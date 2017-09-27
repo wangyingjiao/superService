@@ -121,11 +121,12 @@
           <el-input type="text" v-model="roleForm.roleCode" auto-complete="off" placeholder="门店编码"></el-input>
         </el-form-item>
         <div class="container">
-          <el-amap-search-box class="search-box" :search-option="searchOption" :on-search-result="onSearchResult"></el-amap-search-box>
+          <el-amap-search-box class="search-box" :search-option="searchOption" :on-search-result="onSearchResult" :default="abc" ></el-amap-search-box>
           <el-amap :vid="'amap'" :center="mapCenter" :plugin="plugin" :zoom="zoom" :map-manager="amapManager" ref="map" :events="events">
             <el-amap-marker v-for="marker in markers" :position="marker" ></el-amap-marker>
           </el-amap>
         </div>
+
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -160,8 +161,10 @@
     export default {
         data() {
           return{
+             abc:'',
              zoom:14,
              markers:[],
+             marker:null,
              mapCenter: [116.63942,40.137844],
              plugin: [{
                 pName: 'ToolBar',
@@ -173,8 +176,9 @@
               }],
              events: {
               init: (o) => {
+              var that=this,marker;
                var contextMenu = new AMap.ContextMenu();
-               var marker
+
                 //右键添加Marker标记
                 contextMenu.addItem("门店位置", function(e) {
                     if(marker){
@@ -191,7 +195,21 @@
                             imageOffset: new AMap.Pixel(0, 0)
                         })
                     });
-                     marker.setMap(o);
+                    this.marker=marker;
+
+                     let geocoder=new AMap.Geocoder({
+                      city:"010"
+                    });
+                    let lnglatXY=[o.contextMenuPositon.lng, o.contextMenuPositon.lat];
+                    //console.log(lnglatXY);
+                    //地图上所标点的坐标
+                      geocoder.getAddress(lnglatXY, function(status, result) {
+                          if (status === 'complete' && result.info === 'OK') {
+                             that.roleForm.roleName=result.regeocode.formattedAddress;
+                          }else{
+                             alert("获取地址失败");
+                          }
+                      });
                 }, 3);
                  o.on('rightclick', function(e) {
                     contextMenu.open(o, e.lnglat);
@@ -200,8 +218,8 @@
               },
             },
              searchOption: {
-              city: '上海',
-              citylimit: true
+              city: '010',
+              citylimit: true,
             },
              filters: {
 					name: '',
@@ -266,6 +284,9 @@
             //console.log(pois);
             if (pois.length > 0) {
                 let {lng, lat} = pois[0];
+                 if(this.markers){
+                      this.markers=[];
+                    };
                 this.markers.push([lng, lat]);
 
               let center = {
@@ -275,7 +296,16 @@
               this.mapCenter = [center.lng, center.lat];
             }
           },
-
+          //增加之前先置空表单
+          resetTemp(){
+            this.roleForm={
+              roleName:'',
+              roleCode:''
+            },
+            this.abc='',
+            this.markers=[],
+            this.marker=null
+          },
 
           //查询方法
          getUsers (){
@@ -302,6 +332,7 @@
           },
           //新增方法
           handleAdd(){
+            this.resetTemp();
             this.addFormVisible = true;
             let roleParams={ roleId:this.roleId};
                 requestRole(roleParams).then((data,textStatus) => {
