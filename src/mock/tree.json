@@ -1,0 +1,234 @@
+[
+    {
+        "children": [],
+        "icon": "",
+        "name": "首页",
+        "checked": false,
+        "pid": "0",
+        "id": "1",
+        "type": "module",
+        "open": false,
+        "url": "/main/main.do",
+        "target": "rightFrame"
+    },
+    {
+        "children": [
+            {
+                "children": [],
+                "icon": "",
+                "name": "个人设置",
+                "checked": false,
+                "pid": "16",
+                "id": "17",
+                "type": "page",
+                "open": false,
+                "url": "/user/modify.do",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "用户管理",
+                "checked": false,
+                "pid": "16",
+                "id": "18",
+                "type": "page",
+                "open": false,
+                "url": "/user/list.do",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "角色管理",
+                "checked": false,
+                "pid": "16",
+                "id": "19",
+                "type": "page",
+                "open": false,
+                "url": "/role/list.do",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "系统日志",
+                "checked": false,
+                "pid": "16",
+                "id": "20",
+                "type": "page",
+                "open": false,
+                "url": "/sysLog/list.do",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "修改密码",
+                "checked": false,
+                "pid": "16",
+                "id": "21",
+                "type": "page",
+                "open": false,
+                "url": "/user/modifyPassWord.do",
+                "target": "rightFrame"
+            }
+        ],
+        "icon": "",
+        "name": "系统管理",
+        "checked": false,
+        "pid": "0",
+        "id": "16",
+        "type": "module",
+        "open": false,
+        "url": "/system",
+        "target": "rightFrame"
+    },
+    {
+        "children": [
+            {
+                "children": [],
+                "icon": "",
+                "name": "工资放款",
+                "checked": false,
+                "pid": "28",
+                "id": "29",
+                "type": "page",
+                "open": false,
+                "url": "/salary/money",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "工资文件上传",
+                "checked": false,
+                "pid": "28",
+                "id": "30",
+                "type": "page",
+                "open": false,
+                "url": "/salary/upload",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "工资信息",
+                "checked": false,
+                "pid": "28",
+                "id": "31",
+                "type": "page",
+                "open": false,
+                "url": "/salary/info",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "员工检查",
+                "checked": false,
+                "pid": "28",
+                "id": "32",
+                "type": "page",
+                "open": false,
+                "url": "/salary/check",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "工资发放页",
+                "checked": false,
+                "pid": "28",
+                "id": "37",
+                "type": "page",
+                "open": false,
+                "url": "/salary/result",
+                "target": "rightFrame"
+            }
+        ],
+        "icon": "",
+        "name": "工资操作",
+        "checked": false,
+        "pid": "0",
+        "id": "28",
+        "type": "module",
+        "open": false,
+        "url": "/salary",
+        "target": "rightFrame"
+    },
+    {
+        "children": [
+            {
+                "children": [],
+                "icon": "",
+                "name": "查询发工资详情",
+                "checked": false,
+                "pid": "33",
+                "id": "34",
+                "type": "page",
+                "open": false,
+                "url": "/salary/query/person",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "查询放款详情",
+                "checked": false,
+                "pid": "33",
+                "id": "35",
+                "type": "page",
+                "open": false,
+                "url": "/salary/query/money",
+                "target": "rightFrame"
+            },
+            {
+                "children": [],
+                "icon": "",
+                "name": "查询绑卡信息",
+                "checked": false,
+                "pid": "33",
+                "id": "36",
+                "type": "page",
+                "open": false,
+                "url": "/salary/query/card",
+                "target": "rightFrame"
+            }
+        ],
+        "icon": "",
+        "name": "工资查询",
+        "checked": false,
+        "pid": "28",
+        "id": "33",
+        "type": "module",
+        "open": false,
+        "url": "",
+        "target": "rightFrame"
+    },
+    {
+        "children": [
+            {
+                "children": [],
+                "icon": "",
+                "name": "公司列表",
+                "checked": false,
+                "pid": "38",
+                "id": "39",
+                "type": "page",
+                "open": false,
+                "url": "/company/list",
+                "target": "rightFrame"
+            }
+        ],
+        "icon": "",
+        "name": "公司信息",
+        "checked": false,
+        "pid": "0",
+        "id": "38",
+        "type": "module",
+        "open": false,
+        "url": "/company",
+        "target": "rightFrame"
+    }
+]
