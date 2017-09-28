@@ -163,6 +163,7 @@
           return{
              abc:'',
              zoom:14,
+             map:null,
              markers:[],
              marker:null,
              mapCenter: [116.63942,40.137844],
@@ -176,17 +177,18 @@
               }],
              events: {
               init: (o) => {
-              var that=this,marker;
+              this.map=o;
+              var that=this;
                var contextMenu = new AMap.ContextMenu();
 
                 //右键添加Marker标记
                 contextMenu.addItem("门店位置", function(e) {
-                    if(marker){
-                      marker.setMap(null);
-                      marker = null;
+                    if(that.marker||that.addFormVisible == false){
+                      that.marker.setMap(null);
+                      that.marker = null;
                     };
 
-                      marker = new AMap.Marker({
+                      that.marker = new AMap.Marker({
                         map: o,
                         position: o.contextMenuPositon, //基点位置
                          icon: new AMap.Icon({
@@ -195,7 +197,7 @@
                             imageOffset: new AMap.Pixel(0, 0)
                         })
                     });
-                    this.marker=marker;
+
 
                      let geocoder=new AMap.Geocoder({
                       city:"010"
@@ -303,9 +305,9 @@
               roleCode:''
             },
             this.abc='',
-            this.markers=[],
-            this.marker=null
+            this.markers=[]
           },
+          //删除地图标志
 
           //查询方法
          getUsers (){

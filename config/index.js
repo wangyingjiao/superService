@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{
-        target:'http://192.168.1.105:8080/',
+        target:'http://10.16.70.80:8080/',
         changeOrigin:false, // 如果接口跨域，需要进行这个参数配置
         pathRewrite:{
           '^/api':''
