@@ -45,7 +45,6 @@
   .container{
     width: 100%;
     height:400px;
-    position:relative;
   }
   .search-box {
     position: absolute;
@@ -143,12 +142,6 @@
              amapManager,
 
 
-             //新增角色
-             roleForm: {
-                roleName:'',
-                roleCode:''
-
-             },
              addRules: {
                 roleName: [
                   { required: true, message: '请输入角色名称', trigger: 'blur' }
@@ -157,7 +150,11 @@
                   { required: true, message: '请输入角色编码', trigger: 'blur' }
                 ]
              },
+             roleForm: {
+                roleName:'',
+                roleCode:''
 
+             },
 
           }
 

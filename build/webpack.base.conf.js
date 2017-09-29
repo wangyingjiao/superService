@@ -63,5 +63,9 @@ module.exports = {
         }
       }
     ]
+  },
+  externals: {
+    'AMap': 'AMap',
+    'AMapUI': 'AMapUI'
   }
 }

@@ -28,12 +28,12 @@ const router = new VueRouter({
   routes
 })
 // 初始化vue-amap
-VueAMap.initAMapApiLoader({
+/*VueAMap.initAMapApiLoader({
   // 申请的高德key
   key: 'cda92c8a7e09ad5f3903bbfb7851badd',
   // 插件集合
   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.Geocoder','AMap.CircleEditor']
-});
+});*/
 router.beforeEach((to, from, next) => {
   //NProgress.start();
   if (to.path == '/login') {

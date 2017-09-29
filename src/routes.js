@@ -21,6 +21,7 @@ const addRole = r => require.ensure([], () => r(require('./components/system/add
 const sysLog = r => require.ensure([], () => r(require('./components/system/SysLog')), 'system')
 const map = r => require.ensure([], () => r(require('./components/system/map')), 'system')
 const addMap = r => require.ensure([], () => r(require('./components/system/addMap')), 'system')
+const newMap = r => require.ensure([], () => r(require('./components/system/newMap')), 'system')
 
 
 let routes = [
@@ -90,7 +91,8 @@ let routes = [
             { path: '/roleList', component: roleList, name: '角色管理',iconCls:'fa fa-circle-o'},
             { path: '/sysLog', component: sysLog, name: '日志管理',iconCls:'fa fa-circle-o'},
             { path: '/map', component: map, name: '地图',iconCls:'fa fa-circle-o'},
-            { path: '/addMap', component: addMap, name: '增加地图',iconCls:'fa fa-circle-o'}
+            { path: '/addMap', component: addMap, name: '增加地图',iconCls:'fa fa-circle-o'},
+            { path: '/newMap', component: newMap, name: 'sdk地图',iconCls:'fa fa-circle-o'}
         ]
     },
     /*{  //系统管理->个人设置
