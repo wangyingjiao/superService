@@ -1,8 +1,6 @@
-var merge = require('webpack-merge')
-var prodEnv = require('./prod.env')
-
-module.exports = merge(prodEnv, {
-  NODE_ENV: '"development"',
-  API_ROOT: '"http://10.16.22.69/api"'
-
-})
+module.exports = {
+    NODE_ENV: '"development"',
+    ENV_CONFIG: '"dev"',
+    BASE_API: '"http://10.16.70.80/"',
+    APP_ORIGIN: '"https://wallstreetcn.com"'
+}
