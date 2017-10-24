@@ -1,6 +1,6 @@
 <template>
     <el-menu mode="vertical" theme="dark" unique-opened :default-active="$route.path" :collapse="isCollapse">
-      <sidebar-item :routes='permission_routers'></sidebar-item>
+      <sidebar-item :routes='this.menu'></sidebar-item>
     </el-menu>
 </template>
 
@@ -9,6 +9,11 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 export default {
+  data(){
+    return {
+      menu:[]
+    }
+  },
   components: { SidebarItem },
   computed: {
     ...mapGetters([
@@ -18,6 +23,9 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  created(){
+    this.menu=JSON.parse(sessionStorage.getItem("menu"));
   }
 }
 </script>

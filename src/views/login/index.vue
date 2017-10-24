@@ -56,12 +56,12 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: 'aaaa',
+        password: 'aaaa'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur' }],
+        password: [{ required: true, trigger: 'blur' }]
       },
       pwdType: 'password',
       loading: false,
@@ -81,11 +81,18 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
+
+          this.$store.dispatch('GetUserInfo').then(res => { // 拉取user_info
+          console.log(res.data);
+
+          if(res.data.code==1){
+            sessionStorage.setItem("menu", JSON.stringify(res.data.data));
+          }
+          this.loading = false
+
+        })
             this.$router.push({ path: '/' })
                 // this.showDialog = true
-          }).catch(() => {
-            this.loading = false
           })
         } else {
           console.log('error submit!!')
