@@ -26,7 +26,7 @@ export function requestUserRole(username, password) {
 }
 
 export function logout() {
-  return instance.post(`/api/a/login`,  qs.stringify())
+  return instance.post(`/api/a/logout`)
 }
 
 export function getUserInfo() {

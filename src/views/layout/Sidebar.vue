@@ -24,7 +24,7 @@ export default {
       return !this.sidebar.opened
     }
   },
-  created(){
+  mounted(){
     this.menu=JSON.parse(sessionStorage.getItem("menu"));
   }
 }

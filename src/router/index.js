@@ -51,7 +51,7 @@ export const asyncRouterMap = [
     redirect: '/permission/index',
     name: '权限测试',
     icon: 'lock',
-    meta: { role: ['admin'] },
+    meta: { role: ['admin','edtior','abc'] },
     noDropdown: true,
     children: [{ path: 'index', component: _import('permission/index'), name: '权限测试页', meta: { role: ['admin'] }}]
   },
