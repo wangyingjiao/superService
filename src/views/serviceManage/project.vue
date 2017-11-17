@@ -159,7 +159,7 @@
                 </el-table-column>
                 <el-table-column align="center" label="计量方式">
                   <template>
-                    123
+                    测试
                   </template>
                 </el-table-column>
                 <el-table-column align="center" label="价格">
