@@ -1,0 +1,1304 @@
+<template>
+  <div class="tech">
+    <div class="tech-index">
+      <el-select v-model="servers" clearable placeholder="选择服务站">
+        <el-option v-for="item in server" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select v-model="stations" clearable placeholder="岗位性质" style="margin-left:40px;">
+        <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select v-model="chooses" clearable placeholder="请选择" style="margin-left:40px;">
+        <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+      <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
+      <button class="tech-btn" @click="order">选择技能</button>
+      <button class="button-large tech-btn-right">搜索</button>
+    </div>
+    <div class="tech-section">
+      <div class="tech-section-right">
+        <button class="button-small" @click="dialogVisible = true">新增</button>
+      </div>
+      <ul class="tech-section-ul">
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+
+      <!-- 选择技能 -->
+      <div class="tech-psoition" v-show="position">
+
+        <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
+          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexType" :class="{'tech-green':item.show===true}">
+            {{item.sexName}}
+            <div :class="{'triangle-bottomright':item.show===true}"></div>
+            <div class="tally">&#10004</div>
+          </div>
+        </div>
+        <div class="tech-pos-btn">
+          <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
+          <button @click="hiddenDiv" class="button-cancel">取消</button>
+        </div>
+
+
+      </div>
+
+    </div>
+    <!-- 分页 -->
+    <div v-show="!listLoading" class="pagination-container fy">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+    <!-- 弹出层 -->
+    <el-dialog title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage">
+      <div>
+        <!-- 个人资料 -->
+        <h3 class="tech-tc-prson">个人资料</h3>
+        <ul class="tech-ul">
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>姓名:</p>
+              <p>
+                <el-input placeholder="请输入2~15位姓名" style="width:300px"></el-input>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span">*</span>身份证号:</p>
+              <p>
+                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>手机号:</p>
+              <p>
+                <el-input placeholder="请输入11为手机号" style="width:300px"></el-input>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span">*</span>现住地址:</p>
+              <p>
+                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>性别:</p>
+              <p>
+                <el-select v-model="sexs" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in sex" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p></p>
+              <p>
+                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>民族:</p>
+              <p>
+                <el-input placeholder="请输入11为手机号" style="width:300px"></el-input>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span">*</span>出生日期:</p>
+              <p>
+                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px">
+                </el-date-picker>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="tech-fourth"><span>*</span>上传头像</button>
+                <button class="tech-fourth-rigth">上传身份证</button>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="tech-fourth"><span>*</span>上传位置</button>
+                <button class="tech-fourth-rigth">上传位置</button>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存并创建</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <!-- 补充个人资料 -->
+        <h3 class="tech-tc-prson">补充个人资料</h3>
+        <ul class="tech-ul">
+          <li>
+            <div>
+              <p>邮箱:</p>
+              <p>
+                <el-input placeholder="请输入正确的邮箱地址" style="width:300px"></el-input>
+              </p>
+            </div>
+            <div>
+              <p>学历:</p>
+              <p>
+                <el-select v-model="educations" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in education" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p>身高:</p>
+              <p>
+                <el-select v-model="heights" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in height" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p>体重:</p>
+              <p>
+                <el-select v-model="strongs" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in strong" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p>婚姻状况:</p>
+              <p>
+                <el-select v-model="marriages" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in marriage" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p>籍贯:</p>
+              <p>
+                <el-select v-model="places" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in place" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存信息</button>
+              </p>
+            </div>
+          </li>
+
+        </ul>
+        <!-- 服务信息 -->
+        <h3 class="tech-tc-prson">服务信息</h3>
+        <ul class="tech-ul">
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>选择城市:</p>
+              <p>
+                <el-select v-model="catys" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in caty" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span">*</span>岗位性质:</p>
+              <p>
+                <el-select v-model="stationes" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>所属服务站:</p>
+              <p>
+                <el-select v-model="servers1" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in servery" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span">*</span>岗位状态:</p>
+              <p>
+                <el-select v-model="status" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in statu" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>工作年限:</p>
+              <p>
+                <el-select v-model="workyears" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p><span class="tech-span"></span>入职时间:</p>
+              <p>
+                <el-date-picker v-model="value2" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px">
+                </el-date-picker>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>选择技能:</p>
+              <div class="tech-order-jn">
+                <button class="tech-order-btn" @click="orderson"> &#10010 选择技能</button>
+                <div class="tech-order-jn-son" v-show="flags">
+                  <div style="display:flex;">
+                    <div class="selfCheckBox tech-order-posi" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}">
+                      {{item.sexName}}
+                      <div :class="{'triangle-bottomrighto':item.show===true}"></div>
+                      <div class="tallyo">&#10004</div>
+                    </div>
+                  </div>
+                  <div style="text-align:center;margin:10px 0;">
+                      <button class="button-large">确认</button>
+                      <button class="button-cancel" style="margin-left:20px">取消</button>
+                    </div>
+                </div>
+              </div>
+              <!-- <p>
+                <el-select v-model="workyears" clearable placeholder="请选择" style="width:545px">
+                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p> -->
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>工作时间:</p>
+              <p>
+                <el-select v-model="workyears" clearable placeholder="请选择" style="width:545px">
+                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>级别:</p>
+              <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
+                <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2($index,item)" v-for="(item,$index) in sexTypes"
+                  :class="{'tech-green':isA==$index}" style="margin:0">
+                  {{item.sexName}}
+                  <div :class="{'triangle-bottomrights':isA==$index}"></div>
+                  <div class="tallys">&#10004</div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>经验描述:</p>
+              <p>
+                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
+                </el-input>
+                <!-- <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> -->
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存信息</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <!-- APP账号登陆 -->
+        <h3 class="tech-tc-prson">APP账号登陆</h3>
+        <ul class="tech-ul">
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>手机号:</p>
+              <p>
+                <el-input placeholder="请输入11位手机号" style="width:300px"></el-input>
+              </p>
+            </div>
+            <div>
+              <p>密码:</p>
+              <p>
+                <el-input placeholder="默认为手机号后4位" style="width:300px" type="password"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存信息</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <!-- 银行信息 -->
+        <h3 class="tech-tc-prson">银行信息</h3>
+        <ul class="tech-ul">
+          <li>
+            <div>
+              <p><span class="tech-span"></span>卡类型:</p>
+              <p>
+                <el-select v-model="cards" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in card" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+            <div>
+              <p>银行账号:</p>
+              <p>
+                <el-input placeholder="请输入正确的银行卡号" style="width:300px" type="password"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存信息</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <!--家庭成员（选填） -->
+        <h3 class="tech-tc-prson">家庭成员（选填）</h3>
+        <div class="tech-table">
+          <el-table :key='tableKey' :data="list" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
+            style="width: 100%" v-show="flags">
+
+            <el-table-column align="center" label="关系">
+              <template scope="scope">
+                <span>同事</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="姓名">
+              <template scope="scope">
+                <span>张三</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="手机号">
+              <template scope="scope">
+                <span>1111</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="单位">
+              <template scope="scope">
+                <span>呼家楼</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="职务">
+              <template scope="scope">
+                <span>无</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center" label="操作">
+              <template scope="scope">
+                <el-button size="small" type="primary" @click="handleModifyStatus(scope.row,'deleted')">编辑
+                </el-button>
+                <el-button size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
+                </el-button>
+              </template>
+            </el-table-column>
+
+          </el-table>
+        </div>
+        <div class="tech-table" style="padding:none;">
+          <el-button type="primary" icon="plus" @click="showTabl">家庭成员</el-button>
+        </div>
+        <ul class="tech-ul" v-show="flagso">
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>关系:</p>
+              <p>
+                <el-select v-model="binds" clearable placeholder="请选择" style="width:230px">
+                  <el-option v-for="item in bind" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span">*</span>名字:</p>
+              <p>
+                <el-input placeholder="请输入2~15位名字" style="width:230px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>手机号:</p>
+              <p>
+                <el-input placeholder="请输入11位手机号" style="width:230px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>单位:</p>
+              <p>
+                <el-input placeholder="请输入工作单位名称" style="width:230px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>职务:</p>
+              <p>
+                <el-input placeholder="请输入职务" style="width:230px"></el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large">保存</button>
+                <button class="button-cancel" style="margin-left:20px">取消</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+        <!--其他信息 -->
+        <h3 class="tech-tc-prson">其他信息</h3>
+        <ul class="tech-ul">
+
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="tech-fourth"><span>*</span>上传头像</button>
+                <button class="tech-fourth-rigth">上传身份证</button>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="tech-fourth"><span>*</span>上传位置</button>
+                <button class="tech-fourth-rigth">上传位置</button>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p><span class="tech-span"></span>备注:</p>
+              <p>
+                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
+                </el-input>
+              </p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p></p>
+              <p>
+                <button class="button-large-fourth">保存信息</button>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- <span slot="footer" class="dialog-footer"></span> -->
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        server: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+
+        servery: [{
+          value: '选项1',
+          label: '呼家楼'
+        }, {
+          value: '选项2',
+          label: '双桥'
+        }, {
+          value: '选项3',
+          label: '百子湾'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        marriage: [{
+          value: '选项1',
+          label: '未婚'
+        }, {
+          value: '选项2',
+          label: '已婚'
+        }, {
+          value: '选项3',
+          label: '丧偶'
+        }, {
+          value: '选项4',
+          label: '离婚'
+        }],
+        station: [{
+          value: '选项1',
+          label: '全职'
+        }, {
+          value: '选项2',
+          label: '兼职'
+        }],
+        choose: [{
+          value: '选项1',
+          label: '姓名'
+        }, {
+          value: '选项2',
+          label: '手机'
+        }],
+
+        card: [{
+          value: '选项1',
+          label: '中国建行'
+        }, {
+          value: '选项2',
+          label: '中国银行'
+        }],
+
+        sex: [{
+          value: '选项1',
+          label: '男'
+        }, {
+          value: '选项2',
+          label: '女'
+        }],
+
+        statu: [{
+          value: '选项1',
+          label: '在职'
+        }, {
+          value: '选项2',
+          label: '离职'
+        }],
+        education: [{
+          value: '选项1',
+          label: '小学'
+        }, {
+          value: '选项2',
+          label: '初中'
+        }, {
+          value: '选项3',
+          label: '中专'
+        }, {
+          value: '选项4',
+          label: '高中'
+        }, {
+          value: '选项5',
+          label: '大专'
+        }, {
+          value: '选项6',
+          label: '本科及以上'
+        }],
+        strong: [{
+          value: '选项1',
+          label: '30kg'
+        }, {
+          value: '选项2',
+          label: '40kg'
+        }, {
+          value: '选项3',
+          label: '50kg'
+        }, {
+          value: '选项4',
+          label: '60kg'
+        }, {
+          value: '选项5',
+          label: '70kg'
+        }, {
+          value: '选项6',
+          label: '80kg'
+        }],
+        height: [{
+          value: '选项1',
+          label: '130cm'
+        }, {
+          value: '选项2',
+          label: '140cm'
+        }, {
+          value: '选项3',
+          label: '150cm'
+        }, {
+          value: '选项4',
+          label: '160cm'
+        }, {
+          value: '选项5',
+          label: '170cm'
+        }, {
+          value: '选项6',
+          label: '180cm'
+        }, {
+          value: '选项7',
+          label: '190cm'
+        }, {
+          value: '选项8',
+          label: '200cm'
+        }],
+        place: [{
+          value: '选项1',
+          label: '北京'
+        }, {
+          value: '选项2',
+          label: '天津'
+        }, {
+          value: '选项3',
+          label: '上海'
+        }, {
+          value: '选项4',
+          label: '重庆'
+        }, {
+          value: '选项5',
+          label: '河北'
+        }, {
+          value: '选项6',
+          label: '山西'
+        }, {
+          value: '选项7',
+          label: '辽宁'
+        }, {
+          value: '选项8',
+          label: '河南'
+        }],
+        caty: [{
+          value: '选项1',
+          label: '北京'
+        }, {
+          value: '选项2',
+          label: '天津'
+        }, {
+          value: '选项3',
+          label: '上海'
+        }, {
+          value: '选项4',
+          label: '重庆'
+        }, {
+          value: '选项5',
+          label: '河北'
+        }, {
+          value: '选项6',
+          label: '山西'
+        }, {
+          value: '选项7',
+          label: '辽宁'
+        }, {
+          value: '选项8',
+          label: '河南'
+        }],
+
+        workyear: [{
+          value: '选项1',
+          label: '1年以下'
+        }, {
+          value: '选项2',
+          label: '1年'
+        }, {
+          value: '选项3',
+          label: '2年'
+        }, {
+          value: '选项4',
+          label: '10年'
+        }, {
+          value: '选项5',
+          label: '10年以上'
+        }],
+
+        bind: [{
+          value: '选项1',
+          label: '夫妻'
+        }, {
+          value: '选项2',
+          label: '父母'
+        }, {
+          value: '选项3',
+          label: '母女'
+        }, {
+          value: '选项4',
+          label: '母子'
+        }, {
+          value: '选项5',
+          label: '兄弟姐妹'
+        }, {
+          value: '选项6',
+          label: '亲戚'
+        }],
+        pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          }
+        },
+        sexType: [{
+            sexName: '技能一',
+            show: false
+          },
+          {
+            sexName: '技能二',
+            show: false
+          },
+          {
+            sexName: '技能三',
+            show: false
+          },
+          {
+            sexName: '技能四',
+            show: false
+          },
+          {
+            sexName: '技能五',
+            show: false
+          },
+          {
+            sexName: '技能六',
+            show: false
+          },
+          {
+            sexName: '技能七',
+            show: false
+          },
+          {
+            sexName: '技能八',
+            show: false
+          },
+          {
+            sexName: '技能一',
+            show: false
+          },
+          {
+            sexName: '技能二',
+            show: false
+          },
+          {
+            sexName: '技能三',
+            show: false
+          },
+          {
+            sexName: '技能四',
+            show: false
+          },
+          {
+            sexName: '技能五',
+            show: false
+          },
+          {
+            sexName: '技能六',
+            show: false
+          },
+          {
+            sexName: '技能七',
+            show: false
+          },
+          {
+            sexName: '技能八',
+            show: false
+          },
+          {
+            sexName: '技能四',
+            show: false
+          },
+          {
+            sexName: '技能五',
+            show: false
+          },
+          {
+            sexName: '技能六',
+            show: false
+          },
+          {
+            sexName: '技能七',
+            show: false
+          },
+          {
+            sexName: '技能八',
+            show: false
+          },
+          {
+            sexName: '技能八',
+            show: false
+          }
+        ],
+        sexTypes: [{
+            sexName: '技能一',
+            key: 1
+          },
+          {
+            sexName: '技能二',
+            key: 2
+          },
+          {
+            sexName: '技能三',
+            key: 3
+          },
+          {
+            sexName: '技能四',
+            key: 4
+          },
+          {
+            sexName: '技能五',
+            key: 5
+          }
+        ],
+        sexTypeo: [{
+            sexName: '技能一',
+            show: false
+          },
+          {
+            sexName: '技能二',
+            show: false
+          },
+          {
+            sexName: '技能三我我',
+            show: false
+          },
+          {
+            sexName: '技能四',
+            show: false
+          },
+          {
+            sexName: '技能五',
+            show: false
+          }
+        ],
+        key: false,
+        isA: false,
+        sexLen: '',
+        binds: '',
+        flagso: false,
+        flags: false,
+        tableKey: '',
+        cards: '',
+        textarea3: '',
+        radio8: '1',
+        workyears: '',
+        status: '',
+        servers1: '',
+        stationes: '',
+        catys: '',
+        places: '',
+        marriages: '',
+        strongs: '',
+        heights: '',
+        educations: '',
+        sexs: '',
+        servers: '',
+        stations: '',
+        chooses: '',
+        input: '',
+        value1: '',
+        value2: '',
+        position: false,
+        listLoading: false,
+        list: [1, 2, 3],
+        total: null,
+        listLoading: false,
+        listQuery: {
+          page: 1,
+          limit: 6,
+          importance: undefined,
+          title: undefined,
+          type: undefined,
+          sort: '+id'
+        },
+        dialogVisible: false,
+      }
+    },
+    methods: {
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleModifyStatus(row, status) {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        row.status = status
+      },
+      showTabl() {
+        this.flagso = !this.flagso
+      },
+      order() {
+        this.position = true
+      },
+      hiddenDiv() {
+        this.position = false
+      },
+      roomSel1(item) {
+        item.show = !item.show;
+        //  console.log(item)
+      },
+      roomSel2(index, obj) {
+        this.isA = index;
+      },
+      orderson() {
+        this.flags = true;
+      }
+    }
+  }
+
+</script>
+<style>
+  * {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tech-index {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .tech {
+    position: relative;
+  }
+
+  .tech-btn {
+    background: #fff;
+    border: 1px solid #4c70e8;
+    color: #4c70e8;
+    margin-left: 40px;
+    cursor: pointer;
+    /* border: none; */
+    outline: none;
+    height: 36px;
+    font-size: 12px;
+    text-align: center;
+    width: 80px;
+  }
+
+  .tech-btn-right {
+    margin-left: 300px;
+  }
+
+  .tech-section {
+    margin: 20px;
+  }
+
+  .tech-section-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .tech-section-ul {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tech-table {
+    margin: 20px;
+    padding-bottom: 20px;
+  }
+
+  .tech-section-ul li {
+    width: 32%;
+    height: 200px;
+    background: #fff;
+  }
+
+  .fy {
+    margin: 0 20px;
+  }
+
+  .tech-section-lage {
+    left: 40px;
+    width: 60%;
+  }
+
+  .el-dialog__header {
+    background: #f3f1f1;
+    padding: 20px;
+  }
+
+  .el-dialog__body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .tech-tc-prson {
+    margin: 10px 20px;
+    padding: 10px 0px;
+    border-bottom: #f3f1f1 solid 1px;
+  }
+
+  .tech-ul {
+    padding: 10px 40px 10px 20px;
+    border-bottom: solid 20px #f3f1f1;
+  }
+
+  .tech-ul>li {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+  }
+
+  .tech-center {
+    display: flex;
+    justify-content: center;
+  }
+
+
+  .tech-ul li>div {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .tech-ul li div>p {
+    display: flex;
+  }
+
+  .tech-span {
+    color: red;
+    width: 10px;
+    display: block;
+  }
+
+  .tech-ul li div p:nth-of-type(1) {
+    width: 100px;
+  }
+
+  .tech-fourth {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    height: 36px;
+    font-size: 12px;
+    text-align: center;
+    width: 100px;
+    color: #4c70e8;
+    background: #fff;
+    border: 1px solid #4c70e8;
+  }
+
+  .tech-fourth-rigth {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    height: 36px;
+    font-size: 12px;
+    text-align: center;
+    width: 100px;
+    color: red;
+    background: #fff;
+    border: 1px solid red;
+    margin-left: 40px;
+  }
+
+  .el-textarea__inner {
+    border-radius: 0px;
+  }
+
+  .tech-psoition {
+    width: 100%;
+    height: 320px;
+    background: #fff;
+    position: absolute;
+    top: 77px;
+    left: 0;
+    z-index: 1;
+    animation: show 1s;
+    -moz-animation: show 1s;
+    /* Firefox */
+    -webkit-animation: show 1s;
+    /* Safari 和 Chrome */
+    -o-animation: show 1s;
+  }
+
+  @keyframes show {
+    0% {
+      height: 100px
+    }
+    50% {
+      height: 200px
+    }
+    100% {
+      height: 320px
+    }
+  }
+
+  @keyframes hidden {
+    0% {
+      height: 320px
+    }
+    50% {
+      height: 200px
+    }
+    100% {
+      height: 100px
+    }
+  }
+
+  .positionbox {
+    margin: 20px;
+  }
+
+  .tech-positon-odvi {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tech-pos-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .tech-green {
+    border: solid 1px green;
+  }
+
+  .tech-selfbox {
+    /* margin: 10px 20px; */
+  }
+
+  .tallys {
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 35px;
+  }
+
+  .triangle-bottomrights {
+    width: 0;
+    height: 0;
+    border-bottom: 15px solid green;
+    border-left: 15px solid transparent;
+    position: absolute;
+    margin-top: 17px;
+    margin-left: 32px;
+  }
+
+  .tech-order-btn {
+    background: #fff;
+    color: #4c70e8;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .tech-order-jn {
+    width: 545px;
+    height: 36px;
+    border: 1px solid #bfcbd9;
+    position: relative;
+    line-height: 36px;
+  }
+
+  .tech-order-jn-son {
+    width: 545px;
+    /* height: 100px; */
+    border: 1px solid #bfcbd9;
+    border-top: none;
+    /* display: flex; */
+    position: absolute;
+    background: #fff;
+    z-index: 1;
+    top: 35px;
+    left: -1px;
+  }
+
+  .tech-order-posi {
+    margin: 15px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .tallyo {
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 35px;
+  }
+
+  .triangle-bottomrighto {
+    width: 0;
+    height: 0;
+    border-bottom: 15px solid green;
+    border-left: 15px solid transparent;
+    position: absolute;
+    margin-top: 17px;
+    margin-left: 32px;
+  }
+
+</style>
