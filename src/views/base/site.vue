@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container calendar-list-container">
     <div class="filter-container">
+=======
+<div>
+  <div class="filter-container bgWhite">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="listQuery.title">
       </el-input>
 
@@ -8,12 +13,22 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
+<<<<<<< HEAD
 
       <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
       <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
       <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleSetRange">设置范围</el-button>
       <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleSetMaster">设置站长</el-button>
     </div>
+=======
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+  </div>
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <button class="button-small-fourth btn_right btn_pad" @click="handleSetRange">设置范围</button>
+    <button class="button-small-fourth btn_right btn_pad" @click="handleSetMaster">设置站长</button>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
     <el-table 
     :key='tableKey' 
@@ -91,13 +106,21 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+<<<<<<< HEAD
       <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
+=======
+      <el-form class="small-space" :model="temp2" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
         <el-form-item label="服务站名称" >
           <el-input 
           :maxlength="15" 
           :minlength="2" 
           style='width: 400px;' 
+<<<<<<< HEAD
+=======
+          v-model="temp2.stationName"
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
           placeholder="请输入2-15位的服务站名称"></el-input>
         </el-form-item>
         <el-form-item label="服务站类型">
@@ -107,7 +130,11 @@
           </el-select>
         </el-form-item>
 
+<<<<<<< HEAD
         <el-form-item label="所在区域">
+=======
+        <el-form-item label="所在区域" v-model="temp2.area">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
           <el-select style='width: 120px;' class="filter-item" v-model="temp2.province"  placeholder="请选择">
             <el-option v-for="item in province" :key="item" :label="item" :value="item">
             </el-option>
@@ -123,11 +150,27 @@
         </el-form-item>
 
         <el-form-item label="详细地址" >
+<<<<<<< HEAD
           <el-input :maxlength="100" :minlength="6" style='width: 400px;' placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
         <el-form-item label="服务站电话" >
           <el-input style='width: 400px;' placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
+=======
+          <el-input
+            :maxlength="100"
+            :minlength="6" 
+            style='width: 400px;'
+            v-model="temp2.addr"
+            placeholder="请输入6-100位的详细地址"></el-input>
+        </el-form-item>
+
+        <el-form-item label="服务站电话" >
+          <el-input 
+            style='width: 400px;'
+            v-model="temp2.phone"
+            placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         </el-form-item>
 
         
@@ -200,6 +243,10 @@
       </div>
     </el-dialog>
   </div>
+<<<<<<< HEAD
+=======
+</div>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </template>
 
 <script>
@@ -237,6 +284,7 @@ export default {
         type: undefined,
         sort: '+id'
       },
+<<<<<<< HEAD
       temp: {  
         master: '',
       },
@@ -247,6 +295,26 @@ export default {
         city: '',
         county: '',
       },     
+=======
+      temp: { 
+        master: '',
+      },
+      temp1: {
+        
+      },
+      temp2: {
+        stationName: '',
+        stationType: '',
+        area: '',
+        province: '',
+        city: '',
+        county: '',
+        addr: '',
+        phone: '',
+        stationState: ''
+        
+      },
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       importanceOptions: [1, 2, 3],
       stationType:stationType,
       stationState:stationState,
@@ -339,8 +407,12 @@ export default {
       this.list.splice(index, 1)
     },
     create() {
+<<<<<<< HEAD
       this.temp.id = 1
       this.list.unshift(this.temp)
+=======
+      console.log("新增")
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       this.dialogFormVisible = false
       this.$notify({
         title: '成功',
@@ -389,6 +461,7 @@ export default {
       }))
     },
     // 初始化地图
+<<<<<<< HEAD
     init(){
         var map = new AMap.Map('container', {
             center: [117.000923, 36.675807],
@@ -398,6 +471,17 @@ export default {
             map.addControl(new AMap.ToolBar());
         });
     }
+=======
+    // init(){
+    //     var map = new AMap.Map('container', {
+    //         center: [117.000923, 36.675807],
+    //         zoom: 6
+    //     });
+    //     map.plugin(["AMap.ToolBar"], function() {
+    //         map.addControl(new AMap.ToolBar());
+    //     });
+    // }
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   }
 }
 </script>
@@ -428,4 +512,20 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
+<<<<<<< HEAD
+=======
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
+}
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>

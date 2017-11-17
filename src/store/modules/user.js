@@ -34,7 +34,11 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
+<<<<<<< HEAD
           console.log(response)
+=======
+          // console.log(response)
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
           const data = response.data
           setToken(data.token)
           resolve()
@@ -48,7 +52,10 @@ const user = {
     GetUserInfo({ commit, userInfo }) {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
+<<<<<<< HEAD
           console.log(response)
+=======
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
           const data = response.data
           commit('SET_MENU', data.data)
           resolve(response)

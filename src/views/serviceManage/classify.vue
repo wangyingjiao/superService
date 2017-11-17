@@ -1,10 +1,16 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container calendar-list-container">
     <div class="filter-container">
+=======
+<div>
+  <div class="filter-container bgWhite">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择城市">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
+<<<<<<< HEAD
 
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="listQuery.title">
       </el-input>
@@ -14,6 +20,14 @@
       <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
       <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
     </div>
+=======
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="listQuery.title">
+      </el-input>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+    </div>
+  <div class="app-container calendar-list-container">
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
     <el-table 
     :key='tableKey' 
@@ -87,6 +101,10 @@
     </el-dialog>
 
   </div>
+<<<<<<< HEAD
+=======
+</div>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </template>
 
 <script>
@@ -269,4 +287,20 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
+<<<<<<< HEAD
+=======
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
+}
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>

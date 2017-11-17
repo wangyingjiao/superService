@@ -12,8 +12,13 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
+<<<<<<< HEAD
       if (store.getters.roles.length === 0) {
         console.log("拉取菜单")
+=======
+      if (store.getters.menu.length === 0) {
+        console.log('拉取菜单')
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         store.dispatch('GetUserInfo').then(res => { // 拉取用户信息
           next()
         }).catch(() => {

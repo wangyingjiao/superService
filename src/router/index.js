@@ -45,8 +45,13 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '基础服务',
     children: [
+<<<<<<< HEAD
     { path: 'site', name: '服务机构', component: _import('base/site') },
     { path: 'mechanism', name: '服务站', component: _import('base/mechanism') }
+=======
+    { path: 'mechanism', name: '服务机构', component: _import('base/mechanism') },
+    { path: 'site', name: '服务站', component: _import('base/site') }
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     ]
   },
 
@@ -56,9 +61,13 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '服务技师管理',
     children: [
+<<<<<<< HEAD
     { path: 'holiday', name: '休假管理', component: _import('technician/holiday') },
     { path: 'techni', name: '技师管理', component: _import('technician/techni') },
     { path: 'tech', name: '我你管理', component: _import('technician/tech') }
+=======
+    { path: 'holiday', name: '休假管理', component: _import('technician/holiday') }
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     ]
   },
 

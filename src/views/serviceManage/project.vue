@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container calendar-list-container">
     <div class="filter-container">
+=======
+<div>
+  <div class="filter-container bgWhite">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="所属分类">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
@@ -9,6 +14,7 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
+<<<<<<< HEAD
 
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
       </el-input>
@@ -18,6 +24,14 @@
       <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
       <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
     </div>
+=======
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
+      </el-input>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+    </div>
+  <div class="app-container calendar-list-container">
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
     <el-table 
     :key='tableKey' 
@@ -91,16 +105,40 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+<<<<<<< HEAD
         <el-tabs tabPosition='right' style="height: 200px;">
             <el-tab-pane label="保洁">
               <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
                 <h3>基本信息</h3><hr/><br/>
                 <el-form-item label="状态">
+=======
+        <el-tabs tabPosition='right' >
+            <el-tab-pane label="保洁">
+              <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
+                <h3>基本信息</h3><hr/><br/>
+                <el-form-item label="所属分类">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
                   <el-select class="filter-item" v-model="temp.sption1" >
                     <el-option v-for="item in option1" :key="item" :label="item" :value="item">
                     </el-option>
                   </el-select>
                 </el-form-item>
+<<<<<<< HEAD
+=======
+                <span>*</span><el-form-item label="服务图片">
+                  <el-upload
+                    class="upload-demo upload_box"
+                    action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
+                    :data="sign"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :file-list="fileList2"
+                    list-type="picture">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
+                  </el-upload>
+                </el-form-item>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
                 
                 <el-form-item label="项目名称" >
                   <el-input 
@@ -112,6 +150,7 @@
                 
                 <el-form-item label="定向城市">      
                     <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
+<<<<<<< HEAD
                     <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
                     <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
                     <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
@@ -120,6 +159,145 @@
               </el-form>
             </el-tab-pane>
             <el-tab-pane label="家修">家修</el-tab-pane>
+=======
+                    <el-checkbox v-model="city" label="南京" size="medium"></el-checkbox>
+                    <el-checkbox v-model="city" label="天津" border size="medium"></el-checkbox>
+                    <el-checkbox v-model="city" label="上海" border size="medium"></el-checkbox>
+                    <el-checkbox v-model="city" label="青岛" border size="medium"></el-checkbox>
+                    <div class="font_small">*定向城市指改服务项目的适用城市。默认不填，代表适用于本机构/所属分类设置的所有城市</div>
+                </el-form-item>
+                <el-form-item label="是否上架">
+                    <el-switch
+                      v-model="val"
+                      on-text="是"
+                      off-text="否">
+                    </el-switch>
+                </el-form-item>
+
+                <el-form-item label="排序号">
+                    <el-input 
+                      style='width: 400px;' 
+                      placeholder="请输入排序号（值越小越靠前）"></el-input>
+                </el-form-item>
+              </el-form>
+              <h3>商品信息</h3><hr/><br/>
+              <el-table
+                border 
+                :data="list"
+                class="goods_info">
+                <el-table-column align="center" label="商品名称">
+                  <template scope="scope">
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="商品单位">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="计量方式">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="价格">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="折算时长">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column label="派人数量" class="123" class-name="234">
+                   <el-table-column align="center" width="100%" label="临界值">
+                     <template scope="scope">
+                      <div class="content-rowspan">
+                        <div><=1</div>
+                        <div><=1</div>
+                        <div><=1</div>
+                        <div><=1</div>
+                      </div>
+                    
+                    </template>
+
+                   </el-table-column>
+                   <el-table-column align="center" width="100%" label="人数">
+                     <template>
+                    123
+                  </template>
+
+                   </el-table-column>
+                </el-table-column>
+                <el-table-column align="center" label="起购数量">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="操作">
+                  <template>
+                    123
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div class="add_Btn">
+                <span class="fl btn_Span1">+</span>
+                <span class="fl btn_Span2">添加商品</span>
+              </div>
+<!--添加商品表单 -->
+              <el-form 
+                :model="goods_info"
+                ref="goods_info"
+                label-position="left"
+                label-width="80px" 
+                style='width: 500px; margin-left:50px;'
+                :rules="rules">
+                <el-form-item label="活动名称" prop="name">
+                  <el-input
+                    placeholder="请输入活动名称（2-10位）"
+                    v-model="goods_info.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="商品单位" prop="unit">
+                  <el-input 
+                    placeholder="请输入活动名称（2-10位）"
+                    v-model="goods_info.unit"></el-input>
+                </el-form-item>
+
+                <el-form-item label="计量方式" prop="metering">
+                  <el-select class="filter-item" v-model="goods_info.metering" placeholder="可用">
+                     <el-option v-for="item in option1" :key="item" :label="item" :value="item">
+                     </el-option>
+                  </el-select>
+                </el-form-item>
+                
+                <el-form-item label="价格" prop="price">
+                  <el-input v-model="goods_info.price"></el-input>
+                </el-form-item>
+                <el-form-item label="折算时长" prop="time">
+                  <el-input v-model="goods_info.time"></el-input>
+                </el-form-item>
+
+                <el-form-item label="派人数量" prop="peoNum">
+                  <el-input v-model="goods_info.peoNum"></el-input>
+                </el-form-item>
+                <el-form-item label="起够数量" prop="num">
+                  <el-input 
+                    placeholder="请输入起购数量（默认为1）"
+                    v-model="goods_info.num"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-button type="primary" @click="submitForm('goods_info')">提交</el-button>
+                  <el-button @click="resetForm('goods_info')">重置</el-button>
+                </el-form-item>
+              </el-form>
+              
+            </el-tab-pane>
+
+            <el-tab-pane label="家修">teb切换</el-tab-pane>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         </el-tabs>
       
       <div slot="footer" class="dialog-footer">       
@@ -130,18 +308,29 @@
     </el-dialog>
 
   </div>
+<<<<<<< HEAD
 </template>
 
 <script>
 
+=======
+</div>
+</template>
+
+<script>
+import { getSign} from "@/api/sign";
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { parseTime } from '@/utils'
 //挂载数据
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 const city = ['海淀', '朝阳']
 const option1 = ['北京', '北京']
 
@@ -154,9 +343,41 @@ export default {
   },
   data() {
     return {
+<<<<<<< HEAD
       list: [1,2,3],
       total: null,
       listLoading: true,
+=======
+      sign:getSign(),
+      list: [1,2,3],
+      total: null,
+      listLoading: true,
+      val: true,
+      rules: {
+        name: [
+            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' },
+            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        unit: [
+            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' },
+            { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }
+        ],
+        metering: [
+            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' }
+        ]
+        
+      },
+      goods_info: {
+        name: '',
+        unit: '',
+        metering: '',
+        price: '',
+        time: '',
+        peoNum: '',
+        num: ''
+
+      },
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       listQuery: {
         page: 1,
         limit: 6,
@@ -165,8 +386,19 @@ export default {
         type: undefined,
         sort: '+id'
       },
+<<<<<<< HEAD
       temp: {  
         option1:''
+=======
+      fileList2: [
+        {
+          name: 'food2.jpeg', 
+          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
+        ],
+      temp: {  
+        option1:'',
+        val:true
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       },  
       importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
@@ -179,6 +411,10 @@ export default {
       city: city,
       option1:option1
     }
+<<<<<<< HEAD
+=======
+    
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   },
   filters: {
     statusFilter(status) {
@@ -268,11 +504,36 @@ export default {
         duration: 2000
       })
     },
+<<<<<<< HEAD
+=======
+    handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+    handlePreview(file) {
+        console.log(file);
+      },
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     resetTemp() {
       this.temp = {
         
       }
     },
+<<<<<<< HEAD
+=======
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log('保存表格测试');
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     
 
     formatJson(filterVal, jsonData) {
@@ -289,6 +550,7 @@ export default {
 }
 </script>
 <style>
+<<<<<<< HEAD
 .btn_right{
   float:right;
   width:100px;
@@ -304,10 +566,28 @@ export default {
   padding: 10px 0;
 }
 .checkBox1{
+=======
+.btn_right {
+  float: right;
+  width: 100px;
+}
+.btn_left {
+  width: 100px;
+}
+.checkRightBox {
+  border: solid 1px #dcdcdc;
+  padding: 10px;
+}
+.checkAllBox {
+  padding: 10px 0;
+}
+.checkBox1 {
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
   border-bottom: solid 1px #dcdcdc;
 }
+<<<<<<< HEAD
 .checkBox2{
   padding: 10px 0;
 }
@@ -315,4 +595,79 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
+=======
+.checkBox2 {
+  padding: 10px 0;
+}
+.checkBox3 {
+  padding: 10px 0;
+  border-top: solid 1px #dcdcdc;
+}
+body {
+  background-color: #eef1f6;
+}
+.bgWhite {
+  background-color: #ffffff;
+  padding: 20px;
+}
+.btn_pad {
+  margin: 30px 0px 10px 20px;
+}
+.btn_right {
+  float: right;
+}
+.goods_info {
+  font-size: 12px;
+}
+.el-table th > .cell {
+  text-align: -webkit-center;
+}
+.el-table .cell,
+.el-table th > div {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.upload_box {
+  max-width: 400px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px #785 dashed;
+}
+.upload_box .el-upload .el-button {
+  background-color: #4c70e8;
+  border-color: #4c70e8;
+  border-radius: 0px;
+}
+.font_small {
+  color: #cccccc;
+  font-size: 12px;
+}
+.content-rowspan div {
+  line-height: 30px;
+  border-bottom: 1px solid #cccccc;
+}
+.content-rowspan div:last-child {
+  border-bottom: 0;
+}
+.add_Btn {
+  width: 100px;
+  height: 30px;
+  margin-top: 20px;
+  color: #ffffff;
+  line-height: 30px;
+  background-color: #4c70e8;
+  cursor: pointer;
+}
+.btn_Span1 {
+  width: 30px;
+  height: 30px;
+  background-color: #6d8dfc;
+  text-align: center;
+}
+.btn_Span2 {
+  width: 70px;
+  height: 30px;
+  text-align: center;
+}
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>

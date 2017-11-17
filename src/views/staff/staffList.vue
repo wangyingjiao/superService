@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container calendar-list-container">
     <div class="filter-container">
+=======
+<div>
+  <div class="filter-container bgWhite">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
       </el-input>
 
@@ -8,11 +13,20 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
+<<<<<<< HEAD
 
       <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
       <el-button class="filter-item btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
     </div>
 
+=======
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+    </div>
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <el-button @click="handgetSign">测试签名</el-button>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -29,10 +43,18 @@
         </template>
       </el-table-column>
 
+<<<<<<< HEAD
       <el-table-column align="center" label="姓名" >
         <template scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
+=======
+      <el-table-column align="center" label="姓名" prop="name" >
+
+        <!-- <template scope="scope">
+          <span>{{scope.row.name}}</span>
+        </template> -->
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       </el-table-column>
 
       <el-table-column width="180px" align="center" label="手机号">
@@ -86,17 +108,45 @@
       <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
 
         <el-form-item label="手机号">
+<<<<<<< HEAD
           <el-input v-model="temp.phone" style='width: 400px;' :maxlength ="11" placeholder="请输入11位手机号"></el-input>
+=======
+          <el-input 
+            v-model="temp.phone" 
+            style='width: 400px;' 
+            :maxlength ="11"
+            @blur="phoneBlur" 
+            placeholder="请输入11位手机号"></el-input>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         </el-form-item>
         <el-form-item label="用户名" >
           <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入用户名"></el-input>
         </el-form-item>
+<<<<<<< HEAD
         <el-form-item label="密码" >
           <el-input v-model="temp.password" style='width: 400px;' placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" >
           <el-input style='width: 400px;' placeholder="再次填写密码"></el-input>
         </el-form-item>
+=======
+
+        <el-form-item label="密码" >
+          <el-input 
+            v-model="temp.password" 
+            style='width: 400px;' 
+            placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
+        </el-form-item>
+
+        <el-form-item label="确认密码" >
+          <el-input
+            style='width: 400px;'
+            v-model="temp.password2"
+            @blur="passWordBlur" 
+            placeholder="再次填写密码"></el-input>
+        </el-form-item>
+
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         <el-form-item label="服务机构">
           <el-select  style='width: 400px;' class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanism" :key="item.key" :label="item.display_name" :value="item.key">
@@ -170,7 +220,10 @@
             </el-option>
           </el-select>
         </el-form-item>
+<<<<<<< HEAD
         
+=======
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
@@ -182,6 +235,7 @@
     
 
   </div>
+<<<<<<< HEAD
 </template>
 
 <script>
@@ -189,6 +243,16 @@ import { fetchList, fetchPv,list } from "@/api/article";
 import { staffList, addStaff, getStaff} from "@/api/staff";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
+=======
+</div>
+</template>
+
+<script>
+import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import { getSign} from "@/api/sign";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+//import { parseTime } from "@/utils";
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
 const mechanism = [
   { key: "1", display_name: "日常保洁" },
@@ -309,6 +373,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
+<<<<<<< HEAD
       // fetchList(this.listQuery).then(response => {
       //   this.list = response.data.items
       //   this.total = response.data.total
@@ -324,6 +389,15 @@ export default {
         console.log(this.list)
         this.listLoading = false;
         })
+=======
+      getStaff().then(res => {
+        // console.log(res)
+        // console.log(123)
+        this.list = res.data.data.list;
+        this.total = 1;
+        this.listLoading = false;
+      });
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     },
     handleFilter() {
       this.listQuery.page = 1;
@@ -389,6 +463,7 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.powers.length;
     },
+<<<<<<< HEAD
     create() {
       // this.temp.id = 2;
       // this.temp.phone = +new Date();
@@ -414,6 +489,32 @@ export default {
         })
       this.dialogFormVisible = false;
       getList()
+=======
+    handgetSign(){
+      console.log("请求签名")
+      getSign()
+      console.log(getSign())
+    },
+    create() {
+      var obj = {
+        companyId: "ad86de2fbac14039afe4c4bb12dbf565",
+        companyName: "总公司",
+        loginFlag: "1",
+        loginName: this.temp.phone,
+        mobile: this.temp.phone,
+        name: this.temp.name,
+        newPassword: this.temp.password,
+        no: "00000909",
+        officeId: "cce1ffa65994451abdb00fe56b338e4d",
+        officeName: "国安社区",
+        roles: ["5f9143f86b58404c962bb704c7bd4f07"]
+      };
+      addStaff(obj).then(res=>{
+        console.log(res)
+      })
+      this.dialogFormVisible = false;
+      this.getList();
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       this.$notify({
         title: "成功",
         message: "增加成功",
@@ -422,6 +523,7 @@ export default {
       });
     },
     update() {
+<<<<<<< HEAD
       console.log(111)
       // for (const v of this.list) {
       //   if (v.id === this.temp.id) {
@@ -430,6 +532,9 @@ export default {
       //     break;
       //   }
       // }
+=======
+      console.log(111);
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       this.dialogFormVisible = false;
       this.$notify({
         title: "成功",
@@ -438,6 +543,37 @@ export default {
         duration: 2000
       });
     },
+<<<<<<< HEAD
+=======
+    phoneBlur() {
+      console.log(this.temp.primaryPersonPhone);
+      var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      if (!reg.test(this.temp.primaryPersonPhone)) {
+        console.log("错误");
+        this.temp.primaryPersonPhone = "";
+        this.$notify({
+          title: "手机号有误",
+          message: "请正确输入手机号",
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+    passWordBlur(){
+      console.log(this.temp.password)
+      console.log(this.temp.password2)
+      var psd1= this.temp.password
+      var psd2= this.temp.password2        
+      if(psd2!==psd1){
+        this.$notify({
+          title: "两次密码不一致",
+          message: "请仔细检查",
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     resetTemp() {
       this.temp = {
         phone: null,
@@ -506,4 +642,20 @@ export default {
   width: 100%;
   padding: 10%;
 }
+<<<<<<< HEAD
+=======
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
+}
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>

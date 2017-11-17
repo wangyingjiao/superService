@@ -1,6 +1,11 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container calendar-list-container">
     <div class="filter-container">
+=======
+<div>
+  <div class="filter-container bgWhite">
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
       </el-input>
 
@@ -8,11 +13,19 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
+<<<<<<< HEAD
 
       <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
       <el-button class="filter-item btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
     </div>
 
+=======
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+    </div>
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     <el-table
       :key='tableKey'
       :data="list"
@@ -105,6 +118,10 @@
     </el-dialog>
 
   </div>
+<<<<<<< HEAD
+=======
+</div>
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </template>
 
 <script>
@@ -148,7 +165,11 @@ export default {
   },
   data() {
     return {
+<<<<<<< HEAD
       list: null,
+=======
+      list: [1,2,3],
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       total: null,
       listLoading: false,
       listQuery: {
@@ -226,6 +247,7 @@ export default {
       })
     },
     handleFilter() {
+<<<<<<< HEAD
       this.listQuery.page = 1
       this.getList()
     },
@@ -236,6 +258,18 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.page = val
       this.getList()
+=======
+      // this.listQuery.page = 1
+      // this.getList()
+    },
+    handleSizeChange(val) {
+      // this.listQuery.limit = val
+      // this.getList()
+    },
+    handleCurrentChange(val) {
+      // this.listQuery.page = val
+      // this.getList()
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -360,9 +394,12 @@ export default {
 .btn_left{
   width:100px;
 }
+<<<<<<< HEAD
 .diatable{
   width:1500px;
 }
+=======
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 .checkRightBox{
   border: solid 1px #dcdcdc;
   padding: 10px;
@@ -382,4 +419,32 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
+<<<<<<< HEAD
+=======
+.checkBox1 .el-checkbox{
+   margin-left: 0px;
+   margin-right: 15px 
+}
+.checkBox2 .el-checkbox{
+   margin-left: 0px;
+   margin-right: 15px
+}
+.checkBox3 .el-checkbox{
+   margin-left: 0px;
+   margin-right: 15px
+}
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
+}
+>>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>
