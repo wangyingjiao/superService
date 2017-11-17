@@ -56,9 +56,6 @@
         <router-link to="/technician/holiday">
           <el-menu-item index="1-5">休假管理</el-menu-item>
         </router-link> 
-        <router-link to="/technician/tech">
-          <el-menu-item index="1-5">我你管理</el-menu-item>
-        </router-link>
       </el-submenu>
 
       <el-submenu index="4">
