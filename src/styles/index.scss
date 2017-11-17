@@ -53,11 +53,7 @@ a:hover {
 }
 
 //main-container全局样式
-<<<<<<< HEAD
 .app-main {
-=======
-.app-main{
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   min-height: 100%
 }
 
@@ -73,7 +69,6 @@ a:hover {
   overflow: hidden;
 }
 
-<<<<<<< HEAD
 .el-table {
   margin-top: 20px
 }
@@ -96,7 +91,7 @@ a:hover {
   cursor: pointer;
   border: none;
   outline: none;
-  height: 25px;
+  height: 20px;
   text-align: center;
   font-size: 12px;
   width: 100px;
@@ -122,7 +117,7 @@ a:hover {
   cursor: pointer;
   border: none;
   outline: none;
-  height: 36px;
+  height: 34px;
   font-size: 12px;
   text-align: center;
   width: 100px;
@@ -152,7 +147,7 @@ a:hover {
   cursor: pointer;
   border: 1px solid #4c70e8;
   outline: none;
-  height: 36px;
+  height: 34px;
   text-align: center;
   font-size: 12px;
   width: 80px;
@@ -173,9 +168,14 @@ a:hover {
   margin-top: 10px;
 }
 
-// .el-dialog__header{
-//   background: #666;
-// }
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
 .selfCheckBox {
   width: 80px;
   height: 34px;
@@ -205,98 +205,3 @@ a:hover {
   margin-top: -17px;
   margin-left: 63px;
 }
-=======
-.el-table{
-  margin-top: 20px
-}
-//小button样式
-.button-small{
-  cursor:pointer;
-  border:none;
-outline:none;
-height:25px;
-text-align:center;
-font-size:12px;
-width:80px;
-color:#fff;
-background:#4c70e8;  
-}
-//四字小button样式
-.button-small-fourth{
-  cursor:pointer;
-  border:none;
-outline:none;
-height:20px;
-text-align:center;
-font-size:12px;
-width:100px;
-color:#fff;
-background:#4c70e8;  
-}
-//大button样式
-.button-large{
-cursor:pointer;
-border:none;
-outline:none;
-height:36px;
-font-size:12px;
-text-align:center;
-width:80px;
-color:#fff;
-background:#4c70e8;	
-}
-//四字大button样式
-.button-large-fourth{
-  cursor:pointer;
-border:none;
-outline:none;
-height:34px;
-font-size:12px;
-text-align:center;
-width:100px;
-color:#fff;
-background:#4c70e8;	
-}
-//按钮hover
-.button-small-fourth:hover{
-background:#6d8dfc;
-}
-.button-small:hover{
-background:#6d8dfc;
-}
-.button-large-fourth:hover{
-background:#6d8dfc;
-}
-.button-large:hover{
-background:#6d8dfc;
-}
-//取消按钮样式
-.button-cancel{
-  cursor:pointer;
-  border:1px solid #4c70e8;
-outline:none;
-height:34px;
-text-align:center;
-font-size:12px;
-width:80px;
-color:#4c70e8;
-background:#fff;    
-}
-//input去掉圆角
-.el-input__inner{
- border-radius:0px;   
-}
-//横向分隔线样式
-.hr-style{
-height:1px;
-background:#eef1f6;
-margin-left:30px;
-margin-top:10px;
-}
-.fl{
-  float: left;
-}
-.fr{
-  float: right;
-}
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e

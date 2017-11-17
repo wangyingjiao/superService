@@ -34,14 +34,6 @@
       <el-submenu index="2">
         <template slot="title">
           <i class="el-icon-location"></i>
-<<<<<<< HEAD
-          <span>基础服务</span>
-        </template>     
-        <router-link to="/base/site">
-          <el-menu-item index="2-1">服务机构</el-menu-item>
-        </router-link>
-        <router-link to="/base/mechanism">
-=======
           <span>基础管理</span>
         </template>     
         
@@ -49,7 +41,6 @@
           <el-menu-item index="2-1">服务机构</el-menu-item>
         </router-link>
         <router-link to="/base/site">
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
           <el-menu-item index="2-2">服务站</el-menu-item>
         </router-link>
       </el-submenu>
@@ -58,7 +49,6 @@
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>服务技师管理</span>
-<<<<<<< HEAD
         </template>  
          <router-link to="/technician/techni">
           <el-menu-item index="1-5">技师管理</el-menu-item>
@@ -69,12 +59,6 @@
         <router-link to="/technician/tech">
           <el-menu-item index="1-5">我你管理</el-menu-item>
         </router-link>
-=======
-        </template>     
-        <router-link to="/technician/holiday">
-          <el-menu-item index="1-5">休假管理</el-menu-item>
-        </router-link> 
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       </el-submenu>
 
       <el-submenu index="4">

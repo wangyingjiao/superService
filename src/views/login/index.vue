@@ -55,11 +55,7 @@ export default {
         password: 'aaaa'
       },
       loginRules: {
-<<<<<<< HEAD
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-=======
         username: [{ required: true, trigger: 'blur',  }],
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         password: [{ required: true, trigger: 'blur',  }]
       },
       loading: false
@@ -72,11 +68,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
-<<<<<<< HEAD
-
-=======
           
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
             console.log('登录')
             console.log(res)
             this.loading = false

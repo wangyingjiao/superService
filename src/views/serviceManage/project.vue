@@ -1,11 +1,6 @@
 <template>
-<<<<<<< HEAD
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
-=======
 <div>
   <div class="filter-container bgWhite">
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="所属分类">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
@@ -14,24 +9,12 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-<<<<<<< HEAD
-
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
-      </el-input>
-
-     
-
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
-    </div>
-=======
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
       </el-input>
       <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 
     <el-table 
     :key='tableKey' 
@@ -105,26 +88,16 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-<<<<<<< HEAD
-        <el-tabs tabPosition='right' style="height: 200px;">
-            <el-tab-pane label="保洁">
-              <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
-                <h3>基本信息</h3><hr/><br/>
-                <el-form-item label="状态">
-=======
         <el-tabs tabPosition='right' >
             <el-tab-pane label="保洁">
               <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
                 <h3>基本信息</h3><hr/><br/>
                 <el-form-item label="所属分类">
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
                   <el-select class="filter-item" v-model="temp.sption1" >
                     <el-option v-for="item in option1" :key="item" :label="item" :value="item">
                     </el-option>
                   </el-select>
                 </el-form-item>
-<<<<<<< HEAD
-=======
                 <span>*</span><el-form-item label="服务图片">
                   <el-upload
                     class="upload-demo upload_box"
@@ -138,7 +111,6 @@
                     <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
                   </el-upload>
                 </el-form-item>
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
                 
                 <el-form-item label="项目名称" >
                   <el-input 
@@ -150,16 +122,6 @@
                 
                 <el-form-item label="定向城市">      
                     <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
-<<<<<<< HEAD
-                    <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-                </el-form-item>
-              </el-form>
-            </el-tab-pane>
-            <el-tab-pane label="家修">家修</el-tab-pane>
-=======
                     <el-checkbox v-model="city" label="南京" size="medium"></el-checkbox>
                     <el-checkbox v-model="city" label="天津" border size="medium"></el-checkbox>
                     <el-checkbox v-model="city" label="上海" border size="medium"></el-checkbox>
@@ -297,7 +259,6 @@
             </el-tab-pane>
 
             <el-tab-pane label="家修">teb切换</el-tab-pane>
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
         </el-tabs>
       
       <div slot="footer" class="dialog-footer">       
@@ -308,29 +269,15 @@
     </el-dialog>
 
   </div>
-<<<<<<< HEAD
-</template>
-
-<script>
-
-=======
 </div>
 </template>
 
 <script>
 import { getSign} from "@/api/sign";
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { parseTime } from '@/utils'
 //挂载数据
 
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 const city = ['海淀', '朝阳']
 const option1 = ['北京', '北京']
 
@@ -343,11 +290,6 @@ export default {
   },
   data() {
     return {
-<<<<<<< HEAD
-      list: [1,2,3],
-      total: null,
-      listLoading: true,
-=======
       sign:getSign(),
       list: [1,2,3],
       total: null,
@@ -377,7 +319,6 @@ export default {
         num: ''
 
       },
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       listQuery: {
         page: 1,
         limit: 6,
@@ -386,10 +327,6 @@ export default {
         type: undefined,
         sort: '+id'
       },
-<<<<<<< HEAD
-      temp: {  
-        option1:''
-=======
       fileList2: [
         {
           name: 'food2.jpeg', 
@@ -398,7 +335,6 @@ export default {
       temp: {  
         option1:'',
         val:true
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
       },  
       importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
@@ -411,10 +347,7 @@ export default {
       city: city,
       option1:option1
     }
-<<<<<<< HEAD
-=======
     
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   },
   filters: {
     statusFilter(status) {
@@ -504,22 +437,17 @@ export default {
         duration: 2000
       })
     },
-<<<<<<< HEAD
-=======
     handleRemove(file, fileList) {
         console.log(file, fileList);
       },
     handlePreview(file) {
         console.log(file);
       },
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     resetTemp() {
       this.temp = {
         
       }
     },
-<<<<<<< HEAD
-=======
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -533,7 +461,6 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
     
 
     formatJson(filterVal, jsonData) {
@@ -550,23 +477,6 @@ export default {
 }
 </script>
 <style>
-<<<<<<< HEAD
-.btn_right{
-  float:right;
-  width:100px;
-}
-.btn_left{
-  width:100px;
-}
-.checkRightBox{
-  border: solid 1px #dcdcdc;
-  padding: 10px;
-}
-.checkAllBox{
-  padding: 10px 0;
-}
-.checkBox1{
-=======
 .btn_right {
   float: right;
   width: 100px;
@@ -582,20 +492,10 @@ export default {
   padding: 10px 0;
 }
 .checkBox1 {
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
   border-bottom: solid 1px #dcdcdc;
 }
-<<<<<<< HEAD
-.checkBox2{
-  padding: 10px 0;
-}
-.checkBox3{
-  padding: 10px 0;
-  border-top: solid 1px #dcdcdc;
-}
-=======
 .checkBox2 {
   padding: 10px 0;
 }
@@ -669,5 +569,4 @@ body {
   height: 30px;
   text-align: center;
 }
->>>>>>> a081114da0983c7a5f4fa03e787e8df633496d7e
 </style>
