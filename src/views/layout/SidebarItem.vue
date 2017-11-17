@@ -49,7 +49,10 @@
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>服务技师管理</span>
-        </template>     
+        </template>  
+         <router-link to="/technician/techni">
+          <el-menu-item index="1-5">技师管理</el-menu-item>
+        </router-link>    
         <router-link to="/technician/holiday">
           <el-menu-item index="1-5">休假管理</el-menu-item>
         </router-link> 

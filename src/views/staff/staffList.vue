@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
+<div>
+  <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
       </el-input>
 
@@ -8,11 +8,12 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
-
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <el-button @click="handgetSign">测试签名</el-button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -29,10 +30,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" >
-        <template scope="scope">
+      <el-table-column align="center" label="姓名" prop="name" >
+
+        <!-- <template scope="scope">
           <span>{{scope.row.name}}</span>
-        </template>
+        </template> -->
       </el-table-column>
 
       <el-table-column width="180px" align="center" label="手机号">
@@ -86,17 +88,32 @@
       <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
 
         <el-form-item label="手机号">
-          <el-input v-model="temp.phone" style='width: 400px;' :maxlength ="11" placeholder="请输入11位手机号"></el-input>
+          <el-input 
+            v-model="temp.phone" 
+            style='width: 400px;' 
+            :maxlength ="11"
+            @blur="phoneBlur" 
+            placeholder="请输入11位手机号"></el-input>
         </el-form-item>
         <el-form-item label="用户名" >
           <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入用户名"></el-input>
         </el-form-item>
+
         <el-form-item label="密码" >
-          <el-input v-model="temp.password" style='width: 400px;' placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
+          <el-input 
+            v-model="temp.password" 
+            style='width: 400px;' 
+            placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
+
         <el-form-item label="确认密码" >
-          <el-input style='width: 400px;' placeholder="再次填写密码"></el-input>
+          <el-input
+            style='width: 400px;'
+            v-model="temp.password2"
+            @blur="passWordBlur" 
+            placeholder="再次填写密码"></el-input>
         </el-form-item>
+
         <el-form-item label="服务机构">
           <el-select  style='width: 400px;' class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanism" :key="item.key" :label="item.display_name" :value="item.key">
@@ -170,7 +187,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
@@ -182,10 +198,12 @@
     
 
   </div>
+</div>
 </template>
 
 <script>
 import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import { getSign} from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 //import { parseTime } from "@/utils";
 
@@ -309,6 +327,8 @@ export default {
     getList() {
       this.listLoading = true;
       getStaff().then(res => {
+        // console.log(res)
+        // console.log(123)
         this.list = res.data.data.list;
         this.total = 1;
         this.listLoading = false;
@@ -378,6 +398,11 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.powers.length;
     },
+    handgetSign(){
+      console.log("请求签名")
+      getSign()
+      console.log(getSign())
+    },
     create() {
       var obj = {
         companyId: "ad86de2fbac14039afe4c4bb12dbf565",
@@ -413,6 +438,34 @@ export default {
         type: "success",
         duration: 2000
       });
+    },
+    phoneBlur() {
+      console.log(this.temp.primaryPersonPhone);
+      var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      if (!reg.test(this.temp.primaryPersonPhone)) {
+        console.log("错误");
+        this.temp.primaryPersonPhone = "";
+        this.$notify({
+          title: "手机号有误",
+          message: "请正确输入手机号",
+          type: "warning",
+          duration: 2000
+        });
+      }
+    },
+    passWordBlur(){
+      console.log(this.temp.password)
+      console.log(this.temp.password2)
+      var psd1= this.temp.password
+      var psd2= this.temp.password2        
+      if(psd2!==psd1){
+        this.$notify({
+          title: "两次密码不一致",
+          message: "请仔细检查",
+          type: "warning",
+          duration: 2000
+        });
+      }
     },
     resetTemp() {
       this.temp = {
@@ -481,5 +534,18 @@ export default {
 .twoDialog {
   width: 100%;
   padding: 10%;
+}
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
 }
 </style>

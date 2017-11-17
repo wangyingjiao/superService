@@ -56,7 +56,8 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '服务技师管理',
     children: [
-    { path: 'holiday', name: '休假管理', component: _import('technician/holiday') }
+    { path: 'holiday', name: '休假管理', component: _import('technician/holiday') },
+    { path: 'techni', name: '技师管理', component: _import('technician/techni') }
     ]
   },
 

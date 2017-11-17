@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-let qs = require('qs')
 let instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 

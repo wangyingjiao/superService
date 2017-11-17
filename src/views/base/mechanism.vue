@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
+<div>
+  <div class="filter-container bgWhite">
 
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
@@ -9,10 +9,11 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="listQuery.title">
       </el-input>
 
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
-
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -29,28 +30,16 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="机构名称" align="center" min-width="150px" >
-        <template scope="scope">
-          <span class="">{{scope.row.name}}</span>          
-        </template>
+      <el-table-column  label="机构名称" align="center" min-width="150px" prop="name" >
       </el-table-column>
 
-      <el-table-column  label="机构电话" align="center" min-width="200px" >
-        <template scope="scope">
-          <span class="">{{scope.row.office400}}</span>          
-        </template>
+      <el-table-column  label="机构电话" align="center" min-width="200px" prop="office400">
       </el-table-column>
 
-      <el-table-column  label="机构地址" align="center" min-width="200px">
-        <template scope="scope">
-          <span class="">{{scope.row.officeUrl}}</span>          
-        </template>
+      <el-table-column  label="机构地址" align="center" min-width="200px" prop="officeUrl">
       </el-table-column>
 
-      <el-table-column  label="负责人姓名" align="center" width ="150">
-        <template scope="scope">
-          <span class="">赵四</span>          
-        </template>
+      <el-table-column  label="负责人姓名" align="center" width ="150" prop="masterName">
       </el-table-column>
 
       <el-table-column  label="负责人手机号" align="center" min-width="200px">
@@ -219,6 +208,7 @@
     </el-dialog>
     
   </div>
+</div>
 </template>
 
 <script>
@@ -286,18 +276,18 @@ export default {
         sort: "+id"
       },
       temp: {
-        address: "123",
-        areaId: "123",
-        fax: "123",
-        name: "12312312312",
-        office400: "123",
-        officeUrl: "123",
-        phone: "123",
-        primaryPersonName: "123",
-        primaryPersonPhone: "123",
-        remark: "123",
-        serviceAreaType: "1",
-        cityIds: ["123", "123", "123"],
+        address: "",
+        areaId: "",
+        fax: "",
+        name: "",
+        office400: "",
+        officeUrl: "",
+        phone: "",
+        primaryPersonName: "",
+        primaryPersonPhone: "",
+        remark: "",
+        serviceAreaType: "",
+        cityIds: [],
         province: "",
         city: "",
         county: ""
@@ -539,5 +529,18 @@ export default {
 .checkBox3 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
+}
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
+<div>
+  <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
       </el-input>
 
@@ -8,11 +8,11 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
-
+  <div class="app-container calendar-list-container">
+    
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
     <el-table
       :key='tableKey'
       :data="list"
@@ -105,6 +105,7 @@
     </el-dialog>
 
   </div>
+</div>
 </template>
 
 <script>
@@ -226,16 +227,16 @@ export default {
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
+      // this.listQuery.page = 1
+      // this.getList()
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
+      // this.listQuery.limit = val
+      // this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.getList()
+      // this.listQuery.page = val
+      // this.getList()
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -390,5 +391,18 @@ export default {
 .checkBox3 .el-checkbox{
    margin-left: 0px;
    margin-right: 15px
+}
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
 }
 </style>

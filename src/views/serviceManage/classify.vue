@@ -1,19 +1,16 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
+<div>
+  <div class="filter-container bgWhite">
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择城市">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="listQuery.title">
       </el-input>
-
-     
-
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item  btn_right" type="primary" v-waves  @click="handleCreate">新增</el-button>
+      <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
+  <div class="app-container calendar-list-container">
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
 
     <el-table 
     :key='tableKey' 
@@ -25,22 +22,13 @@
     element-loading-text="正在加载" 
     style="width: 100%" >
 
-      <el-table-column align="center" label="编号" >
-        <template scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
+      <el-table-column align="center" label="编号" type="index" width="100">
       </el-table-column>
 
-      <el-table-column  label="分类名称" align="center" >
-        <template scope="scope">
-          <span class="">日常保洁</span>          
-        </template>
+      <el-table-column  label="分类名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="城市" align="center" >
-        <template scope="scope">
-          <span class="">全部</span>          
-        </template>
+      <el-table-column  label="城市" align="center" prop="cityName">
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -61,12 +49,10 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-      <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
+      <el-form class="small-space" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
 
-        <el-form-item label="服务站名称" >
-          <el-input 
-          :maxlength="15" 
-          :minlength="2" 
+        <el-form-item label="服务站名称"  prop="name" >
+          <el-input        
           style='width: 400px;' 
           placeholder="请输入2-15位的服务站名称"></el-input>
         </el-form-item>
@@ -79,18 +65,21 @@
             <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">       
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
+      <div slot="footer" class="dialog-footer"> 
+        <button class="button-large" @click="cleaning">保 存</button>    
+        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>    
+        <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
         <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
       </div>
     </el-dialog>
 
   </div>
+</div>
 </template>
 
 <script>
-
+import { getClass, addClean} from "@/api/serviceManage";
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { parseTime } from '@/utils'
 //挂载数据
@@ -110,7 +99,7 @@ export default {
   },
   data() {
     return {
-      list: [1,2,3],
+      list: [],
       total: null,
       listLoading: true,
       listQuery: {
@@ -122,7 +111,13 @@ export default {
         sort: '+id'
       },
       temp: {  
-      },  
+      },
+      rules: {
+         name: [
+            { required: true, message: '请输入 2 到 10 位的分类名称', trigger: 'blur' },
+            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+          ]
+      },
       importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
       dialogStatus: '',
@@ -149,6 +144,10 @@ export default {
   },
   methods: {
     getList() {
+      getClass().then(res=>{
+        console.log(res)
+        this.list = res.data.data.list
+      })
       this.listLoading = false
     },
     handleFilter() {
@@ -205,6 +204,20 @@ export default {
         duration: 2000
       })
     },
+    cleaning(){
+      console.log("保存")
+      var obj={
+         "citys": [
+            {
+              "cityId": "bj",
+              "cityName": "北京"
+            }
+          ],
+          "majorSort": "1",
+          "name": "擦地板1"
+      }
+      addClean(obj).then(res=>console.log(res))
+    },
     update() {
       this.temp.timestamp = +this.temp.timestamp
       for (const v of this.list) {
@@ -242,7 +255,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped="scoped">
 .btn_right{
   float:right;
   width:100px;
@@ -269,4 +282,21 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
+body{
+    background-color:#f5f5f5;
+}
+.bgWhite{
+    background-color: #ffffff;
+    padding: 20px
+}
+.btn_pad{
+    margin:30px 0px 10px 20px;
+}
+.btn_right{
+  float:right;
+}
+/* .diatable .el-form-item__label{
+  font-size: 12px;
+  color: red
+} */
 </style>
