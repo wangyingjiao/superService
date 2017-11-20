@@ -73,6 +73,7 @@
               placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
             </el-form-item>
             
+            
             <el-form-item label="定向城市">      
                 <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
                 <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
