@@ -49,22 +49,32 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-      <el-form class="small-space" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
+      <div class="tabBox" ref="refTab">
+        <div class="tabLeft fl">
+          <span class="tabBtn">保洁</span>
+          <span class="tabBtn">家修</span>
+        </div>
+        <div class="tabRight fl">
+          <el-form class="small-space" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
 
-        <el-form-item label="服务站名称"  prop="name" >
-          <el-input        
-          style='width: 400px;' 
-          placeholder="请输入2-15位的服务站名称"></el-input>
-        </el-form-item>
-        
-        <el-form-item label="定向城市">      
-            <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
-            <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
-            <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-            <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-            <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-        </el-form-item>
-      </el-form>
+            <el-form-item label="分类名称"  prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
+            </el-form-item>
+            
+            <el-form-item label="定向城市">      
+                <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
+                <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
+                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
+                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
+                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
+                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      
       <div slot="footer" class="dialog-footer"> 
         <button class="button-large" @click="cleaning">保 存</button>    
         <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>    
@@ -111,6 +121,7 @@ export default {
         sort: '+id'
       },
       temp: {  
+        name: ''
       },
       rules: {
          name: [
@@ -139,13 +150,19 @@ export default {
       return statusMap[status]
     },
   },
+  mounted(){
+    this.init()
+  },
   created() {
     this.getList()
   },
   methods: {
+    init(){
+      console.log(this.$refs.refTab)
+    },
     getList() {
       getClass().then(res=>{
-        console.log(res)
+        //console.log(res)
         this.list = res.data.data.list
       })
       this.listLoading = false
@@ -294,6 +311,42 @@ body{
 }
 .btn_right{
   float:right;
+}
+.word{
+  font-size: 10px;
+  color: #AEAEAE;
+  line-height: 15px;
+}
+.tabBox{
+  width: 100%;
+  overflow: hidden;
+  border: 1px #f5f5f5 solid;
+  background-color: #f5f5f5;
+}
+.tabLeft{
+  width: 15%;
+}
+.tabLeft .tabBtn{
+  display: block;
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  
+
+}
+.tabLeft .tabBtn:hover{
+  background-color: #6D8DFC;
+  color: #ffffff;
+}
+.tabRight{
+  width: 85%;
+  height: 100%;
+  border-left: 1px #f5f5f5 solid;
+  padding-top: 10px;
+  background-color: #ffffff;
 }
 /* .diatable .el-form-item__label{
   font-size: 12px;
