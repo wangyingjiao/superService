@@ -13,7 +13,6 @@
   <div class="app-container calendar-list-container">
     
     <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
-    <el-button @click="handgetSign">测试签名</el-button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -24,30 +23,16 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" width="100">
-        <template scope="scope">
-          <span>1</span>
-        </template>
+      <el-table-column align="center" label="编号" width="100" type="index">
       </el-table-column>
 
       <el-table-column align="center" label="姓名" prop="name" >
-
-        <!-- <template scope="scope">
-          <span>{{scope.row.name}}</span>
-        </template> -->
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="手机号">
-        <template scope="scope">
-          <span>{{scope.row.mobile}}</span>
-        </template>
+      <el-table-column width="180px" align="center" label="手机号" prop="mobile">
       </el-table-column>
 
-      <el-table-column width="100px"  label="岗位名称" align="center">
-        <template scope="scope">
-          <span>{{scope.row.roleNames}}</span>
-          
-        </template>
+      <el-table-column width="100px"  label="岗位名称" align="center" prop="roleNames">
       </el-table-column>
 
       <el-table-column width="150px" align="center" label="服务机构">
@@ -84,20 +69,31 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" minwidth = "700px">
-      <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
+    <el-dialog 
+      :title="textMap[dialogStatus]" 
+      :visible.sync="dialogFormVisible" 
+      :show-close= false
+      minwidth = "700px">
+      <el-form 
+        class="small-space" 
+        :model="temp" 
+        label-position="left" 
+        label-width="70px"
+        :rules="rules"
+        ref="temp"
+        style='width: 400px; margin-left:50px;'>
 
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="phone">
           <el-input 
             v-model="temp.phone" 
-            style='width: 400px;' 
-            :maxlength ="11"
-            @blur="phoneBlur" 
+            style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" >
-          <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入用户名"></el-input>
-        </el-form-item>
+        <el-form-item label="用户名"  prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
+            </el-form-item>
 
         <el-form-item label="密码" >
           <el-input 
@@ -131,7 +127,7 @@
             <el-option v-for="item in station" :key="item" :label="item" :value="item">
             </el-option>
           </el-select>
-           <el-button class="btn_station" @click="handleCreatetwo">新 增</el-button>
+           <button class="button-cancel" @click="dialogFormStation = true">新 增</button>
         </el-form-item>
         <el-form-item  label="可用状态">
           <el-select style='width: 400px;' class="filter-item" v-model="temp.peostate" placeholder="请选择">
@@ -143,14 +139,18 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        
-        <el-button type="primary" @click="create">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <button class="button-large" @click="create">保 存</button>
+        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
       </div>
     </el-dialog>
     
 
-     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormStation" class="twoDialog" width = '100%'>
+     <el-dialog 
+       :title="textMap[dialogStatus]" 
+       :visible.sync="dialogFormStation" 
+       append-to-body
+       class="twoDialog" 
+       width = '100%'>
       <el-form class="small-space" :model="temp2" label-position="left" label-width="70px" style='width: 500px; margin-left:20px;'>
 
         <el-form-item label="岗位名称">
@@ -189,9 +189,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
-        <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormStation = false">取 消</el-button>
+        <button class="button-large" @click="create">保 存</button>
+        <button class="button-cancel" @click="dialogFormStation = false">取 消</button>
       </div>
     </el-dialog>
 
@@ -304,7 +303,17 @@ export default {
       powers1: powerOptions1,
       powers2: powerOptions2,
       powers3: powerOptions3,
-      isIndeterminate: true
+      isIndeterminate: true,
+      rules: {
+        phone: [
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
+        ],
+        name: [
+          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+        ]
+      }
     };
   },
   filters: {
@@ -327,10 +336,9 @@ export default {
     getList() {
       this.listLoading = true;
       getStaff().then(res => {
-        // console.log(res)
-        // console.log(123)
+         console.log(res.data)
         this.list = res.data.data.list;
-        this.total = 1;
+        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -366,9 +374,6 @@ export default {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-    },
-    handleCreatetwo() {
-      this.dialogFormStation = true;
     },
     addstation() {
       this.resetTemptwo();
@@ -438,20 +443,6 @@ export default {
         type: "success",
         duration: 2000
       });
-    },
-    phoneBlur() {
-      console.log(this.temp.primaryPersonPhone);
-      var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-      if (!reg.test(this.temp.primaryPersonPhone)) {
-        console.log("错误");
-        this.temp.primaryPersonPhone = "";
-        this.$notify({
-          title: "手机号有误",
-          message: "请正确输入手机号",
-          type: "warning",
-          duration: 2000
-        });
-      }
     },
     passWordBlur(){
       console.log(this.temp.password)

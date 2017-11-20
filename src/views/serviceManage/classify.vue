@@ -42,20 +42,30 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+    <div class="pagination-container">
+      <el-pagination 
+         @size-change="handleSizeChange" 
+         @current-change="handleCurrentChange" 
+         :current-page.sync="listQuery.page"
+        :page-sizes="[10,20,30,50]" 
+        :page-size="listQuery.limit" 
+        layout="total, sizes, prev, pager, next, jumper" 
+        :total="total">
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-      <div class="tabBox" ref="refTab">
-        <div class="tabLeft fl">
-          <span class="tabBtn">保洁</span>
-          <span class="tabBtn">家修</span>
+    <el-dialog 
+      :title="textMap[dialogStatus]" 
+      :visible.sync="dialogFormVisible" 
+      :show-close= false
+      class="diatable">
+      <div class="tabBox" >
+        <div class="tabLeft fl" ref="refTab">
+          <span class="tabBtn" @click="refbtn1" ref="refbtn1">保洁</span>
+          <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span>
         </div>
         <div class="tabRight fl">
-          <el-form class="small-space" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
+          <el-form class="small-space" ref="temp" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
 
             <el-form-item label="分类名称"  prop="name" >
               <el-input        
@@ -76,8 +86,8 @@
       </div>
       
       <div slot="footer" class="dialog-footer"> 
-        <button class="button-large" @click="cleaning">保 存</button>    
-        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>    
+        <button class="button-large" @click="cleaning('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>    
         <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
         <el-button v-else type="primary" @click="update">保 存</el-button>
         <el-button @click="dialogFormVisible = false">取 消</el-button> -->
@@ -89,21 +99,15 @@
 </template>
 
 <script>
-import { getClass, addClean} from "@/api/serviceManage";
-import waves from '@/directive/waves/index.js' // 水波纹指令
-import { parseTime } from '@/utils'
+import { getClass, addClass } from "@/api/serviceManage";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
 //挂载数据
 
-
-
-
-
-const city = ['海淀', '朝阳']
-
-
+const city = ["海淀", "朝阳"];
 
 export default {
-  name: 'table_demo',
+  name: "table_demo",
   directives: {
     waves
   },
@@ -114,219 +118,244 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 6,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: '+id'
+        sort: "+id"
       },
-      temp: {  
-        name: ''
+      temp: {
+        name: ""
       },
       rules: {
-         name: [
-            { required: true, message: '请输入 2 到 10 位的分类名称', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
-          ]
+        name: [
+          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+        ]
       },
       importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       textMap: {
-        update: '编辑',
-        create: '添加'
+        update: "编辑",
+        create: "添加"
       },
       tableKey: 0,
-      city: city, 
-    }
+      city: city
+    };
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-  },
-  mounted(){
-    this.init()
+        published: "success",
+        draft: "gray",
+        deleted: "danger"
+      };
+      return statusMap[status];
+    }
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
-    init(){
-      console.log(this.$refs.refTab)
+    refbtn1() {
+      console.log(this.$refs.refbtn1);
+    },
+    refbtn2() {
+      console.log(this.$refs.refbtn2);
     },
     getList() {
-      getClass().then(res=>{
+      getClass().then(res => {
         //console.log(res)
-        this.list = res.data.data.list
-      })
-      this.listLoading = false
+        this.list = res.data.data.list;
+        //this.total = res.data.data.count;
+      });
+      this.listLoading = false;
     },
     handleFilter() {
-      console.log("搜索")
-      this.listQuery.page = 1
-      this.getList()
+      console.log("搜索");
+      this.listQuery.page = 1;
+      this.getList();
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
+      this.listQuery.limit = val;
+      this.getList();
     },
     handleCurrentChange(val) {
-      console.log("未知方法")
-      this.listQuery.page = val
-      this.getList()
+      console.log("未知方法");
+      this.listQuery.page = val;
+      this.getList();
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
+        message: "操作成功",
+        type: "success"
+      });
+      row.status = status;
     },
     handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log("编辑")
-      this.temp = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+      console.log("编辑");
+      this.temp = Object.assign({}, row);
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
     },
     handleDelete(row) {
-      console.log("删除")
+      console.log("删除");
       this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
+        title: "成功",
+        message: "删除成功",
+        type: "success",
         duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
+      });
+      const index = this.list.indexOf(row);
+      this.list.splice(index, 1);
     },
     create() {
-      this.temp.id = 1
-      this.list.unshift(this.temp)
-      this.dialogFormVisible = false
+      this.temp.id = 1;
+      this.list.unshift(this.temp);
+      this.dialogFormVisible = false;
       this.$notify({
-        title: '成功',
-        message: '增加成功',
-        type: 'success',
+        title: "成功",
+        message: "增加成功",
+        type: "success",
         duration: 2000
-      })
+      });
     },
-    cleaning(){
-      console.log("保存")
-      var obj={
-         "citys": [
-            {
-              "cityId": "bj",
-              "cityName": "北京"
+    cleaning(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var obj={
+             "citys": [
+                {
+                  "cityId": "bj",
+                  "cityName": "北京"
+                }
+              ],
+              "majorSort": "1",
+              "name": this.temp.name
+          }
+          addClass(obj).then(res=>{
+            if(res.data.code ===1){
+                this.dialogFormVisible = false;
+                this.getList();
+                this.$notify({
+                  title: "成功",
+                  message: res.data.data,
+                  type: "success",
+                  duration: 2000
+                });
+            }else{
+              this.$notify({
+                  title: "失败",
+                  message: res.data.data,
+                  type: "error",
+                  duration: 2000
+                });
             }
-          ],
-          "majorSort": "1",
-          "name": "擦地板1"
-      }
-      addClean(obj).then(res=>console.log(res))
+          })
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName){
+      this.dialogFormVisible = false
+      this.$refs[formName].resetFields()
     },
     update() {
-      this.temp.timestamp = +this.temp.timestamp
+      this.temp.timestamp = +this.temp.timestamp;
       for (const v of this.list) {
         if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v)
-          this.list.splice(index, 1, this.temp)
-          break
+          const index = this.list.indexOf(v);
+          this.list.splice(index, 1, this.temp);
+          break;
         }
       }
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
       this.$notify({
-        title: '成功',
-        message: '编辑成功',
-        type: 'success',
+        title: "成功",
+        message: "编辑成功",
+        type: "success",
         duration: 2000
-      })
+      });
     },
     resetTemp() {
-      this.temp = {
-        
-      }
+      this.temp = {};
     },
-    
-
     formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === "timestamp") {
+            return parseTime(v[j]);
+          } else {
+            return v[j];
+          }
+        })
+      );
+    }
   }
-}
+};
 </script>
 <style scoped="scoped">
-.btn_right{
-  float:right;
-  width:100px;
+.btn_right {
+  float: right;
+  width: 100px;
 }
-.btn_left{
-  width:100px;
+.btn_left {
+  width: 100px;
 }
-.checkRightBox{
+.checkRightBox {
   border: solid 1px #dcdcdc;
   padding: 10px;
 }
-.checkAllBox{
+.checkAllBox {
   padding: 10px 0;
 }
-.checkBox1{
+.checkBox1 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
   border-bottom: solid 1px #dcdcdc;
 }
-.checkBox2{
+.checkBox2 {
   padding: 10px 0;
 }
-.checkBox3{
+.checkBox3 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
-body{
-    background-color:#f5f5f5;
+body {
+  background-color: #f5f5f5;
 }
-.bgWhite{
-    background-color: #ffffff;
-    padding: 20px
+.bgWhite {
+  background-color: #ffffff;
+  padding: 20px;
 }
-.btn_pad{
-    margin:30px 0px 10px 20px;
+.btn_pad {
+  margin: 30px 0px 10px 20px;
 }
-.btn_right{
-  float:right;
+.btn_right {
+  float: right;
 }
-.word{
+.word {
   font-size: 10px;
-  color: #AEAEAE;
+  color: #aeaeae;
   line-height: 15px;
 }
-.tabBox{
+.tabBox {
   width: 100%;
   overflow: hidden;
   border: 1px #f5f5f5 solid;
   background-color: #f5f5f5;
 }
-.tabLeft{
+.tabLeft {
   width: 15%;
 }
-.tabLeft .tabBtn{
+.tabLeft .tabBtn {
   display: block;
   width: 100%;
   height: 35px;
@@ -334,14 +363,12 @@ body{
   font-size: 14px;
   text-align: center;
   cursor: pointer;
-  
-
 }
-.tabLeft .tabBtn:hover{
-  background-color: #6D8DFC;
+.tabBtnclick {
+  background-color: #6d8dfc;
   color: #ffffff;
 }
-.tabRight{
+.tabRight {
   width: 85%;
   height: 100%;
   border-left: 1px #f5f5f5 solid;

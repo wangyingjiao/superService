@@ -22,14 +22,12 @@
     v-loading="listLoading" 
     stripe
     fit 
+    border
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
 
-      <el-table-column align="center" label="排序号" >
-        <template scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
+      <el-table-column align="center" type="index" label="排序号" width="100">
       </el-table-column>
 
       <el-table-column align="center" label="图片" >
@@ -38,15 +36,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="项目名称" align="center" >
-        <template scope="scope">
-          <span class="storey">日常保洁</span>                     
-        </template>
+      <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称  价格单位" align="center" >
+      <el-table-column  label="商品名称  价格单位" align="center" min-width="150" style="padding:0">
         <template scope="scope">
-          <span class="storey">日常保洁 19元/小时</span>                     
+          <div class="branch"  v-for="(item,index) in scope.row.commoditys" :key=index>{{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}</div>
         </template>
       </el-table-column>
 
@@ -56,10 +51,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="城市" align="center" >
-        <template scope="scope">
-          <span class="">北京市</span>          
-        </template>
+      <el-table-column label="城市" align="center" prop="cityName">
       </el-table-column>
 
       <el-table-column  label="状态" align="center" >
@@ -87,7 +79,11 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+    <el-dialog 
+      :title="textMap[dialogStatus]" 
+      :visible.sync="dialogFormVisible" 
+      :show-close= false
+      class="diatable">
         <el-tabs tabPosition='right' >
             <el-tab-pane label="保洁">
               <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
@@ -274,6 +270,7 @@
 </template>
 
 <script>
+import { getProject, addProject } from "@/api/serviceManage";
 import { getSign} from "@/api/sign";
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { parseTime } from '@/utils'
@@ -365,7 +362,12 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = false
+      getProject().then(res => {
+        console.log(res.data)
+        this.list = res.data.data.list;
+        //this.total = res.data.data.count;
+      });
+      this.listLoading = false;
     },
     handleFilter() {
       console.log("搜索")
@@ -569,5 +571,16 @@ body {
   width: 70px;
   height: 30px;
   text-align: center;
+}
+.branch {
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+}
+.branch:nth-of-type(even){
+  background-color: #f5f5f5
+}
+.el-table .cell {
+  padding: 0;
 }
 </style>
