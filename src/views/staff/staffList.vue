@@ -83,22 +83,24 @@
         ref="temp"
         style='width: 400px; margin-left:50px;'>
 
-        <el-form-item label="手机号" prop="phone">
-          <el-input 
-            v-model="temp.phone" 
-            style='width: 400px;'
-            placeholder="请输入11位手机号"></el-input>
-        </el-form-item>
         <el-form-item label="用户名"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
+        
+        <el-form-item label="手机号" prop="phone">
+          <el-input 
+            v-model="temp.phone"
+            style='width: 400px;'
+            placeholder="请输入11位手机号"></el-input>
+        </el-form-item>
 
-        <el-form-item label="密码" >
+        <el-form-item label="密码" prop="password">
           <el-input 
             v-model="temp.password" 
-            style='width: 400px;' 
+            style='width: 400px;'
+            type="password"
             placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
 
@@ -106,6 +108,7 @@
           <el-input
             style='width: 400px;'
             v-model="temp.password2"
+            type="password"
             @blur="passWordBlur" 
             placeholder="再次填写密码"></el-input>
         </el-form-item>
@@ -140,7 +143,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <button class="button-large" @click="create">保 存</button>
-        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
     
@@ -312,7 +315,20 @@ export default {
         name: [
           { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
-        ]
+        ],
+        password: [
+          { required: true, message: "请输入6-20位密码", trigger: "blur"},
+          { min: 6, max: 20, message: "密码长度6-20个字符", trigger: "blur"}
+        ],
+        mechanism: [
+          { required: true, message: "机构不能为空", trigger: "blur"}
+        ],
+        servicestation:[
+          { required: true, message: "服务站不能为空", trigger: "blur"}
+        ],
+        station: [
+          { required: true, message: "岗位不能为空", trigger: "blur"}
+        ],
       }
     };
   },
@@ -476,6 +492,10 @@ export default {
         stationLv: "请选择",
         stationState: ""
       };
+    },
+    resetForm(formName) {
+      this.dialogFormVisible = false
+      this.$refs[formName].resetFields();
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>

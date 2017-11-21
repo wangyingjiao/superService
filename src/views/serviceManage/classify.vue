@@ -17,8 +17,8 @@
     :data="list" 
     v-loading="listLoading" 
     stripe
-    fit 
-    highlight-current-row 
+    fit
+    highlight-current-row
     element-loading-text="正在加载" 
     style="width: 100%" >
 
@@ -166,12 +166,13 @@ export default {
       console.log(this.$refs.refbtn2);
     },
     getList() {
+      this.listLoading = true
       getClass().then(res => {
         //console.log(res)
         this.list = res.data.data.list;
+        this.listLoading = false
         //this.total = res.data.data.count;
       });
-      this.listLoading = false;
     },
     handleFilter() {
       console.log("搜索");
@@ -233,14 +234,15 @@ export default {
           var obj={
              "citys": [
                 {
-                  "cityId": "bj",
-                  "cityName": "北京"
+                  "cityId": "nj",
+                  "cityName": "南京"
                 }
               ],
               "majorSort": "1",
               "name": this.temp.name
           }
           addClass(obj).then(res=>{
+            console.log(res)
             if(res.data.code ===1){
                 this.dialogFormVisible = false;
                 this.getList();
@@ -251,6 +253,7 @@ export default {
                   duration: 2000
                 });
             }else{
+              
               this.$notify({
                   title: "失败",
                   message: res.data.data,
