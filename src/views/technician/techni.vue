@@ -22,11 +22,99 @@
         <button class="button-small" @click="dialogVisible = true">新增</button>
       </div>
       <ul class="tech-section-ul">
-        <li></li>
-        <li></li>
-        <li></li>
+        <li v-for="(item,$index) in infoname" @mousemove="mouser(item)" @mouseout="mousout(item)">
+         <div class="tech-xiu-div">
+            <div class="tech-xiu-div-one">
+              <div style="width:89px;height:89px;background:red;display:inline-block;border-radius:50%;"></div>
+              <div style="margin-top:10px;">
+                <span>男</span>
+                <span>32</span>
+              </div>
+              <div style="margin-top:10px;">
+                <button>全职</button>
+                <button>在职</button>
+              </div>
+            </div>
+            <div class="tech-xiu-div-two">
+               <h4>{{item.name}}</h4> 
+               <div>
+                  <span></span>
+                  <span>国安社区</span>
+               </div>
+               <div>
+                  <span></span>
+                  <span>呼家楼</span>
+               </div>
+                <div>
+                  <span></span>
+                  <span>3年</span>
+               </div>
+               <div>
+                  <span></span>
+                  <span>15660061199</span>
+               </div>
+            </div>
+         </div>
+
+          <!-- 鼠标移入 -->
+          <div class="tech-section-ul-posi" v-show="item.ismouse">
+             <p style="margin-right:20px;" @click="flags = true"><button>休假</button></p>
+             <p><button>修改</button></p>
+             <p style="margin-left:20px;"><button>删除</button></p>
+          </div>
+        </li>
       </ul>
 
+      <!-- 休息弹出层 -->
+       <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
+         <ul class="tech-section-xiu">
+           <li>
+             <div>姓名</div>
+             <div>李阿姨</div>
+           </li>
+           <li>
+             <div><span>*</span>开始时间</div>
+             <div style="display:flex">
+               <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+                </el-date-picker>
+                <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00'
+                        }">
+                </el-time-select>
+             </div>
+           </li>
+           <li>
+             <div><span>*</span>结束时间</div>
+             <div style="display:flex">
+               <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+                </el-date-picker>
+                <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00',
+                          minTime: startTimes
+                        }">
+                </el-time-select>
+             </div>
+           </li>
+           <li>
+             <div>备注</div>
+             <div>
+               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
+                </el-input>
+             </div>
+           </li>
+           <li>
+             <div style="display:flex;justify-content: center;width:100%">
+               <button class="button-large" style="margin-right:10px;">保存</button>
+               <button class="button-cancel">取消</button>
+             </div>
+           </li>
+           
+         </ul>
+       </el-dialog>  
       <!-- 选择技能 -->
       <div class="tech-psoition" v-show="position">
 
@@ -271,7 +359,7 @@
             <div>
               <p><span class="tech-span"></span>入职时间:</p>
               <p>
-                <el-date-picker v-model="value2" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px">
+                <el-date-picker v-model="value2" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
                 </el-date-picker>
               </p>
             </div>
@@ -290,28 +378,62 @@
                     </div>
                   </div>
                   <div style="text-align:center;margin:10px 0;">
-                      <button class="button-large">确认</button>
-                      <button class="button-cancel" style="margin-left:20px">取消</button>
-                    </div>
+                    <button class="button-large" @click="skill">确认</button>
+                    <button class="button-cancel" style="margin-left:20px" @click="skillq">取消</button>
+                  </div>
                 </div>
               </div>
-              <!-- <p>
-                <el-select v-model="workyears" clearable placeholder="请选择" style="width:545px">
-                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p> -->
+            </div>
+          </li>
+          <li v-show="flagso">
+            <div>
+              <p><span class="tech-span"></span></p>
+              <div class="tech-order-jn-sont">
+              </div>
             </div>
           </li>
           <li>
             <div>
               <p><span class="tech-span">*</span>工作时间:</p>
-              <p>
-                <el-select v-model="workyears" clearable placeholder="请选择" style="width:545px">
-                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
+              <div class="tech-order-jn">
+                <button class="tech-order-btn" @click="addtime"> &#10010 添加时间</button>
+                <div class="tech-order-jn-sons" v-show="isB">
+                  <div style="margin:0 10px;">
+                    <p>新增日期</p>
+                    <div>
+
+                      <div style="display:flex;">
+                        <div class="selfCheckBoxsday">日期</div>
+                        <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :class="{'tech-green':item.show===true}">
+                          {{item.sexName}}
+                          <div :class="{'triangle-bottomrightose':item.show===true}"></div>
+                          <div class="tallyose">&#10004</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                      <div class="selfCheckBoxsday">时段</div>
+                      <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00'
+                        }" class="tech-daytim">
+                      </el-time-select>
+                      <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00',
+                          minTime: startTime
+                        }">
+                      </el-time-select>
+                    </div>
+                  </div>
+                  <div style="margin:0px 10px 10px;">
+                    <button class="button-large btn-styl" @click="addtimes">确认</button>
+                    <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </li>
           <li>
@@ -571,6 +693,29 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
+
+         infoname: [{
+          value: '选项1',
+          name: '李阿姨',
+          addres:'国安社区',
+          year:'3年',
+          phone:'17188996644',
+          ismouse:false,
+        },{
+          value: '选项1',
+          name: '王阿姨',
+          addres:'国安社区',
+          year:'3年',
+          phone:'17188996644',
+          ismouse:false,
+        },{
+          value: '选项1',
+          name: '赵阿姨',
+          addres:'国安社区',
+          year:'3年',
+          phone:'17188996644',
+          ismouse:false,
+        } ],
 
         servery: [{
           value: '选项1',
@@ -925,8 +1070,38 @@
             show: false
           }
         ],
+        sexDay: [{
+            sexName: '星期一',
+            show: false
+          },
+          {
+            sexName: '星期二',
+            show: false
+          },
+          {
+            sexName: '星期三',
+            show: false
+          },
+          {
+            sexName: '星期四',
+            show: false
+          },
+          {
+            sexName: '星期五',
+            show: false
+          },
+          {
+            sexName: '星期六',
+            show: false
+          },
+          {
+            sexName: '星期日',
+            show: false
+          },
+        ],
         key: false,
         isA: false,
+        isB: false,
         sexLen: '',
         binds: '',
         flagso: false,
@@ -952,6 +1127,12 @@
         input: '',
         value1: '',
         value2: '',
+        value3: '',
+        value4: '',
+        startTime: '',
+        endTime: '',
+        startTimes: '',
+        endTimes: '',
         position: false,
         listLoading: false,
         list: [1, 2, 3],
@@ -1000,8 +1181,32 @@
       roomSel2(index, obj) {
         this.isA = index;
       },
+      // 添加技能
       orderson() {
         this.flags = true;
+      },
+      skill() {
+        this.flags = false;
+        this.flagso = true;
+      },
+      skillq() {
+        this.flags = false;
+      },
+      // 添加时间
+      addtime() {
+        this.isB = true;
+      },
+      addtimes() {
+        this.isB = false;
+      },
+      addtimeno() {
+        this.isB = false;
+      },
+      mouser(item){
+        item.ismouse=true;
+      },
+      mousout(item){
+        item.ismouse=false;
       }
     }
   }
@@ -1014,7 +1219,7 @@
     padding: 0;
   }
 
-  body{
+  body {
     background: #eef1f6;
   }
 
@@ -1055,6 +1260,7 @@
   .tech-section-right {
     display: flex;
     justify-content: flex-end;
+    margin-top: 45px;
   }
 
   .tech-section-ul {
@@ -1072,7 +1278,21 @@
     width: 32%;
     height: 200px;
     background: #fff;
+    position: relative;
   }
+
+  .tech-section-ul-posi{
+    position: absolute;
+    top: 0;
+    left:0 ;
+    width: 100%;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 
   .fy {
     margin: 0 20px;
@@ -1227,9 +1447,6 @@
     border: solid 1px green;
   }
 
-  .tech-selfbox {
-    /* margin: 10px 20px; */
-  }
 
   .tallys {
     color: #fff;
@@ -1266,13 +1483,28 @@
     line-height: 36px;
   }
 
-  .tech-order-jn-son {
+  .tech-order-jn-son,
+  .tech-order-jn-sons {
     width: 545px;
     /* height: 100px; */
     border: 1px solid #bfcbd9;
     border-top: none;
     /* display: flex; */
     position: absolute;
+    background: #fff;
+    z-index: 2;
+    top: 35px;
+    left: -1px;
+  }
+
+  .tech-order-jn-sont {
+    width: 545px;
+    height: 40px;
+    /* margin-top: 15px; */
+    border: 1px solid #bfcbd9;
+    /* border-top: none; */
+    /* display: flex; */
+    /* position: absolute; */
     background: #fff;
     z-index: 1;
     top: 35px;
@@ -1287,12 +1519,37 @@
     overflow: hidden;
   }
 
+  .tech-order-posis {
+    margin: 0 5px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: hidden;
+  }
+
   .tallyo {
     color: #fff;
     font-size: 12px;
     position: absolute;
     margin-top: 10px;
     margin-left: 35px;
+  }
+
+  .tallyos {
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 35px;
+  }
+
+  .tallyose {
+    color: #fff;
+    /* color: red; */
+    font-size: 6px;
+    position: absolute;
+    margin-top: 6px;
+    margin-left: 22px;
   }
 
   .triangle-bottomrighto {
@@ -1305,4 +1562,93 @@
     margin-left: 32px;
   }
 
+  .triangle-bottomrightos {
+    width: 0;
+    height: 0;
+    border-bottom: 15px solid green;
+    border-left: 15px solid transparent;
+    position: absolute;
+    margin-top: 17px;
+    margin-left: 32px;
+  }
+
+  .triangle-bottomrightose {
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid green;
+    border-left: 10px solid transparent;
+    position: absolute;
+    margin-top: 12px;
+    margin-left: 19px;
+  }
+
+  .btn-styl {
+    height: 25px;
+    width: 60px;
+  }
+
+
+  .selfCheckBoxsday {
+    width: 30px;
+    height: 24px;
+    line-height: 24px;
+    /* border: 1px solid #bfcbd9; */
+    display: inline-block;
+    /* text-align: center; */
+    position: relative;
+    /* margin-left: 20px; */
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .tech-daytim{
+    margin-left: 2px;
+  }
+
+  .tech-section-lages{
+    width: 45%;
+    left: 5%;
+  }
+
+  .tech-section-xiu{
+    padding: 10px 30px;
+  }
+
+  .tech-section-xiu>li{
+    display: flex;
+    padding: 10px;
+  }
+  .tech-section-xiu>li>div:nth-of-type(1){
+    width: 120px;
+    height: 35px;
+    line-height: 35px;
+  }
+
+   .tech-section-xiu>li>d
+   iv:nth-of-type(2){
+     line-height: 35px;
+   }
+
+   .tech-xiu-div{
+     width:100%;
+     height:100%;
+     padding:20px 40px;
+     display: flex;
+     justify-content: space-between;
+   }
+
+   .tech-xiu-div-one{
+     width: 50%;
+     text-align: center;
+     /* display: flex;
+     justify-content: center; */
+   }
+   .tech-xiu-div-two{
+     margin:10px 0; 
+     width: 50%;
+     /* text-align: center; */
+   }
+   .tech-xiu-div-two>div{
+     margin-top: 14px;
+   }
 </style>
