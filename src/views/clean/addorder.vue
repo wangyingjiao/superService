@@ -155,23 +155,23 @@
 	  >
 	  <div class="custom-action"><span class="redStart">*</span>所在区域
 		<span class="customNamevalue">
-		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
-			<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
+		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="province" placeholder="请选择">
+			<el-option v-for="item in provinceOptions" :key="item.key" :label="item.provinceName" :value="item.key">
 			</el-option>
 		  </el-select>
-		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
-			<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
+		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="city" placeholder="请选择">
+			<el-option v-for="item in cityOptions" :key="item.key" :label="item.cityName" :value="item.key">
 			</el-option>
 		  </el-select>
-		  <el-select clearable style="width:130px;" class="filter-item" v-model="custom" placeholder="请选择">
-			<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
+		  <el-select clearable style="width:130px;" class="filter-item" v-model="county" placeholder="请选择">
+			<el-option v-for="item in countyOptions" :key="item.key" :label="item.countyName" :value="item.key">
 			</el-option>
 		  </el-select>		  
 		</span>
 	  </div>
 	  <div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span class="customNamevalue" >详细地址
 		<span class="customNamevalue">
-				<el-input  style="width: 200px;" class="filter-item" placeholder="请输入搜索内容" v-model="customPhone">
+				<el-input  style="width: 300px;" class="filter-item" placeholder="请输入搜索内容" v-model="detailedAddress">
 				</el-input>		
 		</span>
 	  </div>
@@ -248,19 +248,42 @@ export default {
 		  { key: "2", tabName: "王小虎" },
 		  { key: "3", tabName: "王小虎" }
 		],
-        //
+    //
 		serverOptions:[
 		  { key: "1", serverName: "平米保洁" },
 		  { key: "2", serverName: "灯具清洁" },
 		  { key: "3", serverName: "居室保洁" }
 		],
+    //
+		provinceOptions:[
+		  { key: "1", provinceName: "北京" },
+		  { key: "2", provinceName: "上海" },
+		  { key: "3", provinceName: "天津" }
+		],
+		province:'',
+		//
+		cityOptions:[
+		  { key: "1", cityName: "朝阳区" },
+		  { key: "2", cityName: "东城区" },
+		  { key: "3", cityName: "西城区" }
+		],
+		city:'',
+		//
+		countyOptions:[
+		  { key: "1", countyName: "朝阳区" },
+		  { key: "2", countyName: "东城区" },
+		  { key: "3", countyName: "西城区" }
+		],
+		county:'',		
 		//orderOrgin
 		orderOrginOptions:[
 		  { key: "1", orderOrginName: "中信国安" },
 		  { key: "2", orderOrginName: "国安府" },
 		  { key: "3", orderOrginName: "第三方" }
 		],
-        orderOrgin:'',
+    orderOrgin:'',
+		//
+		detailedAddress:'XXX小区1号楼3单元222室',
 		//客户备注
         textarea:'',		
 		//服务站下拉选项

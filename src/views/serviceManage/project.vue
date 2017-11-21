@@ -39,7 +39,7 @@
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称  价格单位" align="center" min-width="150" style="padding:0">
+      <el-table-column  label="商品名称  &nbsp; 价格单位" align="center" min-width="150" style="padding:0">
         <template scope="scope">
           <div class="branch"  v-for="(item,index) in scope.row.commoditys" :key=index>{{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}</div>
         </template>
@@ -204,7 +204,7 @@
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
-<!--添加商品表单 -->
+<!-- //添加商品表单 -->
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -248,8 +248,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-button type="primary" @click="submitForm('goods_info')">提交</el-button>
-                  <el-button @click="resetForm('goods_info')">重置</el-button>
+                  <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
+                  <button class="button-cancel" @click="resetForm('goods_info')">取 消</button> 
                 </el-form-item>
               </el-form>
               
@@ -257,11 +257,10 @@
 
             <el-tab-pane label="家修">teb切换</el-tab-pane>
         </el-tabs>
-      
-      <div slot="footer" class="dialog-footer">       
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
-        <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <hr>
+      <div slot="footer" class="dialog-footer">
+        <button class="button-large" @click="create">保 存</button>    
+        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
       </div>
     </el-dialog>
 
@@ -271,51 +270,45 @@
 
 <script>
 import { getProject, addProject } from "@/api/serviceManage";
-import { getSign} from "@/api/sign";
-import waves from '@/directive/waves/index.js' // 水波纹指令
-import { parseTime } from '@/utils'
+import { getSign } from "@/api/sign";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
 //挂载数据
 
-const city = ['海淀', '朝阳']
-const option1 = ['北京', '北京']
-
-
+const city = ["海淀", "朝阳"];
+const option1 = ["北京", "北京"];
 
 export default {
-  name: 'table_demo',
+  name: "table_demo",
   directives: {
     waves
   },
   data() {
     return {
-      sign:getSign(),
-      list: [1,2,3],
+      sign: getSign(),
+      list: [1, 2, 3],
       total: null,
       listLoading: true,
       val: true,
       rules: {
         name: [
-            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+          { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
         unit: [
-            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' },
-            { min: 1, max: 5, message: '长度在 1 到 5 个字符', trigger: 'blur' }
+          { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
+          { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" }
         ],
-        metering: [
-            { required: true, message: '请输入名称(2-10位)', trigger: 'blur' }
-        ]
-        
+        metering: [{ required: true, message: "请输入名称(2-10位)", trigger: "blur" }]
       },
       goods_info: {
-        name: '',
-        unit: '',
-        metering: '',
-        price: '',
-        time: '',
-        peoNum: '',
-        num: ''
-
+        name: "",
+        unit: "",
+        metering: "",
+        price: "",
+        time: "",
+        peoNum: "",
+        num: ""
       },
       listQuery: {
         page: 1,
@@ -323,161 +316,227 @@ export default {
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: '+id'
+        sort: "+id"
       },
       fileList2: [
         {
-          name: 'food2.jpeg', 
-          url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
-        ],
-      temp: {  
-        option1:'',
-        val:true
-      },  
+          name: "food2.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+        }
+      ],
+      temp: {
+        option1: "",
+        val: true
+      },
       importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       textMap: {
-        update: '编辑',
-        create: '添加'
+        update: "编辑",
+        create: "添加"
       },
       tableKey: 0,
       city: city,
-      option1:option1
-    }
-    
+      option1: option1
+    };
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
+        published: "success",
+        draft: "gray",
+        deleted: "danger"
+      };
+      return statusMap[status];
+    }
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     getList() {
-      getProject().then(res => {
-        console.log(res.data)
-        this.list = res.data.data.list;
-        //this.total = res.data.data.count;
-      });
-      this.listLoading = false;
+      this.listLoading = true;
+      getProject()
+        .then(res => {
+          console.log(res.data);
+          this.list = res.data.data.list;
+          this.listLoading = false;
+          //this.total = res.data.data.count;
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
     },
     handleFilter() {
-      console.log("搜索")
-      this.listQuery.page = 1
-      this.getList()
+      console.log("搜索");
+      this.listQuery.page = 1;
+      this.getList();
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
+      this.listQuery.limit = val;
+      this.getList();
     },
     handleCurrentChange(val) {
-      console.log("未知方法")
-      this.listQuery.page = val
-      this.getList()
+      console.log("未知方法");
+      this.listQuery.page = val;
+      this.getList();
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
+        message: "操作成功",
+        type: "success"
+      });
+      row.status = status;
     },
     handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log("编辑")
-      this.temp = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+      console.log("编辑");
+      this.temp = Object.assign({}, row);
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
     },
     handleDelete(row) {
-      console.log("删除")
+      console.log("删除");
       this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
+        title: "成功",
+        message: "删除成功",
+        type: "success",
         duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
+      });
+      const index = this.list.indexOf(row);
+      this.list.splice(index, 1);
     },
     create() {
-      this.temp.id = 1
-      this.list.unshift(this.temp)
-      this.dialogFormVisible = false
-      this.$notify({
-        title: '成功',
-        message: '增加成功',
-        type: 'success',
-        duration: 2000
-      })
+      var obj = {
+        city: "string",
+        cityId: "string",
+        cityName: "string",
+        citys: [
+          {
+            cityId: "string",
+            cityName: "string"
+          }
+        ],
+        commoditys: [
+          {
+            convertTime: "string",
+            id: "string",
+            isNewRecord: true,
+            itemId: "string",
+            itemName: "string",
+            meterage: "string",
+            minimum: 0,
+            name: "string",
+            persons: [
+              {
+                commodityId: "string",
+                commodityName: "string",
+                critical: "string",
+                id: "string",
+                isNewRecord: true,
+                quantity: 0,
+                remarks: "string"
+              },
+              {
+                commodityId: "string",
+                commodityName: "string",
+                critical: "string",
+                id: "string",
+                isNewRecord: true,
+                quantity: 0,
+                remarks: "string"
+              }
+            ],
+            price: "string",
+            remarks: "string",
+            unit: "string"
+          },
+          {
+            convertTime: "string",
+            id: "string",
+            isNewRecord: true,
+            itemId: "string",
+            itemName: "string",
+            meterage: "string",
+            minimum: 0,
+            name: "string",
+            persons: [
+              {
+                commodityId: "string",
+                commodityName: "string",
+                critical: "string",
+                id: "string",
+                isNewRecord: true,
+                quantity: 0,
+                remarks: "string"
+              }
+            ],
+            price: "string",
+            remarks: "string",
+            unit: "string"
+          }
+        ],
+        description: "string",
+        id: "string",
+        isNewRecord: true,
+        majorSort: "1", //保洁or家修
+        name: "string",
+        officeId: "string",
+        officeName: "string",
+        picture: "string",
+        remarks: "string",
+        sale: "string",
+        sortId: "string", //所属分类编号
+        sortName: "string", //所属分类名
+        sortNum: 0 //排序号
+      };
     },
     update() {
-      this.temp.timestamp = +this.temp.timestamp
+      this.temp.timestamp = +this.temp.timestamp;
       for (const v of this.list) {
         if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v)
-          this.list.splice(index, 1, this.temp)
-          break
+          const index = this.list.indexOf(v);
+          this.list.splice(index, 1, this.temp);
+          break;
         }
       }
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
       this.$notify({
-        title: '成功',
-        message: '编辑成功',
-        type: 'success',
+        title: "成功",
+        message: "编辑成功",
+        type: "success",
         duration: 2000
-      })
+      });
     },
     handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
+      console.log(file, fileList);
+    },
     handlePreview(file) {
-        console.log(file);
-      },
+      console.log(file);
+    },
     resetTemp() {
-      this.temp = {
-        
-      }
+      this.temp = {};
     },
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log('保存表格测试');
+          console.log("保存表格测试");
         } else {
-          console.log('error submit!!');
+          console.log("error submit!!");
           return false;
         }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-
+    }
   }
-}
+};
 </script>
 <style>
 .btn_right {
@@ -577,8 +636,8 @@ body {
   height: 45px;
   line-height: 45px;
 }
-.branch:nth-of-type(even){
-  background-color: #f5f5f5
+.branch:nth-of-type(even) {
+  background-color: #f5f5f5;
 }
 .el-table .cell {
   padding: 0;
