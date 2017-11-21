@@ -78,7 +78,7 @@
         class="small-space" 
         :model="temp" 
         label-position="left" 
-        label-width="70px"
+        label-width="80px"
         :rules="rules"
         ref="temp"
         style='width: 400px; margin-left:50px;'>
@@ -100,32 +100,30 @@
           <el-input 
             v-model="temp.password" 
             style='width: 400px;'
-            type="password"
+             type="password"
             placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
 
-        <el-form-item label="确认密码" >
+        <el-form-item label="确认密码" prop="password2">
           <el-input
             style='width: 400px;'
             v-model="temp.password2"
-            type="password"
-            @blur="passWordBlur" 
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label="服务机构">
+        <el-form-item label="服务机构" prop="mechanism">
           <el-select  style='width: 400px;' class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanism" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="服务站">
+        <el-form-item label="服务站" prop="servicestation">
           <el-select style='width: 400px;' class="filter-item" v-model="temp.servicestation" placeholder="请选择">
             <el-option v-for="item in servicestation" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择岗位">
+        <el-form-item label="选择岗位" >
           <el-select  class="filter-item" v-model="temp.station" placeholder="请选择">
             <el-option v-for="item in station" :key="item" :label="item" :value="item">
             </el-option>
@@ -142,7 +140,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="create">保 存</button>
+        <button class="button-large" @click="create('temp')">保 存</button>
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -154,7 +152,7 @@
        append-to-body
        class="twoDialog" 
        width = '100%'>
-      <el-form class="small-space" :model="temp2" label-position="left" label-width="70px" style='width: 500px; margin-left:20px;'>
+      <el-form class="small-space" :model="temp2" label-position="left" label-width="80px" style='width: 500px; margin-left:20px;'>
 
         <el-form-item label="岗位名称">
           <el-input style='width: 400px' :maxlength="15" :minlength="2" placeholder="请输入2-15位的岗位名称" v-model="temp2.stationName">123</el-input>
@@ -256,6 +254,15 @@ export default {
     waves
   },
   data() {
+    var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.temp.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      }
     return {
       list: null,
       total: null,
@@ -320,14 +327,17 @@ export default {
           { required: true, message: "请输入6-20位密码", trigger: "blur"},
           { min: 6, max: 20, message: "密码长度6-20个字符", trigger: "blur"}
         ],
+        password2: [
+          { required: true,validator: validatePass2, trigger: "blur"}
+        ],
         mechanism: [
-          { required: true, message: "机构不能为空", trigger: "blur"}
+          { required: true, message: "机构不能为空", trigger: "change"}
         ],
         servicestation:[
-          { required: true, message: "服务站不能为空", trigger: "blur"}
+          { required: true, message: "服务站不能为空", trigger: "change"}
         ],
         station: [
-          { required: true, message: "岗位不能为空", trigger: "blur"}
+          { required: true, message: "岗位不能为空", trigger: "change"}
         ],
       }
     };
@@ -424,31 +434,47 @@ export default {
       getSign()
       console.log(getSign())
     },
-    create() {
-      var obj = {
-        companyId: "ad86de2fbac14039afe4c4bb12dbf565",
-        companyName: "总公司",
-        loginFlag: "1",
-        loginName: this.temp.phone,
-        mobile: this.temp.phone,
-        name: this.temp.name,
-        newPassword: this.temp.password,
-        no: "00000909",
-        officeId: "cce1ffa65994451abdb00fe56b338e4d",
-        officeName: "国安社区",
-        roles: ["5f9143f86b58404c962bb704c7bd4f07"]
-      };
-      addStaff(obj).then(res=>{
-        console.log(res)
+    create(formName) {
+      this.$refs[formName].validate((valid) => {
+        if(valid){
+          var obj = {
+            companyId: "ad86de2fbac14039afe4c4bb12dbf565",
+            companyName: "总公司",
+            loginFlag: "1",
+            loginName: this.temp.phone,
+            mobile: this.temp.phone,
+            name: this.temp.name,
+            newPassword: this.temp.password,
+            no: "00000909",
+            officeId: "cce1ffa65994451abdb00fe56b338e4d",
+            officeName: "国安社区",
+            roles: ["5f9143f86b58404c962bb704c7bd4f07"]
+          };
+          addStaff(obj).then(res=>{
+            console.log(res)
+            if(res.data.code ===1){
+                this.dialogFormVisible = false;
+                this.getList();
+                this.$notify({
+                  title: "成功",
+                  message: res.data.data,
+                  type: "success",
+                  duration: 2000
+                });
+            }else{             
+              this.$notify({
+                  title: "失败",
+                  message: "重名或者参数有误",
+                  type: "error",
+                  duration: 3000
+                });
+            }
+          })
+        }else{
+          return false
+        }
+      
       })
-      this.dialogFormVisible = false;
-      this.getList();
-      this.$notify({
-        title: "成功",
-        message: "增加成功",
-        type: "success",
-        duration: 2000
-      });
     },
     update() {
       console.log(111);
@@ -459,20 +485,6 @@ export default {
         type: "success",
         duration: 2000
       });
-    },
-    passWordBlur(){
-      console.log(this.temp.password)
-      console.log(this.temp.password2)
-      var psd1= this.temp.password
-      var psd2= this.temp.password2        
-      if(psd2!==psd1){
-        this.$notify({
-          title: "两次密码不一致",
-          message: "请仔细检查",
-          type: "warning",
-          duration: 2000
-        });
-      }
     },
     resetTemp() {
       this.temp = {
