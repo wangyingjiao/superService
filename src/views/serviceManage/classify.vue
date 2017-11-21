@@ -370,18 +370,6 @@ body {
   color: #ffffff;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 .tabRight {
   width: 85%;
   height: 100%;
