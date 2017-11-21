@@ -1,6 +1,7 @@
 <template>
   <div class="tech">
     <div class="tech-index">
+      <div>
       <el-select v-model="servers" clearable placeholder="选择服务站">
         <el-option v-for="item in server" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
@@ -14,8 +15,8 @@
         </el-option>
       </el-select>
       <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
-      <button class="tech-btn" @click="order">选择技能</button>
-      <button class="button-large tech-btn-right">搜索</button>
+      </div>
+      <div><button class="button-large">搜索</button></div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
@@ -58,9 +59,16 @@
 
           <!-- 鼠标移入 -->
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-             <p style="margin-right:20px;" @click="flags = true"><button>休假</button></p>
-             <p><button>修改</button></p>
-             <p style="margin-left:20px;"><button>删除</button></p>
+             <div style="margin-right:20px;" @click="flags = true">
+                <img src="../../../static/icon/休1.png" alt="">
+               <!-- <button>休假</button> -->
+              </div>
+             <div>
+               <img src="../../../static/icon/编辑1.png" alt="">
+             </div>
+             <div style="margin-left:20px;">
+               <img src="../../../static/icon/删除1.png" alt="">
+             </div>
           </div>
         </li>
       </ul>
@@ -527,7 +535,7 @@
         <h3 class="tech-tc-prson">家庭成员（选填）</h3>
         <div class="tech-table">
           <el-table :key='tableKey' :data="list" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
-            style="width: 100%" v-show="flags">
+            style="width: 100%" v-show="isTab">
 
             <el-table-column align="center" label="关系">
               <template scope="scope">
@@ -621,7 +629,7 @@
             <div>
               <p></p>
               <p>
-                <button class="button-large">保存</button>
+                <button class="button-large" @click="savrTable">保存</button>
                 <button class="button-cancel" style="margin-left:20px">取消</button>
               </p>
             </div>
@@ -1102,6 +1110,7 @@
         key: false,
         isA: false,
         isB: false,
+        isTab:false,
         sexLen: '',
         binds: '',
         flagso: false,
@@ -1207,6 +1216,9 @@
       },
       mousout(item){
         item.ismouse=false;
+      },
+      savrTable(){
+        this.isTab=true;
       }
     }
   }
@@ -1228,6 +1240,7 @@
     padding: 20px;
     margin-top: 20px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
   }
 

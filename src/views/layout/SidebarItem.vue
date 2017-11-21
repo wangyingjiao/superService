@@ -18,7 +18,8 @@
     </template> -->
      <el-submenu index="1">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <!-- <i class="el-icon-location"></i> -->
+          <span class="side-span"> <img src="../../../static/icon/员工管理1.png" alt=""></span>
           <span>员工管理</span>
         </template>
         <router-link to="/sys/user/index">
@@ -33,7 +34,9 @@
 
       <el-submenu index="2">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <!-- <i class="el-icon-location"></i> -->
+          <!-- <img src="../../../static/icon/基础管理1.png" alt=""> -->
+          <span class="side-span"> <img src="../../../static/icon/基础管理1.png" alt=""></span>
           <span>基础管理</span>
         </template>     
         
@@ -47,7 +50,9 @@
 
       <el-submenu index="3">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <!-- <i class="el-icon-location"></i> -->
+          <!-- <img src="../../../static/icon/人员管理1.png" alt=""> -->
+          <span class="side-span"> <img src="../../../static/icon/人员管理1.png" alt=""></span>
           <span>服务技师管理</span>
         </template>  
          <router-link to="/technician/techni">
@@ -60,7 +65,9 @@
 
       <el-submenu index="4">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <!-- <i class="el-icon-location"></i> -->
+          <!-- <img src="../../../static/icon/服务管理1.png" alt=""> -->
+          <span class="side-span"> <img src="../../../static/icon/服务管理1.png" alt=""></span>
           <span>服务管理</span>
         </template>     
         <router-link to="/service/class">
@@ -75,7 +82,9 @@
       </el-submenu>
       <el-submenu index="5">
         <template slot="title">
-          <i class="el-icon-location"></i>
+          <!-- <i class="el-icon-location"></i> -->
+        <!-- <img src="../../../static/icon/保洁1.png" alt=""> -->
+        <span class="side-span"> <img src="../../../static/icon/保洁1.png" alt="" class="side-img"></span>
           <span>保洁订单</span>
         </template>     
         <router-link to="/clean/ordermanage">
@@ -119,5 +128,15 @@ export default {
   display: block;
   text-indent: 10px;
 }
+.side-span{
+  display: inline-block;
+  width: 23px;
+  // height: 1px;
+  text-align: right;
+}
+.side-img{
+  margin-bottom: 5px;
+}
+
 </style>
 
