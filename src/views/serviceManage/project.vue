@@ -39,7 +39,7 @@
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称  价格单位" align="center" min-width="150" style="padding:0">
+      <el-table-column  label="商品名称  &nbsp; 价格单位" align="center" min-width="150" style="padding:0">
         <template scope="scope">
           <div class="branch"  v-for="(item,index) in scope.row.commoditys" :key=index>{{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}</div>
         </template>
@@ -248,6 +248,8 @@
                 </el-form-item>
 
                 <el-form-item>
+                  <button class="button-large" @click="cleaning('temp')">保 存</button>    
+                  <button class="button-cancel" @click="resetForm('temp')">取 消</button> 
                   <el-button type="primary" @click="submitForm('goods_info')">提交</el-button>
                   <el-button @click="resetForm('goods_info')">重置</el-button>
                 </el-form-item>
@@ -258,10 +260,9 @@
             <el-tab-pane label="家修">teb切换</el-tab-pane>
         </el-tabs>
       
-      <div slot="footer" class="dialog-footer">       
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
-        <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <div slot="footer" class="dialog-footer">
+        <button class="button-large" @click="create">保 存</button>    
+        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
       </div>
     </el-dialog>
 
@@ -272,8 +273,8 @@
 <script>
 import { getProject, addProject } from "@/api/serviceManage";
 import { getSign} from "@/api/sign";
-import waves from '@/directive/waves/index.js' // 水波纹指令
-import { parseTime } from '@/utils'
+import waves from '@/directive/waves/index.js'; // 水波纹指令
+import { parseTime } from '@/utils';
 //挂载数据
 
 const city = ['海淀', '朝阳']
@@ -362,12 +363,16 @@ export default {
   },
   methods: {
     getList() {
+      this.listLoading = true;
       getProject().then(res => {
         console.log(res.data)
         this.list = res.data.data.list;
+        this.listLoading = false;
         //this.total = res.data.data.count;
+      }).catch(res=>{
+        this.listLoading = false
       });
-      this.listLoading = false;
+      
     },
     handleFilter() {
       console.log("搜索")
@@ -413,15 +418,7 @@ export default {
       this.list.splice(index, 1)
     },
     create() {
-      this.temp.id = 1
-      this.list.unshift(this.temp)
-      this.dialogFormVisible = false
-      this.$notify({
-        title: '成功',
-        message: '增加成功',
-        type: 'success',
-        duration: 2000
-      })
+
     },
     update() {
       this.temp.timestamp = +this.temp.timestamp
@@ -463,19 +460,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-
+    }
   }
 }
 </script>
