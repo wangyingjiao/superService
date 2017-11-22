@@ -1,8 +1,13 @@
 <template>
 <div>
   <div class="filter-container bgWhite">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="全部" name="0"></el-tab-pane>
+      <el-tab-pane label="保洁" name="1"></el-tab-pane>
+      <el-tab-pane label="家修" name="2"></el-tab-pane>
+    </el-tabs>
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择城市">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
+        <el-option v-for="item in city" :key="item.id" :label="item.areaName" :value="item.id">
         </el-option>
       </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="listQuery.title">
@@ -35,7 +40,7 @@
         <template scope="scope">
           <el-button  size="small" @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
+          <el-button  size="small" type="danger" @click="handleDelete(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -75,11 +80,7 @@
             
 
             <el-form-item label="定向城市">      
-                <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
-                <el-checkbox v-model="city" label="北京" size="medium"></el-checkbox>
-                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
-                <el-checkbox v-model="city" label="北京" border size="medium"></el-checkbox>
+                <el-checkbox @change="citiesChange" v-model="temp.city" v-for="item in city" :key="item.id" :label="item.areaName" :name="item.id" size="medium">{{item.areaName}}</el-checkbox>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
             </el-form-item>
           </el-form>
@@ -88,10 +89,7 @@
       
       <div slot="footer" class="dialog-footer"> 
         <button class="button-large" @click="cleaning('temp')">保 存</button>    
-        <button class="button-cancel" @click="resetForm('temp')">取 消</button>    
-        <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
-        <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
 
@@ -100,12 +98,10 @@
 </template>
 
 <script>
-import { getClass, addClass } from "@/api/serviceManage";
+import {getCity, getClass, addClass, delClass} from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
-
-const city = ["海淀", "朝阳"];
 
 export default {
   name: "table_demo",
@@ -126,7 +122,8 @@ export default {
         sort: "+id"
       },
       temp: {
-        name: ""
+        name: "",
+        city: []
       },
       rules: {
         name: [
@@ -134,7 +131,6 @@ export default {
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ]
       },
-      importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -142,7 +138,8 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      city: city
+      city:[],
+      activeName: '0'
     };
   },
   filters: {
@@ -157,6 +154,10 @@ export default {
   },
   created() {
     this.getList();
+    getCity().then(res=>{
+      this.city=res.data.data
+    })
+    
   },
   methods: {
     refbtn1() {
@@ -168,7 +169,7 @@ export default {
     getList() {
       this.listLoading = true
       getClass().then(res => {
-        //console.log(res)
+        console.log(res)
         this.list = res.data.data.list;
         this.listLoading = false
         //this.total = res.data.data.count;
@@ -176,15 +177,20 @@ export default {
     },
     handleFilter() {
       console.log("搜索");
-      this.listQuery.page = 1;
-      this.getList();
+      var obj={
+
+      }
+      // getList(obj).then(res=>{
+      //   console.log(res)
+      // })
+      // this.listQuery.page = 1;
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
       this.getList();
     },
     handleCurrentChange(val) {
-      console.log("未知方法");
+      console.log("换页");
       this.listQuery.page = val;
       this.getList();
     },
@@ -206,16 +212,38 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
-    handleDelete(row) {
-      console.log("删除");
-      this.$notify({
-        title: "成功",
-        message: "删除成功",
-        type: "success",
-        duration: 2000
-      });
-      const index = this.list.indexOf(row);
-      this.list.splice(index, 1);
+    handleDelete(row) {     
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log(row)
+          var obj = {
+            id:row.id
+          }
+          delClass(obj).then(res=>{
+            console.log(res)
+            if(res.data.code === 1){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.getList()
+            }else{
+              this.$message({
+                  type: 'warning',
+                  message: '发生未知错误!'
+                });
+            }
+          }).catch(()=>console.log("未知错误"))
+          
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
     create() {
       this.temp.id = 1;
@@ -229,6 +257,9 @@ export default {
       });
     },
     cleaning(formName) {
+
+      console.log(this.temp)
+      console.log(this.temp.city)
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj={
@@ -236,9 +267,25 @@ export default {
                 {
                   "cityId": "nj",
                   "cityName": "南京"
-                }
+                },
+                {
+                  "cityId": "nj",
+                  "cityName": "北京"
+                },
+                {
+                  "cityId": "nj",
+                  "cityName": "东京"
+                },
+                {
+                  "cityId": "nj",
+                  "cityName": "西京"
+                },
+                {
+                  "cityId": "nj",
+                  "cityName": "吃京"
+                },
               ],
-              "majorSort": "1",
+              "majorSort": "2",
               "name": this.temp.name
           }
           addClass(obj).then(res=>{
@@ -267,6 +314,11 @@ export default {
         }
       });
     },
+    citiesChange(val){
+      console.log(val)
+      console.log(this.temp)
+
+    },
     resetForm(formName){
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
@@ -290,6 +342,24 @@ export default {
     },
     resetTemp() {
       this.temp = {};
+    },
+    handleClick(tab, event) {
+        var a = tab.name
+        console.log(a)
+        if(a == 0){
+          this.getList()
+        }else{
+          var obj = {majorSort:a }
+          this.listLoading = true
+          getClass(obj).then(res=>{
+             console.log(res)
+             this.list = res.data.data.list
+             this.listLoading = false
+           }
+
+         )
+        }
+        
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
@@ -380,8 +450,8 @@ body {
   padding-top: 10px;
   background-color: #ffffff;
 }
-/* .diatable .el-form-item__label{
-  font-size: 12px;
-  color: red
-} */
+.el-tabs {
+  background-color: #ffffff;
+  color: #333;
+}
 </style>
