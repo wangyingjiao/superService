@@ -17,7 +17,9 @@
 		  </el-dropdown-menu>
 		</el-dropdown>	
 	</div>
-	<levelbar style="width:100%;float:left;height:26px;line-height:26px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;"></levelbar>
+	<div style="width:100%;float:left;height:28px;line-height:28px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;">
+	</div>
+	<tabs-view style="position:relative;margin-top:-59px;margin-left:20px;"></tabs-view>
   </el-menu>
 	
 	
@@ -25,17 +27,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Levelbar from './Levelbar'
+import TabsView from './TabsView'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
-    Levelbar,
+	TabsView,
     Hamburger
   },
   computed: {
     ...mapGetters([
       'sidebar',
+	    'name',
       'avatar'
     ])
   },
@@ -54,13 +57,13 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
     .navbar {
-        height: 86px;
-        line-height: 86px;
+        height: 88px;
+        line-height: 88px;
         border-radius: 0px !important;
-		margin-bottom:20px;
-		background:#eef1f6;
+	    	margin-bottom:20px;
+	    	background:#eef1f6;
         .hamburger-container {
-            line-height: 58px;
+            line-height: 50px;
             height: 50px;
             float: left;
             padding: 0 10px;

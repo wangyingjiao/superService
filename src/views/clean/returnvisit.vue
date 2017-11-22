@@ -1,105 +1,111 @@
 <template>
-    <div class="addorder-container">
-		<div class="fist-bar">
-            <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="100px" style="width:500px;">
-			  <el-form-item label="密码" prop="pass" :required="true">
-				<el-input type="password" v-model="ruleForm2.pass" ></el-input>
-			  </el-form-item>
-			  <el-form-item label="确认密码" prop="checkPass">
-				<el-input type="password" v-model="ruleForm2.checkPass"></el-input>
-			  </el-form-item>
-			  <el-form-item label="年龄" prop="age">
-				<el-input v-model.number="ruleForm2.age"></el-input>
-			  </el-form-item>
-
-			</el-form>
-		</div>
-
+    <div class="allmap" >     
+       <div class="map" ref="map"  style="height:100%;-webkit-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;">  
+          
+	   </div>
+       <div class="actionArea">
+			<button type="button" class="button-large" @click="savePointer()">区域坐标</button>
+			<button type="button" class="button-large" @click="draw()">画多边形</button>
+			<button type="button" class="button-large" @click="clearAll()">清除多边形</button>
+				
+	   </div>		
     </div>
 </template>
-
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
-//import { parseTime } from "@/utils";
 export default {
-  name: "",
   data() {
- var checkAge = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('年龄不能为空'));
-        }
-        setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'));
-          } else {
-            if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(value))) {
-              callback(new Error('error'));
-            } else {
-              callback();
-            }
-          }
-        }, 1000);
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };  
     return {
-       message:"this is message",
-        ruleForm2: {
-          pass: '',
-          checkPass: '',
-          age: ''
-        },
-        rules2: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          age: [
-            { validator: checkAge, trigger: 'blur' }
-          ]
-        }	   
+       mainObj:{},
+	     maskObj:[],
     };
   },
-  methods:{ 
- 
-
-  },
   mounted() {
-
-
+     this.initMap();
+  },
+  methods: {
+    initMap() {
+        var id=this.$refs.map
+		var map = new BMap.Map(id);  
+		var poi = new BMap.Point(113.948913,22.530844);  
+		map.centerAndZoom(poi, 16);  
+		map.enableScrollWheelZoom();
+		//var opts = {offset: new BMap.Size(400,0)} 
+        map.addControl(new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT})); 		
+        this.mainObj=map
+		var styleOptions = {  
+			strokeColor:"blue",    //边线颜色。  
+			fillColor:"blue",      //填充颜色。当参数为空时，圆形将没有填充效果。  
+			strokeWeight: 3,       //边线的宽度，以像素为单位。  
+			strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
+			fillOpacity: 0.1,      //填充的透明度，取值范围0 - 1。  
+			strokeStyle: 'solid' //边线的样式，solid或dashed。  
+		}
+		//实例化鼠标绘制工具  
+		var drawingManager = new BMapLib.DrawingManager(map, {  
+			isOpen: false, //是否开启绘制模式  
+			enableDrawingTool: true, //是否显示工具栏
+            enableCalculate :true,			
+			drawingToolOptions: {  
+				anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
+				offset: new BMap.Size(5, 5), //偏离值
+				drawingModes : [BMAP_DRAWING_POLYGON, BMAP_DRAWING_CIRCLE],			
+			},  
+			circleOptions: styleOptions, //圆的样式  	 
+			polygonOptions: styleOptions, //多边形的样式  
+	 
+		}); 
+		var overlays = [];		
+        var obj={};					   		  
+		//添加鼠标绘制工具监听事件，用于获取绘制结果  
+		//drawingManager.addEventListener('overlaycomplete', overlaycomplete);
+		drawingManager.addEventListener("overlaycomplete", function(e) {
+		    if(e.drawingMode == 'circle' ){
+			   overlays.push(e.overlay);
+			   //e.overlay.getRadius();//圆的半径    
+			}else{
+				overlays.push(e.overlay);			
+				var path = e.overlay.getPath();// 返回多边型的点数组
+				  for (var prop in path) {
+					if (path.hasOwnProperty(prop)) {
+					  obj[prop] = path[prop];
+					}
+				  } 						    
+			}
+			//alert(e.calculate)图形的面积
+			e.label.hide();
+	   });
+       this.maskObj=overlays;		
+       this.dotarr=obj;	   
+    },
+	savePointer(){	   
+	    alert(this.dotarr);
+	},
+	draw(){
+	   this.$router.push({path:'/clean/orderinfo'})
+			
+    },
+    clearAll() {  
+        for(var i = 0; i < this.maskObj.length; i++){  
+            this.mainObj.removeOverlay(this.maskObj[i]);  
+        }  
+        this.maskObj.length = 0     
+    }	
   }
 };
 </script>
-<style scoped>
-.addorder-container{
-    width:100%;
-	float:left;
-	background:#eef1f6;
+<style>
+.allmap{
+   width:100%;
+   height:400px;
 }
-.fist-bar{
-  padding-top:20px;
-  padding-bottom:20px;
-  background:#fff;
-  margin-right:20px;
- 
+.map{
+   width:800px;
+   height:200px;
+   display:block;
+}
+.actionArea{
+	position:absolute;
+	bottom:30px;
+	left:720px;
 }
 </style>
