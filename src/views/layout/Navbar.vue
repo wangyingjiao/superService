@@ -3,31 +3,19 @@
     <div style="width:100%;float:left;background:#fff;">
 		<hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
 		<el-dropdown class="avatar-container" trigger="click">
-			<!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
-			<!-- <i class="el-icon-caret-bottom"></i> -->
-		  <!-- <el-dropdown-menu class="user-dropdown" slot="dropdown">
+		  <div class="avatar-wrapper">
+			<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+			<i class="el-icon-caret-bottom"></i>
+		  </div>
+		  <el-dropdown-menu class="user-dropdown" slot="dropdown">
 			<router-link class='inlineBlock' to="/">
 			  <el-dropdown-item>
 				Home
 			  </el-dropdown-item>
 			</router-link>
 			<el-dropdown-item divided><span @click="logout" style="display:block;">LogOut</span></el-dropdown-item>
-		  </el-dropdown-menu> -->
+		  </el-dropdown-menu>
 		</el-dropdown>	
-    <div  class="navbar-div">
-       <div>
-          <div></div>
-          <div>新增</div>
-        </div>
-        <div>
-          <div></div>
-          <div>李四</div>
-        </div>
-        <div>
-          <div></div>
-          <div>退出</div>
-        </div>
-    </div>    
 	</div>
 	<levelbar style="width:100%;float:left;height:26px;line-height:26px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;"></levelbar>
   </el-menu>
@@ -111,17 +99,5 @@ export default {
             }
         }
     }
-
- .navbar-div{
-   display: flex;
-   height: 50px;
-   justify-content: flex-end;
-   margin-right: 20px;
- } 
- 
- .navbar-div>div{
-   display: flex;
-   align-items: center;
- }
 </style>
 
