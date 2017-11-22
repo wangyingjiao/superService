@@ -79,9 +79,10 @@ export const constantRouterMap = [
     name: '保洁订单',
     children: [
     { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage') },
-	{ path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
-	{ path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
-	{ path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
+    { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
+    { path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
+    { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
+    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
