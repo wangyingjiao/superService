@@ -38,10 +38,16 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button  size="small" @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <el-button  size="small" type="danger" @click="handleDelete(scope.row)">删除
-          </el-button>
+          <div style="display:flex;justify-content: center;">
+              <div class="site-div" @click="handleUpdate(scope.row)">
+                <div class="back-icon-bg"></div>
+                <div>编辑</div>
+              </div>
+              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                <div class="back-icon-del"></div>
+                <div>删除</div>
+              </div>
+            </div>
         </template>
       </el-table-column>
 

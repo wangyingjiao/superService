@@ -16,6 +16,10 @@
         </template>
       </el-submenu>
     </template> -->
+
+    <div class="slde-bcak-log">
+       <!-- <img src="../../../static/icon/logo.png" alt=""> -->
+    </div>
      <el-submenu index="1">
         <template slot="title">
           <!-- <i class="el-icon-location"></i> -->
@@ -136,6 +140,15 @@ export default {
 }
 .side-img{
   margin-bottom: 5px;
+}
+.slde-bcak-log{
+  width: 160px;
+  height: 50px;
+  margin-left:20px;
+  background-image: url(../../../static/icon/logo.png);
+  // background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: left center; 
 }
 </style>
 

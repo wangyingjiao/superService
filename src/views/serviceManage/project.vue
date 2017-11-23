@@ -62,12 +62,20 @@
 
       <el-table-column align="center" label="操作" min-width="100px">
         <template scope="scope">
-          <el-button  size="small" @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <el-button  size="small" @click="handleUpdate(scope.row)">上传
-          </el-button>
-          <el-button icon="el-icon-delete"  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-          </el-button>
+          <div style="display:flex;justify-content: center;">
+              <div class="site-div" @click="handleUpdate(scope.row)">
+                <div class="back-icon-bg"></div>
+                <div>编辑</div>
+              </div>
+              <div class="site-div" @click="handleUpdate(scope.row)">
+                <div class="back-icon-bg"></div>
+                <div>上传</div>
+              </div>
+              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                <div class="back-icon-del"></div>
+                <div>删除</div>
+              </div>
+            </div>
         </template>
       </el-table-column>
 
