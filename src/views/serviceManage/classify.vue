@@ -67,8 +67,14 @@
       class="diatable">
       <div class="tabBox" >
         <div class="tabLeft fl" ref="refTab">
-          <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
-          <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span>
+          <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
+          <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
+          <el-radio-group v-model="activeName">
+            <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
+            <el-radio-button style="width:100%;background-color:red" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%" label="2" @click="refbtn2">家修</el-radio-button>
+            <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
+          </el-radio-group>
         </div>
         <div class="tabRight fl">
           <el-form class="small-space" ref="temp" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
@@ -80,8 +86,13 @@
             </el-form-item>
             
 
-            <el-form-item label="定向城市">      
-                <el-checkbox @change="citiesChange" v-model="temp.city" v-for="item in city" :key="item.id" :label="item.areaName" :name="item.id" size="medium">{{item.areaName}}</el-checkbox>
+            <el-form-item label="定向城市">   
+              <el-checkbox-group v-model="checkCity" @change="citiesChange">
+                <el-checkbox 
+                   v-for="item in city" 
+                   :label="item.areaName"
+                   :key="item.id">{{item.areaName}}</el-checkbox>
+              </el-checkbox-group>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
             </el-form-item>
           </el-form>
@@ -124,7 +135,6 @@ export default {
       },
       temp: {
         name: "",
-        city: []
       },
       search:{
         cityName: '',
@@ -143,8 +153,9 @@ export default {
         create: "添加"
       },
       tableKey: 0,
+      activeName: '0',
       city:[],
-      activeName: '0'
+      checkCity: [],
     };
   },
   filters: {
@@ -202,12 +213,12 @@ export default {
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      this.getList();
+     // this.getList();
     },
     handleCurrentChange(val) {
       console.log("换页");
       this.listQuery.page = val;
-      this.getList();
+      //this.getList();
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -218,14 +229,19 @@ export default {
     },
     handleCreate() {
       this.resetTemp();
+      this.activeName='1'
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log("编辑");
+      console.log(row);
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+      this.activeName = row.majorSort
+      var arr = []
+      arr.push(row.cityName)
+      this.checkCity = arr
     },
     handleDelete(row) {    
       console.log(this.activeName) 
@@ -249,7 +265,7 @@ export default {
             }else{
               this.$message({
                   type: 'warning',
-                  message: '发生未知错误!'
+                  message: '分类下有服务项目，不可删除'
                 });
             }
           }).catch(()=>console.log("未知错误"))
@@ -261,35 +277,37 @@ export default {
           });          
         });
     },
+    getCityId(str){
+       for(var i = 0 ; i < this.city.length ; i ++ ){
+          if(str == this.city[i].areaName){
+            return this.city[i].id
+          }
+       }
+    },
     create(formName) {
-      console.log(this.temp)
-      //console.log(this.temp.city)
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj={
-             "citys": [
-                {
-                  "cityId": "nj",
-                  "cityName": "南京"
-                },
-                {
-                  "cityId": "nj",
-                  "cityName": "北京"
-                }
-              ],
+              "citys": [],
               "majorSort": this.activeName,
               "name": this.temp.name
+            }
+          for(var i = 0;i < this.checkCity.length;i ++){
+               var city = {
+                 "cityId": this.getCityId(this.checkCity[i]),
+                 "cityName": this.checkCity[i]
+               }
+               obj.citys.push(city)
           }
           addClass(obj).then(res=>{
-           // console.log(this.activeName)
+            console.log(this.activeName)
             if(res.data.code ===1){
                 this.dialogFormVisible = false;
+                this.checkCity = []
                 this.getList();
-                this.$notify({
-                  title: "成功",
-                  message: res.data.data,
-                  type: "success",
-                  duration: 2000
+                this.$message({
+                  type: 'success',
+                  message: res.data.data
                 });
             }else{            
               this.$notify({
@@ -307,12 +325,11 @@ export default {
     },
     citiesChange(val){
       console.log(val)
-      console.log(this.temp)
-
     },
     resetForm(formName){
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
+      this.checkCity = []
     },
     update() {
       this.temp.timestamp = +this.temp.timestamp;
@@ -429,5 +446,20 @@ body {
 .el-tabs {
   background-color: #ffffff;
   color: #333;
+}
+.el-radio-button{
+  width: 100%;
+}
+.el-radio-button__inner{
+  width: 100%;
+  color: #ffffff;
+  border: 0px solid #bfcbd9;
+}
+.is-active .el-radio-button__inner {
+    color: #fff;
+    background-color: red !important;
+}
+.is-active .el-radio-button__inner{
+  background-color: red
 }
 </style>
