@@ -6,15 +6,16 @@
       <el-tab-pane label="保洁" name="1"></el-tab-pane>
       <el-tab-pane label="家修" name="2"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择城市">
-        <el-option v-for="item in city" :key="item.id" :label="item.areaName" :value="item.id">
+      <el-select clearable style="width: 200px" v-model="search.cityName" class="filter-item" placeholder="请选择城市">
+        <el-option v-for="item in city" :key="item.id" :label="item.areaName" :value="item.areaName">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
       </el-input>
       <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
   <div class="app-container calendar-list-container">
+    <div class="bgWhite">
     <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
 
     <el-table 
@@ -66,7 +67,7 @@
       class="diatable">
       <div class="tabBox" >
         <div class="tabLeft fl" ref="refTab">
-          <span class="tabBtn" @click="refbtn1" ref="refbtn1">保洁</span>
+          <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span>
         </div>
         <div class="tabRight fl">
@@ -88,11 +89,12 @@
       </div>
       
       <div slot="footer" class="dialog-footer"> 
-        <button class="button-large" @click="cleaning('temp')">保 存</button>    
+        <button class="button-large" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
 
+  </div>
   </div>
 </div>
 </template>
@@ -116,7 +118,6 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        importance: undefined,
         title: undefined,
         type: undefined,
         sort: "+id"
@@ -124,6 +125,10 @@ export default {
       temp: {
         name: "",
         city: []
+      },
+      search:{
+        cityName: '',
+        name: ''
       },
       rules: {
         name: [
@@ -161,29 +166,39 @@ export default {
   },
   methods: {
     refbtn1() {
-      console.log(this.$refs.refbtn1);
+      console.log(this.$refs);
+      this.$refs.refbtn1.className = 'tabBtn tabBtnclick'
+      this.$refs.refbtn2.className = 'tabBtn'
+      this.activeName = '1'
     },
     refbtn2() {
       console.log(this.$refs.refbtn2);
+      this.$refs.refbtn2.className = 'tabBtn tabBtnclick'
+      this.$refs.refbtn1.className = 'tabBtn'
+      this.activeName = '2'
     },
     getList() {
       this.listLoading = true
-      getClass().then(res => {
+      var obj = {
+        "majorSort": this.activeName
+      }
+      getClass(obj).then(res => {
         console.log(res)
         this.list = res.data.data.list;
         this.listLoading = false
         //this.total = res.data.data.count;
+      }).catch(res=>{
+        this.listLoading = false
       });
     },
     handleFilter() {
-      console.log("搜索");
-      var obj={
-
-      }
-      // getList(obj).then(res=>{
-      //   console.log(res)
-      // })
-      // this.listQuery.page = 1;
+      this.listLoading = true
+      getClass(this.search).then(res=>{
+        this.listLoading = false
+        this.list = res.data.data.list
+        this.activeName = '0'
+        this.listQuery.page = 1;
+      })    
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -212,7 +227,8 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
-    handleDelete(row) {     
+    handleDelete(row) {    
+      console.log(this.activeName) 
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -245,21 +261,9 @@ export default {
           });          
         });
     },
-    create() {
-      this.temp.id = 1;
-      this.list.unshift(this.temp);
-      this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "增加成功",
-        type: "success",
-        duration: 2000
-      });
-    },
-    cleaning(formName) {
-
+    create(formName) {
       console.log(this.temp)
-      console.log(this.temp.city)
+      //console.log(this.temp.city)
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj={
@@ -271,25 +275,13 @@ export default {
                 {
                   "cityId": "nj",
                   "cityName": "北京"
-                },
-                {
-                  "cityId": "nj",
-                  "cityName": "东京"
-                },
-                {
-                  "cityId": "nj",
-                  "cityName": "西京"
-                },
-                {
-                  "cityId": "nj",
-                  "cityName": "吃京"
-                },
+                }
               ],
-              "majorSort": "2",
+              "majorSort": this.activeName,
               "name": this.temp.name
           }
           addClass(obj).then(res=>{
-            console.log(res)
+           // console.log(this.activeName)
             if(res.data.code ===1){
                 this.dialogFormVisible = false;
                 this.getList();
@@ -299,8 +291,7 @@ export default {
                   type: "success",
                   duration: 2000
                 });
-            }else{
-              
+            }else{            
               this.$notify({
                   title: "失败",
                   message: res.data.data,
@@ -344,22 +335,7 @@ export default {
       this.temp = {};
     },
     handleClick(tab, event) {
-        var a = tab.name
-        console.log(a)
-        if(a == 0){
-          this.getList()
-        }else{
-          var obj = {majorSort:a }
-          this.listLoading = true
-          getClass(obj).then(res=>{
-             console.log(res)
-             this.list = res.data.data.list
-             this.listLoading = false
-           }
-
-         )
-        }
-        
+      this.getList()
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
@@ -410,7 +386,7 @@ body {
   padding: 20px;
 }
 .btn_pad {
-  margin: 30px 0px 10px 20px;
+  margin: 0px 0px 10px 20px;
 }
 .btn_right {
   float: right;

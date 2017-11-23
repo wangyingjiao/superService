@@ -1,6 +1,11 @@
 <template>
 <div>
   <div class="filter-container bgWhite">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="全部" name="0"></el-tab-pane>
+      <el-tab-pane label="保洁" name="1"></el-tab-pane>
+      <el-tab-pane label="家修" name="2"></el-tab-pane>
+    </el-tabs>
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="所属分类">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
@@ -12,8 +17,9 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
       </el-input>
       <button class="button-large btn_right" @click="handleFilter">搜索</button>
-    </div>
+  </div>
   <div class="app-container calendar-list-container">
+    <div class="bgWhite">
     <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
 
     <el-table 
@@ -26,29 +32,30 @@
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
-
       <el-table-column align="center" type="index" label="排序号" width="100">
       </el-table-column>
 
-      <el-table-column align="center" label="图片" >
+      <el-table-column align="center" label="图片" prop="picture">
         <template scope="scope">
-          <span><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=263865229,1163281087&fm=58"/></span>
+          <span><img :src='scope.row.picture'/></span>
         </template>
       </el-table-column>
 
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称  &nbsp; 价格单位" align="center" min-width="150" style="padding:0">
+      <el-table-column  label="商品名称         价格单位" align="center" min-width="150" style="padding:0">
         <template scope="scope">
-          <div class="branch"  v-for="(item,index) in scope.row.commoditys" :key=index>{{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}</div>
+          <div 
+             class="branch"  
+             v-for="(item,index) in scope.row.commoditys" 
+             :key="index">
+                  {{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}
+          </div>
         </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center" >
-        <template scope="scope">
-          <span class="">日常保洁</span>          
-        </template>
+      <el-table-column  label="所属分类" align="center" prop="sortName">
       </el-table-column>
 
       <el-table-column label="城市" align="center" prop="cityName">
@@ -94,7 +101,7 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <span>*</span><el-form-item label="服务图片">
+                <el-form-item label="服务图片">
                   <el-upload
                     class="upload-demo upload_box"
                     action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
@@ -184,9 +191,8 @@
                    </el-table-column>
                    <el-table-column align="center" width="100%" label="人数">
                      <template>
-                    123
-                  </template>
-
+                      123
+                     </template>
                    </el-table-column>
                 </el-table-column>
                 <el-table-column align="center" label="起购数量">
@@ -204,7 +210,6 @@
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
-<!-- //添加商品表单 -->
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -266,6 +271,8 @@
 
   </div>
 </div>
+</div>
+</div>
 </template>
 
 <script>
@@ -286,7 +293,7 @@ export default {
   data() {
     return {
       sign: getSign(),
-      list: [1, 2, 3],
+      list: [],
       total: null,
       listLoading: true,
       val: true,
@@ -338,7 +345,8 @@ export default {
       },
       tableKey: 0,
       city: city,
-      option1: option1
+      option1: option1,
+      activeName: '0'
     };
   },
   filters: {
@@ -357,7 +365,10 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      getProject()
+      var obj = {
+        "majorSort": this.activeName
+      }
+      getProject(obj)
         .then(res => {
           console.log(res.data);
           this.list = res.data.data.list;
@@ -413,88 +424,48 @@ export default {
     },
     create() {
       var obj = {
-        city: "string",
-        cityId: "string",
-        cityName: "string",
         citys: [
           {
-            cityId: "string",
-            cityName: "string"
+            cityId: "1",
+            cityName: "北京"
+          },
+          {
+            cityId: "2",
+            cityName: "山东"
           }
         ],
         commoditys: [
           {
-            convertTime: "string",
-            id: "string",
-            isNewRecord: true,
-            itemId: "string",
-            itemName: "string",
-            meterage: "string",
-            minimum: 0,
-            name: "string",
-            persons: [
+            name: "日常保洁",
+            unit: "小时",
+            meterage: "按居室",//计量方式
+            price: "19",
+            convertTime: "10",//折算时长
+            minimum: 1,//起购数量
+            persons: [//派人
               {
-                commodityId: "string",
-                commodityName: "string",
-                critical: "string",
-                id: "string",
-                isNewRecord: true,
-                quantity: 0,
-                remarks: "string"
+                critical: ">10",
+                quantity: 1
               },
               {
-                commodityId: "string",
-                commodityName: "string",
-                critical: "string",
-                id: "string",
-                isNewRecord: true,
-                quantity: 0,
-                remarks: "string"
+                critical: ">20",
+                quantity: 2
               }
-            ],
-            price: "string",
-            remarks: "string",
-            unit: "string"
-          },
-          {
-            convertTime: "string",
-            id: "string",
-            isNewRecord: true,
-            itemId: "string",
-            itemName: "string",
-            meterage: "string",
-            minimum: 0,
-            name: "string",
-            persons: [
-              {
-                commodityId: "string",
-                commodityName: "string",
-                critical: "string",
-                id: "string",
-                isNewRecord: true,
-                quantity: 0,
-                remarks: "string"
-              }
-            ],
-            price: "string",
-            remarks: "string",
-            unit: "string"
+            ]
           }
         ],
-        description: "string",
-        id: "string",
-        isNewRecord: true,
-        majorSort: "1", //保洁or家修
-        name: "string",
-        officeId: "string",
-        officeName: "string",
-        picture: "string",
-        remarks: "string",
-        sale: "string",
-        sortId: "string", //所属分类编号
-        sortName: "string", //所属分类名
-        sortNum: 0 //排序号
-      };
+        majorSort: "1",
+        sortId: "00ea9c6db7f242c49eb40b43b38ad7b7",
+        sortName: "日常保洁",//所属分类
+        name: "保洁家修1",//项目名称（验重）
+        picture: "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
+        description: "服务描述测试",
+        sale: "1",//是否上架
+        sortNum: 1//排序号
+      }
+      addProject(obj).then(res=>{
+        console.log(res)
+      })
     },
     update() {
       this.temp.timestamp = +this.temp.timestamp;
@@ -512,6 +483,9 @@ export default {
         type: "success",
         duration: 2000
       });
+    },
+    handleClick(tab, event) {
+      this.getList()
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -573,7 +547,7 @@ body {
   padding: 20px;
 }
 .btn_pad {
-  margin: 30px 0px 10px 20px;
+  margin: 0px 0px 10px 20px;
 }
 .btn_right {
   float: right;

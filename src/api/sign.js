@@ -5,7 +5,7 @@ const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 
 })
-// 获取机构
+// 获取签名
 export function getSign() {
   var sign= {}
   if (Cookies.get('sign')) {

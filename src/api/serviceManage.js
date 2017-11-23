@@ -11,8 +11,8 @@ export function getCity() {
 export function getClass(obj) {
   return instance.post(`/api/a/service/sort/serSortInfo/listData`, obj)
 }
-export function getProject() {
-  return instance.get(`/api/a/service/item/serItemInfo/listData`)
+export function getProject(obj) {
+  return instance.post(`/api/a/service/item/serItemInfo/listData`, obj)
 }
 export function getSkill() {
   return instance.get(`/api/a/service/skill/serSkillInfo/listData`)

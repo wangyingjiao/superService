@@ -7,6 +7,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="">
+      <div class="bgWhite">
     <button class="button-small btn_right btn_pad"  @click="handleCreate"> 新增</button>
     <el-table 
     :key='tableKey' 
@@ -18,10 +19,7 @@
     element-loading-text="正在加载" 
     style="width: 100%" >
 
-      <el-table-column align="center" label="编号" >
-        <template scope="scope">
-          <span>{{scope.index}}</span>
-        </template>
+      <el-table-column align="center" label="编号" type="index" width= "100">
       </el-table-column>
 
       <el-table-column  label="技能名称" align="center" >
@@ -71,6 +69,7 @@
       </div>
     </el-dialog>
 
+  </div>
   </div>
   </div>
 </template>
@@ -259,7 +258,7 @@ body{
     padding: 20px
 }
 .btn_pad{
-    margin:30px 0px 10px 20px;
+    margin:0px 0px 10px 20px;
 }
 .btn_right{
   float:right;

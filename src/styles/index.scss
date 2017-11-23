@@ -253,3 +253,10 @@ a:hover {
   background-repeat: no-repeat;
   background-position: center center; 
 }
+.el-table td, .el-table th {
+  height: 60px;
+  min-width: 0;
+  min-height: 60px;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
