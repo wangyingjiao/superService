@@ -1,12 +1,12 @@
 <template>
-    <div class="addorder-container" style="margin-top: 20px;">
+    <div class="addorder-container">
 		<div class="fist-bar">
 		  <span class="custom-action">选择客户</span>
 		  <el-select clearable style="width:280px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
 			<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
 			</el-option>
 		  </el-select>	  
-		  <button class="button-large" @click="addcustomer">新增</button>
+		  <button class="button-large" @click="handleFilter">新增</button>
 		</div>
 		<div class="second-bar">
 			<div class="custom-inf">
@@ -218,7 +218,7 @@ export default {
 			if (!value) {
 			  return callback(new Error('电话号码不能为空'));
 			}else{
-				if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
+				if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(value))) {
 				  callback(new Error('电话号码不正确！请重新填写'));
 				} else {
 				  callback();
@@ -355,8 +355,7 @@ export default {
   },
   methods:{ 
     //搜索按钮
-    addcustomer() {
-			alert(this.$route.query.coustomerId)
+    handleFilter() {
     },
 	//更换地址按钮
 	changeAddress(){
@@ -460,6 +459,7 @@ export default {
     width:100%;
 	float:left;
 	background:#eef1f6;
+	margin-top: 20px;
 	.fist-bar{
 	  padding-top:20px;
 	  padding-bottom:20px;

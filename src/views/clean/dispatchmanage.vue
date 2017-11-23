@@ -236,6 +236,7 @@ width:140px;margin-left:-20px;text-align:center;height:49px;line-height:49px;bor
     width:100%;
 	float:left;
 	background:#eef1f6;
+	margin-top: 20px;
 }
 .fist-bar{
   padding-top:20px;

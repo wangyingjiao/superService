@@ -85,6 +85,17 @@ export const constantRouterMap = [
     { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
     ]
   },
+  {
+    path: '/customer',
+    component: Layout,
+    redirect: 'base',
+    name: '客户管理',
+    children: [
+    { path: 'customermanage', name: '客户管理', component: _import('customer/customermanage') },
+    { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') },
+    ]
+  },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
 
