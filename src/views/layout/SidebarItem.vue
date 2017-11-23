@@ -23,10 +23,10 @@
           <span>员工管理</span>
         </template>
         <router-link to="/sys/user/index">
-          <el-menu-item index="1-1">员工列表</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-1">员工列表</el-menu-item>
         </router-link>
         <router-link to="/sys/role/list">
-          <el-menu-item index="1-2">岗位设置</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-2">岗位设置</el-menu-item>
         </router-link>      
               
         
@@ -41,10 +41,10 @@
         </template>     
         
         <router-link to="/base/mechanism">
-          <el-menu-item index="2-1">服务机构</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="2-1">服务机构</el-menu-item>
         </router-link>
         <router-link to="/base/site">
-          <el-menu-item index="2-2">服务站</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="2-2">服务站</el-menu-item>
         </router-link>
       </el-submenu>
 
@@ -56,10 +56,10 @@
           <span>服务技师管理</span>
         </template>  
          <router-link to="/technician/techni">
-          <el-menu-item index="1-5">技师管理</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">技师管理</el-menu-item>
         </router-link>    
         <router-link to="/technician/holiday">
-          <el-menu-item index="1-5">休假管理</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">休假管理</el-menu-item>
         </router-link> 
       </el-submenu>
 
@@ -71,13 +71,13 @@
           <span>服务管理</span>
         </template>     
         <router-link to="/service/class">
-          <el-menu-item index="1-5">服务分类</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">服务分类</el-menu-item>
         </router-link>
         <router-link to="/service/project">
-          <el-menu-item index="1-5">服务项目</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">服务项目</el-menu-item>
         </router-link>
         <router-link to="/service/skill">
-          <el-menu-item index="1-5">技能管理</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">技能管理</el-menu-item>
         </router-link> 
       </el-submenu>
       <el-submenu index="5">
@@ -88,16 +88,16 @@
           <span>保洁订单</span>
         </template>     
         <router-link to="/clean/ordermanage">
-          <el-menu-item index="1-5">订单管理</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">订单管理</el-menu-item>
         </router-link>
         <router-link to="/clean/addorder">
-          <el-menu-item index="1-5">新增订单</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">新增订单</el-menu-item>
         </router-link>
         <router-link to="/clean/dispatchmanage">
-          <el-menu-item index="1-5">派单管理</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">派单管理</el-menu-item>
         </router-link>
         <router-link to="/clean/returnvisit">
-          <el-menu-item index="1-5">回访记录</el-menu-item>
+          <el-menu-item style="padding-left:60px" index="1-5">回访记录</el-menu-item>
         </router-link>		
       </el-submenu>
       <el-submenu index="6">
@@ -151,6 +151,5 @@ export default {
 .side-img{
   margin-bottom: 5px;
 }
-
 </style>
 

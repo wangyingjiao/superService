@@ -5,11 +5,14 @@ const instance = axios.create({
 
 })
 
-export function getClass() {
-  return instance.get(`/api/a/service/sort/serSortInfo/listData`)
+export function getCity() {
+  return instance.get(`/api/a/service/sort/serSortInfo/getOfficeCitylist`)
 }
-export function getProject() {
-  return instance.get(`/api/a/service/item/serItemInfo/listData`)
+export function getClass(obj) {
+  return instance.post(`/api/a/service/sort/serSortInfo/listData`, obj)
+}
+export function getProject(obj) {
+  return instance.post(`/api/a/service/item/serItemInfo/listData`, obj)
 }
 export function getSkill() {
   return instance.get(`/api/a/service/skill/serSkillInfo/listData`)
@@ -19,4 +22,7 @@ export function addClass(obj) {
 }
 export function addProject(obj) {
   return instance.post(`/api/a/service/item/serItemInfo/saveData`, obj)
+}
+export function delClass(obj) {
+  return instance.post(`/api/a/service/sort/serSortInfo/deleteSortInfo`, obj)
 }

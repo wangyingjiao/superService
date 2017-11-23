@@ -11,7 +11,7 @@
       <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
   <div class="app-container calendar-list-container">
-    
+    <div class="bgWhite">
     <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
     <el-table 
       :key='tableKey' 
@@ -197,6 +197,7 @@
 
     
 
+  </div>
   </div>
 </div>
 </template>
@@ -566,7 +567,7 @@ body{
     padding: 20px
 }
 .btn_pad{
-    margin:30px 0px 10px 20px;
+    margin:0px 0px 10px 20px;
 }
 .btn_right{
   float:right;

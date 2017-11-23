@@ -2,20 +2,22 @@
   <div class="tech">
     <div class="tech-index">
       <div>
-      <el-select v-model="servers" clearable placeholder="选择服务站">
-        <el-option v-for="item in server" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select v-model="stations" clearable placeholder="岗位性质" style="margin-left:40px;">
-        <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-select v-model="chooses" clearable placeholder="请选择" style="margin-left:40px;">
-        <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-      <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
+        <el-select v-model="servers" clearable placeholder="选择服务站">
+          <el-option v-for="item in server" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="stations" clearable placeholder="岗位性质" style="margin-left:40px;">
+          <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="chooses" clearable placeholder="请选择" style="margin-left:40px;">
+          <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
+        <button class="tech-btn" @click="order">选择技能</button>
       </div>
+     
       <div><button class="button-large">搜索</button></div>
     </div>
     <div class="tech-section">
@@ -24,7 +26,7 @@
       </div>
       <ul class="tech-section-ul">
         <li v-for="(item,$index) in infoname" @mousemove="mouser(item)" @mouseout="mousout(item)">
-         <div class="tech-xiu-div">
+          <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
               <div style="width:89px;height:89px;background:red;display:inline-block;border-radius:50%;"></div>
               <div style="margin-top:10px;">
@@ -37,92 +39,92 @@
               </div>
             </div>
             <div class="tech-xiu-div-two">
-               <h4>{{item.name}}</h4> 
-               <div>
-                  <span></span>
-                  <span>国安社区</span>
-               </div>
-               <div>
-                  <span></span>
-                  <span>呼家楼</span>
-               </div>
-                <div>
-                  <span></span>
-                  <span>3年</span>
-               </div>
-               <div>
-                  <span></span>
-                  <span>15660061199</span>
-               </div>
+              <h4>{{item.name}}</h4>
+              <div>
+                <span></span>
+                <span>国安社区</span>
+              </div>
+              <div>
+                <span></span>
+                <span>呼家楼</span>
+              </div>
+              <div>
+                <span></span>
+                <span>3年</span>
+              </div>
+              <div>
+                <span></span>
+                <span>15660061199</span>
+              </div>
             </div>
-         </div>
+          </div>
 
           <!-- 鼠标移入 -->
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-             <div style="margin-right:20px;" @click="flags = true">
-                <img src="../../../static/icon/休1.png" alt="">
-               <!-- <button>休假</button> -->
-              </div>
-             <div>
-               <img src="../../../static/icon/编辑1.png" alt="">
-             </div>
-             <div style="margin-left:20px;">
-               <img src="../../../static/icon/删除1.png" alt="">
-             </div>
+            <div style="margin-right:20px;" @click="flags = true">
+              <img src="../../../static/icon/休1.png" alt="">
+              <!-- <button>休假</button> -->
+            </div>
+            <div>
+              <img src="../../../static/icon/编辑1.png" alt="">
+            </div>
+            <div style="margin-left:20px;">
+              <img src="../../../static/icon/删除1.png" alt="">
+            </div>
           </div>
         </li>
       </ul>
 
       <!-- 休息弹出层 -->
-       <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
-         <ul class="tech-section-xiu">
-           <li>
-             <div>姓名</div>
-             <div>李阿姨</div>
-           </li>
-           <li>
-             <div><span>*</span>开始时间</div>
-             <div style="display:flex">
-               <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-                </el-date-picker>
-                <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
+      <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
+        <ul class="tech-section-xiu">
+          <li>
+            <div>姓名</div>
+            <div>李阿姨</div>
+          </li>
+          <li>
+            <div><span>*</span>开始时间</div>
+            <div style="display:flex">
+              <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+              </el-date-picker>
+              <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
                           start: '00:00',
                           step: '00:30',
                           end: '24:00'
                         }">
-                </el-time-select>
-             </div>
-           </li>
-           <li>
-             <div><span>*</span>结束时间</div>
-             <div style="display:flex">
-               <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-                </el-date-picker>
-                <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
+              </el-time-select>
+            </div>
+          </li>
+          <li>
+            <div><span>*</span>结束时间</div>
+            <div style="display:flex">
+              <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+              </el-date-picker>
+              <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
                           start: '00:00',
                           step: '00:30',
                           end: '24:00',
                           minTime: startTimes
                         }">
-                </el-time-select>
-             </div>
-           </li>
-           <li>
-             <div>备注</div>
-             <div>
-               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
-                </el-input>
-             </div>
-           </li>
-           <li>
-             <div style="display:flex;justify-content: center;width:100%">
-               <button class="button-large" style="margin-right:10px;">保存</button>
-               <button class="button-cancel">取消</button>
-             </div>
-           </li>
-           
-         </ul>
-       </el-dialog>  
+              </el-time-select>
+            </div>
+          </li>
+          <li>
+            <div>备注</div>
+            <div>
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
+              </el-input>
+            </div>
+          </li>
+          <li>
+            <div style="display:flex;justify-content: center;width:100%">
+              <button class="button-large" style="margin-right:10px;">保存</button>
+              <button class="button-cancel">取消</button>
+            </div>
+          </li>
+
+        </ul>
+      </el-dialog>
       <!-- 选择技能 -->
       <div class="tech-psoition" v-show="position">
 
@@ -158,13 +160,13 @@
             <div>
               <p><span class="tech-span">*</span>姓名:</p>
               <p>
-                <el-input placeholder="请输入2~15位姓名" style="width:300px"></el-input>
+                <el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="techName"></el-input>
               </p>
             </div>
             <div>
               <p><span class="tech-span">*</span>身份证号:</p>
               <p>
-                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+                <el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="techldCard"></el-input>
               </p>
             </div>
           </li>
@@ -172,13 +174,16 @@
             <div>
               <p><span class="tech-span">*</span>手机号:</p>
               <p>
-                <el-input placeholder="请输入11为手机号" style="width:300px"></el-input>
+                <el-input placeholder="请输入11为手机号" style="width:300px" v-model="techPhone"></el-input>
               </p>
             </div>
             <div>
               <p><span class="tech-span">*</span>现住地址:</p>
               <p>
-                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+                <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in areas" :key="item.value" :label="item.name" :value="item.value">
+                  </el-option>
+                </el-select>
               </p>
             </div>
           </li>
@@ -187,7 +192,7 @@
               <p><span class="tech-span">*</span>性别:</p>
               <p>
                 <el-select v-model="sexs" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in sex" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="(item,$index) in sex" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </p>
@@ -203,13 +208,16 @@
             <div>
               <p><span class="tech-span">*</span>民族:</p>
               <p>
-                <el-input placeholder="请输入11为手机号" style="width:300px"></el-input>
+                <el-select v-model="ethnic" clearable placeholder="请选择" style="width:300px">
+                  <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
               </p>
             </div>
             <div>
               <p><span class="tech-span">*</span>出生日期:</p>
               <p>
-                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px">
+                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange" format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
               </p>
             </div>
@@ -236,7 +244,7 @@
             <div>
               <p></p>
               <p>
-                <button class="button-large-fourth">保存并创建</button>
+                <button class="button-large-fourth" @click="create()">保存并创建</button>
               </p>
             </div>
           </li>
@@ -682,6 +690,12 @@
   </div>
 </template>
 <script>
+  import {
+    addTech,
+    getTech,
+    getArea
+  } from "@/api/tech";
+
   export default {
     data() {
       return {
@@ -702,28 +716,28 @@
           label: '北京烤鸭'
         }],
 
-         infoname: [{
+        infoname: [{
           value: '选项1',
           name: '李阿姨',
-          addres:'国安社区',
-          year:'3年',
-          phone:'17188996644',
-          ismouse:false,
-        },{
+          addres: '国安社区',
+          year: '3年',
+          phone: '17188996644',
+          ismouse: false,
+        }, {
           value: '选项1',
           name: '王阿姨',
-          addres:'国安社区',
-          year:'3年',
-          phone:'17188996644',
-          ismouse:false,
-        },{
+          addres: '国安社区',
+          year: '3年',
+          phone: '17188996644',
+          ismouse: false,
+        }, {
           value: '选项1',
           name: '赵阿姨',
-          addres:'国安社区',
-          year:'3年',
-          phone:'17188996644',
-          ismouse:false,
-        } ],
+          addres: '国安社区',
+          year: '3年',
+          phone: '17188996644',
+          ismouse: false,
+        }],
 
         servery: [{
           value: '选项1',
@@ -778,13 +792,14 @@
         }],
 
         sex: [{
-          value: '选项1',
+          value: '1',
           label: '男'
         }, {
-          value: '选项2',
+          value: '2',
           label: '女'
         }],
-
+        ethnics: [],
+        areas: [],
         statu: [{
           value: '选项1',
           label: '在职'
@@ -1110,7 +1125,7 @@
         key: false,
         isA: false,
         isB: false,
-        isTab:false,
+        isTab: false,
         sexLen: '',
         binds: '',
         flagso: false,
@@ -1124,12 +1139,14 @@
         servers1: '',
         stationes: '',
         catys: '',
+        area: '',
         places: '',
         marriages: '',
         strongs: '',
         heights: '',
         educations: '',
         sexs: '',
+        ethnic: '',
         servers: '',
         stations: '',
         chooses: '',
@@ -1142,6 +1159,9 @@
         endTime: '',
         startTimes: '',
         endTimes: '',
+        techName: '',
+        techldCard: '',
+        techPhone: '',
         position: false,
         listLoading: false,
         list: [1, 2, 3],
@@ -1211,15 +1231,47 @@
       addtimeno() {
         this.isB = false;
       },
-      mouser(item){
-        item.ismouse=true;
+      mouser(item) {
+        item.ismouse = true;
       },
-      mousout(item){
-        item.ismouse=false;
+      mousout(item) {
+        item.ismouse = false;
       },
-      savrTable(){
-        this.isTab=true;
+      savrTable() {
+        this.isTab = true;
+      },
+      dateChange(val){
+         this.value1=val;
+      },
+      create() {
+        var time =String(this.value1);
+        var obj = {
+          'techName': this.techName,
+          'techldCard': this.techldCard,
+          'techPhone': this.techPhone,
+          'techSex': this.sexs,
+          'techNation':this.ethnic,
+          'techBirthDate': this.value1
+        }
+        addTech(obj).then(res =>{
+          console.log(res)
+        })
+        this.techName = '',
+          console.log(obj),
+          console.log(time)
+          // console.log(d)
       }
+    },
+    mounted() {
+      getTech().then(res => {
+        // console.log(res)  
+        this.ethnics = res.data;
+      });
+      getArea().then(res => {
+        // console.log(res)  
+        this.areas = res.data.data;
+        // console.log(this.areas)
+      });
     }
   }
 
@@ -1294,10 +1346,10 @@
     position: relative;
   }
 
-  .tech-section-ul-posi{
+  .tech-section-ul-posi {
     position: absolute;
     top: 0;
-    left:0 ;
+    left: 0;
     width: 100%;
     height: 200px;
     background: rgba(0, 0, 0, 0.6);
@@ -1614,54 +1666,57 @@
     cursor: pointer;
   }
 
-  .tech-daytim{
+  .tech-daytim {
     margin-left: 2px;
   }
 
-  .tech-section-lages{
+  .tech-section-lages {
     width: 45%;
     left: 5%;
   }
 
-  .tech-section-xiu{
+  .tech-section-xiu {
     padding: 10px 30px;
   }
 
-  .tech-section-xiu>li{
+  .tech-section-xiu>li {
     display: flex;
     padding: 10px;
   }
-  .tech-section-xiu>li>div:nth-of-type(1){
+
+  .tech-section-xiu>li>div:nth-of-type(1) {
     width: 120px;
     height: 35px;
     line-height: 35px;
   }
 
-   .tech-section-xiu>li>d
-   iv:nth-of-type(2){
-     line-height: 35px;
-   }
+  .tech-section-xiu>li>d iv:nth-of-type(2) {
+    line-height: 35px;
+  }
 
-   .tech-xiu-div{
-     width:100%;
-     height:100%;
-     padding:20px 40px;
-     display: flex;
-     justify-content: space-between;
-   }
+  .tech-xiu-div {
+    width: 100%;
+    height: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-   .tech-xiu-div-one{
-     width: 50%;
-     text-align: center;
-     /* display: flex;
+  .tech-xiu-div-one {
+    width: 50%;
+    text-align: center;
+    /* display: flex;
      justify-content: center; */
-   }
-   .tech-xiu-div-two{
-     margin:10px 0; 
-     width: 50%;
-     /* text-align: center; */
-   }
-   .tech-xiu-div-two>div{
-     margin-top: 14px;
-   }
+  }
+
+  .tech-xiu-div-two {
+    margin: 10px 0;
+    width: 50%;
+    /* text-align: center; */
+  }
+
+  .tech-xiu-div-two>div {
+    margin-top: 14px;
+  }
+
 </style>
