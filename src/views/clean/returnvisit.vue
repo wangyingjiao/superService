@@ -81,7 +81,7 @@ export default {
 	    alert(this.dotarr);
 	},
 	draw(){
-	   this.$router.push({path:'/clean/orderinfo'})
+	   
 			
     },
     clearAll() {  

@@ -1,12 +1,12 @@
 <template>
   <div class='tabs-view-container'>
-    <div style="display:inline-block; float:left;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;margin-top:30px;margin-left:-20px;font-size:25px;color:gray;" @click="leftmove"><</div>
+    <div class="leftmove" @click="leftmove"><</div>
     <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path">
       <el-tag :closable="true" :type="isActive(tag.path)?'primary':''" @close='closeViewTabs(tag,$event)'>
         {{tag.name}}
       </el-tag>
     </router-link>	
-	<div style="display:inline-block;float:right;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;font-size:25px;margin-top:30px;color:gray;margin-right:20px;" @click="rightmove">></div>
+	<div class="rightmove"  @click="rightmove">></div>
   </div>
   
 </template>
@@ -101,9 +101,17 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .tabs-view-container {
     display: inline-block;
-	width:100%;
+    height:28px;
+    line-height:28px;
+  	width:100%;
     vertical-align: top;
     margin-left: 10px;
+    .leftmove{
+        display:inline-block; float:left;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;margin-left:-10px;font-size:25px;color:gray;
+    }
+    .rightmove{
+        display:inline-block;float:right;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;font-size:25px;color:gray;margin-right:20px;
+    }
     .tabs-view {
 	  float:left;
       margin-left: 10px;

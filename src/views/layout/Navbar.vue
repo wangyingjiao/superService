@@ -1,6 +1,5 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
-    <div style="width:100%;float:left;background:#fff;">
+  <el-menu class="navbar" mode="horizontal" style="background:#fff;">
 		<hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
 		<el-dropdown class="avatar-container" trigger="click">
 		  <div class="avatar-wrapper">
@@ -15,11 +14,8 @@
 			</router-link>
 			<el-dropdown-item divided><span @click="logout" style="display:block;">LogOut</span></el-dropdown-item>
 		  </el-dropdown-menu>
-		</el-dropdown>	
-	</div>
-	<div style="width:100%;float:left;height:28px;line-height:28px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;">
-	</div>
-	<tabs-view style="position:relative;margin-top:-59px;margin-left:20px;"></tabs-view>
+		</el-dropdown>
+    <tabs-view style="border-top:2px solid #eef1f6"></tabs-view>		
   </el-menu>
 	
 	
@@ -60,7 +56,6 @@ export default {
         height: 88px;
         line-height: 88px;
         border-radius: 0px !important;
-	    	margin-bottom:20px;
 	    	background:#eef1f6;
         .hamburger-container {
             line-height: 50px;
