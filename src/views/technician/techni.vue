@@ -1276,7 +1276,7 @@
   }
 
 </script>
-<style>
+<style >
   * {
     list-style: none;
     margin: 0;
@@ -1373,10 +1373,10 @@
     padding: 20px;
   }
 
-  .el-dialog__body {
+  /* .el-dialog__body {
     margin: 0;
     padding: 0;
-  }
+  } */
 
   .tech-tc-prson {
     margin: 10px 20px;
