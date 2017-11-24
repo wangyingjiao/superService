@@ -75,8 +75,10 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-          </el-button>
+          <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                <div class="back-icon-del"></div>
+                <div>删除</div>
+          </div>
         </template>
       </el-table-column>
 
