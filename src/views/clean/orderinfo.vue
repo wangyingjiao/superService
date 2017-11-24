@@ -415,7 +415,7 @@ export default {
 }
 .leftArea{width:320px;float:left;}
 .rightArea{width:320px;float:left;margin-left:50px;}
-.contentLine{margin-left:30px;font-size:12px;}
+.contentLine{margin: 20px 0 20px 30px;;font-size:12px;}
 .lineTitle{display:inline-block;width:80px;}
 .lineContent{display:inline-block;margin-left:20px;width:170px;}
 </style>
