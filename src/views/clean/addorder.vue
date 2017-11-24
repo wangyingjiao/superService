@@ -46,7 +46,7 @@
 				<div class="changeserver">
 					<div v-if="serverType==1">
 						<span>面积:</span>
-						<span  style="padding-left:76px;">				
+						<span  style="padding-left:80px;">				
 							<el-input  style="width: 180px;" class="filter-item" placeholder="请输入搜索内容" v-model="customPhone">
 							</el-input>
 							<span style="display:inline-block;width:36px;line-height:36px;text-align:center;height:36px;background:#eef1f6;position:absolute;border:1px solid #bfcbd9;border-left:none;">平米</span>							
@@ -66,7 +66,7 @@
 						    <span @click="bigplus(bigLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:96px;border-left:none;height:36px;line-height:36px;font-size:20px;">+</span>							
 						</div>
 					</div>
-					<div style="margin-left:88px;" v-if="serverType==3">
+					<div style="margin-left:98px;" v-if="serverType==3">
 						<div class="selfCheckBox" ref="selcetOption" @click="roomSel($index,item)" v-for="(item,$index) in roomType">
 							{{item.roomName}}
 							<div v-if="roomLen==item.key" class="triangle-bottomright"></div>
@@ -112,11 +112,23 @@
 				</div>
 				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>服务时间:
 					<span class="customNamevalue" style="padding-left:48px;">
-							<el-date-picker
-							  v-model="severTime"
-							  type="datetime"
-							  placeholder="年/月/日">
-							</el-date-picker>
+                    <el-date-picker
+                      v-model="severTime"                      
+                      placeholder="年-月-日"                     
+                      :type="select"
+                      style="display:inline-block;width:250px;"
+                      >
+                    </el-date-picker>
+                    <el-time-select
+                      v-model="severTime1"
+                      style="display:inline-block;width:150px;margin-left:-5px;"
+                      :picker-options="{
+                        start: '08:30',
+                        step: '00:30',
+                        end: '12:30'
+                      }"
+                      placeholder="选择时间">
+                    </el-time-select>
 					</span>
 				</div>
 				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>订单来源:
@@ -135,7 +147,7 @@
 						  :rows="3"
 						  placeholder="请输入内容"
 						  v-model="textarea"
-						  style="width:400px;margin-left:-20px;"
+						  style="width:400px;margin-left:-10px;"
 						  >
 						</el-input>
 					</span>
@@ -234,7 +246,8 @@ export default {
         customPhone1:{
 			phone:'',
 			customName:'李四'
-		},		
+		},
+		select:'date',		
 		//客户下拉选项
 		customOptions:[
 		  { key: "1", customName: "日常保洁" },
@@ -297,6 +310,7 @@ export default {
 		stationName:'',
 		//服务时间
 		severTime:'',
+		severTime1:'',
 		//弹窗表格数据
 		technicianData:[{
           headUrl: 'headurl',

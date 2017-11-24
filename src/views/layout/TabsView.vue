@@ -1,12 +1,12 @@
 <template>
   <div class='tabs-view-container'>
-    <div class="leftmove" @click="leftmove"><</div>
+    <div class="leftmove" @click="leftmove">&#139</div>
     <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path">
       <el-tag :closable="true" :type="isActive(tag.path)?'primary':''" @close='closeViewTabs(tag,$event)'>
         {{tag.name}}
       </el-tag>
     </router-link>	
-	<div class="rightmove"  @click="rightmove">></div>
+	<div class="rightmove"  @click="rightmove">&#155</div>
   </div>
   
 </template>

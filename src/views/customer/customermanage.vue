@@ -1,20 +1,21 @@
 <template>
     <div class="addorder-container">
 		<div class="fist-bar">
-		  <el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的手机号" v-model="customerPhone"></el-input>
-			<el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的姓名" v-model="customerName"></el-input>
+		  <el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
+			<el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的姓名" v-model="customName"></el-input>
 		  <el-select clearable style="width:200px;margin-left:30px;" class="filter-item" v-model="organizationName" placeholder="请选择">
-				<el-option v-for="item in organizationOptions" :key="item.key" :label="item.organizationName" :value="item.key">
+				<el-option v-for="item in organizationOptions" :key="item.officeId" :label="item.officeName" :value="item.officeId">
 				</el-option>
 		  </el-select>
       		  
-		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch">搜索</button>
+		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch">搜&nbsp&nbsp&nbsp&nbsp索</button>
 		</div>
 		<div class="second-bar" style="height:500px;">
-		  <button type="button" class="button-small" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新增</button>
-			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px;">			      
+		  <button type="button" class="button-small" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp增</button>
+			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px 60px 20px;">			      
 				    <el-table
 					  :data="tableData"
+						v-loading="listLoading"
 					  border
 					  style="width:100%;">
 					  <el-table-column
@@ -25,40 +26,45 @@
 					  </el-table-column>
 					  <el-table-column
 					    align="center"
-						prop="name"
+						prop="customName"
 						label="姓名"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="phone"
+						prop="customPhone"
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="sex"
+						prop="customSex"
 						label="性别">
+						    <template scope="scope">
+						    		<span v-if="scope.row.customSex =='1'">男</span>
+										<span v-if="scope.row.customSex =='2'">女</span>
+								</template>						
 					  </el-table-column>
+
 					  <el-table-column
 						align="center"
-						prop="organization"
+						prop="officeName"
 						label="服务机构">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="address"
+						prop="customAddr"
 						label="地址">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
 						label="操作">
 										<template scope="scope">
-												<button type="button" @click="lookInf(scope.row)">查看</button>
-												<button type="button" @click="Delete(scope.row)">删除</button>
+												<button type="button"  @click="lookInf(scope.row)"><i class="el-icon-document"></i></button>
+												<button type="button" @click="Delete(scope.row)"><i class="el-icon-delete"></i></button>
 										</template>
 					  </el-table-column>					  
 					</el-table>
-					<div  style="margin-top:20px;">
+					<div  style="margin-top:20px;float:right;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
 						:page-sizes="[10,20,30, 50]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
@@ -66,10 +72,10 @@
 			</div>
 		</div>
 		<!--新增客户弹窗-->
-		<el-dialog title="新增客户" :visible.sync="dialogTableVisible">	
+		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left" class="demo-ruleForm">
-					<el-form-item label="姓名:" prop="name" >
-						<el-input v-model="ruleForm.name" placeholder="请输入客户姓名" style="width:400px;"></el-input>
+					<el-form-item label="姓名:" prop="customName" >
+						<el-input v-model="ruleForm.customName" placeholder="请输入客户姓名" style="width:400px;"></el-input>
 					</el-form-item>
 					<el-form-item label="性别:" required>
 							<el-select clearable style="width:400px;" class="filter-item" v-model="sexName" placeholder="请选择性别">
@@ -77,8 +83,8 @@
 									</el-option>
 							</el-select>
 					</el-form-item>
-					<el-form-item label="手机号:"  prop="phone">
-                <el-input  v-model="ruleForm.phone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
+					<el-form-item label="手机号:"  prop="customPhone">
+                <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" required>
 							<el-select clearable style="width:130px;" class="filter-item" v-model="province" placeholder="请选择省">
@@ -94,23 +100,23 @@
 										</el-option>
 							</el-select>
 					</el-form-item>
-					<el-form-item label="详细地址:" prop="desc">
-						<el-input  v-model="ruleForm.desc" style="width:400px;" placeholder="请输入详细地址"></el-input>
+					<el-form-item label="详细地址:" prop="customAddr">
+						<el-input  v-model="ruleForm.customAddr" style="width:400px;" placeholder="请输入详细地址"></el-input>
 					</el-form-item>
-					<el-form-item label="邮箱:" prop="email" style="margin-left:10px;">
-						<el-input  v-model="ruleForm.email" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
+					<el-form-item label="邮箱:" prop="customEmail" style="margin-left:10px;">
+						<el-input  v-model="ruleForm.customEmail" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
 				</el-form>		    
 				<div slot="footer" class="dialog-footer">
 						<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
-						<button class="button-cancel" @click="cancel">取 消</button>
+						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
 		</el-dialog>
   </div>
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import { getCusTable,deleteCus,saveCus} from "@/api/customer";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -125,30 +131,41 @@ export default {
 						callback();
 					}
 				}
-		}; 		
+		};
+		var checkEmail = (rule, value, callback) => {
+					if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
+						callback(new Error('请输入正确的邮箱'));
+					} else {
+						callback();
+					}
+		}; 		 		
     return {
+			  listLoading:true,
         ruleForm: {
-          name: '',
-          phone:'',
-          email: '',
-          desc: ''
-        },
+					customName:'',
+					customPhone:'',
+					customAddr:'',
+					customEmail:'',
+					customSex:''
+				},
         rules: {
-          name: [
+          customName: [
             { required: true, message: '请输入客户姓名', trigger: 'blur' },
             { min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
           ],
-          phone: [
+          customPhone: [
             { required: true,validator: checkPhone, trigger: 'blur' }
 										
           ],
-          desc: [
+          customAddr: [
             { required: true, message: '详细地址不能为空', trigger: 'blur' },
 						{ min:6, max: 100, message: '长度在 6 到 100 个字符', trigger: 'blur' }
-          ]
+					],
+					customEmail:[
+						{ validator: checkEmail, trigger: 'blur' }
+					]
         },
 		sex:[
-		  { key: "0", sexName: "请选择" },
 		  { key: "1", sexName: "男" },
 		  { key: "2", sexName: "女" }
 		],
@@ -174,52 +191,58 @@ export default {
 		  { key: "3", countyName: "西城区" }
 		],
 		county:'',								
-      tableData: [{
-            phone: '13800138000',
-            name: '王小虎',
-            address:'北京市朝阳区常营中路保利嘉园',
-						organization:'国安社区',
-						sex:'男',
-          }, {
-            phone: '13800138001',
-            name: '王小红',
-            address:'北京市朝阳区常营中路保利嘉园',
-						organization:'国安社区',
-						sex:'女',
-          }],	
+      tableData: [],	
 		//全局搜索下拉选项
-		organizationOptions:[
-		  { key: "1", organizationName: "请选择" },
-		  { key: "2", organizationName: "服务机构1" },
-		  { key: "3", organizationName: "服务机构2" },
-		  { key: "4", organizationName: "服务机构3" }
-		],
+		organizationOptions:[],
 		organizationName:'',//服务机构				
 		dialogTableVisible:false,//新增弹窗开关
-		customerName:'',//客户姓名
-		customerPhone:'',//客户电话
-		pagetotal1:100,//表格总页数
-		pageSize1:10,//表格每页条数		
+		customName:'',//客户姓名
+		customPhone:'',//客户电话
+		pagetotal1:1,//表格总页数
+		pageSize1:2,//表格每页条数		
     };
   },
   methods:{
 		submitForm(formName) {
         this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            this.$refs['ruleForm'].resetFields();
+          if (valid) {						
+						this.ruleForm.customSex=this.sexName						
+						var obj = this.ruleForm
+						saveCus(obj).then(res => {
+							if(res.data.code === 1){
+									this.$message({
+										type: 'success',
+										message: '新增成功!'
+									});
+									this.$refs['ruleForm'].resetFields();
+									this.dialogTableVisible = false
+									this.getData();
+							}else{
+								this.$message({
+										type: 'warning',
+										message: '新增失败'
+									});
+							}													
+						}).catch(res=>{
+							
+						});							
+          } else {            
             return false;
           }
-        });
-				this.dialogTableVisible = false
-      },
-			cancel(){
-				this.$refs['ruleForm'].resetFields();
-				this.dialogTableVisible = false
-			},		 
+        });				
+			},
+			//弹窗cancel
+      resetForm(formName) {
+				this.$refs[formName].resetFields();
+				this.dialogTableVisible = false;
+      },		 
 	//全局搜索按钮
 	localSearch(){
+		var obj={
+				customName:this.customName,
+				customPhone:this.customPhone,
+		}
+		 this.getData(obj);
 	},
 	//表格页数改变
     handleSizeChange1(val) {
@@ -229,23 +252,64 @@ export default {
     handleCurrentChange1(val) {
 
     },	
-	 //
+	 //新增
 		selectBut(){
-			  
-				this.dialogTableVisible=true;	
-				this.ruleForm={};	
+				this.dialogTableVisible=true;				
 		},
 		//表格查看操作按钮
 		lookInf(obj){
-        this.$router.push({path:'/clean/addorder',query: { coustomerId: 123}})
+			  var id=obj.id;
+        this.$router.push({path:'/clean/addorder',query: { coustomerId:id}})
 		},
 		//表格删除操作按钮
-		Delete(obj){
+		Delete(row){
+			this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						var obj = {
+							id:row.id
+						}
+						deleteCus(obj).then(res=>{
+							if(res.data.code === 1){
+									this.$message({
+										type: 'success',
+										message: '删除成功!'
+									});
+									this.getData();
+							}else{
+								this.$message({
+										type: 'warning',
+										message: '删除失败'
+									});
+							}
+						}).catch(()=>console.log("未知错误"))
+						
+					}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});          
+					});			
 
+		},
+		getData(pramsObj){
+			this.listLoading = true;
+		  var obj = pramsObj
+      getCusTable(obj).then(res => {
+        console.log(res)
+				this.tableData = res.data.data.list;
+				this.organizationOptions=res.data.data.list;
+        this.listLoading = false
+				this.pagetotal1 = res.data.data.count;
+      }).catch(res=>{
+        this.listLoading = false
+      });	
 		}
   },
   mounted() {
-
+     this.getData();
 
   }
 };
