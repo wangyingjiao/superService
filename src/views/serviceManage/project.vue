@@ -520,7 +520,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .btn_right {
   float: right;
   width: 100px;
