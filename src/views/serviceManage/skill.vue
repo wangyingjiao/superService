@@ -230,7 +230,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .checkRightBox{
   border: solid 1px #dcdcdc;
   padding: 10px;

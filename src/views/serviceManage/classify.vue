@@ -455,11 +455,4 @@ body {
   color: #ffffff;
   border: 0px solid #bfcbd9;
 }
-.is-active .el-radio-button__inner {
-    color: #fff;
-    background-color: red !important;
-}
-.is-active .el-radio-button__inner{
-  background-color: red
-}
 </style>

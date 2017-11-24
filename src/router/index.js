@@ -91,7 +91,7 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '客户管理',
     children: [
-    { path: 'customermanage', name: '客户管理', component: _import('customer/customermanage') },
+    { path: 'customermanage', name: ' 客户管理', component: _import('customer/customermanage') },
     { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') },
     ]
   },
