@@ -222,7 +222,7 @@
           </el-select>	  
           <button class="button-large" @click="technicianSearch">搜索</button>	
           <el-table :data="technicianData">
-          <el-table-column   width="50"  type="selection"></el-table-column>
+          <el-table-column   width="50"  type="selection" align="center"></el-table-column>
           <el-table-column prop="headUrl" align="center" label="头像"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
           <el-table-column prop="sex" align="center" label="性别"></el-table-column>
