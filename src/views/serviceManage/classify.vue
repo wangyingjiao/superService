@@ -44,7 +44,7 @@
                 <div class="back-icon-bg"></div>
                 <div>编辑</div>
               </div>
-              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+              <div class="site-div" @click="handleDelete(scope.row)">
                 <div class="back-icon-del"></div>
                 <div>删除</div>
               </div>

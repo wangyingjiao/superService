@@ -8,11 +8,12 @@
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <button class="button-small btn_right btn_pad ceshi" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi" @click="handleCreate">设置范围</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -53,31 +54,24 @@
       </el-table-column>
 
       <el-table-column align="center" label="操作" width="150">
-<<<<<<< HEAD
-        <!-- <template scope="scope">
-          <el-button  size="small" @click="handleUpdate">编辑
-          </el-button>
-          <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-          </el-button>
-        </template> -->
-=======
         <template scope="scope">
           <!-- <el-button  size="small" @click="handleUpdate">编辑
           </el-button>
           <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
           </el-button> -->
-          <div style="display:flex;justify-content: center;">
-              <div class="site-div" @click="handleUpdate  ">
-                <div class="back-icon-bg"></div>
-                <div>编辑</div>
+          <!-- <div style="display:flex;justify-content: center;">
+              <div class="site-div" @click="handleUpdate ">
+                <div class="el-icon-edit "></div>
+              
               </div>
               <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
-                <div class="back-icon-del"></div>
-                <div>删除</div>
+                <div class="el-icon-delete" style="margin-left:20px"></div>
+         
               </div>
-            </div>
+            </div> -->
+            <el-button class="el-icon-edit ceshi3"></el-button>
+            <el-button class="el-icon-delete ceshi4"></el-button>
         </template>
->>>>>>> bfec27d7ef654bb67c80a5f05ec5e8ae72aaaebb
       </el-table-column>
 
     </el-table>
@@ -97,25 +91,25 @@
         class="small-space" 
         :model="temp" 
         label-position="left" 
-        label-width="80px"
+        label-width="160px"
         :rules="rules"
         ref="temp"
-        style='width: 400px; margin-left:50px;'>
+        style='width: 500px; margin-left:50px;'>
 
-        <el-form-item label="用户名"  prop="name" >
+        <el-form-item label=" 用户名"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label="手机号" prop="phone">
+        <el-form-item label=" 手机号" prop="phone">
           <el-input 
             v-model="temp.phone"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
-        <el-form-item label="密码" prop="password">
+        <el-form-item label=" 密码" prop="password">
           <el-input 
             v-model="temp.password" 
             style='width: 400px;'
@@ -123,33 +117,33 @@
             placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
 
-        <el-form-item label="确认密码" prop="password2">
+        <el-form-item label=" 确认密码" prop="password2">
           <el-input
             style='width: 400px;'
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label="服务机构" prop="mechanism">
+        <el-form-item label=" 服务机构" prop="mechanism">
           <el-select  style='width: 400px;' class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanism" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="服务站" prop="servicestation">
+        <el-form-item label=" 服务站" prop="servicestation">
           <el-select style='width: 400px;' class="filter-item" v-model="temp.servicestation" placeholder="请选择">
             <el-option v-for="item in servicestation" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择岗位" >
+        <el-form-item label="  选择岗位" class="ceshi2">
           <el-select  class="filter-item" v-model="temp.station" placeholder="请选择">
             <el-option v-for="item in station" :key="item" :label="item" :value="item">
             </el-option>
           </el-select>
            <button class="button-cancel" @click="dialogFormStation = true">新 增</button>
         </el-form-item>
-        <el-form-item  label="可用状态">
+        <el-form-item  label="可用状态" class="ceshi2">
           <el-select style='width: 400px;' class="filter-item" v-model="temp.peostate" placeholder="请选择">
             <el-option v-for="item in peostate" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
@@ -162,15 +156,18 @@
         <button class="button-large" @click="create('temp')">保 存</button>
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
-    </el-dialog>
+    
     
 
-     <el-dialog 
-       :title="textMap[dialogStatus]" 
+     
+  </el-dialog>
+  <el-dialog 
+       title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
        class="twoDialog" 
-       width = '100%'>
+      >
+      
       <el-form class="small-space" :model="temp2" label-position="left" label-width="80px" style='width: 500px; margin-left:20px;'>
 
         <el-form-item label="岗位名称">
@@ -209,11 +206,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="create">保 存</button>
+        <button class="button-large" @click="createStation">保 存</button>
         <button class="button-cancel" @click="dialogFormStation = false">取 消</button>
       </div>
     </el-dialog>
-
     
 
   </div>
@@ -449,14 +445,11 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.powers.length;
     },
-    handgetSign(){
-      console.log("请求签名")
-      getSign()
-      console.log(getSign())
-    },
     create(formName) {
+      console.log(this.temp)
       this.$refs[formName].validate((valid) => {
         if(valid){
+
           var obj = {
             companyId: "ad86de2fbac14039afe4c4bb12dbf565",
             companyName: "总公司",
@@ -495,6 +488,10 @@ export default {
         }
       
       })
+    },
+    createStation(){
+      console.log(this.temp2)
+      console.log(this.checkedPowers)
     },
     update() {
       console.log(111);
@@ -543,7 +540,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .btn_right {
   float: right;
   width: 100px;
@@ -590,5 +587,33 @@ body{
 }
 .btn_right{
   float:right;
+}
+.el-table {
+    font-size: 12px;
+}
+.el-table__header-wrapper{
+  font-size:14px;
+}
+.ceshi{
+  height: 30px;
+  width: 80px;
+}
+.ceshi2 label{
+  padding-left: 12px;
+}
+.ceshi3{
+ 
+  font-size: 14px;
+  color: #1f2d3d;
+  border: 1px solid #4c70e8;
+  background-color: #ffffff;
+}
+.ceshi4{
+ 
+  font-size: 14px;
+  background-color: #ffffff;
+}
+.dialog-footer{
+  text-align: center;
 }
 </style>

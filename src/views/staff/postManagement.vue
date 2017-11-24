@@ -23,21 +23,16 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" >
-        <template scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
+      <el-table-column align="center" label="编号" type="index" width="200">
       </el-table-column>
 
-      <el-table-column  label="岗位名称" align="center" >
-        <template scope="scope">
-          <span class="">管理者</span>
-        </template>
+      <el-table-column  label="岗位名称" align="center" prop="name" >
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="状态">
+      <el-table-column class-name="status-col" label="状态" prop="userable">
        <template scope="scope">
-          <span>可用</span>
+          <span v-if="scope.row.useable =='1'">可用</span>
+					<span v-if="scope.row.useable =='0'">不可用</span>
         </template>
       </el-table-column>
 
@@ -69,10 +64,10 @@
       <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 500px; margin-left:20px;'>
 
         <el-form-item label="岗位名称">
-          <el-input :maxlength="15" :minlength="2" style='width: 400px;' placeholder="请输入2-15位的岗位名称">123</el-input>
+          <el-input v-model="temp.stationName" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp2.stationLv" placeholder="请选择">
+          <el-select style='width: 400px;' class="filter-item" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item" :label="item" :value="item">
             </el-option>
           </el-select>
@@ -97,7 +92,7 @@
             </div>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp2.stationState" placeholder="可用">
+          <el-select style='width: 400px;' class="filter-item" v-model="temp.stationState" placeholder="可用">
             <el-option v-for="item in stationState" :key="item" :label="item" :value="item">
             </el-option>
           </el-select>
@@ -117,39 +112,11 @@
 </template>
 
 <script>
-import { fetchList, fetchPv } from '@/api/article'
+import { getStation, addStation} from '@/api/staff'
 import waves from '@/directive/waves/index.js' // 水波纹指令
 import { parseTime } from '@/utils'
 
-const mechanism = [
-      { key: '1', display_name: '日常保洁' },
-      { key: '2', display_name: '除尘除螨' },
-      { key: '3', display_name: '家电清洗' },
-      { key: '4', display_name: '擦玻璃' }
-]
 
-const servicestation = [
-      { key: '1', display_name: '呼家楼服务站' },
-      { key: '2', display_name: '其他' }
-]
-
-const peostate = [
-      { key: '1', display_name: '可用' },
-      { key: '2', display_name: '不可用' }
-]
-
-const powerOptions = ['机构管理', '服务机构', '服务站', '服务管理', '服务类型', '服务属性', '服务项目', '单位管理', '服务人员管理', '人员管理', '增加人员', '技能管理']
-const powerOptions1 = ['机构管理', '服务机构', '服务站']
-const powerOptions2 = ['服务管理', '服务类型', '服务属性', '服务项目', '单位管理', ]
-const powerOptions3 = ['服务人员管理', '人员管理', '增加人员', '技能管理']
-
-const stationLv = ['一级', '二级', '三级', '四级', '五级', '六级', '七级', '八级', '九级', '十级']
-const stationState = ['可用', '不可用']
-// arr to obj
-const mechanismKeyValue = mechanism.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 export default {
   name: 'table_demo',
   directives: {
@@ -157,9 +124,10 @@ export default {
   },
   data() {
     return {
-      list: [1,2,3],
+      list: [],
       total: null,
       listLoading: false,
+      state:false,
       listQuery: {
         page: 1,
         limit: 6,
@@ -169,27 +137,15 @@ export default {
         sort: '+id'
       },
       temp: {
-        id: undefined,
-        password: '',
-        password2: '',
-        mechanism: '',
-        servicestation: '',
-        station: '',
-        peostate: '',
-      },
-      temp2: {
         stationName: '',
-        stationLv: '',
+        dataScope: '',
         stationState: ''
       },
       importanceOptions: [1, 2, 3],
-      mechanism,
-      servicestation,
       station:[1, 2, 3],
-      peostate,
       stationName: '',
-      stationLv:stationLv,
-      stationState:stationState,
+      stationLv:['一级', '二级', '三级', '四级', '五级', '六级', '七级', '八级', '九级', '十级'],
+      stationState:['可用', '不可用'],
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -198,14 +154,13 @@ export default {
       },
       dialogPvVisible: false,
       pvData: [],
-      showAuditor: false,
       tableKey: 0,
       checkAll: true,
       checkedPowers: [],
-      powers: powerOptions,
-      powers1: powerOptions1,
-      powers2: powerOptions2,
-      powers3: powerOptions3,
+      powers: ['机构管理', '服务机构', '服务站', '服务管理', '服务类型', '服务属性', '服务项目', '单位管理', '服务人员管理', '人员管理', '增加人员', '技能管理'],
+      powers1: ['机构管理', '服务机构', '服务站'],
+      powers2: ['服务管理', '服务类型', '服务属性', '服务项目', '单位管理' ],
+      powers3: ['服务人员管理', '人员管理', '增加人员', '技能管理'],
       isIndeterminate: true
     }
   },
@@ -217,20 +172,17 @@ export default {
         deleted: 'danger'
       }
       return statusMap[status]
-    },
-    typeFilter(type) {
-      return mechanismKeyValue[type]
     }
   },
   created() {
-    //this.getList()
+    this.getList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+      getStation().then(res => {
+        console.log(res)
+        this.list = res.data.data
         this.listLoading = false
       })
     },
@@ -295,17 +247,15 @@ export default {
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.powers.length
       },
     create() {
-      this.temp.id = 1
-      this.temp.password = 'abc'
-      this.temp.password2 = 'abc'
-      this.list.unshift(this.temp)
-      this.dialogFormVisible = false
-      this.$notify({
-        title: '成功',
-        message: '增加成功',
-        type: 'success',
-        duration: 2000
-      })
+      console.log(this.temp)
+      console.log(this.checkedPowers)
+      var obj = {
+        name:this.temp.stationName,
+        dataScope:this.temp.dataScope,
+        menuIds:'',
+        useable:'1'//状态
+      }
+      console.log(obj)
     },
     update() {
       this.temp.timestamp = +this.temp.timestamp
@@ -326,20 +276,6 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        password: '',
-        password2: '',
-        mechanism: '',
-        servicestation: '',
-        station: '',
-        peostate: ''
-      }
-    },
-    resetTemptwo() {
-      this.temp2 = {
-        stationName: '',
-        stationLv: '请选择',
-        stationState: ''
       }
     },
     handleFetchPv(pv) {
