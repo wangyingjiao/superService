@@ -17,7 +17,7 @@
         <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
-     
+
       <div><button class="button-large">搜索</button></div>
     </div>
     <div class="tech-section">
@@ -139,8 +139,6 @@
           <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
           <button @click="hiddenDiv" class="button-cancel">取消</button>
         </div>
-
-
       </div>
 
     </div>
@@ -200,7 +198,7 @@
             <div>
               <p></p>
               <p>
-                <el-input placeholder="请输入正确的身份证号" style="width:300px"></el-input>
+                <el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="addrDetailInfo"></el-input>
               </p>
             </div>
           </li>
@@ -217,7 +215,8 @@
             <div>
               <p><span class="tech-span">*</span>出生日期:</p>
               <p>
-                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange" format="yyyy-MM-dd HH:mm:ss">
+                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
+                  format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
               </p>
             </div>
@@ -226,17 +225,18 @@
             <div>
               <p></p>
               <p>
-                <button class="tech-fourth"><span>*</span>上传头像</button>
-                <button class="tech-fourth-rigth">上传身份证</button>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="tech-fourth"><span>*</span>上传位置</button>
-                <button class="tech-fourth-rigth">上传位置</button>
+                <!-- <button class="tech-fourth">上传头像</button> -->
+                <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+                  :file-list="fileList2" list-type="picture" :data="sign">
+                  <el-button class="tech-fourth"><span>*</span>上传头像</el-button>
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+                <!-- <button class="tech-fourth-rigth">上传身份证</button> -->
+                <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+                  :file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
+                  <el-button class="tech-fourth-rigth">上传身份证</el-button>
+                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
               </p>
             </div>
           </li>
@@ -385,7 +385,7 @@
               <p><span class="tech-span">*</span>选择技能:</p>
               <div class="tech-order-jn">
                 <button class="tech-order-btn" @click="orderson"> &#10010 选择技能</button>
-                <div class="tech-order-jn-son" v-show="flags">
+                <div class="tech-order-jn-son" v-show="flage">
                   <div style="display:flex;">
                     <div class="selfCheckBox tech-order-posi" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}">
                       {{item.sexName}}
@@ -695,6 +695,9 @@
     getTech,
     getArea
   } from "@/api/tech";
+  import {
+    getSign
+  } from "@/api/sign";
 
   export default {
     data() {
@@ -1122,6 +1125,7 @@
             show: false
           },
         ],
+        sign: getSign(),
         key: false,
         isA: false,
         isB: false,
@@ -1130,6 +1134,7 @@
         binds: '',
         flagso: false,
         flags: false,
+        flage:false,
         tableKey: '',
         cards: '',
         textarea3: '',
@@ -1150,6 +1155,7 @@
         servers: '',
         stations: '',
         chooses: '',
+        addrDetailInfo: '',
         input: '',
         value1: '',
         value2: '',
@@ -1162,6 +1168,8 @@
         techName: '',
         techldCard: '',
         techPhone: '',
+        fileList2: [
+          {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
         position: false,
         listLoading: false,
         list: [1, 2, 3],
@@ -1212,14 +1220,14 @@
       },
       // 添加技能
       orderson() {
-        this.flags = true;
+        this.flage = true;
       },
       skill() {
-        this.flags = false;
+        this.flage = false;
         this.flagso = true;
       },
       skillq() {
-        this.flags = false;
+        this.flage = false;
       },
       // 添加时间
       addtime() {
@@ -1240,26 +1248,38 @@
       savrTable() {
         this.isTab = true;
       },
-      dateChange(val){
-         this.value1=val;
+      dateChange(val) {
+        this.value1 = val;
       },
       create() {
-        var time =String(this.value1);
+        var time = String(this.value1);
         var obj = {
           'techName': this.techName,
           'techldCard': this.techldCard,
           'techPhone': this.techPhone,
           'techSex': this.sexs,
-          'techNation':this.ethnic,
-          'techBirthDate': this.value1
+          'techNation': this.ethnic,
+          'addrDetailInfo': this.addrDetailInfo,
+          'techBirthDate': this.value1,
+          'images': [{
+            'id': '',
+            'imgType': '',
+            'imgUrl': '',
+          }]
         }
-        addTech(obj).then(res =>{
-          console.log(res)
-        })
+        // addTech(obj).then(res => {
+        //   console.log(res)
+        // })
         this.techName = '',
           console.log(obj),
           console.log(time)
-          // console.log(d)
+        // console.log(d)
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
       }
     },
     mounted() {
@@ -1357,7 +1377,7 @@
     justify-content: center;
     align-items: center;
   }
-
+  
 
   .fy {
     margin: 0 20px;
@@ -1421,6 +1441,11 @@
     width: 100px;
   }
 
+  .el-button{
+    border-radius:0px;
+  }
+
+
   .tech-fourth {
     cursor: pointer;
     border: none;
@@ -1445,13 +1470,18 @@
     color: red;
     background: #fff;
     border: 1px solid red;
-    margin-left: 40px;
+    /* margin-left: 40px; */
   }
+  
 
   .el-textarea__inner {
     border-radius: 0px;
   }
 
+  .el-upload-list{
+    width: 80px;
+    height: 100px;
+  }
   .tech-psoition {
     width: 100%;
     height: 320px;
@@ -1588,6 +1618,10 @@
     margin: 0 5px;
     display: flex;
     flex-wrap: wrap;
+    text-align: center;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 5px; 
     justify-content: center;
     overflow: hidden;
   }

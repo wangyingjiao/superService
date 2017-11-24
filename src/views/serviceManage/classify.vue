@@ -39,10 +39,16 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button  size="small" @click="handleUpdate(scope.row)">编辑
-          </el-button>
-          <el-button  size="small" type="danger" @click="handleDelete(scope.row)">删除
-          </el-button>
+          <div style="display:flex;justify-content: center;">
+              <div class="site-div" @click="handleUpdate(scope.row)">
+                <div class="back-icon-bg"></div>
+                <div>编辑</div>
+              </div>
+              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                <div class="back-icon-del"></div>
+                <div>删除</div>
+              </div>
+            </div>
         </template>
       </el-table-column>
 
@@ -71,7 +77,7 @@
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group v-model="activeName">
             <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;background-color:red" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%;" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
             <el-radio-button style="width:100%" label="2" @click="refbtn2">家修</el-radio-button>
             <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
           </el-radio-group>
@@ -368,7 +374,9 @@ export default {
   }
 };
 </script>
-<style scoped="scoped">
+<style >
+
+
 .btn_right {
   float: right;
   width: 100px;
@@ -451,15 +459,14 @@ body {
   width: 100%;
 }
 .el-radio-button__inner{
-  width: 100%;
-  color: #ffffff;
+  width: 100% ;
+  color: #333333;
   border: 0px solid #bfcbd9;
 }
-.is-active .el-radio-button__inner {
+.el-radio-button__orig-radio:checked+.el-radio-button__inner {
     color: #fff;
-    background-color: red !important;
-}
-.is-active .el-radio-button__inner{
-  background-color: red
+    background-color: #4c70e8;
+    border-color: #4c70e8;
+    box-shadow: -1px 0 0 0 #4c70e8;
 }
 </style>

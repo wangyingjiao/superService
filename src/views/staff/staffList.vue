@@ -54,10 +54,20 @@
 
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
-          <el-button  size="small" @click="handleUpdate">编辑
+          <!-- <el-button  size="small" @click="handleUpdate">编辑
           </el-button>
           <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-          </el-button>
+          </el-button> -->
+          <div style="display:flex;justify-content: center;">
+              <div class="site-div" @click="handleUpdate  ">
+                <div class="back-icon-bg"></div>
+                <div>编辑</div>
+              </div>
+              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                <div class="back-icon-del"></div>
+                <div>删除</div>
+              </div>
+            </div>
         </template>
       </el-table-column>
 
@@ -524,7 +534,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .btn_right {
   float: right;
   width: 100px;
