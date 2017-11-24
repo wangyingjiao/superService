@@ -24,10 +24,7 @@
     element-loading-text="正在加载" 
     style="width: 100%" >
 
-      <el-table-column align="center" label="机构编号" >
-        <template scope="scope">
-          <span>1</span>
-        </template>
+      <el-table-column align="center" label="机构编号" type="index" width="100">
       </el-table-column>
 
       <el-table-column  label="机构名称" align="center" min-width="150px" prop="name" >
@@ -42,10 +39,7 @@
       <el-table-column  label="负责人姓名" align="center" width ="150" prop="masterName">
       </el-table-column>
 
-      <el-table-column  label="负责人手机号" align="center" min-width="200px">
-        <template scope="scope">
-          <span class="">{{scope.row.phone}}</span>          
-        </template>
+      <el-table-column  label="负责人手机号" align="center" min-width="200px" prop="phone">
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -332,10 +326,11 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = false;
+      this.listLoading = true;
       getMech().then(res => {
         console.log(res);
-        this.list=res.data.data
+        this.list = res.data.data
+        this.listLoading = false
         
       });
     },

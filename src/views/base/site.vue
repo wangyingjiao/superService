@@ -19,10 +19,7 @@
       <el-table :key='tableKey' :data="list" v-loading="listLoading" stripe fit highlight-current-row element-loading-text="正在加载"
         style="width: 100%">
 
-        <el-table-column align="center" label="编号">
-          <template scope="scope">
-            <span>{{scope.row.id}}</span>
-          </template>
+        <el-table-column align="center" label="编号" type="index" width="100">
         </el-table-column>
 
         <el-table-column label="服务站名称" align="center">
@@ -397,17 +394,7 @@
             return v[j]
           }
         }))
-      },
-      // 初始化地图
-      // init(){
-      //     var map = new AMap.Map('container', {
-      //         center: [117.000923, 36.675807],
-      //         zoom: 6
-      //     });
-      //     map.plugin(["AMap.ToolBar"], function() {
-      //         map.addControl(new AMap.ToolBar());
-      //     });
-      // }
+      }
     }
   }
 

@@ -53,12 +53,12 @@
       </el-table-column>
 
       <el-table-column align="center" label="操作" width="150">
-        <template scope="scope">
+        <!-- <template scope="scope">
           <el-button  size="small" @click="handleUpdate">编辑
           </el-button>
           <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
           </el-button>
-        </template>
+        </template> -->
       </el-table-column>
 
     </el-table>

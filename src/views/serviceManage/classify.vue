@@ -100,7 +100,8 @@
       </div>
       
       <div slot="footer" class="dialog-footer"> 
-        <button class="button-large" @click="create('temp')">保 存</button>    
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update(scope.row)">保 存</button>    
+        <button class="button-large" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -324,29 +325,17 @@ export default {
       });
     },
     citiesChange(val){
-      console.log(val)
+      //console.log(val)
     },
     resetForm(formName){
       this.dialogFormVisible = false
       this.$refs[formName].resetFields()
       this.checkCity = []
     },
-    update() {
-      this.temp.timestamp = +this.temp.timestamp;
-      for (const v of this.list) {
-        if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v);
-          this.list.splice(index, 1, this.temp);
-          break;
-        }
-      }
+    update(formName) {
+      console.log("编辑")
+      console.log(formName)
       this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "编辑成功",
-        type: "success",
-        duration: 2000
-      });
     },
     resetTemp() {
       this.temp = {};
