@@ -2,20 +2,6 @@
   <el-menu class="navbar" mode="horizontal">
     <div style="width:100%;float:left;background:#fff;position:relative">
       <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-      <!-- <el-dropdown class="avatar-container" trigger="click">
-		  <div class="avatar-wrapper">
-			<i class="el-icon-caret-bottom"></i>
-		  </div>
-      
-		  <el-dropdown-menu class="user-dropdown" slot="dropdown" v-show="show">
-			<router-link class='inlineBlock' to="/">
-			  <el-dropdown-item>
-				首页
-			  </el-dropdown-item>
-			</router-link>
-			<el-dropdown-item divided><span @click="logout" style="display:block;">退出</span></el-dropdown-item>
-		  </el-dropdown-menu>
-		</el-dropdown>	 -->
       <ul class="nav-ul">
         <li style="cursor: pointer;" @click="addpage">
           <div>+</div>
@@ -55,7 +41,7 @@
 
     <div style="width:100%;float:left;height:28px;line-height:28px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;">
     </div>
-    <tabs-view style="position:relative;margin-top:-59px;margin-left:20px;"></tabs-view>
+    <tabs-view style="position:relative;margin-top:-30px;margin-left:20px;"></tabs-view>
   </el-menu>
 
 </template>

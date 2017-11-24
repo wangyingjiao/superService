@@ -385,7 +385,7 @@
               <p><span class="tech-span">*</span>选择技能:</p>
               <div class="tech-order-jn">
                 <button class="tech-order-btn" @click="orderson"> &#10010 选择技能</button>
-                <div class="tech-order-jn-son" v-show="flags">
+                <div class="tech-order-jn-son" v-show="flage">
                   <div style="display:flex;">
                     <div class="selfCheckBox tech-order-posi" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}">
                       {{item.sexName}}
@@ -1134,6 +1134,7 @@
         binds: '',
         flagso: false,
         flags: false,
+        flage:false,
         tableKey: '',
         cards: '',
         textarea3: '',
@@ -1219,14 +1220,14 @@
       },
       // 添加技能
       orderson() {
-        this.flags = true;
+        this.flage = true;
       },
       skill() {
-        this.flags = false;
+        this.flage = false;
         this.flagso = true;
       },
       skillq() {
-        this.flags = false;
+        this.flage = false;
       },
       // 添加时间
       addtime() {
@@ -1617,6 +1618,10 @@
     margin: 0 5px;
     display: flex;
     flex-wrap: wrap;
+    text-align: center;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 5px; 
     justify-content: center;
     overflow: hidden;
   }

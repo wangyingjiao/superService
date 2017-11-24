@@ -72,6 +72,7 @@
 			  </el-table-column>	  
 			  <el-table-column align="center" label="操作" width="150" >
 				<template scope="scope">
+				    <button type="button" @click="lookInf(scope.row)">查看</button>
 				</template>
 			  </el-table-column>
 			</el-table>
@@ -150,7 +151,11 @@ export default {
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
+	},
+	lookInf(row){
+		this.$router.push({path:'/clean/orderinfo'})
 	}
+	
   },
   mounted() {
     this.getTableData();
@@ -163,6 +168,7 @@ export default {
     width:100%;
 	float:left;
 	background:#eef1f6;
+	margin-top: 20px;
 }
 .fist-bar{
   padding:20px 20px;

@@ -103,7 +103,21 @@
         <router-link to="/clean/returnvisit">
           <el-menu-item style="padding-left:60px" index="1-5">回访记录</el-menu-item>
         </router-link>		
-      </el-submenu>	  
+      </el-submenu>
+      <el-submenu index="6">
+        <template slot="title">
+          <!-- <i class="el-icon-location"></i> -->
+        <!-- <img src="../../../static/icon/保洁1.png" alt=""> -->
+        <span class="side-span"> <img src="../../../static/icon/客户管理1.png" alt="" class="side-img"></span>
+          <span>客户管理</span>
+        </template>     
+        <router-link to="/customer/customermanage">
+          <el-menu-item index="1-6">客户管理</el-menu-item>
+        </router-link>
+        <router-link to="/customer/addcustomer">
+          <el-menu-item index="1-6">新增客户</el-menu-item>
+        </router-link>	
+      </el-submenu>      	  
   </div>
 </template>
 
