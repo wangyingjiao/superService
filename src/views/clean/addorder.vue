@@ -221,7 +221,7 @@
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import { getCusTable,deleteCus,saveCus} from "@/api/customer";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -367,10 +367,22 @@ export default {
 		
     };
   },
-  methods:{ 
+  methods:{
+		//获取客户数据
+		getcustomerList(){
+			var obj = {
+				id:this.$route.query.coustomerId
+			}
+      getCusTable(obj).then(res => {
+				console.log(res.data.data.list) 
+
+      }).catch(res=>{
+       
+      });
+		}, 
     //搜索按钮
     addcustomer() {
-			alert(this.$route.query.coustomerId)
+		
     },
 	//更换地址按钮
 	changeAddress(){
@@ -461,7 +473,7 @@ export default {
 	
   },
   mounted() {
-
+     this.getcustomerList();
 
   }
 };

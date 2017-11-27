@@ -66,7 +66,7 @@
 					</el-table>
 					<div  style="margin-top:20px;float:right;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
-						:page-sizes="[10,20,30, 50]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
+						:page-sizes="[10, 20, 30, 40, 50, 100]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
 					</div>										
 			</div>
@@ -77,8 +77,8 @@
 					<el-form-item label="姓名:" prop="customName" >
 						<el-input v-model="ruleForm.customName" placeholder="请输入客户姓名" style="width:400px;"></el-input>
 					</el-form-item>
-					<el-form-item label="性别:" required>
-							<el-select clearable style="width:400px;" class="filter-item" v-model="sexName" placeholder="请选择性别">
+					<el-form-item label="性别:"  prop="customSex">
+							<el-select clearable style="width:400px;" class="filter-item" v-model="ruleForm.customSex" placeholder="请选择性别" >
 									<el-option v-for="item in sex" :key="item.key" :label="item.sexName" :value="item.key">
 									</el-option>
 							</el-select>
@@ -87,16 +87,16 @@
                 <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" required>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="province" placeholder="请选择省">
-									<el-option v-for="item in provinceOptions" :key="item.key" :label="item.provinceName" :value="item.key">
+							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusProvId" placeholder="请选择省" @change="provinceChange">
+									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
 							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="city" placeholder="请选择市">
-										<el-option v-for="item in cityOptions" :key="item.key" :label="item.cityName" :value="item.key">
+							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusCityId" placeholder="请选择市" @change="cityChange">
+										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
 							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="county" placeholder="请选择县区">
-										<el-option v-for="item in countyOptions" :key="item.key" :label="item.countyName" :value="item.key">
+							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusTownId" placeholder="请选择县区">
+										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
 							</el-select>
 					</el-form-item>
@@ -117,6 +117,7 @@
 
 <script>
 import { getCusTable,deleteCus,saveCus} from "@/api/customer";
+import { getArea} from "@/api/base";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -146,7 +147,10 @@ export default {
 					customPhone:'',
 					customAddr:'',
 					customEmail:'',
-					customSex:''
+					customSex:'',
+					cusProvId:'',
+					cusCityId:'',
+					cusTownId:'',
 				},
         rules: {
           customName: [
@@ -163,6 +167,9 @@ export default {
 					],
 					customEmail:[
 						{ validator: checkEmail, trigger: 'blur' }
+					],
+					customSex: [
+						{ required: true, message: '请选择状态', trigger: 'change' }
 					]
         },
 		sex:[
@@ -171,26 +178,11 @@ export default {
 		],
 		sexName:'',
    //
-		provinceOptions:[
-		  { key: "1", provinceName: "北京" },
-		  { key: "2", provinceName: "上海" },
-		  { key: "3", provinceName: "天津" }
-		],
-		province:'',
+		provinceOptions:[],
 		//
-		cityOptions:[
-		  { key: "1", cityName: "朝阳区" },
-		  { key: "2", cityName: "东城区" },
-		  { key: "3", cityName: "西城区" }
-		],
-		city:'',
+		cityOptions:[],
 		//
-		countyOptions:[
-		  { key: "1", countyName: "朝阳区" },
-		  { key: "2", countyName: "东城区" },
-		  { key: "3", countyName: "西城区" }
-		],
-		county:'',								
+		countyOptions:[],								
       tableData: [],	
 		//全局搜索下拉选项
 		organizationOptions:[],
@@ -199,41 +191,72 @@ export default {
 		customName:'',//客户姓名
 		customPhone:'',//客户电话
 		pagetotal1:1,//表格总页数
-		pageSize1:2,//表格每页条数		
+		pageSize1:10,//表格每页条数
+		pageNumber:1,		
     };
   },
   methods:{
+    
+		//
+		provinceChange(value){
+			this.ruleForm.cusCityId='';
+      getArea(value).then(res => {
+			   this.cityOptions=res.data.data;
+      }).catch(res=>{
+        
+      });
+       
+		},
+		//
+		cityChange(value){
+			this.ruleForm.cusTownId='';
+      getArea(value).then(res => {
+			   this.countyOptions=res.data.data;
+      }).catch(res=>{
+        
+      });			
+
+		},
+		//customSex
+		customSexselect(){
+      this.ruleForm.customSex=this.sex;
+		},
 		submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {						
-						this.ruleForm.customSex=this.sexName						
-						var obj = this.ruleForm
-						saveCus(obj).then(res => {
-							if(res.data.code === 1){
+					this.$refs[formName].validate((valid) => {
+						if (valid) {						
+													
+							var obj = this.ruleForm
+							saveCus(obj).then(res => {
+								if(res.data.code === 1){
+										this.$message({
+											type: 'success',
+											message: '新增成功!'
+										});
+										this.$refs['ruleForm'].resetFields();
+										this.dialogTableVisible = false
+										this.getData();
+								}else{
 									this.$message({
-										type: 'success',
-										message: '新增成功!'
-									});
-									this.$refs['ruleForm'].resetFields();
-									this.dialogTableVisible = false
-									this.getData();
-							}else{
-								this.$message({
-										type: 'warning',
-										message: '新增失败'
-									});
-							}													
-						}).catch(res=>{
-							
-						});							
-          } else {            
-            return false;
-          }
-        });				
+											type: 'warning',
+											message: '新增失败'
+										});
+								}													
+							}).catch(res=>{
+								
+							});							
+						} else {            
+							return false;
+						}
+					});				
+
+
+				
 			},
 			//弹窗cancel
       resetForm(formName) {
 				this.$refs[formName].resetFields();
+				this.ruleForm.customSex='';
+				this.sexName='';
 				this.dialogTableVisible = false;
       },		 
 	//全局搜索按钮
@@ -242,19 +265,34 @@ export default {
 				customName:this.customName,
 				customPhone:this.customPhone,
 		}
-		 this.getData(obj);
+		 this.getData(obj,this.pageNumber,this.pageSize1);
 	},
 	//表格页数改变
     handleSizeChange1(val) {
-
+				this.pageSize1=val;
+				 var obj={
+					
+				 }
+				this.getData(obj,this.pageNumber,this.pageSize1);
     },
 	 //表格当前页改变
     handleCurrentChange1(val) {
-
+			  this.pageNumber=val;
+			   var obj={
+					
+				 }
+         this.getData(obj,this.pageNumber,this.pageSize1);
     },	
 	 //新增
 		selectBut(){
-				this.dialogTableVisible=true;				
+				this.dialogTableVisible=true;	
+				//
+				var id=''
+		  	getArea(id).then(res => {
+					this.provinceOptions=res.data.data;
+				}).catch(res=>{
+					
+				});				
 		},
 		//表格查看操作按钮
 		lookInf(obj){
@@ -277,7 +315,8 @@ export default {
 										type: 'success',
 										message: '删除成功!'
 									});
-									this.getData();
+									var obj1={};
+									this.getData(obj1,this.pageNumber,this.pageSize1);
 							}else{
 								this.$message({
 										type: 'warning',
@@ -294,23 +333,23 @@ export default {
 					});			
 
 		},
-		getData(pramsObj){
+		getData(pramsObj,pageNo,pageSize){
 			this.listLoading = true;
-		  var obj = pramsObj
-      getCusTable(obj).then(res => {
-        console.log(res)
-				this.tableData = res.data.data.list;
+			var obj = pramsObj;
+      getCusTable(obj,pageNo,pageSize).then(res => {
+				this.tableData = res.data.data.list
 				this.organizationOptions=res.data.data.list;
         this.listLoading = false
 				this.pagetotal1 = res.data.data.count;
       }).catch(res=>{
         this.listLoading = false
-      });	
+			});
+
 		}
   },
   mounted() {
-     this.getData();
-
+		 this.getData();
+		 this.customSexselect();
   }
 };
 </script>
