@@ -317,11 +317,9 @@ export default {
                   message: res.data.data
                 });
             }else{            
-              this.$notify({
-                  title: "失败",
-                  message: res.data.data,
-                  type: "error",
-                  duration: 2000
+              this.$message({
+                  type: 'error',
+                  message: "发生错误"
                 });
             }
           })

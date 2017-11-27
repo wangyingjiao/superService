@@ -1,19 +1,17 @@
 <template>
 <div>
   <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.phone">
+      </el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择岗位名称">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
-      <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜索</button>
+     
+      <button class="button-large btn_right el-icon-search ceshi5" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-    <button class="button-small btn_right btn_pad ceshi" @click="handleCreate">设置范围</button>
+    <button class="button-small btn_right btn_pad ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -69,8 +67,8 @@
          
               </div>
             </div> -->
-            <el-button class="el-icon-edit ceshi3"></el-button>
-            <el-button class="el-icon-delete ceshi4"></el-button>
+            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
         </template>
       </el-table-column>
 
@@ -124,28 +122,28 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 服务机构" prop="mechanism">
-          <el-select  style='width: 400px;' class="filter-item" v-model="temp.mechanism" placeholder="请选择">
-            <el-option v-for="item in mechanism" :key="item.key" :label="item.display_name" :value="item.key">
+        <el-form-item label=" 服务机构" >
+          <el-select  style='width: 400px;' class="filter-item" v-model="mechanism" placeholder="请选择">
+            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 服务站" prop="servicestation">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp.servicestation" placeholder="请选择">
-            <el-option v-for="item in servicestation" :key="item.key" :label="item.display_name" :value="item.key">
+        <el-form-item label=" 服务站" >
+          <el-select style='width: 400px;' class="filter-item" v-model="servicestation" placeholder="请选择">
+            <el-option v-for="item in servicestationCheck" :key="item.key" :label="item.display_name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="  选择岗位" class="ceshi2">
-          <el-select  class="filter-item" v-model="temp.station" placeholder="请选择">
-            <el-option v-for="item in station" :key="item" :label="item" :value="item">
+        <el-form-item label="  选择岗位" >
+          <el-select  class="filter-item" v-model="station" placeholder="请选择">
+            <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <button class="button-cancel" @click="dialogFormStation = true">新 增</button>
         </el-form-item>
-        <el-form-item  label="可用状态" class="ceshi2">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp.peostate" placeholder="请选择">
-            <el-option v-for="item in peostate" :key="item.key" :label="item.display_name" :value="item.key">
+        <el-form-item  label="可用状态" >
+          <el-select style='width: 400px;' class="filter-item" v-model="peostate" placeholder="请选择">
+            <el-option v-for="item in peostateCheck" :key="item.key" :label="item.name" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -153,7 +151,8 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="create('temp')">保 存</button>
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
@@ -168,46 +167,57 @@
        class="twoDialog" 
       >
       
-      <el-form class="small-space" :model="temp2" label-position="left" label-width="80px" style='width: 500px; margin-left:20px;'>
+      <el-form 
+        class="small-space" 
+        :model="temp2" 
+        label-position="left"
+        :rules="rules"
+        ref="temp" 
+        label-width="80px" 
+        style='width: 500px; margin-left:20px;'>
 
         <el-form-item label="岗位名称">
-          <el-input style='width: 400px' :maxlength="15" :minlength="2" placeholder="请输入2-15位的岗位名称" v-model="temp2.stationName">123</el-input>
+          <el-input v-model="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级">
-          <el-select  class="filter-item" v-model="temp2.stationLv" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item" :label="item" :value="item">
+          <el-select style='width: 400px;' class="filter-item" v-model="dataScope" placeholder="请选择">
+            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="权限">
-           <div class="checkRightBox"  style='width: 400px'>
+           <div class="checkRightBox" style='width: 400px;'>
             <div class="checkAllBox">
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
             </div>
               <el-checkbox-group v-model="checkedPowers" @change="handleCheckedPowersChange">
                 <div class="checkBox1">
-                <el-checkbox style='margin-left:5px' v-for="power in powers1" :label="power" :key="power" class="check">{{power}}</el-checkbox>
+                <el-checkbox v-for="power in powers1" :label="power" :key="power" class="check">{{power}}</el-checkbox>
                 </div>
                 <div class="checkBox2">
-                <el-checkbox style='margin-left:5px' v-for="power in powers2" :label="power" :key="power" class="check">{{power}}</el-checkbox>
+                <el-checkbox v-for="power in powers2" :label="power" :key="power" class="check">{{power}}</el-checkbox>
                 </div>
                 <div class="checkBox3">
-                <el-checkbox  style='margin-left:5px' v-for="power in powers3" :label="power" :key="power" class="check">{{power}}</el-checkbox>
+                <el-checkbox v-for="power in powers3" :label="power" :key="power" class="check">{{power}}</el-checkbox>
                 </div>
               </el-checkbox-group>
             </div>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select class="filter-item" v-model="temp2.stationState" placeholder="可用">
-            <el-option v-for="item in stationState" :key="item" :label="item" :value="item">
-            </el-option>
+          <el-select style='width: 400px;' class="filter-item" v-model="stationState" placeholder="可用">
+            <el-option v-for="item in stationStateCheck" :key="item.key" :label="item.value" :value="item.key">
+          </el-option>
           </el-select>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="createStation">保 存</button>
         <button class="button-cancel" @click="dialogFormStation = false">取 消</button>
+
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp2')">保 存</button>    
+        <button class="button-large" v-else @click="create2('temp2')">保 存</button>    
+        <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
       </div>
     </el-dialog>
     
@@ -218,25 +228,19 @@
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
-import { getSign} from "@/api/sign";
+import { staffList, addStaff, getStaff, addMech ,getSList, getStation} from "@/api/staff";
+import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 //import { parseTime } from "@/utils";
 
-const mechanism = [
-  { key: "1", display_name: "日常保洁" },
-  { key: "2", display_name: "除尘除螨" },
-  { key: "3", display_name: "家电清洗" },
-  { key: "4", display_name: "擦玻璃" }
-];
 const servicestation = [
   { key: "1", display_name: "呼家楼服务站" },
   { key: "2", display_name: "其他" }
 ];
 
 const peostate = [
-  { key: "1", display_name: "可用" },
-  { key: "2", display_name: "不可用" }
+  { key: "1", name: "可用" },
+  { key: "2", name: "不可用" }
 ];
 
 const powerOptions = [
@@ -260,10 +264,7 @@ const powerOptions3 = ["服务人员管理", "人员管理", "增加人员", "�
 const stationLv = ["一级", "二级", "三级", "四级", "五级", "六级", "七级", "八级", "九级", "十级"];
 const stationState = ["可用", "不可用"];
 // arr to obj
-const mechanismKeyValue = mechanism.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
+
 export default {
   name: "table_demo",
   directives: {
@@ -271,14 +272,14 @@ export default {
   },
   data() {
     var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.temp.password) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.temp.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
       }
+    };
     return {
       list: null,
       total: null,
@@ -291,29 +292,32 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      search: {
+        phone: "",
+        name: ""
+      },
       temp: {
         phone: null,
         name: "",
         password: "",
-        password2: "",
-        mechanism: "",
-        servicestation: "",
-        station: "",
-        peostate: ""
+        password2: ""
       },
+      mechanism: [],
+      servicestation: [],
+      station: [],
+      peostate: [],
       temp2: {
-        stationName: "",
-        stationLv: "",
-        stationState: ""
+        name:''
       },
       importanceOptions: [1, 2, 3],
-      mechanism,
-      servicestation,
-      station: [1, 2, 3, 4],
-      peostate,
+      mechanismCheck:[],
+      servicestationCheck:servicestation,
+      stationCheck: [],
+      peostateCheck:peostate,
       stationName: "",
-      stationLv: stationLv,
-      stationState: stationState,
+      stationLv: [{id:1,value:'一级'}, {id:2,value:'二级'}, {id:3,value:'三级'}, {id:4,value:'四级'}, {id:5,value:'五级'}, {id:6,value:'六级'}, {id:7,value:'七级'}, {id:8,value:'八级'}, {id:9,value:'九级'}],
+      stationStateCheck: stationState,
+      stationState:[],
       dialogFormVisible: false,
       dialogFormStation: false,
       dialogStatus: "",
@@ -325,6 +329,7 @@ export default {
       tableKey: 0,
       checkAll: true,
       checkedPowers: [],
+      dataScope:[],
       powers: powerOptions,
       powers1: powerOptions1,
       powers2: powerOptions2,
@@ -340,21 +345,17 @@ export default {
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "请输入6-20位密码", trigger: "blur"},
-          { min: 6, max: 20, message: "密码长度6-20个字符", trigger: "blur"}
+          { required: true, message: "请输入6-20位密码", trigger: "blur" },
+          { min: 6, max: 20, message: "密码长度6-20个字符", trigger: "blur" }
         ],
         password2: [
-          { required: true,validator: validatePass2, trigger: "blur"}
+          { required: true, validator: validatePass2, trigger: "blur" }
         ],
-        mechanism: [
-          { required: true, message: "机构不能为空", trigger: "change"}
+        mechanism: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        servicestation: [
+          { required: true, message: "服务站不能为空", trigger: "change" }
         ],
-        servicestation:[
-          { required: true, message: "服务站不能为空", trigger: "change"}
-        ],
-        station: [
-          { required: true, message: "岗位不能为空", trigger: "change"}
-        ],
+        station: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       }
     };
   },
@@ -373,20 +374,50 @@ export default {
   },
   created() {
     this.getList();
+    getSList().then(res=>{
+      this.mechanismCheck = res.data.data
+    })
+    getStation().then(res=>{
+      console.log(res)
+      this.stationCheck = res.data.data
+    })
   },
   methods: {
     getList() {
+      var obj = {
+        roleName: "",
+        mobile: ""
+      };
       this.listLoading = true;
-      getStaff().then(res => {
-         console.log(res.data)
+      getStaff(obj).then(res => {
+        console.log(res.data);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      var obj = {
+        roleName: this.search.name,
+        mobile: this.search.phone
+      };
+      this.listLoading = true;
+      getStaff(obj).then(res => {
+        if (res.data.code === 1) {    
+          this.list = res.data.data.list;
+          this.listLoading = false;
+          this.search = {
+            phone:'',
+            name:''
+          };
+        } else {
+          this.listLoading = false;
+          this.$message({
+            type: "warning",
+            message: "员工不存在"
+          });
+        }
+      });
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -426,14 +457,7 @@ export default {
       this.dialogFormVisible = true;
     },
     handleDelete(row) {
-      this.$notify({
-        title: "成功",
-        message: "删除成功",
-        type: "success",
-        duration: 2000
-      });
-      const index = this.list.length;
-      this.list.splice(index, 1);
+      //删除
     },
     handleCheckAllChange(event) {
       this.checkedPowers = event.target.checked ? powerOptions : [];
@@ -445,53 +469,82 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.powers.length;
     },
+    getId(str,obj){
+       for(var i = 0 ; i < this.objOptions.length ; i ++ ){
+          if(str == this.objOptions[i].value){
+            return this.objOptions[i].id
+          }
+       }
+    },
     create(formName) {
-      console.log(this.temp)
-      this.$refs[formName].validate((valid) => {
-        if(valid){
-
+      console.log(this.temp);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
           var obj = {
-            companyId: "ad86de2fbac14039afe4c4bb12dbf565",
-            companyName: "总公司",
-            loginFlag: "1",
-            loginName: this.temp.phone,
             mobile: this.temp.phone,
             name: this.temp.name,
             newPassword: this.temp.password,
-            no: "00000909",
             officeId: "cce1ffa65994451abdb00fe56b338e4d",
-            officeName: "国安社区",
-            roles: ["5f9143f86b58404c962bb704c7bd4f07"]
+            stationId: "1",
+            roles: ["5f9143f86b58404c962bb704c7bd4f07"],
+            useable: "1"
           };
-          addStaff(obj).then(res=>{
-            console.log(res)
-            if(res.data.code ===1){
-                this.dialogFormVisible = false;
-                this.getList();
-                this.$notify({
-                  title: "成功",
-                  message: res.data.data,
-                  type: "success",
-                  duration: 2000
-                });
-            }else{             
-              this.$notify({
-                  title: "失败",
-                  message: "重名或者参数有误",
-                  type: "error",
-                  duration: 3000
-                });
+          addStaff(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.dialogFormVisible = false;
+              this.getList();
+              this.$message({
+                type: "success",
+                message: "新增成功"
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "发生错误"
+              });
             }
-          })
-        }else{
-          return false
+          });
+        } else {
+          return false;
         }
-      
-      })
+      });
     },
-    createStation(){
+    create2(formName) {
       console.log(this.temp2)
-      console.log(this.checkedPowers)
+      var str = ''
+      for (var i =0;i < this.checkedPowers.length;i ++){
+         str += this.getId(this.checkedPowers[i]) +','
+      }
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var obj = {
+            name: this.temp2.name,
+            dataScope: this.temp.dataScope,
+            menuIds: str,
+            useable: this.stationState //状态
+          };
+          this.dialogFormVisible = false;
+          addStation(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "添加成功"
+              });
+              this.getList();
+            } else {
+              this.$message({
+                type: "error",
+                message: "发生未知错误，或者角色已存在"
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+      this.resetTemp()
     },
     update() {
       console.log(111);
@@ -505,15 +558,14 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        phone: null,
+        phone: "",
         name: "",
         password: "",
-        password2: "",
-        mechanism: "",
-        servicestation: "",
-        station: "",
-        peostate: ""
+        password2: ""
       };
+      this.mechanism=[],
+      this.servicestation= [],
+      this.station= []
     },
     resetTemptwo() {
       this.temp2 = {
@@ -523,7 +575,11 @@ export default {
       };
     },
     resetForm(formName) {
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
+      this.$refs[formName].resetFields();
+    },
+    resetForm2(formName) {
+      this.dialogFormStation = false
       this.$refs[formName].resetFields();
     },
     formatJson(filterVal, jsonData) {
@@ -575,45 +631,62 @@ export default {
   width: 100%;
   padding: 10%;
 }
-body{
-    background-color:#f5f5f5;
+body {
+  background-color: #f5f5f5;
 }
-.bgWhite{
-    background-color: #ffffff;
-    padding: 20px
+.bgWhite {
+  background-color: #ffffff;
+  padding: 20px;
 }
-.btn_pad{
-    margin:0px 0px 10px 20px;
+.btn_pad {
+  margin: 0px 0px 10px 20px;
 }
-.btn_right{
-  float:right;
+.btn_right {
+  float: right;
 }
 .el-table {
-    font-size: 12px;
+  font-size: 12px;
 }
-.el-table__header-wrapper{
-  font-size:14px;
+.el-table__header-wrapper {
+  font-size: 14px;
 }
-.ceshi{
-  height: 30px;
+.ceshi {
+  height: 25px;
   width: 80px;
 }
-.ceshi2 label{
+.ceshi2 label {
   padding-left: 12px;
 }
-.ceshi3{
- 
+.ceshi3 {
   font-size: 14px;
-  color: #1f2d3d;
-  border: 1px solid #4c70e8;
+  color: #1d85fe;
+  border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
-.ceshi4{
- 
+.ceshi3:hover {
+  color: #ffffff;
+  border: 1px solid #3e9fff;
+  background-color: #3e9fff;
+}
+.ceshi4 {
+  color: #999999;
+  border: 1px solid #b9b9b9;
   font-size: 14px;
   background-color: #ffffff;
 }
-.dialog-footer{
+.checkBox1 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
+}
+.checkBox2 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
+}
+.checkBox3 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
+}
+.dialog-footer {
   text-align: center;
 }
 </style>

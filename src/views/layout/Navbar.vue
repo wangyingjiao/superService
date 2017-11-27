@@ -98,6 +98,7 @@
  }
   .navbar {
     height: 88px;
+    overflow: hidden;
     line-height: 88px;
     border-radius: 0px !important;
     margin-bottom: 20px;
