@@ -28,6 +28,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+<<<<<<< HEAD
       '/api': {
        target: 'http://192.168.1.199:8800/',
        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -40,7 +41,37 @@ module.exports = {
       //    pathRewrite: {
       //      '^/api': ''
       //    }
+=======
+<<<<<<< HEAD
+      '/api': {
+        target: 'http://192.168.1.199:8800/',
+        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^/api': ''
+        }
+      // '/api': {
+      //   target: 'http://10.16.70.80:8800/',
+      //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/api': ''
+      //   }
+        }
+=======
+      //'/api': {
+        //target: 'http://192.168.1.105:8800/',
+        //changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+        //pathRewrite: {
+         // '^/api': ''
+       // }
+       '/api': {
+       target: 'http://10.16.70.80:8800/',
+         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+         pathRewrite: {
+           '^/api': ''
+         }
+>>>>>>> 548bac8082b2c94311b6f9c27d4b508a9bb79281
        }
+>>>>>>> 4241a76723a0b3a9064444cc9ffab16d028343c0
       
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

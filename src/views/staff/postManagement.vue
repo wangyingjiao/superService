@@ -1,13 +1,8 @@
 <template>
 <div>
   <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search">
       </el-input>
-
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择岗位名称">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
       <button class="button-large btn_right" @click="handleFilter">搜索</button>
     </div>
   <div class="app-container calendar-list-container">
@@ -23,21 +18,16 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" >
-        <template scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
+      <el-table-column align="center" label="编号" type="index" width="200">
       </el-table-column>
 
-      <el-table-column  label="岗位名称" align="center" >
-        <template scope="scope">
-          <span class="">管理者</span>
-        </template>
+      <el-table-column  label="岗位名称" align="center" prop="name" >
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="状态">
+      <el-table-column class-name="status-col" label="状态" prop="userable" align="center">
        <template scope="scope">
-          <span>可用</span>
+          <span v-if="scope.row.useable =='1'">可用</span>
+					<span v-if="scope.row.useable =='0'">不可用</span>
         </template>
       </el-table-column>
 
@@ -46,9 +36,9 @@
           <div style="display:flex;justify-content: center;">
               <div class="site-div" @click="handleUpdate(scope.row)">
                 <div class="back-icon-bg"></div>
-                <div>编辑状态</div>
+                <div>编辑</div>
               </div>
-              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+              <div class="site-div" @click="handleDelete(scope.row)">
                 <div class="back-icon-del"></div>
                 <div>删除</div>
               </div>
@@ -65,49 +55,60 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-      <el-form class="small-space" :model="temp" label-position="left" label-width="70px" style='width: 500px; margin-left:20px;'>
+    <el-dialog 
+       :title="textMap[dialogStatus]" 
+       :visible.sync="dialogFormVisible" 
+       :show-close= "false"
+       class="diatable">
+      <el-form 
+        class="small-space" 
+        :model="temp" 
+        label-position="left"
+        :rules="rules"
+        ref="temp" 
+        label-width="160px" 
+        style='width: 500px; margin-left:20px;'>
 
-        <el-form-item label="岗位名称">
-          <el-input :maxlength="15" :minlength="2" style='width: 400px;' placeholder="请输入2-15位的岗位名称">123</el-input>
+        <el-form-item label="岗位名称" prop="name">
+          <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp2.stationLv" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item" :label="item" :value="item">
+        <el-form-item label="等级" prop="dataScope">
+          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
+            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限">
-           <div class="checkRightBox" style='width: 400px;'>
-            <div class="checkAllBox">
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            </div>
-              <el-checkbox-group v-model="checkedPowers" @change="handleCheckedPowersChange">
-                <div class="checkBox1">
-                <el-checkbox v-for="power in powers1" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-                <div class="checkBox2">
-                <el-checkbox v-for="power in powers2" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-                <div class="checkBox3">
-                <el-checkbox v-for="power in powers3" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-              </el-checkbox-group>
-            </div>
+        <el-form-item label="权限" prop="check">
+            <el-tree
+              :data="data2"
+              :indent= 10
+              show-checkbox
+              node-key="id"
+              v-model="temp.check"
+              ref="domTree"
+              style='width: 400px;'
+              @check-change="handTreechange"
+              :default-expand-all = "true"
+              :props="defaultProps">
+            </el-tree>
+  
         </el-form-item>
         <el-form-item label="状态">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp2.stationState" placeholder="可用">
-            <el-option v-for="item in stationState" :key="item" :label="item" :value="item">
+          <el-select style='width: 400px;' class="filter-item" v-model="stationState">
+            <el-option v-for="item in state" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+        <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
         <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
       </div>
     </el-dialog>
 
@@ -117,126 +118,141 @@
 </template>
 
 <script>
-import { fetchList, fetchPv } from '@/api/article'
-import waves from '@/directive/waves/index.js' // 水波纹指令
-import { parseTime } from '@/utils'
+import {
+  getStation,
+  addStation,
+  delStation,
+  searchStation,
+  getPower,
+  getMenudata
+} from "@/api/staff";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
+var data = [];
 
-const mechanism = [
-      { key: '1', display_name: '日常保洁' },
-      { key: '2', display_name: '除尘除螨' },
-      { key: '3', display_name: '家电清洗' },
-      { key: '4', display_name: '擦玻璃' }
-]
-
-const servicestation = [
-      { key: '1', display_name: '呼家楼服务站' },
-      { key: '2', display_name: '其他' }
-]
-
-const peostate = [
-      { key: '1', display_name: '可用' },
-      { key: '2', display_name: '不可用' }
-]
-
-const powerOptions = ['机构管理', '服务机构', '服务站', '服务管理', '服务类型', '服务属性', '服务项目', '单位管理', '服务人员管理', '人员管理', '增加人员', '技能管理']
-const powerOptions1 = ['机构管理', '服务机构', '服务站']
-const powerOptions2 = ['服务管理', '服务类型', '服务属性', '服务项目', '单位管理', ]
-const powerOptions3 = ['服务人员管理', '人员管理', '增加人员', '技能管理']
-
-const stationLv = ['一级', '二级', '三级', '四级', '五级', '六级', '七级', '八级', '九级', '十级']
-const stationState = ['可用', '不可用']
-// arr to obj
-const mechanismKeyValue = mechanism.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
-  name: 'table_demo',
+  name: "table_demo",
   directives: {
     waves
   },
   data() {
     return {
-      list: [1,2,3],
+      list: [],
       total: null,
       listLoading: false,
+      state: false,
+      search: "",
       listQuery: {
         page: 1,
         limit: 6,
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: '+id'
+        sort: "+id"
       },
+      stationState: "1",
       temp: {
-        id: undefined,
-        password: '',
-        password2: '',
-        mechanism: '',
-        servicestation: '',
-        station: '',
-        peostate: '',
-      },
-      temp2: {
-        stationName: '',
-        stationLv: '',
-        stationState: ''
+        name: "",
+        dataScope: "",
+        check: []
       },
       importanceOptions: [1, 2, 3],
-      mechanism,
-      servicestation,
-      station:[1, 2, 3],
-      peostate,
-      stationName: '',
-      stationLv:stationLv,
-      stationState:stationState,
+      station: [1, 2, 3],
+      stationName: "",
+      stationLv: [
+        { id: "1", value: "一级" },
+        { id: "2", value: "二级" },
+        { id: "3", value: "三级" },
+        { id: "4", value: "四级" },
+        { id: "5", value: "五级" },
+        { id: "6", value: "六级" },
+        { id: "7", value: "七级" },
+        { id: "8", value: "八级" },
+        { id: "9", value: "九级" }
+      ],
       dialogFormVisible: false,
-      dialogStatus: '',
+      state: state,
+      dialogStatus: "",
       textMap: {
-        update: '编辑',
-        create: '添加'
+        update: "编辑",
+        create: "添加"
       },
       dialogPvVisible: false,
       pvData: [],
-      showAuditor: false,
       tableKey: 0,
-      checkAll: true,
-      checkedPowers: [],
-      powers: powerOptions,
-      powers1: powerOptions1,
-      powers2: powerOptions2,
-      powers3: powerOptions3,
-      isIndeterminate: true
-    }
+      data2: data,
+      defaultProps: {
+        children: "subMenus",
+        label: "name"
+      },
+      powerList: [],
+      isIndeterminate: true,
+      rules: {
+        name: [
+          { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        check: [
+          {
+            type: "array",
+            required: true,
+            message: "权限不能为空",
+            trigger: "check-change"
+          }
+        ]
+      }
+    };
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return mechanismKeyValue[type]
+        published: "success",
+        draft: "gray",
+        deleted: "danger"
+      };
+      return statusMap[status];
     }
   },
   created() {
-    //this.getList()
+    this.getList();
+    getMenudata().then(res => {
+      console.log(res);
+      this.data2 = res.data.data;
+    });
   },
   methods: {
     getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
-      })
+      this.listLoading = true;
+      getStation().then(res => {
+        console.log(res);
+        this.list = res.data.data;
+        this.listLoading = false;
+      });
     },
     handleFilter() {
-      // this.listQuery.page = 1
-      // this.getList()
+      this.listQuery.page = 1;
+      var obj = {
+        name: this.search
+      };
+      if (this.search) {
+        searchStation(obj).then(res => {
+          if (res.data.code === 1) {
+            this.listLoading = true;
+            this.list = res.data.data;
+            this.listLoading = false;
+          } else {
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
+          }
+        });
+      }else{
+        console.log(11111)
+        this.getList()
+      }
     },
     handleSizeChange(val) {
       // this.listQuery.limit = val
@@ -246,171 +262,270 @@ export default {
       // this.listQuery.page = val
       // this.getList()
     },
+    handTreechange(a, b, c) {
+      this.temp.check = this.$refs.domTree.getCheckedKeys();
+      console.log(this.temp.check);
+    },
     timeFilter(time) {
       if (!time[0]) {
-        this.listQuery.start = undefined
-        this.listQuery.end = undefined
-        return
+        this.listQuery.start = undefined;
+        this.listQuery.end = undefined;
+        return;
       }
-      this.listQuery.start = parseInt(+time[0] / 1000)
-      this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000)
+      this.listQuery.start = parseInt(+time[0] / 1000);
+      this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
+    lvChange(value) {
+      console.log(value);
+      console.log(this.dataScope);
+      this.temp.dataScope = value;
     },
     handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-    },
-    addstation() {
-      this.resetTemptwo()
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+      // var promise = new Promise(function(resove, reject) {
+      getPower(row.id).then(res => {
+        console.log(res);
+        this.temp.check = res.data.data.menuIdList;
+        this.$refs.domTree.setCheckedKeys(this.temp.check);
+      });
+
+      this.dataScope = row.dataScope;
+
+      this.temp = Object.assign({}, row);
+      this.stationState = this.temp.useable;
+      this.dialogStatus = "update";
+      this.dialogFormVisible = true;
     },
     handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
+        .then(() => {
+          console.log(row);
+          var obj = {
+            id: row.id
+          };
+          delStation(obj)
+            .then(res => {
+              console.log(res);
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.getList();
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "该信息不可删除"
+                });
+              }
+            })
+            .catch(() => {
+              this.$message({
+                type: "warning",
+                message: "发生未知错误，请稍后再试"
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    handleCheckAllChange(event) {
-      this.checkedPowers = event.target.checked ? powerOptions : []
-      this.isIndeterminate = false
-      },
-    handleCheckedPowersChange(value) {
-      let checkedCount = value.length
-      this.checkAll = checkedCount === this.powers.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.powers.length
-      },
-    create() {
-      this.temp.id = 1
-      this.temp.password = 'abc'
-      this.temp.password2 = 'abc'
-      this.list.unshift(this.temp)
-      this.dialogFormVisible = false
-      this.$notify({
-        title: '成功',
-        message: '增加成功',
-        type: 'success',
-        duration: 2000
-      })
-    },
-    update() {
-      this.temp.timestamp = +this.temp.timestamp
-      for (const v of this.list) {
-        if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v)
-          this.list.splice(index, 1, this.temp)
-          break
+    getLv() {
+      for (var i = 0; i < this.stationLv.length; i++) {
+        if ("2" == this.stationLv[i].id) {
+          return this.stationLv[i].value;
         }
       }
-      this.dialogFormVisible = false
-      this.$notify({
-        title: '成功',
-        message: '编辑成功',
-        type: 'success',
-        duration: 2000
-      })
+    },
+    create(formName) {
+      console.log(this.temp);
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var obj = {
+            name: this.temp.name,
+            dataScope: this.temp.dataScope,
+            menuIds: str,
+            useable: this.stationState //状态
+          };
+          this.dialogFormVisible = false;
+          addStation(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$refs.domTree.setCheckedKeys([]);
+              this.$message({
+                type: "success",
+                message: "添加成功"
+              });
+              this.getList();
+            } else {
+              this.$refs.domTree.setCheckedKeys([]);
+              this.resetTemp();
+              this.$message({
+                type: "error",
+                message: "发生未知错误，或者角色已存在"
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    update(formName) {
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+      this.$refs[formName].validate(valid => {
+        console.log(this.dataScope);
+        if (valid) {
+          var obj = {
+            id: this.temp.id,
+            name: this.temp.name,
+            dataScope: this.temp.dataScope,
+            menuIds: str,
+            useable: this.stationState //状态
+          };
+          this.dialogFormVisible = false;
+          addStation(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "修改成功"
+              });
+              this.getList();
+            } else {
+              this.$message({
+                type: "error",
+                message: "发生未知错误"
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.dialogFormVisible = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        password: '',
-        password2: '',
-        mechanism: '',
-        servicestation: '',
-        station: '',
-        peostate: ''
-      }
-    },
-    resetTemptwo() {
-      this.temp2 = {
-        stationName: '',
-        stationLv: '请选择',
-        stationState: ''
-      }
+        name: "",
+        dataScope: "",
+        check: []
+      };
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
+        this.pvData = response.data.pvData;
+        this.dialogPvVisible = true;
+      });
     },
 
     formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === "timestamp") {
+            return parseTime(v[j]);
+          } else {
+            return v[j];
+          }
+        })
+      );
     }
   }
-}
+};
 </script>
-<style scoped>
-.btn_right{
-  float:right;
-  width:100px;
+<style>
+.btn_right {
+  float: right;
+  width: 100px;
 }
-.btn_left{
-  width:100px;
+.btn_left {
+  width: 100px;
 }
-.checkRightBox{
+.checkRightBox {
   border: solid 1px #dcdcdc;
   padding: 10px;
 }
-.checkAllBox{
+.checkAllBox {
   padding: 10px 0;
 }
-.checkBox1{
+.checkBox1 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
   border-bottom: solid 1px #dcdcdc;
 }
-.checkBox2{
+.checkBox2 {
   padding: 10px 0;
 }
-.checkBox3{
+.checkBox3 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
-.checkBox1 .el-checkbox{
-   margin-left: 0px;
-   margin-right: 15px 
+.checkBox1 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
 }
-.checkBox2 .el-checkbox{
-   margin-left: 0px;
-   margin-right: 15px
+.checkBox2 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
 }
-.checkBox3 .el-checkbox{
-   margin-left: 0px;
-   margin-right: 15px
+.checkBox3 .el-checkbox {
+  margin-left: 0px;
+  margin-right: 15px;
 }
-body{
-    background-color:#f5f5f5;
+body {
+  background-color: #f5f5f5;
 }
-.bgWhite{
-    background-color: #ffffff;
-    padding: 20px
+.bgWhite {
+  background-color: #ffffff;
+  padding: 20px;
 }
-.btn_pad{
-    margin:0px 0px 10px 20px;
+.btn_pad {
+  margin: 0px 0px 10px 20px;
 }
-.btn_right{
-  float:right;
+.btn_right {
+  float: right;
+}
+.el-tree-node
+  .el-tree-node__children
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: left;
+}
+.el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+  float: left;
+}
+.el-tree-node:nth-child(1)
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: none;
 }
 </style>

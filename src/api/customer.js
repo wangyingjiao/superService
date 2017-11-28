@@ -5,8 +5,8 @@ let instance = axios.create({
 
 })
 // 获取客户表格信息
-export function getCusTable(obj) {
-  return instance.post(`/api/a/service/order/orderCustomInfo/listData`, obj)
+export function getCusTable(obj,pageNumber,pageSize) {
+  return instance.post(`/api/a/service/order/orderCustomInfo/listData?pageNo=`+pageNumber+'&pageSize='+pageSize, obj)
 }
 // 删除客户
 export function deleteCus(obj) {
