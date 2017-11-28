@@ -469,7 +469,7 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount < this.powers.length;
     },
-    getId(str,obj){
+    getId(str){
        for(var i = 0 ; i < this.objOptions.length ; i ++ ){
           if(str == this.objOptions[i].value){
             return this.objOptions[i].id

@@ -55,46 +55,47 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+    <el-dialog 
+       :title="textMap[dialogStatus]" 
+       :visible.sync="dialogFormVisible" 
+       :show-close= "false"
+       class="diatable">
       <el-form 
         class="small-space" 
         :model="temp" 
         label-position="left"
         :rules="rules"
         ref="temp" 
-        label-width="80px" 
+        label-width="160px" 
         style='width: 500px; margin-left:20px;'>
 
-        <el-form-item label="岗位名称">
+        <el-form-item label="岗位名称" prop="name">
           <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级">
-          <el-select style='width: 400px;' class="filter-item" v-model="dataScope" placeholder="请选择">
+        <el-form-item label="等级" prop="dataScope">
+          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限">
-           <div class="checkRightBox" style='width: 400px;'>
-            <div class="checkAllBox">
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            </div>
-              <el-checkbox-group v-model="checkedPowers" @change="handleCheckedPowersChange">
-                <div class="checkBox1">
-                <el-checkbox v-for="power in powers1" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-                <div class="checkBox2">
-                <el-checkbox v-for="power in powers2" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-                <div class="checkBox3">
-                <el-checkbox v-for="power in powers3" :label="power" :key="power" class="check">{{power}}</el-checkbox>
-                </div>
-              </el-checkbox-group>
-            </div>
+        <el-form-item label="权限" prop="check">
+            <el-tree
+              :data="data2"
+              :indent= 10
+              show-checkbox
+              node-key="id"
+              v-model="temp.check"
+              ref="domTree"
+              style='width: 400px;'
+              @check-change="handTreechange"
+              :default-expand-all = "true"
+              :props="defaultProps">
+            </el-tree>
+  
         </el-form-item>
         <el-form-item label="状态">
-          <el-select style='width: 400px;' class="filter-item" v-model="stationState" placeholder="请选择">
+          <el-select style='width: 400px;' class="filter-item" v-model="stationState">
             <el-option v-for="item in state" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -117,25 +118,18 @@
 </template>
 
 <script>
-import { getStation, addStation, delStation, searchStation ,getPower} from "@/api/staff";
+import {
+  getStation,
+  addStation,
+  delStation,
+  searchStation,
+  getPower,
+  getMenudata
+} from "@/api/staff";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
+var data = [];
 
-const powerOptions = ["机构管理","服务机构","服务站","服务管理","服务类型","服务属性","服务项目","单位管理","服务人员管理","人员管理","增加人员","技能管理"];
-const objOptions = [
-  {id:'1',value:'机构管理'},
-  {id:'2',value:'服务机构'},
-  {id:'3',value:'服务站'},
-  {id:'4',value:'服务管理'},
-  {id:'5',value:'服务类型'},
-  {id:'6',value:'服务属性'},
-  {id:'7',value:'服务项目'},
-  {id:'8',value:'单位管理'},
-  {id:'9',value:'服务人员管理'},
-  {id:'10',value:'人员管理'},
-  {id:'11',value:'增加人员'},
-  {id:'12',value:'技能管理'}
-  ];
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
   name: "table_demo",
@@ -148,7 +142,7 @@ export default {
       total: null,
       listLoading: false,
       state: false,
-      search:'',
+      search: "",
       listQuery: {
         page: 1,
         limit: 6,
@@ -157,17 +151,26 @@ export default {
         type: undefined,
         sort: "+id"
       },
-      dataScope: "",
-      stationState: "",
+      stationState: "1",
       temp: {
         name: "",
         dataScope: "",
-        stationState: ""
+        check: []
       },
       importanceOptions: [1, 2, 3],
       station: [1, 2, 3],
       stationName: "",
-      stationLv: [{id:1,value:'一级'}, {id:2,value:'二级'}, {id:3,value:'三级'}, {id:4,value:'四级'}, {id:5,value:'五级'}, {id:6,value:'六级'}, {id:7,value:'七级'}, {id:8,value:'八级'}, {id:9,value:'九级'}],
+      stationLv: [
+        { id: "1", value: "一级" },
+        { id: "2", value: "二级" },
+        { id: "3", value: "三级" },
+        { id: "4", value: "四级" },
+        { id: "5", value: "五级" },
+        { id: "6", value: "六级" },
+        { id: "7", value: "七级" },
+        { id: "8", value: "八级" },
+        { id: "9", value: "九级" }
+      ],
       dialogFormVisible: false,
       state: state,
       dialogStatus: "",
@@ -178,35 +181,27 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       tableKey: 0,
-      checkAll: true,
-      checkedPowers: [],
-      objOptions:objOptions,
-      powers: [
-        "机构管理",
-        "服务机构",
-        "服务站",
-        "服务管理",
-        "服务类型",
-        "服务属性",
-        "服务项目",
-        "单位管理",
-        "服务人员管理",
-        "人员管理",
-        "增加人员",
-        "技能管理"
-      ],
-      powers1: ["机构管理", "服务机构", "服务站"],
-      powers2: ["服务管理", "服务类型", "服务属性", "服务项目", "单位管理"],
-      powers3: ["服务人员管理", "人员管理", "增加人员", "技能管理"],
-      powerList:[],
+      data2: data,
+      defaultProps: {
+        children: "subMenus",
+        label: "name"
+      },
+      powerList: [],
       isIndeterminate: true,
       rules: {
         name: [
           { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        lv: [{ required: true, message: "等级不能为空" }],
-        check: [{ required: true, message: "权限不能为空", trigger: "change" }]
+        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        check: [
+          {
+            type: "array",
+            required: true,
+            message: "权限不能为空",
+            trigger: "check-change"
+          }
+        ]
       }
     };
   },
@@ -222,6 +217,10 @@ export default {
   },
   created() {
     this.getList();
+    getMenudata().then(res => {
+      console.log(res);
+      this.data2 = res.data.data;
+    });
   },
   methods: {
     getList() {
@@ -233,23 +232,27 @@ export default {
       });
     },
     handleFilter() {
-      console.log(this.search);
-      this.listQuery.page = 1
-      var obj={
-        name:this.search
+      this.listQuery.page = 1;
+      var obj = {
+        name: this.search
+      };
+      if (this.search) {
+        searchStation(obj).then(res => {
+          if (res.data.code === 1) {
+            this.listLoading = true;
+            this.list = res.data.data;
+            this.listLoading = false;
+          } else {
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
+          }
+        });
+      }else{
+        console.log(11111)
+        this.getList()
       }
-      searchStation(obj).then(res=>{
-        if(res.data.code === 1){
-          this.listLoading = true
-          this.list = res.data.data
-          this.listLoading = false
-        }else{
-          this.$message({
-                type: "warning",
-                message: "岗位名不存在"
-              });
-        }
-      })
     },
     handleSizeChange(val) {
       // this.listQuery.limit = val
@@ -258,6 +261,10 @@ export default {
     handleCurrentChange(val) {
       // this.listQuery.page = val
       // this.getList()
+    },
+    handTreechange(a, b, c) {
+      this.temp.check = this.$refs.domTree.getCheckedKeys();
+      console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -268,36 +275,30 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
+    lvChange(value) {
+      console.log(value);
+      console.log(this.dataScope);
+      this.temp.dataScope = value;
+    },
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log(row)
-      // var promise = new Promise(function(resove,reject){
-        
-      // })
-      getPower(row.id).then(res=>{
-        console.log(res)
-        this.powerList = res.data.data.menuIdList
-      })
-      var arr = []
-      for (var i = 0;i<=this.powerList;i++ ){
-        for(var j = 0;j < this.objOptions ;j++){
-           if(this.powerList[i] == this.objOptions[j].id){
-              arr.push(this.objOptions[j].value)
-           }
-        }
-        
-      }
-      console.log(arr)
+      // var promise = new Promise(function(resove, reject) {
+      getPower(row.id).then(res => {
+        console.log(res);
+        this.temp.check = res.data.data.menuIdList;
+        this.$refs.domTree.setCheckedKeys(this.temp.check);
+      });
+
+      this.dataScope = row.dataScope;
+
       this.temp = Object.assign({}, row);
-      this.stationState = this.temp.useable
+      this.stationState = this.temp.useable;
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-      this.checkedPowers = ["人员管理","增加人员"]
-      this.dataScope = this.getLv(row.dataScope)
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -340,51 +341,26 @@ export default {
           });
         });
     },
-    handleCheckAllChange(event) {
-      this.checkedPowers = event.target.checked ? powerOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedPowersChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.powers.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.powers.length;
-    },
-    getId(str,obj){
-       for(var i = 0 ; i < this.objOptions.length ; i ++ ){
-          if(str == this.objOptions[i].value){
-            return this.objOptions[i].id
-          }
-       }
-    },
-    getValue(arr){
-      for(var j = 0 ; j<= arr.length; j++){
-       for(var i = 0 ; i < this.objOptions.length ; i ++ ){
-          if(arr[j] == this.objOptions[i].id){
-            return this.objOptions[i].value
-          }
+    getLv() {
+      for (var i = 0; i < this.stationLv.length; i++) {
+        if ("2" == this.stationLv[i].id) {
+          return this.stationLv[i].value;
         }
-       }
-       console.log(arr)
-    },
-    getLv(){
-       for(var i = 0;i< this.stationLv.length; i++){
-         if('2' == this.stationLv[i].id){
-           return this.stationLv[i].value
-         }
-       }
+      }
     },
     create(formName) {
-      console.log(this.temp)
-      var str = ''
-      for (var i =0;i < this.checkedPowers.length;i ++){
-         str += this.getId(this.checkedPowers[i]) +','
+      console.log(this.temp);
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
       }
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {
             name: this.temp.name,
-            dataScope: '2',
+            dataScope: this.temp.dataScope,
             menuIds: str,
             useable: this.stationState //状态
           };
@@ -392,12 +368,16 @@ export default {
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
+              this.resetTemp();
+              this.$refs.domTree.setCheckedKeys([]);
               this.$message({
                 type: "success",
                 message: "添加成功"
               });
               this.getList();
             } else {
+              this.$refs.domTree.setCheckedKeys([]);
+              this.resetTemp();
               this.$message({
                 type: "error",
                 message: "发生未知错误，或者角色已存在"
@@ -408,17 +388,21 @@ export default {
           return false;
         }
       });
-      this.resetTemp()
     },
     update(formName) {
-      console.log(this.stationLv)
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
       this.$refs[formName].validate(valid => {
+        console.log(this.dataScope);
         if (valid) {
           var obj = {
-            id:this.temp.id,
+            id: this.temp.id,
             name: this.temp.name,
-            dataScope: this.dataScope,
-            menuIds: "1,",
+            dataScope: this.temp.dataScope,
+            menuIds: str,
             useable: this.stationState //状态
           };
           this.dialogFormVisible = false;
@@ -444,17 +428,15 @@ export default {
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
+      this.resetTemp();
       this.$refs[formName].resetFields();
     },
     resetTemp() {
       this.temp = {
         name: "",
         dataScope: "",
-        stationState: ""
+        check: []
       };
-      this.checkedPowers=[]
-      this.stationState = ''
-      this.dataScope = ''
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
@@ -477,7 +459,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .btn_right {
   float: right;
   width: 100px;
@@ -528,5 +510,22 @@ body {
 }
 .btn_right {
   float: right;
+}
+.el-tree-node
+  .el-tree-node__children
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: left;
+}
+.el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+  float: left;
+}
+.el-tree-node:nth-child(1)
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: none;
 }
 </style>

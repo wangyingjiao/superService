@@ -31,7 +31,10 @@ export function getPower(str) {
 export function getSList(obj) {
   return instance.post(`/api/a/sys/office/listData`, obj)
 }
-
+// 获取menudata
+export function getMenudata() {
+  return instance.get(`/api/a/sys/user/menuData`)
+}
 // export function addMana(obj) {
 //   return instance.post(`/api//a/sys/office/saveData`, obj)
 // }
