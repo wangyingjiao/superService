@@ -7,8 +7,15 @@
 			<button type="button" class="button-large" @click="savePointer()">区域坐标</button>
 			<button type="button" class="button-large" @click="draw()">画多边形</button>
 			<button type="button" class="button-large" @click="clearAll()">清除多边形</button>
-				
-	   </div>		
+	<div ref="gdMap" class="mapWrap">
+
+	</div>				
+	   </div>
+
+    <div class="pickerBox">
+        <input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">		    
+    </div>
+			
     </div>
 </template>
 <script>
@@ -16,15 +23,17 @@ export default {
   data() {
     return {
        mainObj:{},
-	     maskObj:[],
+	   maskObj:[],
+	   inputvalue:'',
     };
   },
   mounted() {
-     this.initMap();
+	 this.initMap();
+	 this.initMap1();
   },
   methods: {
     initMap() {
-        var id=this.$refs.map
+		var id=this.$refs.map		
 		var map = new BMap.Map(id);  
 		var poi = new BMap.Point(113.948913,22.530844);  
 		map.centerAndZoom(poi, 16);  
@@ -76,7 +85,44 @@ export default {
 	   });
        this.maskObj=overlays;		
        this.dotarr=obj;	   
-    },
+	},
+	initMap1(){
+		var id=this.$refs.gdMap;
+		var inputname=this.$refs.pickerInput;
+		var map = new AMap.Map(id, {
+				zoom: 10
+		});
+		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
+				var poiPicker = new PoiPicker({
+						city:'北京',
+						input: inputname
+				});
+				//初始化poiPicker
+				poiPickerReady(poiPicker);
+		});
+		function poiPickerReady(poiPicker) {
+				window.poiPicker = poiPicker;
+				var marker = new AMap.Marker();
+				var infoWindow = new AMap.InfoWindow({
+						offset: new AMap.Pixel(0, -20)
+				});
+				//选取了某个POI
+				poiPicker.on('poiPicked', function(poiResult) {
+						var source = poiResult.source,
+								poi = poiResult.item,
+								info = {
+										source: source,
+										id: poi.id,
+										name: poi.name,
+										location: poi.location.toString(),
+										address: poi.address
+								};
+								inputname.value=info.name
+								alert(info.location);
+				});
+		}						
+	},
+		
 	savePointer(){	   
 	    alert(this.dotarr);
 	},
@@ -107,5 +153,10 @@ export default {
 	position:absolute;
 	bottom:30px;
 	left:720px;
+}
+.mapWrap{
+	width:0px;
+	height:0px;
+	display:block;
 }
 </style>

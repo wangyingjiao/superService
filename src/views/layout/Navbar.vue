@@ -28,10 +28,7 @@
         <li>新增客户</li>
       </ul>
     </div>
-
-    <div style="width:100%;float:left;height:28px;line-height:28px;margin-top:2px;background:#fff;padding-left:10px;margin-left:0px;">
-    </div>
-    <tabs-view style="position:relative;margin-top:-30px;margin-left:20px;"></tabs-view>
+    <tabs-view style="position:relative;    margin-left: -0px;background: #fff;margin-top: 2px;"></tabs-view>
   </el-menu>
 
 </template>
@@ -85,7 +82,6 @@
  }
   .navbar {
     height: 88px;
-    overflow: hidden;
     line-height: 88px;
     border-radius: 0px !important;
     margin-bottom: 20px;

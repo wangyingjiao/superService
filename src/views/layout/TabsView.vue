@@ -107,10 +107,10 @@ export default {
     vertical-align: top;
     margin-left: 10px;
     .leftmove{
-        display:inline-block; float:left;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;margin-left:-10px;font-size:25px;color:gray;
+        display:inline-block; float:left;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;margin-top: -3px;font-size:25px;color:gray;
     }
     .rightmove{
-        display:inline-block;float:right;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;font-size:25px;color:gray;margin-right:20px;
+        display:inline-block;float:right;width:30px;height:28px;line-height:28px;text-align:center;cursor:pointer;margin-top: -3px;font-size:25px;color:gray;
     }
     .tabs-view {
 	  float:left;
