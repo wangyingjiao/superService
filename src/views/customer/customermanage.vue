@@ -8,16 +8,18 @@
 				</el-option>
 		  </el-select>
       		  
-		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch">搜&nbsp&nbsp&nbsp&nbsp索</button>
+		  <button class="search-button" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<div class="second-bar" style="height:500px;">
-		  <button type="button" class="button-small" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp增</button>
+		  <button type="button" class="add-button" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</button>
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px 60px 20px;">			      
 				    <el-table
 					  :data="tableData"
 						v-loading="listLoading"
+						tooltip-effect='light'
 					  border
-					  style="width:100%;">
+					  style="width:100%;"
+						>
 					  <el-table-column
 						align="center"
 						label="编号"
@@ -50,30 +52,35 @@
 						prop="officeName"
 						label="服务机构">
 					  </el-table-column>
-					  <el-table-column
+					 
+						<el-table-column
 						align="center"
-						prop="customAddr"
-						label="地址">
+						prop="customAddr"						
+						style="width:180px;"
+						label="地址"
+						:show-overflow-tooltip="true"
+						>						            
 					  </el-table-column>
+						
 					  <el-table-column
 						align="center"
 						label="操作">
 										<template scope="scope">
-												<button type="button"  @click="lookInf(scope.row)"><i class="el-icon-document"></i></button>
-												<button type="button" @click="Delete(scope.row)"><i class="el-icon-delete"></i></button>
+												<el-button type="button" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
 					</el-table>
 					<div  style="margin-top:20px;float:right;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
-						:page-sizes="[10, 20, 30, 40, 50, 100]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
+						:page-sizes="[5, 10, 15, 20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
 					</div>										
 			</div>
 		</div>
 		<!--新增客户弹窗-->
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
-				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left" class="demo-ruleForm">
+				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 					<el-form-item label="姓名:" prop="customName" >
 						<el-input v-model="ruleForm.customName" placeholder="请输入客户姓名" style="width:400px;"></el-input>
 					</el-form-item>
@@ -86,7 +93,7 @@
 					<el-form-item label="手机号:"  prop="customPhone">
                 <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
-					<el-form-item label="所在区域:" required>
+					<el-form-item label="所在区域:" prop="cusTownId">
 							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusProvId" placeholder="请选择省" @change="provinceChange">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
@@ -101,17 +108,26 @@
 							</el-select>
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="customAddr">
-						<el-input  v-model="ruleForm.customAddr" style="width:400px;" placeholder="请输入详细地址"></el-input>
+		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
+								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
+								<el-input style="margin-left:-5px;width:200px;"  v-model="ruleForm.customAddr" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="customEmail" style="margin-left:10px;">
 						<el-input  v-model="ruleForm.customEmail" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
-				</el-form>		    
-				<div slot="footer" class="dialog-footer">
+				</el-form>
+						    
+				<div slot="footer" class="dialog-footer" style="text-align:center;">
 						<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
+
 		</el-dialog>
+		<div style="float:left;margin-top:100px;background:red;">
+							  <div ref="gdMap" class="mapWrap"></div>
+              	
+		</div>
+
   </div>
 </template>
 
@@ -134,13 +150,19 @@ export default {
 				}
 		};
 		var checkEmail = (rule, value, callback) => {
+				if (!value) {
+            callback();
+				}else{
 					if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
 						callback(new Error('请输入正确的邮箱'));
 					} else {
 						callback();
 					}
+				}			
+
 		}; 		 		
     return {
+			  testvalue:'',
 			  listLoading:true,
         ruleForm: {
 					customName:'',
@@ -151,6 +173,9 @@ export default {
 					cusProvId:'',
 					cusCityId:'',
 					cusTownId:'',
+					customArea:'',
+					addrLongitude:'',
+					addrLatitude:'',
 				},
         rules: {
           customName: [
@@ -163,14 +188,16 @@ export default {
           ],
           customAddr: [
             { required: true, message: '详细地址不能为空', trigger: 'blur' },
-						{ min:6, max: 100, message: '长度在 6 到 100 个字符', trigger: 'blur' }
 					],
 					customEmail:[
-						{ validator: checkEmail, trigger: 'blur' }
+						{ required: false, validator: checkEmail, trigger: 'blur' }
 					],
 					customSex: [
-						{ required: true, message: '请选择状态', trigger: 'change' }
-					]
+						{ required: true, message: '请选择性别', trigger: 'change' }
+					],
+					cusTownId:[
+							{ required: true, message: '请选择区域', trigger: 'change' }
+					]					
         },
 		sex:[
 		  { key: "1", sexName: "男" },
@@ -222,9 +249,21 @@ export default {
       this.ruleForm.customSex=this.sex;
 		},
 		submitForm(formName) {
+			   if(this.$refs.pickerInput.value !=''){
+							this.ruleForm.customArea=this.$refs.pickerInput.value;
+							var str=this.$refs.pickerInput1.value;
+									str=str.split(',')
+									//经度
+									var lag=str[0];
+									this.ruleForm.addrLongitude=lag;
+									//纬度
+									var lat=str[1];
+									this.ruleForm.addrLatitude=lat;
+				 }else{
+					  // this.ruleForm.customAddr='';
+				 }			   
 					this.$refs[formName].validate((valid) => {
-						if (valid) {						
-													
+						if (valid) {																			
 							var obj = this.ruleForm
 							saveCus(obj).then(res => {
 								if(res.data.code === 1){
@@ -256,6 +295,8 @@ export default {
       resetForm(formName) {
 				this.$refs[formName].resetFields();
 				this.ruleForm.customSex='';
+				this.ruleForm.cusProvId='';
+				this.ruleForm.cusCityId='';
 				this.sexName='';
 				this.dialogTableVisible = false;
       },		 
@@ -285,11 +326,16 @@ export default {
     },	
 	 //新增
 		selectBut(){
-				this.dialogTableVisible=true;	
+				this.dialogTableVisible=true;					
+				this.ruleForm.customSex='';
+				this.ruleForm.cusProvId='';
+				this.ruleForm.cusCityId='';
+				this.sexName='';
 				//
 				var id=''
 		  	getArea(id).then(res => {
 					this.provinceOptions=res.data.data;
+					this.test();
 				}).catch(res=>{
 					
 				});				
@@ -345,11 +391,62 @@ export default {
         this.listLoading = false
 			});
 
-		}
+		},
+		test(){
+				var inputname=this.$refs.pickerInput;
+				var inputname1=this.$refs.pickerInput1;
+				AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
+						var poiPicker = new PoiPicker({
+								city:'北京',
+                type:'小区',
+								input: inputname
+						});
+						//初始化poiPicker
+						poiPickerReady(poiPicker);
+				});
+				var obj='';
+				function poiPickerReady(poiPicker) {
+						window.poiPicker = poiPicker;
+						var marker = new AMap.Marker();
+						var infoWindow = new AMap.InfoWindow({
+								offset: new AMap.Pixel(0, -20)
+						});
+						//选取了某个POI
+						poiPicker.on('poiPicked', function(poiResult) {
+								var source = poiResult.source,
+										poi = poiResult.item,
+										info = {
+												source: source,
+												id: poi.id,
+												name: poi.name,
+												location: poi.location.toString(),
+												address: poi.address,
+												
+										};
+										inputname.value=info.address;
+										inputname1.value=info.location;										
+						});
+						
+						poiPicker.onCityReady(function() {
+								poiPicker.suggest('周边小区');
+						});
+				}	
+								
+		},
+	initMap1(){
+		var id=this.$refs.gdMap;	
+		var map = new AMap.Map(id, {
+				zoom: 10
+		});
+	
+	},
+
   },
   mounted() {
+		 this.initMap1();
 		 this.getData();
 		 this.customSexselect();
+     
   }
 };
 </script>
@@ -374,5 +471,32 @@ export default {
   margin-left:20px;
   margin-right:20px;
   
+}
+.mapWrap{
+	width:0px;
+	height:0px;
+	display:block;
+}
+.pickerInput{
+	  width: 200px;
+		height: 36px;
+		font-size:12px;
+		padding:0 10px;
+    border: none;
+		border: 1px solid #bfcbd9;
+		outline:none;
+}
+.pickerInput:hover{
+	border-color:#8391a5;
+}
+.amap-ui-poi-picker-sugg{
+	width:180px;
+	overflow:hidden;
+}
+.amap-ui-poi-picker-sugg-list{
+	width:180px;
+}
+.sugg-item{
+	width:180px !important;
 }
 </style>

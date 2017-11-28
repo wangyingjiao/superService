@@ -10,22 +10,23 @@
         <div class="bgWhite">
           <button class="button-small btn_right btn_pad" @click="dialogVisible = true"> 新增</button>
           <el-table :key='tableKey' :data="getListdata" v-loading="listLoading" stripe fit highlight-current-row element-loading-text="正在加载"
-            style="width: 100%" v-for="(item,$index) in getListdata">
+            style="width: 100%">
 
             <el-table-column align="center" label="编号" width="100" type="index">
             </el-table-column>
 
             <el-table-column label="技能名称" align="center">
               <template scope="scope">
-                <span class="storey">{{item.name}}</span>
+                {{ scope.row.name}}
               </template>
             </el-table-column>
 
             <el-table-column label="技师个数" align="center">
               <template scope="scope">
-                <span class="">{{item.technicianNum}}</span>
+                {{ scope.row.name}}
               </template>
             </el-table-column>
+
 
             <el-table-column align="center" label="操作" min-width="100px">
               <template scope="scope">
@@ -34,7 +35,7 @@
                     <div class="back-icon-bg"></div>
                     <div>编辑状态</div>
                   </div>
-                  <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
+                  <div class="site-div" @click="handleDelete(scope.row)">
                     <div class="back-icon-del"></div>
                     <div>删除</div>
                   </div>
@@ -72,12 +73,16 @@
             <li style="margin:0">
               <div class="clearfix">
                 <p style="float:left;"><span class="tech-spansk"></span>&nbsp;</p>
+
                 <el-table :data="list" border style="width: 400px;margin:0px;float:left">
-                  <el-table-column prop="date" label="项目名称" width="100" height="30">
+                  <el-table-column prop="date" label="项目名称" width="100" height="30" align="center">
                   </el-table-column>
-                  <el-table-column prop="name" label="商品名称" width="180">
+                  <el-table-column prop="name" label="商品名称" width="180" align="center">
                   </el-table-column>
-                  <el-table-column prop="address" label="操作">
+                  <el-table-column prop="address" label="操作" align="center">
+                    <template scope="scope">
+                      <button>删除</button>
+                    </template>
                   </el-table-column>
                 </el-table>
               </div>
@@ -86,7 +91,15 @@
               <div class="clearfix">
                 <p style="float:left"><span class="tech-spansk">*</span>选择技师:</p>
                 <div class="tech-order-jnsk" style="float:left">
-                  <button class="tech-order-btnsk"> &#10010 请选择</button>
+                  <button class="tech-order-btnsk" @click="orderTech"> &#10010 请选择</button>
+                </div>
+              </div>
+            </li>
+            <li v-show="ortech">
+              <div class="clearfix">
+                <p style="float:left"><span class="tech-spansk"></span>&nbsp;</p>
+                <div class="tech-order-jnsk" style="float:left">
+
                 </div>
               </div>
             </li>
@@ -101,22 +114,73 @@
             </li>
           </ul>
         </el-dialog>
-        <el-dialog title="选择服务" :visible.sync="flagserver" style="width:60%;left:200px;">
+        <!-- 选择服务弹出层 -->
+        <el-dialog title="选择服务" :visible.sync="flagserver" style="width:60%;left:200px;overflow:hidden">
           <ul class="skill-server-ul">
             <li class="clearfix">
               <div style="float:left">
-                <el-input placeholder="输入要搜索的项目名称" style="width:220px"></el-input>
+                <el-input placeholder="输入要搜索的项目名称" style="width:220px" v-model="xingmu"></el-input>
+              </div>
+              <div style="float:right"><button class="selfCheckBox" @click="quiry">查询</button></div>
+              <li>
+                <el-table ref="multipleTable" :data="listorderServer "  border tooltip-effect="dark" style="width: 100%;margin:0;" @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="" align="center">
+                  </el-table-column>
+                  <el-table-column label="项目名称" align="center">
+                    <template scope="scope">{{ scope.row.name }}</template>
+                  </el-table-column>
+                  <el-table-column label="商品名称" align="center">
+                    <template scope="scope">{{ scope.row.name }}</template>
+                  </el-table-column>
+                </el-table>
+                </el-table>
+              </li>
+              <li>
+                <div v-show="!listLoading" class="pagination-container">
+                  <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+                    :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+                  </el-pagination>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <button class="selfCheckBox" @click="serversave">确定</button>
+                  <button class="selfCheckBox" @click="serversave">取消</button>
+                </div>
+              </li>
+          </ul>
+        </el-dialog>
+
+        <!-- 选择技师弹出层 -->
+        <el-dialog title="选择服务人员" :visible.sync="ordertech" style="left:120px;">
+          <ul class="skill-server-ul">
+            <li class="clearfix">
+              <div style="float:left;width:120px">
+                <el-input placeholder="输入要搜索的姓名" style="width:120px"></el-input>
+              </div>
+              <div style="float:left;margin-left:10px;">
+                <el-select clearable placeholder="请选择服务站">
+                  <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+                  </el-option>
+                </el-select>
               </div>
               <div style="float:right"><button class="selfCheckBox">查询</button></div>
               <li>
-                <el-table :data="list" border style="width: 100%;margin:0px;">
-                  <el-table-column prop="date" label="项目名称" width="100" height="30">
-                    <template scope="scope">
-                      <el-checkbox v-model="checked"></el-checkbox>
-                    </template>
+                <el-table ref="multipleTable" :data="listTech" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="55" align="center"  v-model="checkbox">
                   </el-table-column>
-
-                  <el-table-column prop="name" label="商品名称">
+                  <el-table-column label="头像" width="120" align="center">
+                    <template scope="scope">{{ scope.row.imgUrl}}</template>
+                  </el-table-column>
+                  <el-table-column  label="姓名" width="120" align="center">
+                    <template scope="scope">{{ scope.row.techName}}</template>
+                  </el-table-column>
+                  <el-table-column  label="性别" show-overflow-tooltip align="center">
+                    <template scope="scope">{{ scope.row.techSex}}</template>
+                  </el-table-column>
+                  <el-table-column  label="服务站" show-overflow-tooltip align="center">
+                    <template scope="scope">{{ scope.row.techStationName}}</template>
                   </el-table-column>
                 </el-table>
               </li>
@@ -130,7 +194,7 @@
               </li>
               <li>
                 <div>
-                  <button class="selfCheckBox" @click="serversave">保存</button>
+                  <button class="selfCheckBox" @click="techorde">确认</button>
                   <button class="selfCheckBox" @click="serversave">取消</button>
                 </div>
               </li>
@@ -143,12 +207,17 @@
 </template>
 
 <script>
+
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import {
     parseTime
   } from '@/utils'
   import {
-    getListdata
+    getListdata,
+    Skillserver,
+    getListser,
+    orderServer,
+    techDelet
   } from '@/api/skill'
 
   //挂载数据
@@ -169,9 +238,17 @@
     },
     data() {
       return {
+        commodityse: {},
+        options: [],
+        checkbox:false,
         getListdata: [],
+        ordertech: false,
+        xingmu: '',
         list: [1, 2, 3],
+        listTech: {},
+        listorderServer: {},
         checked: false,
+        ortech: false,
         total: null,
         listLoading: true,
         dialogVisible: false,
@@ -230,13 +307,6 @@
         this.listQuery.page = val
         this.getList()
       },
-      handleModifyStatus(row, status) {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        row.status = status
-      },
       handleCreate() {
         this.resetTemp()
         this.dialogStatus = 'create'
@@ -248,17 +318,40 @@
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
-      handleDelete(row) {
-        console.log("删除")
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
-      },
+      handleDelete(row) {    
+      // console.log(this.activeName) 
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          console.log(row)
+          var obj = {
+            id:row.id
+          }
+          techDelet(obj).then(res=>{
+            console.log(res)
+            if(res.data.code === 1){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.getList()
+            }else{
+              this.$message({
+                  type: 'warning',
+                  message: '分类下有服务项目，不可删除'
+                });
+            }
+          }).catch(()=>console.log("未知错误"))
+          
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
       create() {
         this.temp.id = 1
         this.list.unshift(this.temp)
@@ -306,16 +399,34 @@
       choseServer() {
         this.flagserver = true
       },
-      serversave(){
-        this.flagserver=false
+      serversave() {
+        this.flagserver = false
+      },
+      orderTech() {
+        this.ordertech = true
+      },
+      // 选择服务人员全选
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      quiry() {
+        // console.log(this.xingmu)
       }
     },
     mounted() {
       getListdata().then(res => {
-        console.log(res)
         this.getListdata = res.data.data.list
-        console.log(this.getListdata)
+      });
+      Skillserver().then(res => {
+        this.listTech = res.data.data.list
+      });
+      getListser().then(res => {
+        this.options = res.data;
+      });
+      orderServer().then(res => {
+        this.listorderServer = res.data.data.list
       })
+
     }
   }
 

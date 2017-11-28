@@ -156,10 +156,88 @@ a:hover {
   color: #4c70e8;
   background: #fff;
 }
+//搜索按钮样式
+.search-button{
+  cursor: pointer;
+  width:100px;
+  height:30px;
+  border:none;
+  outline:none;
+  color:#fff;
+  font-size:12px;
+  background: #4c70e8;
+}
+.search-button:hover {
+  background: #6d8dfc;
+}
+//新增按钮样式
+.add-button{
+  cursor: pointer;
+  width:80px;
+  height:25px;
+  border:none;
+  outline:none;
+  color:#fff;
+  font-size:12px;
+  background: #4c70e8;
+}
+.add-button:hover {
+  background: #6d8dfc;
+}
+.el-tag{
+  color: #7a838a;
+  background-color: #fff;
+  border:none;
+  height: 28px;
+  line-height: 28px;
+  border-radius:0px;
+}
+.tabs-view-container .tabs-view[data-v-8111fe88]{
+  margin-left:0px !important;
+  background:none;
+  height:24px;
+  line-height:24px;
+}
+.el-tag--primary{
+  background-color: #f0f4f5;
+  border:none;
+}
+//
+.el-button{
+  border-color: #1d85fe;
+  color:#1d85fe;
+  font-size:12px;
+}
+.el-button:hover{
+  border-color:#3e9fff;
+  background:#3e9fff;
+  color:#fff;
 
+}
+
+.el-table{
+  font-size:12px;
+
+}
+.el-table__header-wrapper{
+  font-size:14px;
+}
+.el-pagination{
+  font-size:14px;
+}
+.el-pagination button, .el-pagination span{
+  font-size:14px;
+}
+.el-dialog__title{
+  font-size:14px;
+}
+.el-form-item__label{
+  font-size:12px;
+}
 //input去掉圆角
 .el-input__inner {
   border-radius: 0px;
+  font-size:12px;
 }
 
 //横向分隔线样式
