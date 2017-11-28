@@ -253,7 +253,7 @@
                     </el-date-picker>
                     <el-time-select
                       v-model="value2"
-                      style="display:inline-block;width:95px;"
+                      style="display:inline-block;width:110px;margin-left:-5px;"
                       :picker-options="{
                         start: '08:30',
                         step: '00:30',

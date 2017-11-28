@@ -20,3 +20,7 @@ export function getSerarea() {
 export function getSerstation() {
   return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
 }
+// 服务范围类型
+export function getArea(id) {
+  return instance.get(`/api/a/sys/area/getchildArea?id=`+id)
+}

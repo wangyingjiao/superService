@@ -13,21 +13,11 @@
           </div>
           <div>李四</div>
         </li>
-        <li style="cursor: pointer;" @click="outhome">
+        <li style="cursor: pointer;"  @click="logout">
           <div>
             <img src="../../../static/icon/客户管理1.png" alt="">
           </div>
           <div>退出</div>
-          <div class="nar-home" style="height:80px;" v-show="flag">
-            <router-link to="/" tag="div">
-                  <p>首页</p> 
-              <p><span @click="logout" style="display:block;">退出</span></p>
-            </router-link>
-          </div>
-          <el-dropdown-menu class="user-dropdown" slot="dropdown">
-            
-            
-          </el-dropdown-menu>
         </li>
       </ul>
       <ul style="position:absolute;width: 50px;height: 200px;top:52px;z-index: 1;right: 240px;" class="nav-posi" v-show="show">
@@ -79,9 +69,6 @@
         this.$store.dispatch('LogOut').then(() => {
           location.reload() // 为了重新实例化vue-router对象 避免bug
         })
-      },
-      outhome(){
-        this.flag=!this.flag  
       },
       addpage(){
         this.show=!this.show  
