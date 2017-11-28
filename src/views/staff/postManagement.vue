@@ -3,11 +3,11 @@
   <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search">
       </el-input>
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <button class="button-small btn_right btn_pad ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table
       :key='tableKey'
       :data="list"
@@ -33,16 +33,8 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <div style="display:flex;justify-content: center;">
-              <div class="site-div" @click="handleUpdate(scope.row)">
-                <div class="back-icon-bg"></div>
-                <div>编辑</div>
-              </div>
-              <div class="site-div" @click="handleDelete(scope.row)">
-                <div class="back-icon-del"></div>
-                <div>删除</div>
-              </div>
-            </div>
+          <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
+          <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
 
         </template>
       </el-table-column>
@@ -323,7 +315,7 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "该信息不可删除"
+                  message: "该信息不可删除或者没有权限"
                 });
               }
             })
@@ -429,6 +421,7 @@ export default {
     resetForm(formName) {
       this.dialogFormVisible = false;
       this.resetTemp();
+      this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
     },
     resetTemp() {
@@ -437,6 +430,7 @@ export default {
         dataScope: "",
         check: []
       };
+      
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
@@ -527,5 +521,15 @@ body {
   .el-tree-node__children
   .el-tree-node {
   float: none;
+}
+.ceshi {
+  height: 25px;
+  width: 80px;
+}
+.ceshi3 {
+  font-size: 14px;
+  color: #1d85fe;
+  border: 1px solid #1d85fe;
+  background-color: #ffffff;
 }
 </style>
