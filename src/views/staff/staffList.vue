@@ -120,7 +120,7 @@
         </el-form-item>
 
         <el-form-item label="  选择岗位" prop="station">
-          <el-select  class="filter-item" @change="postChange" v-model="station" placeholder="请选择">
+          <el-select ref="domSelect"  class="filter-item" @change="postChange" v-model="station" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -164,7 +164,7 @@
         <el-form-item label="岗位名称" prop="name">
           <el-input v-model="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级">
+        <el-form-item label="等级" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
@@ -188,7 +188,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select style='width: 400px;' class="filter-item" v-model="stationState" placeholder="可用">
-            <el-option v-for="item in stationStateCheck" :key="item.id" :label="item.value" :value="item.id">
+            <el-option v-for="item in stationStateCheck" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
           </el-select>
         </el-form-item>
@@ -197,8 +197,8 @@
       <div slot="footer" class="dialog-footer">
         <!-- <button class="button-cancel" @click="dialogFormStation = false">取 消</button> -->
 
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp2')">保 存</button>    
-        <button class="button-large" v-else @click="create2('temp2')">保 存</button>    
+        <!-- <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp2')">保 存</button>     -->
+        <button class="button-large" @click="create2('temp2')">保 存</button>    
         <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
       </div>
     </el-dialog>
@@ -458,24 +458,27 @@ export default {
       console.log(this.temp2.check);
     },
     handleUpdate(row) {
-      console.log(row)
+      this.handleCreate();
       this.temp = {
-        phone: row.moblie,
-        name: row.loginName,
-        password:"",
-        password2: "",
-        mechanism:row.office.name,
-        servicestation:row.stationName,
-        station: row.stationId,
-        peostate:"1"
-      }
-      this.temp.phone = row.moblie
-      this.mechanism = row.office.name
-      this.servicestation = row.stationName
-      this.station = row.station
-      this.peostate = "1"
+        id: row.id,
+        mechanism: row.office.id,
+        servicestation :row.stationId,
+        station :row.station,
+        peostate :"1"
+      };
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
+      console.log(row);
+      console.log(this.temp);
+      console.log(this.mechanism);
+
+      this.temp.name = row.loginName;
+      this.temp.phone = row.mobile;
+      this.mechanism = "1";
+      this.mechanism = row.office.id;
+      this.servicestation = row.stationId;
+      this.station = row.station;
+      this.peostate = "1";
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -522,7 +525,7 @@ export default {
       console.log(value);
       console.log(this.dataScope);
       this.temp2.dataScope = value;
-      console.log(this.temp2.dataScope)
+      console.log(this.temp2.dataScope);
     },
     peoStateChange(val) {
       console.log(val);
@@ -567,6 +570,7 @@ export default {
     create(formName) {
       console.log(this.temp);
       //var arr = [this]
+      console.log(this.$refs.domSelect);
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {
@@ -591,7 +595,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "发生错误"
+                message: "发生错误或者没有权限"
               });
             }
           });
@@ -619,19 +623,17 @@ export default {
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              //this.resetTemp();
               this.$refs.domTree.setCheckedKeys([]);
               this.$message({
                 type: "success",
                 message: "添加成功"
               });
-              this.temp.station = res.data.data.id
-              this.station = res.data.data.id
-              console.log(1111)
-              console.log(this.temp.station)
+              this.stationCheck.push(res.data.data);
+              this.station = res.data.data.id;
+              this.resetTemp2();
             } else {
               this.$refs.domTree.setCheckedKeys([]);
-              //this.resetTemp();
+              //this.resetTemp2();
               this.$message({
                 type: "error",
                 message: "发生未知错误，或者角色已存在"
@@ -644,14 +646,35 @@ export default {
       });
     },
     update() {
-      console.log(111);
-      this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "更新成功",
-        type: "success",
-        duration: 2000
-      });
+      var obj = {
+        id: this.temp.id,
+        mobile: this.temp.phone,
+        name: this.temp.name,
+        newPassword: "mimaceshi",
+        officeId: this.temp.mechanism,
+        stationId: this.temp.servicestation,
+        roles: [this.temp.station],
+        useable: this.temp.peostate
+      };
+      console.log(obj)
+      //this.dialogFormVisible = false;
+       addStaff(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.dialogFormVisible = false;
+              this.getList();
+              this.$message({
+                type: "success",
+                message: "修改成功"
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "发生错误或者没有权限"
+              });
+            }
+          });
+      
     },
     resetTemp() {
       this.temp = {
@@ -662,31 +685,32 @@ export default {
         mechanism: "",
         servicestation: "",
         station: "",
-        peostate:"1"
+        peostate: "1"
       };
-      this.mechanism = ""
-      this.servicestation = ""
-      this.station = ""
-      this.peostate = "1"
+      this.mechanism = "";
+      this.servicestation = "";
+      this.station = "";
+      this.peostate = "1";
     },
-    resetTempt2() {
+    resetTemp2() {
       this.temp2 = {
         name: "",
         dataScope: "",
         check: []
       };
+      this.dataScope = "";
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
     },
     resetForm2(formName) {
-      this.temp2={
+      this.temp2 = {
         name: "",
         dataScope: "",
         check: []
-      }
-      this.dataScope = ""
+      };
+      this.dataScope = "";
       this.dialogFormStation = false;
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
