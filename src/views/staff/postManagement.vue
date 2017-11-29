@@ -532,4 +532,7 @@ body {
   border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
+.dialog-footer{
+  text-align: center;
+}
 </style>
