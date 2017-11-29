@@ -29,18 +29,19 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-       target: 'http://192.168.1.199:8800/',
-       changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
-       pathRewrite: {
-         '^/api': ''
-       }
-      //  '/api': {
-      //    target: 'http://10.16.70.80:8800/',
-      //    changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
-      //    pathRewrite: {
-      //      '^/api': ''
-      //    }
-      }
+        target: 'http://192.168.1.199:8800/',
+        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^/api': ''
+        }
+      // '/api': {
+      //   target: 'http://10.16.70.80:8800/',
+      //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/api': ''
+      //   }
+        }
+      
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
