@@ -68,9 +68,6 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
-          
-            console.log('登录')
-            console.log(res)
             this.loading = false
             this.$router.push({ path: '/' })
             
