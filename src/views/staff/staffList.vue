@@ -107,27 +107,27 @@
         </el-form-item>
 
         <el-form-item label=" 服务机构"  prop="mechanism">
-          <el-select  style='width: 400px;' @change="mechChange" class="filter-item" v-model="mechanism" placeholder="请选择">
+          <el-select  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label=" 服务站" prop="servicestation" >
-          <el-select  style='width: 400px;' @change="stationChange" class="filter-item" v-model="servicestation" placeholder="请选择">
+          <el-select  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.servicestation" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="  选择岗位" prop="station">
-          <el-select ref="domSelect"  class="filter-item" @change="postChange" v-model="station" placeholder="请选择">
+          <el-select ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.station" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <button class="button-cancel" @click="dialogFormStation = true">新 增</button>
         </el-form-item>
         <el-form-item  label="可用状态" >
-          <el-select style='width: 400px;' @change="peoStateChange" class="filter-item" v-model="peostate" placeholder="请选择">
+          <el-select style='width: 400px;' @change="peoStateChange" class="filter-item" v-model="temp.peostate" placeholder="请选择">
             <el-option v-for="item in peostateCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -319,7 +319,7 @@ export default {
       isIndeterminate: true,
       rules: {
         phone: [
-          { required: true, type: 'number', message: "请输入手机号", trigger: "blur" },
+          { required: true, message: "请输入手机号", trigger: "blur" },
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         name: [
@@ -461,6 +461,8 @@ export default {
       this.handleCreate();
       this.temp = {
         id: row.id,
+        name:row.loginName,
+        phone:row.mobile,
         mechanism: row.office.id,
         servicestation :row.stationId,
         station :row.station,
@@ -472,8 +474,8 @@ export default {
       console.log(this.temp);
       console.log(this.mechanism);
 
-      this.temp.name = row.loginName;
-      this.temp.phone = row.mobile;
+      //this.temp.name = row.loginName;
+      //this.temp.phone = row.mobile;
       this.mechanism = "1";
       this.mechanism = row.office.id;
       this.servicestation = row.stationId;
@@ -541,6 +543,7 @@ export default {
     },
     mechChange(val) {
       this.temp.mechanism = val;
+      this.servicestation = '';
       console.log(val);
       var obj = {
         officeId: val
@@ -568,9 +571,9 @@ export default {
       }
     },
     create(formName) {
+      console.log("create");
       console.log(this.temp);
       //var arr = [this]
-      console.log(this.$refs.domSelect);
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {
@@ -586,6 +589,7 @@ export default {
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
+              this.resetTemp()
               this.dialogFormVisible = false;
               this.getList();
               this.$message({
@@ -687,10 +691,10 @@ export default {
         station: "",
         peostate: "1"
       };
-      this.mechanism = "";
-      this.servicestation = "";
-      this.station = "";
-      this.peostate = "1";
+      // this.mechanism = "";
+      // this.servicestation = "";
+      // this.station = "";
+      // this.peostate = "1";
     },
     resetTemp2() {
       this.temp2 = {
