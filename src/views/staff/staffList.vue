@@ -294,15 +294,15 @@ export default {
       peostateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
       stationLv: [
-        { id: 1, value: "一级" },
-        { id: 2, value: "二级" },
-        { id: 3, value: "三级" },
-        { id: 4, value: "四级" },
-        { id: 5, value: "五级" },
-        { id: 6, value: "六级" },
-        { id: 7, value: "七级" },
-        { id: 8, value: "八级" },
-        { id: 9, value: "九级" }
+        { id: "1", value: "一级" },
+        { id: "2", value: "二级" },
+        { id: "3", value: "三级" },
+        { id: "4", value: "四级" },
+        { id: "5", value: "五级" },
+        { id: "6", value: "六级" },
+        { id: "7", value: "七级" },
+        { id: "8", value: "八级" },
+        { id: "9", value: "九级" }
       ],
       stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
 
@@ -319,7 +319,7 @@ export default {
       isIndeterminate: true,
       rules: {
         phone: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
+          { required: true, type: 'number', message: "请输入手机号", trigger: "blur" },
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         name: [
@@ -821,5 +821,22 @@ body {
 }
 .dialog-footer {
   text-align: center;
+}
+.el-tree-node
+  .el-tree-node__children
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: left;
+}
+.el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+  float: left;
+}
+.el-tree-node:nth-child(1)
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: none;
 }
 </style>
