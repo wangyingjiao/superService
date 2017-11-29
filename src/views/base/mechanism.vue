@@ -2,11 +2,11 @@
 <div>
   <div class="filter-container bgWhite">
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
+      <el-select clearable style="width: 200px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
+        <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
       </el-input>
 
       <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
@@ -257,6 +257,10 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      search: {
+        key: "",
+        value: ""
+      },
       temp: {
         address: "",
         areaId: "",
@@ -274,7 +278,11 @@ export default {
         city: "",
         county: ""
       },
-      importanceOptions: ["请选择", "机构名称", "负责人姓名", "负责人手机号"],
+      importanceOptions: [
+        { id: "name", value: "机构名称" },
+        { id: "masterName", value: "负责人姓名" },
+        { id: "masterPhone", value: "负责人手机号" }
+      ],
       stationType: [],
       dialogFormVisible: false,
       dialogStatus: "",
@@ -356,9 +364,29 @@ export default {
       });
     },
     handleFilter() {
-      console.log("搜索");
+      var value = this.search.value;
+      if (this.search.key == "name") {
+        var obj = {
+          name: value
+        };
+      } else if (this.search.key == "masterName") {
+        var obj = {
+          masterName: value
+        };
+      } else {
+        var obj = {
+          masterPhone: value
+        };
+      }
+      this.listLoading = true;
+      getMech(obj).then(res => {
+        console.log(res);
+        this.list = res.data.data;
+        this.listLoading = false;
+      });
+      console.log(obj);
       this.listQuery.page = 1;
-      this.getList();
+      // this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -388,10 +416,13 @@ export default {
       this.dialogFormVisible = true;
     },
     resetForm(formName) {
-      this.dialogFormVisible = false;
-      this.resetTemp();
-      // this.$refs.domTree.setCheckedKeys([]);
-      this.$refs[formName].resetFields();
+      this.dialogFormVisible = false
+      this.resetTemp()
+      this.$refs[formName].resetFields()
+    },
+    searchChange(val) {
+      console.log(val);
+      // this.search.key = val
     },
     create(formName) {
       var obj = {
@@ -466,7 +497,6 @@ export default {
           });
         }
       });
-      
     },
     provinceChange(value) {
       this.temp.city = "";
@@ -486,23 +516,8 @@ export default {
         .catch(res => {});
     },
     resetTemp() {
-      this.temp = {
-        address: "",
-        areaId: "",
-        fax: "",
-        name: "",
-        office400: "",
-        officeUrl: "",
-        phone: "",
-        primaryPersonName: "",
-        primaryPersonPhone: "",
-        remark: "",
-        serviceAreaType: "",
-        cityIds: [],
-        province: "",
-        city: "",
-        county: ""
-      };
+      this.temp={
+      }
     },
 
     formatJson(filterVal, jsonData) {
