@@ -1,46 +1,81 @@
 <template>
     <div class="allmap" >     
-       <div class="map" ref="map"  style="height:100%;-webkit-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;">  
-          
-	   </div>
-       <div class="actionArea">
-			<button type="button" class="button-large" @click="savePointer()">区域坐标</button>
-			<button type="button" class="button-large" @click="draw()">画多边形</button>
-			<button type="button" class="button-large" @click="clearAll()">清除多边形</button>
-	<div ref="gdMap" class="mapWrap">
-
-	</div>				
-	   </div>
-
-    <div class="pickerBox">
-        <input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">		    
-    </div>
+		<div ref="gdMap" class="mapWrap">
+			<div class="buttonWrap">
+				<input type="button" class="mapButton" value="绘制多边形" ref="polygon"/>
+				<input type="button" class="mapButton" value="绘制圆" ref="circle"/>
+				<!--<input type="button" class="mapButton" value="清除" ref="remove"/>-->			
+			</div>              
+		</div>		
+		<div class="pickerBox">
+			<div class="headerWrap">
+               <h3>服务范围信息</h3>
+			   <div style="height:25px;line-height:25px;margin-top:10px;"><span style="display:inline-block;">服务范围个数:</span><span class="overlay-number">{{number}}</span><span style="display:inline-block;margin-left:20px;color:blue;cursor:pointer;" @click="removeOverlay">全部删除</span></div>
+			</div>
+			<div class="bottomContent">
+				<p >请输入地址:<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点"></p>
+				<div>
+					<el-table
+						:data="tableData"
+						border
+						style="width: 100%">
+						<el-table-column
+						label="服务范围"
+						align="center"
+						width='120'
+						prop="index"
+						>
+						</el-table-column>
+						<el-table-column
+						prop="radius"
+						align="center"
+						width='180'
+						label="圆形半径"
+						>
+						</el-table-column>
+						<el-table-column
+						align="center"
+						width="100"						
+						label="操作">
+							<template scope="scope">
+									<el-button type="button" @click="Delete(scope.row)" >删除</el-button>
+							</template>						
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>						
 			
+				    
+		</div>
+		
     </div>
 </template>
 <script>
 export default {
   data() {
     return {
-       mainObj:{},
-	   maskObj:[],
 	   inputvalue:'',
+	   overlays:[],//覆盖物对象
+	   overlaysObj:[],//覆盖物对象
+	   myMap:{},//地图对象
+	   number:'0',
+	   tableData:[],
+	   index:0,
     };
   },
   mounted() {
-	 this.initMap();
 	 this.initMap1();
   },
   methods: {
-    initMap() {
-		var id=this.$refs.map		
-		var map = new BMap.Map(id);  
-		var poi = new BMap.Point(113.948913,22.530844);  
-		map.centerAndZoom(poi, 16);  
-		map.enableScrollWheelZoom();
-		//var opts = {offset: new BMap.Size(400,0)} 
-        map.addControl(new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT})); 		
-        this.mainObj=map
+	initMap1(){
+		var that=this;
+		var id=this.$refs.gdMap;
+		var inputname=this.$refs.pickerInput;
+		var map = new AMap.Map(id, {
+				zoom: 15
+		});
+		that.myMap=map;
+		var number='';
 		var styleOptions = {  
 			strokeColor:"blue",    //边线颜色。  
 			fillColor:"blue",      //填充颜色。当参数为空时，圆形将没有填充效果。  
@@ -48,50 +83,23 @@ export default {
 			strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
 			fillOpacity: 0.1,      //填充的透明度，取值范围0 - 1。  
 			strokeStyle: 'solid' //边线的样式，solid或dashed。  
-		}
-		//实例化鼠标绘制工具  
-		var drawingManager = new BMapLib.DrawingManager(map, {  
-			isOpen: false, //是否开启绘制模式  
-			enableDrawingTool: true, //是否显示工具栏
-            enableCalculate :true,			
-			drawingToolOptions: {  
-				anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
-				offset: new BMap.Size(5, 5), //偏离值
-				drawingModes : [BMAP_DRAWING_POLYGON, BMAP_DRAWING_CIRCLE],			
-			},  
-			circleOptions: styleOptions, //圆的样式  	 
-			polygonOptions: styleOptions, //多边形的样式  
-	 
-		}); 
-		var overlays = [];		
-        var obj={};					   		  
-		//添加鼠标绘制工具监听事件，用于获取绘制结果  
-		//drawingManager.addEventListener('overlaycomplete', overlaycomplete);
-		drawingManager.addEventListener("overlaycomplete", function(e) {
-		    if(e.drawingMode == 'circle' ){
-			   overlays.push(e.overlay);
-			   //e.overlay.getRadius();//圆的半径    
-			}else{
-				overlays.push(e.overlay);			
-				var path = e.overlay.getPath();// 返回多边型的点数组
-				  for (var prop in path) {
-					if (path.hasOwnProperty(prop)) {
-					  obj[prop] = path[prop];
-					}
-				  } 						    
-			}
-			//alert(e.calculate)图形的面积
-			e.label.hide();
-	   });
-       this.maskObj=overlays;		
-       this.dotarr=obj;	   
-	},
-	initMap1(){
-		var id=this.$refs.gdMap;
-		var inputname=this.$refs.pickerInput;
-		var map = new AMap.Map(id, {
-				zoom: 10
-		});
+		}		
+		var mouseTool = new AMap.MouseTool(map);
+		var polygon=this.$refs.polygon
+		var circle=this.$refs.circle
+		//var remove=this.$refs.remove
+		AMap.event.addDomListener(polygon, 'click', function() {
+			 mouseTool.polygon(styleOptions);
+		   
+		}, false);		
+		AMap.event.addDomListener(circle, 'click', function() {
+			mouseTool.circle(styleOptions);			
+		}, false);
+		AMap.event.addListener(mouseTool, "draw", function callback(e) {
+			var eObject = e.obj;//obj属性就是鼠标事件完成所绘制的覆盖物对象。
+			that.index++
+			that.testalert(eObject,that.index);					
+		});		
 		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
 				var poiPicker = new PoiPicker({
 						city:'北京',
@@ -113,50 +121,141 @@ export default {
 								info = {
 										source: source,
 										id: poi.id,
+										district:poi.district,
 										name: poi.name,
 										location: poi.location.toString(),
 										address: poi.address
 								};
-								inputname.value=info.name
-								alert(info.location);
+								inputname.value=info.district+info.name;
+								marker.setMap(map);
+								infoWindow.setMap(map);
+								marker.setPosition(poi.location);
+								infoWindow.setPosition(poi.location);
+								infoWindow.setContent(inputname.value);
+								infoWindow.open(map, marker.getPosition());
+								
 				});
 		}						
 	},
-		
-	savePointer(){	   
-	    alert(this.dotarr);
+	testalert(obj,index){
+		    //获取多边形轮廓线节点数组。其中lat和lng是经纬度参数
+			var path=''
+			//圆半径，单位:米
+			var radius=''
+			var row = {};
+			//覆盖物对象
+			var overlays=this.myMap.getAllOverlays();						
+			if(obj.CLASS_NAME === 'AMap.Polygon'){				
+				 path=obj.getPath();
+				 row.path =path;
+				 row.radius='---'
+				 row.center=''		
+			}
+			if(obj.CLASS_NAME === 'AMap.Circle'){				
+				 radius=obj.getRadius();
+				 row.radius =(radius*1000).toFixed(3)+'公里';
+				 row.path=''
+				 row.center=obj.getCenter();				
+			}
+			row.index="范围"+index;
+			row.type=obj.CLASS_NAME;
+			row.id=obj._amap_id;								
+			this.tableData.push(row);				
+			this.number=overlays.length;       		
 	},
-	draw(){
-	   
-			
-    },
-    clearAll() {  
-        for(var i = 0; i < this.maskObj.length; i++){  
-            this.mainObj.removeOverlay(this.maskObj[i]);  
-        }  
-        this.maskObj.length = 0     
-    }	
+	//删除地图所有的覆盖物
+	removeOverlay(){
+		var overlays=this.myMap.getAllOverlays();
+		this.tableData=[];
+		this.myMap.remove(overlays)
+		this.number='0';
+		this.index=0;
+	},
+	//
+	Delete(row){
+		var overlays=this.myMap.getAllOverlays();
+		for(var i=0;i<overlays.length;i++){
+			if(overlays[i]._amap_id==row.id){
+				this.myMap.remove(overlays[i]);				
+				
+			}
+		}
+		for(var j=0;j<this.tableData.length;j++){
+			if(overlays[j]._amap_id==row.id){
+				this.tableData.del(j)			
+				
+			}						
+		}
+		if(this.number>0){
+			this.number=this.number-1;
+		}else{
+			this.number=0;
+		}		
+	}
+
+		
+	
   }
 };
 </script>
-<style>
+<style lang="scss" scoped>
 .allmap{
    width:100%;
-   height:400px;
+   .mapWrap{
+		width:80%;
+		height:500px;
+		float:left;
+		.buttonWrap{
+			position: absolute;
+			z-index: 9999;
+			top:460px;
+			right:20px;
+			.mapButton{
+				width:80px;
+				height: 25px;
+				line-height:25px;
+				color:#fff;
+				text-align:center;
+				font-size:12px;
+				border:none;
+				outline:none;
+				background: #4c70e8;
+			}
+		}
+	}
+	.pickerBox {
+		float:left;
+        width: 20%;
+		height:500px;
+		background:#fff;
+		border-left:1px dashed #ccc;
+		font-size:12px;
+		.headerWrap{
+			border-bottom:1px dashed #ccc;
+			padding:10px 5px;
+			.overlay-number{
+				display:inline-block;
+				width:30px;
+				text-align:center;
+				color:red;
+			}
+		}
+		.bottomContent{
+			padding:20px 5px;
+			.el-table th>.cell{
+				font-size:12px;
+			}
+			.pickerInput {
+				width: 150px;
+				padding: 5px 5px;
+   		    }
+		}
+
+    }
+
 }
-.map{
-   width:800px;
-   height:200px;
-   display:block;
-}
-.actionArea{
-	position:absolute;
-	bottom:30px;
-	left:720px;
-}
-.mapWrap{
-	width:0px;
-	height:0px;
-	display:block;
-}
+
+
+    
+
 </style>
