@@ -12,6 +12,11 @@ axios.defaults.withCredentials = true
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
+//按下标删除数组的对应元素
+Array.prototype.del = function(dx){ 
+  if(isNaN(dx)||dx>this.length){return false;} 
+  this.splice(dx,1); 
+} 
 new Vue({
   el: '#app',
   router,

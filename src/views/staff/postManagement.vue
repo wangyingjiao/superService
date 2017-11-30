@@ -7,7 +7,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table
       :key='tableKey'
       :data="list"
@@ -356,7 +356,7 @@ export default {
             menuIds: str,
             useable: this.stationState //状态
           };
-          this.dialogFormVisible = false;
+          
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
@@ -366,10 +366,11 @@ export default {
                 type: "success",
                 message: "添加成功"
               });
+              this.dialogFormVisible = false;
               this.getList();
             } else {
-              this.$refs.domTree.setCheckedKeys([]);
-              this.resetTemp();
+              //this.$refs.domTree.setCheckedKeys([]);
+              // this.resetTemp();
               this.$message({
                 type: "error",
                 message: "发生未知错误，或者角色已存在"
@@ -531,5 +532,8 @@ body {
   color: #1d85fe;
   border: 1px solid #1d85fe;
   background-color: #ffffff;
+}
+.dialog-footer{
+  text-align: center;
 }
 </style>
