@@ -18,11 +18,13 @@
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
-      <div><button class="button-large">搜索</button></div>
+      <div>
+        <button class="button-large el-icon-search"> 搜索</button>
+      </div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small" @click="dialogVisible = true">新增</button>
+        <button class="button-small  btn_pad ceshi ceshi5" @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
       </div>
       <ul class="tech-section-ul">
         <li v-for="(item,$index) in infoname" @mousemove="mouser(item)" @mouseout="mousout(item)">
@@ -201,7 +203,7 @@
       </el-pagination>
     </div>
     <!-- 弹出层 -->
-    <el-dialog title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage">
+    <el-dialog title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
       <div>
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
@@ -231,7 +233,7 @@
               <p><span class="tech-span">*</span>现住地址:</p>
               <p>
                 <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in areas" :key="item.value" :label="item.name" :value="item.value">
+                  <el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </p>
@@ -326,7 +328,7 @@
               <p>身高:</p>
               <p>
                 <el-select v-model="heights" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in height" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
               </p>
@@ -335,7 +337,7 @@
               <p>体重:</p>
               <p>
                 <el-select v-model="strongs" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in strong" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.value">
                   </el-option>
                 </el-select>
               </p>
@@ -355,7 +357,7 @@
               <p>籍贯:</p>
               <p>
                 <el-select v-model="places" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in place" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="item in place" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </p>
@@ -649,7 +651,7 @@
               <p></p>
               <p>
                 <button class="tech-fourth"><span>*</span>上传头像</button>
-                <button class="tech-fourth-rigth">上传身份证</button>
+                <button class="tech-fourth-rigth" style="margin-left:40px">上传身份证</button>
               </p>
             </div>
           </li>
@@ -658,7 +660,7 @@
               <p></p>
               <p>
                 <button class="tech-fourth"><span>*</span>上传位置</button>
-                <button class="tech-fourth-rigth">上传位置</button>
+                <button class="tech-fourth-rigth" style="margin-left:40px">上传位置</button>
               </p>
             </div>
           </li>
@@ -690,7 +692,11 @@
   import {
     addTech,
     getTech,
-    getArea
+    getArea,
+    getEducations,
+    getStrong,
+    getHeight,
+    getMatrimony
   } from "@/api/tech";
   import {
     getSign
@@ -755,19 +761,7 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
-        marriage: [{
-          value: '选项1',
-          label: '未婚'
-        }, {
-          value: '选项2',
-          label: '已婚'
-        }, {
-          value: '选项3',
-          label: '丧偶'
-        }, {
-          value: '选项4',
-          label: '离婚'
-        }],
+        marriage: [],
         station: [{
           value: '选项1',
           label: '全职'
@@ -800,6 +794,7 @@
         }],
         ethnics: [],
         areas: [],
+        strong:{},
         statu: [{
           value: '选项1',
           label: '在职'
@@ -807,94 +802,9 @@
           value: '选项2',
           label: '离职'
         }],
-        education: [{
-          value: '选项1',
-          label: '小学'
-        }, {
-          value: '选项2',
-          label: '初中'
-        }, {
-          value: '选项3',
-          label: '中专'
-        }, {
-          value: '选项4',
-          label: '高中'
-        }, {
-          value: '选项5',
-          label: '大专'
-        }, {
-          value: '选项6',
-          label: '本科及以上'
-        }],
-        strong: [{
-          value: '选项1',
-          label: '30kg'
-        }, {
-          value: '选项2',
-          label: '40kg'
-        }, {
-          value: '选项3',
-          label: '50kg'
-        }, {
-          value: '选项4',
-          label: '60kg'
-        }, {
-          value: '选项5',
-          label: '70kg'
-        }, {
-          value: '选项6',
-          label: '80kg'
-        }],
-        height: [{
-          value: '选项1',
-          label: '130cm'
-        }, {
-          value: '选项2',
-          label: '140cm'
-        }, {
-          value: '选项3',
-          label: '150cm'
-        }, {
-          value: '选项4',
-          label: '160cm'
-        }, {
-          value: '选项5',
-          label: '170cm'
-        }, {
-          value: '选项6',
-          label: '180cm'
-        }, {
-          value: '选项7',
-          label: '190cm'
-        }, {
-          value: '选项8',
-          label: '200cm'
-        }],
-        place: [{
-          value: '选项1',
-          label: '北京'
-        }, {
-          value: '选项2',
-          label: '天津'
-        }, {
-          value: '选项3',
-          label: '上海'
-        }, {
-          value: '选项4',
-          label: '重庆'
-        }, {
-          value: '选项5',
-          label: '河北'
-        }, {
-          value: '选项6',
-          label: '山西'
-        }, {
-          value: '选项7',
-          label: '辽宁'
-        }, {
-          value: '选项8',
-          label: '河南'
-        }],
+        education: [],
+        height: [],
+        place: [],
         caty: [{
           value: '选项1',
           label: '北京'
@@ -1282,14 +1192,35 @@
     },
     mounted() {
       getTech().then(res => {
-        // console.log(res)  
         this.ethnics = res.data;
+        this.ethnic=res.data[32].label
       });
       getArea().then(res => {
-        // console.log(res)  
+        console.log(res)
         this.areas = res.data.data;
-        // console.log(this.areas)
+        this.place= res.data.data
       });
+      getEducations().then(res =>{
+        this.education=res.data
+        this.educations=res.data[2].value
+      });
+      getStrong().then(res =>{
+        this.strong=res.data
+        this.strongs=res.data[22].value
+      });
+      getHeight().then(res =>{
+        this.height=res.data
+        this.heights=res.data[18].value 
+      });
+      getMatrimony().then(res =>{ 
+        if(res.status==200){
+          this.marriage=res.data
+          this.marriages=res.data[0].label
+          // console.log(this.marriage)
+        }else{
+          console.log("错误")
+        }
+      })
     }
   }
 
@@ -1313,7 +1244,7 @@
     justify-content: space-between;
     align-items: center;
   }
-
+ 
   .tech {
     position: relative;
   }
@@ -1382,28 +1313,33 @@
   }
 
   .tech-section-lage {
+    /* margin: 0px; */
+    padding: 0px;
     left: 40px;
     width: 60%;
   }
-
-  .el-dialog__header {
-    background: #f3f1f1;
-    padding: 20px;
+  .tech-section-lage>div{
+    margin: 0px;
+    padding: 0px;
   }
 
-  /* .el-dialog__body {
-    margin: 0;
-    padding: 0;
-  } */
+  .tech-section-lage>div:nth-of-type(1){
+    padding: 20px 20px 0 20px;
+    font-size: 14;
+    font-weight: 700;
+  }
 
   .tech-tc-prson {
-    margin: 10px 20px;
-    padding: 10px 0px;
+    margin: 0px 20px;
+    padding: 30px 20px 10px 0;  
     border-bottom: #f3f1f1 solid 1px;
+    font-size: 14px;
+    font-weight: 700;
+    color: black;
   }
 
   .tech-ul {
-    padding: 10px 40px 10px 20px;
+    padding: 20px 40px 10px 25px;
     border-bottom: solid 20px #f3f1f1;
   }
 
