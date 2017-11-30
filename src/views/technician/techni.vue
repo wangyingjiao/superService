@@ -33,48 +33,100 @@
                 <span>男</span>
                 <span>32</span>
               </div>
-              <div style="margin-top:10px;">
-                <button>全职</button>
-                <button>在职</button>
+              <div class="tech-mouse-div">
+                <span class="tech-mouse">全职</span>
+                <span class="tech-mouse">在职</span>
               </div>
             </div>
             <div class="tech-xiu-div-two">
               <h4>{{item.name}}</h4>
-              <div>
-                <span></span>
-                <span>国安社区</span>
+              <div>              
+                  <img src="../../../static/icon/服务机构.png" alt="" style="width:15px;height:15px;">              
+                  <div style="margin-left:5px;">国安社区</div>
               </div>
               <div>
-                <span></span>
-                <span>呼家楼</span>
+                <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
+                <div style="margin-left:5px;">呼家楼</div>
               </div>
               <div>
-                <span></span>
-                <span>3年</span>
+                <img src="../../../static/icon/工作经验.png" alt="" style="width:15px;height:15px;">              
+                <div style="margin-left:5px;">3年</div>
               </div>
               <div>
-                <span></span>
-                <span>15660061199</span>
+                <img src="../../../static/icon/手机.png" alt="" style="width:15px;height:15px;">              
+                <div style="margin-left:5px;">15660061100</div>
               </div>
             </div>
           </div>
 
-          <!-- 鼠标移入 -->
+          <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div style="margin-right:20px;" @click="flags = true">
-              <img src="../../../static/icon/休1.png" alt="">
-              <!-- <button>休假</button> -->
+            <div style="margin-right:20px;">
+              <img src="../../../static/icon/密码.png" alt="" style="width:30px">
             </div>
-            <div>
-              <img src="../../../static/icon/编辑1.png" alt="">
+            <div  @click="flags = true">
+              <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
             <div style="margin-left:20px;">
-              <img src="../../../static/icon/删除1.png" alt="">
+              <img src="../../../static/icon/修改.png" alt="" style="width:30px">
+            </div>
+            <div style="margin-left:20px;">
+              <img src="../../../static/icon/删除.jpg" alt="" style="width:30px">
             </div>
           </div>
         </li>
       </ul>
 
+      <!-- 密码弹出层 -->
+      <el-dialog title="休假" :visible.sync="password" custom-class="tech-section-lages" style="top:10%;">
+        <ul class="tech-section-xiu">
+          <li>
+            <div>姓名</div>
+            <div>李阿姨</div>
+          </li>
+          <li>
+            <div><span>*</span>开始时间</div>
+            <div style="display:flex">
+              <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+              </el-date-picker>
+              <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00'
+                        }">
+              </el-time-select>
+            </div>
+          </li>
+          <li>
+            <div><span>*</span>结束时间</div>
+            <div style="display:flex">
+              <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
+              </el-date-picker>
+              <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
+                          start: '00:00',
+                          step: '00:30',
+                          end: '24:00',
+                          minTime: startTimes
+                        }">
+              </el-time-select>
+            </div>
+          </li>
+          <li>
+            <div>备注</div>
+            <div>
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
+              </el-input>
+            </div>
+          </li>
+          <li>
+            <div style="display:flex;justify-content: center;width:100%">
+              <button class="button-large" style="margin-right:10px;">保存</button>
+              <button class="button-cancel">取消</button>
+            </div>
+          </li>
+
+        </ul>
+      </el-dialog>
       <!-- 休息弹出层 -->
       <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
         <ul class="tech-section-xiu">
@@ -216,7 +268,7 @@
               <p><span class="tech-span">*</span>出生日期:</p>
               <p>
                 <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
-                  format="yyyy-MM-dd HH:mm:ss">
+                  format="yyyy-MM-dd">
                 </el-date-picker>
               </p>
             </div>
@@ -472,61 +524,6 @@
                 <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
                 </el-input>
                 <!-- <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> -->
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
-          </li>
-        </ul>
-        <!-- APP账号登陆 -->
-        <h3 class="tech-tc-prson">APP账号登陆</h3>
-        <ul class="tech-ul">
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>手机号:</p>
-              <p>
-                <el-input placeholder="请输入11位手机号" style="width:300px"></el-input>
-              </p>
-            </div>
-            <div>
-              <p>密码:</p>
-              <p>
-                <el-input placeholder="默认为手机号后4位" style="width:300px" type="password"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
-          </li>
-        </ul>
-        <!-- 银行信息 -->
-        <h3 class="tech-tc-prson">银行信息</h3>
-        <ul class="tech-ul">
-          <li>
-            <div>
-              <p><span class="tech-span"></span>卡类型:</p>
-              <p>
-                <el-select v-model="cards" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in card" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p>银行账号:</p>
-              <p>
-                <el-input placeholder="请输入正确的银行卡号" style="width:300px" type="password"></el-input>
               </p>
             </div>
           </li>
@@ -1134,6 +1131,7 @@
         binds: '',
         flagso: false,
         flags: false,
+        password:false,
         flage:false,
         tableKey: '',
         cards: '',
@@ -1296,7 +1294,7 @@
   }
 
 </script>
-<style >
+<style>
   * {
     list-style: none;
     margin: 0;
@@ -1724,7 +1722,7 @@
     line-height: 35px;
   }
 
-  .tech-section-xiu>li>d iv:nth-of-type(2) {
+  .tech-section-xiu>li>div:nth-of-type(2) {
     line-height: 35px;
   }
 
@@ -1751,6 +1749,36 @@
 
   .tech-xiu-div-two>div {
     margin-top: 14px;
+    display: flex;
+  }
+
+  .tech-mouse{
+    width: 50px;
+    height: 20px;
+    line-height: 18px;
+    background: #fff;
+    display: block;
+    
+    text-align: center;
+  }
+  
+  .tech-mouse-div{
+    margin-top: 10px;
+    /* width: 120px; */
+    display: inline-block;
+    display: flex;
+    justify-content: center;
+  }
+  .tech-mouse-div>span:nth-of-type(1){
+    margin-right: 5px;
+    border: 1px solid #707cd2;
+    color: #707cd2;
+  }
+
+  .tech-mouse-div>span:nth-of-type(2){
+    margin-left: 5px;
+    border: 1px solid #ff7676;
+    color: #ff7676;
   }
 
 </style>

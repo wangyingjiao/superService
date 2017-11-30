@@ -2,18 +2,18 @@
 <div>
   <div class="filter-container bgWhite">
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
+      <el-select clearable style="width: 200px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
+        <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
       </el-input>
 
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+     <button class="button-small btn_right btn_pad ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -44,10 +44,7 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-            <div class="site-div" @click="handleUpdate(scope.row)">
-                <div class="back-icon-bg"></div>
-                <div>编辑</div>
-              </div>
+           <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
           </el-button>
         </template>
       </el-table-column>
@@ -61,9 +58,16 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
-      <el-form class="small-space" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
+      <el-form 
+         class="small-space" 
+         :model="temp" 
+         label-position="left" 
+         label-width="160px"
+         :rules="rules"
+         ref="temp" 
+         style='width: 560px; margin-left:20px;'>
 
-        <el-form-item label="机构名称" >
+        <el-form-item label="机构名称" prop="name">
           <el-input 
           :maxlength="15" 
           :minlength="2" 
@@ -72,46 +76,45 @@
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
-        <el-form-item label="机构电话" >
+        <el-form-item label="机构电话" prop="phone" >
           <el-input 
             style='width: 400px;' 
             v-model="temp.phone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
-        <el-form-item label="负责人姓名" >
+        <el-form-item label="负责人姓名" prop="masterName">
           <el-input 
           :maxlength="15" 
           :minlength="2" 
           style='width: 400px;' 
-          v-model="temp.primaryPersonName"
+          v-model="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
-        <el-form-item label="负责人手机号" >
+        <el-form-item label="负责人手机号" prop="masterPhone" >
           <el-input 
-            @blur="phoneBlur" 
             style='width: 400px;' 
             placeholder="请输入11位手机号" 
-            v-model="temp.primaryPersonPhone"></el-input>
+            v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <el-form-item label="所在区域" v-model="temp.areaId">
-          <el-select style='width: 120px;' class="filter-item" v-model="temp.province"  placeholder="请选择">
-            <el-option v-for="item in province" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
-          <el-select style='width: 120px; margin-left:15px;' class="filter-item" v-model="temp.city" placeholder="请选择">
-            <el-option v-for="item in city" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
-          <el-select style='width: 120px; margin-left:15px;' class="filter-item" v-model="temp.county" placeholder="请选择">
-            <el-option v-for="item in county" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
+        <el-form-item label="所在区域:">
+							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.province" placeholder="请选择省" @change="provinceChange">
+									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
+									</el-option>
+							</el-select>
+							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.city" placeholder="请选择市" @change="cityChange">
+										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
+										</el-option>
+							</el-select>
+							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.county" placeholder="请选择县区">
+										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
+										</el-option>
+							</el-select>
+					</el-form-item>
 
-        <el-form-item label="详细地址" >
+        <el-form-item label="详细地址" prop="address">
           <el-input 
              :maxlength="100" 
              :minlength="6" 
@@ -120,7 +123,7 @@
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
-        <el-form-item label="服务范围类型">
+        <el-form-item label="服务范围类型" prop="serviceAreaType">
           <el-select 
             style='width: 400px;' 
             class="filter-item" 
@@ -134,10 +137,10 @@
         <el-form-item label="服务城市" >
           <el-select 
             style='width: 400px;' 
-            v-model="temp.cityIds" 
+            v-model="temp.serviceCityId" 
             multiple 
             placeholder="请选择">
-            <el-option-group
+            <!-- <el-option-group
               v-for="group in serviceCity"
               :key="group.label"
               :label="group.label">  
@@ -147,18 +150,18 @@
                 :label="item.label"
                 :value="item.value">
               </el-option>
-            </el-option-group>
+            </el-option-group> -->
           </el-select>
         </el-form-item>
 
-        <el-form-item label="机构网址" >
+        <el-form-item label=" 机构网址" >
           <el-input 
             style='width: 400px;' 
             v-model="temp.officeUrl"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
-        <el-form-item label="机构传真" >
+        <el-form-item label=" 机构传真" >
           <el-input 
             style='width: 400px;' 
             v-model="temp.fax"
@@ -172,38 +175,22 @@
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
-        <el-form-item label="备注" >
+        <el-form-item label=" 备注" >
           <el-input 
             type="textarea" 
             :rows="2" 
-            v-model="temp.remark"></el-input>
+            v-model="temp.remarks"></el-input>
         </el-form-item>
         
-
-        
-        
       </el-form>
-      <div slot="footer" class="dialog-footer">       
-        <el-button type="primary" @click="create">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <div slot="footer" class="dialog-footer" style="text-align:center">       
+        <!-- <el-button type="primary" @click="create">保 存</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
-
-    <el-dialog title="设置站长" :visible.sync="dialogTempVisible">
-      <el-form :model="temp">
-        <el-form-item label="服务站长">
-          <el-select class="filter-item" v-model="temp.master" >
-            <el-option v-for="item in master" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogTempVisible = false">保 存</el-button>
-        <el-button @click="dialogTempVisible = false">取 消</el-button>
-      </div>
-    </el-dialog>
-    
   </div>
   </div>
 </div>
@@ -211,13 +198,10 @@
 
 <script>
 import { getMech, addMech, getSerarea, getSerstation } from "@/api/base";
+import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
-//临时挂载三级联动
-const province = ["北京", "上海"];
-const city = ["海淀", "朝阳"];
-const county = ["海淀", "朝阳"];
 const optionsBox = [
   {
     label: "北京市",
@@ -273,6 +257,10 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      search: {
+        key: "",
+        value: ""
+      },
       temp: {
         address: "",
         areaId: "",
@@ -281,32 +269,67 @@ export default {
         office400: "",
         officeUrl: "",
         phone: "",
-        primaryPersonName: "",
-        primaryPersonPhone: "",
-        remark: "",
+        masterName: "",
+        masterPhone: "",
+        remarks: "",
         serviceAreaType: "",
-        cityIds: [],
+        serviceCityId: [],
         province: "",
         city: "",
         county: ""
       },
-      importanceOptions: ["请选择", "机构名称", "负责人姓名", "负责人手机号"],
+      importanceOptions: [
+        { id: "name", value: "机构名称" },
+        { id: "masterName", value: "负责人姓名" },
+        { id: "masterPhone", value: "负责人手机号" }
+      ],
       stationType: [],
-      stationState: ["启用", "停用"],
       dialogFormVisible: false,
-      dialogTempVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑",
         create: "添加"
       },
       tableKey: 0,
-      province: province,
-      city: city,
-      county: county,
-      master: ["张三", "李四"],
+      provinceOptions: [],
+      cityOptions: [],
+      countyOptions: [],
       textarea: "",
-      serviceCity: optionsBox
+      serviceCity: optionsBox,
+      updateId: "",
+      rules: {
+        name: [
+          { required: true, message: "请输入 2 到 15 位的机构名称", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入服务机构电话 如：010-66668888",
+            trigger: "blur"
+          }
+        ],
+        masterName: [
+          { required: true, message: "请输入 2 到 15 位的负责人姓名", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        masterPhone: [
+          { required: true, message: "请输入11位由数字组成的手机号", trigger: "blur" },
+          { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
+        ],
+        address: [
+          { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
+          { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
+        ],
+        serviceAreaType: [
+          { required: true, message: "服务范围类型不能为空", trigger: "change" }
+        ],
+        serviceCityId: [
+          { required: true, message: "服务范围城市不能为空", trigger: "change" }
+        ],
+        county: [{ required: true, message: "服务城市地址不能为空", trigger: "change" }],
+        areaId: []
+      }
     };
   },
   filters: {
@@ -321,10 +344,14 @@ export default {
   },
   created() {
     this.getList();
-  },
-  mounted() {
     getSerarea().then(res => {
+      console.log(res);
       this.stationType = res.data;
+    });
+    var id = "";
+    getArea(id).then(res => {
+      console.log(res);
+      this.provinceOptions = res.data.data;
     });
   },
   methods: {
@@ -332,29 +359,40 @@ export default {
       this.listLoading = true;
       getMech().then(res => {
         console.log(res);
-        this.list = res.data.data
-        this.listLoading = false
-        
+        this.list = res.data.data;
+        this.listLoading = false;
       });
     },
     handleFilter() {
-      console.log("搜索");
+      var value = this.search.value;
+      if (this.search.key == "name") {
+        var obj = {
+          name: value
+        };
+      } else if (this.search.key == "masterName") {
+        var obj = {
+          masterName: value
+        };
+      } else {
+        var obj = {
+          masterPhone: value
+        };
+      }
+      this.listLoading = true;
+      getMech(obj).then(res => {
+        console.log(res);
+        this.list = res.data.data;
+        this.listLoading = false;
+      });
+      console.log(obj);
       this.listQuery.page = 1;
-      this.getList();
-    },
-    handleSetMaster() {
-      console.log("设置站长");
-      this.dialogTempVisible = true;
-    },
-    handleSetRange() {
-      console.log("设置范围");
+      // this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
       this.getList();
     },
     handleCurrentChange(val) {
-      console.log("未知方法");
       this.listQuery.page = val;
       this.getList();
     },
@@ -371,121 +409,115 @@ export default {
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log("编辑");
+      console.log(row);
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
+      this.updateId = row.id;
       this.dialogFormVisible = true;
     },
-    handleDelete(row) {
-      console.log("删除");
-      this.$notify({
-        title: "成功",
-        message: "删除成功",
-        type: "success",
-        duration: 2000
-      });
-      const index = this.list.indexOf(row);
-      this.list.splice(index, 1);
+    resetForm(formName) {
+      this.dialogFormVisible = false
+      this.resetTemp()
+      this.$refs[formName].resetFields()
     },
-    create() {
-      //this.temp.id = 1
-      var ceshi = {
-        address: "北京市",
-        areaId: "12",
-        fax: "123",
-        name: "国安社区5",
-        office400: "4000900123",
-        officeUrl: "北京",
-        phone: "13264532323",
-        primaryPersonName: "张三",
-        primaryPersonPhone: "13265451212",
-        remark: "1",
-        serviceAreaType: "1",
-        cityIds: ["123", "123", "123"]
-      };
+    searchChange(val) {
+      console.log(val);
+      // this.search.key = val
+    },
+    create(formName) {
       var obj = {
-        address: this.temp.address,
-        areaId: this.temp.address,
-        fax: this.temp.address,
-        name: this.temp.address,
-        office400: this.temp.address,
-        officeUrl: this.temp.address,
+        name: this.temp.name,
         phone: this.temp.phone,
-        primaryPersonName: this.temp.address,
-        primaryPersonPhone: this.temp.address,
-        remark: this.temp.address,
-        serviceAreaType: "1",
-        cityIds: ["123", "123", "123"]
+        masterName: this.temp.masterName,
+        masterPhone: this.temp.masterPhone,
+        areaId: "",
+        address: this.temp.address,
+        serviceAreaType: this.temp.serviceAreaType, //服务类型
+        cityIds: ["123", "123", "123"],
+        officeUrl: this.temp.officeUrl,
+        fax: this.temp.fax,
+        office400: this.temp.office400,
+        remarks: this.temp.remarks
       };
-      addMech(ceshi).then(res => {
-        console.log(res);
-        if (res.data.code) {
-          this.dialogFormVisible = false;
-          this.$notify({
-            title: "成功",
-            message: res.data.data,
-            type: "success",
-            duration: 2000
-          })
-        }else{
-          this.$notify({
-            title: "失败",
-            message: res.data.data,
-            type: "error",
-            duration: 2000
-          })
+      console.log(obj);
+      //return
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          addMech(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$message({
+                type: "success",
+                message: "添加成功"
+              });
+              this.getList();
+            } else {
+              this.$message({
+                type: "error",
+                message: "创建失败"
+              });
+            }
+          });
+        } else {
+          return false;
         }
       });
     },
     update() {
-      this.temp.timestamp = +this.temp.timestamp;
-      for (const v of this.list) {
-        if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v);
-          this.list.splice(index, 1, this.temp);
-          break;
+      var obj = {
+        id: this.updateId,
+        name: this.temp.name,
+        phone: this.temp.phone,
+        masterName: this.temp.masterName,
+        masterPhone: this.temp.masterPhone,
+        areaId: "",
+        address: this.temp.address,
+        serviceAreaType: this.temp.serviceAreaType,
+        cityIds: ["123", "123", "123"],
+        officeUrl: this.temp.officeUrl,
+        fax: this.temp.fax,
+        office400: this.temp.office400,
+        remarks: this.temp.remarks
+      };
+      console.log(obj);
+      addMech(obj).then(res => {
+        console.log(res);
+        this.dialogFormVisible = false;
+        if (res.data.code === 1) {
+          this.$message({
+            type: "success",
+            message: "修改成功"
+          });
+          this.getList();
+        } else {
+          this.$message({
+            type: "error",
+            message: "发生未知错误"
+          });
         }
-      }
-      this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "编辑成功",
-        type: "success",
-        duration: 2000
       });
     },
-    phoneBlur() {
-      console.log(this.temp.primaryPersonPhone);
-      var reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-      if (!reg.test(this.temp.primaryPersonPhone)) {
-        console.log("错误");
-        this.temp.primaryPersonPhone = "";
-        this.$notify({
-          title: "手机号有误",
-          message: "请正确输入手机号",
-          type: "warning",
-          duration: 2000
-        });
-      }
+    provinceChange(value) {
+      this.temp.city = "";
+      getArea(value)
+        .then(res => {
+          this.cityOptions = res.data.data;
+        })
+        .catch(res => {});
+    },
+    //
+    cityChange(value) {
+      this.temp.county = "";
+      getArea(value)
+        .then(res => {
+          this.countyOptions = res.data.data;
+        })
+        .catch(res => {});
     },
     resetTemp() {
-      this.temp = {
-        address: "",
-        areaId: "",
-        fax: "",
-        name: "",
-        office400: "",
-        officeUrl: "",
-        phone: "",
-        primaryPersonName: "",
-        primaryPersonPhone: "",
-        remark: "",
-        serviceAreaType: "",
-        cityIds: [],
-        province: "",
-        city: "",
-        county: ""
-      };
+      this.temp={
+      }
     },
 
     formatJson(filterVal, jsonData) {
@@ -529,17 +561,27 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
-body{
-    background-color:#f5f5f5;
+body {
+  background-color: #f5f5f5;
 }
-.bgWhite{
-    background-color: #ffffff;
-    padding: 20px
+.bgWhite {
+  background-color: #ffffff;
+  padding: 20px;
 }
-.btn_pad{
-    margin:0px 0px 10px 20px;
+.btn_pad {
+  margin: 0px 0px 10px 20px;
 }
-.btn_right{
-  float:right;
+.btn_right {
+  float: right;
+}
+.el-dialog-footer {
+  text-align: center;
+  float: right;
+}
+.ceshi3 {
+  font-size: 14px;
+  color: #1d85fe;
+  border: 1px solid #1d85fe;
+  background-color: #ffffff;
 }
 </style>
