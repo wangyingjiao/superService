@@ -4,7 +4,7 @@
 		  <el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
 			<el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索的姓名" v-model="customName"></el-input>
 		  <el-select clearable style="width:200px;margin-left:30px;" class="filter-item" v-model="organizationName" placeholder="请选择服务机构">
-				<el-option v-for="item in organizationOptions" :key="item.officeId" :label="item.officeName" :value="item.officeId">
+				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
 				</el-option>
 		  </el-select>
       		  
@@ -133,7 +133,7 @@
 
 <script>
 import { getCusTable,deleteCus,saveCus} from "@/api/customer";
-import { getArea} from "@/api/base";
+import { getArea,getMech} from "@/api/base";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -305,6 +305,7 @@ export default {
 		var obj={
 				customName:this.customName,
 				customPhone:this.customPhone,
+				officeId:this.organizationName,
 		}
 		 this.getData(obj,this.pageNumber,this.pageSize1);
 	},
@@ -312,7 +313,9 @@ export default {
     handleSizeChange1(val) {
 				this.pageSize1=val;
 				 var obj={
-					
+					 	 customName:this.customName,
+						 customPhone:this.customPhone,
+						 officeId:this.organizationName,
 				 }
 				this.getData(obj,this.pageNumber,this.pageSize1);
     },
@@ -320,7 +323,9 @@ export default {
     handleCurrentChange1(val) {
 			  this.pageNumber=val;
 			   var obj={
-					
+						 customName:this.customName,
+						 customPhone:this.customPhone,
+						 officeId:this.organizationName,
 				 }
          this.getData(obj,this.pageNumber,this.pageSize1);
     },	
@@ -384,13 +389,20 @@ export default {
 			var obj = pramsObj;
       getCusTable(obj,pageNo,pageSize).then(res => {
 				this.tableData = res.data.data.list
-				this.organizationOptions=res.data.data.list;
+				
         this.listLoading = false
 				this.pagetotal1 = res.data.data.count;
       }).catch(res=>{
         this.listLoading = false
 			});
 
+		},
+		getorgin(){
+			getMech().then(res => {
+			  this.organizationOptions=res.data.data;
+      }).catch(res=>{
+        
+      });
 		},
 		test(){
 				var inputname=this.$refs.pickerInput;
@@ -447,7 +459,7 @@ export default {
 		 this.initMap1();
 		 this.getData();
 		 this.customSexselect();
-     
+     this.getorgin();
   }
 };
 </script>
