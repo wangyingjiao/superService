@@ -28,18 +28,18 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-        target: 'http://192.168.1.199:8800/',
-        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
-        pathRewrite: {
-          '^/api': ''
-        }
       // '/api': {
-      //   target: 'http://10.16.70.80:8800/',
+      //   target: 'http://10.16.70.133:8800/',
       //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
       //   pathRewrite: {
       //     '^/api': ''
       //   }
+      '/api': {
+        target: 'http://10.16.70.130:8800/',
+        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^/api': ''
+        }
         }
       
     },

@@ -53,7 +53,7 @@
 
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -99,20 +99,20 @@
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <el-form-item label="所在区域:">
-							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.province" placeholder="请选择省" @change="provinceChange">
+        <el-form-item label="所在区域"  prop="cusTownId">
+							<el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
 							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.city" placeholder="请选择市" @change="cityChange">
+							<el-select clearable style="width:130px;"  @change="cityChange" class="filter-item" v-model="temp.cusCityId" placeholder="请选择市">
 										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
 							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.county" placeholder="请选择县区">
+							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.cusTownId" placeholder="请选择县区">
 										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
 							</el-select>
-					</el-form-item>
+				</el-form-item>
 
         <el-form-item label="详细地址" prop="address">
           <el-input 
@@ -134,25 +134,23 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="服务城市" >
-          <el-select 
-            style='width: 400px;' 
-            v-model="temp.serviceCityId" 
-            multiple 
-            placeholder="请选择">
-            <!-- <el-option-group
-              v-for="group in serviceCity"
+        <!-- <el-form-item label="*服务城市" >
+         
+           <el-select v-model="temp.serviceCityId"  multiple  placeholder="请选择">
+            <el-option-group
+              v-for="group in options3"
               :key="group.label"
-              :label="group.label">  
+              :label="group.label">
               <el-option
                 v-for="item in group.options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
               </el-option>
-            </el-option-group> -->
+            </el-option-group>
+
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label=" 机构网址" >
           <el-input 
@@ -197,7 +195,14 @@
 </template>
 
 <script>
-import { getMech, addMech, getSerarea, getSerstation } from "@/api/base";
+import {
+  getMech,
+  addMech,
+  getSerarea,
+  getSerstation,
+  getMechPage,
+  getCity
+} from "@/api/base";
 import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -257,6 +262,8 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      pageSize: 10,
+      total: 1,
       search: {
         key: "",
         value: ""
@@ -272,12 +279,13 @@ export default {
         masterName: "",
         masterPhone: "",
         remarks: "",
+        cusProvId: "",
+        cusCityId: "",
+        cusTownId: "",
         serviceAreaType: "",
-        serviceCityId: [],
-        province: "",
-        city: "",
-        county: ""
+        serviceCityId: []
       },
+      province: "",
       importanceOptions: [
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
@@ -291,11 +299,12 @@ export default {
         create: "添加"
       },
       tableKey: 0,
+      options3: optionsBox,
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
       textarea: "",
-      serviceCity: optionsBox,
+      serviceCity: [],
       updateId: "",
       rules: {
         name: [
@@ -327,8 +336,10 @@ export default {
         serviceCityId: [
           { required: true, message: "服务范围城市不能为空", trigger: "change" }
         ],
-        county: [{ required: true, message: "服务城市地址不能为空", trigger: "change" }],
-        areaId: []
+        cusTownId: [
+          { required: true, message: "服务城市地址不能为空", trigger: "change" }
+        ],
+        areaId: [{ required: true, message: "所在区域不能为空", trigger: "change" }]
       }
     };
   },
@@ -345,21 +356,27 @@ export default {
   created() {
     this.getList();
     getSerarea().then(res => {
-      console.log(res);
+      //console.log(res);
       this.stationType = res.data;
     });
     var id = "";
     getArea(id).then(res => {
-      console.log(res);
+      //console.log(res);
       this.provinceOptions = res.data.data;
+    });
+    getCity().then(res => {
+      this.serviceCity = res.data.data;
+      console.log(this.serviceCity);
     });
   },
   methods: {
     getList() {
       this.listLoading = true;
-      getMech().then(res => {
+      var obj = {};
+      getMechPage(obj).then(res => {
         console.log(res);
-        this.list = res.data.data;
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -379,9 +396,10 @@ export default {
         };
       }
       this.listLoading = true;
-      getMech(obj).then(res => {
+      getMechPage(obj).then(res => {
         console.log(res);
-        this.list = res.data.data;
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
         this.listLoading = false;
       });
       console.log(obj);
@@ -389,12 +407,51 @@ export default {
       // this.getList();
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val;
-      this.getList();
+      console.log("size-change");
+      this.pageSize = val;
+      var value = this.search.value;
+      if (this.search.key == "name") {
+        var obj = {
+          name: value
+        };
+      } else if (this.search.key == "masterName") {
+        var obj = {
+          masterName: value
+        };
+      } else {
+        var obj = {
+          masterPhone: value
+        };
+      }
+      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
+        console.log(res);
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val;
-      this.getList();
+      console.log("current-change");
+      this.pageNumber = val;
+      var value = this.search.value;
+      if (this.search.key == "name") {
+        var obj = {
+          name: value
+        };
+      } else if (this.search.key == "masterName") {
+        var obj = {
+          masterName: value
+        };
+      } else {
+        var obj = {
+          masterPhone: value
+        };
+      }
+      this.listLoading = true;
+      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+      });
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -413,12 +470,18 @@ export default {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.updateId = row.id;
+      setTimeout(() => {
+        this.temp.cusProvId = row.cusProvId;
+        // this.temp.cusCityId = row.cusCityId;
+        // this.temp.cusTownId = row.cusTownId;
+      }, 1000);
+
       this.dialogFormVisible = true;
     },
     resetForm(formName) {
-      this.dialogFormVisible = false
-      this.resetTemp()
-      this.$refs[formName].resetFields()
+      this.dialogFormVisible = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
     },
     searchChange(val) {
       console.log(val);
@@ -433,11 +496,15 @@ export default {
         areaId: "",
         address: this.temp.address,
         serviceAreaType: this.temp.serviceAreaType, //服务类型
-        cityIds: ["123", "123", "123"],
+       // cityIds: this.temp.serviceCityId,
+        cityIds: ["123",["123"],["123"]],
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
         office400: this.temp.office400,
-        remarks: this.temp.remarks
+        remarks: this.temp.remarks,
+        cusProvId: this.temp.cusProvId,
+        cusCityId: this.temp.cusCityId,
+        cusTownId: this.temp.cusTownId
       };
       console.log(obj);
       //return
@@ -478,8 +545,12 @@ export default {
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
         office400: this.temp.office400,
-        remarks: this.temp.remarks
+        remarks: this.temp.remarks,
+        cusProvId: "",
+        cusCityId: this.temp.cusCityId,
+        cusTownId: this.temp.cusTownId
       };
+
       console.log(obj);
       addMech(obj).then(res => {
         console.log(res);
@@ -516,8 +587,23 @@ export default {
         .catch(res => {});
     },
     resetTemp() {
-      this.temp={
-      }
+      this.temp = {
+        address: "",
+        areaId: "",
+        fax: "",
+        name: "",
+        office400: "",
+        officeUrl: "",
+        phone: "",
+        masterName: "",
+        masterPhone: "",
+        remarks: "",
+        cusProvId: "",
+        cusCityId: "",
+        cusTownId: "",
+        serviceAreaType: "",
+        serviceCityId: []
+      };
     },
 
     formatJson(filterVal, jsonData) {

@@ -9,11 +9,14 @@ export function addStaff(obj) {
   return instance.post(`/api/a/sys/user/saveData`, obj)
 }
 
-export function getStation() {
-  return instance.get(`/api/a/sys/role/listData?pageSize=-1`)
+export function getStationPage(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/sys/role/listPageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-export function getStaff(obj) {
-  return instance.post(`/api/a/sys/user/listData`, obj)
+export function getStation() {
+  return instance.get(`/api/a/sys/role/listData`)
+}
+export function getStaff(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/sys/user/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 export function addStation(obj) {
   return instance.post(`/api/a/sys/role/saveData`, obj)
