@@ -134,10 +134,10 @@
           </el-select>
         </el-form-item>
 
-        <!-- <el-form-item label="*服务城市" >
+        <el-form-item label="服务城市" prop="serviceCityId" >
          
-           <el-select v-model="temp.serviceCityId"  multiple  placeholder="请选择">
-            <el-option-group
+           <el-select v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
+            <!-- <el-option-group
               v-for="group in options3"
               :key="group.label"
               :label="group.label">
@@ -147,10 +147,22 @@
                 :label="item.label"
                 :value="item.value">
               </el-option>
+            </el-option-group> -->
+
+            <el-option-group
+              v-for="(group,index) in serviceCity"
+              :key="group.id"
+              :label="group.name">
+              <el-option
+                v-for="item in group.subs"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
             </el-option-group>
 
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
 
         <el-form-item label=" 机构网址" >
           <el-input 
@@ -334,7 +346,7 @@ export default {
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
         serviceCityId: [
-          { required: true, message: "服务范围城市不能为空", trigger: "change" }
+          { required: true,type:"array",  message: "服务范围城市不能为空", trigger: "change" }
         ],
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
@@ -367,6 +379,8 @@ export default {
     getCity().then(res => {
       this.serviceCity = res.data.data;
       console.log(this.serviceCity);
+      console.log(this.serviceCity[1].id);
+      console.log(this.serviceCity[1].name);
     });
   },
   methods: {
@@ -487,7 +501,17 @@ export default {
       console.log(val);
       // this.search.key = val
     },
+    changeCity(val){
+     console.log(val)
+    },
     create(formName) {
+      var arr = []
+      for(var i = 0;i < this.temp.serviceCityId;i++){
+        arr.push(this.temp.serviceCityId[i])
+      }
+      // arr.pop()
+      console.log(arr)
+
       var obj = {
         name: this.temp.name,
         phone: this.temp.phone,
@@ -496,8 +520,8 @@ export default {
         areaId: "",
         address: this.temp.address,
         serviceAreaType: this.temp.serviceAreaType, //服务类型
-       // cityIds: this.temp.serviceCityId,
-        cityIds: ["123",["123"],["123"]],
+        cityIds: this.temp.serviceCityId,
+       // cityIds: ["123","123","123"],
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
         office400: this.temp.office400,
@@ -519,10 +543,11 @@ export default {
                 message: "添加成功"
               });
               this.getList();
+              this.dialogFormVisible = false;
             } else {
               this.$message({
                 type: "error",
-                message: "创建失败"
+                message: "创建失败,参数有误"
               });
             }
           });
