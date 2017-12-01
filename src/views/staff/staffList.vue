@@ -797,7 +797,7 @@ export default {
   padding: 10%;
 }
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 .bgWhite {
   background-color: #ffffff;
