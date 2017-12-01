@@ -1,52 +1,62 @@
 <template>
-    <div class="allmap" >     
-		<div ref="gdMap" class="mapWrap">
-			<div class="buttonWrap">
-				<input type="button" class="mapButton" value="绘制多边形" ref="polygon"/>
-				<input type="button" class="mapButton" value="绘制圆" ref="circle"/>
-				<!--<input type="button" class="mapButton" value="清除" ref="remove"/>-->			
-			</div>              
-		</div>		
-		<div class="pickerBox">
-			<div class="headerWrap">
-               <h3>服务范围信息</h3>
-			   <div style="height:25px;line-height:25px;margin-top:10px;"><span style="display:inline-block;">服务范围个数:</span><span class="overlay-number">{{number}}</span><span style="display:inline-block;margin-left:20px;color:blue;cursor:pointer;" @click="removeOverlay">全部删除</span></div>
-			</div>
-			<div class="bottomContent">
-				<p >请输入地址:<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点"></p>
-				<div>
-					<el-table
-						:data="tableData"
-						border
-						style="width: 100%">
-						<el-table-column
-						label="服务范围"
-						align="center"
-						width='120'
-						prop="index"
-						>
-						</el-table-column>
-						<el-table-column
-						prop="radius"
-						align="center"
-						width='180'
-						label="圆形半径"
-						>
-						</el-table-column>
-						<el-table-column
-						align="center"
-						width="100"						
-						label="操作">
-							<template scope="scope">
-									<el-button type="button" @click="Delete(scope.row)" >删除</el-button>
-							</template>						
-						</el-table-column>
-					</el-table>
+    <div class="allmap" >
+		<button type="type" @click="showdialog" style="">打开地图</button>
+		<el-dialog
+			title="服务范围选择"
+			:visible.sync="severSelectdialogVisible"
+			width="100%"
+			size="full"
+			:show-close="false"
+			>
+				<div ref="gdMap" class="mapWrap">             
 				</div>
-			</div>						
-			
-				    
-		</div>
+				<div class="buttonWrap">
+					<input type="button" class="mapButton" value="绘制多边形" ref="polygon"/>
+					<input type="button" class="mapButton" value="绘制圆" ref="circle"/>
+					<button type="button" class="mapButton" @click="saveOverlays">保存</button>
+					<button class="mapButton"  @click="closeMap">关闭</button>			
+				</div> 		
+				<div class="pickerBox">
+					<div class="headerWrap">
+					<h3>服务范围信息<span v-if="showPromit" style="color:red;margin-left:30px;">{{promitInf}}</span></h3>
+					<div style="height:25px;line-height:25px;margin-top:10px;"><span style="display:inline-block;">服务范围个数:</span><span class="overlay-number">{{number}}</span><span style="display:inline-block;margin-left:20px;color:blue;cursor:pointer;" @click="removeOverlay">全部删除</span></div>
+					</div>
+					<div class="bottomContent">
+						<p >请输入地址:<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点"></p>
+						<div>
+							<el-table
+								:data="tableData"
+								border
+								style="width: 100%"
+								max-height="250">
+								<el-table-column
+								label="服务范围"
+								align="center"
+								width='120'
+								prop="index"
+								>
+								</el-table-column>
+								<el-table-column
+								prop="radius"
+								align="center"
+								width='160'
+								label="圆形半径"
+								>
+								</el-table-column>
+								<el-table-column
+								align="center"
+								width="100"						
+								label="操作">
+									<template scope="scope">
+										<el-button type="button" @click="Delete(scope.row)" >删除</el-button>
+									</template>						
+								</el-table-column>
+							</el-table>							
+						</div>
+					</div>													    
+				</div>							
+	    </el-dialog>     
+
 		
     </div>
 </template>
@@ -54,40 +64,55 @@
 export default {
   data() {
     return {
-	   inputvalue:'',
-	   overlays:[],//覆盖物对象
-	   overlaysObj:[],//覆盖物对象
+	   severSelectdialogVisible: false,
+	   inputvalue:[],
 	   myMap:{},//地图对象
 	   number:'0',
 	   tableData:[],
 	   index:0,
+	   promitInf:'',
+	   showPromit:false,
     };
   },
   mounted() {
-	 this.initMap1();
+	 
   },
   methods: {
+	showdialog(){
+		this.severSelectdialogVisible=true;
+		this.$nextTick(() => {
+		   this.initMap1();
+		})		
+	},
 	initMap1(){
 		var that=this;
 		var id=this.$refs.gdMap;
 		var inputname=this.$refs.pickerInput;
 		var map = new AMap.Map(id, {
+			    center:new AMap.LngLat(116.368904,39.913423),
 				zoom: 15
 		});
+        map.plugin(["AMap.Scale"],function(){
+			var scale = new AMap.Scale();
+			map.addControl(scale);   
+		});
+		map.plugin(["AMap.ToolBar"],function(){
+			//加载工具条
+			var tool = new AMap.ToolBar();
+			map.addControl(tool);    
+		});
 		that.myMap=map;
-		var number='';
 		var styleOptions = {  
 			strokeColor:"blue",    //边线颜色。  
 			fillColor:"blue",      //填充颜色。当参数为空时，圆形将没有填充效果。  
-			strokeWeight: 3,       //边线的宽度，以像素为单位。  
-			strokeOpacity: 0.8,    //边线透明度，取值范围0 - 1。  
-			fillOpacity: 0.1,      //填充的透明度，取值范围0 - 1。  
+			strokeWeight:1,       //边线的宽度，以像素为单位。  
+			strokeOpacity: 0.1,    //边线透明度，取值范围0 - 1。  
+			fillOpacity: 0.3,      //填充的透明度，取值范围0 - 1。  
 			strokeStyle: 'solid' //边线的样式，solid或dashed。  
 		}		
 		var mouseTool = new AMap.MouseTool(map);
 		var polygon=this.$refs.polygon
 		var circle=this.$refs.circle
-		//var remove=this.$refs.remove
 		AMap.event.addDomListener(polygon, 'click', function() {
 			 mouseTool.polygon(styleOptions);
 		   
@@ -127,6 +152,7 @@ export default {
 										address: poi.address
 								};
 								inputname.value=info.district+info.name;
+								that.inputvalue.push(info.location);
 								marker.setMap(map);
 								infoWindow.setMap(map);
 								marker.setPosition(poi.location);
@@ -147,18 +173,19 @@ export default {
 			var overlays=this.myMap.getAllOverlays();						
 			if(obj.CLASS_NAME === 'AMap.Polygon'){				
 				 path=obj.getPath();
+				 row.type='Polygon';
 				 row.path =path;
 				 row.radius='---'
 				 row.center=''		
 			}
 			if(obj.CLASS_NAME === 'AMap.Circle'){				
 				 radius=obj.getRadius();
+				 row.type='Circle';
 				 row.radius =(radius*1000).toFixed(3)+'公里';
 				 row.path=''
 				 row.center=obj.getCenter();				
 			}
-			row.index="范围"+index;
-			row.type=obj.CLASS_NAME;
+			row.index="范围"+index;		
 			row.id=obj._amap_id;								
 			this.tableData.push(row);				
 			this.number=overlays.length;       		
@@ -191,71 +218,93 @@ export default {
 		}else{
 			this.number=0;
 		}		
-	}
-
-		
-	
+	},
+	saveOverlays(){
+		 if(this.tableData == ''){
+			   this.promitInf='请选择一个服务区域';
+	           this.showPromit=true;
+		 }else if(this.tableData.length >1){
+			   this.promitInf='只能选择一个服务区域';
+	           this.showPromit=true;			 
+		 }else{
+			this.promitInf='';
+			this.showPromit=false;			 
+			//搜索的经纬度
+			//this.inputvalue
+			//区域对象
+			//this.tableData[0]
+		 }
+	},
+	closeMap(){
+		this.tableData=[];
+		this.number='0';
+		this.index=0;
+		this.promitInf='';
+		this.showPromit=false;				
+        this.severSelectdialogVisible = false;
+	}	
   }
 };
 </script>
-<style lang="scss" scoped>
-.allmap{
-   width:100%;
+<style  scoped>
+	.allmap{
+		margin-top:80px;
+		width:100%;
+	}   
+	.mapButton{
+		width:80px;
+		height: 25px;
+		line-height:25px;
+		color:#fff;
+		text-align:center;
+		font-size:12px;
+		border:none;
+		border-radius:0px;
+		outline:none;
+		background: #4c70e8;
+		cursor: pointer;
+	} 
+	.mapButton:hover{
+		background: #6d8dfc;
+	}  
    .mapWrap{
-		width:80%;
+		width:70%;
 		height:500px;
 		float:left;
-		.buttonWrap{
-			position: absolute;
-			z-index: 9999;
-			top:460px;
-			right:20px;
-			.mapButton{
-				width:80px;
-				height: 25px;
-				line-height:25px;
-				color:#fff;
-				text-align:center;
-				font-size:12px;
-				border:none;
-				outline:none;
-				background: #4c70e8;
-			}
-		}
 	}
+	.buttonWrap{
+		position: absolute;
+		z-index: 9999;
+		bottom:10%;
+		right:35%;
+
+	}	
 	.pickerBox {
 		float:left;
-        width: 20%;
+        width: 30%;
 		height:500px;
 		background:#fff;
 		border-left:1px dashed #ccc;
 		font-size:12px;
-		.headerWrap{
-			border-bottom:1px dashed #ccc;
-			padding:10px 5px;
-			.overlay-number{
-				display:inline-block;
-				width:30px;
-				text-align:center;
-				color:red;
-			}
-		}
-		.bottomContent{
-			padding:20px 5px;
-			.el-table th>.cell{
-				font-size:12px;
-			}
-			.pickerInput {
-				width: 150px;
-				padding: 5px 5px;
-   		    }
-		}
-
     }
-
-}
-
-
-    
-
+	.headerWrap{
+		border-bottom:1px dashed #ccc;
+		padding:10px 5px;
+	}
+	.overlay-number{
+		display:inline-block;
+		width:30px;
+		text-align:center;
+		color:red;
+	}		
+	.bottomContent{
+		padding:20px 5px;
+	}
+	.el-table th>.cell{
+		font-size:12px;
+	}
+	.pickerInput {
+		width: 150px;
+		padding: 5px 5px;
+	}			
 </style>

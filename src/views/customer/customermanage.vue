@@ -10,14 +10,15 @@
       		  
 		  <button class="search-button" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
-		<div class="second-bar" style="height:500px;">
+		<div class="second-bar">
 		  <button type="button" class="add-button" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</button>
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px 60px 20px;">			      
 				    <el-table
 					  :data="tableData"
 						v-loading="listLoading"
 						tooltip-effect='light'
-					  border
+					  
+						stripe
 					  style="width:100%;"
 						>
 					  <el-table-column
@@ -340,10 +341,13 @@ export default {
 				var id=''
 		  	getArea(id).then(res => {
 					this.provinceOptions=res.data.data;
-					this.test();
+					
 				}).catch(res=>{
 					
-				});				
+				});
+				this.$nextTick(() => {
+		   			this.test();
+		    })				
 		},
 		//表格查看操作按钮
 		lookInf(obj){
