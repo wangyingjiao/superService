@@ -35,7 +35,7 @@ module.exports = {
       //     '^/api': ''
       //   }
       '/api': {
-        target: 'http://10.16.70.130:8800/',
+        target: 'http://10.16.70.133:8800/',
         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {
           '^/api': ''

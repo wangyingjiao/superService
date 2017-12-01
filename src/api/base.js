@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-let instance = axios.create({
+const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 
 })
@@ -26,9 +26,29 @@ export function getSerstation() {
 }
 // 服务范围类型
 export function getArea(id) {
-  return instance.get(`/api/a/sys/area/getchildArea?id=`+id)
+  return instance.get(`/api/a/sys/area/getchildArea?id=` + id)
 }
 // 获取服务城市
 export function getCity() {
   return instance.post(`/api/a/sys/area/treeArea`)
+}
+// 获取服务站
+export function getSite() {
+  return instance.post(`/api/a`)
+}
+// 新增服务站
+export function addSite() {
+  return instance.post(`/api/a`)
+}
+// 删除服务站
+export function delSite() {
+  return instance.post(`/api/a`)
+}
+// 获取站长列表
+export function getMaster() {
+  return instance.post(`/api/a`)
+}
+// 字典量 获取服务站类型
+export function getType() {
+  return instance.post(`/api/a`)
 }

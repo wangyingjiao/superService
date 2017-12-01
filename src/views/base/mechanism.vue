@@ -13,7 +13,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-     <button class="button-small btn_right btn_pad ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+     <button class="button-small btn_right btn_pad ceshi ceshi5" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -30,16 +30,16 @@
       <el-table-column  label="机构名称" align="center" min-width="150px" prop="name" >
       </el-table-column>
 
-      <el-table-column  label="机构电话" align="center" min-width="200px" prop="office400">
+      <el-table-column  label="机构电话" align="center" min-width="200px" prop="phone">
       </el-table-column>
 
-      <el-table-column  label="机构地址" align="center" min-width="200px" prop="officeUrl">
+      <el-table-column  label="机构地址" align="center" min-width="200px" prop="address">
       </el-table-column>
 
       <el-table-column  label="负责人姓名" align="center" width ="150" prop="masterName">
       </el-table-column>
 
-      <el-table-column  label="负责人手机号" align="center" min-width="200px" prop="phone">
+      <el-table-column  label="负责人手机号" align="center" min-width="200px" prop="masterPhone">
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -52,7 +52,7 @@
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -137,18 +137,7 @@
         <el-form-item label="服务城市" prop="serviceCityId" >
          
            <el-select v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
-            <!-- <el-option-group
-              v-for="group in options3"
-              :key="group.label"
-              :label="group.label">
-              <el-option
-                v-for="item in group.options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-option-group> -->
-
+            
             <el-option-group
               v-for="(group,index) in serviceCity"
               :key="group.id"
@@ -162,6 +151,14 @@
             </el-option-group>
 
           </el-select>
+        </el-form-item>
+
+        <el-form-item label=" 客户信息" >
+          <el-switch
+            v-model="temp.visable"
+            on-color="#4c70e8"
+            off-color="#eef1f6">
+          </el-switch>
         </el-form-item>
 
         <el-form-item label=" 机构网址" >
@@ -178,7 +175,7 @@
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
-        <el-form-item label="400客服电话" >
+        <el-form-item label="  400客服电话" >
           <el-input 
             style='width: 400px;' 
             v-model="temp.office400"
@@ -194,8 +191,6 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer" style="text-align:center">       
-        <!-- <el-button type="primary" @click="create">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
@@ -218,43 +213,6 @@ import {
 import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-//挂载数据
-const optionsBox = [
-  {
-    label: "北京市",
-    options: [
-      {
-        value: "朝阳",
-        label: "朝阳区"
-      },
-      {
-        value: "海淀",
-        label: "海淀区"
-      }
-    ]
-  },
-  {
-    label: "河北市",
-    options: [
-      {
-        value: "邯郸",
-        label: "邯郸市"
-      },
-      {
-        value: "廊坊",
-        label: "廊坊市"
-      },
-      {
-        value: "石家庄",
-        label: "石家庄市"
-      },
-      {
-        value: "Dalian",
-        label: "大连"
-      }
-    ]
-  }
-];
 
 export default {
   name: "table_demo",
@@ -295,7 +253,8 @@ export default {
         cusCityId: "",
         cusTownId: "",
         serviceAreaType: "",
-        serviceCityId: []
+        serviceCityId: [],
+        visable:true
       },
       province: "",
       importanceOptions: [
@@ -311,7 +270,6 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      options3: optionsBox,
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
@@ -346,7 +304,12 @@ export default {
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
         serviceCityId: [
-          { required: true,type:"array",  message: "服务范围城市不能为空", trigger: "change" }
+          {
+            required: true,
+            type: "array",
+            message: "服务范围城市不能为空",
+            trigger: "change"
+          }
         ],
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
@@ -378,9 +341,7 @@ export default {
     });
     getCity().then(res => {
       this.serviceCity = res.data.data;
-      console.log(this.serviceCity);
-      console.log(this.serviceCity[1].id);
-      console.log(this.serviceCity[1].name);
+      
     });
   },
   methods: {
@@ -416,12 +377,10 @@ export default {
         this.total = res.data.data.count;
         this.listLoading = false;
       });
-      console.log(obj);
       this.listQuery.page = 1;
       // this.getList();
     },
     handleSizeChange(val) {
-      console.log("size-change");
       this.pageSize = val;
       var value = this.search.value;
       if (this.search.key == "name") {
@@ -445,7 +404,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log("current-change");
       this.pageNumber = val;
       var value = this.search.value;
       if (this.search.key == "name") {
@@ -467,33 +425,45 @@ export default {
         this.listLoading = false;
       });
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      });
-      row.status = status;
-    },
-    handleCreate() {
-      this.resetTemp();
+    handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      //this.resetTemp();
+      //this.$refs[formName].resetFields();
     },
     handleUpdate(row) {
-      console.log(row);
+      //console.log(row);
+      
+      console.log(this.temp.visable)
+      var arr = [];
+      arr = row.serviceCityId.split(",");
+      arr.pop();
       this.temp = Object.assign({}, row);
+      this.temp.serviceCityId = arr;
       this.dialogStatus = "update";
       this.updateId = row.id;
+      this.temp.cusProvId= ""
+      this.temp.cusCityId= ""
+      if(row.visable ==1){
+        this.temp.visable = true
+      }else{
+        this.temp.visable = false
+
+      }
       setTimeout(() => {
         this.temp.cusProvId = row.cusProvId;
-        // this.temp.cusCityId = row.cusCityId;
-        // this.temp.cusTownId = row.cusTownId;
+       
+      }, 500);
+      setTimeout(() => {
+        this.temp.cusCityId = row.cusCityId;
       }, 1000);
 
       this.dialogFormVisible = true;
+      
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
+      this.$refs[formName].resetFields();
       this.resetTemp();
       this.$refs[formName].resetFields();
     },
@@ -501,16 +471,15 @@ export default {
       console.log(val);
       // this.search.key = val
     },
-    changeCity(val){
-     console.log(val)
+    changeCity(val) {
+      console.log(val);
     },
     create(formName) {
-      var arr = []
-      for(var i = 0;i < this.temp.serviceCityId;i++){
-        arr.push(this.temp.serviceCityId[i])
+      var str = "";
+      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
+        str += this.temp.serviceCityId[i] + ",";
       }
-      // arr.pop()
-      console.log(arr)
+      
 
       var obj = {
         name: this.temp.name,
@@ -520,16 +489,22 @@ export default {
         areaId: "",
         address: this.temp.address,
         serviceAreaType: this.temp.serviceAreaType, //服务类型
-        cityIds: this.temp.serviceCityId,
-       // cityIds: ["123","123","123"],
+        cityIds: str,
+        // cityIds: ["123","123","123"],
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
         office400: this.temp.office400,
         remarks: this.temp.remarks,
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
-        cusTownId: this.temp.cusTownId
+        cusTownId: this.temp.cusTownId,
+        visable:this.temp.visable
       };
+      if(this.temp.visable){
+       obj.visable = "1" 
+      }else{
+        obj.visable = "0"
+      }
       console.log(obj);
       //return
       this.$refs[formName].validate(valid => {
@@ -547,7 +522,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "创建失败,参数有误"
+                message: "参数有误或者机构名重复"
               });
             }
           });
@@ -557,6 +532,10 @@ export default {
       });
     },
     update() {
+      var str = "";
+      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
+        str += this.temp.serviceCityId[i] + ",";
+      }
       var obj = {
         id: this.updateId,
         name: this.temp.name,
@@ -566,15 +545,21 @@ export default {
         areaId: "",
         address: this.temp.address,
         serviceAreaType: this.temp.serviceAreaType,
-        cityIds: ["123", "123", "123"],
+        cityIds: str,
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
         office400: this.temp.office400,
         remarks: this.temp.remarks,
-        cusProvId: "",
+        cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
-        cusTownId: this.temp.cusTownId
+        cusTownId: this.temp.cusTownId,
+        visable:this.temp.visable
       };
+       if(this.temp.visable){
+       obj.visable = "1" 
+      }else{
+        obj.visable = "0"
+      }
 
       console.log(obj);
       addMech(obj).then(res => {
@@ -627,7 +612,8 @@ export default {
         cusCityId: "",
         cusTownId: "",
         serviceAreaType: "",
-        serviceCityId: []
+        serviceCityId: [],
+        visable:""
       };
     },
 
