@@ -163,7 +163,7 @@ export default {
         { id: "7", value: "七级" },
         { id: "8", value: "八级" },
         { id: "9", value: "九级" },
-        { id: "10", value: "十级" },
+        { id: "10", value: "十级" }
       ],
       dialogFormVisible: false,
       state: state,
@@ -219,7 +219,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      var obj = {}
+      var obj = {};
       getStationPage(obj).then(res => {
         console.log(res);
         this.list = res.data.data.list;
@@ -235,9 +235,8 @@ export default {
       if (this.search) {
         this.listLoading = true;
         getStationPage(obj).then(res => {
-          console.log(res)
+          console.log(res);
           if (res.data.code === 1) {
-            
             this.list = res.data.data.list;
             this.total = res.data.data.count;
             this.listLoading = false;
@@ -248,9 +247,9 @@ export default {
             });
           }
         });
-      }else{
-        console.log(11111)
-        this.getList()
+      } else {
+        console.log(11111);
+        this.getList();
       }
     },
     handleSizeChange(val) {
@@ -261,7 +260,7 @@ export default {
       };
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-          this.total = res.data.data.count
+        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -376,10 +375,10 @@ export default {
           var obj = {
             name: this.temp.name,
             dataScope: this.temp.dataScope,
-            menuIds: str,
+            menuIds: str
             // useable: this.stationState //状态
           };
-          
+
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
@@ -454,7 +453,6 @@ export default {
         dataScope: "",
         check: []
       };
-      
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
@@ -517,7 +515,7 @@ export default {
   margin-right: 15px;
 }
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 .bgWhite {
   background-color: #ffffff;
@@ -556,7 +554,7 @@ body {
   border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
-.dialog-footer{
+.dialog-footer {
   text-align: center;
 }
 </style>

@@ -64,7 +64,7 @@
     </div>
 
     <el-dialog 
-      :title="textMap[dialogStatus]" 
+      :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
       :show-close= "false"
       minwidth = "700px">
@@ -149,6 +149,7 @@
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
+       
        class="twoDialog" 
       >
       
@@ -660,7 +661,8 @@ export default {
                 message: "添加成功"
               });
               this.stationCheck.push(res.data.data);
-              this.station = res.data.data.id;
+             // console.log(res.data.data.id)
+              this.temp.station = res.data.data.id;
               this.resetTemp2();
             } else {
               this.$refs.domTree.setCheckedKeys([]);
@@ -795,7 +797,7 @@ export default {
   padding: 10%;
 }
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 .bgWhite {
   background-color: #ffffff;
