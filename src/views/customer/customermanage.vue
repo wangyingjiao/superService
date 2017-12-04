@@ -444,9 +444,9 @@ export default {
 										inputname1.value=info.location;										
 						});
 						
-						poiPicker.onCityReady(function() {								
-								poiPicker.searchByKeyword('附近小区');								
-						});
+					//	poiPicker.onCityReady(function() {								
+							//	poiPicker.searchByKeyword('附近小区');								
+					//	});
 				}	
 								
 		},

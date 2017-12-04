@@ -15,10 +15,7 @@
             <el-table-column align="center" label="编号" width="100" type="index">
             </el-table-column>
 
-            <el-table-column label="技能名称" align="center">
-              <template scope="scope">
-                {{ scope.row.name}}
-              </template>
+            <el-table-column label="技能名称" align="center" prop="name">
             </el-table-column>
 
             <el-table-column label="技师个数" align="center">

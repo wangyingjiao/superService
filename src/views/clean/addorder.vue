@@ -35,123 +35,108 @@
 			<div class="order-inf">
 				<div class="custom-action">订单信息</div>
 				<div class="hr-style"></div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>服务项目:
-					<span class="customNamevalue">
-					  <el-select clearable style="width:400px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择" @change="serverchange">
-						<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
-						</el-option>
-					  </el-select>
-					</span>
-				</div>
-				<div class="changeserver">
-					<div v-if="serverType==1">
-						<span>面积:</span>
-						<span  style="padding-left:80px;">				
-							<el-input  style="width: 180px;" class="filter-item" placeholder="请输入搜索内容" v-model="customPhone">
-							</el-input>
-							<span style="display:inline-block;width:36px;line-height:36px;text-align:center;height:36px;background:#eef1f6;position:absolute;border:1px solid #bfcbd9;border-left:none;">平米</span>							
-						</span>
-					</div>
-					<div v-if="serverType==2">
-						<div style="margin-left:126px;width:180px;border-top:1px solid #eef1f6;height:50px;line-height:50px;font-size:12px;">
-						   <span style="display:inline-block;">小型灯</span>
-						   <span @click="smallminus(smallLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:10px;border-right:none;height:36px;line-height:36px;font-size:20px;">-</span>
-						   <input  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" style="width:50px;position:absolute;margin-left:46px;margin-top:9px;border:none;border:1px solid #bfcbd9;height:36px;line-height:36px;text-align:center;"  v-model="smallLight">
-						   <span @click="smallplus(smallLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:96px;border-left:none;height:36px;line-height:36px;font-size:20px;">+</span>
-						</div>
-						<div style="margin-left:126px;width:180px;border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;height:50px;line-height:50px;font-size:12px;">
-							<span>大型灯</span>
-						    <span @click="bigminus(bigLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:10px;border-right:none;height:36px;line-height:36px;font-size:20px;">-</span>
-							<input  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" style="width:50px;text-align:center;position:absolute;margin-left:46px;text-align:center;margin-top:9px;border:none;border:1px solid #bfcbd9;height:36px;line-height:36px;outline:none;"  v-model="bigLight">
-						    <span @click="bigplus(bigLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:96px;border-left:none;height:36px;line-height:36px;font-size:20px;">+</span>							
-						</div>
-					</div>
-					<div style="margin-left:98px;" v-if="serverType==3">
-						<div class="selfCheckBox" ref="selcetOption" @click="roomSel($index,item)" v-for="(item,$index) in roomType">
-							{{item.roomName}}
-							<div v-if="roomLen==item.key" class="triangle-bottomright"></div>
-							<div class="tally">&#10004</div>
-						</div>						
-					</div>
-				</div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>价格:
-					<span class="customNamevalue" style="padding-left:78px;">{{price}}元</span>
-				</div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>技师性别:
-				    <div style="display:inline-block;margin-left:28px;" >
-						<div class="selfCheckBox"  ref="sexOption"  @click="roomSel1($index,item)" v-for="(item,$index) in sexType">
-							{{item.sexName}}
-							<div v-if="sexLen==item.key" class="triangle-bottomright"></div>
-							<div class="tally">&#10004</div>
-						</div>
-					</div>					
-				</div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>技师:
-                        <span class="customNamevalue" style="padding-left:72px;">
-							<button type="button" class="button-cancel" style="width:100px;" @click="technicianSel">选择技师</button>
-							<span style="margin-left:50px;font-size:12px;">系统自动分配:
-								  <el-switch
-									v-model="sysAllocat"
-									on-color="#4c70e8"
-									off-color="#bfcbd9"
-									on-text="是"
-									off-text="否"
-									on-value="1"
-									off-value="0">
-								  </el-switch>				
-							</span>
-						</span>				
-				</div>
 				<div class="custom-action" style="margin-top:20px;">
-					<div class="customNamevalue" style="margin-left:60px;width:100%;height:40px;">
-						<div class="tabWrap" v-for="(item,$index) in tabOptions " ref="tabsName">
-						   {{item.tabName}}
-						   <div class="closePic"  @click="errorClose(item,$index)">&#10005</div>
-						</div>						
-					</div>
-				</div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>服务时间:
-					<span class="customNamevalue" style="padding-left:48px;">
-                    <el-date-picker
-                      v-model="severTime"                      
-                      placeholder="年-月-日"                     
-                      :type="select"
-                      style="display:inline-block;width:250px;"
-                      >
-                    </el-date-picker>
-                    <el-time-select
-                      v-model="severTime1"
-                      style="display:inline-block;width:150px;margin-left:-5px;"
-                      :picker-options="{
-                        start: '08:30',
-                        step: '00:30',
-                        end: '12:30'
-                      }"
-                      placeholder="选择时间">
-                    </el-time-select>
-					</span>
-				</div>
-				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>订单来源:
-					<span class="customNamevalue">
-					  <el-select clearable style="width:400px;margin-right:20px;" class="filter-item" v-model="orderOrgin" placeholder="请选择">
-						<el-option v-for="item in orderOrginOptions" :key="item.key" :label="item.orderOrginName" :value="item.key">
-						</el-option>
-					  </el-select>
-					</span>
-				</div>
-				<div class="custom-action" style="margin-top:20px;">
-				    <span style="position:absolute;margin-top:30px;">客户备注:</span>
-					<span class="customNamevalue" style="margin-left:78px;">
-						<el-input
-						  type="textarea"
-						  :rows="3"
-						  placeholder="请输入内容"
-						  v-model="textarea"
-						  style="width:400px;margin-left:-10px;"
-						  >
-						</el-input>
-					</span>
-				</div>
+						<el-form :model="orderInf" :rules="rules3" ref="orderInf" label-position="left" label-width="110px">
+							<el-form-item label="服务项目:" prop="serverPro" required>
+								<el-select clearable style="width:400px;margin-right:20px;" class="filter-item" v-model="orderInf.serverPro" placeholder="请选择" @change="serverchange">
+									<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
+									</el-option>
+								</el-select>
+								<div class="changeserver">
+									<div v-if="serverType==1" style="margin-left:-30px;">
+										<span>面积:</span>														
+											<el-input  style="width:180px;" class="filter-item" placeholder="请输入搜索内容" v-model="customPhone">
+											</el-input>
+											<span style="display:inline-block;width:36px;line-height:36px;text-align:center;height:36px;background:#eef1f6;position:absolute;border:1px solid #bfcbd9;border-left:none;">平米</span>																	
+									</div>
+									<div v-if="serverType==2" style="margin-left:-30px;">
+										<div style="width:180px;border-top:1px solid #eef1f6;height:50px;line-height:50px;font-size:12px;">
+											<span style="display:inline-block;">小型灯</span>
+											<span @click="smallminus(smallLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:10px;border-right:none;height:36px;line-height:36px;font-size:20px;">-</span>
+											<input  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" style="width:50px;position:absolute;margin-left:46px;margin-top:9px;border:none;border:1px solid #bfcbd9;height:36px;line-height:36px;text-align:center;"  v-model="smallLight">
+											<span @click="smallplus(smallLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:96px;border-left:none;height:36px;line-height:36px;font-size:20px;">+</span>
+										</div>
+										<div style="width:180px;border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;height:50px;line-height:50px;font-size:12px;">
+											<span>大型灯</span>
+												<span @click="bigminus(bigLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:10px;border-right:none;height:36px;line-height:36px;font-size:20px;">-</span>
+												<input  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" style="width:50px;text-align:center;position:absolute;margin-left:46px;text-align:center;margin-top:9px;border:none;border:1px solid #bfcbd9;height:36px;line-height:36px;outline:none;"  v-model="bigLight">
+												<span @click="bigplus(bigLight)" style="margin-top:9px;position:absolute;border:1px solid #bfcbd9;width:36px;text-align:center;display:inline-block;margin-left:96px;border-left:none;height:36px;line-height:36px;font-size:20px;">+</span>							
+										</div>
+									</div>
+									<div style="margin-left:-50px;" v-if="serverType==3">
+										<div class="selfCheckBox" ref="selcetOption" @click="roomSel($index,item)" v-for="(item,$index) in roomType">
+											{{item.roomName}}
+											<div v-if="roomLen==item.key" class="triangle-bottomright"></div>
+											<div class="tally">&#10004</div>
+										</div>						
+									</div>
+								</div>								
+							</el-form-item>
+							<el-form-item label="价格:" prop="price" required>
+							     <span>{{orderInf.price}}元</span>
+							</el-form-item>
+							<el-form-item label="技师性别:" prop="sexType" required>
+									<div style="display:inline-block;margin-left:-20px;" >
+											<div class="selfCheckBox"  ref="sexOption"  @click="roomSel1($index,item)" v-for="(item,$index) in sexType">
+												{{item.sexName}}
+												<div v-if="sexLen==item.key" class="triangle-bottomright"></div>
+												<div class="tally">&#10004</div>
+											</div>
+									</div>
+							</el-form-item>
+							<el-form-item label="技师:" prop="technician" required>
+											<button type="button" class="button-cancel" style="width:100px;" @click="technicianSel">选择技师</button>
+											<span style="margin-left:50px;font-size:12px;">系统自动分配:
+													<el-switch
+													v-model="sysAllocat"
+													on-color="#4c70e8"
+													off-color="#bfcbd9"
+													on-text="是"
+													off-text="否"
+													on-value="1"
+													off-value="0">
+													</el-switch>				
+											</span>
+									<div class="custom-action" style="margin-top:20px;margin-left:-46px;">
+										<div class="customNamevalue" style="width:100%;height:40px;">
+											<div class="tabWrap" v-for="(item,$index) in tabOptions " ref="tabsName">
+												{{item.tabName}}
+												<div class="closePic"  @click="errorClose(item,$index)">&#10005</div>
+											</div>						
+										</div>
+									</div>									
+							</el-form-item>
+							<el-form-item label="服务时间:" prop="severTime" required>
+														<el-date-picker
+															v-model="severTime"                      
+															placeholder="年-月-日"                     
+															:type="select"
+															style="display:inline-block;width:250px;"
+															>
+														</el-date-picker>
+														<el-time-select
+															v-model="severTime1"
+															style="display:inline-block;width:150px;margin-left:-5px;"
+															:picker-options="{
+																start: '08:30',
+																step: '00:30',
+																end: '12:30'
+															}"
+															placeholder="选择时间">
+														</el-time-select>								
+							</el-form-item>
+							<el-form-item label="客户备注:" prop="textarea" style="margin-left:10px;">
+										<el-input
+											type="textarea"
+											:rows="3"
+											placeholder="请输入内容"
+											v-model="textarea"
+											style="width:400px;margin-left:-10px;"
+											>
+										</el-input>						
+							</el-form-item>															
+						</el-form>
+				</div>				
 				<div class="custom-action" style="margin-top:50px;margin-left:180px;padding-bottom:20px;">
 				   <button class="button-large" @click="confirmOrder">确认下单</button>
 				</div>
@@ -204,38 +189,37 @@
 				</div>
 
 		</el-dialog>		
-	<!--更换地址弹窗-->
+  	<!--更换地址弹窗-->
     <el-dialog
 	  :visible.sync="dialogVisible"
 	  title="更换地址"
 	  size="small"
 	  >
-	  <div class="custom-action"><span class="redStart">*</span>所在区域
-		<span class="customNamevalue">
-		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="province" placeholder="请选择">
-					<el-option v-for="item in provinceOptions" :key="item.key" :label="item.provinceName" :value="item.key">
-					</el-option>
-		  </el-select>
-		  <el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="city" placeholder="请选择">
-						<el-option v-for="item in cityOptions" :key="item.key" :label="item.cityName" :value="item.key">
-						</el-option>
-		  </el-select>
-		  <el-select clearable style="width:130px;" class="filter-item" v-model="county" placeholder="请选择">
-					<el-option v-for="item in countyOptions" :key="item.key" :label="item.countyName" :value="item.key">
-					</el-option>
-		  </el-select>		  
-		</span>
-	  </div>
-	  <div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span class="customNamevalue" >详细地址
-		<span class="customNamevalue">
-				<el-input  style="width: 300px;" class="filter-item" placeholder="请输入搜索内容" v-model="detailedAddress">
-				</el-input>		
-		</span>
-	  </div>
-	  <span slot="footer" class="dialog-footer">
-	    <button class="button-large" @click="changeOk">确 认</button>
-		<button class="button-cancel" @click="dialogVisible = false">取 消</button>		
-	  </span>
+		<el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="130px" label-position="left" class="demo-ruleForm">
+					<el-form-item label="所在区域:" prop="cusTownId">
+								<el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="ruleForm1.cusProvId" placeholder="请选择" @change="provinceChange1">
+										<el-option v-for="item in provinceOptions1" :key="item.id" :label="item.name" :value="item.id">
+										</el-option>    
+								</el-select>
+								<el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="ruleForm1.cusCityId" placeholder="请选择" @change="cityChange1">
+											<el-option v-for="item in cityOptions1" :key="item.id" :label="item.name" :value="item.id">
+											</el-option>
+								</el-select>
+								<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm1.cusTownId" placeholder="请选择">
+										<el-option v-for="item in countyOptions1" :key="item.id" :label="item.name" :value="item.id">
+										</el-option>
+								</el-select>
+					</el-form-item>
+					<el-form-item label="详细地址:" prop="customAddr">
+		    				<input class="pickerInput" style="width:220px;" ref="pickerInput2"  value='' placeholder="输入关键字选取地点">
+								<input type="hidden" class="pickerInput" ref="pickerInput21"  value=''>
+								<el-input style="margin-left:-5px;width:220px;"  v-model="ruleForm1.customAddr" placeholder="输入详细地址"></el-input>		
+					</el-form-item>				
+				</el-form>
+				<div slot="footer" class="dialog-footer" style="text-align:center;">
+						<button class="button-large" @click="submitForm1('ruleForm1')">确 定</button>
+						<button class="button-cancel"  @click="resetForm1('ruleForm1')">取 消</button>
+				</div>				
 	</el-dialog>
 	<!--技师选择弹窗-->
 	<el-dialog title="选择技师" :visible.sync="dialogTableVisible">
@@ -305,93 +289,125 @@ export default {
 			phone:'',
 			customName:'李四'
 		},
-		        ruleForm: {
-					customName:'',
-					customPhone:'',
-					customAddr:'',
-					customEmail:'',
-					customSex:'',
-					cusProvId:'',
-					cusCityId:'',
-					cusTownId:'',
-					customArea:'',
-					addrLongitude:'',
-					addrLatitude:'',
-				},
-        rules: {
-          customName: [
-            { required: true, message: '请输入客户姓名', trigger: 'blur' },
-            { min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
-          ],
-          customPhone: [
-            { required: true,validator: checkPhone, trigger: 'blur' }
-										
-          ],
-          customAddr: [
-            { required: true, message: '详细地址不能为空', trigger: 'blur' },
-					],
-					customEmail:[
-						{ required: false, validator: checkEmail, trigger: 'blur' }
-					],
-					customSex: [
-						{ required: true, message: '请选择性别', trigger: 'change' }
-					],
-					cusTownId:[
-							{ required: true, message: '请选择区域', trigger: 'change' }
-					]					
-        },
-		sex:[
-		  { key: "1", sexName: "男" },
-		  { key: "2", sexName: "女" }
-		],
-		sexName:'',
-   //
-		provinceOptions:[],
-		//
-		cityOptions:[],
-		//
-		countyOptions:[],
-		select:'date',		
-		//客户下拉选项
-		customOptions:[
-		  { key: "1", customName: "日常保洁" },
-		  { key: "2", customName: "除尘除螨" },
-		  { key: "3", customName: "家电清洗" },
-		  { key: "4", customName: "擦玻璃" }
-		],
-		//tabName
-		tabOptions:[
-		  { key: "1", tabName: "王小虎" },
-		  { key: "2", tabName: "王小虎" },
-		  { key: "3", tabName: "王小虎" }
-		],
-    //
-		serverOptions:[
-		  { key: "1", serverName: "平米保洁" },
-		  { key: "2", serverName: "灯具清洁" },
-		  { key: "3", serverName: "居室保洁" }
-		],
-    //
-		provinceOptions:[
-		  { key: "1", provinceName: "北京" },
-		  { key: "2", provinceName: "上海" },
-		  { key: "3", provinceName: "天津" }
-		],
-		province:'',
-		//
-		cityOptions:[
-		  { key: "1", cityName: "朝阳区" },
-		  { key: "2", cityName: "东城区" },
-		  { key: "3", cityName: "西城区" }
-		],
-		city:'',
-		//
-		countyOptions:[
-		  { key: "1", countyName: "朝阳区" },
-		  { key: "2", countyName: "东城区" },
-		  { key: "3", countyName: "西城区" }
-		],
-		county:'',		
+		ruleForm: {
+				customName:'',
+				customPhone:'',
+				customAddr:'',
+				customEmail:'',
+				customSex:'',
+				cusProvId:'',
+				cusCityId:'',
+				cusTownId:'',
+				customArea:'',
+				addrLongitude:'',
+				addrLatitude:'',
+	},
+
+	rules: {
+			customName: [
+				{ required: true, message: '请输入客户姓名', trigger: 'blur' },
+				{ min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+			],
+			customPhone: [
+				{ required: true,validator: checkPhone, trigger: 'blur' }
+								
+			],
+			customAddr: [
+				{ required: true, message: '详细地址不能为空', trigger: 'blur' },
+			],
+			customEmail:[
+				{ required: false, validator: checkEmail, trigger: 'blur' }
+			],
+			customSex: [
+				{ required: true, message: '请选择性别', trigger: 'change' }
+			],
+			cusTownId:[
+					{ required: true, message: '请选择区域', trigger: 'change' }
+			]					
+	},
+	ruleForm1: {
+			customAddr:'',
+			cusProvId:'',
+			cusCityId:'',
+			cusTownId:'',
+			customArea:'',
+			addrLongitude:'',
+			addrLatitude:'',
+},
+rules1: {
+	customAddr: [
+		{ required: true, message: '详细地址不能为空', trigger: 'blur' },
+	],
+	cusTownId:[
+			{ required: true, message: '请选择区域', trigger: 'change' }
+	]					
+},								
+sex:[
+	{ key: "1", sexName: "男" },
+	{ key: "2", sexName: "女" }
+],
+sexName:'',
+//
+provinceOptions:[],
+//
+cityOptions:[],
+//
+countyOptions:[],
+select:'date',
+orderInf:{
+	  serverPro:'',
+		price:'10000',
+		sexType:'',
+		technician:'',
+		severTime:'',
+		textarea:''	
+},
+rules3: {
+	serverPro: [
+		{ required: true, message: '不能为空', trigger: 'change' },
+	],
+	price:[
+			{ required: true, message: '不能为空', trigger: 'blur' }
+	],
+	sexType:[
+			{ required: true, message: '不能为空', trigger: 'blur' }
+	],
+	technician:[
+			{ required: true, message: '不能为空', trigger: 'blur' }
+	],
+	severTime:[
+			{ required: true, message: '不能为空', trigger: 'blur' }
+	]		
+
+},
+//tabName
+tabOptions:[
+	{ key: "1", tabName: "王小虎" },
+	{ key: "2", tabName: "王小虎" },
+	{ key: "3", tabName: "王小虎" }
+],
+//
+serverOptions:[
+	{ key: "1", serverName: "平米保洁" },
+	{ key: "2", serverName: "灯具清洁" },
+	{ key: "3", serverName: "居室保洁" }
+],		
+//客户下拉选项
+customOptions:[
+	{ key: "1", customName: "日常保洁" },
+	{ key: "2", customName: "除尘除螨" },
+	{ key: "3", customName: "家电清洗" },
+	{ key: "4", customName: "擦玻璃" }
+],
+//
+provinceOptions1:[],
+province1:'',
+//
+cityOptions1:[],
+city1:'',
+//
+countyOptions1:[],
+county1:'',		
 		//orderOrgin
 		orderOrginOptions:[
 		  { key: "1", orderOrginName: "中信国安" },
@@ -493,6 +509,26 @@ export default {
       });			
 
 		},
+		//
+		provinceChange1(value){
+			this.city1='';
+      getArea(value).then(res => {
+			   this.cityOptions1=res.data.data;
+      }).catch(res=>{
+        
+      });
+       
+		},
+		//
+		cityChange1(value){
+			this.county1='';
+      getArea(value).then(res => {
+			   this.countyOptions1=res.data.data;
+      }).catch(res=>{
+        
+      });			
+
+		},		
 		//customSex
 		customSexselect(){
       this.ruleForm.customSex=this.sex;
@@ -543,18 +579,64 @@ export default {
 				this.ruleForm.cusCityId='';
 				this.sexName='';
 				this.dialogTableVisible1 = false;
-      },					
+      },
+		//更换地址弹窗“确认”	
+		submitForm1(formName) {
+			   if(this.$refs.pickerInput2.value !=''){
+							this.ruleForm1.customArea=this.$refs.pickerInput2.value;
+							var str=this.$refs.pickerInput21.value;
+									str=str.split(',')
+									//经度
+									var lng=str[0];
+									this.ruleForm1.addrLongitude=lng;
+									//纬度
+									var lat=str[1];
+									this.ruleForm1.addrLatitude=lat;
+				 }else{
+				 }			   
+					this.$refs[formName].validate((valid) => {
+						if (valid) {																			
+							var obj = this.ruleForm1
+							saveCus(obj).then(res => {
+								if(res.data.code === 1){
+										this.$message({
+											type: 'success',
+											message: '新增成功!'
+										});
+										this.$refs['ruleForm1'].resetFields();
+										this.dialogVisible = false;
+								}else{
+									this.$message({
+											type: 'warning',
+											message: '新增失败'
+										});
+								}													
+							}).catch(res=>{
+								
+							});							
+						} else {            
+							return false;
+						}
+					});								
+			},
+			//更换地址弹窗cancel
+      resetForm1(formName) {
+				this.$refs[formName].resetFields();
+				this.ruleForm1.cusProvId='';
+				this.ruleForm1.cusCityId='';
+				this.dialogVisible = false;
+      },								
 		//获取客户数据
 		getcustomerList(){
 			var obj = {
 				id:this.$route.query.coustomerId
 			}
-      getCusTable(obj).then(res => {
-				console.log(res.data.data.list) 
+     // getCusTable(obj).then(res => {
+			//	console.log(res.data.data.list) 
 
-      }).catch(res=>{
+     // }).catch(res=>{
        
-      });
+     // });
 		}, 
     //新增按钮
     addcustomer() {
@@ -578,10 +660,15 @@ export default {
 	//更换地址按钮
 	changeAddress(){
 	    this.dialogVisible=true;
-	},
-	//更换地址弹窗“确认”
-	changeOk(){
-	    this.dialogVisible = false;
+				var id=''
+		  	getArea(id).then(res => {
+					this.provinceOptions1=res.data.data;					
+				}).catch(res=>{
+					
+				});
+				this.$nextTick(() => {
+		   			this.test1();
+		    })						
 	},
 	//服务类型下拉改变
 	serverchange(value){
@@ -663,7 +750,48 @@ export default {
 	},
 	test(){
 		var inputname=this.$refs.pickerInput;
-		var inputname1=this.$refs.pickerInput1;
+		var inputname1=this.$refs.pickerInput1;		
+		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
+				var poiPicker = new PoiPicker({
+						city:'北京',
+						input: inputname
+				});
+				
+				//初始化poiPicker
+				poiPickerReady(poiPicker);
+		});
+		var obj='';
+		function poiPickerReady(poiPicker) {
+				window.poiPicker = poiPicker;
+				var marker = new AMap.Marker();
+				var infoWindow = new AMap.InfoWindow({
+						offset: new AMap.Pixel(0, -20)
+				});
+				//选取了某个POI
+				poiPicker.on('poiPicked', function(poiResult) {
+						var source = poiResult.source,
+								poi = poiResult.item,
+								info = {
+										source: source,
+										id: poi.id,
+										name: poi.name,
+										location: poi.location.toString(),
+										address: poi.address,
+										
+								};
+								inputname.value=info.name;
+								inputname1.value=info.location;										
+				});
+				
+				poiPicker.onCityReady(function() {								
+						poiPicker.searchByKeyword('附近小区');								
+				});
+		}	
+						
+},
+test1(){
+		var inputname=this.$refs.pickerInput2;
+		var inputname1=this.$refs.pickerInput21;		
 		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
 				var poiPicker = new PoiPicker({
 						city:'北京',
@@ -738,6 +866,7 @@ export default {
 .custom-action{
 	margin-left:30px;
 	margin-right:48px;
+	font-size:12px;
 }
 
 .second-bar{
