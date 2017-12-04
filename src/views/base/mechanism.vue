@@ -498,7 +498,7 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:this.temp.visable
+        visable:"1"
       };
       if(this.temp.visable){
        obj.visable = "1" 
@@ -553,7 +553,7 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:this.temp.visable
+        visable:"1"
       };
        if(this.temp.visable){
        obj.visable = "1" 
