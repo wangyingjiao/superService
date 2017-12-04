@@ -19,7 +19,7 @@
       </div>
 
       <div>
-        <button class="button-large el-icon-search"> 搜索</button>
+        <button class="search-button el-icon-search"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">
@@ -586,7 +586,7 @@
           </el-table>
         </div>
         <div class="tech-table" style="padding:none;">
-          <el-button type="primary" icon="plus" @click="showTabl">家庭成员</el-button>
+          <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button>
         </div>
         <ul class="tech-ul" v-show="flagso">
           <li>
@@ -1375,8 +1375,12 @@
     width: 100px;
   }
 
-  .el-button{
+  /* .el-button{
     border-radius:0px;
+  } */
+
+  .tech-family-btn{
+    border-radius: 0px;
   }
 
 

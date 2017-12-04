@@ -3,25 +3,22 @@
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的技能名称" v-model="listQuery.title">
       </el-input>
-      <button class="button-large btn_right" @click="handleFilter"> 搜索</button>
+      <button class="search-button btn_right el-icon-search"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite">
-          <button class="button-small btn_right btn_pad" @click="dialogVisible = true"> 新增</button>
+          <button class="button-small btn_right btn_pad ceshi ceshi5" @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
           <el-table :key='tableKey' :data="getListdata" v-loading="listLoading" stripe fit highlight-current-row element-loading-text="正在加载"
             style="width: 100%">
 
             <el-table-column align="center" label="编号" width="100" type="index">
             </el-table-column>
 
-            <el-table-column label="技能名称" align="center">
-              <template scope="scope">
-                {{ scope.row.name}}
-              </template>
+            <el-table-column label="技能名称" align="center" prop="name">
             </el-table-column>
 
-            <el-table-column label="技师个数" align="center">
+            <el-table-column label="技师个数" align="center" prop="">
               <template scope="scope">
                 {{ scope.row.name}}
               </template>
@@ -52,78 +49,48 @@
           </el-pagination>
         </div>
         <!-- 弹出层新增技师 -->
-        <el-dialog title="新增技师" :visible.sync="dialogVisible" size="small">
-          <ul class="skill-ul">
-            <li>
-              <div class="clearfix">
-                <p style="float:left"><span class="tech-spansk">*</span>技能名称:</p>
-                <p style="float:left">
-                  <el-input placeholder="请输入2~15位技能名称" style="width:300px"></el-input>
-                </p>
-              </div>
-            </li>
-            <li style="margin-bottom:0px;">
-              <div class="clearfix">
-                <p style="float:left"><span class="tech-spansk">*</span>选择服务:</p>
-                <div class="tech-order-jnsk" style="float:left">
+        <el-dialog title="新增技能" :visible.sync="dialogVisible" size="small">
+          <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
+            <el-form-item label="技能名称" prop="name">
+              <el-input  v-model="ruleForm2.pass" auto-complete="off" style="width:300px"></el-input>
+            </el-form-item>
+            <el-form-item label="选择服务" prop="skill">
+              <div class="tech-order-jnsk" style="float:left;width:500px;">
                   <button class="tech-order-btnsk" @click="choseServer"> &#10010 请选择</button>
-                </div>
               </div>
-            </li>
-            <li style="margin:0">
-              <div class="clearfix">
-                <p style="float:left;"><span class="tech-spansk"></span>&nbsp;</p>
-
-                <el-table :data="list" border style="width: 400px;margin:0px;float:left">
+              <el-table :data="list" border style="width:500px;margin:0px;float:left">
                   <el-table-column prop="date" label="项目名称" width="100" height="30" align="center">
                   </el-table-column>
                   <el-table-column prop="name" label="商品名称" width="180" align="center">
                   </el-table-column>
                   <el-table-column prop="address" label="操作" align="center">
                     <template scope="scope">
-                      <button>删除</button>
+                      <button class="skill-delte">删除</button>
                     </template>
                   </el-table-column>
                 </el-table>
-              </div>
-            </li>
-            <li>
-              <div class="clearfix">
-                <p style="float:left"><span class="tech-spansk">*</span>选择技师:</p>
-                <div class="tech-order-jnsk" style="float:left">
+            </el-form-item>
+            <el-form-item label="选择技师" prop="tech">
+             <div class="tech-order-jnsk" style="float:left;width:500px;">
                   <button class="tech-order-btnsk" @click="orderTech"> &#10010 请选择</button>
-                </div>
-              </div>
-            </li>
-            <li v-show="ortech">
-              <div class="clearfix">
-                <p style="float:left"><span class="tech-spansk"></span>&nbsp;</p>
-                <div class="tech-order-jnsk" style="float:left">
-
-                </div>
-              </div>
-            </li>
-            <li style="margin:40px 0;">
-              <div class="clearfix">
-                <p style="float:left"><span class="tech-spansk"></span>&nbsp;</p>
-                <div style="float:left">
-                  <button class="selfCheckBox">保存</button>
-                  <button class="selfCheckBox">取消</button>
-                </div>
-              </div>
-            </li>
-          </ul>
+            </div>
+            </el-form-item>
+            <el-form-item>
+             <button class="button-large">保存</button>
+             <button class="button-cancel">取消</button>
+            </el-form-item>
+          </el-form>
         </el-dialog>
         <!-- 选择服务弹出层 -->
-        <el-dialog title="选择服务" :visible.sync="flagserver" style="width:60%;left:200px;overflow:hidden">
+        <el-dialog title="选择服务" :visible.sync="flagserver" style="width:60%;left:200px;">
           <ul class="skill-server-ul">
             <li class="clearfix">
               <div style="float:left">
                 <el-input placeholder="输入要搜索的项目名称" style="width:220px" v-model="xingmu"></el-input>
               </div>
-              <div style="float:right"><button class="selfCheckBox" @click="quiry">查询</button></div>
+              <div style="float:right"><button class="button-large" @click="quiry">查询</button></div>
               <li>
-                <el-table ref="multipleTable" :data="listorderServer "  border tooltip-effect="dark" style="width: 100%;margin:0;" @selection-change="handleSelectionChange">
+                <el-table ref="multipleTable" :data="listorderServer " border tooltip-effect="dark" style="width: 100%;margin:0;" @selection-change="handleSelectionChange">
                   <el-table-column type="selection" width="" align="center">
                   </el-table-column>
                   <el-table-column label="项目名称" align="center">
@@ -145,8 +112,8 @@
               </li>
               <li>
                 <div>
-                  <button class="selfCheckBox" @click="serversave">确定</button>
-                  <button class="selfCheckBox" @click="serversave">取消</button>
+                  <button class="button-large">确定</button>
+                  <button class="button-cancel">取消</button>
                 </div>
               </li>
           </ul>
@@ -165,21 +132,21 @@
                   </el-option>
                 </el-select>
               </div>
-              <div style="float:right"><button class="selfCheckBox">查询</button></div>
+              <div style="float:right"><button class="button-large">查询</button></div>
               <li>
                 <el-table ref="multipleTable" :data="listTech" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" width="55" align="center"  v-model="checkbox">
+                  <el-table-column type="selection" width="55" align="center" v-model="checkbox">
                   </el-table-column>
                   <el-table-column label="头像" width="120" align="center">
                     <template scope="scope">{{ scope.row.imgUrl}}</template>
                   </el-table-column>
-                  <el-table-column  label="姓名" width="120" align="center">
+                  <el-table-column label="姓名" width="120" align="center">
                     <template scope="scope">{{ scope.row.techName}}</template>
                   </el-table-column>
-                  <el-table-column  label="性别" show-overflow-tooltip align="center">
+                  <el-table-column label="性别" show-overflow-tooltip align="center">
                     <template scope="scope">{{ scope.row.techSex}}</template>
                   </el-table-column>
-                  <el-table-column  label="服务站" show-overflow-tooltip align="center">
+                  <el-table-column label="服务站" show-overflow-tooltip align="center">
                     <template scope="scope">{{ scope.row.techStationName}}</template>
                   </el-table-column>
                 </el-table>
@@ -194,8 +161,8 @@
               </li>
               <li>
                 <div>
-                  <button class="selfCheckBox" @click="techorde">确认</button>
-                  <button class="selfCheckBox" @click="serversave">取消</button>
+                 <button class="button-large">确定</button>
+                 <button class="button-cancel">取消</button>
                 </div>
               </li>
           </ul>
@@ -207,7 +174,6 @@
 </template>
 
 <script>
-
   import waves from '@/directive/waves/index.js' // 水波纹指令
   import {
     parseTime
@@ -238,9 +204,26 @@
     },
     data() {
       return {
+        rules: {
+          name: [
+          { required: true, message: '请输入技能名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+          ],
+          skill: [
+            { required: true, message: '请选择活动区域', trigger: 'change' }
+          ],
+          tech: [
+            { type: 'date', required: true}
+          ]
+        },
+        ruleForm2: {
+          pass: '',
+          checkPass: '',
+          age: ''
+        },
         commodityse: {},
         options: [],
-        checkbox:false,
+        checkbox: false,
         getListdata: [],
         ordertech: false,
         xingmu: '',
@@ -276,6 +259,7 @@
         option1: option1
       }
     },
+    
     filters: {
       statusFilter(status) {
         const statusMap = {
@@ -318,40 +302,40 @@
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
       },
-      handleDelete(row) {    
-      // console.log(this.activeName) 
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+      handleDelete(row) {
+        // console.log(this.activeName) 
+        this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           console.log(row)
           var obj = {
-            id:row.id
+            id: row.id
           }
-          techDelet(obj).then(res=>{
+          techDelet(obj).then(res => {
             console.log(res)
-            if(res.data.code === 1){
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-                this.getList()
-            }else{
+            if (res.data.code === 1) {
               this.$message({
-                  type: 'warning',
-                  message: '分类下有服务项目，不可删除'
-                });
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.getList()
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '分类下有服务项目，不可删除'
+              });
             }
-          }).catch(()=>console.log("未知错误"))
-          
+          }).catch(() => console.log("未知错误"))
+
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-    },
+      },
       create() {
         this.temp.id = 1
         this.list.unshift(this.temp)
@@ -514,6 +498,13 @@
 
   .tech-spansk {
     color: red;
+  }
+  .skill-delte{
+    border: none;
+    background: none;
+    color: red;
+    outline: none;
+    cursor: pointer;
   }
 
 

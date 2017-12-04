@@ -17,8 +17,7 @@
       start-placeholder="开始"
       end-placeholder="结束">
     </el-date-picker>
-
-      <el-button class="filter-item  btn_left" type="primary" v-waves  @click="handleFilter">搜索</el-button>
+       <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜索</button>
     </div>
 
     <el-table 
