@@ -25,13 +25,13 @@
       <el-table-column align="center" label="编号" width="100" type="index">
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" prop="loginName" >
+      <el-table-column align="center" label="姓名" prop="name" >
       </el-table-column>
 
       <el-table-column width="180px" align="center" label="手机号" prop="mobile">
       </el-table-column>
 
-      <el-table-column width="100px"  label="岗位名称" align="center" prop="name">
+      <el-table-column width="100px"  label="岗位名称" align="center" prop="roleName">
       </el-table-column>
 
       <el-table-column width="150px" align="center" label="服务机构" prop="office.name">
@@ -58,13 +58,13 @@
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
     <el-dialog 
-      :title="textMap[dialogStatus]" 
+      :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
       :show-close= "false"
       minwidth = "700px">
@@ -149,6 +149,7 @@
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
+       
        class="twoDialog" 
       >
       
@@ -186,12 +187,12 @@
             </el-tree>
            
         </el-form-item>
-        <el-form-item label="状态">
+        <!-- <el-form-item label="状态">
           <el-select style='width: 400px;' class="filter-item" v-model="stationState" placeholder="可用">
             <el-option v-for="item in stationStateCheck" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -254,6 +255,9 @@ export default {
         type: undefined,
         sort: "+id"
       },
+
+      pageSize: 10,
+      total: 1,
       search: {
         phone: "",
         name: ""
@@ -302,7 +306,8 @@ export default {
         { id: "6", value: "六级" },
         { id: "7", value: "七级" },
         { id: "8", value: "八级" },
-        { id: "9", value: "九级" }
+        { id: "9", value: "九级" },
+        { id: "10", value: "十级" },
       ],
       stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
 
@@ -406,9 +411,12 @@ export default {
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
         getStaff(obj).then(res => {
-          if (res.data.code === 1) {
+           console.log(res)
+          if (res.data.code === 1) {     
             this.list = res.data.data.list;
+            this.total = res.data.data.count;
             this.listLoading = false;
+            this.listQuery.page = 1
           } else {
             this.listLoading = false;
             this.$message({
@@ -422,12 +430,30 @@ export default {
       }
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val;
-      this.getList();
+      var obj = {
+        roleName: this.search.name,
+        mobile: this.search.phone
+      };
+      console.log("size-change");
+      this.pageSize = val;
+      // var obj = {};
+      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+      });
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val;
-      this.getList();
+      console.log("current-change");
+      this.pageNumber = val;
+      var obj = {
+        roleName: this.search.name,
+        mobile: this.search.phone
+      };
+      this.listLoading = true;
+      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+      });
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -458,29 +484,33 @@ export default {
       console.log(this.temp2.check);
     },
     handleUpdate(row) {
-      this.handleCreate();
+      //this.handleCreate();
+      this.dialogFormVisible = true;
+      console.log(row)
+      this.dialogStatus = "update";
       this.temp = {
         id: row.id,
-        name:row.loginName,
-        phone:row.mobile,
-        mechanism: row.office.id,
-        servicestation :row.stationId,
-        station :row.station,
-        peostate :"1"
+        name: row.name,
+        phone: row.mobile,
+        mechanism: "",
+        servicestation: row.stationId,
+        station: row.roleId,
+        peostate: row.useable
       };
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      console.log(row);
-      console.log(this.temp);
-      console.log(this.mechanism);
+      setTimeout(() => (this.temp.mechanism = row.office.id), 1000);
 
-      //this.temp.name = row.loginName;
-      //this.temp.phone = row.mobile;
-      this.mechanism = "1";
-      this.mechanism = row.office.id;
-      this.servicestation = row.stationId;
-      this.station = row.station;
-      this.peostate = "1";
+      // this.dialogFormVisible = true;
+      // console.log(row);
+      // console.log(this.temp);
+      // console.log(this.mechanism);
+
+      // //this.temp.name = row.loginName;
+      // //this.temp.phone = row.mobile;
+      // this.mechanism = "1";
+      // this.mechanism = row.office.id;
+      // this.servicestation = row.stationId;
+      // this.station = row.station;
+      // this.peostate = "1";
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -543,7 +573,7 @@ export default {
     },
     mechChange(val) {
       this.temp.mechanism = val;
-      this.servicestation = '';
+      this.servicestation = "";
       console.log(val);
       var obj = {
         officeId: val
@@ -571,7 +601,6 @@ export default {
       }
     },
     create(formName) {
-      console.log("create");
       console.log(this.temp);
       //var arr = [this]
       this.$refs[formName].validate(valid => {
@@ -589,7 +618,7 @@ export default {
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.resetTemp()
+              this.resetTemp();
               this.dialogFormVisible = false;
               this.getList();
               this.$message({
@@ -621,7 +650,6 @@ export default {
             name: this.temp2.name,
             dataScope: this.temp2.dataScope,
             menuIds: str,
-            useable: this.stationState //状态
           };
           this.dialogFormStation = false;
           addStation(obj).then(res => {
@@ -633,7 +661,8 @@ export default {
                 message: "添加成功"
               });
               this.stationCheck.push(res.data.data);
-              this.station = res.data.data.id;
+             // console.log(res.data.data.id)
+              this.temp.station = res.data.data.id;
               this.resetTemp2();
             } else {
               this.$refs.domTree.setCheckedKeys([]);
@@ -654,31 +683,30 @@ export default {
         id: this.temp.id,
         mobile: this.temp.phone,
         name: this.temp.name,
-        newPassword: "mimaceshi",
+        newPassword: this.temp.password,
         officeId: this.temp.mechanism,
         stationId: this.temp.servicestation,
         roles: [this.temp.station],
         useable: this.temp.peostate
       };
-      console.log(obj)
+      console.log(obj);
       //this.dialogFormVisible = false;
-       addStaff(obj).then(res => {
-            console.log(res);
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.getList();
-              this.$message({
-                type: "success",
-                message: "修改成功"
-              });
-            } else {
-              this.$message({
-                type: "error",
-                message: "发生错误或者没有权限"
-              });
-            }
+      addStaff(obj).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.dialogFormVisible = false;
+          this.getList();
+          this.$message({
+            type: "success",
+            message: "修改成功"
           });
-      
+        } else {
+          this.$message({
+            type: "error",
+            message: "发生错误或者没有权限"
+          });
+        }
+      });
     },
     resetTemp() {
       this.temp = {
@@ -769,7 +797,7 @@ export default {
   padding: 10%;
 }
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 .bgWhite {
   background-color: #ffffff;

@@ -18,18 +18,18 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" type="index" width="200">
+      <el-table-column align="center" label="编号" type="index" width="300">
       </el-table-column>
 
       <el-table-column  label="岗位名称" align="center" prop="name" >
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="状态" prop="userable" align="center">
+      <!-- <el-table-column class-name="status-col" label="状态" prop="userable" align="center">
        <template scope="scope">
           <span v-if="scope.row.useable =='1'">可用</span>
 					<span v-if="scope.row.useable =='0'">不可用</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
@@ -42,8 +42,8 @@
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -86,12 +86,12 @@
             </el-tree>
   
         </el-form-item>
-        <el-form-item label="状态">
+        <!-- <el-form-item label="状态">
           <el-select style='width: 400px;' class="filter-item" v-model="stationState">
             <el-option v-for="item in state" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -111,10 +111,9 @@
 
 <script>
 import {
-  getStation,
+  getStationPage,
   addStation,
   delStation,
-  searchStation,
   getPower,
   getMenudata
 } from "@/api/staff";
@@ -137,13 +136,15 @@ export default {
       search: "",
       listQuery: {
         page: 1,
-        limit: 6,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
         sort: "+id"
       },
-      stationState: "1",
+      pageSize: 10,
+      total: 1,
+      // stationState: "1",
       temp: {
         name: "",
         dataScope: "",
@@ -161,7 +162,8 @@ export default {
         { id: "6", value: "六级" },
         { id: "7", value: "七级" },
         { id: "8", value: "八级" },
-        { id: "9", value: "九级" }
+        { id: "9", value: "九级" },
+        { id: "10", value: "十级" }
       ],
       dialogFormVisible: false,
       state: state,
@@ -217,9 +219,11 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      getStation().then(res => {
+      var obj = {};
+      getStationPage(obj).then(res => {
         console.log(res);
-        this.list = res.data.data;
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -229,10 +233,12 @@ export default {
         name: this.search
       };
       if (this.search) {
-        searchStation(obj).then(res => {
+        this.listLoading = true;
+        getStationPage(obj).then(res => {
+          console.log(res);
           if (res.data.code === 1) {
-            this.listLoading = true;
-            this.list = res.data.data;
+            this.list = res.data.data.list;
+            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.$message({
@@ -241,22 +247,38 @@ export default {
             });
           }
         });
-      }else{
-        console.log(11111)
-        this.getList()
+      } else {
+        console.log(11111);
+        this.getList();
       }
     },
     handleSizeChange(val) {
-      // this.listQuery.limit = val
-      // this.getList()
+      console.log("size-change");
+      this.pageSize = val;
+      var obj = {
+        name: this.search
+      };
+      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleCurrentChange(val) {
-      // this.listQuery.page = val
-      // this.getList()
+      console.log("current-change");
+      this.pageNumber = val;
+      var obj = {
+        name: this.search
+      };
+      this.listLoading = true;
+      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+      });
     },
     handTreechange(a, b, c) {
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-      console.log(this.temp.check);
+      //console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -353,10 +375,10 @@ export default {
           var obj = {
             name: this.temp.name,
             dataScope: this.temp.dataScope,
-            menuIds: str,
-            useable: this.stationState //状态
+            menuIds: str
+            // useable: this.stationState //状态
           };
-          
+
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
@@ -431,7 +453,6 @@ export default {
         dataScope: "",
         check: []
       };
-      
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
@@ -494,7 +515,7 @@ export default {
   margin-right: 15px;
 }
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 .bgWhite {
   background-color: #ffffff;
@@ -533,7 +554,7 @@ body {
   border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
-.dialog-footer{
+.dialog-footer {
   text-align: center;
 }
 </style>
