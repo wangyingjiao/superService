@@ -17,6 +17,14 @@ Array.prototype.del = function(dx){
   if(isNaN(dx)||dx>this.length){return false;} 
   this.splice(dx,1); 
 } 
+//指定元素从Array对象中删除
+Array.prototype.remove = function(val) {
+  var index = this.indexOf(val);
+    if (index > -1) {
+    this.splice(index, 1);
+    }
+  };
+
 new Vue({
   el: '#app',
   router,

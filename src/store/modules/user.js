@@ -7,7 +7,8 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    menu: []
+    menu: [],
+    buttonshow:[],
   },
 
   mutations: {
@@ -24,8 +25,11 @@ const user = {
       state.roles = roles
     },
     SET_MENU: (state, menu) => {
-      state.menu = menu
-    }
+      state.menu = menu    
+    },
+    SET_BUTTONSHOW: (state, buttonshow) => {
+      state.buttonshow = buttonshow
+    }	
   },
 
   actions: {
@@ -50,6 +54,7 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           commit('SET_MENU', data.data)
+          commit('SET_BUTTONSHOW', data.data)
           resolve(response)
         }).catch(error => {
           reject(error)
