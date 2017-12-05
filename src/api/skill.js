@@ -5,23 +5,26 @@ const instance = axios.create({
 
 })
 // 服务站Talbe
-export function Skillserver(obj) {
-  return instance.post(`/api/a/service/skill/serSkillInfo/choiceTechnicianlistData`,obj)
+export function Skillserver(obj,pageNumber,pageSize) {
+  return instance.post(`/api/a/service/skill/serSkillInfo/choiceTechnicianlistData?pageNo=`+pageNumber+'&pageSize='+pageSize,obj)
 }
-//获取列表
-export function getListdata() {
-    return instance.get(`/api/a/service/skill/serSkillInfo/listData`)
+// 获取技能列表
+export function getListdata(obj,pageNumber,pageSize) {
+  return instance.post(`/api/a/service/skill/serSkillInfo/listData?pageNo=`+pageNumber+'&pageSize='+pageSize, obj)
 }
 //获取服务列表
 export function getListser() {
   return instance.get(`/api/a/service/skill/serSkillInfo/getServiceStationList`)
 }
-
-export function orderServer(obj) {
-  return instance.post(`/api/a/service/skill/serSkillInfo/choiceSerlistData`,obj)
+//保存技能
+export function saveServer(obj) {
+  return instance.post(`/api/a/service/skill/serSkillInfo/saveData`,obj)
+}
+//选择服务
+export function orderServer(obj,pageNumber,pageSize) {
+  return instance.post(`/api/a/service/skill/serSkillInfo/choiceSerlistData?pageNo=`+pageNumber+'&pageSize='+pageSize,obj)
 }
 //删除技能
-
-export function techDelet() {
+export function techDelet(obj) {
   return instance.post(`/api/a/service/skill/serSkillInfo/deleteSortInfo`,obj)
 }
