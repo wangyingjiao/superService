@@ -13,7 +13,7 @@ export function loginByUsername(username, password) {
     username,
     password
   }
-  return instance.post(`/api/a/login`, qs.stringify(data))
+  return instance.post(`https://apiservice.guoanshequ.wang/apiservice/a/login`, qs.stringify(data))
 }
 
 export function requestUserRole(username, password) {
