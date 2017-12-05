@@ -12,10 +12,10 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="showdialog">地图</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="showdialog">地图</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -70,7 +70,7 @@
           <template scope="scope">
             <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
-        </template>
+          </template>
         </el-table-column>
 
       </el-table>
@@ -841,14 +841,8 @@ export default {
 </script>
 <style scoped>
 .btn_right {
-  float: right;
-  width: 100px;
+  float: right;  
 }
-
-.btn_left {
-  width: 100px;
-}
-
 .checkRightBox {
   border: solid 1px #dcdcdc;
   padding: 10px;

@@ -35,11 +35,9 @@
       </el-table-column>
 
       <el-table-column width="150px" align="center" label="服务机构" prop="office.name">
-       
       </el-table-column>
 
       <el-table-column  min-width="110px" align="center" label="服务站" prop="stationName">
-       
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
          <template scope="scope">
@@ -67,6 +65,8 @@
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
       :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
       minwidth = "700px">
       <el-form 
         class="small-space" 
@@ -107,20 +107,20 @@
         </el-form-item>
 
         <el-form-item label=" 服务机构"  prop="mechanism">
-          <el-select  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.mechanism" placeholder="请选择">
+          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.mechanism" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label=" 服务站" prop="servicestation" >
-          <el-select  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.servicestation" placeholder="请选择">
+          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.servicestation" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="  选择岗位" prop="station">
-          <el-select ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.station" placeholder="请选择">
+          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.station" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -149,7 +149,9 @@
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
-       
+       :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
        class="twoDialog" 
       >
       
@@ -234,6 +236,17 @@ export default {
     waves
   },
   data() {
+    var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入6-20位密码'));
+        } else {
+           
+          if (this.temp.password2 !== '') {
+            this.$refs.ruleForm2.validateField('password2');
+          }
+          callback();
+        }
+      };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
@@ -328,11 +341,11 @@ export default {
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         name: [
-          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          { required: true, message: "请输入 2 到 15 位的名称", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         password: [
-          { required: true, message: "请输入6-20位密码", trigger: "blur" },
+          { required: true, validator: validatePass, trigger: "blur" },
           { min: 6, max: 20, message: "密码长度6-20个字符", trigger: "blur" }
         ],
         password2: [
@@ -396,10 +409,11 @@ export default {
         mobile: ""
       };
       this.listLoading = true;
-      getStaff(obj).then(res => {
+      getStaff(obj ,this.pageNumber, this.pageSize).then(res => {
         console.log(res.data);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
+        //this.pageSize = res.data.data.pageSize;
         this.listLoading = false;
       });
     },
@@ -410,7 +424,7 @@ export default {
       };
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
-        getStaff(obj).then(res => {
+        getStaff(obj, this.pageSize).then(res => {
            console.log(res)
           if (res.data.code === 1) {     
             this.list = res.data.data.list;
@@ -535,14 +549,14 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "该信息不可删除或者没有权限"
+                  message: "删除失败"
                 });
               }
             })
             .catch(() => {
               this.$message({
                 type: "warning",
-                message: "与服务器断开连接，请稍后再试"
+                message: "删除失败"
               });
             });
         })
@@ -617,9 +631,10 @@ export default {
           console.log(obj);
           addStaff(obj).then(res => {
             console.log(res);
-            if (res.data.code === 1) {
-              this.resetTemp();
+            if (res.data.code === 1) {             
               this.dialogFormVisible = false;
+              this.resetTemp();
+              this.$refs[formName].resetFields();
               this.getList();
               this.$message({
                 type: "success",
@@ -719,6 +734,9 @@ export default {
         station: "",
         peostate: "1"
       };
+      this.temp.mechanism = ""
+      this.temp.servicestation = ""
+      this.temp.station = ""
       // this.mechanism = "";
       // this.servicestation = "";
       // this.station = "";
