@@ -8,8 +8,8 @@ const instance = axios.create({
 export function getCity() {
   return instance.get(`/api/a/service/sort/serSortInfo/getOfficeCitylist`)
 }
-export function getClass(obj) {
-  return instance.post(`/api/a/service/sort/serSortInfo/listData`, obj)
+export function getClass(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/service/sort/serSortInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 export function getProject(obj) {
   return instance.post(`/api/a/service/item/serItemInfo/listData`, obj)

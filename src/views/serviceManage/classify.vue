@@ -16,7 +16,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -37,7 +37,7 @@
       <el-table-column  label="城市" align="center">
         <template scope="scope">
           <span v-if="scope.row.allCity =='1'">全部</span>
-          <span v-else v-for="(item,index) in scope.row.cityNames" :key="index" :value="item">{{item}}</span>
+          <span v-else v-for="(item,index) in scope.row.cityNames" :key="index" :value="item">{{item}}&nbsp;</span>
         </template>
       </el-table-column>
 
@@ -50,15 +50,9 @@
 
     </el-table>
 
-    <div class="pagination-container">
-      <el-pagination 
-         @size-change="handleSizeChange" 
-         @current-change="handleCurrentChange" 
-         :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30,50]" 
-        :page-size="listQuery.limit" 
-        layout="total, sizes, prev, pager, next, jumper" 
-        :total="total">
+   <div v-show="!listLoading" class="pagination-container">
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -92,8 +86,9 @@
               <el-checkbox-group v-model="checkCity" @change="citiesChange">
                 <el-checkbox 
                    v-for="item in city" 
+                   @change="cityChange"
                    :label="item.areaName"
-                   :key="item.id">{{item.areaName}}</el-checkbox>
+                   :key="item.id"></el-checkbox>
               </el-checkbox-group>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
             </el-form-item>
@@ -114,7 +109,7 @@
 </template>
 
 <script>
-import {getCity, getClass, addClass, delClass} from "@/api/serviceManage";
+import { getCity, getClass, addClass, delClass } from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -136,12 +131,14 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      pageSize: 10,
+      total: 1,
       temp: {
-        name: "",
+        name: ""
       },
-      search:{
-        cityName: '',
-        name: ''
+      search: {
+        cityName: "",
+        name: ""
       },
       rules: {
         name: [
@@ -156,9 +153,9 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      activeName: '0',
-      city:[],
-      checkCity: [],
+      activeName: "0",
+      city: [],
+      checkCity: []
     };
   },
   filters: {
@@ -173,66 +170,85 @@ export default {
   },
   created() {
     this.getList();
-    getCity().then(res=>{
-      this.city=res.data.data
-    })
-    
+    getCity().then(res => {
+      this.city = res.data.data;
+    });
   },
   methods: {
+    cityChange(val) {
+      console.log(val);
+    },
     refbtn1() {
       console.log(this.$refs);
-      this.$refs.refbtn1.className = 'tabBtn tabBtnclick'
-      this.$refs.refbtn2.className = 'tabBtn'
-      this.activeName = '1'
+      this.$refs.refbtn1.className = "tabBtn tabBtnclick";
+      this.$refs.refbtn2.className = "tabBtn";
+      this.activeName = "1";
     },
     refbtn2() {
       console.log(this.$refs.refbtn2);
-      this.$refs.refbtn2.className = 'tabBtn tabBtnclick'
-      this.$refs.refbtn1.className = 'tabBtn'
-      this.activeName = '2'
+      this.$refs.refbtn2.className = "tabBtn tabBtnclick";
+      this.$refs.refbtn1.className = "tabBtn";
+      this.activeName = "2";
     },
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       var obj = {
-        "majorSort": this.activeName
-      }
-      getClass(obj).then(res => {
-        console.log(res)
-        this.list = res.data.data.list;
-        this.listLoading = false
-        //this.total = res.data.data.count;
-      }).catch(res=>{
-        this.listLoading = false
-      });
+        cityId: this.getCityId(this.search.cityName),
+        name: this.search.name,
+        majorSort: this.activeName
+      };
+      getClass(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          console.log(res);
+          this.list = res.data.data.list;
+          this.listLoading = false;
+          this.total = res.data.data.count;
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
     },
     handleFilter() {
-      this.listLoading = true
-      getClass(this.search).then(res=>{
-        this.listLoading = false
-        this.list = res.data.data.list
-        this.activeName = '0'
-        this.listQuery.page = 1;
-      })    
+      var obj = {
+        cityId: this.getCityId(this.search.cityName),
+        name: this.search.name,
+        majorSort: this.activeName
+      };
+      this.listLoading = true;
+      getClass(obj,this.pageNumber, this.pageSize).then(res => {
+        this.listLoading = false;
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+      });
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val;
-     // this.getList();
+      this.pageSize = val;
+      // this.getList();
+      var obj = {
+        majorSort: this.activeName
+      };
+      getClass(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleCurrentChange(val) {
-      console.log("换页");
-      this.listQuery.page = val;
-      //this.getList();
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
+      console.log(111111);
+      this.pageNumber = val;
+      var obj = {
+        majorSort: this.activeName
+      };
+      this.listLoading = true;
+      getClass(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+        this.total = res.data.data.count;
       });
-      row.status = status;
     },
     handleCreate() {
       this.resetTemp();
-      this.activeName='1'
+      this.activeName = "1";
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
@@ -241,107 +257,110 @@ export default {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
-      this.activeName = row.majorSort
-      var arr = []
-      arr.push(row.cityName)
-      this.checkCity = arr
+      this.activeName = row.majorSort;
+      var arr = [];
+      arr.push(row.cityNames);
+      this.checkCity = row.cityNames;
     },
-    handleDelete(row) {    
-      console.log(this.activeName) 
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          console.log(row)
+    handleDelete(row) {
+      console.log(this.activeName);
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          console.log(row);
           var obj = {
-            id:row.id
-          }
-          delClass(obj).then(res=>{
-            console.log(res)
-            if(res.data.code === 1){
+            id: row.id
+          };
+          delClass(obj)
+            .then(res => {
+              console.log(res);
+              if (res.data.code === 1) {
                 this.$message({
-                  type: 'success',
-                  message: '删除成功!'
+                  type: "success",
+                  message: "删除成功!"
                 });
-                this.getList()
-            }else{
-              this.$message({
-                  type: 'warning',
-                  message: '分类下有服务项目，不可删除'
+                this.getList();
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "分类下有服务项目，不可删除"
                 });
-            }
-          }).catch(()=>console.log("未知错误"))
-          
-        }).catch(() => {
+              }
+            })
+            .catch(() => console.log("未知错误"));
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+            type: "info",
+            message: "已取消删除"
+          });
         });
     },
-    getCityId(str){
-       for(var i = 0 ; i < this.city.length ; i ++ ){
-          if(str == this.city[i].areaName){
-            return this.city[i].id
-          }
-       }
+    getCityId(str) {
+      for (var i = 0; i < this.city.length; i++) {
+        if (str == this.city[i].areaName) {
+          return this.city[i].id;
+        }
+      }
     },
     create(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var obj={
-              "citys": [],
-              "majorSort": this.activeName,
-              "name": this.temp.name
-            }
-          for(var i = 0;i < this.checkCity.length;i ++){
-               var city = {
-                 "cityId": this.getCityId(this.checkCity[i]),
-                 "cityName": this.checkCity[i]
-               }
-               obj.citys.push(city)
+          var obj = {
+            citys: [],
+            majorSort: this.activeName,
+            name: this.temp.name
+          };
+          for (var i = 0; i < this.checkCity.length; i++) {
+            var city = {
+              cityId: this.getCityId(this.checkCity[i]),
+              cityName: this.checkCity[i]
+            };
+            obj.citys.push(city);
           }
-          addClass(obj).then(res=>{
-            console.log(this.activeName)
-            if(res.data.code ===1){
-                this.dialogFormVisible = false;
-                this.checkCity = []
-                this.getList();
-                this.$message({
-                  type: 'success',
-                  message: res.data.data
-                });
-            }else{            
+          addClass(obj).then(res => {
+            console.log(this.activeName);
+            if (res.data.code === 1) {
+              this.dialogFormVisible = false;
+              this.checkCity = [];
+              this.getList();
               this.$message({
-                  type: 'error',
-                  message: "发生错误"
-                });
+                type: "success",
+                message: res.data.data
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: "发生错误"
+              });
             }
-          })
+          });
         } else {
           return false;
         }
       });
     },
-    citiesChange(val){
+    citiesChange(val) {
       //console.log(val)
     },
-    resetForm(formName){
-      this.dialogFormVisible = false
-      this.$refs[formName].resetFields()
-      this.checkCity = []
+    resetForm(formName) {
+      this.dialogFormVisible = false;
+      this.$refs[formName].resetFields();
+      this.checkCity = [];
     },
     update(formName) {
-      console.log("编辑")
-      console.log(formName)
+      console.log("编辑");
+      console.log(formName);
       this.dialogFormVisible = false;
     },
     resetTemp() {
       this.temp = {};
     },
     handleClick(tab, event) {
-      this.getList()
+      this.getList();
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
@@ -358,8 +377,6 @@ export default {
 };
 </script>
 <style >
-
-
 .btn_right {
   float: right;
   width: 100px;
@@ -438,18 +455,18 @@ body {
   background-color: #ffffff;
   color: #333;
 }
-.el-radio-button{
+.el-radio-button {
   width: 100%;
 }
-.el-radio-button__inner{
-  width: 100% ;
+.el-radio-button__inner {
+  width: 100%;
   color: #333333;
   border: 0px solid #bfcbd9;
 }
-.el-radio-button__orig-radio:checked+.el-radio-button__inner {
-    color: #fff;
-    background-color: #4c70e8;
-    border-color: #4c70e8;
-    box-shadow: -1px 0 0 0 #4c70e8;
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  color: #fff;
+  background-color: #4c70e8;
+  border-color: #4c70e8;
+  box-shadow: -1px 0 0 0 #4c70e8;
 }
 </style>

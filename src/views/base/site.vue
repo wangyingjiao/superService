@@ -12,10 +12,10 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="showdialog">地图</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="showdialog">地图</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -840,9 +840,6 @@ export default {
 };
 </script>
 <style scoped>
-.btn_right {
-  float: right;  
-}
 .checkRightBox {
   border: solid 1px #dcdcdc;
   padding: 10px;
