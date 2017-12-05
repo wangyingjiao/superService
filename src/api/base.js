@@ -33,12 +33,12 @@ export function getCity() {
   return instance.post(`/api/a/sys/area/treeArea`)
 }
 // 获取服务站
-export function getSite(obj) {
-  return instance.post(`/api/a/service/station/serviceStation/listData`, obj)
+export function getSite(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/service/station/serviceStation/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 // 新增服务站
-export function addSite() {
-  return instance.post(`/api/a`)
+export function addSite(obj) {
+  return instance.post(`/api/a/service/station/serviceStation/saveData`, obj)
 }
 // 删除服务站
 export function delSite() {
