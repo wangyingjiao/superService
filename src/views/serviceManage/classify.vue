@@ -88,6 +88,7 @@
                    v-for="item in city" 
                    @change="cityChange"
                    :label="item.areaName"
+                   :value="item.id"
                    :key="item.id"></el-checkbox>
               </el-checkbox-group>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
@@ -171,6 +172,8 @@ export default {
   created() {
     this.getList();
     getCity().then(res => {
+      console.log(res)
+      console.log(1111)
       this.city = res.data.data;
     });
   },

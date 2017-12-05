@@ -286,7 +286,7 @@ export default {
       rowInfo: {
         id: "",
         masterId: "",
-        rangeType:""
+        rangeType: ""
       },
       temp: {
         name: "",
@@ -428,9 +428,9 @@ export default {
       this.listLoading = true;
       var obj = {
         name: "",
-        addrCityId: "1"
+        addrCityId: ""
       };
-      getSite(obj).then(res => {
+      getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -444,7 +444,7 @@ export default {
         name: this.search.name,
         addrCityId: "1"
       };
-      getSite(obj).then(res => {
+      getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -461,7 +461,7 @@ export default {
         getMaster(obj).then(res => {
           console.log(res);
           this.master = res.data.data.list;
-          this.tempMaster.master = this.rowInfo.masterId
+          this.tempMaster.master = this.rowInfo.masterId;
         });
         this.dialogMasterVisible = true;
       }
@@ -582,16 +582,16 @@ export default {
     },
     create(formName) {
       var obj = {
-        name: "",
-        type: "",
-        area: "",
-        cusProvId: "",
-        cusCityId: "",
-        county: "",
-        cusTownId: "",
-        phone: "",
-        state: ""
+        name: this.temp.name,
+        type: this.temp.type,
+        addrDetailInfo: this.temp.area,
+        addrProvinceId: this.temp.cusProvId,
+        addrCityId: this.temp.cusCityId,
+        addrDistrictId: this.temp.cusTownId,
+        phone: this.temp.phone,
+        useable: this.temp.state
       };
+      console.log(obj)
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
@@ -657,12 +657,12 @@ export default {
     },
     resetStore() {
       //取消门店
-      
+
       this.dialogStoreVisible = false;
     },
     resetMaster() {
       //取消店长
-      this.tempMaster.master = ""
+      this.tempMaster.master = "";
       this.dialogMasterVisible = false;
     },
     showdialog() {
