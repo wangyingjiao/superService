@@ -33,8 +33,8 @@ export function getCity() {
   return instance.post(`/api/a/sys/area/treeArea`)
 }
 // 获取服务站
-export function getSite() {
-  return instance.post(`/api/a`)
+export function getSite(obj) {
+  return instance.post(`/api/a/service/station/serviceStation/listData`, obj)
 }
 // 新增服务站
 export function addSite() {
@@ -45,10 +45,10 @@ export function delSite() {
   return instance.post(`/api/a`)
 }
 // 获取站长列表
-export function getMaster() {
-  return instance.post(`/api/a`)
+export function getMaster(obj) {
+  return instance.post(`/api/a/sys/user/listData?pageSize=-1`, obj)
 }
 // 字典量 获取服务站类型
 export function getType() {
-  return instance.post(`/api/a`)
+  return instance.post(`/api/a/sys/dict/listData?type=service_station_type`)
 }

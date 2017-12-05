@@ -52,8 +52,8 @@
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination class="fr page mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -153,13 +153,13 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label=" 客户信息" >
+        <!-- <el-form-item label=" 客户信息" >
           <el-switch
             v-model="temp.visable"
             on-color="#4c70e8"
             off-color="#eef1f6">
           </el-switch>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label=" 机构网址" >
           <el-input 
@@ -254,7 +254,7 @@ export default {
         cusTownId: "",
         serviceAreaType: "",
         serviceCityId: [],
-        visable:true
+        visable:""
       },
       province: "",
       importanceOptions: [
@@ -498,7 +498,7 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:this.temp.visable
+        visable:"1"
       };
       if(this.temp.visable){
        obj.visable = "1" 
@@ -553,7 +553,7 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:this.temp.visable
+        visable:"1"
       };
        if(this.temp.visable){
        obj.visable = "1" 
@@ -613,21 +613,10 @@ export default {
         cusTownId: "",
         serviceAreaType: "",
         serviceCityId: [],
-        visable:""
+        visable:false
       };
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v =>
-        filterVal.map(j => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
     }
+    
   }
 };
 </script>
@@ -680,5 +669,8 @@ body {
   color: #1d85fe;
   border: 1px solid #1d85fe;
   background-color: #ffffff;
+}
+.pagination-container {
+  overflow: hidden;
 }
 </style>

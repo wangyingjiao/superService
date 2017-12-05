@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="请选择城市">
+      <el-select clearable style="width: 200px" class="filter-item" v-model="search.addrCityId" placeholder="请选择城市">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="showdialog">地图</button>
-      <button class="button-small-fourth btn_right btn_pad" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="showdialog">地图</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -31,39 +31,46 @@
         <el-table-column align="center" label="编号" type="index" width="100">
         </el-table-column>
 
-        <el-table-column label="服务站名称" align="center">
+        <el-table-column label="服务站名称" align="center" prop="name">
 
         </el-table-column>
 
-        <el-table-column label="服务站类型" align="center">
+        <el-table-column label="服务站类型" align="center" prop="type">
+           <template scope="scope">
+            <span v-if="scope.row.type =='1'">加盟</span>
+            <span v-if="scope.row.type =='2'">直营</span>
+          </template>
           
         </el-table-column>
 
-        <el-table-column label="所属城市" align="center">
+        <el-table-column label="所属城市" align="center" prop="addrCityName">
          
         </el-table-column>
 
-        <el-table-column label="服务站电话" align="center">
+        <el-table-column label="服务站电话" align="center" prop="phone">
          
         </el-table-column>
 
-        <el-table-column label="员工数量" align="center">
+        <el-table-column label="员工数量" align="center" prop="employees">
           
         </el-table-column>
 
-        <el-table-column label="阿姨数量" align="center">
+        <el-table-column label="阿姨数量" align="center" prop="aunts"> 
           
         </el-table-column>
 
-        <el-table-column class-name="status-col" label="状态">
-          
+        <el-table-column class-name="status-col" label="状态" prop="userable">
+          <template scope="scope">
+            <span v-if="scope.row.useable =='1'">可用</span>
+            <span v-if="scope.row.useable =='0'">不可用</span>
+          </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作" width="150">
           <template scope="scope">
             <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
-        </template>
+          </template>
         </el-table-column>
 
       </el-table>
@@ -125,7 +132,7 @@
           </el-form-item>
 
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer" style="text-align:center">
           <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
           <button class="button-large" v-else @click="create('temp')">保 存</button>    
           <button class="button-cancel" @click="resetForm('temp')">取 消</button>
@@ -136,12 +143,12 @@
         <el-form :model="tempMaster">
           <el-form-item label="服务站长">
             <el-select class="filter-item" v-model="tempMaster.master">
-              <el-option v-for="item in master" :key="item" :label="item" :value="item">
+              <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer" style="text-align:center">
            <button class="button-large"  @click="createMaster">保 存</button>    
            <button class="button-cancel" @click="resetMaster">取 消</button>
         </div>
@@ -221,7 +228,7 @@
 
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div slot="footer" class="dialog-footer" style="text-align:center">
            <button class="button-large"  @click="createStore('temp')">保 存</button>    
            <button class="button-cancel" @click="resetStore('temp')">取 消</button>
         </div>
@@ -232,12 +239,11 @@
 </template>
 
 <script>
-import { getSite, addSite, delSite } from "@/api/base";
+import { getSite, addSite, delSite, getType, getMaster } from "@/api/base";
+import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
-
-const stationType = ["直营", "加盟"]; //服务站类型
 
 const master = ["张三", "李四"]; //站长
 //临时挂载三级联动
@@ -260,7 +266,6 @@ export default {
       index: 0,
       promitInf: "",
       showPromit: false,
-
       list: [],
       total: null,
       listLoading: true,
@@ -273,11 +278,16 @@ export default {
         sort: "+id"
       },
       pageSize: 10,
-      total: 1,
-      temp: {
-        master: ""
+      total: 0,
+      search: {
+        name: "",
+        addrCityId: ""
       },
-      rowId: "",
+      rowInfo: {
+        id: "",
+        masterId: "",
+        rangeType:""
+      },
       temp: {
         name: "",
         type: "",
@@ -350,7 +360,7 @@ export default {
         label: "label"
       },
       importanceOptions: [],
-      stationType: stationType,
+      stationType: [],
       stationState: [{ id: "1", value: "启用" }, { id: "2", value: "停用" }],
       dialogFormVisible: false, //表格
       dialogMasterVisible: false, //店长
@@ -365,7 +375,7 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
-      master: master,
+      master: [],
       rules: {
         name: [
           { required: true, message: "请输入 2 到 15 位的机构名称", trigger: "blur" },
@@ -403,29 +413,63 @@ export default {
   },
   created() {
     this.getList();
+    var id = "";
+    getArea(id).then(res => {
+      //console.log(res);
+      this.provinceOptions = res.data.data;
+    });
+    getType().then(res => {
+      console.log(res);
+      //this.stationType =
+    });
   },
   methods: {
     getList() {
-      this.listLoading = false;
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.total = response.data.total
-      //   this.listLoading = false
-      // })
+      this.listLoading = true;
+      var obj = {
+        name: "",
+        addrCityId: "1"
+      };
+      getSite(obj).then(res => {
+        console.log(res);
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleFilter() {
       console.log("搜索");
       this.listQuery.page = 1;
-      this.getList();
+      var obj = {
+        name: this.search.name,
+        addrCityId: "1"
+      };
+      getSite(obj).then(res => {
+        console.log(res);
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleSetMaster() {
-      console.log("设置站长");
-      this.dialogMasterVisible = true;
+      if (this.rowInfo.id == "") {
+        this.$message.error("您未选择任何操作对象，请选择一行数据");
+      } else {
+        var obj = {
+          stationId: this.rowInfo.id
+        };
+        getMaster(obj).then(res => {
+          console.log(res);
+          this.master = res.data.data.list;
+          this.tempMaster.master = this.rowInfo.masterId
+        });
+        this.dialogMasterVisible = true;
+      }
     },
     handleSetRange() {
       console.log("设置范围");
 
-      if (1) {
+      if (this.rowInfo.rangeType == "1") {
         this.dialogStoreVisible = true;
       } else {
         this.dialogMapVisible = true;
@@ -458,15 +502,14 @@ export default {
       });
     },
     resetForm(formName) {
-      this.dialogFormVisible = false
+      this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
     },
     rowClick(row, event, column) {
-      this.rowId = row.id;
+      this.rowInfo.id = row.id;
+      this.rowInfo.masterId = row.user.id;
       console.log(row);
-      console.log(event);
-      console.log(column);
     },
     handleCreate() {
       this.resetTemp();
@@ -537,9 +580,41 @@ export default {
         })
         .catch(res => {});
     },
-    create() {
-      console.log("新增");
-      this.dialogFormVisible = false;
+    create(formName) {
+      var obj = {
+        name: "",
+        type: "",
+        area: "",
+        cusProvId: "",
+        cusCityId: "",
+        county: "",
+        cusTownId: "",
+        phone: "",
+        state: ""
+      };
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          addSite(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$message({
+                type: "success",
+                message: "添加成功"
+              });
+              this.getList();
+              this.dialogFormVisible = false;
+            } else {
+              this.$message({
+                type: "error",
+                message: "您输入的数据有误"
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
     },
     createStore() {
       //保存门店
@@ -547,6 +622,7 @@ export default {
     },
     createMaster() {
       //设置店长
+
       this.dialogMasterVisible = false;
     },
     update() {
@@ -567,26 +643,27 @@ export default {
       });
     },
     resetTemp() {
-      this.temp = {};
+      this.temp = {
+        name: "",
+        type: "",
+        area: "",
+        cusProvId: "",
+        cusCityId: "",
+        county: "",
+        cusTownId: "",
+        phone: "",
+        state: ""
+      };
     },
     resetStore() {
       //取消门店
+      
       this.dialogStoreVisible = false;
     },
     resetMaster() {
       //取消店长
+      this.tempMaster.master = ""
       this.dialogMasterVisible = false;
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v =>
-        filterVal.map(j => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
     },
     showdialog() {
       this.severSelectdialogVisible = true;
@@ -763,15 +840,6 @@ export default {
 };
 </script>
 <style scoped>
-.btn_right {
-  float: right;
-  width: 100px;
-}
-
-.btn_left {
-  width: 100px;
-}
-
 .checkRightBox {
   border: solid 1px #dcdcdc;
   padding: 10px;
@@ -797,7 +865,7 @@ export default {
 }
 
 body {
-  background-color: #f5f5f5;
+  background-color: #eef1f6;
 }
 
 .bgWhite {
@@ -812,61 +880,59 @@ body {
 .btn_right {
   float: right;
 }
-.mapButton{
-		width:80px;
-		height: 25px;
-		line-height:25px;
-		color:#fff;
-		text-align:center;
-		font-size:12px;
-		border:none;
-		border-radius:0px;
-		outline:none;
-		background: #4c70e8;
-		cursor: pointer;
-	} 
-	.mapButton:hover{
-		background: #6d8dfc;
-	}  
-   .mapWrap{
-		width:70%;
-		height:500px;
-		float:left;
-	}
-	.buttonWrap{
-		position: absolute;
-		z-index: 9999;
-		bottom:10%;
-		right:35%;
-
-	}	
-	.pickerBox {
-		float:left;
-        width: 30%;
-		height:500px;
-		background:#fff;
-		border-left:1px dashed #ccc;
-		font-size:12px;
-    }
-	.headerWrap{
-		border-bottom:1px dashed #ccc;
-		padding:10px 5px;
-	}
-	.overlay-number{
-		display:inline-block;
-		width:30px;
-		text-align:center;
-		color:red;
-	}		
-	.bottomContent{
-		padding:20px 5px;
-	}
-	.el-table th>.cell{
-		font-size:12px;
-	}
-	.pickerInput {
-		width: 150px;
-		padding: 5px 5px;
-	}
-
+.mapButton {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  border: none;
+  border-radius: 0px;
+  outline: none;
+  background: #4c70e8;
+  cursor: pointer;
+}
+.mapButton:hover {
+  background: #6d8dfc;
+}
+.mapWrap {
+  width: 70%;
+  height: 500px;
+  float: left;
+}
+.buttonWrap {
+  position: absolute;
+  z-index: 9999;
+  bottom: 10%;
+  right: 35%;
+}
+.pickerBox {
+  float: left;
+  width: 30%;
+  height: 500px;
+  background: #fff;
+  border-left: 1px dashed #ccc;
+  font-size: 12px;
+}
+.headerWrap {
+  border-bottom: 1px dashed #ccc;
+  padding: 10px 5px;
+}
+.overlay-number {
+  display: inline-block;
+  width: 30px;
+  text-align: center;
+  color: red;
+}
+.bottomContent {
+  padding: 20px 5px;
+}
+.el-table th > .cell {
+  font-size: 12px;
+}
+.pickerInput {
+  width: 150px;
+  padding: 5px 5px;
+}
 </style>
