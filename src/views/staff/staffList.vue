@@ -636,7 +636,6 @@ export default {
             roles: [this.temp.station],
             useable: this.temp.peostate
           };
-          console.log(obj);
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {             
@@ -827,10 +826,10 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding:15px 20px;
+  padding:15px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 15px 20px;
 }
 .btn_right {
   float: right;

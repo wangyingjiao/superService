@@ -59,10 +59,10 @@
           
         </el-table-column>
 
-        <el-table-column class-name="status-col" label="状态" prop="userable">
+        <el-table-column align="center" label="状态" prop="userable">
           <template scope="scope">
-            <span v-if="scope.row.useable =='1'">可用</span>
-            <span v-if="scope.row.useable =='0'">不可用</span>
+            <span v-if="scope.row.useable =='1'">启用</span>
+            <span v-else>停用</span>
           </template>
         </el-table-column>
 
@@ -96,7 +96,7 @@
           </el-form-item>
           <el-form-item label="服务站类型" prop="type">
             <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
-              <el-option v-for="item in stationType" :key="item" :label="item" :value="item">
+              <el-option v-for="item in stationType" :key="item.id" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -239,17 +239,17 @@
 </template>
 
 <script>
-import { getSite, addSite, delSite, getType, getMaster } from "@/api/base";
+import {
+  getSite,
+  addSite,
+  delSite,
+  getType,
+  getMaster,
+  setMaster
+} from "@/api/base";
 import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-//挂载数据
-
-const master = ["张三", "李四"]; //站长
-//临时挂载三级联动
-const province = ["北京", "上海"];
-const city = ["海淀", "朝阳"];
-const county = ["海淀", "朝阳"];
 
 export default {
   name: "table_demo",
@@ -257,6 +257,17 @@ export default {
     waves
   },
   data() {
+    var validatePhone = (rule, value, callback) => {
+      if (!value) {
+					return callback(new Error('电话号码不能为空'));
+				}else{
+					if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
+						callback(new Error('手机号码格式不正确！'));
+					} else {
+						callback();
+					}
+				}
+    };
     return {
       severSelectdialogVisible: false,
       inputvalue: [],
@@ -291,10 +302,10 @@ export default {
       temp: {
         name: "",
         type: "",
-        area: "",
+        addr: "",
         cusProvId: "",
         cusCityId: "",
-        county: "",
+        addrCityName: "",
         cusTownId: "",
         phone: "",
         state: ""
@@ -361,7 +372,7 @@ export default {
       },
       importanceOptions: [],
       stationType: [],
-      stationState: [{ id: "1", value: "启用" }, { id: "2", value: "停用" }],
+      stationState: [{ id: "1", value: "启用" }, { id: "0", value: "停用" }],
       dialogFormVisible: false, //表格
       dialogMasterVisible: false, //店长
       dialogStoreVisible: false, //门店
@@ -396,7 +407,7 @@ export default {
           { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
         ],
         phone: [
-          { required: true, message: "请输入11位由数字组成的手机号、或者座机号", trigger: "blur" }
+          { required: true,validator: validatePhone, trigger: "blur" }
         ]
       }
     };
@@ -419,8 +430,8 @@ export default {
       this.provinceOptions = res.data.data;
     });
     getType().then(res => {
-      console.log(res);
-      //this.stationType =
+      console.log(res.data);
+      this.stationType = res.data;
     });
   },
   methods: {
@@ -507,18 +518,35 @@ export default {
       this.$refs[formName].resetFields();
     },
     rowClick(row, event, column) {
-      this.rowInfo.id = row.id;
-      this.rowInfo.masterId = row.user.id;
       console.log(row);
+      this.rowInfo.id = row.id;
+      if (row.user == undefined) {
+        this.rowInfo.masterId = "";
+      } else {
+        this.rowInfo.masterId = row.user.id;
+      }
+      console.log(this.rowInfo);
     },
     handleCreate() {
-      this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log("编辑");
-      this.temp = Object.assign({}, row);
+      console.log(row);
+      this.temp = {
+        id: row.id,
+        name: row.name,
+        type: row.type,
+        addr: row.addrDetailInfo,
+        cusProvId: "",
+        cusCityId: "",
+        cusTownId: row.addrDistrictId,
+        phone: row.phone,
+        state: row.useable
+      };
+      setTimeout(() => (this.temp.cusProvId = row.addrProvinceId), 100);
+      setTimeout(() => (this.temp.cusCityId = row.addrCityId), 200);
+      setTimeout(() => (this.temp.cusTownId = row.addrDistrictId), 300);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
@@ -565,6 +593,8 @@ export default {
     },
     provinceChange(value) {
       this.temp.city = "";
+      this.temp.cusCityId = "";
+      this.temp.cusTownId = "";
       getArea(value)
         .then(res => {
           this.cityOptions = res.data.data;
@@ -573,7 +603,14 @@ export default {
     },
     //
     cityChange(value) {
-      this.temp.county = "";
+      console.log(this.cityOptions);
+      this.temp.cusTownId = "";
+      for (var i = 0; i < this.cityOptions.length; i++) {
+        if (value == this.cityOptions[i].id) {
+          console.log(this.cityOptions[i].name);
+          this.temp.addrCityName = this.cityOptions[i].name;
+        }
+      }
       getArea(value)
         .then(res => {
           this.countyOptions = res.data.data;
@@ -584,20 +621,23 @@ export default {
       var obj = {
         name: this.temp.name,
         type: this.temp.type,
-        addrDetailInfo: this.temp.area,
+        addrDetailInfo: this.temp.addr,
         addrProvinceId: this.temp.cusProvId,
         addrCityId: this.temp.cusCityId,
+        addrCityName: this.temp.addrCityName,
         addrDistrictId: this.temp.cusTownId,
         phone: this.temp.phone,
         useable: this.temp.state
       };
-      console.log(obj)
+      console.log(obj);
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
+              this.$refs[formName].resetFields();
               this.$message({
                 type: "success",
                 message: "添加成功"
@@ -607,7 +647,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "您输入的数据有误"
+                message: "添加失败"
               });
             }
           });
@@ -621,35 +661,88 @@ export default {
       this.dialogStoreVisible = false;
     },
     createMaster() {
-      //设置店长
-
-      this.dialogMasterVisible = false;
-    },
-    update() {
-      this.temp.timestamp = +this.temp.timestamp;
-      for (const v of this.list) {
-        if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v);
-          this.list.splice(index, 1, this.temp);
-          break;
+      var name = ""
+      for (var i =0;i<this.master.length;i++){
+        if(this.tempMaster.master ==this.master[i].id){
+          name = this.master[i].name
         }
       }
-      this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "编辑成功",
-        type: "success",
-        duration: 2000
+      var obj = {
+        user: {
+          id: this.tempMaster.master,
+          name: name
+        },
+        id:this.rowInfo.id
+      };
+      console.log(this.master)
+      setMaster(obj).then(res => {
+        console.log(res)
+        if(res.data.code == "1"){
+          this.$message({
+                type: "success",
+                message: "设置成功"
+              });
+          this.getList()
+          this.dialogMasterVisible = false;
+        }else{
+          this.$message({
+                type: "error",
+                message: "设置失败"
+              });
+           this.dialogMasterVisible = false;
+        }
+      });
+
+     
+    },
+    update(formName) {
+      var obj = {
+        id: this.temp.id,
+        name: this.temp.name,
+        type: this.temp.type,
+        addrDetailInfo: this.temp.addr,
+        addrProvinceId: this.temp.cusProvId,
+        addrCityId: this.temp.cusCityId,
+        addrCityName: this.temp.addrCityName,
+        addrDistrictId: this.temp.cusTownId,
+        phone: this.temp.phone,
+        useable: this.temp.state
+      };
+      console.log(obj);
+
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          addSite(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.$message({
+                type: "success",
+                message: "修改成功"
+              });
+              this.getList();
+              this.dialogFormVisible = false;
+            } else {
+              this.$message({
+                type: "error",
+                message: "修改失败"
+              });
+            }
+          });
+        } else {
+          return false;
+        }
       });
     },
     resetTemp() {
       this.temp = {
         name: "",
         type: "",
-        area: "",
+        addr: "",
         cusProvId: "",
         cusCityId: "",
-        county: "",
+        addrCityName: "",
         cusTownId: "",
         phone: "",
         state: ""
@@ -874,7 +967,7 @@ body {
 }
 
 .btn_pad {
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 15px 20px;
 }
 
 .btn_right {
