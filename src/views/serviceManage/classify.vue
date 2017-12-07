@@ -12,7 +12,7 @@
       </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
       </el-input>
-      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_right ceshi" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -59,7 +59,9 @@
     <el-dialog 
       title="添加" 
       :visible.sync="dialogFormVisible" 
-      :show-close= false
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
       class="diatable">
       <div class="tabBox" >
         <div class="tabLeft fl" ref="refTab">
@@ -120,7 +122,9 @@
     <el-dialog 
       title="编辑" 
       :visible.sync="dialogFormUpdate" 
-      :show-close= false
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
       class="diatable">
       <div class="tabBox" >
         <div class="tabLeft fl" ref="refTab">
