@@ -81,7 +81,13 @@
       </el-pagination>
       </div>
 
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+      <el-dialog 
+        :title="textMap[dialogStatus]" 
+        :visible.sync="dialogFormVisible"
+        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false" 
+        class="diatable">
         <el-form 
            class="small-space" 
            :model="temp" 
@@ -139,7 +145,13 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="设置站长" :visible.sync="dialogMasterVisible">
+      <el-dialog 
+        title="设置站长"
+        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false" 
+       :visible.sync="dialogMasterVisible">
+
         <el-form :model="tempMaster">
           <el-form-item label="服务站长">
             <el-select class="filter-item" v-model="tempMaster.master">
@@ -159,7 +171,9 @@
         :visible.sync="severSelectdialogVisible"
         width="100%"
         size="full"
-        :show-close="false"
+        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
         >
           <div ref="gdMap" class="mapWrap">             
           </div>
@@ -211,7 +225,12 @@
 	    </el-dialog>
 
 
-      <el-dialog title="门店范围" :visible.sync="dialogStoreVisible">
+      <el-dialog 
+        title="门店范围" 
+        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+        :visible.sync="dialogStoreVisible">
         <el-form 
           :model="tempStore"
           label-position="left"
@@ -245,9 +264,9 @@ import {
   delSite,
   getType,
   getMaster,
-  setMaster
+  setMaster,
+  getArea
 } from "@/api/base";
-import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -259,17 +278,17 @@ export default {
   data() {
     var validatePhone = (rule, value, callback) => {
       if (!value) {
-					return callback(new Error('电话号码不能为空'));
-				}else{
-					if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
-						callback(new Error('手机号码格式不正确！'));
-					} else {
-						callback();
-					}
-				}
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^1[3|4|5|8][0-9]\d{8}$/.test(value)) {
+          callback(new Error("手机号码格式不正确！"));
+        } else {
+          callback();
+        }
+      }
     };
     return {
-      severSelectdialogVisible: false,
+      severSelectdialogVisible: false,//地图
       inputvalue: [],
       myMap: {}, //地图对象
       number: "0",
@@ -297,7 +316,8 @@ export default {
       rowInfo: {
         id: "",
         masterId: "",
-        rangeType: ""
+        rangeType: "",
+        serviceAreaType: ""
       },
       temp: {
         name: "",
@@ -376,7 +396,6 @@ export default {
       dialogFormVisible: false, //表格
       dialogMasterVisible: false, //店长
       dialogStoreVisible: false, //门店
-      dialogMapVisible: false, //地图
       dialogStatus: "",
       textMap: {
         update: "编辑",
@@ -406,9 +425,7 @@ export default {
           { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
           { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
         ],
-        phone: [
-          { required: true,validator: validatePhone, trigger: "blur" }
-        ]
+        phone: [{ required: true, validator: validatePhone, trigger: "blur" }]
       }
     };
   },
@@ -470,20 +487,28 @@ export default {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
-          console.log(res);
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
         });
-        this.dialogMasterVisible = true;
+        setTimeout(()=>{
+              this.dialogMasterVisible = true;
+        },100)
+       
       }
     },
     handleSetRange() {
       console.log("设置范围");
-
-      if (this.rowInfo.rangeType == "1") {
-        this.dialogStoreVisible = true;
+      if (this.rowInfo.id == "") {
+        this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        this.dialogMapVisible = true;
+        if (this.rowInfo.serviceAreaType == "1") {
+          this.dialogStoreVisible = true;
+        } else {
+          this.severSelectdialogVisible = true;
+          this.$nextTick(() => {
+            this.initMap1();
+          });
+        }
       }
     },
     handleSizeChange(val) {
@@ -519,6 +544,7 @@ export default {
     },
     rowClick(row, event, column) {
       console.log(row);
+      this.rowInfo.serviceAreaType = row.office.serviceAreaType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
         this.rowInfo.masterId = "";
@@ -573,7 +599,7 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "该信息不可删除或者没有权限"
+                  message: "删除失败"
                 });
               }
             })
@@ -661,10 +687,10 @@ export default {
       this.dialogStoreVisible = false;
     },
     createMaster() {
-      var name = ""
-      for (var i =0;i<this.master.length;i++){
-        if(this.tempMaster.master ==this.master[i].id){
-          name = this.master[i].name
+      var name = "";
+      for (var i = 0; i < this.master.length; i++) {
+        if (this.tempMaster.master == this.master[i].id) {
+          name = this.master[i].name;
         }
       }
       var obj = {
@@ -672,28 +698,26 @@ export default {
           id: this.tempMaster.master,
           name: name
         },
-        id:this.rowInfo.id
+        id: this.rowInfo.id
       };
-      console.log(this.master)
+      console.log(this.master);
       setMaster(obj).then(res => {
-        console.log(res)
-        if(res.data.code == "1"){
+        console.log(res);
+        if (res.data.code == "1") {
           this.$message({
-                type: "success",
-                message: "设置成功"
-              });
-          this.getList()
+            type: "success",
+            message: "设置成功"
+          });
+          this.getList();
           this.dialogMasterVisible = false;
-        }else{
+        } else {
           this.$message({
-                type: "error",
-                message: "设置失败"
-              });
-           this.dialogMasterVisible = false;
+            type: "error",
+            message: "设置失败"
+          });
+          this.dialogMasterVisible = false;
         }
       });
-
-     
     },
     update(formName) {
       var obj = {
