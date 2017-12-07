@@ -16,11 +16,11 @@
       </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
       </el-input>
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large btn_right el-icon-search ceshi" @click="handleFilter">搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -97,7 +97,9 @@
     <el-dialog 
       :title="textMap[dialogStatus]" 
       :visible.sync="dialogFormVisible" 
-      :show-close= false
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
       class="diatable">
       <div class="tabBox">
           <div class="tabLeft fl" ref="refTab">
@@ -400,6 +402,7 @@ export default {
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
+       this.activeName = "1";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {

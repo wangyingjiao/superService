@@ -57,7 +57,13 @@
       </el-pagination>
     </div>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" class="diatable">
+    <el-dialog 
+      :title="textMap[dialogStatus]" 
+      :visible.sync="dialogFormVisible" 
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+      class="diatable">
       <el-form 
          class="small-space" 
          :model="temp" 
@@ -254,7 +260,7 @@ export default {
         cusTownId: "",
         serviceAreaType: "",
         serviceCityId: [],
-        visable:""
+        visable: ""
       },
       province: "",
       importanceOptions: [
@@ -341,7 +347,6 @@ export default {
     });
     getCity().then(res => {
       this.serviceCity = res.data.data;
-      
     });
   },
   methods: {
@@ -433,8 +438,8 @@ export default {
     },
     handleUpdate(row) {
       //console.log(row);
-      
-      console.log(this.temp.visable)
+
+      console.log(this.temp.visable);
       var arr = [];
       arr = row.serviceCityId.split(",");
       arr.pop();
@@ -442,24 +447,21 @@ export default {
       this.temp.serviceCityId = arr;
       this.dialogStatus = "update";
       this.updateId = row.id;
-      this.temp.cusProvId= ""
-      this.temp.cusCityId= ""
-      if(row.visable ==1){
-        this.temp.visable = true
-      }else{
-        this.temp.visable = false
-
+      this.temp.cusProvId = "";
+      this.temp.cusCityId = "";
+      if (row.visable == 1) {
+        this.temp.visable = true;
+      } else {
+        this.temp.visable = false;
       }
       setTimeout(() => {
         this.temp.cusProvId = row.cusProvId;
-       
       }, 500);
       setTimeout(() => {
         this.temp.cusCityId = row.cusCityId;
       }, 1000);
 
       this.dialogFormVisible = true;
-      
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
@@ -479,7 +481,6 @@ export default {
       for (var i = 0; i < this.temp.serviceCityId.length; i++) {
         str += this.temp.serviceCityId[i] + ",";
       }
-      
 
       var obj = {
         name: this.temp.name,
@@ -498,12 +499,12 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:"1"
+        visable: "1"
       };
-      if(this.temp.visable){
-       obj.visable = "1" 
-      }else{
-        obj.visable = "0"
+      if (this.temp.visable) {
+        obj.visable = "1";
+      } else {
+        obj.visable = "0";
       }
       console.log(obj);
       //return
@@ -553,12 +554,12 @@ export default {
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
-        visable:"1"
+        visable: "1"
       };
-       if(this.temp.visable){
-       obj.visable = "1" 
-      }else{
-        obj.visable = "0"
+      if (this.temp.visable) {
+        obj.visable = "1";
+      } else {
+        obj.visable = "0";
       }
 
       console.log(obj);
@@ -613,10 +614,9 @@ export default {
         cusTownId: "",
         serviceAreaType: "",
         serviceCityId: [],
-        visable:false
+        visable: false
       };
     }
-    
   }
 };
 </script>

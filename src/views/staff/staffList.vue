@@ -521,18 +521,6 @@ export default {
       };
       setTimeout(() => (this.temp.mechanism = row.office.id), 1000);
 
-      // this.dialogFormVisible = true;
-      // console.log(row);
-      // console.log(this.temp);
-      // console.log(this.mechanism);
-
-      // //this.temp.name = row.loginName;
-      // //this.temp.phone = row.mobile;
-      // this.mechanism = "1";
-      // this.mechanism = row.office.id;
-      // this.servicestation = row.stationId;
-      // this.station = row.station;
-      // this.peostate = "1";
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {

@@ -51,6 +51,8 @@
        :title="textMap[dialogStatus]" 
        :visible.sync="dialogFormVisible" 
        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
        class="diatable">
       <el-form 
         class="small-space" 
