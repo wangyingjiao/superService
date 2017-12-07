@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-          Sign in
+          登录
         </el-button>
       </el-form-item>
       <div class='tips'>
@@ -64,7 +64,7 @@ export default {
   methods: {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        console.log(valid)
+        //console.log(valid)
         if (valid) {
           this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {

@@ -13,7 +13,7 @@ export function loginByUsername(username, password) {
     username,
     password
   }
-  return instance.post(`https://apiservice.guoanshequ.wang/apiservice/a/login`, qs.stringify(data))
+  return instance.post(`/api/a/login`, qs.stringify(data))
 }
 
 export function requestUserRole(username, password) {
@@ -30,16 +30,5 @@ export function logout() {
 
 export function getUserInfo() {
   return instance.get(`/api/a/sys/user/menuData`)
-}
-
-export function login(username, password) {
-  return fetch({
-    url: '/user/login',
-    method: 'post',
-    data: {
-      username,
-      password
-    }
-  })
 }
 
