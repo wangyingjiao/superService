@@ -95,14 +95,14 @@
               </el-checkbox-group> -->
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
-                    <button 
+                    <div 
                       class="selfCheckBox cityBtn" 
                       ref="cityOption" 
                       @click="cityChange(item,index)" 
                       v-for="(item,index) in city"
                       :value="item.areaName">
                       {{item.areaName}}
-                      </button>
+                    </div>
 								  	</div>
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
@@ -148,18 +148,18 @@
             <el-form-item label="定向城市">   
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
-                    <button 
+                    <div 
                       class="selfCheckBox cityBtn allCity"
                       ref="allCity"                      
-                      @click="allCity">全部城市</button>
-                    <button 
+                      @click="allCity">全部城市</div>
+                    <div 
                       class="selfCheckBox cityBtn" 
                       ref="cityOption2"                     
                       @click="cityUpdate(item,index)" 
                       v-for="(item,index) in city"
                       :value="item.areaName">
                       {{item.areaName}}
-                      </button>
+                      </div>
 								  	</div>
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>

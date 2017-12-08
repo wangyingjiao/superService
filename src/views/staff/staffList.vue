@@ -125,7 +125,7 @@
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-           <button class="button-cancel" @click="dialogFormStation = true">新 增</button>
+           <div class="btn_addStation" @click="dialogFormStation = true">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态" >
           <el-select style='width: 400px;' @change="peoStateChange" class="filter-item" v-model="temp.peostate" placeholder="请选择">
@@ -883,5 +883,15 @@ body {
   .el-tree-node__children
   .el-tree-node {
   float: none;
+}
+.btn_addStation{
+  float: right;
+  height: 34px;
+  width: 80px;
+  background-color: #fff;
+  border: 1px solid #4c70e8;
+  text-align: center;
+  line-height: 34px;
+  color: #4c70e8;
 }
 </style>
