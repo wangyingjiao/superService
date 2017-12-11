@@ -893,5 +893,6 @@ body {
   text-align: center;
   line-height: 34px;
   color: #4c70e8;
+  cursor: pointer;
 }
 </style>

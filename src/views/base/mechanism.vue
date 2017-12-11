@@ -81,10 +81,10 @@
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
-        <el-form-item label="机构电话" prop="phone" >
+        <el-form-item label="机构电话" prop="telephone" >
           <el-input 
             style='width: 400px;' 
-            v-model="temp.phone"
+            v-model="temp.telephone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
@@ -104,7 +104,8 @@
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <el-form-item label="所在区域"  prop="areaIds">
+        <!-- <el-form-item label="所在区域"  prop="areaIds"> -->
+        <el-form-item label="所在区域">
 							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
@@ -147,19 +148,20 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="服务城市" prop="serviceCityId" >
+        <!-- <el-form-item label="服务城市" prop="serviceCityId" > -->
+        <el-form-item label="服务城市"  >
          
            <el-select v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
             
             <el-option-group
-              v-for="(group,index) in serviceCity"
-              :key="group.id"
-              :label="group.name">
+              v-for="(group,index) in areaOptions"
+              :key="group.value"
+              :label="group.label">
               <el-option
-                v-for="item in group.subs"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="item in group.children"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
               </el-option>
             </el-option-group>
 
@@ -191,7 +193,7 @@
         <el-form-item label="  400客服电话" >
           <el-input 
             style='width: 400px;' 
-            v-model="temp.office400"
+            v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
@@ -199,7 +201,7 @@
           <el-input 
             type="textarea" 
             :rows="2" 
-            v-model="temp.remarks"></el-input>
+            v-model="temp.remark"></el-input>
         </el-form-item>
         
       </el-form>
@@ -257,19 +259,19 @@ export default {
         areaIds: "",
         fax: "",
         name: "",
-        office400: "",
+        tel400: "",
         officeUrl: "",
-        phone: "",
+        telephone: "",
         masterName: "",
         masterPhone: "",
-        remarks: "",
+        remark: "",
         // cusProvId: "",
         // cusCityId: "",
         // cusTownId: "",
         areaCodes:[],
         serviceAreaType: "",
         serviceCityId: [],
-        visable: ""
+        visable: "1"
       },
       province: "",
       importanceOptions: [
@@ -290,14 +292,14 @@ export default {
       countyOptions: [],
       areaOptions:this.$store.state.user.area,
       textarea: "",
-      serviceCity: [],
+      // serviceCity: this.$store.state.user.area,
       updateId: "",
       rules: {
         name: [
           { required: true, message: "请输入 2 到 15 位的机构名称", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        phone: [
+        telephone: [
           {
             required: true,
             message: "请输入服务机构电话 如：010-66668888",
@@ -349,14 +351,6 @@ export default {
     getSerarea().then(res => {
       //console.log(res);
       this.stationType = res.data;
-    });
-    // var id = "";
-    // getArea(id).then(res => {
-    //   //console.log(res);
-    //   this.provinceOptions = res.data.data;
-    // });
-    getCity().then(res => {
-      this.serviceCity = res.data.data;
     });
   },
   methods: {
@@ -461,14 +455,14 @@ export default {
           var arr = [];
             //arr = res.data.data.serviceCityId.split(",");
           arr.pop();
-          this.temp = Object.assign({}, row);
-          this.temp.serviceCityId = arr;
+          this.temp = Object.assign({}, res.data.data);
+          this.temp.serviceCityId = res.data.data.cityCodes;
           this.dialogStatus = "update";
           this.updateId = res.data.data.id;
           this.temp.cusProvId = "";
           this.temp.cusCityId = "";
           // 省市区
-          this.temp.areaIds = [res.data.data.provinceCode,res.data.data.cityCode,res.data.data.areaCode]
+          this.temp.areaCodes = [res.data.data.provinceCode,res.data.data.cityCode,res.data.data.areaCode]
           // if (row.visable == 1) {
           //   this.temp.visable = true;
           // } else {
@@ -505,27 +499,26 @@ export default {
       console.log(val);
     },
     create(formName) {
-      var str = "";
-      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
-        str += this.temp.serviceCityId[i] + ",";
+      console.log(this.temp.serviceCityId)
+      var arr = []
+      for(var i = 0;i<this.temp.serviceCityId.length; i++){
+        arr.push(this.temp.serviceCityId[i])
       }
-
       var obj = {
         name: this.temp.name, //机构名
-        telephone: this.temp.phone, //机构电话
+        telephone: this.temp.telephone, //机构电话
         masterName: this.temp.masterName, //负责人
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.serviceAreaType, //服务类型
-        cityCodes: str,
-        // cityIds: ["123","123","123"],
+        cityCodes: arr,
         url: this.temp.officeUrl, //网址
         fax: this.temp.fax, //传真
-        tel_400: this.temp.office400, //400
-        remark: this.temp.remarks, //备注
-        provinceCode: this.temp.areaIds[0], //省
-        cityCode: this.temp.areaIds[1], //市
-        areaCode: this.temp.areaIds[2] //区
+        tel400: this.temp.tel400, //400
+        remark: this.temp.remark, //备注
+        provinceCode: this.temp.areaCodes[0], //省
+        cityCode: this.temp.areaCodes[1], //市
+        areaCode: this.temp.areaCodes[2] //区
         //visable: "1"
       };
       if (this.temp.visable) {
@@ -534,7 +527,6 @@ export default {
         obj.visable = "0";
       }
       console.log(obj);
-      //return
       this.$refs[formName].validate(valid => {
         if (valid) {
           addMech(obj).then(res => {
@@ -576,8 +568,8 @@ export default {
         cityIds: str,
         officeUrl: this.temp.officeUrl,
         fax: this.temp.fax,
-        office400: this.temp.office400,
-        remarks: this.temp.remarks,
+        tel400: this.temp.tel400,
+        remarks: this.temp.remark,
         cusProvId: this.temp.cusProvId,
         cusCityId: this.temp.cusCityId,
         cusTownId: this.temp.cusTownId,
@@ -630,7 +622,7 @@ export default {
         areaId: "",
         fax: "",
         name: "",
-        office400: "",
+        tel400: "",
         officeUrl: "",
         phone: "",
         masterName: "",
@@ -685,10 +677,6 @@ body {
   margin: 0px 0px 15px 20px;
 }
 .btn_right {
-  float: right;
-}
-.el-dialog-footer {
-  text-align: center;
   float: right;
 }
 .ceshi3 {

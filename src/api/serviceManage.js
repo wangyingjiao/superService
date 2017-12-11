@@ -11,8 +11,8 @@ export function getCity() {
 export function getClass(obj, pageNumber, pageSize) {
   return instance.post(`/api/a/service/sort/serSortInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-export function getProject(obj) {
-  return instance.post(`/api/a/service/item/serItemInfo/listData`, obj)
+export function getProject(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/service/item/serItemInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 export function getSkill() {
   return instance.get(`/api/a/service/skill/serSkillInfo/listData`)
@@ -26,6 +26,13 @@ export function addProject(obj) {
 export function delClass(obj) {
   return instance.post(`/api/a/service/sort/serSortInfo/deleteSortInfo`, obj)
 }
+export function delProject(obj) {
+  return instance.post(`/api/a/service/item/serItemInfo/deleteSortInfo`, obj)
+}
 export function getSuccess(obj) {
   return instance.post(`/api/a/service/sort/serSortInfo/checkCityItem`, obj)
 }
+export function getInfoPic(obj) {
+  return instance.post(`/api/a/service/item/serItemInfo/getSerItemInfoPic`, obj)
+}
+

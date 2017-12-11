@@ -8,10 +8,10 @@ const instance = axios.create({
 export function getMech() {
   return instance.get(`/api/a/sys/office/listData`)
 }
-// 获取机构带分页
-export function getMechPage(obj, pageNumber, pageSize) {
-  return instance.post(`/api/a/sys/office/pageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
-}
+// // 获取机构带分页
+// export function getMechPage(obj, pageNumber, pageSize) {
+//   return instance.post(`/api/a/sys/office/pageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+// }
 // // 新增机构
 // export function addMech(obj) {
 //   return instance.post(`/api/a/sys/office/saveData`, obj)
@@ -28,7 +28,7 @@ export function getArea(id) {
 }
 // 获取服务城市
 export function getCity() {
-  return instance.post(`/api/a/sys/area/treeArea`)
+  return instance.get(`/api/a/sys/area/listData1`)
 }
 // 获取服务站
 export function getSite(obj, pageNumber, pageSize) {
@@ -60,9 +60,9 @@ export function getOffcity(obj) {
 }
 //  修改后
 // 获取机构带分页
-// export function getMechPage(obj, pageNumber, pageSize) {
-//   return instance.post(`/api/a/sys/organization/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
-// }
+export function getMechPage(obj, pageNumber, pageSize) {
+  return instance.post(`/api/a/sys/organization/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
 // 新增机构
 export function addMech(obj) {
   return instance.post(`/api/a/sys/organization/saveData`, obj)

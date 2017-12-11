@@ -1,4 +1,4 @@
-import { loginByUsername, logout, getUserInfo, requestUserRole } from '@/api/login'
+import { loginByUsername, logout, getUserInfo, getArea} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -8,7 +8,8 @@ const user = {
     avatar: '',
     roles: [],
     menu: [],
-    buttonshow:[],
+    buttonshow: [],
+    area: []
   },
 
   mutations: {
@@ -25,11 +26,14 @@ const user = {
       state.roles = roles
     },
     SET_MENU: (state, menu) => {
-      state.menu = menu    
+      state.menu = menu
     },
     SET_BUTTONSHOW: (state, buttonshow) => {
       state.buttonshow = buttonshow
-    }	
+    },
+    SET_AREA: (state, area) => {
+      state.area = area
+    }
   },
 
   actions: {
@@ -61,7 +65,19 @@ const user = {
         })
       })
     },
-
+    // 获取省市区
+    Getarea({ commit }) {
+      return new Promise((resolve, reject) => {
+        getArea().then(res => {
+          console.log(res)
+          const data = res.data
+          commit('SET_AREA', data.data)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {

@@ -8,7 +8,7 @@
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite">
-          <button class="button-small btn_right btn_pad ceshi ceshi5" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+          <button class="button-small btn_right btn_pad ceshi ceshi5"  style="width:80px" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
           <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
             style="width: 100%">
                   <el-table-column align="center" label="编号" width="100" type="index"></el-table-column>
@@ -532,7 +532,7 @@
 
   .bgWhite {
     background-color: #ffffff;
-    padding: 20px
+    padding: 15px 20px 20px 20px;
   }
 
   .btn_pad {
