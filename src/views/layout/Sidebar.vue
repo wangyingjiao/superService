@@ -9,9 +9,9 @@ import SidebarItem from './SidebarItem'
 export default {
   components: { SidebarItem },
   computed: {
-    // routes() {
-    //   return this.$router.options.routes
-    // },
+     routes() {
+       return this.$router.options.routes
+    },
     menu() {
       return this.$store.state.user.menu
     }
