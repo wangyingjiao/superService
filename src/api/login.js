@@ -32,14 +32,3 @@ export function getUserInfo() {
   return instance.get(`/api/a/sys/user/menuData`)
 }
 
-export function login(username, password) {
-  return fetch({
-    url: '/user/login',
-    method: 'post',
-    data: {
-      username,
-      password
-    }
-  })
-}
-

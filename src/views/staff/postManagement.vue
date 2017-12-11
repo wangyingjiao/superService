@@ -51,6 +51,8 @@
        :title="textMap[dialogStatus]" 
        :visible.sync="dialogFormVisible" 
        :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
        class="diatable">
       <el-form 
         class="small-space" 
@@ -522,7 +524,7 @@ body {
   padding: 15px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 15px 20px;
 }
 .btn_right {
   float: right;

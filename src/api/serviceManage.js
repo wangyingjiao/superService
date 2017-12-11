@@ -26,3 +26,6 @@ export function addProject(obj) {
 export function delClass(obj) {
   return instance.post(`/api/a/service/sort/serSortInfo/deleteSortInfo`, obj)
 }
+export function getSuccess(obj) {
+  return instance.post(`/api/a/service/sort/serSortInfo/checkCityItem`, obj)
+}

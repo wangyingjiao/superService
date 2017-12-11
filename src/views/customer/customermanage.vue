@@ -267,6 +267,7 @@ export default {
 						if (valid) {																			
 							var obj = this.ruleForm
 							saveCus(obj).then(res => {
+								console.log(res)
 								if(res.data.code === 1){
 										this.$message({
 											type: 'success',
@@ -340,6 +341,7 @@ export default {
 				//
 				var id=''
 		  	getArea(id).then(res => {
+					
 					this.provinceOptions=res.data.data;
 					
 				}).catch(res=>{

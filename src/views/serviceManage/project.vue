@@ -16,11 +16,11 @@
       </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
       </el-input>
-      <button class="button-large btn_right" @click="handleFilter">搜索</button>
+      <button class="button-large btn_right el-icon-search ceshi" @click="handleFilter">搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新增</button>
+    <button class="button-small btn_right btn_pad" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -97,10 +97,22 @@
     <el-dialog 
       :title="textMap[dialogStatus]" 
       :visible.sync="dialogFormVisible" 
-      :show-close= false
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
       class="diatable">
-        <el-tabs tabPosition='right' >
-            <el-tab-pane label="保洁">
+      <div class="tabBox">
+          <div class="tabLeft fl" ref="refTab">
+          <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
+          <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
+          <el-radio-group v-model="activeName">
+            <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
+            <el-radio-button style="width:100%;" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%" label="2" @click="refbtn2">家修</el-radio-button>
+            <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
+          </el-radio-group>
+        </div>
+         <div class="tabRight fl">
               <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
                 <h3>基本信息</h3><hr/><br/>
                 <el-form-item label="所属分类">
@@ -153,36 +165,25 @@
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
                 </el-form-item>
               </el-form>
-              <h3>商品信息</h3><hr/><br/>
+              <h3> 商品信息</h3><hr/><br/>
               <el-table
                 border 
                 :data="list"
                 class="goods_info">
                 <el-table-column align="center" label="商品名称">
-                  <template scope="scope">
-                    123
-                  </template>
+                 
                 </el-table-column>
                 <el-table-column align="center" label="商品单位">
-                  <template>
-                    123
-                  </template>
+                  
                 </el-table-column>
                 <el-table-column align="center" label="计量方式">
-                  <template>
-                    测试
-                  </template>
+                 
                 </el-table-column>
                 <el-table-column align="center" label="价格">
-                  <template>
-                    测试
-                    
-                  </template>
+                  
                 </el-table-column>
                 <el-table-column align="center" label="折算时长">
-                  <template>
-                    123
-                  </template>
+                  
                 </el-table-column>
                 <el-table-column label="派人数量" class="123" class-name="234">
                    <el-table-column align="center" width="100%" label="临界值">
@@ -195,23 +196,16 @@
                       </div>
                     
                     </template>
-
                    </el-table-column>
                    <el-table-column align="center" width="100%" label="人数">
-                     <template>
-                      123
-                     </template>
+                     
                    </el-table-column>
                 </el-table-column>
                 <el-table-column align="center" label="起购数量">
-                  <template>
-                    123
-                  </template>
+                  
                 </el-table-column>
                 <el-table-column align="center" label="操作">
-                  <template>
-                    123
-                  </template>
+                  
                 </el-table-column>
               </el-table>
               <div class="add_Btn">
@@ -265,12 +259,9 @@
                   <button class="button-cancel" @click="resetForm('goods_info')">取 消</button> 
                 </el-form-item>
               </el-form>
-              
-            </el-tab-pane>
+         </div>
+         </div>
 
-            <el-tab-pane label="家修">teb切换</el-tab-pane>
-        </el-tabs>
-      <hr>
       <div slot="footer" class="dialog-footer">
         <button class="button-large" @click="create">保 存</button>    
         <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
@@ -387,30 +378,31 @@ export default {
           this.listLoading = false;
         });
     },
+    refbtn1() {
+      console.log(this.$refs);
+      this.$refs.refbtn1.className = "tabBtn tabBtnclick";
+      this.$refs.refbtn2.className = "tabBtn";
+      this.activeName = "1";
+    },
+    refbtn2() {
+      console.log(this.$refs.refbtn2);
+      this.$refs.refbtn2.className = "tabBtn tabBtnclick";
+      this.$refs.refbtn1.className = "tabBtn";
+      this.activeName = "2";
+    },
     handleFilter() {
-      console.log("搜索");
-      this.listQuery.page = 1;
-      this.getList();
+      
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val;
-      this.getList();
+      
     },
     handleCurrentChange(val) {
-      console.log("未知方法");
-      this.listQuery.page = val;
-      this.getList();
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      });
-      row.status = status;
+      
     },
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
+       this.activeName = "1";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
@@ -520,7 +512,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .btn_right {
   float: right;
   width: 100px;
@@ -555,7 +547,7 @@ body {
   padding: 20px;
 }
 .btn_pad {
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 15px 20px;
 }
 .btn_right {
   float: right;
@@ -623,5 +615,58 @@ body {
 }
 .el-table .cell {
   padding: 0;
+}
+.tabBox {
+  width: 100%;
+  overflow: hidden;
+  border: 1px #f5f5f5 solid;
+  background-color: #f5f5f5;
+}
+.tabLeft {
+  width: 15%;
+}
+.tabLeft .tabBtn {
+  display: block;
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+}
+.tabBtnclick {
+  background-color: #6d8dfc;
+  color: #ffffff;
+}
+
+.tabRight {
+  width: 85%;
+  height: 100%;
+  border-left: 1px #f5f5f5 solid;
+  padding-top: 10px;
+  background-color: #ffffff;
+}
+.el-radio-button {
+  width: 100%;
+}
+.el-radio-button__inner {
+  width: 100%;
+  color: #333333;
+  border: 0px solid #bfcbd9;
+}
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  color: #fff;
+  background-color: #4c70e8;
+  border-color: #4c70e8;
+  box-shadow: -1px 0 0 0 #4c70e8;
+}
+.el-upload .el-button span{
+  color:#ffffff
+}
+.el-upload-list--picture .el-upload-list__item{
+  width: 24%;
+}
+.el-upload .el-upload-list li .el-upload-list__item-name{
+  display: none;
 }
 </style>

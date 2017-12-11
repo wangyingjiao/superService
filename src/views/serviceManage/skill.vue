@@ -665,7 +665,7 @@
   }
 
   .btn_pad {
-    margin: 0px 0px 10px 20px;
+    margin: 0px 0px 15px 20px;
   }
 
   .btn_right {
