@@ -12,19 +12,17 @@ export function getMech() {
 export function getMechPage(obj, pageNumber, pageSize) {
   return instance.post(`/api/a/sys/office/pageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-// 新增机构
-export function addMech(obj) {
-  return instance.post(`/api/a/sys/office/saveData`, obj)
-}
+// // 新增机构
+// export function addMech(obj) {
+//   return instance.post(`/api/a/sys/office/saveData`, obj)
+// }
 // 服务范围类型
 export function getSerarea() {
   return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
 }
-// 服务范围类型
 export function getSerstation() {
   return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
 }
-// 服务范围类型
 export function getArea(id) {
   return instance.get(`/api/a/sys/area/getchildArea?id=` + id)
 }
@@ -59,4 +57,17 @@ export function getType() {
 // 当前机构的服务城市
 export function getOffcity(obj) {
   return instance.post(`/api/a/sys/office/officeServerCity`, obj)
+}
+//  修改后
+// 获取机构带分页
+// export function getMechPage(obj, pageNumber, pageSize) {
+//   return instance.post(`/api/a/sys/organization/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+// }
+// 新增机构
+export function addMech(obj) {
+  return instance.post(`/api/a/sys/organization/saveData`, obj)
+}
+// 编辑机构
+export function upMech(obj) {
+  return instance.post(`/api/a/sys/organization/formData`, obj)
 }

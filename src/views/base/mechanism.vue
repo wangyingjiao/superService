@@ -23,14 +23,13 @@
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
-
       <el-table-column align="center" label="机构编号" type="index" width="100">
       </el-table-column>
 
       <el-table-column  label="机构名称" align="center" min-width="150px" prop="name" >
       </el-table-column>
 
-      <el-table-column  label="机构电话" align="center" min-width="200px" prop="phone">
+      <el-table-column  label="机构电话" align="center" min-width="200px" prop="telephone">
       </el-table-column>
 
       <el-table-column  label="机构地址" align="center" min-width="200px" prop="address">
@@ -57,9 +56,9 @@
       </el-pagination>
     </div>
 
-    <el-dialog 
-      :title="textMap[dialogStatus]" 
-      :visible.sync="dialogFormVisible" 
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -105,8 +104,8 @@
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <el-form-item label="所在区域"  prop="cusTownId">
-							<el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
+        <el-form-item label="所在区域"  prop="areaIds">
+							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
 							</el-select>
@@ -117,7 +116,15 @@
 							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.cusTownId" placeholder="请选择县区">
 										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
-							</el-select>
+							</el-select> -->
+
+
+              <!-- 省市区 -->
+              <el-cascader
+                :options="areaOptions"
+                :show-all-levels="false"
+                v-model="temp.areaCodes"
+              ></el-cascader>
 				</el-form-item>
 
         <el-form-item label="详细地址" prop="address">
@@ -211,6 +218,7 @@
 import {
   getMech,
   addMech,
+  upMech,
   getSerarea,
   getSerstation,
   getMechPage,
@@ -246,7 +254,7 @@ export default {
       },
       temp: {
         address: "",
-        areaId: "",
+        areaIds: "",
         fax: "",
         name: "",
         office400: "",
@@ -255,9 +263,10 @@ export default {
         masterName: "",
         masterPhone: "",
         remarks: "",
-        cusProvId: "",
-        cusCityId: "",
-        cusTownId: "",
+        // cusProvId: "",
+        // cusCityId: "",
+        // cusTownId: "",
+        areaCodes:[],
         serviceAreaType: "",
         serviceCityId: [],
         visable: ""
@@ -279,6 +288,7 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
+      areaOptions:this.$store.state.user.area,
       textarea: "",
       serviceCity: [],
       updateId: "",
@@ -320,7 +330,7 @@ export default {
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
         ],
-        areaId: [{ required: true, message: "所在区域不能为空", trigger: "change" }]
+        areaIds: [{ required: true, message: "所在区域不能为空", trigger: "change" }]
       }
     };
   },
@@ -340,11 +350,11 @@ export default {
       //console.log(res);
       this.stationType = res.data;
     });
-    var id = "";
-    getArea(id).then(res => {
-      //console.log(res);
-      this.provinceOptions = res.data.data;
-    });
+    // var id = "";
+    // getArea(id).then(res => {
+    //   //console.log(res);
+    //   this.provinceOptions = res.data.data;
+    // });
     getCity().then(res => {
       this.serviceCity = res.data.data;
     });
@@ -438,30 +448,48 @@ export default {
     },
     handleUpdate(row) {
       //console.log(row);
-
-      console.log(this.temp.visable);
-      var arr = [];
-      arr = row.serviceCityId.split(",");
-      arr.pop();
-      this.temp = Object.assign({}, row);
-      this.temp.serviceCityId = arr;
-      this.dialogStatus = "update";
-      this.updateId = row.id;
-      this.temp.cusProvId = "";
-      this.temp.cusCityId = "";
-      if (row.visable == 1) {
-        this.temp.visable = true;
-      } else {
-        this.temp.visable = false;
+      this.listLoading = true
+      const obj = {
+        id:row.id
       }
-      setTimeout(() => {
-        this.temp.cusProvId = row.cusProvId;
-      }, 500);
-      setTimeout(() => {
-        this.temp.cusCityId = row.cusCityId;
-      }, 1000);
-
-      this.dialogFormVisible = true;
+      upMech(obj).then(res=>{
+        console.log(res)
+        
+        if(res.data.code == "1"){
+          this.listLoading = false
+          
+          var arr = [];
+            //arr = res.data.data.serviceCityId.split(",");
+          arr.pop();
+          this.temp = Object.assign({}, row);
+          this.temp.serviceCityId = arr;
+          this.dialogStatus = "update";
+          this.updateId = res.data.data.id;
+          this.temp.cusProvId = "";
+          this.temp.cusCityId = "";
+          // 省市区
+          this.temp.areaIds = [res.data.data.provinceCode,res.data.data.cityCode,res.data.data.areaCode]
+          // if (row.visable == 1) {
+          //   this.temp.visable = true;
+          // } else {
+          //   this.temp.visable = false;
+          // }
+            this.dialogFormVisible = true
+        }else{
+          this.listLoading = false
+          this.$message({
+                type: "error",
+                message: "请求错误"
+              });
+        }
+      }).catch(error=>{
+        this.listLoading = false
+        this.$message({
+                type: "error",
+                message: "网络原因，稍后再试"
+              });
+      })
+      // console.log(this.temp.visable);
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
@@ -483,23 +511,22 @@ export default {
       }
 
       var obj = {
-        name: this.temp.name,
-        phone: this.temp.phone,
-        masterName: this.temp.masterName,
-        masterPhone: this.temp.masterPhone,
-        areaId: "",
-        address: this.temp.address,
-        serviceAreaType: this.temp.serviceAreaType, //服务类型
-        cityIds: str,
+        name: this.temp.name, //机构名
+        telephone: this.temp.phone, //机构电话
+        masterName: this.temp.masterName, //负责人
+        masterPhone: this.temp.masterPhone, //负责人
+        address: this.temp.address, //详细地址
+        scopeType: this.temp.serviceAreaType, //服务类型
+        cityCodes: str,
         // cityIds: ["123","123","123"],
-        officeUrl: this.temp.officeUrl,
-        fax: this.temp.fax,
-        office400: this.temp.office400,
-        remarks: this.temp.remarks,
-        cusProvId: this.temp.cusProvId,
-        cusCityId: this.temp.cusCityId,
-        cusTownId: this.temp.cusTownId,
-        visable: "1"
+        url: this.temp.officeUrl, //网址
+        fax: this.temp.fax, //传真
+        tel_400: this.temp.office400, //400
+        remark: this.temp.remarks, //备注
+        provinceCode: this.temp.areaIds[0], //省
+        cityCode: this.temp.areaIds[1], //市
+        areaCode: this.temp.areaIds[2] //区
+        //visable: "1"
       };
       if (this.temp.visable) {
         obj.visable = "1";
@@ -532,7 +559,7 @@ export default {
         }
       });
     },
-    update() {
+    update(formName) {
       var str = "";
       for (var i = 0; i < this.temp.serviceCityId.length; i++) {
         str += this.temp.serviceCityId[i] + ",";
@@ -652,7 +679,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 15px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 15px 20px;
