@@ -1,6 +1,5 @@
 import { loginByUsername, logout, getUserInfo, getArea} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
 const user = {
   state: {
     token: getToken(),
@@ -58,7 +57,7 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           commit('SET_MENU', data.data)
-          commit('SET_BUTTONSHOW', data.data)
+          commit('SET_BUTTONSHOW',data.data)
           resolve(response)
         }).catch(error => {
           reject(error)
