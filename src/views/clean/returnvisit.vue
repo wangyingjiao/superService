@@ -57,13 +57,13 @@
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians">
              <div class="tech-order-jnsk" style="float:left;width:500px;">
-                  <button class="tech-order-btnsk" @click="orderTech"> &#10010 请选择</button>
+                  <div class="tech-order-btnsk" style="background:none;"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>
-            <el-form-item label="" > 
+            <el-form-item label=""> 
                   <div class="tabWrap" v-for="item in tabOptions" :key="item.technicianId">
                     {{item.techName}}
-                    <div class="closePic"  @click="errorClose(item)">&#10005</div>
+                    <div class="closePic" @click="errorClose(item)">&#10005</div>
                   </div>              
             </el-form-item>           
           </el-form>

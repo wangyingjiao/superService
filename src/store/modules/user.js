@@ -42,6 +42,7 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           // console.log(response)
+          
           const data = response.data
           setToken(data.token)
           resolve()

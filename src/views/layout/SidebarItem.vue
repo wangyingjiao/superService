@@ -3,13 +3,13 @@
     <div class="slde-bcak-log">
        <!-- <img src="../../../static/icon/logo.png" alt=""> -->
     </div>    
-     <template v-for="item in menu">
-        <el-submenu :index="item.id">        
+     <template >
+        <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
               <template slot="title">
                 <img v-if="item.icon != ''" :src="'../../../static/icon/'+item.icon+'.png'" alt="" class="side-img">
                 {{item.name}}          
               </template>          
-              <el-menu-item v-for="child in item.subMenus" :index="child.id">
+              <el-menu-item v-for="child in item.subMenus" :index="child.id" :key="child.id">
                   <router-link  class="menu-indent" :to="child.href"  >
                     <span style="display:inline-block;width:160px;">{{child.name}}</span>
                   </router-link>                   
