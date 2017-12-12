@@ -8,26 +8,6 @@
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite">
-<<<<<<< HEAD
-          <button class="button-small btn_right btn_pad ceshi ceshi5"  style="width:80px" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-          <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
-            style="width: 100%">
-                  <el-table-column align="center" label="编号" width="100" type="index"></el-table-column>
-                  <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
-                  <el-table-column label="技师个数" align="center" prop="technicianNum"> </el-table-column>
-                  <el-table-column align="center" label="操作" min-width="100px">
-                    <template scope="scope">
-                        <el-button class="el-icon-edit" @click="add('edit',scope.row)"></el-button>
-                        <el-button class="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
-                    </template>
-                  </el-table-column>
-          </el-table>
-        </div>
-        <div v-show="!listLoading" class="pagination-container">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
-             layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total">
-          </el-pagination>
-=======
           <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="qunxian.indexOf('ser_add') != -1" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
@@ -48,7 +28,6 @@
                 </el-pagination>
               </div>
           </div>          
->>>>>>> fd99b9a481307b0fb6cba3b0946df4a86117700c
         </div>
         <!-- 弹出层新增技能 -->
         <el-dialog title="新增技能" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
@@ -681,12 +660,8 @@
 
   .bgWhite {
     background-color: #ffffff;
-<<<<<<< HEAD
-    padding: 15px 20px 20px 20px;
-=======
     padding: 20px;
     padding-bottom: 70px;
->>>>>>> fd99b9a481307b0fb6cba3b0946df4a86117700c
   }
 
   .btn_pad {
