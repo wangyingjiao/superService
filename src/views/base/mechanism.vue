@@ -104,8 +104,8 @@
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <!-- <el-form-item label="所在区域"  prop="areaIds"> -->
-        <el-form-item label="所在区域">
+        <el-form-item label="所在区域"  prop="areaCodes">
+        <!-- <el-form-item label="所在区域"> -->
 							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
@@ -137,19 +137,19 @@
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
-        <el-form-item label="服务范围类型" prop="serviceAreaType">
+        <el-form-item label="服务范围类型" prop="scopeType">
           <el-select 
             style='width: 400px;' 
             class="filter-item" 
-            v-model="temp.serviceAreaType" 
+            v-model="temp.scopeType" 
             placeholder="请选择">
-            <el-option v-for="item in stationType" :key="item.id" :label="item.label" :value="item.value">
+            <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <!-- <el-form-item label="服务城市" prop="serviceCityId" > -->
-        <el-form-item label="服务城市"  >
+        <el-form-item label="服务城市" prop="serviceCityId" >
+        <!-- <el-form-item label="服务城市"  > -->
          
            <el-select v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
             
@@ -179,7 +179,7 @@
         <el-form-item label=" 机构网址" >
           <el-input 
             style='width: 400px;' 
-            v-model="temp.officeUrl"
+            v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
@@ -221,7 +221,6 @@ import {
   getMech,
   addMech,
   upMech,
-  getSerarea,
   getSerstation,
   getMechPage,
   getCity
@@ -236,6 +235,28 @@ export default {
     waves
   },
   data() {
+    var validatePhone = (rule, value, callback) => {
+      if (!value) {
+					return callback(new Error('电话号码不能为空'));
+				}else{
+					if (!(/^(\d{1,4}-)?(\d{1,4}-)?\d{7,9}$/.test(value))) {
+						callback(new Error('请输入正确固话格式，如：010-88886666'));
+					} else {
+						callback();
+					}
+				}
+    };
+    var validateMasterPhone = (rule, value, callback) => {
+      if (!value) {
+					return callback(new Error('电话号码不能为空'));
+				}else{
+					if (!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(value))) {
+						callback(new Error('请输入正确11位手机号'));
+					} else {
+						callback();
+					}
+				}
+    };
     return {
       list: [],
       total: null,
@@ -256,11 +277,10 @@ export default {
       },
       temp: {
         address: "",
-        areaIds: "",
         fax: "",
         name: "",
         tel400: "",
-        officeUrl: "",
+        url: "",
         telephone: "",
         masterName: "",
         masterPhone: "",
@@ -268,8 +288,8 @@ export default {
         // cusProvId: "",
         // cusCityId: "",
         // cusTownId: "",
-        areaCodes:[],
-        serviceAreaType: "",
+        areaCodes: [],
+        scopeType: "",
         serviceCityId: [],
         visable: "1"
       },
@@ -279,7 +299,7 @@ export default {
         { id: "masterName", value: "负责人姓名" },
         { id: "masterPhone", value: "负责人手机号" }
       ],
-      stationType: [],
+      scopeType: [],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -290,7 +310,7 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
-      areaOptions:this.$store.state.user.area,
+      areaOptions: this.$store.state.user.area,
       textarea: "",
       // serviceCity: this.$store.state.user.area,
       updateId: "",
@@ -302,7 +322,7 @@ export default {
         telephone: [
           {
             required: true,
-            message: "请输入服务机构电话 如：010-66668888",
+            validator: validatePhone,
             trigger: "blur"
           }
         ],
@@ -311,14 +331,14 @@ export default {
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         masterPhone: [
-          { required: true, message: "请输入11位由数字组成的手机号", trigger: "blur" },
+          { required: true, validator: validateMasterPhone, trigger: "blur" },
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         address: [
           { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
           { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
         ],
-        serviceAreaType: [
+        scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
         serviceCityId: [
@@ -332,7 +352,14 @@ export default {
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
         ],
-        areaIds: [{ required: true, message: "所在区域不能为空", trigger: "change" }]
+        areaCodes: [
+          {
+            required: true,
+            type: "array",
+            message: "所在区域不能为空",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -348,16 +375,15 @@ export default {
   },
   created() {
     this.getList();
-    getSerarea().then(res => {
-      //console.log(res);
-      this.stationType = res.data;
-    });
+    var dict = require("../../../static/dict.json");
+    this.scopeType = dict.service_area_type;
+    console.log(this.scopeType);
   },
   methods: {
     getList() {
       this.listLoading = true;
       var obj = {};
-      getMechPage(obj).then(res => {
+      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -380,7 +406,7 @@ export default {
         };
       }
       this.listLoading = true;
-      getMechPage(obj).then(res => {
+      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -442,52 +468,50 @@ export default {
     },
     handleUpdate(row) {
       //console.log(row);
-      this.listLoading = true
+      this.listLoading = true;
       const obj = {
-        id:row.id
-      }
-      upMech(obj).then(res=>{
-        console.log(res)
-        
-        if(res.data.code == "1"){
-          this.listLoading = false
-          
-          var arr = [];
+        id: row.id
+      };
+      upMech(obj)
+        .then(res => {
+          console.log(res);
+
+          if (res.data.code == "1") {
+            this.listLoading = false;
+
+            var arr = [];
             //arr = res.data.data.serviceCityId.split(",");
-          arr.pop();
-          this.temp = Object.assign({}, res.data.data);
-          this.temp.serviceCityId = res.data.data.cityCodes;
-          this.dialogStatus = "update";
-          this.updateId = res.data.data.id;
-          this.temp.cusProvId = "";
-          this.temp.cusCityId = "";
-          // 省市区
-          this.temp.areaCodes = [res.data.data.provinceCode,res.data.data.cityCode,res.data.data.areaCode]
-          // if (row.visable == 1) {
-          //   this.temp.visable = true;
-          // } else {
-          //   this.temp.visable = false;
-          // }
-            this.dialogFormVisible = true
-        }else{
-          this.listLoading = false
+            arr.pop();
+            this.temp = Object.assign({}, res.data.data);
+            this.temp.serviceCityId = res.data.data.cityCodes;
+            this.dialogStatus = "update";
+            this.updateId = res.data.data.id;
+            // 省市区
+            this.temp.areaCodes = [
+              res.data.data.provinceCode,
+              res.data.data.cityCode,
+              res.data.data.areaCode
+            ];
+            this.dialogFormVisible = true;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "error",
+              message: "请求错误"
+            });
+          }
+        })
+        .catch(error => {
+          this.listLoading = false;
           this.$message({
-                type: "error",
-                message: "请求错误"
-              });
-        }
-      }).catch(error=>{
-        this.listLoading = false
-        this.$message({
-                type: "error",
-                message: "网络原因，稍后再试"
-              });
-      })
+            type: "error",
+            message: "网络原因，稍后再试"
+          });
+        });
       // console.log(this.temp.visable);
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
-      this.$refs[formName].resetFields();
       this.resetTemp();
       this.$refs[formName].resetFields();
     },
@@ -499,10 +523,10 @@ export default {
       console.log(val);
     },
     create(formName) {
-      console.log(this.temp.serviceCityId)
-      var arr = []
-      for(var i = 0;i<this.temp.serviceCityId.length; i++){
-        arr.push(this.temp.serviceCityId[i])
+      console.log(this.temp.serviceCityId);
+      var arr = [];
+      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
+        arr.push(this.temp.serviceCityId[i]);
       }
       var obj = {
         name: this.temp.name, //机构名
@@ -510,9 +534,9 @@ export default {
         masterName: this.temp.masterName, //负责人
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
-        scopeType: this.temp.serviceAreaType, //服务类型
+        scopeType: this.temp.scopeType, //服务类型
         cityCodes: arr,
-        url: this.temp.officeUrl, //网址
+        url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
         remark: this.temp.remark, //备注
@@ -521,11 +545,11 @@ export default {
         areaCode: this.temp.areaCodes[2] //区
         //visable: "1"
       };
-      if (this.temp.visable) {
-        obj.visable = "1";
-      } else {
-        obj.visable = "0";
-      }
+      // if (this.temp.visable) {
+      //   obj.visable = "1";
+      // } else {
+      //   obj.visable = "0";
+      // }
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -533,6 +557,7 @@ export default {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
+              this.$refs[formName].resetFields();
               this.$message({
                 type: "success",
                 message: "添加成功"
@@ -542,7 +567,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "参数有误或者机构名重复"
+                message: res.data.data
               });
             }
           });
@@ -552,90 +577,68 @@ export default {
       });
     },
     update(formName) {
-      var str = "";
+      var arr = [];
       for (var i = 0; i < this.temp.serviceCityId.length; i++) {
-        str += this.temp.serviceCityId[i] + ",";
+        arr.push(this.temp.serviceCityId[i]);
       }
       var obj = {
         id: this.updateId,
-        name: this.temp.name,
-        phone: this.temp.phone,
-        masterName: this.temp.masterName,
-        masterPhone: this.temp.masterPhone,
-        areaId: "",
-        address: this.temp.address,
-        serviceAreaType: this.temp.serviceAreaType,
-        cityIds: str,
-        officeUrl: this.temp.officeUrl,
-        fax: this.temp.fax,
-        tel400: this.temp.tel400,
-        remarks: this.temp.remark,
-        cusProvId: this.temp.cusProvId,
-        cusCityId: this.temp.cusCityId,
-        cusTownId: this.temp.cusTownId,
-        visable: "1"
+        name: this.temp.name, //机构名
+        telephone: this.temp.telephone, //机构电话
+        masterName: this.temp.masterName, //负责人
+        masterPhone: this.temp.masterPhone, //负责人
+        address: this.temp.address, //详细地址
+        scopeType: this.temp.scopeType, //服务类型
+        cityCodes: arr,
+        url: this.temp.url, //网址
+        fax: this.temp.fax, //传真
+        tel400: this.temp.tel400, //400
+        remark: this.temp.remark, //备注
+        provinceCode: this.temp.areaCodes[0], //省
+        cityCode: this.temp.areaCodes[1], //市
+        areaCode: this.temp.areaCodes[2] //区
       };
-      if (this.temp.visable) {
-        obj.visable = "1";
-      } else {
-        obj.visable = "0";
-      }
-
-      console.log(obj);
-      addMech(obj).then(res => {
-        console.log(res);
-        this.dialogFormVisible = false;
-        if (res.data.code === 1) {
-          this.$message({
-            type: "success",
-            message: "修改成功"
-          });
-          this.getList();
-        } else {
-          this.$message({
-            type: "error",
-            message: "发生未知错误"
+      console.log(obj)
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          addMech(obj).then(res => {
+            console.log(res);
+            this.dialogFormVisible = false;
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.$message({
+                type: "success",
+                message: "修改成功"
+              });
+              this.getList();
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+            }
           });
         }
       });
     },
-    provinceChange(value) {
-      this.temp.city = "";
-      getArea(value)
-        .then(res => {
-          this.cityOptions = res.data.data;
-        })
-        .catch(res => {});
-    },
-    //
-    cityChange(value) {
-      this.temp.county = "";
-      getArea(value)
-        .then(res => {
-          this.countyOptions = res.data.data;
-        })
-        .catch(res => {});
-    },
     resetTemp() {
       this.temp = {
         address: "",
-        areaId: "",
         fax: "",
         name: "",
         tel400: "",
-        officeUrl: "",
+        url: "",
         phone: "",
         masterName: "",
         masterPhone: "",
-        remarks: "",
-        cusProvId: "",
-        cusCityId: "",
-        cusTownId: "",
-        serviceAreaType: "",
-        serviceCityId: [],
-        visable: false
+        remark: "",
+        areaCodes: [],
+        scopeType: "",
+        serviceCityId: []
       };
     }
+   
   }
 };
 </script>
