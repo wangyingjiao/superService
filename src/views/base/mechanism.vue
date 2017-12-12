@@ -123,8 +123,9 @@
               <!-- 省市区 -->
               <el-cascader
                 :options="areaOptions"
-                :show-all-levels="false"
+                :show-all-levels="true"
                 v-model="temp.areaCodes"
+                 style='width: 400px;' 
               ></el-cascader>
 				</el-form-item>
 
@@ -151,7 +152,7 @@
         <el-form-item label="服务城市" prop="serviceCityId" >
         <!-- <el-form-item label="服务城市"  > -->
          
-           <el-select v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
+           <el-select  style='width: 400px;'  v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
             
             <el-option-group
               v-for="(group,index) in areaOptions"
