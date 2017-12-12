@@ -24,7 +24,16 @@ Array.prototype.remove = function(val) {
     this.splice(index, 1);
     }
   };
-
+//确定指定对象是否是 Array 对象中的元素
+Array.prototype.contains = function (obj) {  
+	var i = this.length;  
+	while (i--) {  
+		if (this[i] === obj) {  
+			return true;  
+		}  
+	}  
+	return false;  
+}
 new Vue({
   el: '#app',
   router,

@@ -6,21 +6,21 @@
       <el-tab-pane label="保洁" name="1"></el-tab-pane>
       <el-tab-pane label="家修" name="2"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="所属分类">
+      <el-select clearable style="width: 200px" class="filter-item" filterable  v-model="search.sortId" placeholder="所属分类">
+        <el-option v-for="item in sortList" :key="item.id" :label="item.value" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityId" placeholder="定向城市">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.importance" placeholder="定向城市">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="listQuery.title">
+      <el-input style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large btn_right el-icon-search ceshi" @click="handleFilter">搜索</button>
+      <button class="button-large btn_right el-icon-search ceshi" @click="handleFilter"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -47,10 +47,10 @@
       <el-table-column  label="商品名称         价格单位" align="center" min-width="150" style="padding:0">
         <template scope="scope">
           <div 
-             class="branch"  
-             v-for="(item,index) in scope.row.commoditys" 
-             :key="index">
-                  {{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}
+            class="branch"  
+            v-for="(item,index) in scope.row.commoditys" 
+            :key="index">
+              {{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}
           </div>
         </template>
       </el-table-column>
@@ -67,30 +67,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="100px">
+      <el-table-column align="center" label="操作" min-width="166px">
         <template scope="scope">
-          <div style="display:flex;justify-content: center;">
-              <div class="site-div" @click="handleUpdate(scope.row)">
-                <div class="back-icon-bg"></div>
-                <div>编辑</div>
-              </div>
-              <div class="site-div" @click="handleUpdate(scope.row)">
-                <div class="back-icon-bg"></div>
-                <div>上传</div>
-              </div>
-              <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
-                <div class="back-icon-del"></div>
-                <div>删除</div>
-              </div>
-            </div>
-        </template>
+            <el-button class="el-icon-upload ceshi3" @click="handleUplode(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+          </template>
       </el-table-column>
 
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -113,15 +102,31 @@
           </el-radio-group>
         </div>
          <div class="tabRight fl">
-              <el-form class="small-space" :model="temp" label-position="left" label-width="90px" style='width: 500px; margin-left:20px;'>
-                <h3>基本信息</h3><hr/><br/>
+              <el-form 
+                class="small-space" 
+                :model="temp" 
+                label-position="left" 
+                label-width="90px" 
+                 ref="temp" 
+                :rules="rules" 
+                style='width: 450px;               
+                margin-left:20px;'>
+                <h3 class="tit">基本信息</h3><hr/><br/>
                 <el-form-item label="所属分类">
-                  <el-select class="filter-item" v-model="temp.sption1" >
-                    <el-option v-for="item in option1" :key="item" :label="item" :value="item">
+                  <el-select class="filter-item" filterable  v-model="temp.sption1" >
+                    <el-option v-for="item in sortList" :key="item.id" :label="item.value" :value="item.id">
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="服务图片">
+
+                <el-form-item label="项目名称" prop="name">
+                  <el-input
+                  :maxlength="10"
+                  :minlength="2"                 
+                  placeholder="请输入2-10位的服务站名称"></el-input>
+                </el-form-item>
+
+                <el-form-item label="服务图片" prop="picture">
                   <el-upload
                     class="upload-demo upload_box"
                     action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
@@ -134,15 +139,13 @@
                     <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
                   </el-upload>
                 </el-form-item>
-                
-                <el-form-item label="项目名称" >
-                  <el-input 
-                  :maxlength="10" 
-                  :minlength="2" 
-                  style='width: 400px;' 
-                  placeholder="请输入2-10位的服务站名称"></el-input>
+
+                <el-form-item label="服务描述" prop="info">
+                  <el-input
+                  type="textarea"
+                  placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
-                
+            
                 <el-form-item label="定向城市">      
                     <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
                     <el-checkbox v-model="city" label="南京" size="medium"></el-checkbox>
@@ -161,11 +164,10 @@
 
                 <el-form-item label="排序号">
                     <el-input 
-                      style='width: 400px;' 
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
                 </el-form-item>
               </el-form>
-              <h3> 商品信息</h3><hr/><br/>
+              <h3 class="tit"> 商品信息</h3><hr/><br/>
               <el-table
                 border 
                 :data="list"
@@ -217,8 +219,9 @@
                 ref="goods_info"
                 label-position="left"
                 label-width="80px" 
-                style='width: 500px; margin-left:50px;'
-                :rules="rules">
+                style='width: 450px; margin-left:50px;'
+                :rules = "goods"
+                 >
                 <el-form-item label="活动名称" prop="name">
                   <el-input
                     placeholder="请输入活动名称（2-10位）"
@@ -233,23 +236,30 @@
 
                 <el-form-item label="计量方式" prop="metering">
                   <el-select class="filter-item" v-model="goods_info.metering" placeholder="可用">
-                     <el-option v-for="item in option1" :key="item" :label="item" :value="item">
+                     <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
                      </el-option>
                   </el-select>
                 </el-form-item>
                 
                 <el-form-item label="价格" prop="price">
-                  <el-input v-model="goods_info.price"></el-input>
+                  <el-input v-model="goods_info.price">
+                     <template slot="append">元/{{goods_info.unit}}</template>
+                  </el-input>
                 </el-form-item>
                 <el-form-item label="折算时长" prop="time">
-                  <el-input v-model="goods_info.time"></el-input>
+                  <el-input v-model="goods_info.time">
+                    <template slot="append">小时/{{goods_info.metering}}</template>
+                  </el-input>
                 </el-form-item>
+             
+                
 
                 <el-form-item label="派人数量" prop="peoNum">
-                  <el-input v-model="goods_info.peoNum"></el-input>
+                   
                 </el-form-item>
+
                 <el-form-item label="起够数量" prop="num">
-                  <el-input 
+                  <el-input
                     placeholder="请输入起购数量（默认为1）"
                     v-model="goods_info.num"></el-input>
                 </el-form-item>
@@ -262,7 +272,7 @@
          </div>
          </div>
 
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" style="text-align:center">
         <button class="button-large" @click="create">保 存</button>    
         <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
       </div>
@@ -275,13 +285,11 @@
 </template>
 
 <script>
-import { getProject, addProject } from "@/api/serviceManage";
+import { getProject, addProject ,delProject,getInfoPic} from "@/api/serviceManage";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
-
-const city = ["海淀", "朝阳"];
 const option1 = ["北京", "北京"];
 
 export default {
@@ -291,12 +299,26 @@ export default {
   },
   data() {
     return {
+      measure:[
+        {
+          label:"按居室",
+          value:"一居室"
+          },
+        {
+          label:"按面积",
+          value:"平米"
+          },
+        {
+          label:"按数量",
+          value:"个"
+          },
+        ],
       sign: getSign(),
       list: [],
       total: null,
       listLoading: true,
       val: true,
-      rules: {
+      goods: {
         name: [
           { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
@@ -307,6 +329,12 @@ export default {
         ],
         metering: [{ required: true, message: "请输入名称(2-10位)", trigger: "blur" }]
       },
+      rules: {
+        name: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
+        picture: [{ required: true, message: "请上传至少一张图片" }],
+        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }]
+      },
+
       goods_info: {
         name: "",
         unit: "",
@@ -317,13 +345,15 @@ export default {
         num: ""
       },
       listQuery: {
-        page: 1,
-        limit: 6,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
         sort: "+id"
       },
+      search: {
+        sortId: "",
+        cityId: "",
+        name: ""
+      },
+      pageSize: 10,
+      total: 0,
       fileList2: [
         {
           name: "food2.jpeg",
@@ -343,9 +373,15 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      city: city,
-      option1: option1,
-      activeName: '0'
+      city: ["1","2","3"],
+      option1: [],
+      sortList:[
+        {id:"0",value:"全部"},
+        {id:"1",value:"保洁"},
+        {id:"2",value:"家修"},
+        ],
+     
+      activeName: "0"
     };
   },
   filters: {
@@ -365,8 +401,8 @@ export default {
     getList() {
       this.listLoading = true;
       var obj = {
-        "majorSort": this.activeName
-      }
+        majorSort: this.activeName
+      };
       getProject(obj)
         .then(res => {
           console.log(res.data);
@@ -390,19 +426,36 @@ export default {
       this.$refs.refbtn1.className = "tabBtn";
       this.activeName = "2";
     },
-    handleFilter() {
-      
-    },
+    handleFilter() {},
     handleSizeChange(val) {
-      
+      this.pageSize = val;
+      // this.getList();
+      var obj = {
+        majorSort: this.activeName
+      };
+      getProject(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleCurrentChange(val) {
-      
+      console.log(111111);
+      this.pageNumber = val;
+      var obj = {
+        majorSort: this.activeName
+      };
+      this.listLoading = true;
+      getProject(obj, this.pageNumber, this.pageSize).then(res => {
+        this.list = res.data.data.list;
+        this.listLoading = false;
+        this.total = res.data.data.count;
+      });
     },
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
-       this.activeName = "1";
+      this.activeName = "1";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
@@ -411,16 +464,44 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
+    handleUplode(row) {
+      console.log("上传");
+    },
     handleDelete(row) {
-      console.log("删除");
-      this.$notify({
-        title: "成功",
-        message: "删除成功",
-        type: "success",
-        duration: 2000
-      });
-      const index = this.list.indexOf(row);
-      this.list.splice(index, 1);
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          console.log(row);
+          var obj = {
+            id: row.id
+          };
+          delProject(obj)
+            .then(res => {
+              console.log(res);
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.getList();
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: "删除失败"
+                });
+              }
+            })
+            .catch(() => console.log("未知错误"));
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     create() {
       var obj = {
@@ -438,11 +519,12 @@ export default {
           {
             name: "日常保洁",
             unit: "小时",
-            meterage: "按居室",//计量方式
+            meterage: "按居室", //计量方式
             price: "19",
-            convertTime: "10",//折算时长
-            minimum: 1,//起购数量
-            persons: [//派人
+            convertTime: "10", //折算时长
+            minimum: 1, //起购数量
+            persons: [
+              //派人
               {
                 critical: ">10",
                 quantity: 1
@@ -456,16 +538,17 @@ export default {
         ],
         majorSort: "1",
         sortId: "00ea9c6db7f242c49eb40b43b38ad7b7",
-        sortName: "日常保洁",//所属分类
-        name: "保洁家修1",//项目名称（验重）
-        picture: "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
+        sortName: "日常保洁", //所属分类
+        name: "保洁家修1", //项目名称（验重）
+        picture:
+          "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
         description: "服务描述测试",
-        sale: "1",//是否上架
-        sortNum: 1//排序号
-      }
-      addProject(obj).then(res=>{
-        console.log(res)
-      })
+        sale: "1", //是否上架
+        sortNum: 1 //排序号
+      };
+      addProject(obj).then(res => {
+        console.log(res);
+      });
     },
     update() {
       this.temp.timestamp = +this.temp.timestamp;
@@ -485,7 +568,7 @@ export default {
       });
     },
     handleClick(tab, event) {
-      this.getList()
+      this.getList();
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -544,7 +627,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 15px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 15px 20px;
@@ -640,11 +723,13 @@ body {
 }
 
 .tabRight {
-  width: 85%;
+  width: 80%;
   height: 100%;
   border-left: 1px #f5f5f5 solid;
   padding-top: 10px;
   background-color: #ffffff;
+  padding: 10px;
+  /* margin-right: 10px; */
 }
 .el-radio-button {
   width: 100%;
@@ -660,13 +745,16 @@ body {
   border-color: #4c70e8;
   box-shadow: -1px 0 0 0 #4c70e8;
 }
-.el-upload .el-button span{
-  color:#ffffff
+.el-upload .el-button span {
+  color: #ffffff;
 }
-.el-upload-list--picture .el-upload-list__item{
+.el-upload-list--picture .el-upload-list__item {
   width: 24%;
 }
-.el-upload .el-upload-list li .el-upload-list__item-name{
+.el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
+}
+.tit {
+  font-weight: bold;
 }
 </style>
