@@ -45,7 +45,7 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '基础服务',
     children: [
-    { path: 'organization', name: '服务机构', component: _import('base/mechanism') },
+    { path: 'organization', name: '服务机构', component: _import('base/mechanism') }
     
     ]
   },
@@ -83,7 +83,7 @@ export const constantRouterMap = [
     { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
     { path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
     { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
-    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
+    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') }
     ]
   },
   {
@@ -93,7 +93,7 @@ export const constantRouterMap = [
     name: '客户管理',
     children: [
     { path: 'customermanage', name: ' 客户管理', component: _import('customer/customermanage') },
-    { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') },
+    { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') }
     ]
   },
 
