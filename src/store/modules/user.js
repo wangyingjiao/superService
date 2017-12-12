@@ -1,4 +1,4 @@
-import { loginByUsername, logout, getUserInfo, getArea} from '@/api/login'
+import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
@@ -57,7 +57,6 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           commit('SET_MENU', data.data)
-          commit('SET_BUTTONSHOW',data.data)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -68,9 +67,21 @@ const user = {
     Getarea({ commit }) {
       return new Promise((resolve, reject) => {
         getArea().then(res => {
-          console.log(res)
+          //console.log(res)
           const data = res.data
           commit('SET_AREA', data.data)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 获取按钮权限
+    Getbutton({ commit }) {
+      return new Promise((resolve, reject) => {
+        getButton().then(res => {
+          console.log(res.data.data)
+          commit('SET_BUTTONSHOW', res.data.data)
           resolve(res)
         }).catch(error => {
           reject(error)

@@ -8,18 +8,7 @@ const instance = axios.create({
 export function getMech() {
   return instance.get(`/api/a/sys/office/listData`)
 }
-// // 获取机构带分页
-// export function getMechPage(obj, pageNumber, pageSize) {
-//   return instance.post(`/api/a/sys/office/pageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
-// }
-// // 新增机构
-// export function addMech(obj) {
-//   return instance.post(`/api/a/sys/office/saveData`, obj)
-// }
-// 服务范围类型
-export function getSerarea() {
-  return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
-}
+
 export function getSerstation() {
   return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
 }

@@ -35,3 +35,6 @@ export function getUserInfo() { // 侧边栏
 export function getArea() { // 省市区
   return instance.get(`/api/a/sys/area/listData`)
 }
+export function getButton() { // 按钮
+  return instance.get(`/api/a/sys/user/getButtons`)
+}

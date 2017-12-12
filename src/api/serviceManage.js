@@ -6,7 +6,7 @@ const instance = axios.create({
 })
 
 export function getCity() {
-  return instance.get(`/api/a/service/sort/serSortInfo/getOfficeCitylist`)
+  return instance.get(`/api/a/sys/organization/getOrgCityCodes`)
 }
 export function getClass(obj, pageNumber, pageSize) {
   return instance.post(`/api/a/service/sort/serSortInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
@@ -34,5 +34,8 @@ export function getSuccess(obj) {
 }
 export function getInfoPic(obj) {
   return instance.post(`/api/a/service/item/serItemInfo/getSerItemInfoPic`, obj)
+}
+export function setClass(obj) {
+  return instance.post(`/api/a/service/sort/serSortInfo/formData`, obj)
 }
 

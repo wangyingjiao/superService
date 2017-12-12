@@ -24,6 +24,9 @@ router.beforeEach((to, from, next) => {
         store.dispatch('Getarea').then(res => {  // 获取省市区
           next()
         })
+        store.dispatch('Getbutton').then(res => {  // 获取按钮权限
+          next()
+        })
       } else {
         next()
       }
