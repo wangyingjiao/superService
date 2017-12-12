@@ -13,7 +13,7 @@ export function loginByUsername(username, password) {
     username,
     password
   }
-  return instance.post(`/api/a/login`, qs.stringify(data))
+  return instance.post(`https://apiservice.guoanshequ.wang/apiservice/a/login`, qs.stringify(data))
 }
 
 export function requestUserRole(username, password) {
@@ -21,20 +21,20 @@ export function requestUserRole(username, password) {
     username,
     password
   }
-  return instance.post(`/api/a/sys/user/roleData`, qs.stringify(data))
+  return instance.post(`https://apiservice.guoanshequ.wang/apiservice/a/sys/user/roleData`, qs.stringify(data))
 }
 
 export function logout() {  // 退出
-  return instance.post(`/api/a/logout`)
+  return instance.post(`https://apiservice.guoanshequ.wang/apiservice/a/logout`)
 }
 
 export function getUserInfo() { // 侧边栏
-  return instance.get(`/api/a/sys/user/menuData`)
+  return instance.get(`https://apiservice.guoanshequ.wang/apiservice/a/sys/user/menuData`)
 }
 
 export function getArea() { // 省市区
-  return instance.get(`/api/a/sys/area/listData`)
+  return instance.get(`https://apiservice.guoanshequ.wang/apiservice/a/sys/area/listData`)
 }
 export function getButton() { // 按钮
-  return instance.get(`/api/a/sys/user/getButtons`)
+  return instance.get(`https://apiservice.guoanshequ.wang/apiservice/a/sys/user/getButtons`)
 }

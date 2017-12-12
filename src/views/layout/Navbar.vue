@@ -11,7 +11,7 @@
           <div>
             <img src="../../../static/icon/客户管理1.png" alt="">
           </div>
-          <div>李四</div>
+          <div>{{username}}</div>
         </li>
         <li style="cursor: pointer;"  @click="logout">
           <div>
@@ -55,7 +55,8 @@
     data() {
       return {
         show: false,
-        flag:false
+        flag:false,
+        username:localStorage.getItem('name')
       }
     },
     methods: {

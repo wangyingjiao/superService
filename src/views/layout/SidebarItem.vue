@@ -32,8 +32,6 @@
         <router-link to="/sys/role/list">
           <el-menu-item style="padding-left:60px" index="1-2">岗位设置</el-menu-item>
         </router-link>      
-              
-        
       </el-submenu>
 
       <el-submenu index="2">

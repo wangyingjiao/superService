@@ -201,6 +201,17 @@ export default {
       }
     };
   },
+  // watch:{
+  //    'temp.check':{
+  //      handler(curVal,oldVal){
+  //        console.log(123123)
+  //        console.log(curVal,oldVal)
+  //        if(this.temp.check.indexOf('887fd8696f9f46f2a7129489ca60038f') != -1){
+
+  //        }
+  //      }
+  //    }
+  // },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -280,7 +291,7 @@ export default {
     },
     handTreechange(a, b, c) {
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-      //console.log(this.temp.check);
+      console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
