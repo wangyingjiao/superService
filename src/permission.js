@@ -13,7 +13,6 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
     } else {
       if (store.getters.menu.length === 0) {
-        console.log('拉取菜单')
         store.dispatch('GetUserInfo').then(res => { // 拉取用户信息
           next()
         }).catch(() => {
@@ -21,6 +20,12 @@ router.beforeEach((to, from, next) => {
             Message.error('验证失败,请重新登录')
             next({ path: '/login' })
           })
+        })
+        store.dispatch('Getarea').then(res => {  // 获取省市区
+          next()
+        })
+        store.dispatch('Getbutton').then(res => {  // 获取按钮权限
+          next()
         })
       } else {
         next()

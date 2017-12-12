@@ -75,7 +75,14 @@
           </el-radio-group>
         </div>
         <div class="tabRight fl">
-          <el-form class="small-space" ref="temp" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
+          <el-form 
+            class="small-space" 
+            ref="temp" 
+            :rules="rules" 
+            :model="temp" 
+            label-position="left" 
+            label-width="100px" 
+            style='width: 500px; margin-left:20px;'>
 
             <el-form-item label="分类名称"  prop="name" >
               <el-input        
@@ -85,24 +92,14 @@
             
 
             <el-form-item label="定向城市">   
-              <!-- <el-checkbox-group v-model="checkCity" @change="citiesChange">
-                <el-checkbox 
-                   v-for="item in city" 
-                   @change="cityChange"
-                   :label="item.areaName"
-                   :value="item.id"
-                   :key="item.id"></el-checkbox>
-              </el-checkbox-group> -->
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
-                    <button 
+                    <div 
                       class="selfCheckBox cityBtn" 
                       ref="cityOption" 
                       @click="cityChange(item,index)" 
                       v-for="(item,index) in city"
-                      :value="item.areaName">
-                      {{item.areaName}}
-                      </button>
+                      :value="item.areaName">{{item.areaName}}</div>
 								  	</div>
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
@@ -148,18 +145,16 @@
             <el-form-item label="定向城市">   
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
-                    <button 
+                    <div 
                       class="selfCheckBox cityBtn allCity"
                       ref="allCity"                      
-                      @click="allCity">全部城市</button>
-                    <button 
+                      @click="allCity">全部城市</div>
+                    <div 
                       class="selfCheckBox cityBtn" 
                       ref="cityOption2"                     
                       @click="cityUpdate(item,index)" 
                       v-for="(item,index) in city"
-                      :value="item.areaName">
-                      {{item.areaName}}
-                      </button>
+                      :tit="item.areaName">{{item.areaName}}</div>
 								  	</div>
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
@@ -199,6 +194,7 @@ export default {
   },
   data() {
     return {
+      active:true,
       list: [],
       total: null,
       listLoading: true,
@@ -266,14 +262,16 @@ export default {
         cityId: "",
         cityName: ""
       };
-      console.log(this.$refs.cityOption[1].style.borderColor);
+      console.log(this.$refs.cityOption[index].className)
       if (this.$refs.cityOption[index].style.borderColor == "") {
+        this.$refs.cityOption[index].className = "selfCheckBox cityBtn mark";
         this.$refs.cityOption[index].style.borderColor = "green";
         this.$refs.cityOption[index].style.color = "green";
         this.checkCity.push(item.areaName);
         console.log(this.checkCity);
       } else {
         this.$refs.cityOption[index].style.borderColor = "";
+        this.$refs.cityOption[index].className = "selfCheckBox cityBtn";
         this.$refs.cityOption[index].style.color = "#48576a";
         this.checkCity.remove(item.areaName);
         console.log(this.checkCity);
@@ -283,54 +281,59 @@ export default {
     cityUpdate(item, index) {
       console.log(this.checkCity);
       console.log("城市编辑");
-      console.log(item);
-      console.log(this.$refs.cityOption2[index].style.borderColor);
       if (this.$refs.allCity.style.borderColor == "green") {
         console.log(item);
         var obj = {
           id: this.rowId,
           cityid: item.id
         };
-        getSuccess(obj).then(res => {
-          if (res.data.data != "success") {
-            this.$message({
-              type: "warning",
-              message: "该城市已关联服务项目，不可移除其选中状态"
-            });
-          }else{
-            console.log(145)
+        // getSuccess(obj).then(res => {
+        //   if (res.data.data != "success") {
+        //     this.$message({
+        //       type: "warning",
+        //       message: "该城市已关联服务项目，不可移除其选中状态"
+        //     });
+        //   }else{
             this.$refs.allCity.style.borderColor =""
             this.$refs.allCity.style.color ="#48576a"
             this.$refs.cityOption2[index].style.borderColor =""
             this.$refs.cityOption2[index].style.color ="#48576a"
             console.log(this.checkCity)
-          }
-        });
+        //   }
+        // });
       } else {
         if (this.$refs.cityOption2[index].style.borderColor == "green") {
+          console.log(index)
           var obj = {
             id: this.rowId,
-            cityId: this.getCityId(this.$refs.cityOption2[index].value)
+            cityId: this.getCityId(this.$refs.cityOption2[index].innerText)
           };
           console.log(obj);
-          getSuccess(obj).then(res => {
-            console.log(res);
-            if (res.data.data != "success") {
-              this.$message({
-                type: "warning",
-                message: "该城市已关联服务项目，不可移除其选中状态"
-              });
-            } else {
-              this.checkCity.remove(this.$refs.cityOption[index].value);
+          // getSuccess(obj).then(res => {
+          //   console.log(res);
+          //   if (res.data.data != "success") {
+          //     this.$message({
+          //       type: "warning",
+          //       message: "该城市已关联服务项目，不可移除其选中状态"
+          //     });
+          //   } else {
+              console.log("测试是编辑或者新增")
+              this.checkCity.remove(this.$refs.cityOption[index].innerText);
+              console.log(11111)
               this.$refs.cityOption2[index].style.borderColor = "";
+              console.log(222222)
               this.$refs.cityOption2[index].style.color = "#48576a";
+              console.log(33333)
               console.log(this.checkCity);
-            }
-          });
+          //   }
+          // });
         } else {
           this.$refs.cityOption2[index].style.borderColor = "green";
+          console.log(444444)
           this.$refs.cityOption2[index].style.color = "green";
-          this.checkCity.push(this.$refs.cityOption2[index].value);
+          console.log(555555)
+          this.checkCity.push(this.$refs.cityOption2[index].innerText);
+          console.log(6666)
           console.log(this.checkCity);
         }
       }
@@ -433,7 +436,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log(111111);
       this.pageNumber = val;
       var obj = {
         majorSort: this.activeName
@@ -468,14 +470,15 @@ export default {
         });
 
       } else {
+        console.log(row.cityNames)
         this.checkCity = row.cityNames;
         this.$nextTick(() => {
           this.$refs.allCity.style.borderColor = "";
           this.$refs.allCity.style.color = "#48576a";
           for (var i = 0; i < row.cityNames.length; i++) {
             for (var j = 0; j < this.city.length; j++) {
-              
-              if (row.cityNames[i] == this.$refs.cityOption2[j].value) {
+              if (row.cityNames[i] == this.$refs.cityOption2[j].innerText) {
+                console.log("编辑时被选中")
                 this.$refs.cityOption2[j].style.borderColor = "green";
                 this.$refs.cityOption2[j].style.color = "green";
               }
@@ -594,9 +597,9 @@ export default {
         this.checkCity =[]
         for(var i =0;i<this.city.length;i++){
           if(this.$refs.cityOption2[i].style.borderColor == "green"){
-            console.log(this.$refs.cityOption2[i].value)
+            console.log(this.$refs.cityOption2[i].innerText)
             
-            this.checkCity.push(this.$refs.cityOption2[i].value)
+            this.checkCity.push(this.$refs.cityOption2[i].innerText)
           }
         }
       }
@@ -704,7 +707,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 15px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 15px 20px;
@@ -770,5 +773,9 @@ body {
   border-width: 1px;
   margin-bottom: 10px;
   color: rgb(72, 87, 106);
+}
+.mark {
+  background: url(../../../static/icon/mark.png) right bottom no-repeat;
+  background-size: 20px 20px;
 }
 </style>

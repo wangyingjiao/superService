@@ -14,7 +14,6 @@
      <div class="bgWhite">
       <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
       <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="showdialog">地图</button>
       <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
 
       <el-table 
@@ -265,7 +264,8 @@ import {
   getType,
   getMaster,
   setMaster,
-  getArea
+  getArea,
+  getOffcity
 } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -288,7 +288,7 @@ export default {
       }
     };
     return {
-      severSelectdialogVisible: false,//地图
+      severSelectdialogVisible: false, //地图
       inputvalue: [],
       myMap: {}, //地图对象
       number: "0",
@@ -450,6 +450,12 @@ export default {
       console.log(res.data);
       this.stationType = res.data;
     });
+    var obj = {
+      id: "437ce6ccb3c14c61b4d0e0cf8fb8e908"
+    };
+    getOffcity(obj).then(res => {
+      console.log(res)
+    });
   },
   methods: {
     getList() {
@@ -490,10 +496,9 @@ export default {
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
         });
-        setTimeout(()=>{
-              this.dialogMasterVisible = true;
-        },100)
-       
+        setTimeout(() => {
+          this.dialogMasterVisible = true;
+        }, 100);
       }
     },
     handleSetRange() {
@@ -987,7 +992,7 @@ body {
 
 .bgWhite {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 15px 20px 20px 20px;
 }
 
 .btn_pad {

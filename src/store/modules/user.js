@@ -1,4 +1,4 @@
-import { loginByUsername, logout, getUserInfo, requestUserRole } from '@/api/login'
+import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
@@ -7,7 +7,8 @@ const user = {
     avatar: '',
     roles: [],
     menu: [],
-    buttonshow:[],
+    buttonshow: [],
+    area: []
   },
 
   mutations: {
@@ -24,11 +25,14 @@ const user = {
       state.roles = roles
     },
     SET_MENU: (state, menu) => {
-      state.menu = menu    
+      state.menu = menu
     },
     SET_BUTTONSHOW: (state, buttonshow) => {
-      state.buttonshow = buttonshow    
-    },  	
+      state.buttonshow = buttonshow
+    },
+    SET_AREA: (state, area) => {
+      state.area = area
+    }
   },
 
   actions: {
@@ -53,14 +57,37 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           commit('SET_MENU', data.data)
-          commit('SET_BUTTONSHOW',data.data)
           resolve(response)
         }).catch(error => {
           reject(error)
         })
       })
     },
-
+    // 获取省市区
+    Getarea({ commit }) {
+      return new Promise((resolve, reject) => {
+        getArea().then(res => {
+          //console.log(res)
+          const data = res.data
+          commit('SET_AREA', data.data)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 获取按钮权限
+    Getbutton({ commit }) {
+      return new Promise((resolve, reject) => {
+        getButton().then(res => {
+          console.log(res.data.data)
+          commit('SET_BUTTONSHOW', res.data.data)
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
