@@ -40,13 +40,13 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/base',
+    path: '/basic',
     component: Layout,
     redirect: 'base',
     name: '基础服务',
     children: [
-    { path: 'mechanism', name: '服务机构', component: _import('base/mechanism') },
-    { path: 'site', name: '服务站', component: _import('base/site') }
+    { path: 'organization', name: '服务机构', component: _import('base/mechanism') },
+    
     ]
   },
 
@@ -69,7 +69,8 @@ export const constantRouterMap = [
     children: [
     { path: 'class', name: '服务分类', component: _import('serviceManage/classify') },
     { path: 'project', name: '服务项目', component: _import('serviceManage/project') },
-    { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') }
+    { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') },
+    { path: 'station', name: '服务站', component: _import('base/site') }
     ]
   },
   {

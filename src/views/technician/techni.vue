@@ -15,7 +15,7 @@
           </el-option>
         </el-select>
         <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
-        <button class="tech-btn" @click="order">选择技能</button>
+        <button class="tech-btn" @click="order">选择技能1</button>
       </div>
 
       <div>
@@ -63,13 +63,13 @@
 
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div style="margin-right:20px;">
+            <div style="margin-right:20px;" @click="password = true">
               <img src="../../../static/icon/密码.png" alt="" style="width:30px">
             </div>
             <div  @click="flags = true">
               <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
-            <div style="margin-left:20px;">
+            <div style="margin-left:20px;" @click="dialogVisibleEdit = true">
               <img src="../../../static/icon/修改.png" alt="" style="width:30px">
             </div>
             <div style="margin-left:20px;">
@@ -80,95 +80,89 @@
       </ul>
 
       <!-- 密码弹出层 -->
-      <el-dialog title="休假" :visible.sync="password" custom-class="tech-section-lages" style="top:10%;">
-        <ul class="tech-section-xiu">
-          <li>
-            <div>姓名</div>
-            <div>李阿姨</div>
-          </li>
-          <li>
-            <div><span>*</span>开始时间</div>
-            <div style="display:flex">
-              <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-              </el-date-picker>
-              <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00'
-                        }">
-              </el-time-select>
-            </div>
-          </li>
-          <li>
-            <div><span>*</span>结束时间</div>
-            <div style="display:flex">
-              <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-              </el-date-picker>
-              <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00',
-                          minTime: startTimes
-                        }">
-              </el-time-select>
-            </div>
-          </li>
-          <li>
-            <div>备注</div>
-            <div>
-              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
-              </el-input>
-            </div>
-          </li>
-          <li>
-            <div style="display:flex;justify-content: center;width:100%">
-              <button class="button-large" style="margin-right:10px;">保存</button>
-              <button class="button-cancel">取消</button>
-            </div>
-          </li>
-
-        </ul>
+      <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages" style="top：10%">
+		<div class="mobel">
+			<p>手机：</p>
+			<p>15711445668</p>
+		</div>
+		<div class="passBox">
+			<el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="设置密码：" prop="pass">
+					<el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="重复密码：" prop="checkPass">
+					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary">保存</el-button>
+					<el-button >取消</el-button>
+				</el-form-item>
+			</el-form>
+		</div>
       </el-dialog>
       <!-- 休息弹出层 -->
       <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
         <ul class="tech-section-xiu">
-          <li>
-            <div>姓名</div>
-            <div>李阿姨</div>
+          <li class="mobel">
+            <p>姓名:</p>
+            <p>李阿姨</p>
           </li>
           <li>
-            <div><span>*</span>开始时间</div>
-            <div style="display:flex">
-              <el-date-picker v-model="value3" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-              </el-date-picker>
-              <el-time-select placeholder="起始时间" v-model="startTimes" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00'
-                        }">
-              </el-time-select>
-            </div>
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="开始时间" required>
+					<el-col :span="11">
+						<el-form-item prop="date1">
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col class="line" :span="2">-</el-col>
+					<el-col :span="11">
+						<el-form-item prop="date2">
+							<el-time-select
+								v-model="ruleForm.date2"
+								:picker-options="{
+									start: '00:00',
+									step: '00:30',
+									end: '24:00'
+								}"
+								placeholder="选择时间">
+							</el-time-select>
+						</el-form-item>
+					</el-col>
+				</el-form-item>
+			</el-form>
           </li>
           <li>
-            <div><span>*</span>结束时间</div>
-            <div style="display:flex">
-              <el-date-picker v-model="value4" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-              </el-date-picker>
-              <el-time-select placeholder="结束时间" v-model="endTimes" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00',
-                          minTime: startTimes
-                        }">
-              </el-time-select>
-            </div>
+			  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+				<el-form-item label="结束时间" required>
+					<el-col :span="11">
+						<el-form-item prop="date1">
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+						</el-form-item>
+					</el-col>
+					<el-col class="line" :span="2">-</el-col>
+					<el-col :span="11">
+						<el-form-item prop="date2">
+							<el-time-select
+								v-model="ruleForm.date2"
+								:picker-options="{
+									start: '00:00',
+									step: '00:30',
+									end: '24:00'
+								}"
+								placeholder="选择时间">
+							</el-time-select>
+						</el-form-item>
+					</el-col>
+				</el-form-item>
+			</el-form>
           </li>
           <li>
-            <div>备注</div>
+            <!-- <div>备注</div>
             <div>
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
               </el-input>
-            </div>
+            </div> -->
           </li>
           <li>
             <div style="display:flex;justify-content: center;width:100%">
@@ -202,257 +196,193 @@
         :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <!-- 弹出层 -->
+    <!-- 编辑技师 -->
+	<el-dialog title="新增技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
+		<techni-edit></techni-edit>
+	</el-dialog>
+    <!-- 弹出层 新增技师-->
     <el-dialog title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
       <div>
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
-        <ul class="tech-ul">
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>姓名:</p>
-              <p>
-                <el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="techName"></el-input>
-              </p>
-            </div>
-            <div>
-              <p><span class="tech-span">*</span>身份证号:</p>
-              <p>
-                <el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="techldCard"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>手机号:</p>
-              <p>
-                <el-input placeholder="请输入11为手机号" style="width:300px" v-model="techPhone"></el-input>
-              </p>
-            </div>
-            <div>
-              <p><span class="tech-span">*</span>现住地址:</p>
-              <p>
-                <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>性别:</p>
-              <p>
-                <el-select v-model="sexs" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="(item,$index) in sex" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p></p>
-              <p>
-                <el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="addrDetailInfo"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>民族:</p>
-              <p>
-                <el-select v-model="ethnic" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p><span class="tech-span">*</span>出生日期:</p>
-              <p>
-                <el-date-picker v-model="value1" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
-                  format="yyyy-MM-dd">
-                </el-date-picker>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <!-- <button class="tech-fourth">上传头像</button> -->
-                <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                  :file-list="fileList2" list-type="picture" :data="sign">
-                  <el-button class="tech-fourth"><span>*</span>上传头像</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                </el-upload>
-                <!-- <button class="tech-fourth-rigth">上传身份证</button> -->
-                <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                  :file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
-                  <el-button class="tech-fourth-rigth">上传身份证</el-button>
-                  <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-                </el-upload>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth" @click="create()">保存并创建</button>
-              </p>
-            </div>
-          </li>
-        </ul>
-        <!-- 补充个人资料 -->
-        <h3 class="tech-tc-prson">补充个人资料</h3>
-        <ul class="tech-ul">
-          <li>
-            <div>
-              <p>邮箱:</p>
-              <p>
-                <el-input placeholder="请输入正确的邮箱地址" style="width:300px"></el-input>
-              </p>
-            </div>
-            <div>
-              <p>学历:</p>
-              <p>
-                <el-select v-model="educations" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in education" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p>身高:</p>
-              <p>
-                <el-select v-model="heights" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p>体重:</p>
-              <p>
-                <el-select v-model="strongs" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p>婚姻状况:</p>
-              <p>
-                <el-select v-model="marriages" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in marriage" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p>籍贯:</p>
-              <p>
-                <el-select v-model="places" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in place" :key="item.id" :label="item.name" :value="item.id">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
-          </li>
+		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
+			<ul class="tech-ul">
+				<li>
+					<div>
+					<!-- <p><span class="tech-span"></span>姓名:</p> -->
+					<p>
+						<el-form-item label="姓名:" prop="techName">
+							<el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="personal.techName"></el-input>
+						</el-form-item>
+					</p>
+					</div>
+					<div>
+					<!-- <p><span class="tech-span"></span>身份证号:</p> -->
+					<p>
+						<el-form-item label="身份证号:" prop="techIdCard">
+							<el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="personal.techIdCard"></el-input>
+						</el-form-item>
+					</p>
+					</div>
+				</li>
+				<li>
+					<div>
+					<!-- <p><span class="tech-span"></span>手机号:</p> -->
+					<p>
+						<el-form-item label="手机号:" prop="techPhone">
+							<el-input placeholder="请输入11为手机号" style="width:300px" v-model="personal.techPhone"></el-input>
+						</el-form-item>
+					</p>
+					</div>
+					<div>
+					<p><span class="tech-span"></span>现住地址:</p>
+					<p>
+						<el-select v-model="area" clearable placeholder="请选择" style="width:300px">
+						<el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
+						</el-option>
+						</el-select>
+					</p>
+					</div>
+				</li>
+				<li>
+					<div>
+					<!-- <p><span class="tech-span"></span>性别:</p> -->
+					<p>
+						<el-form-item label="性别:" prop="techSex">
+							<el-select v-model="personal.techSex" clearable placeholder="请选择" style="width:300px">
+								<el-option v-for="(item,$index) in sex" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</p>
+					</div>
+					<div>
+					<p></p>
+					<p>
+						<el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="personal.addrDetailInfo"></el-input>
+					</p>
+					</div>
+				</li>
+				<li>
+					<div>
+					<p><span class="tech-span"></span>民族:</p>
+					<p>
+						<el-select v-model="personal.techNation" clearable placeholder="请选择" style="width:300px">
+							<el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
+					</p>
+					</div>
+					<div>
+					<!-- <p><span class="tech-span"></span>出生日期:</p> -->
+					<p>
+						<el-form-item label="出生日期:" prop="techBirthDate">
+							<el-date-picker v-model="personal.techBirthDate" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
+							format="yyyy-MM-dd">
+							</el-date-picker>
+						</el-form-item>
+					</p>
+					</div>
+				</li>
+				<li>
+					<div>
+					<p></p>
+					<p>
+						<!-- <button class="tech-fourth">上传头像</button> -->
+						<el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+						:file-list="fileList2" list-type="picture" :data="sign">
+						<el-button class="tech-fourth"><span></span>上传头像</el-button>
+						<!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+						</el-upload>
+						<!-- <button class="tech-fourth-rigth">上传身份证</button> -->
+						<el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+						:file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
+						<el-button class="tech-fourth-rigth">上传身份证</el-button>
+						<!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+						</el-upload>
+					</p>
+					</div>
+				</li>
 
-        </ul>
         <!-- 服务信息 -->
         <h3 class="tech-tc-prson">服务信息</h3>
-        <ul class="tech-ul">
+        <ul class="tech-ul tech-service">
           <li>
             <div>
-              <p><span class="tech-span">*</span>选择城市:</p>
-              <p>
-                <el-select v-model="catys" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in caty" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
+              <!-- <p><span class="tech-span">*</span>选择城市:</p> -->
+              	<p>
+					<el-form-item label="选择城市:" prop="serviceCityName">
+						<el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:300px">
+							<el-option v-for="item in caty" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
+						</el-select>
+					</el-form-item>
               </p>
             </div>
             <div>
-              <p><span class="tech-span">*</span>岗位性质:</p>
+              <!-- <p><span class="tech-span">*</span>岗位性质:</p> -->
               <p>
-                <el-select v-model="stationes" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
+				<el-form-item label="岗位性质:" prop="jobNatrue">
+					<el-select v-model="personal.jobNatrue" clearable placeholder="请选择" style="width:300px">
+						<el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
+					</el-select>
+				</el-form-item>
               </p>
             </div>
           </li>
           <li>
             <div>
-              <p><span class="tech-span">*</span>所属服务站:</p>
+              <!-- <p><span class="tech-span">*</span>所属服务站:</p> -->
               <p>
-                <el-select v-model="servers1" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in servery" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
+				<el-form-item label="所属服务站:" prop="stationName">
+					<el-select v-model="personal.stationName" clearable placeholder="请选择" style="width:300px">
+						<el-option v-for="item in servery" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
+					</el-select>
+				</el-form-item>
               </p>
             </div>
             <div>
-              <p><span class="tech-span">*</span>岗位状态:</p>
+              <!-- <p><span class="tech-span">*</span>岗位状态:</p> -->
               <p>
-                <el-select v-model="status" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in statu" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>工作年限:</p>
-              <p>
-                <el-select v-model="workyears" clearable placeholder="请选择" style="width:300px">
-                  <el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-            <div>
-              <p><span class="tech-span"></span>入职时间:</p>
-              <p>
-                <el-date-picker v-model="value2" type="date" placeholder="年/月/日" :picker-options="pickerOptions0" style="width:300px">
-                </el-date-picker>
+				  	<el-form-item label="岗位状态:" prop="jobStatus">
+						<el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:300px">
+							<el-option v-for="item in statu" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
               </p>
             </div>
           </li>
           <li>
             <div>
-              <p><span class="tech-span">*</span>选择技能:</p>
-              <div class="tech-order-jn">
-                <button class="tech-order-btn" @click="orderson"> &#10010 选择技能</button>
-                <div class="tech-order-jn-son" v-show="flage">
-                  <div style="display:flex;">
-                    <div class="selfCheckBox tech-order-posi" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}">
-                      {{item.sexName}}
-                      <div :class="{'triangle-bottomrighto':item.show===true}"></div>
-                      <div class="tallyo">&#10004</div>
-                    </div>
-                  </div>
-                  <div style="text-align:center;margin:10px 0;">
-                    <button class="button-large" @click="skill">确认</button>
-                    <button class="button-cancel" style="margin-left:20px" @click="skillq">取消</button>
-                  </div>
-                </div>
-              </div>
+              <!-- <p><span class="tech-span">*</span>工作年限:</p> -->
+				<p>
+					<el-form-item label="工作年限:" prop="workTime">
+						<el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:300px">
+							<el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+				</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <!-- <p id="skill"><span class="tech-span">*</span>选择技能:</p> -->
+			  	<p>
+					<el-form-item label="选择技能:" prop="skills">
+						<el-select v-model="personal.skills" multiple placeholder="请选择" style="width:300px">
+							<el-option
+							v-for="(item,index) in sexTypeo"
+							:key="index"
+							:label="item.sexName"
+							:value="item.sexName">
+							</el-option>
+						</el-select>
+					</el-form-item>
+				</p>
             </div>
           </li>
           <li v-show="flagso">
@@ -464,224 +394,72 @@
           </li>
           <li>
             <div>
-              <p><span class="tech-span">*</span>工作时间:</p>
-              <div class="tech-order-jn">
-                <button class="tech-order-btn" @click="addtime"> &#10010 添加时间</button>
-                <div class="tech-order-jn-sons" v-show="isB">
-                  <div style="margin:0 10px;">
-                    <p>新增日期</p>
-                    <div>
+              <!-- <p><span class="tech-span">*</span>工作时间:</p> -->
+			          <div style="width:100px"><span class="tech-span">*</span>工作时间:</div>
+                <div class="tech-order-jn">
+                  <button class="tech-order-btn" @click="addtime"> &#10010 添加时间</button>
+                  <div class="tech-order-jn-sons" v-show="isB">
+                    <div style="margin:0 10px;">
+                      <p>新增日期</p>
+                      <div>
 
-                      <div style="display:flex;">
-                        <div class="selfCheckBoxsday">日期</div>
-                        <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :class="{'tech-green':item.show===true}">
-                          {{item.sexName}}
-                          <div :class="{'triangle-bottomrightose':item.show===true}"></div>
-                          <div class="tallyose">&#10004</div>
+                        <div style="display:flex;">
+                          <div class="selfCheckBoxsday">日期</div>
+                          <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :class="{'tech-green':item.show===true}">
+                            {{item.sexName}}
+                            <!-- <div :class="{'triangle-bottomrightose':item.show===true}"></div> -->
+                            <!-- <div class="tallyose">&#10004</div> -->
+                          </div>
                         </div>
                       </div>
+                      <div style="margin-top:10px;">
+                        <div class="selfCheckBoxsday">时段</div>
+                        <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00'
+                          }" class="tech-daytim">
+                        </el-time-select>
+                        <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00',
+                            minTime: startTime
+                          }">
+                        </el-time-select>
+                      </div>
                     </div>
-                    <div style="margin-top:10px;">
-                      <div class="selfCheckBoxsday">时段</div>
-                      <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00'
-                        }" class="tech-daytim">
-                      </el-time-select>
-                      <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                          start: '00:00',
-                          step: '00:30',
-                          end: '24:00',
-                          minTime: startTime
-                        }">
-                      </el-time-select>
+                    <div style="margin:0px 10px 10px;">
+                      <button class="button-large btn-styl" @click="techClick">确认</button>
+                      <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
                     </div>
-                  </div>
-                  <div style="margin:0px 10px 10px;">
-                    <button class="button-large btn-styl" @click="addtimes">确认</button>
-                    <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
                   </div>
                 </div>
               </div>
+
+            <div v-show="teachArr.length>0">
+              <ul class="working">
+                <li v-for="(item,index) in teachArr" :key="index">
+                  <div>
+                    <div class="woking-div">
+                      <div><span v-for="(data,i) in item.week" :key="i">{{data.sexName+"、"}}</span></div>
+                      <div class="time">{{item.start+"~"+item.end}}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <i class="i-delete" @click="deletes(index)">X</i>
+                  </div>
+                </li>
+              </ul>
             </div>
           </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>级别:</p>
-              <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
-                <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2($index,item)" v-for="(item,$index) in sexTypes"
-                  :class="{'tech-green':isA==$index}" style="margin:0">
-                  {{item.sexName}}
-                  <div :class="{'triangle-bottomrights':isA==$index}"></div>
-                  <div class="tallys">&#10004</div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>经验描述:</p>
-              <p>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
-                </el-input>
-                <!-- <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea"> -->
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
+          <li id="confirmation">
+                <button class="button-large-fourth" @click="submitFormPer('personal')">保存信息</button>
+                <el-button>取消</el-button>
           </li>
         </ul>
-        <!--家庭成员（选填） -->
-        <h3 class="tech-tc-prson">家庭成员（选填）</h3>
-        <div class="tech-table">
-          <el-table :key='tableKey' :data="list" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
-            style="width: 100%" v-show="isTab">
-
-            <el-table-column align="center" label="关系">
-              <template scope="scope">
-                <span>同事</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="姓名">
-              <template scope="scope">
-                <span>张三</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="手机号">
-              <template scope="scope">
-                <span>1111</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="单位">
-              <template scope="scope">
-                <span>呼家楼</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="职务">
-              <template scope="scope">
-                <span>无</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="操作">
-              <template scope="scope">
-                <el-button size="small" type="primary" @click="handleModifyStatus(scope.row,'deleted')">编辑
-                </el-button>
-                <el-button size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-                </el-button>
-              </template>
-            </el-table-column>
-
-          </el-table>
-        </div>
-        <div class="tech-table" style="padding:none;">
-          <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button>
-        </div>
-        <ul class="tech-ul" v-show="flagso">
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>关系:</p>
-              <p>
-                <el-select v-model="binds" clearable placeholder="请选择" style="width:230px">
-                  <el-option v-for="item in bind" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>名字:</p>
-              <p>
-                <el-input placeholder="请输入2~15位名字" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>手机号:</p>
-              <p>
-                <el-input placeholder="请输入11位手机号" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>单位:</p>
-              <p>
-                <el-input placeholder="请输入工作单位名称" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>职务:</p>
-              <p>
-                <el-input placeholder="请输入职务" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large" @click="savrTable">保存</button>
-                <button class="button-cancel" style="margin-left:20px">取消</button>
-              </p>
-            </div>
-          </li>
-        </ul>
-        <!--其他信息 -->
-        <h3 class="tech-tc-prson">其他信息</h3>
-        <ul class="tech-ul">
-
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="tech-fourth"><span>*</span>上传头像</button>
-                <button class="tech-fourth-rigth" style="margin-left:40px">上传身份证</button>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="tech-fourth"><span>*</span>上传位置</button>
-                <button class="tech-fourth-rigth" style="margin-left:40px">上传位置</button>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>备注:</p>
-              <p>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
-                </el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
-          </li>
-        </ul>
+		 </ul>
+		</el-form>
       </div>
 
       <!-- <span slot="footer" class="dialog-footer"></span> -->
@@ -701,10 +479,113 @@
   import {
     getSign
   } from "@/api/sign";
+  import techniEdit from './techniEdit.vue'
 
   export default {
     data() {
+      var validatePass = (rule, value, callback) => {
+		  console.log(value.length,"------")
+        if (value === '') {
+         	 callback(new Error('请输入密码'));
+        } else if(value.length<8){
+			callback(new Error('至少8个字符'));
+		} else {
+          if (this.ruleForm2.checkPass !== '') {
+            this.$refs.ruleForm2.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm2.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
+		ruleForm: {
+          date1: '',
+          date2: '',
+		},
+		rules: {
+          date1: [
+            { type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
+          ],
+          date2: [
+            { type: 'date', required: true, message: '请选择时间', trigger: 'blur' }
+          ],
+        },
+		ruleForm2: {
+          pass: '',
+          checkPass: '',
+        },
+        rules2: {
+          pass: [
+            {required: true, validator: validatePass, trigger: 'blur' }
+          ],
+          checkPass: [
+            {required: true, validator: validatePass2, trigger: 'blur' }
+          ],
+		},
+		// 个人资料验证
+		personal:{
+			techName: '',
+			techIdCard: '',
+			techPhone: '',
+			techSex:'',
+			addrDetailInfo:'',
+			techNation:'',
+			techBirthDate:'',
+			serviceCityName:'',
+			jobNatrue:'',
+			stationName:'',
+			jobStatus:'',
+			workTime:'',
+			skills:''
+			
+		},
+		rulesPer:{
+			techName:[
+				{ required: true, message: '请输入姓名', trigger: 'blur' },
+            	{ min: 3, max: 5, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+			],
+			// 身份证
+			techIdCard:[
+				{required: true, message: '请输入身份证号', trigger: 'blur'},
+			],
+			techPhone:[
+				{required: true, message: '请输入手机号', trigger: 'blur'},
+				{ min: 11, max: 11, message: '请输入正确的手机号', trigger: 'blur' }
+			],
+			techSex:[
+				{ required: true, message: '请输入性别', trigger: 'change' }
+			],
+			techBirthDate:[
+				{ type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
+			],
+			serviceCityName:[
+				{ required: true, message: '请选择城市', trigger: 'change' }
+			],
+			jobNatrue:[
+				{ required: true, message: '请选择岗位', trigger: 'change' }
+			],
+			stationName:[
+				{ required: true, message: '请选择服务站', trigger: 'change' }
+			],
+			jobStatus:[
+				{ required: true, message: '请选择岗位状态', trigger: 'change' }
+			],
+			workTime:[
+				{ required: true, message: '请选择工作年限', trigger: 'change' }
+			],
+			skills:[
+				{ required: true, message: '请选择技能', trigger: 'blur' }
+			]
+
+		},
         server: [{
           value: '选项1',
           label: '黄金糕'
@@ -1063,7 +944,6 @@
         servers: '',
         stations: '',
         chooses: '',
-        addrDetailInfo: '',
         input: '',
         value1: '',
         value2: '',
@@ -1073,16 +953,15 @@
         endTime: '',
         startTimes: '',
         endTimes: '',
-        techName: '',
-        techldCard: '',
-        techPhone: '',
         fileList2: [
           {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
         position: false,
         listLoading: false,
         list: [1, 2, 3],
         total: null,
-        listLoading: false,
+		listLoading: false,
+		roomSel1Arr:[],
+		teachArr:[],
         listQuery: {
           page: 1,
           limit: 6,
@@ -1092,9 +971,17 @@
           sort: '+id'
         },
         dialogVisible: false,
+        dialogVisibleEdit:false,
       }
     },
+    components:{
+      techniEdit
+    },
     methods: {
+      // 工作时间删除
+      deletes(index){
+        this.teachArr.splice(index,1)
+      },
       handleCurrentChange(val) {
         this.listQuery.page = val
         this.getList()
@@ -1120,9 +1007,22 @@
         this.position = false
       },
       roomSel1(item) {
+        this.roomSel1Arr.push(item);
+        console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
+        console.log(this.teachArr,"this.arr-----")
         item.show = !item.show;
         //  console.log(item)
-      },
+	  },
+	  techClick(){
+      var obj = {};
+
+      obj.start = this.startTime;
+      obj.end = this.endTime
+      obj.week = [].concat( this.roomSel1Arr )
+		  this.teachArr.push(obj)
+		  console.log(this.teachArr,"this.teachArr--12323--")
+		   this.isB  = false;
+	  },
       roomSel2(index, obj) {
         this.isA = index;
       },
@@ -1141,9 +1041,6 @@
       addtime() {
         this.isB = true;
       },
-      addtimes() {
-        this.isB = false;
-      },
       addtimeno() {
         this.isB = false;
       },
@@ -1158,38 +1055,48 @@
       },
       dateChange(val) {
         this.value1 = val;
-      },
-      create() {
-        var time = String(this.value1);
-        var obj = {
-          'techName': this.techName,
-          'techldCard': this.techldCard,
-          'techPhone': this.techPhone,
-          'techSex': this.sexs,
-          'techNation': this.ethnic,
-          'addrDetailInfo': this.addrDetailInfo,
-          'techBirthDate': this.value1,
-          'images': [{
-            'id': '',
-            'imgType': '',
-            'imgUrl': '',
-          }]
-        }
+	  },
+	  //个人资料保存
+	  submitFormPer(formName){
+		  this.$refs[formName].validate((valid) => {
+			  if(valid){
+				
+			  }else{
+				  return false;
+			  }
+		  })
+	  }
+    //   create() {
+    //     var time = String(this.value1);
+    //     var obj = {
+    //       'techName': this.techName,
+    //       'techldCard': this.techldCard,
+    //       'techPhone': this.techPhone,
+    //       'techSex': this.sexs,
+    //       'techNation': this.ethnic,
+    //       'addrDetailInfo': this.addrDetailInfo,
+    //       'techBirthDate': this.value1,
+    //       'images': [{
+    //         'id': '',
+    //         'imgType': '',
+    //         'imgUrl': '',
+    //       }]
+    //     }
         // addTech(obj).then(res => {
         //   console.log(res)
         // })
-        this.techName = '',
-          console.log(obj),
-          console.log(time)
+        // this.techName = '',
+        //   console.log(obj),
+        //   console.log(time)
         // console.log(d)
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      }
-    },
+    //   },
+    //   handleRemove(file, fileList) {
+    //     console.log(file, fileList);
+    //   },
+    //   handlePreview(file) {
+    //     console.log(file);
+    //   }
+     },
     mounted() {
       getTech().then(res => {
         this.ethnics = res.data;
@@ -1340,15 +1247,17 @@
 
   .tech-ul {
     padding: 20px 40px 10px 25px;
-    border-bottom: solid 20px #f3f1f1;
+    /* border-bottom: solid 20px #f3f1f1; */
   }
 
   .tech-ul>li {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
   }
-
+ .tech-ul .el-form-item__label{
+	 text-align: left;
+ }
   .tech-center {
     display: flex;
     justify-content: center;
@@ -1356,6 +1265,7 @@
 
 
   .tech-ul li>div {
+	  width: 400px;
     display: flex;
     align-items: center;
     font-size: 12px;
@@ -1368,7 +1278,8 @@
   .tech-span {
     color: red;
     width: 10px;
-    display: block;
+    /* display: block; */
+    margin-right: 4px;
   }
 
   .tech-ul li div p:nth-of-type(1) {
@@ -1478,8 +1389,26 @@
 
   .tech-green {
     border: solid 1px green;
-  }
 
+  }
+  .tech-green::after{
+    content:"✔";
+    width: 10px;
+    height: 10px;
+    margin-top:6px;
+    margin-left:0px; 
+    /* border-bottom:10px solid green;
+    border-left:10px solid transparent;
+    color: #fff;
+    margin-top: 3px; */
+    /* border-bottom:10px solid green;
+    border-left:10px solid transparent;
+    width: 10px;
+    height: 10px;
+    margin-top:12px;
+    margin-left:0px; 
+    color: #fff; */
+  }
 
   .tallys {
     color: #fff;
@@ -1509,7 +1438,7 @@
   }
 
   .tech-order-jn {
-    width: 545px;
+    width: 300px;
     height: 36px;
     border: 1px solid #bfcbd9;
     position: relative;
@@ -1559,7 +1488,7 @@
     text-align: center;
     height: 24px;
     line-height: 24px;
-    padding: 0 5px; 
+    padding: 0 0 0 5px; 
     justify-content: center;
     overflow: hidden;
   }
@@ -1643,8 +1572,9 @@
   }
 
   .tech-section-lages {
-    width: 45%;
+    width: 40%;
     left: 5%;
+	padding-right: 30px;
   }
 
   .tech-section-xiu {
@@ -1721,4 +1651,51 @@
     color: #ff7676;
   }
 
+.mobel{
+	margin-bottom:22px; 
+	display: flex;
+}
+.mobel>p:nth-child(1){
+	width: 100px;
+	text-align: right;
+	padding-right:12px; 
+}
+.line {
+	text-align:center;
+}
+.tech-service{
+	padding: 20px 0 10px 0;
+}
+.working{
+  border: 1px solid #F2F2F2;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 0 0 0 20px;;
+}
+.working>li{
+  position: relative;
+  border-bottom:1px solid #F2F2F2; 
+  padding-top:15px; 
+}
+
+.woking-div{
+  display: flex;
+  flex-direction:column;
+}
+.i-delete{
+  position: absolute;
+  right:20px;
+  top: 20px; 
+}
+.time{
+  padding: 10px 0;
+}
+#confirmation{
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+.button-large-fourth{
+  margin-right: 40px;
+}
 </style>

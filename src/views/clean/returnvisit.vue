@@ -17,7 +17,7 @@
                       <el-table-column label="技师个数" align="center" prop="technicianNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
                         <template scope="scope">
-                            <el-button class="el-icon-edit" v-if="qunxian.indexOf('ser_edit') != -1" @click="add('edit',scope.row)"></el-button>
+                            <el-button class="el-icon-edit"  @click="add('edit',scope.row)"></el-button>
                             <el-button class="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
                         </template>
                       </el-table-column>
@@ -107,8 +107,6 @@
 
         <!-- 选择技师弹出层 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
-
-
               <div style="float:left;width:120px">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName" style="width:120px"></el-input>
               </div>
@@ -120,48 +118,27 @@
               </div>
               <div style="float:right"><button class="button-large" @click="searchTeh">查询</button></div>              
               <div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;">
-					<div class="table-d">
-						<table width="100%" border="0" cellspacing="1" cellpadding="0">
-							<tr>
-								<td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
-								<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">头像</td>
-								<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">姓名</td>
-								<td  style="background: #F8F8F9;height:30px;" align="center" width="10%">性别</td>
-								<td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
-							</tr>
-							<tr v-for="item in listTech" :key="item.id" >
-								<td style="height:30px;" align="center"><el-checkbox  v-model="checkAll"></el-checkbox></td>
-								<td style="height:30px;" align="center">{{item.imgUrl}}</td>
-								<td style="height:30px;" align="center">{{item.techName}}</td>
-								<td style="height:30px;" align="center">
-									<span v-if="item.techSex =='1'">男</span>
-									<span v-if="item.techSex =='2'">女</span>									
-								</td>
-								<td style="height:30px;" align="center">{{item.techStationName}}</td>							
-							</tr>
-						</table>
-					</div>
-
-
-
-
-
-
-
-                  <!--<el-table  :data="listTech" border tooltip-effect="dark" style="width: 100%">
-                    <el-table-column label="头像" width="120" align="center" prop="imgUrl">  
-                    </el-table-column>
-                    <el-table-column label="姓名" width="120" align="center" prop="technicianName">
-                    </el-table-column>
-                    <el-table-column label="性别" show-overflow-tooltip align="center" >
-                        <template scope="scope">
-                            <span v-if="scope.row.techSex =='1'">男</span>
-                            <span v-if="scope.row.techSex =='2'">女</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="服务站" show-overflow-tooltip align="center" prop="techStationName">
-                    </el-table-column>
-                  </el-table>-->              
+                    <div class="table-d">
+                      <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                        <tr>
+                          <td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
+                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">头像</td>
+                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">姓名</td>
+                          <td  style="background: #F8F8F9;height:30px;" align="center" width="10%">性别</td>
+                          <td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
+                        </tr>
+                        <tr v-for="item in listTech" :key="item.id" >
+                          <td style="height:30px;" align="center"><el-checkbox  v-model="checkAll"></el-checkbox></td>
+                          <td style="height:30px;" align="center">{{item.imgUrl}}</td>
+                          <td style="height:30px;" align="center">{{item.techName}}</td>
+                          <td style="height:30px;" align="center">
+                            <span v-if="item.techSex =='1'">男</span>
+                            <span v-if="item.techSex =='2'">女</span>									
+                          </td>
+                          <td style="height:30px;" align="center">{{item.techStationName}}</td>							
+                        </tr>
+                      </table>
+                    </div>            
               </div>             
               <div slot="footer" class="dialog-footer" style="text-align:center;">
                   <button class="button-large"   @click="submitForm2()">保存</button>
@@ -191,8 +168,7 @@
         qunxian:["ser_add","ser_edit"],
         localSearch:'',
         //tabName
-        tabOptions:[
-        ],
+        tabOptions:{},
         techShow:false,
         techName:'',
         techStationId:'',
@@ -284,7 +260,7 @@
               this.getorderTech(); 
           }) 		  		         
           this.originData=[];
-          this.tabOptions=[]                  
+          this.tabOptions={};                  
          if(this.dialogStatus =='add'){
            //新增操作
             this.ruleForm2={};
@@ -401,8 +377,9 @@
       },
       //选择技师弹出层保存
       submitForm2() {
-		//先遍历数据中选中的再保存	
-        this.tabOptions=this.listTech;
+		//先遍历数据中选中的再保存
+	
+        this.tabOptions=Object.assign({},this.listTech)
         this.ordertech = false;		
       },
       //选择技师弹出层cancel
@@ -430,8 +407,8 @@
       },          
       handleCurrentChange(val) {
         this.pageNumber=val;
-		var obj={
-		}
+        var obj={
+        }
 	    this.getList(obj,this.pageNumber,this.pageSize);   
       },         
       //总数据删除

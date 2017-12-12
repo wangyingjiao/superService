@@ -15,7 +15,16 @@ export default {
     menu() {
       return this.$store.state.user.menu
     }
-  }
+  },
+  methods:{
+     test(){
+       console.log(this.$store.state.user.menu);
+     }
+  },
+  mounted() {
+  //this.test();
+    
+  }  
 }
 </script>
 
