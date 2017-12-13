@@ -2,9 +2,9 @@
 <div>
   <div class="filter-container bgWhite">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="全部" name="0"></el-tab-pane>
-      <el-tab-pane label="保洁" name="1"></el-tab-pane>
-      <el-tab-pane label="家修" name="2"></el-tab-pane>
+      <el-tab-pane label="全部" name="all"></el-tab-pane>
+      <el-tab-pane label="保洁" name="clean"></el-tab-pane>
+      <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <el-select clearable style="width: 200px" v-model="search.cityName" class="filter-item" placeholder="请选择城市">
         <el-option v-for="item in city" :key="item.id" :label="item.areaName" :value="item.areaName">
@@ -36,8 +36,8 @@
 
       <el-table-column  label="城市" align="center">
         <template scope="scope">
-          <span v-if="scope.row.allCity =='1'">全部</span>
-          <span v-else v-for="(item,index) in scope.row.cityNames" :key="index" :value="item">{{item}}&nbsp;</span>
+          <span v-if="scope.row.allCity =='yes'">全部</span>
+          <span v-else v-for="(item,index) in scope.row.citys" :key="index" :value="item.cityCode">{{item.cityName}}&nbsp;</span>
         </template>
       </el-table-column>
 
@@ -99,7 +99,7 @@
                       ref="cityOption" 
                       @click="cityChange(item,index)" 
                       v-for="(item,index) in city"
-                      :value="item.areaName">{{item.areaName}}</div>
+                      :value="item.cityName">{{item.cityName}}</div>
 								  	</div>
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
@@ -126,10 +126,9 @@
       <div class="tabBox" >
         <div class="tabLeft fl" ref="refTab">
           <el-radio-group v-model="activeName">
-            <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="2" @click="refbtn2">家修</el-radio-button>
-            <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
+            
+            <el-radio-button style="width:100%;" size='large' label="clear"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%" label="repair" @click="refbtn2">家修</el-radio-button>
           </el-radio-group>
         </div>
         <div class="tabRight fl">
@@ -181,7 +180,7 @@ import {
   getClass,
   addClass,
   delClass,
-  getSuccess
+  setClass
 } from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -194,6 +193,7 @@ export default {
   },
   data() {
     return {
+      aa:this.$store.state.user.buttonshow,
       active:true,
       list: [],
       total: null,
@@ -228,7 +228,7 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      activeName: "0",
+      activeName: "all",
       city: [],
       cityIndex: 0,
       checkCity: [],
@@ -249,8 +249,6 @@ export default {
   created() {
     this.getList();
     getCity().then(res => {
-      //console.log(res)
-      //console.log(1111)
       this.city = res.data.data;
       this.cityIndex = res.data.data.length;
       //console.log(this.cityIndex)
@@ -381,16 +379,16 @@ export default {
       console.log(this.checkCity);
     },
     refbtn1() {
-      console.log(this.$refs);
+      console.log(123);
       this.$refs.refbtn1.className = "tabBtn tabBtnclick";
       this.$refs.refbtn2.className = "tabBtn";
-      this.activeName = "1";
+      this.activeName = "clean";
     },
     refbtn2() {
       console.log(this.$refs.refbtn2);
       this.$refs.refbtn2.className = "tabBtn tabBtnclick";
       this.$refs.refbtn1.className = "tabBtn";
-      this.activeName = "2";
+      this.activeName = "repair";
     },
     getList() {
       this.listLoading = true;
@@ -449,10 +447,16 @@ export default {
     },
     handleCreate() {
       this.resetTemp();
-      this.activeName = "1";
+      this.activeName = "clean";
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
+      var obj = {
+        	"id": row.id
+      }
+      setClass(obj).then(res=>{
+
+      })
       console.log(row);
       this.rowId = row.id;
       this.temp = Object.assign({}, row);
@@ -552,7 +556,7 @@ export default {
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.checkCity = [];
-              this.activeName = "0"
+              this.activeName = "all"
               this.resetCity();
               this.getList();
               this.$message({
@@ -576,14 +580,14 @@ export default {
     },
     resetForm(formName) {
       this.resetCity();
-      this.activeName = "0";
+      this.activeName = "all";
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
       this.checkCity = [];
     },
     resetForm2(formName) {
       this.resetCity2();
-      this.activeName = "0"
+      this.activeName = "all"
       this.$refs.allCity.style.borderColor = "";
       this.$refs.allCity.style.color = "#48576a";
       this.dialogFormUpdate = false;
@@ -623,7 +627,7 @@ export default {
             console.log(res);
             if (res.data.code === 1) {
               this.dialogFormUpdate = false;
-              this.activeName = "0"
+              this.activeName = "all"
               this.checkCity = [];
               this.resetCity2();
               this.getList();

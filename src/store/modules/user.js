@@ -41,8 +41,9 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          // console.log(response)
-          
+          console.log(response.data.data.user.name)
+          localStorage.setItem('name', response.data.data.user.name)
+          console.log(localStorage.getItem('name'))
           const data = response.data
           setToken(data.token)
           resolve()
@@ -96,6 +97,7 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          localStorage.removeItem('name')
           resolve()
         }).catch(error => {
           reject(error)

@@ -1,7 +1,7 @@
 import fetch from '@/utils/fetch'
 import axios from 'axios'
 
-let qs = require('qs');
+let qs = require('qs')
 const instance = axios.create({
   headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' } //把参数转成字符串  a=1&b=2
 
