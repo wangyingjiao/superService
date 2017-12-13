@@ -1,37 +1,121 @@
 <template>
-    <div class="addorder-container" style="margin-top: 20px;">
-		<div class="fist-bar">
-		  <span class="custom-action">选择客户</span>
-		  <el-select clearable style="width:280px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
-			<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
-			</el-option>
-		  </el-select>	  
-		  <button class="add-button" @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</button>
-		</div>
-		<div class="second-bar">
-			<div class="custom-inf">
-				<div class="custom-action">客户信息</div>
-				<div class="hr-style"></div>
-				<div class="custom-action" style="margin-top:20px;">					
-					<el-form :model="customPhone1" :rules="rules2" ref="customPhone1" label-position="left" >
-					  <el-form-item label="客户姓名:" prop="customName">
-						  <span class="customNamevalue">{{customPhone1.customName}}</span>
-					  </el-form-item>
-					  <el-form-item label="客户电话:" prop="phone" style="margin-top:-15px;">
-						<span class="customNamevalue"><el-input  style="width:200px;"  placeholder="请输入搜索内容" v-model="customPhone1.phone"></el-input></span>
-					  </el-form-item>
-					</el-form>					
-				</div>		
+    <div class="addorder-container" style="">
+		<div style="width:100%;height:600px;background:#fff;padding-top:20px;">
+			    <div style="width:100%;padding-left:30px;">
+						<el-steps :space="300" :active="active"  align-center >
+						<el-step title="选择客户"></el-step>
+						<el-step title="服务信息"></el-step>
+						<el-step title="选择技师"></el-step>
+						<el-step title="服务时间"></el-step>
+						</el-steps>
+				</div>
+				<div style="width:100%;height:400px;padding-left:30px;margin-top:50px;">
+					<div style="width:100%;height:350px;" v-if="active == 1">
+                           <el-form ref="form" :model="form" label-width="100px" label-position="left">
+									<el-form-item label="选择客户:" prop="custom">
+										<el-select clearable style="width:280px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
+											<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
+											</el-option>
+										</el-select>
+										<div  style="width:80px;height:34px;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8" @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
+									</el-form-item>
+									<el-form-item label="客户姓名:" prop="customName">
+										<span style="font-size:12px;">{{form.customName}}</span>
+									</el-form-item>
+									<el-form-item label="客户电话:" prop="phone">
+										<el-input  style="width:280px;"  placeholder="请输入搜索内容" v-model="form.phone"></el-input>
+									</el-form-item>
+									<el-form-item label="服务地址:" prop="serverAddress">
+										{{form.serverAddress}}<div  style="margin-left:30px;height:20px;line-height:20px;display:inline-block;cursor: pointer;border: 1px solid #4c70e8;text-align: center;font-size: 12px;width: 80px; color: #4c70e8;" @click="changeAddress">更换地址</div>
+									</el-form-item>
+									<el-form-item label="所属服务站:" prop="serverStation">
+										<span style="font-size:12px;">{{form.serverStation}}</span>
+									</el-form-item>																											
+							</el-form>						
+					</div>
+					<div style="width:100%;height:350px;" v-if="active == 2">
+                           <el-form ref="form1" :model="form1" label-width="100px" label-position="left">
+									<el-form-item label="服务项目:" prop="serverPro" required>
+											<el-select clearable style="width:400px;margin-right:20px;" class="filter-item" v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
+												<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
+												</el-option>
+											</el-select>
+									</el-form-item>
+									<el-form-item label="选择商品:" prop="serverPro" required>
+											<div v-if="serverType==1" style="margin-left:-30px;">
+												<span>平米保洁:</span>																																
+											</div>
+											<div v-if="serverType==2" style="margin-left:-30px;">
+												<span>灯具清洁:</span>
+											</div>
+											<div style="margin-left:-50px;" v-if="serverType==3">
+					                            <span>居室保洁:</span>
+											</div>	
+									</el-form-item>
+									<el-form-item label="总价:" prop="sumPrice" required>
+										<span>{{form1.sumPrice}}元</span>
+									</el-form-item>																																														
+							</el-form>
+					</div>
+					<div style="width:100%;height:350px;" v-if="active == 3">
+                           <el-form ref="form2" :model="form2" label-width="100px" label-position="left">
+									<el-form-item label="技师性别:" prop="sex" required>
+											<el-select clearable style="width:200px;" class="filter-item" v-model="form2.sex" placeholder="请选择">
+												<el-option v-for="item in sexType" :key="item.key" :label="item.sexName" :value="item.key">
+												</el-option>
+											</el-select>
+									</el-form-item>
+									<el-form-item label="技师:" prop="" required>
+											<span  class="button-cancel" style="width:200px;height:34px;line-height:34px;display:inline-block;" @click="technicianSel">+选择技师</span>
+											<div class="custom-action" style="margin-top:20px;margin-left:-46px;">
+												<div class="customNamevalue" style="width:100%;height:40px;">
+													<div class="tabWrap" v-for="(item,index) in tabOptions " ref="tabsName" :key="index">
+														{{item.tabName}}
+														<div class="closePic"  @click="errorClose(item,index)">&#10005</div>
+													</div>						
+												</div>
+											</div>										
+									</el-form-item>																																													
+							</el-form>
 
-			</div>
-			<div class="sever-inf">
-				<div class="custom-action">服务信息</div>
-				<div class="hr-style"></div>
-				<div class="custom-action" style="margin-top:20px;">服务地址:<span class="customNamevalue">{{serverAddress}}<button type="button" class="button-cancel" style="margin-left:30px;height:20px;" @click="changeAddress">更换地址</button></span></div>
-				<div class="custom-action" style="margin-top:20px;">所属服务站:<span style="margin-left:35px;">{{serverStation}}</span></div>
-			</div>
+					</div>
+					<div style="width:100%;height:350px;" v-if="active == 4">
+						<el-form ref="form3" :model="form3" label-width="100px" label-position="left">
+									<el-form-item label="选择日期:" prop="severTime" required>
+													<el-date-picker
+														v-model="severTime"                      
+														placeholder="年-月-日"                     
+														:type="select"
+														style="display:inline-block;width:400px;"
+														:picker-options="pickerOptions0"
+
+														>
+													</el-date-picker>							
+									</el-form-item>
+									<el-form-item label="选择时间:" prop="severTime" required>							
+									</el-form-item>									
+									<el-form-item label="客户备注:" prop="textarea" style="margin-left:10px;font-size:12px;">
+												<el-input
+													type="textarea"
+													:rows="3"
+													placeholder="请输入内容"
+													v-model="textarea"
+													style="width:400px;margin-left:-10px;"
+													>
+												</el-input>						
+									</el-form-item>	
+						</el-form>
+					</div>
+				</div>
+				<div style="margin-bottom:20px;text-align:center;">
+					<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 2 || active == 3 || active == 4" @click="prev">上一步</span>
+					<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 1 || active == 2|| active == 3"  @click="next">下一步</span>					
+					<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 4" @click="confirmOrder">保存</span>		
+				</div>
 		</div>
-		<div class="thrid-bar">
+
+
+		<!--<div class="thrid-bar">
 			<div class="order-inf">
 				<div class="custom-action">订单信息</div>
 				<div class="hr-style"></div>
@@ -85,26 +169,7 @@
 									</div>
 							</el-form-item>
 							<el-form-item label="技师:" prop="technician" required>
-											<button type="button" class="button-cancel" style="width:100px;" @click="technicianSel">选择技师</button>
-											<span style="margin-left:50px;font-size:12px;">系统自动分配:
-													<el-switch
-													v-model="sysAllocat"
-													on-color="#4c70e8"
-													off-color="#bfcbd9"
-													on-text="是"
-													off-text="否"
-													on-value="1"
-													off-value="0">
-													</el-switch>				
-											</span>
-									<div class="custom-action" style="margin-top:20px;margin-left:-46px;">
-										<div class="customNamevalue" style="width:100%;height:40px;">
-											<div class="tabWrap" v-for="(item,$index) in tabOptions " ref="tabsName">
-												{{item.tabName}}
-												<div class="closePic"  @click="errorClose(item,$index)">&#10005</div>
-											</div>						
-										</div>
-									</div>									
+									
 							</el-form-item>
 							<el-form-item label="服务时间:" prop="severTime" required>
 														<el-date-picker
@@ -143,7 +208,7 @@
                 				
 			</div>
 			
-		</div>
+		</div>-->
 		<!--新增客户弹窗-->
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
@@ -280,6 +345,35 @@ export default {
 				}			
 		};	  
     return {
+        pickerOptions0: {
+          disabledDate(time) {
+			  //let nowTime=Date.now()
+			  if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
+                  return false;
+			  }else{
+				  return true;
+			  }
+           
+          }
+        },		
+		form: {
+		  custom:'',
+          phone: '',
+		  customName:"李四",
+		  serverAddress:'北京市朝阳区关东街11呼家楼',
+		  serverStation:'呼家楼服务站',		  
+		},
+		form1: {
+		  serverPro:'',
+          sumPrice:'1000',
+		},
+		form2:{
+			sex:'',
+		},
+		form3:{
+			date:'',
+		},	
+		active: 1,
         rules2: {
           phone: [
             { validator: checkPhone, trigger: 'blur' }
@@ -476,9 +570,9 @@ county1:'',
 		roomLen:0,//居室数量开关
 		price:1000,//服务价格
 		sexType:[
-		  { key: "1", sexName: "不限制" },
-		  { key: "2", sexName: "男" },
-		  { key: "3", sexName: "女" }
+		  { key: "0", sexName: "不限制" },
+		  { key: "1", sexName: "男" },
+		  { key: "2", sexName: "女" }
 		],//技师信息
 		sexLen:0,//技师性别开关
     sysAllocat:1,//系统分配值
@@ -489,6 +583,18 @@ county1:'',
     };
   },
   methods:{
+	  	next(){
+           if (this.active++ >= 4) this.active = 1;
+		   if(this.active==3 && this.form2.sex==''){
+                 this.form2.sex="0"
+		   }
+		},
+		prev(){
+		   if (this.active-- <= 1) this.active = 1;
+		   if(this.active==3 && this.form2.sex==''){
+                 this.form2.sex="0"
+		   }		   
+		},
 		//
 		provinceChange(value){
 			this.ruleForm.cusCityId='';

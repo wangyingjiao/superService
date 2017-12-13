@@ -17,7 +17,7 @@
                       <el-table-column label="技师个数" align="center" prop="technicianNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
                         <template scope="scope">
-                            <el-button class="el-icon-edit"  @click="add('edit',scope.row)"></el-button>
+                            <el-button class="el-icon-edit" @click="add('edit',scope.row)"></el-button>
                             <el-button class="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
                         </template>
                       </el-table-column>
@@ -57,13 +57,13 @@
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians">
              <div class="tech-order-jnsk" style="float:left;width:500px;">
-                  <div class="tech-order-btnsk" style="background:none;"  @click="orderTech"> &#10010 请选择</div>
+                  <button class="tech-order-btnsk" @click="orderTech"> &#10010 请选择</button>
             </div>
             </el-form-item>
-            <el-form-item label=""> 
+            <el-form-item label="" > 
                   <div class="tabWrap" v-for="item in tabOptions" :key="item.technicianId">
-                    {{item.techName}}
-                    <div class="closePic" @click="errorClose(item)">&#10005</div>
+                    {{item.technicianName}}
+                    <div class="closePic"  @click="errorClose(item)">&#10005</div>
                   </div>              
             </el-form-item>           
           </el-form>
@@ -79,25 +79,22 @@
                 <el-input placeholder="输入要搜索的项目名称" style="width:220px" v-model="xingmu"></el-input>
               </div>
               <div style="float:right"><button class="button-large" @click="quiry">查询</button></div>
-              <div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;">
-					<ul class="role-table">
-						<li class="header">
-							<div class="left">项目名称</div>
-							<div class="right">商品名称</div>
-						</li>
-						<div class="vertical-line"></div>
-						<li  v-for="item in listorderServer" :key="item.id" >
-							<div class="left h40">
-								<el-checkbox @click.native="handleOneCheckAll($event,item)" v-cloak  :indeterminate="item.isIndeterminate" v-model="item.checkAll"> {{item.name}}</el-checkbox>
-							</div>
-							<div class="right h40">
-								<el-checkbox-group v-model="item.checkedCities" @change="handleOneCheckedCitiesChange(item)">
-									<el-checkbox  v-for="m in item.commoditys" :label="m.id" :key="m.id" v-cloak> {{m.name}}</el-checkbox>
-								</el-checkbox-group>
-							</div>
-							<div class="line"></div>
-						</li>
-					</ul>				                 
+              <div style="float:left;margin-top:20px;width:100%;">
+                <el-table ref="multipleTable" :data="listorderServer" border  style="width: 100%;" @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="" align="center">
+                  </el-table-column>
+                  <el-table-column label="项目名称" align="center" prop="itemName">
+                       
+                  </el-table-column>
+                  <el-table-column label="商品名称" align="center" prop="serItemCommoditys">                    
+                  </el-table-column>                 
+                </el-table>
+                <div  class="pagination-container" style="float:right;margin-top:20px;margin-bottom:20px;">
+                  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
+                    :page-sizes="[10,20,30, 50]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper"
+                    :total="total1">
+                  </el-pagination>
+                </div>                  
               </div>
                 <div slot="footer" class="dialog-footer" style="text-align:center;">
                     <button class="button-large"   @click="submitForm1()">保存</button>
@@ -107,6 +104,8 @@
 
         <!-- 选择技师弹出层 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
+
+
               <div style="float:left;width:120px">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName" style="width:120px"></el-input>
               </div>
@@ -117,28 +116,29 @@
                 </el-select>
               </div>
               <div style="float:right"><button class="button-large" @click="searchTeh">查询</button></div>              
-              <div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;">
-                    <div class="table-d">
-                      <table width="100%" border="0" cellspacing="1" cellpadding="0">
-                        <tr>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">头像</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">姓名</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="10%">性别</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
-                        </tr>
-                        <tr v-for="item in listTech" :key="item.id" >
-                          <td style="height:30px;" align="center"><el-checkbox  v-model="checkAll"></el-checkbox></td>
-                          <td style="height:30px;" align="center">{{item.imgUrl}}</td>
-                          <td style="height:30px;" align="center">{{item.techName}}</td>
-                          <td style="height:30px;" align="center">
-                            <span v-if="item.techSex =='1'">男</span>
-                            <span v-if="item.techSex =='2'">女</span>									
-                          </td>
-                          <td style="height:30px;" align="center">{{item.techStationName}}</td>							
-                        </tr>
-                      </table>
-                    </div>            
+              <div style="float:left;margin-top:20px;width:100%;">
+                  <el-table ref="multipleTable1" :data="listTech" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange1">
+                    <el-table-column type="selection" width="55" align="center" v-model="checkbox">
+                    </el-table-column>
+                    <el-table-column label="头像" width="120" align="center" prop="imgUrl">  
+                    </el-table-column>
+                    <el-table-column label="姓名" width="120" align="center" prop="technicianName">
+                    </el-table-column>
+                    <el-table-column label="性别" show-overflow-tooltip align="center" >
+                        <template scope="scope">
+                            <span v-if="scope.row.techSex =='1'">男</span>
+                            <span v-if="scope.row.techSex =='2'">女</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="服务站" show-overflow-tooltip align="center" prop="techStationName">
+                    </el-table-column>
+                  </el-table>
+                  <div  class="pagination-container" style="float:right;margin-top:20px;margin-bottom:20px;">
+                    <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" 
+                      :page-sizes="[10,20,30, 50]"  :page-size="pageSize2" layout="total, sizes, prev, pager, next, jumper"
+                      :total="total2">
+                    </el-pagination>
+                  </div>                
               </div>             
               <div slot="footer" class="dialog-footer" style="text-align:center;">
                   <button class="button-large"   @click="submitForm2()">保存</button>
@@ -150,6 +150,7 @@
     </div>
   </div>
 </template>
+
 <script>
   import {
     getListdata,
@@ -163,12 +164,12 @@
   export default {
     name: '',
     data() {
-      return { 
-		checkAll:false,      
+      return {       
         qunxian:["ser_add","ser_edit"],
         localSearch:'',
         //tabName
-        tabOptions:{},
+        tabOptions:[
+        ],
         techShow:false,
         techName:'',
         techStationId:'',
@@ -194,7 +195,8 @@
         xingmu: '',
         list: [1, 2, 3],
         listTech: {},
-        listorderServer:[],
+        listorderServer: {
+        },
         listorderServer1: {
         },        
         checked: false,
@@ -203,6 +205,10 @@
         ortech: false,
         total: null,
         pageSize:10,
+        total1:null,
+        pageSize1:10,
+        total2:null,
+        pageSize2:10,
         pageNumber:1,
         pageNumber1:1,
         pageNumber2:1,
@@ -220,47 +226,26 @@
     methods: {     
       cityChange(value){
         
-	  },
-		// 二级数据变化的时候
-		handleOneCheckedCitiesChange:function (item) {            		
-			let checkedCount = item.checkedCities.length;//二级选中的数量
-			if (typeof item.isIndeterminate === "undefined") {
-				this.$set(item, "isIndeterminate", false);
-			}
-			if (typeof item.checkAll === "undefined") {
-				this.$set(item, "checkAll", false);
-			}
-			item.isIndeterminate = checkedCount > 0 && checkedCount < item.commoditys.length;
-			item.checkAll = checkedCount === item.commoditys.length;
-
-		},
-		//全选操作
-        handleOneCheckAll:function (event,item) {
-            let arr = [];
-            for (let a = 0; a < item.commoditys.length; a++) {
-                arr.push(item.commoditys[a].commodityId)
-            }
-            item.checkedCities = event.target.checked ? arr : [];
-        },	  
+      },
       //全局搜索按钮
       search(){
-		 var obj={
+				 var obj={
            name:this.localSearch,
-		}
-		this.getList(obj,this.pageNumber,this.pageSize);
+				 }
+				this.getList(obj,this.pageNumber,this.pageSize);
       },
       //全局新增按钮
       add(status,row){
           this.dialogVisible = true;
-		  this.dialogStatus=status;
+          this.dialogStatus=status;
           this.$nextTick(() => {
               this.getOrderserver();
           })
           this.$nextTick(() => {
               this.getorderTech(); 
-          }) 		  		         
+          })         
           this.originData=[];
-          this.tabOptions={};                  
+          this.tabOptions=[]                  
          if(this.dialogStatus =='add'){
            //新增操作
             this.ruleForm2={};
@@ -293,12 +278,34 @@
       },
       //服务数据回显二级选中
       selectionreturn(){
-                                     
+        if(this.ruleForm2.serItems.length){
+           this.listorderServer.forEach((row) => {
+                for(var i=0 ;i<this.ruleForm2.serItems.length;i++){
+                      if(row.itemId == this.ruleForm2.serItems[i].itemId){                   
+                        this.$nextTick(() => {                         
+                          this.$refs.multipleTable.toggleRowSelection(row);  
+                        })
+                        
+                      }
+                }
+           })           
+        }                                      
          
       },
       //技师数据回显二级选中
       selectionreturn1(){
-                                                
+        if(this.tabOptions.length){
+           this.listTech.forEach((row) => {
+                for(var i=0 ;i<this.tabOptions.length;i++){
+                      if(row.technicianId == this.tabOptions[i].technicianId){                   
+                        this.$nextTick(() => {                         
+                          this.$refs.multipleTable1.toggleRowSelection(row);  
+                        })
+                        
+                      }
+                }
+           })
+        }                                                
       },      
       //新增或编辑弹窗保存
       submitForm(formName) {
@@ -367,19 +374,32 @@
       },
       //选择服务弹窗保存
       submitForm1() {
-		//先遍历数据中选中的再保存
-		this.ruleForm2.serItems=this.listorderServer;         
+        if(this.dialogStatus == 'add'){
+           this.ruleForm2.serItems=this.multipleSelection;
+           this.$refs.multipleTable.clearSelection();
+        }
+        if(this.dialogStatus == 'edit'){
+          this.ruleForm2.serItems=this.multipleSelection;         
+          this.$refs.multipleTable.clearSelection();         
+        } 
+         
         this.flagserver = false				
       },
       //选择服务弹窗cancel
-      resetForm1() {        
+      resetForm1() {
+        if(this.dialogStatus == 'add'){
+          
+        }
+        if(this.dialogStatus == 'edit'){
+          this.$refs.multipleTable.clearSelection();
+        }        
+         this.$refs.multipleTable.clearSelection();
          this.flagserver = false
       },
       //选择技师弹出层保存
-      submitForm2() {
-		//先遍历数据中选中的再保存
-	
-        this.tabOptions=Object.assign({},this.listTech)
+      submitForm2() {	
+        this.tabOptions=this.multipleSelection1;
+        this.$refs.multipleTable1.clearSelection(); 
         this.ordertech = false;		
       },
       //选择技师弹出层cancel
@@ -404,13 +424,39 @@
            name:this.localSearch,
 				 }
 				this.getList(obj,this.pageNumber,this.pageSize);        
-      },          
+      },
+      handleSizeChange1(val) {
+        this.pageSize1=val;        
+				 var obj={
+           itemName:this.xingmu,
+				 }
+				this.getOrderserver(obj,this.pageNumber1,this.pageSize1);   
+      },
+      handleSizeChange2(val) {
+        this.pageSize2=val;        
+				 var obj={
+         }
+         this.getorderTech(obj,this.pageNumber2,this.pageSize2);  
+      },            
       handleCurrentChange(val) {
         this.pageNumber=val;
-        var obj={
-        }
-	    this.getList(obj,this.pageNumber,this.pageSize);   
-      },         
+				 var obj={
+				 }
+				this.getList(obj,this.pageNumber,this.pageSize);   
+      },
+       handleCurrentChange1(val) {
+         this.pageNumber1=val;
+				 var obj={
+           name:this.xingmu,
+				 }
+				this.getOrderserver(obj,this.pageNumber1,this.pageSize1);   
+      },
+      handleCurrentChange2(val) {
+        this.pageNumber2=val;
+				 var obj={
+				 }
+				this.getorderTech(obj,this.pageNumber2,this.pageSize2);    
+      },           
       //总数据删除
       handleDelete(row) { 
         this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -445,50 +491,80 @@
       },
       //选择服务按钮
       choseServer() {
-		this.flagserver = true;
+        this.flagserver = true;
         this.$nextTick(() => {
             this.getOrderserver();
-        })		 		                                 
+        })
+        this.$nextTick(() => {   
+            this.selectionreturn()
+        })                                 
       },
       //服务列表获取
       getOrderserver(pramsObj,pageNo,pageSize){              
-		var obj = pramsObj;
+		  	var obj = pramsObj;
         orderServer(obj,pageNo,pageSize).then(res => {      
-          if (res.data.code === 1) {              
-			  this.listorderServer=res.data.data.list;
-			  console.log(this.listorderServer)                                                                  
+          if (res.data.code === 1) {               
+              this.listorderServer=res.data.data.list;                                         
+              var obj1=res.data.data.list;
+             if(res.data.data.list.length){
+                for(var i=0;i<obj1.length;i++){                
+                        var comLen=obj1[i].serItemCommoditys.length;
+                        var objName=''
+                      for(var j=0; j<comLen;j++){                           
+                                objName+=','+obj1[i].serItemCommoditys[j].commodityName;
+                                
+                      }
+                      this.listorderServer[i].serItemCommoditys=objName.substring(1);                                                                      
+                  } 
+              }
+
+              this.$nextTick(() => {
+                 this.getdata();
+              })                           
           }else{
 
           }          
           
         }).catch(res=>{
             
-		});
+			  });
 
-      },      
+      },
+      //存储原服务数据
+      getdata(pramsObj,pageNo,pageSize){
+  		  	var obj = pramsObj;
+        orderServer(obj,pageNo,pageSize).then(res => {      
+          if (res.data.code === 1) {               
+              this.listorderServer1=res.data.data.list;                                                                   
+          }else{
+
+          }          
+          
+        }).catch(res=>{
+            
+			  });         
+      },
+      
       //选择技师按钮
       orderTech() {
-		 this.ordertech = true;
-		 this.$nextTick(() => {
+        this.ordertech = true;
+         this.$nextTick(() => {
               this.getorderTech(); 
          })
+        this.$nextTick(() => {   
+            this.selectionreturn1()
+        }) 
       },
       //技师列表获取
       getorderTech(pramsObj,pageNo,pageSize){
         getListser().then(res => {
           this.options = res.data;
         });                 
-		var obj = pramsObj;
+		  	var obj = pramsObj;
         Skillserver(obj,pageNo,pageSize).then(res => {
           if (res.data.code === 1) {
-			   //for(let a=0;a<res.data.data.list.length;a++){
-               // if (typeof res.data.data.list[a].checkAll === "undefined") {
-					//  alert(res.data.data.list[a].checkAll)
-                     // res.data.data.list[a].$set(res.data.data.list[a], "checkAll", false);
-                  //}
-			  // }
-				this.listTech=res.data.data.list 
-				console.log(this.listTech)                            
+                this.listTech=res.data.data.list
+                this.total2=res.data.data.count;                            
           }else{
 
           }          
@@ -498,33 +574,60 @@
 			  });
 
       },      
-
+      // 选择服务全选
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+        if(val.length == 0 && this.ruleForm2.serItems.length){
+              this.listorderServer.forEach((row) => {
+                  for(var i=0 ;i<this.ruleForm2.serItems.length;i++){
+                        if(row.itemId == this.ruleForm2.serItems[i].itemId){                   
+                          this.$nextTick(() => {                         
+                            this.$refs.multipleTable.toggleRowSelection(row);  
+                          })                       
+                        }
+                  } 
+                })
+        }      
+      },
+      // 选择技师全选
+      handleSelectionChange1(val) {
+        this.multipleSelection1 = val;
+        if(val.length == 0 && this.tabOptions.length){
+           this.listTech.forEach((row) => {
+                for(var i=0 ;i<this.tabOptions.length;i++){
+                      if(row.technicianId == this.tabOptions[i].technicianId){                   
+                        this.$nextTick(() => {                         
+                          this.$refs.multipleTable1.toggleRowSelection(row);  
+                        })
+                        
+                      }
+                }
+           })           
+        }
+      },
       //选择服务弹出层查询按钮      
       quiry() {
-		var obj={
-			itemName:this.xingmu,
-		}
-		this.getOrderserver(obj);           
+				 var obj={
+           itemName:this.xingmu,
+				 }
+				this.getOrderserver(obj,this.pageNumber1,this.pageSize1);           
       },
       //选择技师弹出层查询按钮
       searchTeh(){
           var obj={
               technicianName:this.techName,
               techStationId:this.techStationId
-		  }
-           this.getorderTech(obj); 
+				   }
+           this.getorderTech(obj,this.pageNumber2,this.pageSize2); 
       }
     },
     mounted() {
-	  this.getList();
-			
+      this.getList();
     }
   }
 
 </script>
-<style  scoped>
-   .table-d table{ background:#ddd}
-.table-d table td{ background:#FFF}
+<style scoped>
   .tabWrap{width:100px;margin-right:20px;font-size:12px;display:inline-block;height:25px;text-align:center;line-height:25px;border-radius:12px;border:1px solid #bfcbd9;position:relative;}
   .closePic{cursor:pointer;color:#bfcbd9;font-size:12px;position:absolute;margin-left:80px;top:0px;}
   .checkRightBox {
@@ -562,16 +665,30 @@
   }
 
   .btn_pad {
-    margin: 0px 0px 10px 20px;
+    margin: 0px 0px 15px 20px;
   }
 
   .btn_right {
     float: right;
   }
 
+  .skill-ul {
+    padding: 0 30px;
+  }
+
+  .skill-ul>li {
+    margin: 20px 0;
+  }
 
 
+  .skill-ul>li>div>p:nth-child(1) {
+    width: 120px;
+  }
 
+  .skill-ul>li>div>p {
+    display: flex;
+    line-height: 36px;
+  }
 
   .tech-order-jnsk {
     width: 400px;
@@ -615,8 +732,14 @@
     zoom: 1;
   }
 
+  .skill-server-ul {
+    padding: 0 20px;
+  }
+
+  .skill-server-ul>li {
+    margin: 10px 0;
+  }
 .role-table {
-    list-style:none;
     border: 1px solid #e0e0e0;
     border-bottom: none;
     padding: 0;
@@ -644,7 +767,6 @@
     width: 30%;
     float: left;
     padding-left: 10px;
-	text-align:left;
     user-select: none;
     cursor: pointer;
 }
@@ -655,7 +777,7 @@
 
 .right {
     width: 70%;
-	float: left;
+    float: left;
     padding-left: 10px;
 }
 
@@ -676,5 +798,5 @@
 }
 [v-cloak] {
     display: none;
-}			
+}
 </style>
