@@ -270,6 +270,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      pageNumber:1,
       pageSize: 10,
       total: 1,
       search: {

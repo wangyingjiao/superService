@@ -11,7 +11,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -31,13 +31,13 @@
       <el-table-column width="180px" align="center" label="手机号" prop="mobile">
       </el-table-column>
 
-      <el-table-column width="100px"  label="岗位名称" align="center" prop="roleName">
+      <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
       </el-table-column>
 
-      <el-table-column width="150px" align="center" label="服务机构" prop="office.name">
+      <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" prop="stationName">
+      <el-table-column  min-width="110px" align="center" label="服务站" prop="station.name">
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
          <template scope="scope">
@@ -48,8 +48,8 @@
 
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('user_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('user_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
         </template>
       </el-table-column>
 
@@ -273,6 +273,7 @@ export default {
 				}
     };
     return {
+      btnShow:this.$store.state.user.buttonshow,
       list: null,
       total: null,
       listLoading: true,
@@ -284,7 +285,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
-
+      pageNumber:1,
       pageSize: 10,
       total: 1,
       search: {
@@ -404,9 +405,9 @@ export default {
   },
   created() {
     this.getList();
-    getSList().then(res => {
-      console.log(res.data.data);
-      this.mechanismCheck = res.data.data;
+    getSList({}).then(res => { // 服务机构
+      this.mechanismCheck = res.data.data.list;
+    
     });
     getStation().then(res => {
       console.log(res.data.data);
@@ -545,7 +546,7 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "删除失败"
+                  message: res.data.data
                 });
               }
             })
@@ -583,12 +584,13 @@ export default {
     },
     mechChange(val) {
       this.temp.mechanism = val;
-      this.servicestation = "";
+      this.temp.servicestation = ""
       console.log(val);
       var obj = {
-        officeId: val
+        orgId: val
       };
       getFuwu(obj).then(res => {
+        console.log(res)
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });

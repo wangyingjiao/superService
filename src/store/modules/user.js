@@ -41,9 +41,7 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          console.log(response.data.data.user.name)
           localStorage.setItem('name', response.data.data.user.name)
-          console.log(localStorage.getItem('name'))
           const data = response.data
           setToken(data.token)
           resolve()
@@ -69,7 +67,7 @@ const user = {
     Getarea({ commit }) {
       return new Promise((resolve, reject) => {
         getArea().then(res => {
-          //console.log(res)
+          // console.log(res)
           const data = res.data
           commit('SET_AREA', data.data)
           resolve(res)
