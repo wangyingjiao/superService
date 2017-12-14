@@ -13,7 +13,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-     <button class="button-small btn_right btn_pad ceshi ceshi5" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+     <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf(office_insert) > -1" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -43,7 +43,7 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-           <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
+           <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf(office_update) > -1" @click="handleUpdate(scope.row)"></el-button>
           </el-button>
         </template>
       </el-table-column>
@@ -149,10 +149,10 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="服务城市" prop="serviceCityId" >
+        <el-form-item label="服务城市" prop="cityCodes" >
         <!-- <el-form-item label="服务城市"  > -->
          
-           <el-select  style='width: 400px;'  v-model="temp.serviceCityId" @change="changeCity"  multiple  placeholder="请选择">
+           <el-select  style='width: 400px;'  v-model="temp.cityCodes" @change="changeCity"  multiple  placeholder="请选择">
             
             <el-option-group
               v-for="(group,index) in areaOptions"
@@ -259,6 +259,7 @@ export default {
 				}
     };
     return {
+      btnShow: this.$store.state.user.buttonshow,
       list: [],
       total: null,
       listLoading: true,
@@ -292,7 +293,7 @@ export default {
         // cusTownId: "",
         areaCodes: [],
         scopeType: "",
-        serviceCityId: [],
+        cityCodes: [],
         visable: "1"
       },
       province: "",
@@ -343,7 +344,7 @@ export default {
         scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
-        serviceCityId: [
+        cityCodes: [
           {
             required: true,
             type: "array",
@@ -481,11 +482,13 @@ export default {
           if (res.data.code == "1") {
             this.listLoading = false;
 
-            var arr = [];
-            //arr = res.data.data.serviceCityId.split(",");
-            arr.pop();
+            // var arr = [];
+            // //arr = res.data.data.cityCodes.split(",");
+            // arr.pop();
+            console.log(123)
+            console.log(res.data.data.cityCodes)
             this.temp = Object.assign({}, res.data.data);
-            this.temp.serviceCityId = res.data.data.cityCodes;
+           // this.temp.cityCodes = res.data.data.cityCodes;
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -525,10 +528,10 @@ export default {
       console.log(val);
     },
     create(formName) {
-      console.log(this.temp.serviceCityId);
+      console.log(this.temp.cityCodes);
       var arr = [];
-      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
-        arr.push(this.temp.serviceCityId[i]);
+      for (var i = 0; i < this.temp.cityCodes.length; i++) {
+        arr.push(this.temp.cityCodes[i]);
       }
       var obj = {
         name: this.temp.name, //机构名
@@ -537,7 +540,8 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        cityCodes: arr,
+        //cityCodes: arr,
+        cityCodes: this.temp.cityCodes,
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -580,9 +584,10 @@ export default {
     },
     update(formName) {
       var arr = [];
-      for (var i = 0; i < this.temp.serviceCityId.length; i++) {
-        arr.push(this.temp.serviceCityId[i]);
+      for (var i = 0; i < this.temp.cityCodes.length; i++) {
+        arr.push(this.temp.cityCodes[i]);
       }
+      console.log( this.temp.cityCodes)
       var obj = {
         id: this.updateId,
         name: this.temp.name, //机构名
@@ -591,7 +596,8 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        cityCodes: arr,
+        //cityCodes: arr,
+        cityCodes: this.temp.cityCodes,
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -601,6 +607,7 @@ export default {
         areaCode: this.temp.areaCodes[2] //区
       };
       console.log(obj)
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           addMech(obj).then(res => {
@@ -637,7 +644,7 @@ export default {
         remark: "",
         areaCodes: [],
         scopeType: "",
-        serviceCityId: []
+        cityCodes: []
       };
     }
    
