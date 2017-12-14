@@ -7,7 +7,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi" v-if="btnShow.indexOf('role_insert') >= 0"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table
       :key='tableKey'
       :data="list"
@@ -33,8 +33,8 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+          <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+          <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('role_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
 
         </template>
       </el-table-column>
@@ -100,9 +100,6 @@
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
-        <!-- <el-button v-if="dialogStatus=='create'" type="primary" @click="create">保 存</el-button>
-        <el-button v-else type="primary" @click="update">保 存</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button> -->
       </div>
     </el-dialog>
 
@@ -131,6 +128,7 @@ export default {
   },
   data() {
     return {
+      btnShow: this.$store.state.user.buttonshow,
       list: [],
       total: null,
       listLoading: false,
@@ -144,6 +142,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      pageNumber: 1,
       pageSize: 10,
       total: 1,
       // stationState: "1",
@@ -152,7 +151,7 @@ export default {
         dataScope: "",
         check: []
       },
-      importanceOptions: [1, 2, 3],
+      checked: [],
       station: [1, 2, 3],
       stationName: "",
       stationLv: [
@@ -177,7 +176,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       tableKey: 0,
-      data2: data,
+      data2: [],
       defaultProps: {
         children: "subMenus",
         label: "name"
@@ -201,17 +200,47 @@ export default {
       }
     };
   },
-  // watch:{
-  //    'temp.check':{
-  //      handler(curVal,oldVal){
-  //        console.log(123123)
-  //        console.log(curVal,oldVal)
-  //        if(this.temp.check.indexOf('887fd8696f9f46f2a7129489ca60038f') != -1){
+  watch: {
+    // "temp.check": {
+    //   handler(curVal, oldVal) {
+    //     // 判断顺序（增，删，改）
 
-  //        }
-  //      }
-  //    }
-  // },
+    //     // 员工
+    //     if (
+    //       this.temp.check.indexOf("887fd8696f9f46f2a7129489ca60038f") != -1 ||
+    //       this.temp.check.indexOf("b9b621428ef24acfb695c31395c2efb4") != -1 ||
+    //       this.temp.check.indexOf("761d02662d7546cfa18e4d0fc5af2168") != -1
+    //     ) {
+    //       this.$refs.domTree.setChecked(
+    //         "ae3383c47b7b4889a20c5eca04f24419",
+    //         true
+    //       );
+    //     }
+    //     // 岗位
+    //     if (
+    //       this.temp.check.indexOf("ca01d14ee3174f30a3a16274041c63c4") != -1 ||
+    //       this.temp.check.indexOf("b5c64c8418f748179a50bca5f1fe1981") != -1 ||
+    //       this.temp.check.indexOf("2490d6c57fa7492db6feae0322ba1e29") != -1
+    //     ) {
+    //       this.$refs.domTree.setChecked(
+    //         "2c77fc7f3a1744fc984b78640bb697d0",
+    //         true
+    //       );
+    //     }
+    //     // 服务机构
+    //     if (
+    //       this.temp.check.indexOf("02806b87f7614ce385174075c7bd9425") != -1 ||
+    //       this.temp.check.indexOf("c54aa1a86bb7490886c9bbe3c3b3ebc9") != -1 ||
+    //       this.temp.check.indexOf("3b0069b7b482422bab8cae52e5d79734") != -1
+    //     ) {
+    //       this.$refs.domTree.setChecked(
+    //         "d0bab306e5844b43a7b60a8bd7f22b1b",
+    //         true
+    //       );
+    //     }
+    //   }
+    // }
+  },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -225,6 +254,7 @@ export default {
   created() {
     this.getList();
     getMenudata().then(res => {
+      console.log("权限列表");
       console.log(res);
       this.data2 = res.data.data;
     });
@@ -290,8 +320,15 @@ export default {
       });
     },
     handTreechange(a, b, c) {
+      console.log(a)
+      // 
+      console.log(a.parentIds)
+
+      // console.log(this.$refs.domTree.getCheckedKeys())
+      // console.log(this.$refs.domTree.getCheckedNodes())
+  
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-      console.log(this.temp.check);
+    console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -313,7 +350,6 @@ export default {
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      // var promise = new Promise(function(resove, reject) {
       getPower(row.id).then(res => {
         console.log(res);
         this.temp.check = res.data.data.menuIdList;
@@ -350,14 +386,14 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "该信息不可删除或者没有权限"
+                  message: res.data.data
                 });
               }
             })
             .catch(() => {
               this.$message({
                 type: "warning",
-                message: "发生未知错误，请稍后再试"
+                message: "服务器已断开，请稍后再试"
               });
             });
         })
@@ -375,14 +411,57 @@ export default {
         }
       }
     },
+    getFather(data) {
+      console.log(121233213)
+       for (var i in data){
+        //  if(this.data2.indexOf(data[i].id) > -1){
+        //    console.log(i)
+        //    data.push(data[i].parentId)
+        //  }else {
+        //    this.getFather(data[i].submenus)
+        //  }
+        if(data[i].subMenus != undefined){
+           console.log(i)
+           this.getFather(data[i].subMenus)
+        }else{
+          if(this.data2.indexOf(data[i].id) > -1){
+            console.log(data[i].parentId)
+          }
+        }
+       }
+    },
     create(formName) {
-      console.log(this.temp);
+      //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
+      console.log(arr);
+      var parentId = []
+      for (var i = 0; i < this.data2.length; i++) {
+        //console.log("i" + i);
+        //console.log(this.data2[i].subMenus);
+        for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+          //console.log("j" + j);
+          //console.log(this.data2[i].subMenus[j].subMenus);
+          var a = this.data2[i].subMenus[j]
+          if(a.subMenus != undefined){
+            for (var k=0;k< a.subMenus.length;k++){
+              if(arr.indexOf(a.subMenus[k].id) > -1){
+                console.log(a.subMenus[k].parentIds)
+              }
+            }
+          }else{
+            console.log("第二层")
+            if(arr.indexOf(this.data2[i].subMenus[j].id) > -1){
+               console.log(this.data2[i].subMenus[j].parentIds)
+            }
+          }
+        }
+      }
+      
       var str = "";
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-
+      return;
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {
@@ -408,7 +487,7 @@ export default {
               // this.resetTemp();
               this.$message({
                 type: "error",
-                message: "发生未知错误，或者角色已存在"
+                message: res.data.data
               });
             }
           });
