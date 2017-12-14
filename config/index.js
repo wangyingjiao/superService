@@ -8,7 +8,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
-    productionSourceMap: true,
+    productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -29,19 +29,19 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       // '/api': {
-      //   target: 'https://apiservice.guoanshequ.wang/apiservice/',
-      //   secure: false, 
-      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
-      //   pathRewrite: {
+      //   'target': 'https://apiservice.guoanshequ.wang/apiservice/',
+      //   'secure': false, 
+      //   'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
+      //   'pathRewrite': {
       //     '^/api': ''
       //   }
       '/api': {
-        target: 'http://10.16.70.80:8800/',
+        target: 'http://10.16.70.133:8800/',
         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {
           '^/api': ''
         }
-        }
+      }
       
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
