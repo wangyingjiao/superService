@@ -13,7 +13,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-     <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf(office_insert) > -1" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+     <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('office_insert') > -1" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -43,7 +43,7 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-           <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf(office_update) > -1" @click="handleUpdate(scope.row)"></el-button>
+           <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('office_update') > -1" @click="handleUpdate(scope.row)"></el-button>
           </el-button>
         </template>
       </el-table-column>
@@ -226,7 +226,6 @@ import {
   getMechPage,
   getCity
 } from "@/api/base";
-import { getArea } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -481,11 +480,6 @@ export default {
 
           if (res.data.code == "1") {
             this.listLoading = false;
-
-            // var arr = [];
-            // //arr = res.data.data.cityCodes.split(",");
-            // arr.pop();
-            console.log(123)
             console.log(res.data.data.cityCodes)
             this.temp = Object.assign({}, res.data.data);
            // this.temp.cityCodes = res.data.data.cityCodes;
