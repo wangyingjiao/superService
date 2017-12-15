@@ -72,7 +72,7 @@
             <div style="margin-left:20px;" @click="dialogVisibleEdit = true">
               <img src="../../../static/icon/修改.png" alt="" style="width:30px">
             </div>
-            <div style="margin-left:20px;">
+            <div style="margin-left:20px;" @click="techDelete">
               <img src="../../../static/icon/删除.jpg" alt="" style="width:30px">
             </div>
           </div>
@@ -201,7 +201,7 @@
 		<techni-edit></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
-    <el-dialog title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
+    <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
       <div>
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
@@ -455,7 +455,7 @@
           </li>
           <li id="confirmation">
                 <button class="button-large-fourth" @click="submitFormPer('personal')">保存信息</button>
-                <el-button>取消</el-button>
+                <el-button @click="handleClose('personal')">取消</el-button>
           </li>
         </ul>
 		 </ul>
@@ -978,6 +978,11 @@
       techniEdit
     },
     methods: {
+      handlePreview(file){},
+     handleClose(formName){
+       this.$refs[formName].resetFields();
+       this.teachArr = [];
+     },
       // 工作时间删除
       deletes(index){
         this.teachArr.splice(index,1)
@@ -1022,7 +1027,24 @@
 		  this.teachArr.push(obj)
 		  console.log(this.teachArr,"this.teachArr--12323--")
 		   this.isB  = false;
-	  },
+    },
+    techDelete(){
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
       roomSel2(index, obj) {
         this.isA = index;
       },
@@ -1389,14 +1411,16 @@
 
   .tech-green {
     border: solid 1px green;
-
+     background:url('../../../static/icon/Selected.png') no-repeat;
+    background-size:15px 15px;
+    background-position: bottom right;
   }
-  .tech-green::after{
+  /* .tech-green::after{
     content:"✔";
     width: 10px;
     height: 10px;
     margin-top:6px;
-    margin-left:0px; 
+    margin-left:0px;  */
     /* border-bottom:10px solid green;
     border-left:10px solid transparent;
     color: #fff;
@@ -1408,7 +1432,7 @@
     margin-top:12px;
     margin-left:0px; 
     color: #fff; */
-  }
+  /* } */
 
   .tallys {
     color: #fff;
@@ -1486,9 +1510,8 @@
     display: flex;
     flex-wrap: wrap;
     text-align: center;
-    height: 24px;
-    line-height: 24px;
-    padding: 0 0 0 5px; 
+    line-height: 26px;
+    padding: 0 7px; 
     justify-content: center;
     overflow: hidden;
   }
