@@ -342,7 +342,7 @@
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
         <button class="button-large" @click="subForm('basic')">保 存</button>    
-        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
+        <button class="button-cancel" @click="cancel('basic')">取 消</button>
       </div>
     </el-dialog>
 
@@ -455,12 +455,14 @@ export default {
         sortNum:'',
         majorSort: "all",
         commoditys:[],
-        cityCodes:[]
+		cityCodes:[],
+		description:''
       },
       basicRles: {
         name: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         // picture: [{ required: true, message: "请上传至少一张图片" }],
-        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }]
+		info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
+		description:[{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
 
       goods_info: {
@@ -684,7 +686,7 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        majorSort: this.basicForm.majorSort
+        majorSort: this.tabs
       };
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
@@ -833,7 +835,23 @@ export default {
     },
     resetTemp() {
       this.temp = {};
-    },
+	},
+	//取消
+	cancel(fromName){
+		// console.log(fromName,"-----")
+		// this.$refs[fromName].resetFields()  //基本信息重置
+		// console.log()
+		// this.resetForm('goods_info')
+		// //  this.basicForm.commoditys = []  //商品信息table重置
+		// this.goods_info = {};   //商品信息table重置
+		this.dialogFormVisible = false
+		// alert("dawdaw")
+		// this.basicForm = {}
+		// this.basicForm.persons = [];
+		// this.goods_info.minPurchase = ''
+		// this.dialogFormVisible = false
+	},
+	//保存
     subForm(formName){
       var that = this
       this.$refs[formName].validate(valid => {
@@ -918,8 +936,8 @@ export default {
             obj.minPurchase = goods.minPurchase;
             obj.persons = goods.persons;
             this.basicForm.commoditys.push(obj)
-            goods.persons = [];
-            // arr = []
+			// arr = []
+			goods.persons = [];
             this.goods_info.minPurchase = ''
             this.resetForm('goods_info')
             console.log(obj,'obj-----')
@@ -935,8 +953,9 @@ export default {
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
-      this.goods_info.minPurchase = '';
+	  this.$refs[formName].resetFields();
+	   this.goods_info.persons = [];
+	   this.goods_info.minPurchase = '';
     }
   }
 };
