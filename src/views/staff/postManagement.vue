@@ -1,6 +1,6 @@
 <template>
-<div>
-  <div class="filter-container bgWhite">
+  <div>
+    <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search">
       </el-input>
       <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
@@ -9,7 +9,7 @@
     <div class="bgWhite">
     <button class="button-small btn_right btn_pad ceshi" v-if="btnShow.indexOf('role_insert') >= 0"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table
-      :key='tableKey'
+      :key="tableKey"
       :data="list"
       stripe
       v-loading="listLoading"
@@ -24,12 +24,6 @@
       <el-table-column  label="岗位名称" align="center" prop="name" >
       </el-table-column>
 
-      <!-- <el-table-column class-name="status-col" label="状态" prop="userable" align="center">
-       <template scope="scope">
-          <span v-if="scope.row.useable =='1'">可用</span>
-					<span v-if="scope.row.useable =='0'">不可用</span>
-        </template>
-      </el-table-column> -->
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
@@ -63,9 +57,17 @@
         label-width="160px" 
         style='width: 500px; margin-left:20px;'>
 
+        <el-form-item label=" 所属机构"  prop="officeId">
+          <el-select style='width: 400px;' class="filter-item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
+            <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="岗位名称" prop="name">
           <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
+
         <el-form-item label="等级" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
@@ -114,7 +116,9 @@ import {
   addStation,
   delStation,
   getPower,
-  getMenudata
+  getMenudata,
+  getSList,
+  chkName
 } from "@/api/staff";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -127,9 +131,29 @@ export default {
     waves
   },
   data() {
+    var validateName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("岗位名不能为空"));
+      } else {
+        console.log(this.dialogStatus);
+        if (this.dialogStatus == "create") {
+          var obj = {};
+          chkName(obj).then(res => {
+            if (res.data.code == 0) {
+              callback(new Error("岗位名重复！"));
+            } else {
+              callback();
+            }
+          });
+        }else{
+          callback();
+        }
+      }
+    };
     return {
       btnShow: this.$store.state.user.buttonshow,
       list: [],
+      officeIds: [],
       total: null,
       listLoading: false,
       state: false,
@@ -147,12 +171,13 @@ export default {
       total: 1,
       // stationState: "1",
       temp: {
+        officeId: "",
         name: "",
         dataScope: "",
         check: []
       },
       checked: [],
-      station: [1, 2, 3],
+      station: "",
       stationName: "",
       stationLv: [
         { id: "1", value: "一级" },
@@ -184,11 +209,18 @@ export default {
       powerList: [],
       isIndeterminate: true,
       rules: {
+        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
         name: [
-          { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
+          {
+            required: true,
+            validator: validateName,
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        dataScope: [
+          { required: true, message: "等级不能为空", trigger: "change" }
+        ],
         check: [
           {
             type: "array",
@@ -204,7 +236,6 @@ export default {
     // "temp.check": {
     //   handler(curVal, oldVal) {
     //     // 判断顺序（增，删，改）
-
     //     // 员工
     //     if (
     //       this.temp.check.indexOf("887fd8696f9f46f2a7129489ca60038f") != -1 ||
@@ -258,12 +289,21 @@ export default {
       console.log(res);
       this.data2 = res.data.data;
     });
+    getSList({}).then(res => {
+      console.log("所属机构");
+      console.log(res);
+      this.officeIds = res.data.data.list;
+      console.log(this.officeIds)
+    });
   },
   methods: {
+    aaa(val){
+      console.log(val)
+    },
     getList() {
       this.listLoading = true;
       var obj = {};
-      getStationPage(obj).then(res => {
+      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -320,15 +360,9 @@ export default {
       });
     },
     handTreechange(a, b, c) {
-      console.log(a)
-      // 
-      console.log(a.parentIds)
-
-      // console.log(this.$refs.domTree.getCheckedKeys())
-      // console.log(this.$refs.domTree.getCheckedNodes())
-  
+      console.log(a);
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-    console.log(this.temp.check);
+      console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -341,8 +375,10 @@ export default {
     },
     lvChange(value) {
       console.log(value);
-      console.log(this.dataScope);
-      this.temp.dataScope = value;
+      // this.temp.dataScope = value;
+    },
+    offChange(val) {
+      console.log(val);
     },
     handleCreate() {
       this.resetTemp();
@@ -412,56 +448,56 @@ export default {
       }
     },
     getFather(data) {
-      console.log(121233213)
-       for (var i in data){
+      console.log(121233213);
+      for (var i in data) {
         //  if(this.data2.indexOf(data[i].id) > -1){
         //    console.log(i)
         //    data.push(data[i].parentId)
         //  }else {
         //    this.getFather(data[i].submenus)
         //  }
-        if(data[i].subMenus != undefined){
-           console.log(i)
-           this.getFather(data[i].subMenus)
-        }else{
-          if(this.data2.indexOf(data[i].id) > -1){
-            console.log(data[i].parentId)
+        if (data[i].subMenus != undefined) {
+          console.log(i);
+          this.getFather(data[i].subMenus);
+        } else {
+          if (this.data2.indexOf(data[i].id) > -1) {
+            console.log(data[i].parentId);
           }
         }
-       }
+      }
     },
     create(formName) {
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
-      console.log(arr);
-      var parentId = []
-      for (var i = 0; i < this.data2.length; i++) {
-        //console.log("i" + i);
-        //console.log(this.data2[i].subMenus);
-        for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-          //console.log("j" + j);
-          //console.log(this.data2[i].subMenus[j].subMenus);
-          var a = this.data2[i].subMenus[j]
-          if(a.subMenus != undefined){
-            for (var k=0;k< a.subMenus.length;k++){
-              if(arr.indexOf(a.subMenus[k].id) > -1){
-                console.log(a.subMenus[k].parentIds)
-              }
-            }
-          }else{
-            console.log("第二层")
-            if(arr.indexOf(this.data2[i].subMenus[j].id) > -1){
-               console.log(this.data2[i].subMenus[j].parentIds)
-            }
-          }
-        }
-      }
-      
+      // console.log(arr);
+      // var parentId = []
+      // for (var i = 0; i < this.data2.length; i++) {
+      //   //console.log("i" + i);
+      //   //console.log(this.data2[i].subMenus);
+      //   for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+      //     //console.log("j" + j);
+      //     //console.log(this.data2[i].subMenus[j].subMenus);
+      //     var a = this.data2[i].subMenus[j]
+      //     if(a.subMenus != undefined){
+      //       for (var k=0;k< a.subMenus.length;k++){
+      //         if(arr.indexOf(a.subMenus[k].id) > -1){
+      //           console.log(a.subMenus[k].parentIds)
+      //         }
+      //       }
+      //     }else{
+      //       console.log("第二层")
+      //       if(arr.indexOf(this.data2[i].subMenus[j].id) > -1){
+      //          console.log(this.data2[i].subMenus[j].parentIds)
+      //       }
+      //     }
+      //   }
+      // }
+
       var str = "";
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-      return;
+      //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {
@@ -514,7 +550,9 @@ export default {
           };
           this.dialogFormVisible = false;
           addStation(obj).then(res => {
-            console.log(res);
+            this.resetTemp();
+            this.$refs.domTree.setCheckedKeys([]);
+            this.$refs[formName].resetFields();
             if (res.data.code === 1) {
               this.$message({
                 type: "success",
