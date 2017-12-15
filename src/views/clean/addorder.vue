@@ -42,15 +42,46 @@
 											</el-select>
 									</el-form-item>
 									<el-form-item label="选择商品:" prop="serverPro" required>
-											<div v-if="serverType==1" style="margin-left:-30px;">
-												<span>平米保洁:</span>																																
-											</div>
-											<div v-if="serverType==2" style="margin-left:-30px;">
-												<span>灯具清洁:</span>
-											</div>
-											<div style="margin-left:-50px;" v-if="serverType==3">
-					                            <span>居室保洁:</span>
-											</div>	
+											<div class="table-d">
+												<table width="80%" border="0" cellspacing="1" cellpadding="0">
+													<tr>
+													<td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
+													<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">商品名称</td>
+													<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">单价</td>
+													<td  style="background: #F8F8F9;height:30px;" align="center" width="10%">起购数</td>
+													<td  style="background: #F8F8F9;height:30px;" align="center" width="26%">数量</td>							
+													</tr>
+													<tr v-for="item in selectCommidty" :key="item.id" >
+													<td style="height:30px;" align="center"><el-checkbox  v-model="item.checkAll"></el-checkbox></td>
+													<td style="height:30px;" align="center">
+														<span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
+														<span v-if="item.type=='3'">
+															<el-select  style="width:120px;margin-top:3px;margin-bottom:3px;" v-model="item.roomId" placeholder="请选择">
+																<el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
+																</el-option>
+															</el-select>
+														</span>
+													</td>
+													<td style="height:30px;" align="center">
+														<span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
+														<span v-if="item.type=='3'">
+															<span v-if="item.roomId =='1'">{{item.testprice[item.roomId-1].pirce}}</span>
+															<span v-if="item.roomId =='2'">{{item.testprice[item.roomId-1].pirce}}</span>
+															<span v-if="item.roomId =='3'">{{item.testprice[item.roomId-1].pirce}}</span>
+														</span>
+													</td>
+													<td style="height:30px;" align="center">{{item.payNum}}</td>
+													<td style="height:30px;" align="center">
+														<span v-if="item.type=='1'"><el-input-number style="width:120px;margin-top:3px;margin-bottom:3px;" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
+														<span v-if="item.type=='2'"><el-input  style="width: 120px;margin-top:3px;margin-bottom:3px;"  placeholder="请输入技师姓名" v-model="item.number"></el-input></span>
+														<span v-if="item.type=='3'">{{item.number}}</span>
+														
+													</td>							
+													</tr>
+												</table>
+										</div>   																																
+
+	
 									</el-form-item>
 									<el-form-item label="总价:" prop="sumPrice" required>
 										<span>{{form1.sumPrice}}元</span>
@@ -355,7 +386,65 @@ export default {
 			  }
            
           }
-        },		
+		},
+		selectCommidty:[
+			{
+			  id:'1',
+			  checkAll:false,
+			  name:'大型灯',
+			  type:'1',
+			  pirce:'26',
+			  payNum:'2',
+			  number:2
+			},
+			{
+			  id:'4',
+			  checkAll:true,
+			  roomId:'1',
+			  testprice:[
+				  {pirce:'26'},
+				  {pirce:'52'},
+				  {pirce:'78'},
+			  ],
+			  roomType:[
+				{ key: "1", roomName: "一居室"},
+				{ key: "2", roomName: "二居室"},
+				{ key: "3", roomName: "三居室"}
+			  ],
+			  type:'3',
+			  pirce:'26',
+			  payNum:'2',
+			  number:1
+			},			
+			{
+			  id:'2',
+			  checkAll:false,
+			  name:'面积（平米)',
+			  type:'2',
+			  pirce:'26',
+			  payNum:'2',
+			  number:3
+			},
+			{
+			  id:'3',
+			  checkAll:false,
+			  roomId:'2',
+			  testprice:[
+				  {pirce:'26'},
+				  {pirce:'52'},
+				  {pirce:'78'},
+			  ],
+			  roomType:[
+				{ key: "1", roomName: "一居室"},
+				{ key: "2", roomName: "二居室"},
+				{ key: "3", roomName: "三居室"}
+			  ],
+			  type:'3',
+			  pirce:'26',
+			  payNum:'2',
+			  number:1
+			}						
+		],		
 		form: {
 		  custom:'',
           phone: '',
@@ -584,9 +673,11 @@ county1:'',
   },
   methods:{
 	  	next(){
-           if (this.active++ >= 4) this.active = 1;
+		   if (this.active++ >= 4) this.active = 1;
+		   
 		   if(this.active==3 && this.form2.sex==''){
-                 this.form2.sex="0"
+				 this.form2.sex="0";
+				 console.log(this.selectCommidty);
 		   }
 		},
 		prev(){
@@ -778,7 +869,7 @@ county1:'',
 	},
 	//服务类型下拉改变
 	serverchange(value){
-	   this.serverType=value;
+	   //this.serverType=value;
 	},
 	//小型灯减
 	smallminus(value){
@@ -954,7 +1045,8 @@ test1(){
 };
 </script>
 <style  lang="scss" scoped>
-
+   .table-d table{ background:#ddd}
+   .table-d table td{ background:#FFF}
 .tabWrap{width:100px;margin-right:20px;font-size:12px;display:inline-block;height:25px;text-align:center;line-height:25px;border-radius:12px;border:1px solid #bfcbd9;position:relative;}
 .closePic{cursor:pointer;color:#bfcbd9;font-size:12px;position:absolute;margin-left:80px;margin-top:-25px;}
 .addorder-container{
