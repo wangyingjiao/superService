@@ -348,7 +348,7 @@
 
 <script>
 import { getCusTable,deleteCus,saveCus} from "@/api/customer";
-import { getArea,getMech} from "@/api/base";
+import { getMech} from "@/api/base";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -689,41 +689,41 @@ county1:'',
 		//
 		provinceChange(value){
 			this.ruleForm.cusCityId='';
-      getArea(value).then(res => {
-			   this.cityOptions=res.data.data;
-      }).catch(res=>{
+    //   getArea(value).then(res => {
+	// 		   this.cityOptions=res.data.data;
+    //   }).catch(res=>{
         
-      });
+    //   });
        
 		},
 		//
 		cityChange(value){
 			this.ruleForm.cusTownId='';
-      getArea(value).then(res => {
-			   this.countyOptions=res.data.data;
-      }).catch(res=>{
+    //   getArea(value).then(res => {
+	// 		   this.countyOptions=res.data.data;
+    //   }).catch(res=>{
         
-      });			
+    //   });			
 
 		},
 		//
 		provinceChange1(value){
 			this.city1='';
-      getArea(value).then(res => {
-			   this.cityOptions1=res.data.data;
-      }).catch(res=>{
+    //   getArea(value).then(res => {
+	// 		   this.cityOptions1=res.data.data;
+    //   }).catch(res=>{
         
-      });
+    //   });
        
 		},
 		//
 		cityChange1(value){
 			this.county1='';
-      getArea(value).then(res => {
-			   this.countyOptions1=res.data.data;
-      }).catch(res=>{
+    //   getArea(value).then(res => {
+	// 		   this.countyOptions1=res.data.data;
+    //   }).catch(res=>{
         
-      });			
+    //   });			
 
 		},		
 		//customSex
@@ -844,12 +844,12 @@ county1:'',
 				this.sexName='';
 				//
 				var id=''
-		  	getArea(id).then(res => {
-					this.provinceOptions=res.data.data;
+		  	// getArea(id).then(res => {
+			// 		this.provinceOptions=res.data.data;
 					
-				}).catch(res=>{
+			// 	}).catch(res=>{
 					
-				});
+			// 	});
 				this.$nextTick(() => {
 		   			this.test();
 		    })					
@@ -858,11 +858,11 @@ county1:'',
 	changeAddress(){
 	    this.dialogVisible=true;
 				var id=''
-		  	getArea(id).then(res => {
-					this.provinceOptions1=res.data.data;					
-				}).catch(res=>{
+		  	// getArea(id).then(res => {
+			// 		this.provinceOptions1=res.data.data;					
+			// 	}).catch(res=>{
 					
-				});
+			// 	});
 				this.$nextTick(() => {
 		   			this.test1();
 		    })						

@@ -107,7 +107,7 @@
           </el-form-item>
 
           <el-form-item label="所在区域"  prop="cusTownId">
-							<el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
+							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
 							</el-select>
@@ -118,7 +118,7 @@
 							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.cusTownId" placeholder="请选择县区">
 										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
-							</el-select>
+							</el-select> -->
 				</el-form-item>
 
           <el-form-item label="详细地址" prop="addr">
@@ -264,7 +264,6 @@ import {
   getType,
   getMaster,
   setMaster,
-  getArea,
   getOffcity
 } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
@@ -441,11 +440,6 @@ export default {
   },
   created() {
     this.getList();
-    var id = "";
-    getArea(id).then(res => {
-      //console.log(res);
-      this.provinceOptions = res.data.data;
-    });
     getType().then(res => {
       console.log(res.data);
       this.stationType = res.data;
@@ -621,32 +615,6 @@ export default {
             message: "已取消删除"
           });
         });
-    },
-    provinceChange(value) {
-      this.temp.city = "";
-      this.temp.cusCityId = "";
-      this.temp.cusTownId = "";
-      getArea(value)
-        .then(res => {
-          this.cityOptions = res.data.data;
-        })
-        .catch(res => {});
-    },
-    //
-    cityChange(value) {
-      console.log(this.cityOptions);
-      this.temp.cusTownId = "";
-      for (var i = 0; i < this.cityOptions.length; i++) {
-        if (value == this.cityOptions[i].id) {
-          console.log(this.cityOptions[i].name);
-          this.temp.addrCityName = this.cityOptions[i].name;
-        }
-      }
-      getArea(value)
-        .then(res => {
-          this.countyOptions = res.data.data;
-        })
-        .catch(res => {});
     },
     create(formName) {
       var obj = {

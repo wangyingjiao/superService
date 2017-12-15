@@ -1,7 +1,7 @@
 <template>
-<div>
-  <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.phone">
+  <div>
+    <div class="filter-container bgWhite">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.mobile">
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
@@ -11,7 +11,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -31,13 +31,13 @@
       <el-table-column width="180px" align="center" label="手机号" prop="mobile">
       </el-table-column>
 
-      <el-table-column width="100px"  label="岗位名称" align="center" prop="roleName">
+      <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
       </el-table-column>
 
-      <el-table-column width="150px" align="center" label="服务机构" prop="office.name">
+      <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" prop="stationName">
+      <el-table-column  min-width="110px" align="center" label="服务站" prop="station.name">
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
          <template scope="scope">
@@ -48,8 +48,8 @@
 
       <el-table-column align="center" label="操作" width="150">
         <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('user_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('user_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
         </template>
       </el-table-column>
 
@@ -83,9 +83,9 @@
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label=" 手机号" prop="phone">
+        <el-form-item label=" 手机号" prop="mobile">
           <el-input 
-            v-model="temp.phone"
+            v-model="temp.mobile"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
@@ -107,29 +107,29 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 服务机构"  prop="mechanism">
-          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.mechanism" placeholder="请选择">
+        <el-form-item label=" 服务机构"  prop="officeId">
+          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 服务站" prop="servicestation" >
-          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.servicestation" placeholder="请选择">
+        <el-form-item label=" 服务站" prop="stationId" >
+          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="  选择岗位" prop="station">
-          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.station" placeholder="请选择">
+        <el-form-item label="  选择岗位" prop="role">
+          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <div class="btn_addStation" @click="dialogFormStation = true">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态" >
-          <el-select style='width: 400px;' @change="peoStateChange" class="filter-item" v-model="temp.peostate" placeholder="请选择">
-            <el-option v-for="item in peostateCheck" :key="item.id" :label="item.name" :value="item.id">
+          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
+            <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -142,9 +142,7 @@
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
-    
-
-     
+      
   </el-dialog>
   <el-dialog 
        title="新增岗位" 
@@ -199,9 +197,6 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <!-- <button class="button-cancel" @click="dialogFormStation = false">取 消</button> -->
-
-        <!-- <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp2')">保 存</button>     -->
         <button class="button-large" @click="create2('temp2')">保 存</button>    
         <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
       </div>
@@ -273,6 +268,7 @@ export default {
 				}
     };
     return {
+      btnShow:this.$store.state.user.buttonshow,
       list: null,
       total: null,
       listLoading: true,
@@ -284,32 +280,28 @@ export default {
         type: undefined,
         sort: "+id"
       },
-
+      pageNumber:1,
       pageSize: 10,
       total: 1,
       search: {
-        phone: "",
+        mobile: "",
         name: ""
       },
       mechanismCheck: [],
       servicestationCheck: [],
       temp: {
-        phone: "",
+        mobile: "",
         name: "",
         password: "",
         password2: "",
-        mechanism: "",
-        servicestation: "",
-        station: "",
-        peostate: "1",
+        officeId: "",
+        stationId: "",
+        roles: "",
+        useable: "1",
         child: {
           check: []
         }
       },
-      mechanism: "",
-      servicestation: "",
-      station: "",
-      peostate: "1",
       data2: [],
       defaultProps: {
         children: "subMenus",
@@ -324,7 +316,7 @@ export default {
       stationState: "",
       importanceOptions: [1, 2, 3],
       stationCheck: [],
-      peostateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
+      useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
       stationLv: [
         { id: "1", value: "一级" },
@@ -352,7 +344,7 @@ export default {
       tableKey: 0,
       isIndeterminate: true,
       rules: {
-        phone: [
+        mobile: [
           { required: true, validator: validatePhone, trigger: "blur" }
         ],
         name: [
@@ -366,11 +358,11 @@ export default {
         password2: [
           { required: true, validator: validatePass2, trigger: "blur" }
         ],
-        mechanism: [{ required: true, message: "机构不能为空", trigger: "change" }],
-        servicestation: [
+        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        stationId: [
           { required: true, message: "服务站不能为空", trigger: "change" }
         ],
-        station: [{ required: true, message: "岗位不能为空", trigger: "change" }]
+        role: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       },
       rules2: {
         name: [
@@ -397,19 +389,16 @@ export default {
         deleted: "danger"
       };
       return statusMap[status];
-    },
-    typeFilter(type) {
-      return mechanismKeyValue[type];
     }
   },
   created() {
     this.getList();
-    getSList().then(res => {
-      console.log(res.data.data);
-      this.mechanismCheck = res.data.data;
+    getSList({}).then(res => { // 服务机构
+      this.mechanismCheck = res.data.data.list;
+    
     });
     getStation().then(res => {
-      console.log(res.data.data);
+     // console.log(res.data.data);
       this.stationCheck = res.data.data;
     });
     getMenudata().then(res => {
@@ -435,7 +424,7 @@ export default {
     handleFilter() {
       var obj = {
         roleName: this.search.name,
-        mobile: this.search.phone
+        mobile: this.search.mobile
       };
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
@@ -461,7 +450,7 @@ export default {
     handleSizeChange(val) {
       var obj = {
         roleName: this.search.name,
-        mobile: this.search.phone
+        mobile: this.search.mobile
       };
       console.log("size-change");
       this.pageSize = val;
@@ -476,7 +465,7 @@ export default {
       this.pageNumber = val;
       var obj = {
         roleName: this.search.name,
-        mobile: this.search.phone
+        mobile: this.search.mobile
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -513,13 +502,14 @@ export default {
       this.temp = {
         id: row.id,
         name: row.name,
-        phone: row.mobile,
-        mechanism: "",
-        servicestation: row.stationId,
-        station: row.roleId,
-        peostate: row.useable
+        mobile: row.mobile,
+        officeId: "",
+        stationId: row.station.id,
+        role: row.role.id,
+        useable: row.useable
       };
-      setTimeout(() => (this.temp.mechanism = row.office.id), 1000);
+    setTimeout(() => (this.temp.officeId = row.organization.id), 80);
+    setTimeout(() => (this.temp.stationId = row.station.id), 80);
 
     },
     handleDelete(row) {
@@ -545,7 +535,7 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "删除失败"
+                  message: res.data.data
                 });
               }
             })
@@ -569,9 +559,9 @@ export default {
       this.temp2.dataScope = value;
       console.log(this.temp2.dataScope);
     },
-    peoStateChange(val) {
+    useableChange(val) {
       console.log(val);
-      this.temp.peostate = val;
+      this.temp.useable = val;
     },
     postChange(val) {
       console.log(val);
@@ -579,16 +569,17 @@ export default {
     },
     stationChange(val) {
       console.log(val);
-      this.temp.servicestation = val;
+      this.temp.stationId = val;
     },
     mechChange(val) {
-      this.temp.mechanism = val;
-      this.servicestation = "";
+      this.temp.officeId = val;
+      this.temp.stationId = ""
       console.log(val);
       var obj = {
-        officeId: val
+        orgId: val
       };
       getFuwu(obj).then(res => {
+        console.log(res)
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });
@@ -613,17 +604,19 @@ export default {
     create(formName) {
       console.log(this.temp);
       //var arr = [this]
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = {
-            mobile: this.temp.phone,
+      var obj = {
+            mobile: this.temp.mobile,
             name: this.temp.name,
             newPassword: this.temp.password,
-            officeId: this.temp.mechanism,
-            stationId: this.temp.servicestation,
-            roles: [this.temp.station],
-            useable: this.temp.peostate
+            officeId: this.temp.officeId,
+            stationId: this.temp.stationId,
+            roles: [this.temp.role],
+            useable: this.temp.useable
           };
+          console.log(obj)
+         // return
+      this.$refs[formName].validate(valid => {
+        if (valid) {
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {             
@@ -672,7 +665,7 @@ export default {
               });
               this.stationCheck.push(res.data.data);
              // console.log(res.data.data.id)
-              this.temp.station = res.data.data.id;
+              this.temp.role = res.data.data.id;
               this.resetTemp2();
             } else {
               this.$refs.domTree.setCheckedKeys([]);
@@ -691,13 +684,13 @@ export default {
     update() {
       var obj = {
         id: this.temp.id,
-        mobile: this.temp.phone,
+        mobile: this.temp.mobile,
         name: this.temp.name,
         newPassword: this.temp.password,
-        officeId: this.temp.mechanism,
-        stationId: this.temp.servicestation,
-        roles: [this.temp.station],
-        useable: this.temp.peostate
+        officeId: this.temp.officeId,
+        stationId: this.temp.stationId,
+        roles: [this.temp.role],
+        useable: this.temp.useable
       };
       console.log(obj);
       //this.dialogFormVisible = false;
@@ -720,22 +713,15 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        phone: "",
+        mobile: "",
         name: "",
         password: "",
         password2: "",
-        mechanism: "",
-        servicestation: "",
-        station: "",
-        peostate: "1"
+        officeId: "",
+        stationId: "",
+        role: "",
+        useable: "1"
       };
-      this.temp.mechanism = ""
-      this.temp.servicestation = ""
-      this.temp.station = ""
-      // this.mechanism = "";
-      // this.servicestation = "";
-      // this.station = "";
-      // this.peostate = "1";
     },
     resetTemp2() {
       this.temp2 = {

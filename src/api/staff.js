@@ -32,7 +32,7 @@ export function getPower(str) {
 }
 // 获取机构列表
 export function getSList(obj) {
-  return instance.post(`/api/a/sys/office/listData`, obj)
+  return instance.post(`/api/a/sys/organization/listData?pageSize=-1`, obj)
 }
 // 根据id获取服务站
 export function getFuwu(obj) {
@@ -45,4 +45,7 @@ export function getMenudata() {
 // 删除员工
 export function delStaff(obj) {
   return instance.post(`/api/a/sys/user/deleteUser`, obj)
+}
+export function chkName(obj) { // 岗位重名检测
+  return instance.post(`/api/a/sys/role/chkName`, obj)
 }

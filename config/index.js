@@ -8,7 +8,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
-    productionSourceMap: true,
+    productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -28,13 +28,21 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/api': {
+        'target': 'https://apiservice.guoanshequ.wang/apiservice/',
+        'secure': false, 
+        'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
+        'pathRewrite': {
+          '^/api': ''
+        }
+      }
       // '/api': {
-      //   target: 'https://apiservice.guoanshequ.wang/apiservice/',
-      //   secure: false, 
-      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      //   target: 'http://www.li.com:8800/',
+      //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
       //   pathRewrite: {
       //     '^/api': ''
       //   }
+<<<<<<< HEAD
       '/api': {
         target: 'http://10.16.70.133:8800/',
         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -42,6 +50,16 @@ module.exports = {
           '^/api': ''
         }
         }
+=======
+      // }
+      // '/api': {
+      //   target: 'http://10.16.70.133:8800/',
+      //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/api': ''
+      //   }
+      // }
+>>>>>>> 28ebfd74d409009a89dd2347f71438ba8620dc7b
       
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
