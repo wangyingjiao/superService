@@ -134,7 +134,7 @@
 
 <script>
 import { getCusTable,deleteCus,saveCus} from "@/api/customer";
-import { getArea,getMech} from "@/api/base";
+import {getMech} from "@/api/base";
 //import { parseTime } from "@/utils";
 export default {
   name: "",
@@ -226,25 +226,25 @@ export default {
   methods:{
     
 		//
-		provinceChange(value){
-			this.ruleForm.cusCityId='';
-      getArea(value).then(res => {
-			   this.cityOptions=res.data.data;
-      }).catch(res=>{
+		// provinceChange(value){
+		// 	this.ruleForm.cusCityId='';
+    //   // getArea(value).then(res => {
+		// 	//    this.cityOptions=res.data.data;
+    //   // }).catch(res=>{
         
-      });
+    //   // });
        
-		},
-		//
-		cityChange(value){
-			this.ruleForm.cusTownId='';
-      getArea(value).then(res => {
-			   this.countyOptions=res.data.data;
-      }).catch(res=>{
+		// },
+		// //
+		// cityChange(value){
+		// 	this.ruleForm.cusTownId='';
+    //   getArea(value).then(res => {
+		// 	   this.countyOptions=res.data.data;
+    //   }).catch(res=>{
         
-      });			
+    //   });			
 
-		},
+		// },
 		//customSex
 		customSexselect(){
       this.ruleForm.customSex=this.sex;
@@ -340,13 +340,13 @@ export default {
 				this.sexName='';
 				//
 				var id=''
-		  	getArea(id).then(res => {
+		  	// getArea(id).then(res => {
 					
-					this.provinceOptions=res.data.data;
+				// 	this.provinceOptions=res.data.data;
 					
-				}).catch(res=>{
+				// }).catch(res=>{
 					
-				});
+				// });
 				this.$nextTick(() => {
 		   			this.test();
 		    })				

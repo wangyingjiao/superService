@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setSession } from '@/utils/auth'
 const user = {
   state: {
     token: getToken(),
@@ -40,9 +40,18 @@ const user = {
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          // console.log(response)
+
+        var obj = {
+          username: userInfo.username,
+          password: userInfo.password
+        }
+        console.log(obj)
+        loginByUsername(obj).then(response => {
+          console.log(response)
+          console.log(response.data.data.JSESSIONID)
+          localStorage.setItem('name', response.data.data.user.name)
           const data = response.data
+          setSession(response.data.data.JSESSIONID)
           setToken(data.token)
           resolve()
         }).catch(error => {
@@ -67,7 +76,7 @@ const user = {
     Getarea({ commit }) {
       return new Promise((resolve, reject) => {
         getArea().then(res => {
-          //console.log(res)
+          // console.log(res)
           const data = res.data
           commit('SET_AREA', data.data)
           resolve(res)
@@ -95,6 +104,7 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          localStorage.removeItem('name')
           resolve()
         }).catch(error => {
           reject(error)

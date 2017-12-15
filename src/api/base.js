@@ -12,9 +12,7 @@ export function getMech() {
 export function getSerstation() {
   return instance.get(`/api/a/sys/dict/listData?type=service_area_type`)
 }
-export function getArea(id) {
-  return instance.get(`/api/a/sys/area/getchildArea?id=` + id)
-}
+
 // 获取服务城市
 export function getCity() {
   return instance.get(`/api/a/sys/area/listData1`)
