@@ -180,14 +180,14 @@
                         </p>
                     </div>
                 </li>
-                <li v-show="flagso">
+                <!-- <li v-show="flagso">
                     <div>
                     <p><span class="tech-span"></span></p>
                     <div class="tech-order-jn-sont">
                     </div>
                     </div>
-                </li>
-                <li>
+                </li> -->
+                <li class="hours">
                     <div>
                         <p><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
@@ -199,7 +199,7 @@
 
                                 <div style="display:flex;">
                                     <div class="selfCheckBoxsday">日期</div>
-                                    <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :class="{'tech-green':item.show===true}">
+                                    <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" :class="{'techTime-green':item.show===true}">
                                     {{item.sexName}}
                                     <!-- <div :class="{'triangle-bottomrightose':item.show===true}"></div>
                                     <div class="tallyose">&#10004</div> -->
@@ -402,7 +402,7 @@
             <div>
               <p></p>
               <p>
-                <button class="button-large-fourth">保存信息</button>
+                    <span class="button-large-fourth" @click="submitForm('perServer')">保存信息</span>
               </p>
             </div>
           </li>
@@ -458,99 +458,109 @@
         <div style="padding:25px">
           <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button>
         </div>
-        <ul class="tech-ul" v-show="flagso" style="padding-left:50px">
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>关系:</p>
-              <p>
-                <el-select v-model="binds" clearable placeholder="请选择" style="width:230px">
-                  <el-option v-for="item in bind" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span">*</span>名字:</p>
-              <p>
-                <el-input placeholder="请输入2~15位名字" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>手机号:</p>
-              <p>
-                <el-input placeholder="请输入11位手机号" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>单位:</p>
-              <p>
-                <el-input placeholder="请输入工作单位名称" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>职务:</p>
-              <p>
-                <el-input placeholder="请输入职务" style="width:230px"></el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large" @click="savrTable">保存</button>
-                <button class="button-cancel" style="margin-left:20px">取消</button>
-              </p>
-            </div>
-          </li>
-        </ul>
+        <el-form :model="perFamily"  ref="perFamily"  label-width="100px" :rules="rulesFamily">
+            <ul class="tech-ul" v-show="flagso" style="padding-left:50px">
+                <li>
+                    <div>
+                        <!-- <p><span class="tech-span">*</span>关系:</p> -->
+                        <p>
+                            <el-form-item label="关系:" prop="relation">
+                                <el-select v-model="perFamily.relation" clearable placeholder="请选择" style="width:200px">
+                                    <el-option v-for="(item,$index) in bind" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                    <!-- <p><span class="tech-span">*</span>名字:</p> -->
+                    <p>
+                        <el-form-item label="名字:" prop="memberName">
+							<el-input placeholder="请输入2~15位姓名" style="width:200px" v-model="perFamily.memberName"></el-input>
+						</el-form-item>
+                    </p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                    <!-- <p><span class="tech-span"></span>手机号:</p> -->
+                        <p>
+                            <el-form-item label="手机号:">
+                                <el-input placeholder="请输入11位手机号" style="width:200px" v-model="perFamily.memberPhone"></el-input>
+                            </el-form-item>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                    <!-- <p><span class="tech-span"></span>单位:</p> -->
+                    <p>
+                        <el-form-item label="单位:">
+                            <el-input placeholder="请输入工作单位名称" style="width:200px" v-model="perFamily.memberUnit"></el-input>
+                        </el-form-item>
+                    </p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                    <p>
+                         <el-form-item label="职务:">
+                            <el-input placeholder="请输入职务" style="width:200px" v-model="perFamily.memberJob"></el-input>
+                        </el-form-item>
+                    </p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                    <p></p>
+                    <p>
+                        <button class="button-large" @click="savrTable('perFamily')">保存</button>
+                        <button class="button-cancel" style="margin-left:20px">取消</button>
+                    </p>
+                    </div>
+                </li>
+            </ul>
+        </el-form>
         <!--其他信息 -->
         <h3 class="tech-tc-prson">其他信息</h3>
         <ul class="tech-ul">
-
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="tech-fourth"><span>*</span>上传头像</button>
-                <button class="tech-fourth-rigth" style="margin-left:40px">上传身份证</button>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="tech-fourth"><span>*</span>上传位置</button>
-                <button class="tech-fourth-rigth" style="margin-left:40px">上传位置</button>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p><span class="tech-span"></span>备注:</p>
-              <p>
-                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
-                </el-input>
-              </p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <p></p>
-              <p>
-                <button class="button-large-fourth">保存信息</button>
-              </p>
-            </div>
-          </li>
+            <li>
+                <div>
+                    <p></p>
+                    <p>
+                        <!-- <button class="tech-fourth">上传头像</button> -->
+                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+                        :file-list="fileList2" list-type="picture" :data="sign">
+                        <el-button class="tech-fourth"><span></span>上传证件照</el-button>
+                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        </el-upload>
+                        <!-- <button class="tech-fourth-rigth">上传身份证</button> -->
+                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+                        :file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
+                        <el-button class="tech-fourth-rigth">上传生活照</el-button>
+                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        </el-upload>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div style="flex:1">
+                  <p>备注:</p>
+                  <p>
+                     <el-input type="textarea" v-model="input" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下" style="width:545px;"></el-input>
+                  </p>
+              </div>
+            </li>
+            <li>
+                <div>
+                    <p></p>
+                    <p>
+                        <span class="button-large-fourth" @click="submitForm('perServer')">保存信息</span>
+                    </p>
+                </div>
+            </li>
         </ul>
       </div>
 
@@ -573,6 +583,22 @@ export default {
     return {
         roomSel1Arr:[],
         teachArr:[],
+        perFamily:{
+            relation:'',
+            memberName:'',
+            memberPhone:'',
+            memberUnit:'',
+            memberJob:''
+        },
+        rulesFamily:{
+            relation:[
+                { required: true, message: "请输入关系", trigger: "change" }
+            ],
+            memberName:[
+                { required: true, message: "请输入名字", trigger: "blur" },
+                { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+            ]
+        },
       // 个人资料
       techTable:false,
       personalEDit: {
@@ -1080,10 +1106,11 @@ export default {
     };
   },
   methods: {
+    handlePreview(file){},
     deletes(index){
         this.teachArr.splice(index,1)
     },
-      //个人保存
+      //个人,服务保存
     submitForm(formName){
        this.$refs[formName].validate((valid) => {
 			  if(valid){
@@ -1165,7 +1192,15 @@ export default {
     mousout(item) {
       item.ismouse = false;
     },
-    savrTable() {
+    savrTable(formName) {
+        this.$refs[formName].validate((valid)=>{
+            if(valid){
+                alert("true")
+            }else{
+                alert('false')
+                return false
+            }
+        })
       this.isTab = true;
     },
     dateChange(val) {
@@ -1487,8 +1522,14 @@ body {
   margin-top: 20px;
 }
 
-.tech-green {
-  border: solid 1px green;
+.tech-green,.techTime-green {
+    border: solid 1px green;
+    background:url('../../../static/icon/Selected.png') no-repeat;
+    background-size:20px 20px;
+    background-position: bottom right;
+}
+.techTime-green{
+     background-size:15px 15px;
 }
 
 .tallys {
@@ -1567,9 +1608,9 @@ body {
   display: flex;
   flex-wrap: wrap;
   text-align: center;
-  height: 24px;
-  line-height: 24px;
-  padding: 0 5px;
+  /* height: 24px; */
+  line-height: 26px;
+  padding: 0 7px;
   justify-content: center;
   overflow: hidden;
 }
@@ -1764,5 +1805,8 @@ body {
 }
 .level{
     flex: 1;
+}
+.hours{
+    align-items: flex-start;
 }
 </style>

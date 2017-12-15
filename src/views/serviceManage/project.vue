@@ -1,22 +1,33 @@
 <template>
 <div>
   <div class="filter-container bgWhite">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="全部" name="0"></el-tab-pane>
-      <el-tab-pane label="保洁" name="1"></el-tab-pane>
-      <el-tab-pane label="家修" name="2"></el-tab-pane>
+    <el-tabs v-model="tabs" @tab-click="handleClick">
+      <!-- <el-tab-pane v-for="(item,key,index) in whole" :key="index" :label="item" :name="index"></el-tab-pane> -->
+      <el-tab-pane label="全部" name="all"></el-tab-pane>
+      <el-tab-pane label="保洁" name="clean"></el-tab-pane>
+      <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item" filterable  v-model="search.sortId" placeholder="所属分类">
-        <el-option v-for="item in sortList" :key="item.id" :label="item.value" :value="item.id">
+      <el-select clearable style="width: 200px" class="filter-item" filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+        <el-option v-for="(item,index) in sortList" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityId" placeholder="定向城市">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
+<!-- 
+        <el-form-item label="所属分类：" class="seize" prop="calss">
+          <el-select class="filter-item" filterable  v-model="basicForm.calss" style="width:400px" @change="open">
+            <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
+
+
+      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityId" placeholder="定向城市" @change="cjw">
+        <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
+
       <el-input style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large btn_right el-icon-search ceshi" @click="handleFilter"> 搜索</button>
+      <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -59,11 +70,15 @@
       </el-table-column>
 
       <el-table-column label="城市" align="center" prop="cityName">
+        <template scope="scope">
+          <span class="branch" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column  label="状态" align="center" >
         <template scope="scope">
-          <span class="">上架</span>          
+          <span v-show="scope.row.sale == 'no'">下架</span>
+          <span v-show="scope.row.sale == 'yes'">上架</span>
         </template>
       </el-table-column>
 
@@ -94,40 +109,62 @@
           <div class="tabLeft fl" ref="refTab">
           <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
-          <el-radio-group v-model="activeName">
+          <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
             <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="1"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="2" @click="refbtn2">家修</el-radio-button>
+            <el-radio-button style="width:100%;" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%" label="repair" @click="refbtn2">家修</el-radio-button>
             <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
          <div class="tabRight fl">
+			 <h3 class="tit">基本信息</h3><hr/><br/>
               <el-form 
-                class="small-space" 
-                :model="temp" 
+                class="small-space basic" 
+                :model="basicForm" 
                 label-position="left" 
                 label-width="90px" 
-                 ref="temp" 
-                :rules="rules" 
-                style='width: 450px;               
-                margin-left:20px;'>
-                <h3 class="tit">基本信息</h3><hr/><br/>
-                <el-form-item label="所属分类">
-                  <el-select class="filter-item" filterable  v-model="temp.sption1" >
-                    <el-option v-for="item in sortList" :key="item.id" :label="item.value" :value="item.id">
+                 ref="basic" 
+                :rules="basicRles" >
+                <el-form-item label="项目名称：" prop="name">
+                  <el-input
+                  style="width:400px"
+                  v-model="basicForm.name"
+                  placeholder="请输入2-10位的服务站名称"></el-input>
+                </el-form-item>
+
+                <el-form-item label="所属分类：" class="seize" prop="sortId">
+                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:400px" @change="(val)=>open(val,2)">
+                    <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
                 </el-form-item>
 
-                <el-form-item label="项目名称" prop="name">
-                  <el-input
-                  :maxlength="10"
-                  :minlength="2"                 
-                  placeholder="请输入2-10位的服务站名称"></el-input>
+                <el-form-item label="定向城市：" class="seize"> 
+                   <div class="cityClass">
+                        <div :class="{'techTime-green':basicForm.cityCodes.indexOf(item.cityCode)!=-1}" class="selfCheckBox tech-selfbox tech-center" v-for="(item,index) in cityArr" :key="index" @click="clickClick(item)">
+                          {{item.cityName}}
+                        </div>
+                    </div>     
+                    <ul>
+                    </ul>
                 </el-form-item>
 
-                <el-form-item label="服务图片" prop="picture">
-                  <el-upload
+                <el-form-item label="服务图片：" prop="picture">
+                  <div class="upload-demo upload_box">
+                      <!-- <span class="upload-back"></span> -->
+                      <el-upload
+                          action="https://jsonplaceholder.typicode.com/posts/"
+                          list-type="picture-card"
+                          :on-preview="handlePreview"
+                          :on-remove="handleRemove"
+                          >
+                          <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog v-model="dialogVisible" size="tiny">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
+                  </div>
+                  <!-- <el-upload
                     class="upload-demo upload_box"
                     action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
                     :data="sign"
@@ -135,133 +172,164 @@
                     :on-remove="handleRemove"
                     :file-list="fileList2"
                     list-type="picture">
-                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload> -->
+                     <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                     <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
-                  </el-upload>
                 </el-form-item>
 
-                <el-form-item label="服务描述" prop="info">
+                <el-form-item label="服务描述：" prop="description">
                   <el-input
+                  style="width:400px"
+                  v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
             
-                <el-form-item label="定向城市">      
-                    <el-checkbox v-model="city" label="北京" border='true' size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="南京" size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="天津" border size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="上海" border size="medium"></el-checkbox>
-                    <el-checkbox v-model="city" label="青岛" border size="medium"></el-checkbox>
-                    <div class="font_small">*定向城市指改服务项目的适用城市。默认不填，代表适用于本机构/所属分类设置的所有城市</div>
-                </el-form-item>
-                <el-form-item label="是否上架">
+                <el-form-item label="是否上架：" class="seize">
                     <el-switch
-                      v-model="val"
+                      @change="isNo"
+                      v-model="basicForm.sale"
                       on-text="是"
-                      off-text="否">
+                      off-text="否"
+                      on-value="yes"
+                      off-value="no">
                     </el-switch>
                 </el-form-item>
 
-                <el-form-item label="排序号">
-                    <el-input 
+                <el-form-item label="排序号：" class="seize">
+                    <el-input
+                      v-model="basicForm.sortNum"
+                      style="width:400px"
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
                 </el-form-item>
               </el-form>
-              <h3 class="tit"> 商品信息</h3><hr/><br/>
+              <h3 class="tit"> 商品信息</h3><hr/>
               <el-table
+                v-if="basicForm.commoditys.length>0"
                 border 
-                :data="list"
+                :data="basicForm.commoditys"
                 class="goods_info">
-                <el-table-column align="center" label="商品名称">
+                <el-table-column align="center" label="商品名称" prop="name">
+
+                </el-table-column>
+                <el-table-column align="center" label="商品单位" prop="unit">
+                  
+                </el-table-column>
+                <el-table-column align="center" label="计量方式" prop="type">
                  
                 </el-table-column>
-                <el-table-column align="center" label="商品单位">
+                <el-table-column align="center" label="价格" prop="price">
                   
                 </el-table-column>
-                <el-table-column align="center" label="计量方式">
-                 
-                </el-table-column>
-                <el-table-column align="center" label="价格">
+                <el-table-column align="center" label="折算时长" prop="convertHours">
                   
                 </el-table-column>
-                <el-table-column align="center" label="折算时长">
-                  
-                </el-table-column>
-                <el-table-column label="派人数量" class="123" class-name="234">
-                   <el-table-column align="center" width="100%" label="临界值">
-                     <template scope="scope">
+                <el-table-column align="center" label="派人数量" prop="persons">
+                  <el-table-column align="center" label="临界值">
+                    <template scope="scope">
                       <div class="content-rowspan">
-                        <div><=1</div>
-                        <div><=1</div>
-                        <div><=1</div>
-                        <div><=1</div>
+                        <div v-for="(item,index) in scope.row.persons" :key="index">
+                          {{item.critical}}
+                        </div>
                       </div>
-                    
                     </template>
-                   </el-table-column>
-                   <el-table-column align="center" width="100%" label="人数">
-                     
-                   </el-table-column>
+                  </el-table-column>
+                  <el-table-column align="center" label="人数">
+                    <template scope="scope">
+                      <div class="content-rowspan">
+                        <div v-for="(item,index) in scope.row.persons" :key="index">
+                          {{item.quantity}}
+                        </div>
+                      </div>
+                    </template>
+                  </el-table-column>
                 </el-table-column>
-                <el-table-column align="center" label="起购数量">
-                  
+                <el-table-column align="center" label="起购数量" prop="minPurchase">
+                   
                 </el-table-column>
-                <el-table-column align="center" label="操作">
-                  
+                <el-table-column align="center" label="操作" width="150">
+                 <template scope="scope">
+                    <el-button
+                      size="small"
+                      @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button
+                      size="small"
+                      type="danger"
+                      @click="tableHandleDelete(scope.$index, scope.row)">删除</el-button>
+                  </template>
                 </el-table-column>
               </el-table>
-              <div class="add_Btn">
+              <div class="add_Btn" @click="addComm = !addComm">
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-form 
+                v-if="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
                 label-width="80px" 
-                style='width: 450px; margin-left:50px;'
+                style='width: 450px; padding:20px 0 0 20px'
                 :rules = "goods"
                  >
-                <el-form-item label="活动名称" prop="name">
+                <el-form-item label="活动名称:" prop="name">
                   <el-input
                     placeholder="请输入活动名称（2-10位）"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
 
-                <el-form-item label="商品单位" prop="unit">
+                <el-form-item label="商品单位:" prop="unit">
                   <el-input 
                     placeholder="请输入活动名称（2-10位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
-                <el-form-item label="计量方式" prop="metering">
-                  <el-select class="filter-item" v-model="goods_info.metering" placeholder="可用">
-                     <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
-                     </el-option>
+                <el-form-item label="计量方式:" prop="type">
+                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:350px">
+                     <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
+                     </el-option> -->
+                     <el-option v-for="(item,key,index) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
                 
-                <el-form-item label="价格" prop="price">
+                <el-form-item label="价格:" prop="price">
                   <el-input v-model="goods_info.price">
                      <template slot="append">元/{{goods_info.unit}}</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="折算时长" prop="time">
-                  <el-input v-model="goods_info.time">
-                    <template slot="append">小时/{{goods_info.metering}}</template>
+                <el-form-item label="折算时长:" prop="convertHours">
+                  <el-input v-model="goods_info.convertHours">
+                    <!-- <template slot="append">小时/{{goods_info.convertHours}}</template> -->
+                    <template slot="append">小时/{{goods_info.unit}}</template>
                   </el-input>
                 </el-form-item>
              
                 
 
-                <el-form-item label="派人数量" prop="peoNum">
-                   
+                <el-form-item label="派人数量:" class="send">
+                   <table class="table-pro">
+                     <tr>
+                       <th @click="addTable">+</th>
+                       <th>临界值</th>
+                       <th>人数</th>
+                     </tr>
+                     <tr v-for="(item,index) in goods_info.persons" :key="index">
+                        <td @click="tableDelete(index)">-</td>
+                        <td>
+                          <input class="table-input" type="text" v-model="item.critical">
+                        </td>
+                        <td>
+                          <input class="table-input" type="text" v-model="item.quantity">
+                        </td>
+                     </tr>
+                   </table>
+                   <div class="el-form-item__error" v-if="personsTime">请输入折算时长</div>
                 </el-form-item>
 
-                <el-form-item label="起够数量" prop="num">
+                <el-form-item label="起够数量:" prop="minPurchase" class="seize">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
-                    v-model="goods_info.num"></el-input>
+                    v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
 
                 <el-form-item>
@@ -273,8 +341,8 @@
          </div>
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" @click="create">保 存</button>    
-        <button class="button-cancel" @click="dialogFormVisible = false">取 消</button>
+        <button class="button-large" @click="subForm('basic')">保 存</button>    
+        <button class="button-cancel" @click="cancel('basic')">取 消</button>
       </div>
     </el-dialog>
 
@@ -289,9 +357,11 @@ import { getProject, addProject ,delProject,getInfoPic} from "@/api/serviceManag
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
+import {Taxonomy,Orienteering,Whether,ServerAdd,ServerDelete,ServerEdit,serverEditPre} from '@/api/project'
+// var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
-
+var arr = [];
 export default {
   name: "table_demo",
   directives: {
@@ -299,6 +369,45 @@ export default {
   },
   data() {
     return {
+	tabs:'all',
+	editId:'',
+    total:null,
+    houseStr:'',
+    whole:{},
+    serverCityArr:[],
+    wholeTable:{},
+    directional:[],
+    cityArr:[],
+    personsTime:false,
+    addComm:false,
+		critical:'',
+		quantity:'',
+		commoditysObj:{
+			
+		},
+		persons:[],
+      commoditys:[
+        // {
+		// 	"idc":1,
+        //   "name": "室内玻璃",
+        //   "unit": "平米",
+        //   "meterage": "2",
+        //   "price": 100,
+        //   "convertHours": 1,
+        //   "minimum": "1",
+        //   "persons": [
+        //     {
+        //       "critical": "≤100",
+        //       "quantity": 1
+        //     },{
+        //       "critical": ">100",
+        //       "quantity": 2
+        //     }
+        //   ]
+		// },
+      ],
+       dialogImageUrl: '',
+      dialogVisible: false,
       measure:[
         {
           label:"按居室",
@@ -315,9 +424,9 @@ export default {
         ],
       sign: getSign(),
       list: [],
-      total: null,
       listLoading: true,
-      val: true,
+      whether: true,
+      sortList:[],
       goods: {
         name: [
           { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
@@ -327,25 +436,48 @@ export default {
           { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
           { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" }
         ],
-        metering: [{ required: true, message: "请输入名称(2-10位)", trigger: "blur" }]
+        type: [{ required: true, message: "请输入名称(2-10位)", trigger: "change" }],
+        price:[
+          { required: true, message: "请输入价格", trigger: "blur" }
+        ],
+        convertHours:[
+           { required: true, message: "请输入折算时长", trigger: "blur" }
+		],
+		peoNum:[
+			{ required: true, message: "请输入折算时长", trigger: "blur" }
+		]
       },
-      rules: {
+      basicForm:{
+        name:'',
+        picture:'123123132',   //服务图片
+        sortId:'',
+        sale:'',
+        sortNum:'',
+        majorSort: "all",
+        commoditys:[],
+		cityCodes:[],
+		description:''
+      },
+      basicRles: {
         name: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-        picture: [{ required: true, message: "请上传至少一张图片" }],
-        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }]
+        // picture: [{ required: true, message: "请上传至少一张图片" }],
+		info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
+		description:[{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
 
       goods_info: {
         name: "",
         unit: "",
-        metering: "",
+        type: "",
         price: "",
         time: "",
         peoNum: "",
-        num: ""
+        num: "",
+        persons:[]
       },
       listQuery: {
-        sort: "+id"
+        sort: "+id",
+        page:1
       },
       search: {
         sortId: "",
@@ -353,7 +485,6 @@ export default {
         name: ""
       },
       pageSize: 10,
-      total: 0,
       fileList2: [
         {
           name: "food2.jpeg",
@@ -375,13 +506,7 @@ export default {
       tableKey: 0,
       city: ["1","2","3"],
       option1: [],
-      sortList:[
-        {id:"0",value:"全部"},
-        {id:"1",value:"保洁"},
-        {id:"2",value:"家修"},
-        ],
      
-      activeName: "0"
     };
   },
   filters: {
@@ -395,17 +520,126 @@ export default {
     }
   },
   created() {
-    this.getList();
+    //所属分类
+    // console.log(without,"_without_without")
+    Taxonomy().then(data=>{
+      this.sortList = data.data.data.list
+    }).catch(error=>{
+      console.log(error,"error-----project")
+    })
+    //是否 计量方式 全部 保洁 家修
+    Whether().then(({data})=>{
+      console.log(data,"-------------data--------------")
+       this.measure = data.meterage
+       this.whole = data.ser_sort
+    }).catch(error=>{
+      console.log(error,"error-----project")
+    })
+
+    this.orient({},0)  // 所属分类
+    this.getList(1,10);   //搜索 ，分页
   },
   methods: {
-    getList() {
+    cjw(val){
+      console.log(val,'------------------')
+    },
+    //所属分类搜索
+    // queryClass(val){
+    //   console.log(val,'----queryClass----')
+    //    Orienteering({"sortId":val}).then(data=>{
+    //     this.serverCityArr = data.data.data
+    //   }).catch(error=>{
+    //     console.log(error,"error-----project")
+    //   })
+    // },
+    //表格编辑
+    handleEdit(index,val){
+      console.log(this.goods_info,"this.goods_info.name")
+	  console.log(val,"this.commoditys.name")
+	  this.addComm = true
+      this.goods_info = val
+      this.basicForm.commoditys.splice(index,1)
+    },
+    //表格删除
+    tableHandleDelete(val){
+    
+    },
+    houseClick(val){
+      this.houseStr = val
+       console.log(val,"val----")
+    },
+    isNo(bl){
+      console.log(bl,"adawd")
+    },
+    //定向城市
+    orient(obj,id){
+      Orienteering(obj).then(data=>{
+        if(id == 1){
+          this.serverCityArr = data.data.data
+        }else if(id == 2){
+          this.cityArr = data.data.data
+        }else{
+          this.serverCityArr = data.data.data
+           this.cityArr = data.data.data
+        }
+      }).catch(error=>{
+        console.log(error,"error-----project")
+      })
+    },
+    //数组去重
+    remove(arr,val){
+      for(var i = 0; i<arr.length; i++){
+        if(arr[i] == val){
+          arr.splice(i,1)
+          break;
+        }
+      }
+      return arr
+    },
+    clickClick(item){
+      var arr = this.basicForm.cityCodes;
+      if(arr.indexOf(item.cityCode) == -1){
+        arr.push(item.cityCode)
+      }else{
+        this.remove(arr,item.cityCode)
+      }
+      console.log(arr,"arr--------")
+      item.haveItem = !item.haveItem
+    },
+    open(val,id){
+      console.log(val,"val----")
+      console.log(id,"id-----")
+      this.orient({"sortId":val},id)
+      // console.log(id,'------------')
+    },
+    tableDelete(id){
+      this.goods_info.persons.splice(id,1)
+    },
+    addTable(){
+      // arr.push({critical:'',quantity:''})
+      this.goods_info.persons.push({critical:'',quantity:''})
+      this.personsTime = false;
+    },
+    getList(page,size) {
       this.listLoading = true;
-      var obj = {
-        majorSort: this.activeName
-      };
-      getProject(obj)
+      var obj = {}
+      if(this.basicForm.majorSort){
+        obj.majorSort = this.tabs
+      }
+      if(this.search.sortId){
+        obj.sortId = this.search.sortId
+      }
+      if(this.search.cityId){
+        obj.cityCode =this.search.cityId
+      }
+      if(this.search.name){
+        obj.name = this.search.name
+      }
+
+      getProject(obj,page,size)
         .then(res => {
-          console.log(res.data);
+          console.log(res.data,"res.data-------");
+          this.total = res.data.data.count
           this.list = res.data.data.list;
           this.listLoading = false;
           //this.total = res.data.data.count;
@@ -415,23 +649,33 @@ export default {
         });
     },
     refbtn1() {
-      console.log(this.$refs);
-      this.$refs.refbtn1.className = "tabBtn tabBtnclick";
-      this.$refs.refbtn2.className = "tabBtn";
-      this.activeName = "1";
+      alert("dawdawd")
+      // console.log(this.$refs);
+      // this.$refs.refbtn1.className = "tabBtn tabBtnclick";
+      // this.$refs.refbtn2.className = "tabBtn";
+      // this.activeName = "1";
     },
     refbtn2() {
-      console.log(this.$refs.refbtn2);
-      this.$refs.refbtn2.className = "tabBtn tabBtnclick";
-      this.$refs.refbtn1.className = "tabBtn";
-      this.activeName = "2";
+      // console.log(this.$refs.refbtn2);
+      // this.$refs.refbtn2.className = "tabBtn tabBtnclick";
+      // this.$refs.refbtn1.className = "tabBtn";
+      // this.activeName = "2";
     },
-    handleFilter() {},
+    // 搜索
+    handleFilter() {
+      var obj = {}
+      obj.majorSort = this.basicForm.majorSort
+      obj.sortId = this.search.sortId
+      obj.cityCode =this.search.cityId
+      obj.name = this.search.name
+      console.log(obj,"搜索--------")
+    },
     handleSizeChange(val) {
+      // alert(val)
       this.pageSize = val;
       // this.getList();
       var obj = {
-        majorSort: this.activeName
+        majorSort: this.basicForm.majorSort
       };
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
@@ -440,10 +684,9 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log(111111);
       this.pageNumber = val;
       var obj = {
-        majorSort: this.activeName
+        majorSort: this.tabs
       };
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
@@ -455,19 +698,30 @@ export default {
     handleCreate() {
       this.resetTemp();
       this.dialogStatus = "create";
-      this.activeName = "1";
+      this.basicForm.majorSort = "clean";
       this.dialogFormVisible = true;
     },
+    //编辑方法
     handleUpdate(row) {
-      console.log("编辑");
+      // console.log(row,"------row`````");
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      this.basicForm.majorSort = "clean";
+	  this.dialogFormVisible = true;
+	  this.editId = row.id
+      ServerEdit({"id":this.editId}).then(data=>{
+        console.log(data,"data-----编辑")
+        this.basicForm = data.data.data
+        console.log(this.cityArr,"cityArr")
+      }).catch(error=>{
+        console.log(error)
+      })
     },
     handleUplode(row) {
       console.log("上传");
     },
     handleDelete(row) {
+      console.log(row,"-----row---")
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -478,7 +732,7 @@ export default {
           var obj = {
             id: row.id
           };
-          delProject(obj)
+          ServerDelete(obj)
             .then(res => {
               console.log(res);
               if (res.data.code === 1) {
@@ -521,8 +775,8 @@ export default {
             unit: "小时",
             meterage: "按居室", //计量方式
             price: "19",
-            convertTime: "10", //折算时长
-            minimum: 1, //起购数量
+            convertHours: "10", //折算时长
+            minPurchase: 1, //起购数量
             persons: [
               //派人
               {
@@ -568,7 +822,10 @@ export default {
       });
     },
     handleClick(tab, event) {
-      this.getList();
+      console.log(tab,event,"-------tab")
+      var size = this.pageSize
+      this.getList(1,size);
+      this.listQuery.page = 1;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -578,19 +835,127 @@ export default {
     },
     resetTemp() {
       this.temp = {};
+	},
+	//取消
+	cancel(fromName){
+		// console.log(fromName,"-----")
+		// this.$refs[fromName].resetFields()  //基本信息重置
+		// console.log()
+		// this.resetForm('goods_info')
+		// //  this.basicForm.commoditys = []  //商品信息table重置
+		// this.goods_info = {};   //商品信息table重置
+		this.dialogFormVisible = false
+		// alert("dawdaw")
+		// this.basicForm = {}
+		// this.basicForm.persons = [];
+		// this.goods_info.minPurchase = ''
+		// this.dialogFormVisible = false
+	},
+	//保存
+    subForm(formName){
+      var that = this
+      this.$refs[formName].validate(valid => {
+         console.log(this.basicForm,"basicForm------")
+        if (valid) {
+          // var obj = {}
+          // obj.majorSort = that.basicForm.majorSort;    //所属分类    
+          // obj.sortId = that.basicForm.sortId;  //所属分类编号
+          // obj.commoditys = that.basicForm.commoditys;   //商品信息
+          // obj.name = that.basicForm.name;   //项目名称
+          // obj.picture = that.dialogVisible;    //服务图片缩略图   有问题
+          // obj.description = that.basicForm.description;   //服务描述
+          // obj.sale =   that.basicForm.sale   //是否上架    
+          // obj.sortNum = that.basicForm.sortNum     //排序号
+          // obj.cityCodes = that.basicForm.cityCodes;     //定向城市
+          // console.log(obj,"-----------------------------------")
+          //==update 是编辑   create是添加
+          if(this.dialogStatus == "update"){
+			that.basicForm.id = this.editId
+			serverEditPre(that.basicForm).then(data=>{
+				if(data.data.code){
+						this.$message({
+							message: data.data.data,
+							type: 'success'
+						});
+						this.dialogFormVisible = false
+						 this.getList(1,10);
+					}else{
+						this.$message({
+							message: data.data.data,
+							type: 'warning'
+						});
+					}
+			}).catch(error=>{
+				console.log(error,"error---project---857")
+			})
+          }else{
+				ServerAdd(that.basicForm).then(data=>{
+				console.log(data,"添加成功")
+					if(data.data.code){
+						this.$message({
+							message: data.data.data,
+							type: 'success'
+						});
+						this.dialogFormVisible = false
+						 this.getList(1,10);
+					}else{
+						this.$message({
+							message: data.data.data,
+							type: 'warning'
+						});
+					}
+				}).catch(error=>{
+				console.log(error,"error--project--770")
+				})
+			}
+        }else{
+          alert('false')
+          return false;
+        }
+      })
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("保存表格测试");
+          if(this.goods_info.persons.length>0){
+            this.personsTime = false
+          }else{
+            this.personsTime = true;
+            return false
+          }
+            console.log("保存表格测试");
+
+            console.log(this.goods_info.persons,"this.persons----")
+            var obj = {};
+            var goods = this.goods_info;
+            obj.name = goods.name;
+            obj.unit = goods.unit;
+            obj.type = goods.type;
+            obj.price = goods.price;
+            obj.convertHours = goods.convertHours;
+            obj.minPurchase = goods.minPurchase;
+            obj.persons = goods.persons;
+            this.basicForm.commoditys.push(obj)
+			// arr = []
+			goods.persons = [];
+            this.goods_info.minPurchase = ''
+            this.resetForm('goods_info')
+            console.log(obj,'obj-----')
         } else {
+          if(this.persons.length>0){
+            this.personsTime = false
+          }else{
+            this.personsTime = true;
+          }
           console.log("error submit!!");
           return false;
         }
       });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+	  this.$refs[formName].resetFields();
+	   this.goods_info.persons = [];
+	   this.goods_info.minPurchase = '';
     }
   }
 };
@@ -647,10 +1012,11 @@ body {
   padding-right: 10px;
 }
 .upload_box {
+  /* text-align: center; */
   max-width: 400px;
   box-sizing: border-box;
   padding: 10px;
-  border: 1px #785 dashed;
+  border: 1px #ccc dashed;
 }
 .upload_box .el-upload .el-button {
   background-color: #4c70e8;
@@ -660,6 +1026,8 @@ body {
 .font_small {
   color: #cccccc;
   font-size: 12px;
+  line-height: 20px;
+  width: 400px;
 }
 .content-rowspan div {
   line-height: 30px;
@@ -671,7 +1039,7 @@ body {
 .add_Btn {
   width: 100px;
   height: 30px;
-  margin-top: 20px;
+  margin: 20px 0 10px 0;
   color: #ffffff;
   line-height: 30px;
   background-color: #4c70e8;
@@ -723,7 +1091,7 @@ body {
 }
 
 .tabRight {
-  width: 80%;
+  width: 85%;
   height: 100%;
   border-left: 1px #f5f5f5 solid;
   padding-top: 10px;
@@ -756,5 +1124,89 @@ body {
 }
 .tit {
   font-weight: bold;
+  padding: 10px 0 5px 0;
 }
+.el-upload--picture-card{
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+.upload-back{
+  display: inline-block;
+  background: url('../../../static/icon/sctp.png') no-repeat;
+  background-size:100%; 
+  background-position:33.33333% 33.33333%;
+  width: 50px;
+  height: 50px;
+}
+.upload-back::before{
+  content:'点击上传';
+  font-size: 12px;
+  line-height: 110px;
+  }
+.table-pro,.table-pro tr th, .table-pro tr td { border:1px solid #dececb; }
+.table-pro { width: 350px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}  
+.table-pro tr td:nth-child(1),.table-pro tr th:nth-child(1){
+  background: #ccc;
+  padding: 0 10px;
+}
+.table-input{
+	border: none;
+	outline:none;
+	text-align: center;
+}
+.basic{
+	padding: 0 20px;
+}
+.send>label::before{
+  content: "*";
+  margin-right: 4px;
+  color: red;
+  }
+.seize>label::before{
+  content: "";
+  margin-right: 8px;
+  color: red;
+}
+.tech-center {
+  margin:0px 20px 10px 0;
+  display: flex;
+  justify-content: center;
+}
+.selfCheckBoxsday {
+  width: 30px;
+  height: 24px;
+  line-height: 24px;
+  /* border: 1px solid #bfcbd9; */
+  display: inline-block;
+  /* text-align: center; */
+  position: relative;
+  /* margin-left: 20px; */
+  font-size: 12px;
+  cursor: pointer;
+}
+.cityClass{
+  display:flex;
+  flex-wrap:wrap;
+  width:400px; 
+  overflow:hidden;
+}
+.cityClass>div:nth-child(1),.cityClass>div:nth-child(5n){
+
+}
+.techTime-green{
+     background-size:15px 15px;
+    border: solid 1px green;
+    background:url('../../../static/icon/Selected.png') no-repeat;
+    background-size:20px 20px;
+    background-position: bottom right;
+}
+
+hr{
+  border-top:1px solid #ccc;
+}
+
+
+
+
 </style>
