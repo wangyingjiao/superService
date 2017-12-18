@@ -1,8 +1,7 @@
-# vueAdmin-template
+# 后台管理系统
 
 > A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
 
-[中文文档](https://github.com/PanJiaChen/vueAdmin-template/blob/master/README-zh.md)
 
 ## Build Setup
 
