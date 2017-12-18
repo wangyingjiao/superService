@@ -255,8 +255,8 @@
 					<el-form-item label="手机号:"  prop="customPhone">
                 <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
-					<el-form-item label="所在区域:" prop="cusTownId">
-							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusProvId" placeholder="请选择省" @change="provinceChange">
+					<el-form-item label="所在区域:" prop="areaCodes">
+							<!--<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusProvId" placeholder="请选择省" @change="provinceChange">
 									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
 									</el-option>
 							</el-select>
@@ -267,7 +267,14 @@
 							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusTownId" placeholder="请选择县区">
 										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
-							</el-select>
+							</el-select>-->
+							<!-- 省市区 -->
+							<el-cascader
+								:options="areaOptions"
+								:show-all-levels="true"
+								v-model="ruleForm.areaCodes"
+								style='width: 400px;' 
+							></el-cascader>								
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="customAddr">
 		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
@@ -292,8 +299,8 @@
 	  size="small"
 	  >
 		<el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="130px" label-position="left" class="demo-ruleForm">
-					<el-form-item label="所在区域:" prop="cusTownId">
-								<el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="ruleForm1.cusProvId" placeholder="请选择" @change="provinceChange1">
+					<el-form-item label="所在区域:" prop="areaCodes">
+								<!--<el-select clearable style="width:130px;margin-right:20px;" class="filter-item" v-model="ruleForm1.cusProvId" placeholder="请选择" @change="provinceChange1">
 										<el-option v-for="item in provinceOptions1" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>    
 								</el-select>
@@ -304,7 +311,13 @@
 								<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm1.cusTownId" placeholder="请选择">
 										<el-option v-for="item in countyOptions1" :key="item.id" :label="item.name" :value="item.id">
 										</el-option>
-								</el-select>
+								</el-select>-->
+								<el-cascader
+									:options="areaOptions"
+									:show-all-levels="true"
+									v-model="ruleForm1.areaCodes"
+									style='width: 436px;' 
+								></el-cascader>								
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="customAddr">
 		    				<input class="pickerInput" style="width:220px;" ref="pickerInput2"  value='' placeholder="输入关键字选取地点">
@@ -349,7 +362,6 @@
 <script>
 import { getCusTable,deleteCus,saveCus} from "@/api/customer";
 import { getMech} from "@/api/base";
-//import { parseTime } from "@/utils";
 export default {
   name: "",
   data() {
@@ -378,7 +390,6 @@ export default {
     return {
         pickerOptions0: {
           disabledDate(time) {
-			  //let nowTime=Date.now()
 			  if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
                   return false;
 			  }else{
@@ -387,6 +398,7 @@ export default {
            
           }
 		},
+		areaOptions:this.$store.state.user.area,
 		selectCommidty:[
 			{
 			  id:'1',
@@ -481,6 +493,7 @@ export default {
 				cusProvId:'',
 				cusCityId:'',
 				cusTownId:'',
+				areaCodes:[],
 				customArea:'',
 				addrLongitude:'',
 				addrLatitude:'',
@@ -504,8 +517,8 @@ export default {
 			customSex: [
 				{ required: true, message: '请选择性别', trigger: 'change' }
 			],
-			cusTownId:[
-					{ required: true, message: '请选择区域', trigger: 'change' }
+			areaCodes:[
+					{ type:'array',required: true, message: '请选择区域', trigger: 'change' }
 			]					
 	},
 	ruleForm1: {
@@ -513,6 +526,7 @@ export default {
 			cusProvId:'',
 			cusCityId:'',
 			cusTownId:'',
+			areaCodes:[],
 			customArea:'',
 			addrLongitude:'',
 			addrLatitude:'',
@@ -521,8 +535,8 @@ rules1: {
 	customAddr: [
 		{ required: true, message: '详细地址不能为空', trigger: 'blur' },
 	],
-	cusTownId:[
-			{ required: true, message: '请选择区域', trigger: 'change' }
+	areaCodes:[
+			{ type:'array',required: true, message: '请选择区域', trigger: 'change' }
 	]					
 },								
 sex:[
@@ -823,18 +837,18 @@ county1:'',
 				this.ruleForm1.cusCityId='';
 				this.dialogVisible = false;
       },								
-		//获取客户数据
-		getcustomerList(){
-			var obj = {
-				id:this.$route.query.coustomerId
-			}
-     // getCusTable(obj).then(res => {
-			//	console.log(res.data.data.list) 
+	//获取客户数据
+	getcustomerList(){
+		var obj = {
+			id:this.$route.query.coustomerId
+		}
+		// getCusTable(obj).then(res => {
+				//	console.log(res.data.data.list) 
 
-     // }).catch(res=>{
-       
-     // });
-		}, 
+		// }).catch(res=>{
+		
+		// });
+	}, 
     //新增按钮
     addcustomer() {
 				this.dialogTableVisible1=true;					
@@ -842,14 +856,7 @@ county1:'',
 				this.ruleForm.cusProvId='';
 				this.ruleForm.cusCityId='';
 				this.sexName='';
-				//
 				var id=''
-		  	// getArea(id).then(res => {
-			// 		this.provinceOptions=res.data.data;
-					
-			// 	}).catch(res=>{
-					
-			// 	});
 				this.$nextTick(() => {
 		   			this.test();
 		    })					
@@ -858,11 +865,6 @@ county1:'',
 	changeAddress(){
 	    this.dialogVisible=true;
 				var id=''
-		  	// getArea(id).then(res => {
-			// 		this.provinceOptions1=res.data.data;					
-			// 	}).catch(res=>{
-					
-			// 	});
 				this.$nextTick(() => {
 		   			this.test1();
 		    })						
@@ -980,9 +982,9 @@ county1:'',
 								inputname1.value=info.location;										
 				});
 				
-				poiPicker.onCityReady(function() {								
-						poiPicker.searchByKeyword('附近小区');								
-				});
+				//poiPicker.onCityReady(function() {								
+						//poiPicker.searchByKeyword('附近小区');								
+				//});
 		}	
 						
 },
@@ -1021,9 +1023,9 @@ test1(){
 								inputname1.value=info.location;										
 				});
 				
-				poiPicker.onCityReady(function() {								
-						poiPicker.searchByKeyword('附近小区');								
-				});
+				//poiPicker.onCityReady(function() {								
+						//poiPicker.searchByKeyword('附近小区');								
+				//});
 		}	
 						
 },

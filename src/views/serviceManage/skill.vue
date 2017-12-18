@@ -8,7 +8,7 @@
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite">
-          <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="qunxian.indexOf('ser_add') != -1" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+          <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
@@ -17,8 +17,8 @@
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
                         <template scope="scope">
-                            <el-button class="el-icon-edit"  @click="add('edit',scope.row)"></el-button>
-                            <el-button class="el-icon-delete" @click="handleDelete(scope.row)"></el-button>
+                            <el-button class="el-icon-edit"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
+                            <el-button class="el-icon-delete" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
                         </template>
                       </el-table-column>
               </el-table>
@@ -39,7 +39,7 @@
               <div class="tech-order-jnsk" style="float:left;width:500px;" >
                   <div class="tech-order-btnsk"  @click="choseServer">&#10010 请选择</div>
               </div>
-              <el-table :data="ruleForm2.serItems"  border style="width:500px;margin:0px;float:left" >
+              <el-table :data="ruleForm2.serItems"  v-loading="listLoading"  border style="width:500px;margin:0px;float:left" >
                   <el-table-column prop="name" label="项目名称" width="100" height="30" align="center">
                   </el-table-column>
                   <el-table-column prop="serItemCommoditys" label="商品名称" width="180" align="center">
@@ -50,7 +50,7 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <div v-if="!ruleForm2.serItems || showRUles" style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;">请选择服务</div>
+                <div v-if="!ruleForm2.serItems || showRUles" v-cloak  style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;">请选择服务</div>
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians" style='margin-top:30px;'>
              <div class="tech-order-jnsk" style="float:left;width:500px;">
@@ -164,11 +164,11 @@
     name: '',
     data() {
       return {
+        btnShow: this.$store.state.user.buttonshow,
         showRUles:false,
         promShow:false,
         promShow1:false, 
 		    checkAll:false,      
-        qunxian:["ser_add","ser_edit"],
         localSearch:'',
         tabOptions:[],
         techShow:false,
@@ -538,7 +538,8 @@
             this.flagserver = true;                    	 		                                 
       },
       //服务列表获取
-      getOrderserver(pramsObj){              
+      getOrderserver(pramsObj){ 
+        this.listLoading = true;             
 		    var obj = pramsObj;
         orderServer(obj).then(res => {      
           if (res.data.code === 1) {            
@@ -548,7 +549,7 @@
           }else{
 
           }          
-          
+          this.listLoading = false;
         }).catch(res=>{
             
 		    });

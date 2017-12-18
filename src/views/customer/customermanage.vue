@@ -11,7 +11,7 @@
 		  <button class="search-button" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<div class="second-bar">
-		  <button type="button" class="add-button" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</button>
+		  <button type="button" class="add-button" v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut" style="float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</button>
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px 60px 20px;">			      
 				    <el-table
 					  :data="tableData"
@@ -67,8 +67,8 @@
 						align="center"
 						label="操作">
 										<template scope="scope">
-												<el-button type="button" @click="lookInf(scope.row)">下单</el-button>
-												<el-button type="button" @click="Delete(scope.row)">删除</el-button>
+												<el-button type="button" v-if="btnShow.indexOf('customer_update') != -1" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button"  v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
 					</el-table>
@@ -94,19 +94,14 @@
 					<el-form-item label="手机号:"  prop="customPhone">
                 <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
-					<el-form-item label="所在区域:" prop="cusTownId">
-							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusProvId" placeholder="请选择省" @change="provinceChange">
-									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
-									</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusCityId" placeholder="请选择市" @change="cityChange">
-										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="ruleForm.cusTownId" placeholder="请选择县区">
-										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select>
+					<el-form-item label="所在区域:" prop="areaCodes">
+              <!-- 省市区 -->
+              <el-cascader
+                :options="areaOptions"
+                :show-all-levels="true"
+                 v-model="ruleForm.areaCodes"
+                 style='width: 400px;' 
+              ></el-cascader>							
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="customAddr">
 		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
@@ -163,7 +158,9 @@ export default {
 
 		}; 		 		
     return {
-			  testvalue:'',
+			  btnShow: this.$store.state.user.buttonshow,
+				testvalue:'',
+				areaOptions:this.$store.state.user.area,
 			  listLoading:true,
         ruleForm: {
 					customName:'',
@@ -174,6 +171,7 @@ export default {
 					cusProvId:'',
 					cusCityId:'',
 					cusTownId:'',
+					areaCodes:[],
 					customArea:'',
 					addrLongitude:'',
 					addrLatitude:'',
@@ -196,22 +194,16 @@ export default {
 					customSex: [
 						{ required: true, message: '请选择性别', trigger: 'change' }
 					],
-					cusTownId:[
-							{ required: true, message: '请选择区域', trigger: 'change' }
+					areaCodes:[
+							{type:'array', required: true, message: '请选择区域', trigger: 'change' }
 					]					
         },
 		sex:[
 		  { key: "1", sexName: "男" },
 		  { key: "2", sexName: "女" }
 		],
-		sexName:'',
-   //
-		provinceOptions:[],
-		//
-		cityOptions:[],
-		//
-		countyOptions:[],								
-      tableData: [],	
+		sexName:'',								
+    tableData: [],	
 		//全局搜索下拉选项
 		organizationOptions:[],
 		organizationName:'',//服务机构				
@@ -224,27 +216,6 @@ export default {
     };
   },
   methods:{
-    
-		//
-		// provinceChange(value){
-		// 	this.ruleForm.cusCityId='';
-    //   // getArea(value).then(res => {
-		// 	//    this.cityOptions=res.data.data;
-    //   // }).catch(res=>{
-        
-    //   // });
-       
-		// },
-		// //
-		// cityChange(value){
-		// 	this.ruleForm.cusTownId='';
-    //   getArea(value).then(res => {
-		// 	   this.countyOptions=res.data.data;
-    //   }).catch(res=>{
-        
-    //   });			
-
-		// },
 		//customSex
 		customSexselect(){
       this.ruleForm.customSex=this.sex;
@@ -264,8 +235,12 @@ export default {
 					  // this.ruleForm.customAddr='';
 				 }			   
 					this.$refs[formName].validate((valid) => {
-						if (valid) {																			
-							var obj = this.ruleForm
+						if (valid) {																								
+							var obj = this.ruleForm;
+							//省、市、区三级ID	
+							obj.cusProvId=ruleForm.areaCodes[0];
+							obj.cusCityId=ruleForm.areaCodes[1];
+							obj.cusTownId=ruleForm.areaCodes[2];
 							saveCus(obj).then(res => {
 								console.log(res)
 								if(res.data.code === 1){
@@ -275,7 +250,9 @@ export default {
 										});
 										this.$refs['ruleForm'].resetFields();
 										this.dialogTableVisible = false
-										this.getData();
+										var obj={};
+										this.pageNumber=1;
+										this.getData(obj,this.pageNumber,this.pageSize1);
 								}else{
 									this.$message({
 											type: 'warning',
@@ -338,15 +315,7 @@ export default {
 				this.ruleForm.cusProvId='';
 				this.ruleForm.cusCityId='';
 				this.sexName='';
-				//
 				var id=''
-		  	// getArea(id).then(res => {
-					
-				// 	this.provinceOptions=res.data.data;
-					
-				// }).catch(res=>{
-					
-				// });
 				this.$nextTick(() => {
 		   			this.test();
 		    })				
@@ -373,6 +342,7 @@ export default {
 										message: '删除成功!'
 									});
 									var obj1={};
+									this.pageNumber=1;
 									this.getData(obj1,this.pageNumber,this.pageSize1);
 							}else{
 								this.$message({
