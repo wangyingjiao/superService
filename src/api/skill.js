@@ -4,19 +4,11 @@ const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 
 })
-// 服务站Talbe
-export function Skillserver(obj,pageNumber,pageSize) {
-  return instance.post(`/api/a/service/skill/serSkillInfo/choiceTechnicianlistData?pageNo=`+pageNumber+'&pageSize='+pageSize,obj)
-}
 // 获取技能列表
 export function getListdata(obj,pageNumber,pageSize) {
   return instance.post(`/api/a/service/skill/serSkillInfo/listData?pageNo=`+pageNumber+'&pageSize='+pageSize, obj)
 }
-//获取服务列表
-export function getListser() {
-  return instance.get(`/api/a/service/skill/serSkillInfo/getServiceStationList`)
-}
-//保存技能
+//新增保存技能
 export function saveServer(obj) {
   return instance.post(`/api/a/service/skill/serSkillInfo/saveData`,obj)
 }
@@ -31,4 +23,8 @@ export function techDelet(obj) {
 //编辑技能
 export function editTech(obj) {
   return instance.post(`/api/a/service/skill/serSkillInfo/formData`,obj)
+}
+//编辑保存技能
+export function upDataTech(obj) {
+  return instance.post(`/api/a/service/skill/serSkillInfo/upData`,obj)
 }
