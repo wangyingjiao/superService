@@ -31,7 +31,7 @@
 						align="center"
 						label="头像">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
 						</template>
 					  </el-table-column>
 					  <el-table-column
@@ -39,7 +39,7 @@
 						align="center"
 						label="技师">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
 						</template>
 					  </el-table-column>
 					  <el-table-column
@@ -47,7 +47,7 @@
 						align="center"
 						label="性别">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
 						</template>
 					  </el-table-column>
 					  <el-table-column
@@ -55,7 +55,7 @@
 						align="center"
 						label="电话">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
 						</template>
 					  </el-table-column>
 					  <el-table-column
@@ -63,7 +63,7 @@
 						align="center"
 						label="所属服务站">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
 						</template>
 					  </el-table-column>
 					  <el-table-column
@@ -71,7 +71,7 @@
 						align="center"
 						label="操作">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" @click="selectBut(item.name)">{{item.name}}</div>						
+                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name" @click="selectBut(item.name)">{{item.name}}</div>						
 						</template>
 					  </el-table-column>					  
 					</el-table>

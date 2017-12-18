@@ -8,7 +8,8 @@
 						<el-tab-pane label="已取消" name="4"></el-tab-pane>
 						<el-tab-pane label="已上门" name="5"></el-tab-pane>
 						<el-tab-pane label="已完成" name="6"></el-tab-pane>
-						<el-tab-pane label="已关闭" name="7"></el-tab-pane>		
+						<el-tab-pane label="已成功" name="7"></el-tab-pane>
+						<el-tab-pane label="已暂停" name="8"></el-tab-pane>		
 			  </el-tabs>
 			  <el-select clearable style="width:200px" class="filter-item" v-model="payType" placeholder="选择支付方式">
 						<el-option v-for="item in payTypeOptions" :key="item.key" :label="item.name" :value="item.key">
