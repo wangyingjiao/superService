@@ -716,6 +716,7 @@ export default {
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
+          this.pageNumber = 1
           this.getList();
           this.$message({
             type: "success",
