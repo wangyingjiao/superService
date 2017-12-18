@@ -177,21 +177,21 @@
           </el-switch>
         </el-form-item> -->
 
-        <el-form-item label=" 机构网址" >
+        <el-form-item label=" 机构网址" prop="url">
           <el-input 
             style='width: 400px;' 
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 机构传真" >
+        <el-form-item label=" 机构传真" prop="fax">
           <el-input 
             style='width: 400px;' 
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
-        <el-form-item label="  400客服电话" >
+        <el-form-item label="  400客服电话" prop="tel400">
           <el-input 
             style='width: 400px;' 
             v-model="temp.tel400"
@@ -237,25 +237,62 @@ export default {
   data() {
     var validatePhone = (rule, value, callback) => {
       if (!value) {
-					return callback(new Error('电话号码不能为空'));
-				}else{
-					if (!(/^(\d{1,4}-)?(\d{1,4}-)?\d{7,9}$/.test(value))) {
-						callback(new Error('请输入正确固话格式，如：010-88886666'));
-					} else {
-						callback();
-					}
-				}
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^(\d{1,4}-)?(\d{1,4}-)?\d{7,9}$/.test(value)) {
+          callback(new Error("请输入正确固话格式，如：010-88886666"));
+        } else {
+          callback();
+        }
+      }
     };
     var validateMasterPhone = (rule, value, callback) => {
       if (!value) {
-					return callback(new Error('电话号码不能为空'));
-				}else{
-					if (!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(value))) {
-						callback(new Error('请输入正确11位手机号'));
-					} else {
-						callback();
-					}
-				}
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) {
+          callback(new Error("请输入正确11位手机号"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var validateurl = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (
+          !/[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?/.test(
+            value
+          )
+        ) {
+          callback(new Error("请输入正确的机构网址"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var validatefax = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (!/^(\d{3,4}-)?\d{7,8}$/.test(value)) {
+          callback(new Error("请输入正确的传真地址"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var validatetel400 = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (!/^[4]00\d{7}$/.test(value)) {
+          callback(new Error("请输入正确的400服务电话"));
+        } else {
+          callback();
+        }
+      }
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
@@ -270,7 +307,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
-      pageNumber:1,
+      pageNumber: 1,
       pageSize: 10,
       total: 1,
       search: {
@@ -318,7 +355,11 @@ export default {
       updateId: "",
       rules: {
         name: [
-          { required: true, message: "请输入 2 到 15 位的机构名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的机构名称",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         telephone: [
@@ -329,7 +370,11 @@ export default {
           }
         ],
         masterName: [
-          { required: true, message: "请输入 2 到 15 位的负责人姓名", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的负责人姓名",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         masterPhone: [
@@ -337,8 +382,17 @@ export default {
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         address: [
-          { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
-          { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
+          {
+            required: true,
+            message: "请输入 6 到 100 位的详细地址",
+            trigger: "blur"
+          },
+          {
+            min: 6,
+            max: 100,
+            message: "长度在 6 到 100 个字符",
+            trigger: "blur"
+          }
         ],
         scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
@@ -360,6 +414,24 @@ export default {
             type: "array",
             message: "所在区域不能为空",
             trigger: "change"
+          }
+        ],
+        url: [
+          {
+            validator: validateurl,
+            trigger: "blur"
+          }
+        ],
+        fax: [
+          {
+            validator: validatefax,
+            trigger: "blur"
+          }
+        ],
+        tel400: [
+          {
+            validator: validatetel400,
+            trigger: "blur"
           }
         ]
       }
@@ -480,9 +552,9 @@ export default {
 
           if (res.data.code == "1") {
             this.listLoading = false;
-            console.log(res.data.data.cityCodes)
+            console.log(res.data.data.cityCodes);
             this.temp = Object.assign({}, res.data.data);
-           // this.temp.cityCodes = res.data.data.cityCodes;
+            // this.temp.cityCodes = res.data.data.cityCodes;
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -581,7 +653,7 @@ export default {
       for (var i = 0; i < this.temp.cityCodes.length; i++) {
         arr.push(this.temp.cityCodes[i]);
       }
-      console.log( this.temp.cityCodes)
+      console.log(this.temp.cityCodes);
       var obj = {
         id: this.updateId,
         name: this.temp.name, //机构名
@@ -600,7 +672,7 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      console.log(obj)
+      console.log(obj);
 
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -641,7 +713,6 @@ export default {
         cityCodes: []
       };
     }
-   
   }
 };
 </script>
