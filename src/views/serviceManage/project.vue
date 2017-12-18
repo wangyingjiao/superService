@@ -8,17 +8,9 @@
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <el-select clearable style="width: 200px" class="filter-item" filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
-        <el-option v-for="(item,index) in sortList" :key="item.id" :label="item.name" :value="item.id">
+        <el-option v-for="(item,index) in sortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-<!-- 
-        <el-form-item label="所属分类：" class="seize" prop="calss">
-          <el-select class="filter-item" filterable  v-model="basicForm.calss" style="width:400px" @change="open">
-            <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-
 
       <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityId" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
@@ -97,7 +89,7 @@
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
+    <!-- 添加，编辑弹框 -->
     <el-dialog 
       :title="textMap[dialogStatus]" 
       :visible.sync="dialogFormVisible" 
@@ -151,7 +143,7 @@
 
                 <el-form-item label="服务图片：" prop="picture">
                   <div class="upload-demo upload_box">
-                      <!-- <span class="upload-back"></span> -->
+                
                       <el-upload
                           action="https://jsonplaceholder.typicode.com/posts/"
                           list-type="picture-card"
@@ -164,16 +156,7 @@
                         <img width="100%" :src="dialogImageUrl" alt="">
                       </el-dialog>
                   </div>
-                  <!-- <el-upload
-                    class="upload-demo upload_box"
-                    action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
-                    :data="sign"
-                    :on-preview="handlePreview"
-                    :on-remove="handleRemove"
-                    :file-list="fileList2"
-                    list-type="picture">
-                  </el-upload> -->
-                     <!-- <el-button size="small" type="primary">点击上传</el-button> -->
+      
                     <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
                 </el-form-item>
 
@@ -272,15 +255,15 @@
                 style='width: 450px; padding:20px 0 0 20px'
                 :rules = "goods"
                  >
-                <el-form-item label="活动名称:" prop="name">
+                <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入活动名称（2-10位）"
+                    placeholder="请输入商品名称（2-10位）"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
-                    placeholder="请输入活动名称（2-10位）"
+                    placeholder="请输入单位名称（1-5位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
@@ -288,7 +271,7 @@
                   <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:350px">
                      <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
                      </el-option> -->
-                     <el-option v-for="(item,key,index) in measure" :key="key" :label="item" :value="key"></el-option>
+                     <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
                 
@@ -306,7 +289,7 @@
              
                 
 
-                <el-form-item label="派人数量:" class="send">
+                <el-form-item label="派人数量:" class="send" prop="persons">
                    <table class="table-pro">
                      <tr>
                        <th @click="addTable">+</th>
@@ -323,10 +306,10 @@
                         </td>
                      </tr>
                    </table>
-                   <div class="el-form-item__error" v-if="personsTime">请输入折算时长</div>
+                   <!-- <div class="el-form-item__error" v-if="personsTime">请输入折算时长</div> -->
                 </el-form-item>
 
-                <el-form-item label="起够数量:" prop="minPurchase" class="seize">
+                <el-form-item label="起够数量:" class="seize">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
                     v-model="goods_info.minPurchase"></el-input>
@@ -346,8 +329,30 @@
       </div>
     </el-dialog>
 
+    <!-- 图文详情 -->
+      <div class="image-text">
+          <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
+            <div class="image-text-header">
+                <p>添加图文详情</p>
+                <p><span class="el-icon-plus" @click="addImage"></span><span class="el-icon-close" @click="ImageText = false"></span></p>
+            </div>
+            <div class="image-text-body">
+                <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
+                    <el-upload
+                        class="avatar-uploader"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :show-file-list="false"
+                        :on-success="(res,file)=>handleAvatarSuccess(res,file,index)"
+                        :before-upload="beforeAvatarUpload">
+                        <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar">
+                        <i v-if="!item.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </div>
+            </div>
+        </el-dialog>
+      </div>
+
   </div>
-</div>
 </div>
 </div>
 </template>
@@ -368,9 +373,71 @@ export default {
     waves
   },
   data() {
+    var UNIT = (rule,value,callback)=>{
+      var reg = /^\d+$/;
+      if(value){
+        if(value.length>=1 && value.length<=5){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error("商品单位必须为数字值"))
+          }
+        }else{
+           callback(new Error("长度在 1 到 5 个字符"))
+        }
+      }else{
+        callback(new Error("请输入商品单位"))
+      }
+    }
+    var PRICE = (rule,value,callback)=>{
+      var reg = /^\d+$/;
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+           callback(new Error("价格必须为数字值"))
+        }
+      }else{
+        callback(new Error("请输入价格"))
+      }
+    }
+    var CONVERTHOURS = (rule,value,callback)=>{
+       var reg = /^\d+$/;
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error("折算时长必须为数字值"))
+        }
+      }else{
+        callback(new Error("请输入折算时长"))
+      }
+    }
+    var PERSONS = (rule,value,callback)=>{
+      var reg = /^\d+$/;
+      console.log(rule,"rule-------")
+      console.log(value,"value---------111")
+      if(value.length>0){
+        for(var i =0 ;i<value.length; i++){
+          if(reg.test(value[i].critical)){
+            if(reg.test(value[i].quantity)){
+              callback()
+            }else{
+               callback(new Error("人数必须为数字值"))
+            }
+          }else{
+             callback(new Error("临界值必须为数字值"))
+          }
+        }
+      }else{
+        callback(new Error("请输入派人数量"))
+      }
+    }
     return {
-	tabs:'all',
-	editId:'',
+      ImageTextArr:[{"imageUrl":''}],
+      ImageText:false,
+    tabs:'all',
+    editId:'',
     total:null,
     houseStr:'',
     whole:{},
@@ -387,25 +454,9 @@ export default {
 		},
 		persons:[],
       commoditys:[
-        // {
-		// 	"idc":1,
-        //   "name": "室内玻璃",
-        //   "unit": "平米",
-        //   "meterage": "2",
-        //   "price": 100,
-        //   "convertHours": 1,
-        //   "minimum": "1",
-        //   "persons": [
-        //     {
-        //       "critical": "≤100",
-        //       "quantity": 1
-        //     },{
-        //       "critical": ">100",
-        //       "quantity": 2
-        //     }
-        //   ]
-		// },
+       
       ],
+      imageUrl:'',
        dialogImageUrl: '',
       dialogVisible: false,
       measure:[
@@ -429,29 +480,31 @@ export default {
       sortList:[],
       goods: {
         name: [
-          { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
+          { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
         unit: [
-          { required: true, message: "请输入名称(2-10位)", trigger: "blur" },
-          { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" }
+          {required: true,validator:UNIT,trigger:'blur'}
         ],
-        type: [{ required: true, message: "请输入名称(2-10位)", trigger: "change" }],
+        type: [{ required: true, message: "请选择计量方式", trigger: "change" }],
         price:[
-          { required: true, message: "请输入价格", trigger: "blur" }
+          {required:true,validator:PRICE,trigger:"blur"}
         ],
         convertHours:[
-           { required: true, message: "请输入折算时长", trigger: "blur" }
-		],
-		peoNum:[
-			{ required: true, message: "请输入折算时长", trigger: "blur" }
-		]
+           { required: true, validator:CONVERTHOURS, trigger: "blur" }
+		    ],
+        peoNum:[
+          { required: true, message: "请输入折算时长", trigger: "blur" }
+        ],
+        persons:[
+          {require:true,validator:PERSONS, trigger:"change"}
+        ]
       },
       basicForm:{
         name:'',
         picture:'123123132',   //服务图片
         sortId:'',
-        sale:'',
+        sale:'yes',
         sortNum:'',
         majorSort: "all",
         commoditys:[],
@@ -459,7 +512,10 @@ export default {
 		description:''
       },
       basicRles: {
-        name: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
+        name: [
+          { required: true, message: "请输入项目名称", trigger: "blur" },
+          { min:2,max:10,message:"请输入2-10位的项目名称", trigger: "blur"}
+        ],
         // picture: [{ required: true, message: "请上传至少一张图片" }],
 		info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
 		description:[{ required: true, message: "请输入服务描述", trigger: "blur" }]
@@ -473,7 +529,8 @@ export default {
         time: "",
         peoNum: "",
         num: "",
-        persons:[]
+        persons:[],
+        minPurchase:''
       },
       listQuery: {
         sort: "+id",
@@ -540,6 +597,27 @@ export default {
     this.getList(1,10);   //搜索 ，分页
   },
   methods: {
+    addImage(){
+      this.ImageTextArr.push({"imageUrl":''})
+    },
+    handleAvatarSuccess(res, file,index) {
+        this.ImageTextArr[index]["imageUrl"] = URL.createObjectURL(file.raw)
+        this.imageUrl = URL.createObjectURL(file.raw);
+        console.log(this.ImageTextArr[0]["imageUrl"],"this.ImageTextArr[0]['imageUrl']---")
+        console.log(this.imageUrl,"this.imageurl------")
+      },
+      beforeAvatarUpload(file) {
+        // const isJPG = file.type === 'image/jpeg';
+        // const isLt2M = file.size / 1024 / 1024 < 2;
+
+        // if (!isJPG) {
+        //   this.$message.error('上传头像图片只能是 JPG 格式!');
+        // }
+        // if (!isLt2M) {
+        //   this.$message.error('上传头像图片大小不能超过 2MB!');
+        // }
+        // return isJPG && isLt2M;
+      },
     cjw(val){
       console.log(val,'------------------')
     },
@@ -561,10 +639,16 @@ export default {
       this.basicForm.commoditys.splice(index,1)
     },
     //表格删除
-    tableHandleDelete(val){
-    
+    tableHandleDelete(index,item){
+      this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val){
+      	// this.$refs['basic'].resetFields()  //基本信息重置
+        // this.basicForm.sortNum = ''  //排序号好清空
+        // this.basicForm.cityCodes = '' //定向城市
+        // this.resetForm('goods_info')  //添加商品
+        // this.goods_info.minPurchase = '' //起够数量
+        // this.basicForm.commoditys = [] //商品信息表格
       this.houseStr = val
        console.log(val,"val----")
     },
@@ -617,7 +701,15 @@ export default {
     },
     addTable(){
       // arr.push({critical:'',quantity:''})
-      this.goods_info.persons.push({critical:'',quantity:''})
+      if(this.goods_info.persons.length>=4){
+        this.$notify({
+          title: '警告',
+          message: '派人数量最多4个',
+          type: 'warning'
+        });
+      }else{
+         this.goods_info.persons.push({critical:'',quantity:''})
+      }
       this.personsTime = false;
     },
     getList(page,size) {
@@ -649,13 +741,15 @@ export default {
         });
     },
     refbtn1() {
-      alert("dawdawd")
+      //  this.cancel('basic')
+      alert("dawdaw")
       // console.log(this.$refs);
       // this.$refs.refbtn1.className = "tabBtn tabBtnclick";
       // this.$refs.refbtn2.className = "tabBtn";
       // this.activeName = "1";
     },
     refbtn2() {
+      // this.cancel('basic')
       // console.log(this.$refs.refbtn2);
       // this.$refs.refbtn2.className = "tabBtn tabBtnclick";
       // this.$refs.refbtn1.className = "tabBtn";
@@ -710,15 +804,28 @@ export default {
 	  this.dialogFormVisible = true;
 	  this.editId = row.id
       ServerEdit({"id":this.editId}).then(data=>{
-        console.log(data,"data-----编辑")
-        this.basicForm = data.data.data
-        console.log(this.cityArr,"cityArr")
+        // console.log(data,"data-----编辑")
+        // this.basicForm = data.data.data
+        var arr = data.data.data;
+        for(var i = 0; i<arr.commoditys.length; i++){
+          if(arr.commoditys[i].id){
+            delete arr.commoditys[i].id
+          }
+          for(var j = 0; j<arr.commoditys[i].persons.length; j++){
+            if(arr.commoditys[i].persons[j].id){
+              delete arr.commoditys[i].persons[j].id
+            }
+          }
+        }
+        this.basicForm = arr
+        console.log(this.basicForm,"basicForm------")
       }).catch(error=>{
         console.log(error)
       })
     },
     handleUplode(row) {
-      console.log("上传");
+      // console.log("上传");
+      this.ImageText = true
     },
     handleDelete(row) {
       console.log(row,"-----row---")
@@ -839,17 +946,13 @@ export default {
 	//取消
 	cancel(fromName){
 		// console.log(fromName,"-----")
-		// this.$refs[fromName].resetFields()  //基本信息重置
-		// console.log()
-		// this.resetForm('goods_info')
-		// //  this.basicForm.commoditys = []  //商品信息table重置
-		// this.goods_info = {};   //商品信息table重置
-		this.dialogFormVisible = false
-		// alert("dawdaw")
-		// this.basicForm = {}
-		// this.basicForm.persons = [];
-		// this.goods_info.minPurchase = ''
-		// this.dialogFormVisible = false
+    this.dialogFormVisible = false
+		this.$refs[fromName].resetFields()  //基本信息重置
+    this.basicForm.sortNum = ''  //排序号好清空
+    this.basicForm.cityCodes = [] //定向城市
+    this.resetForm('goods_info')  //添加商品
+    this.goods_info.minPurchase = '' //起够数量
+    this.basicForm.commoditys = [] //商品信息表格
 	},
 	//保存
     subForm(formName){
@@ -870,46 +973,47 @@ export default {
           // console.log(obj,"-----------------------------------")
           //==update 是编辑   create是添加
           if(this.dialogStatus == "update"){
-			that.basicForm.id = this.editId
-			serverEditPre(that.basicForm).then(data=>{
-				if(data.data.code){
-						this.$message({
-							message: data.data.data,
-							type: 'success'
-						});
-						this.dialogFormVisible = false
-						 this.getList(1,10);
-					}else{
-						this.$message({
-							message: data.data.data,
-							type: 'warning'
-						});
-					}
-			}).catch(error=>{
-				console.log(error,"error---project---857")
-			})
+              // that.basicForm.id = this.editId
+              console.log(that.basicForm,"that.basicForm----")
+              serverEditPre(that.basicForm).then(data=>{
+                if(data.data.code){
+                    this.$message({
+                      message: data.data.data,
+                      type: 'success'
+                    });
+                    this.dialogFormVisible = false
+                    this.getList(1,10);
+                  }else{
+                    this.$message({
+                      message: data.data.data,
+                      type: 'warning'
+                    });
+                  }
+              }).catch(error=>{
+                console.log(error,"error---project---857")
+              })
           }else{
-				ServerAdd(that.basicForm).then(data=>{
-				console.log(data,"添加成功")
-					if(data.data.code){
-						this.$message({
-							message: data.data.data,
-							type: 'success'
-						});
-						this.dialogFormVisible = false
-						 this.getList(1,10);
-					}else{
-						this.$message({
-							message: data.data.data,
-							type: 'warning'
-						});
-					}
-				}).catch(error=>{
-				console.log(error,"error--project--770")
-				})
+            ServerAdd(that.basicForm).then(data=>{
+            console.log(data,"添加成功")
+              if(data.data.code){
+                this.$message({
+                  message: data.data.data,
+                  type: 'success'
+                });
+                this.cancel("basic")
+                this.getList(1,10);
+              }else{
+                this.$message({
+                  message: data.data.data,
+                  type: 'warning'
+                });
+              }
+            }).catch(error=>{
+            console.log(error,"error--project--770")
+            })
 			}
         }else{
-          alert('false')
+          this.$message.error('不能为空');
           return false;
         }
       })
@@ -953,11 +1057,12 @@ export default {
       });
     },
     resetForm(formName) {
-	  this.$refs[formName].resetFields();
-	   this.goods_info.persons = [];
-	   this.goods_info.minPurchase = '';
+      var str = formName || 'goods_info'
+      this.$refs[str].resetFields();
+      this.goods_info.persons = [];
+      this.goods_info.minPurchase = '';
     }
-  }
+  },
 };
 </script>
 <style>
@@ -1205,7 +1310,69 @@ body {
 hr{
   border-top:1px solid #ccc;
 }
+.image-text .el-dialog__body,.image-text .el-dialog__header{
+  padding: 0;
+}
 
+.image-text-header{
+  overflow: hidden;
+  width: 100%;
+  height: 44px;
+  background: rgb(228, 225, 225);
+  font-size:16px;
+  font-weight: bolder;
+  line-height: 44px;
+  padding: 0 20px;
+}
+.image-text-header p:nth-child(1){
+  float: left;
+}
+.image-text p:nth-child(2){
+  float: right;
+}
+.image-text p:nth-child(2) span{
+  margin: 0 5px;
+}
+.image-text-body{
+  width:100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+}
+.image-border{
+  width: 100%;
+  background: rgb(182, 180, 180);
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 10px 0;
+}
+
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
 
 

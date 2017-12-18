@@ -43,7 +43,7 @@
                         <p>
                             <el-form-item label="性别:" prop="techSex">
                                 <el-select v-model="personalEDit.techSex" clearable placeholder="请选择" style="width:300px">
-                                    <el-option v-for="(item,$index) in sex" :key="item.value" :label="item.label" :value="item.value">
+                                    <el-option v-for="item in sex" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -191,7 +191,7 @@
                     <div>
                         <p><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
-                            <button class="tech-order-btn" @click="addtime"> &#10010 添加时间</button>
+                            <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
                             <div class="tech-order-jn-sons" v-show="isB">
                             <div style="margin:0 10px;">
                                 <p>新增日期</p>
@@ -359,7 +359,7 @@
                   <p>
                     <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
                         <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2($index,item)" v-for="(item,$index) in sexTypes"
-                        :class="{'tech-green':isA==$index}">
+                        :class="{'tech-green':isA==$index}" :key="$index">
                         {{item.sexName}}
                         <!-- <div :class="{'triangle-bottomrights':isA==$index}"></div>
                         <div class="tallys">&#10004</div> -->
@@ -410,7 +410,7 @@
         </ul>
         <!--家庭成员（选填） -->
         <h3 class="tech-tc-prson">家庭成员（选填）</h3>
-        <div class="tech-table"v-show="techTable">
+        <div class="tech-table" v-show="techTable">
           <el-table :key='tableKey' :data="list" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
             style="width: 100%" v-show="isTab">
 
