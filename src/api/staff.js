@@ -46,6 +46,6 @@ export function getMenudata() {
 export function delStaff(obj) {
   return instance.post(`/api/a/sys/user/deleteUser`, obj)
 }
-export function chkName(obj) { // 岗位重名检测
-  return instance.post(`/api/a/sys/role/chkName`, obj)
+export function chkName(name) { // 岗位重名检测
+  return instance.get(`/api/a/sys/role/chkName?name=` + name)
 }

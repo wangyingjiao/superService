@@ -1,25 +1,32 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <div class="filter-container">
+<div>
+    <div class="filter-container bgWhite">
+   
 
-      <el-select  clearable style="width: 200px" class="filter-item bottom0" v-model="listQuery.importance" placeholder="请选择">
-        <el-option v-for="item in seOptions" :key="item" :label="item" :value="item">
+      <el-select  clearable style="width: 200px" class="filter-item bottom0" v-model="search.type" placeholder="请选择">
+        <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
 
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item bottom0" placeholder="请输入搜索内容" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item bottom0" placeholder="请输入搜索内容" v-model="search.val">
       </el-input>
 
       <el-date-picker
-      v-model="date"
-      type="datetimerange"
-      range-separator="至"
-      start-placeholder="开始"
-      end-placeholder="结束">
+      v-model="search.startTime"
+      format
+      type="datetime"
+      placeholder="年/月/日/时间">
     </el-date-picker>
-       <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜索</button>
+    至
+      <el-date-picker
+      v-model="search.endTime"
+      type="datetime"
+      placeholder="年/月/日/时间">
+    </el-date-picker>
+       <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜 索</button>
     </div>
-
+  <div class="app-container calendar-list-container">
+    <div class="bgWhite">
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -31,243 +38,254 @@
       style="width: 100%">
 
       <el-table-column align="center" label="编号" >
-        <template scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
       </el-table-column>
 
       <el-table-column align="center" label="姓名" >
-        <template scope="scope">
-          <span>张三</span>
-        </template>
+       
       </el-table-column>
       
       <el-table-column align="center" label="手机号" >
-        <template scope="scope">
-          <span>1111</span>
-        </template>
+       
       </el-table-column>
       
       <el-table-column align="center" label="服务站" >
-        <template scope="scope">
-          <span>呼家楼</span>
-        </template>
+        
       </el-table-column>
       
       <el-table-column align="center" label="开始时间" >
-        <template scope="scope">
-          <span>2017-10-17 13:00</span>
-        </template>
+        
       </el-table-column>
       
       <el-table-column align="center" label="结束时间" >
-        <template scope="scope">
-          <span>2017-10-17 13:00</span>
-        </template>
+        
       </el-table-column>
       
       <el-table-column align="center" label="备注" >
-        <template scope="scope">
-          <span>无</span>
-        </template>
+        
       </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <div class="site-div" @click="handleModifyStatus(scope.row,'deleted')">
-                <div class="back-icon-del"></div>
-                <div>删除</div>
-          </div>
+          <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
         </template>
       </el-table-column>
 
     </el-table>
 
     <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
   </div>
+  </div>
+</div>
 </template>
 
 <script>
-import waves from '@/directive/waves/index.js' // 水波纹指令
-import { parseTime } from '@/utils'
+import { getHoliday, delHoliday } from "@/api/tech";
+import util from "@/utils/date";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
 
-
-// arr to obj
 export default {
-  name: 'table_demo',
+  name: "table_demo",
   directives: {
     waves
   },
   data() {
     return {
-      list: [1,2,3],
+      btnShow: this.$store.state.user.buttonshow,
+      list: [],
       total: null,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 6,
-        importance: undefined,
         title: undefined,
-        type: undefined,
-        sort: '+id'
+        type: undefined
       },
-      temp: {
-        id: undefined,
-        password: '',
-        password2: '',
-        servicestation: '',
-        station: '',
-        peostate: '',
-      }, 
-      seOptions: ['姓名', '手机号'],
-      date: '',
+      pageNumber: 1,
+      pageSize: 10,
+      total: 1,
+      search: {
+        type: "",
+        val: "",
+        startTime: "",
+        endTime: ""
+      },
+      seOptions: [
+        { label: "姓名", value: "techName" },
+        { label: "手机号", value: "techPhone" }
+      ],
       tableKey: 0,
       isIndeterminate: true
-    }
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
+    };
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
     getList() {
-      this.listLoading = false
+      this.listLoading = false;
     },
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
+      var startTime = util.formatDate.format(
+        new Date(this.search.startTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      var endTime = util.formatDate.format(
+        new Date(this.search.endTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      if (this.search.type == "techName") {
+        var obj = {
+          techName: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
+      } else {
+        var obj = {
+          techPhone: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
+      }
+
+      console.log(obj);
+      this.listLoading = true;
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
+        if (res.data.code == 1) {
+          this.list = res.data.data.list;
+          this.total = res.data.data.count;
+          this.listLoading = false;
+          this.listQuery.page = 1;
+        }
+      });
     },
     handleSizeChange(val) {
-      this.listQuery.limit = val
-      this.getList()
+      this.pageSize = val;
+      var startTime = util.formatDate.format(
+        new Date(this.search.startTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      var endTime = util.formatDate.format(
+        new Date(this.search.endTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      if (this.search.type == "techName") {
+        var obj = {
+          techName: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
+      } else {
+        var obj = {
+          techPhone: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
+      }
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
+        if (res.data.code == 1) {
+          this.list = res.data.data.list;
+          this.total = res.data.data.count;
+          this.listLoading = false;
+        }
+      });
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.getList()
-    },
-    timeFilter(time) {
-      if (!time[0]) {
-        this.listQuery.start = undefined
-        this.listQuery.end = undefined
-        return
+      this.pageNumber = val;
+      var startTime = util.formatDate.format(
+        new Date(this.search.startTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      var endTime = util.formatDate.format(
+        new Date(this.search.endTime),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      if (this.search.type == "techName") {
+        var obj = {
+          techName: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
+      } else {
+        var obj = {
+          techPhone: this.search.val,
+          startTime: startTime,
+          endTime: endTime
+        };
       }
-      this.listQuery.start = parseInt(+time[0] / 1000)
-      this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000)
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
-    },
-    
-    addstation() {
-      this.resetTemptwo()
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
+        if (res.data.code == 1) {
+          this.list = res.data.data.list;
+          this.total = res.data.data.count;
+          this.listLoading = false;    
+        }
+      });
     },
     handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
+      console.log(row);
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
-    handleCheckAllChange(event) {
-      this.checkedPowers = event.target.checked ? powerOptions : []
-      this.isIndeterminate = false
-      },
-    handleCheckedPowersChange(value) {
-      let checkedCount = value.length
-      this.checkAll = checkedCount === this.powers.length
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.powers.length
-      },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        password: '',
-        password2: '',
-        servicestation: '',
-        station: '',
-        peostate: ''
-      }
-    },
-    resetTemptwo() {
-      this.temp2 = {
-        stationName: '',
-        stationLv: '请选择',
-        stationState: ''
-      }
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+        .then(() => {
+          console.log(row);
+          var obj = {
+            id: row.id
+          };
+          delHoliday(obj)
+            .then(res => {
+              console.log(res);
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.getList();
+              } else {
+                this.$message({
+                  type: "warning",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(() => {
+              this.$message({
+                type: "warning",
+                message: "删除失败"
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
-}
+};
 </script>
-<style scoped>
-.btn_right{
-  float:right;
-  width:100px;
+<style>
+.btn_right {
+  float: right;
+  width: 100px;
 }
-.btn_left{
-  width:100px;
+.btn_left {
+  width: 100px;
 }
-.checkRightBox{
-  border: solid 1px #dcdcdc;
-  padding: 10px;
+.ele-date {
+  margin: 0 10px;
 }
-.checkAllBox{
-  padding: 10px 0;
+.bottom0 {
+  margin-bottom: 0px;
 }
-.checkBox1{
-  padding: 10px 0;
-  border-top: solid 1px #dcdcdc;
-  border-bottom: solid 1px #dcdcdc;
-}
-.checkBox2{
-  padding: 10px 0;
-}
-.check:nth-child(5){
-   margin-left: 0px;
-}
-.checkBox3{
-  padding: 10px 0;
-  border-top: solid 1px #dcdcdc;
-}
-.ele-date{
-  margin:0 10px
-}
-.bottom0{
-  margin-bottom: 0px
+.bgWhite {
+  background-color: #ffffff;
+  padding: 15px 20px 20px 20px;
 }
 </style>

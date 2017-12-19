@@ -162,12 +162,19 @@
         ref="temp2" 
         label-width="80px" 
         style='width: 500px; margin-left:20px;'>
+        
+        <el-form-item label=" 所属机构"  prop="officeId2">
+          <el-select style='width: 400px;' class="filter-item"  v-model="temp2.officeId2" placeholder="请选择">
+            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
 
         <el-form-item label="岗位名称" prop="name">
           <el-input v-model="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级" prop="dataScope">
-          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="dataScope" placeholder="请选择">
+          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -233,20 +240,24 @@ export default {
   },
   data() {
     var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入6-20位密码'));
+      if (value === "") {
+        callback(new Error("请输入6-20位密码"));
+      } else {
+        if (
+          !/^(?![\d]+$)(?![a-zA-Z]+$)(?![!#$%^&*]+$)[\da-zA-Z!#$%^&*]{6,20}$/.test(
+            value
+          )
+        ) {
+          callback(new Error("密码由6-20位数字、字母、字符任意两种组成"));
         } else {
-          if (!(/^(?![\d]+$)(?![a-zA-Z]+$)(?![!#$%^&*]+$)[\da-zA-Z!#$%^&*]{6,20}$/.test(value))) {
-						callback(new Error('密码由6-20位数字、字母、字符任意两种组成'));
-					} else {
-						callback();
-					}
-          if (this.temp.password2 !== '') {
-            this.$refs.temp.validateField('password2');
-          }
           callback();
         }
-      };
+        if (this.temp.password2 !== "") {
+          this.$refs.temp.validateField("password2");
+        }
+        callback();
+      }
+    };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
@@ -258,17 +269,17 @@ export default {
     };
     var validatePhone = (rule, value, callback) => {
       if (!value) {
-					return callback(new Error('电话号码不能为空'));
-				}else{
-					if (!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(value))) {
-						callback(new Error('手机号码格式不正确！'));
-					} else {
-						callback();
-					}
-				}
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) {
+          callback(new Error("手机号码格式不正确！"));
+        } else {
+          callback();
+        }
+      }
     };
     return {
-      btnShow:this.$store.state.user.buttonshow,
+      btnShow: this.$store.state.user.buttonshow,
       list: null,
       total: null,
       listLoading: true,
@@ -280,7 +291,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
-      pageNumber:1,
+      pageNumber: 1,
       pageSize: 10,
       total: 1,
       search: {
@@ -308,13 +319,12 @@ export default {
         label: "name"
       },
       temp2: {
+        officeId2: "",
         check: [],
         dataScope: "",
         stationState: ""
       },
-      dataScope: "",
       stationState: "",
-      importanceOptions: [1, 2, 3],
       stationCheck: [],
       useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
@@ -328,9 +338,12 @@ export default {
         { id: "7", value: "七级" },
         { id: "8", value: "八级" },
         { id: "9", value: "九级" },
-        { id: "10", value: "十级" },
+        { id: "10", value: "十级" }
       ],
-      stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
+      stationStateCheck: [
+        { id: "1", name: "可用" },
+        { id: "0", name: "不可用" }
+      ],
 
       dialogFormVisible: false,
       dialogFormStation: false,
@@ -344,11 +357,13 @@ export default {
       tableKey: 0,
       isIndeterminate: true,
       rules: {
-        mobile: [
-          { required: true, validator: validatePhone, trigger: "blur" }
-        ],
+        mobile: [{ required: true, validator: validatePhone, trigger: "blur" }],
         name: [
-          { required: true, message: "请输入 2 到 15 位的名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的名称",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         password: [
@@ -358,18 +373,29 @@ export default {
         password2: [
           { required: true, validator: validatePass2, trigger: "blur" }
         ],
-        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        officeId: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
         stationId: [
           { required: true, message: "服务站不能为空", trigger: "change" }
         ],
         role: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       },
       rules2: {
+        officeId2: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
         name: [
-          { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的分类名称",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        dataScope: [
+          { required: true, message: "等级不能为空", trigger: "change" }
+        ],
         check: [
           {
             type: "array",
@@ -393,12 +419,12 @@ export default {
   },
   created() {
     this.getList();
-    getSList({}).then(res => { // 服务机构
+    getSList({}).then(res => {
+      // 服务机构
       this.mechanismCheck = res.data.data.list;
-    
     });
     getStation().then(res => {
-     // console.log(res.data.data);
+      // console.log(res.data.data);
       this.stationCheck = res.data.data;
     });
     getMenudata().then(res => {
@@ -413,7 +439,7 @@ export default {
         mobile: ""
       };
       this.listLoading = true;
-      getStaff(obj ,this.pageNumber, this.pageSize).then(res => {
+      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res.data);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
@@ -428,13 +454,13 @@ export default {
       };
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
-        getStaff(obj,this.pageNumber, this.pageSize).then(res => {
-           console.log(res)
-          if (res.data.code === 1) {     
+        getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
             this.list = res.data.data.list;
             this.total = res.data.data.count;
             this.listLoading = false;
-            this.listQuery.page = 1
+            this.listQuery.page = 1;
           } else {
             this.listLoading = false;
             this.$message({
@@ -497,7 +523,7 @@ export default {
     handleUpdate(row) {
       //this.handleCreate();
       this.dialogFormVisible = true;
-      console.log(row)
+      console.log(row);
       this.dialogStatus = "update";
       this.temp = {
         id: row.id,
@@ -508,9 +534,8 @@ export default {
         role: row.role.id,
         useable: row.useable
       };
-    setTimeout(() => (this.temp.officeId = row.organization.id), 80);
-    setTimeout(() => (this.temp.stationId = row.station.id), 80);
-
+      setTimeout(() => (this.temp.officeId = row.organization.id), 80);
+      setTimeout(() => (this.temp.stationId = row.station.id), 80);
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -554,45 +579,35 @@ export default {
         });
     },
     lvChange(value) {
-      console.log(value);
-      console.log(this.dataScope);
-      this.temp2.dataScope = value;
-      console.log(this.temp2.dataScope);
+      // console.log(value);
+      // console.log(this.dataScope);
+      // this.temp2.dataScope = value;
+      // console.log(this.temp2.dataScope);
     },
     useableChange(val) {
-      console.log(val);
-      this.temp.useable = val;
+      // console.log(val);
+      // this.temp.useable = val;
     },
     postChange(val) {
-      console.log(val);
-      this.temp.station = val;
+      // console.log(val);
+      // this.temp.station = val;
     },
     stationChange(val) {
-      console.log(val);
-      this.temp.stationId = val;
+      // console.log(val);
+      // this.temp.stationId = val;
     },
     mechChange(val) {
       this.temp.officeId = val;
-      this.temp.stationId = ""
+      this.temp.stationId = "";
       console.log(val);
       var obj = {
         orgId: val
       };
       getFuwu(obj).then(res => {
-        console.log(res)
+        console.log(res);
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });
-    },
-    handleCheckAllChange(event) {
-      this.checkedPowers = event.target.checked ? powerOptions : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedPowersChange(value) {
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.powers.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.powers.length;
     },
     getId(str) {
       for (var i = 0; i < this.objOptions.length; i++) {
@@ -605,21 +620,20 @@ export default {
       console.log(this.temp);
       //var arr = [this]
       var obj = {
-            mobile: this.temp.mobile,
-            name: this.temp.name,
-            newPassword: this.temp.password,
-            officeId: this.temp.officeId,
-            stationId: this.temp.stationId,
-            roles: [this.temp.role],
-            useable: this.temp.useable
-          };
-          console.log(obj)
-         // return
+        mobile: this.temp.mobile,
+        name: this.temp.name,
+        newPassword: this.temp.password,
+        officeId: this.temp.officeId,
+        stationId: this.temp.stationId,
+        roles: [this.temp.role],
+        useable: this.temp.useable
+      };
+      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStaff(obj).then(res => {
             console.log(res);
-            if (res.data.code === 1) {             
+            if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -631,7 +645,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "新增失败"
+                message: res.data.data
               });
             }
           });
@@ -646,14 +660,18 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
+      var obj = {
+        name: this.temp2.name,
+        dataScope: this.temp2.dataScope,
+        menuIds: str,
+        useable: "1",
+        organization: {
+          id: this.temp2.officeId2
+        }
+      };
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var obj = {
-            name: this.temp2.name,
-            dataScope: this.temp2.dataScope,
-            menuIds: str,
-          };
           this.dialogFormStation = false;
           addStation(obj).then(res => {
             console.log(res);
@@ -664,15 +682,15 @@ export default {
                 message: "添加成功"
               });
               this.stationCheck.push(res.data.data);
-             // console.log(res.data.data.id)
+              // console.log(res.data.data.id)
               this.temp.role = res.data.data.id;
               this.resetTemp2();
             } else {
-              this.$refs.domTree.setCheckedKeys([]);
+              //this.$refs.domTree.setCheckedKeys([]);
               //this.resetTemp2();
               this.$message({
                 type: "error",
-                message: "添加失败"
+                message: res.data.data
               });
             }
           });
@@ -698,6 +716,7 @@ export default {
         console.log(res);
         if (res.data.code === 1) {
           this.dialogFormVisible = false;
+          this.pageNumber = 1
           this.getList();
           this.$message({
             type: "success",
@@ -725,11 +744,12 @@ export default {
     },
     resetTemp2() {
       this.temp2 = {
+        officeId:"",
         name: "",
         dataScope: "",
         check: []
       };
-      this.dataScope = "";
+      //this.dataScope = "";
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
@@ -737,11 +757,12 @@ export default {
     },
     resetForm2(formName) {
       this.temp2 = {
+        officeId:"",
         name: "",
         dataScope: "",
         check: []
       };
-      this.dataScope = "";
+      //this.dataScope = "";
       this.dialogFormStation = false;
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
@@ -800,7 +821,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding:15px 20px 20px 20px;
+  padding: 15px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 15px 20px;
@@ -870,7 +891,7 @@ body {
   .el-tree-node {
   float: none;
 }
-.btn_addStation{
+.btn_addStation {
   float: right;
   height: 34px;
   width: 80px;

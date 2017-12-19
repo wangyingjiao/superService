@@ -81,6 +81,7 @@
               :indent= 10
               show-checkbox
               node-key="id"
+            
               v-model="temp.check"
               ref="domTree"
               style='width: 400px;'
@@ -137,15 +138,14 @@ export default {
       } else {
         console.log(this.dialogStatus);
         if (this.dialogStatus == "create") {
-          var obj = {};
-          chkName(obj).then(res => {
+          chkName(value).then(res => {
             if (res.data.code == 0) {
               callback(new Error("岗位名重复！"));
             } else {
               callback();
             }
           });
-        }else{
+        } else {
           callback();
         }
       }
@@ -169,13 +169,14 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
-      // stationState: "1",
       temp: {
-        officeId: "",
         name: "",
         dataScope: "",
-        check: []
+        check: [],
+        officeId: ""
       },
+      checkNode: [],
+      roleId: "",
       checked: [],
       station: "",
       stationName: "",
@@ -218,9 +219,7 @@ export default {
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [
-          { required: true, message: "等级不能为空", trigger: "change" }
-        ],
+        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
         check: [
           {
             type: "array",
@@ -232,46 +231,19 @@ export default {
       }
     };
   },
-  watch: {
-    // "temp.check": {
-    //   handler(curVal, oldVal) {
-    //     // 判断顺序（增，删，改）
-    //     // 员工
-    //     if (
-    //       this.temp.check.indexOf("887fd8696f9f46f2a7129489ca60038f") != -1 ||
-    //       this.temp.check.indexOf("b9b621428ef24acfb695c31395c2efb4") != -1 ||
-    //       this.temp.check.indexOf("761d02662d7546cfa18e4d0fc5af2168") != -1
-    //     ) {
-    //       this.$refs.domTree.setChecked(
-    //         "ae3383c47b7b4889a20c5eca04f24419",
-    //         true
-    //       );
-    //     }
-    //     // 岗位
-    //     if (
-    //       this.temp.check.indexOf("ca01d14ee3174f30a3a16274041c63c4") != -1 ||
-    //       this.temp.check.indexOf("b5c64c8418f748179a50bca5f1fe1981") != -1 ||
-    //       this.temp.check.indexOf("2490d6c57fa7492db6feae0322ba1e29") != -1
-    //     ) {
-    //       this.$refs.domTree.setChecked(
-    //         "2c77fc7f3a1744fc984b78640bb697d0",
-    //         true
-    //       );
-    //     }
-    //     // 服务机构
-    //     if (
-    //       this.temp.check.indexOf("02806b87f7614ce385174075c7bd9425") != -1 ||
-    //       this.temp.check.indexOf("c54aa1a86bb7490886c9bbe3c3b3ebc9") != -1 ||
-    //       this.temp.check.indexOf("3b0069b7b482422bab8cae52e5d79734") != -1
-    //     ) {
-    //       this.$refs.domTree.setChecked(
-    //         "d0bab306e5844b43a7b60a8bd7f22b1b",
-    //         true
-    //       );
-    //     }
-    //   }
-    // }
-  },
+  // watch: {
+  //   "temp.check": {
+  //     handler(curVal, oldVal) {
+  //       // 判断顺序（增，删，改）
+  //       // 员工
+  //       var len = curVal.length
+  //      for(var i = 0;i<len;i++){
+  //        console.log(123);
+
+  //      }
+  //     }
+  //   }
+  // },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -293,12 +265,12 @@ export default {
       console.log("所属机构");
       console.log(res);
       this.officeIds = res.data.data.list;
-      console.log(this.officeIds)
+      console.log(this.officeIds);
     });
   },
   methods: {
-    aaa(val){
-      console.log(val)
+    aaa(val) {
+      console.log(val);
     },
     getList() {
       this.listLoading = true;
@@ -317,7 +289,7 @@ export default {
       };
       if (this.search) {
         this.listLoading = true;
-        getStationPage(obj).then(res => {
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.list = res.data.data.list;
@@ -360,7 +332,8 @@ export default {
       });
     },
     handTreechange(a, b, c) {
-      console.log(a);
+      console.log(this.$refs.domTree.getCheckedKeys(true));
+      console.log(this.$refs.domTree.getCheckedNodes());
       this.temp.check = this.$refs.domTree.getCheckedKeys();
       console.log(this.temp.check);
     },
@@ -374,30 +347,50 @@ export default {
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
     lvChange(value) {
-      console.log(value);
-      // this.temp.dataScope = value;
+      // console.log(value);
+      // console.log(this.temp.officeId);
+      // console.log(this.temp.name);
+      // console.log(this.roleId);
+      // console.log(this.temp);
+      // // this.temp.dataScope = value;
     },
     offChange(val) {
       console.log(val);
     },
     handleCreate() {
-      this.resetTemp();
+      //this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      if (this.officeIds.length == 1) {
+        console.log(this.officeIds[0].id);
+        this.temp.officeId = this.officeIds[0].id;
+      }
     },
     handleUpdate(row) {
+      this.listLoading = true;
       getPower(row.id).then(res => {
         console.log(res);
-        this.temp.check = res.data.data.menuIdList;
-        this.$refs.domTree.setCheckedKeys(this.temp.check);
+        this.listLoading = false;
+        if (res.data.code == 1) {
+          console.log(1);
+          this.dialogStatus = "update";
+          this.dialogFormVisible = true;
+          var a = res.data.data;
+          this.roleId = a.id;
+          this.temp.officeId = a.organization.id;
+          this.temp.name = a.name;
+          this.temp.dataScope = a.dataScope;
+          this.temp.check = a.menuIdList;
+          this.$nextTick(() => {
+            this.$refs.domTree.setCheckedKeys(this.temp.check);
+          });
+        } else {
+          this.$message({
+            type: "warning",
+            message: "请求失败"
+          });
+        }
       });
-
-      this.dataScope = row.dataScope;
-
-      this.temp = Object.assign({}, row);
-      this.stationState = this.temp.useable;
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -441,11 +434,11 @@ export default {
         });
     },
     getLv() {
-      for (var i = 0; i < this.stationLv.length; i++) {
-        if ("2" == this.stationLv[i].id) {
-          return this.stationLv[i].value;
-        }
-      }
+      // for (var i = 0; i < this.stationLv.length; i++) {
+      //   if ("2" == this.stationLv[i].id) {
+      //     return this.stationLv[i].value;
+      //   }
+      // }
     },
     getFather(data) {
       console.log(121233213);
@@ -498,15 +491,18 @@ export default {
         str += arr[i] + ",";
       }
       //return;
+      var obj = {
+        name: this.temp.name,
+        dataScope: this.temp.dataScope,
+        menuIds: str,
+        useable: "1", //状态
+        organization: {
+          id: this.temp.officeId
+        }
+      };
+      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var obj = {
-            name: this.temp.name,
-            dataScope: this.temp.dataScope,
-            menuIds: str
-            // useable: this.stationState //状态
-          };
-
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
@@ -538,16 +534,19 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
+      var obj = {
+        id: this.roleId,
+        name: this.temp.name,
+        dataScope: this.temp.dataScope,
+        menuIds: str,
+        useable: "1", //状态
+        organization: {
+          id: this.temp.officeId
+        }
+      };
+      console.log(obj);
       this.$refs[formName].validate(valid => {
-        console.log(this.dataScope);
         if (valid) {
-          var obj = {
-            id: this.temp.id,
-            name: this.temp.name,
-            dataScope: this.temp.dataScope,
-            menuIds: str,
-            useable: this.stationState //状态
-          };
           this.dialogFormVisible = false;
           addStation(obj).then(res => {
             this.resetTemp();
@@ -562,7 +561,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "发生未知错误"
+                message: res.data.data
               });
             }
           });
@@ -579,6 +578,7 @@ export default {
     },
     resetTemp() {
       this.temp = {
+        officeId: "",
         name: "",
         dataScope: "",
         check: []
