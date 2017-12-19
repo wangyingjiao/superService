@@ -107,18 +107,12 @@
           </el-form-item>
 
           <el-form-item label="所在区域"  prop="cusTownId">
-							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
-									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
-									</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;"  @change="cityChange" class="filter-item" v-model="temp.cusCityId" placeholder="请选择市">
-										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.cusTownId" placeholder="请选择县区">
-										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select> -->
+              <el-cascader
+                :options="areaOptions"
+                :show-all-levels="true"
+                v-model="temp.areaCodes"
+                 style='width: 400px;' 
+              ></el-cascader>
 				</el-form-item>
 
           <el-form-item label="详细地址" prop="addr">
@@ -322,10 +316,8 @@ export default {
         name: "",
         type: "",
         addr: "",
-        cusProvId: "",
-        cusCityId: "",
+        areaCodes: [],
         addrCityName: "",
-        cusTownId: "",
         phone: "",
         state: ""
       },
@@ -401,9 +393,7 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      provinceOptions: [],
-      cityOptions: [],
-      countyOptions: [],
+      areaOptions: this.$store.state.user.area,
       master: [],
       rules: {
         name: [
@@ -448,7 +438,7 @@ export default {
       id: "437ce6ccb3c14c61b4d0e0cf8fb8e908"
     };
     getOffcity(obj).then(res => {
-      console.log(res)
+      console.log(res);
     });
   },
   methods: {
@@ -563,15 +553,10 @@ export default {
         name: row.name,
         type: row.type,
         addr: row.addrDetailInfo,
-        cusProvId: "",
-        cusCityId: "",
-        cusTownId: row.addrDistrictId,
+        areaCodes: [],
         phone: row.phone,
         state: row.useable
       };
-      setTimeout(() => (this.temp.cusProvId = row.addrProvinceId), 100);
-      setTimeout(() => (this.temp.cusCityId = row.addrCityId), 200);
-      setTimeout(() => (this.temp.cusTownId = row.addrDistrictId), 300);
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
@@ -737,10 +722,8 @@ export default {
         name: "",
         type: "",
         addr: "",
-        cusProvId: "",
-        cusCityId: "",
         addrCityName: "",
-        cusTownId: "",
+        areaCodes: [],
         phone: "",
         state: ""
       };

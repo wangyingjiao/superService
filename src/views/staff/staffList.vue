@@ -125,7 +125,7 @@
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-           <div class="btn_addStation" @click="dialogFormStation = true">新 增</div>
+           <div class="btn_addStation" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态" >
           <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
@@ -471,6 +471,13 @@ export default {
         });
       } else {
         this.getList();
+      }
+    },
+    addRole(){
+      this.dialogFormStation = true
+      if (this.mechanismCheck.length == 1) {
+        console.log(this.mechanismCheck[0].id);
+        this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
     },
     handleSizeChange(val) {

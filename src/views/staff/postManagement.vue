@@ -303,12 +303,10 @@ export default {
           }
         });
       } else {
-        console.log(11111);
         this.getList();
       }
     },
     handleSizeChange(val) {
-      console.log("size-change");
       this.pageSize = val;
       var obj = {
         name: this.search
@@ -320,7 +318,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log("current-change");
       this.pageNumber = val;
       var obj = {
         name: this.search
@@ -332,10 +329,10 @@ export default {
       });
     },
     handTreechange(a, b, c) {
-      console.log(this.$refs.domTree.getCheckedKeys(true));
-      console.log(this.$refs.domTree.getCheckedNodes());
+      //console.log(this.$refs.domTree.getCheckedKeys(false));
+      //console.log(this.$refs.domTree.getCheckedNodes());
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-      console.log(this.temp.check);
+      //console.log(this.temp.check);
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -372,7 +369,6 @@ export default {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
-          console.log(1);
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
           var a = res.data.data;
@@ -381,6 +377,26 @@ export default {
           this.temp.name = a.name;
           this.temp.dataScope = a.dataScope;
           this.temp.check = a.menuIdList;
+          console.log(a.menuIdList);
+          for (let i = 0; i < this.data2.length; i++) { //特殊首页处理
+            if (this.data2[i].permission == "index") {
+              console.log(this.data2[i].permission);
+              //this.temp.check.remove(this.data2[i].id);
+              //this.temp.check.push(this.data2[0].id);
+            } else {
+              this.temp.check.remove(this.data2[i].id);
+            }
+
+            if (this.data2[i].subMenus != undefined) {
+              var child = this.data2[i];
+              for (let j = 0; j < child.subMenus.length; j++) {
+                console.log(child.subMenus[j].id);
+                this.temp.check.remove(child.subMenus[j].id);
+              }
+            }
+          }
+          console.log(a.menuIdList);
+          console.log(this.temp.check);
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
@@ -507,6 +523,7 @@ export default {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
+              this.$refs[formName].resetFields();
               this.$refs.domTree.setCheckedKeys([]);
               this.$message({
                 type: "success",
