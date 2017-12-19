@@ -29,12 +29,16 @@
 					    </p>
                     </div>
                     <div>
-                       <p><span class="tech-span"></span>现住地址:</p>
+                       <!-- <p><span class="tech-span"></span>现住地址:</p> -->
                         <p>
-                            <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
-                            <el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
-                            </el-option>
-                            </el-select>
+                            <el-form-item label="现住地址1:" prop="area">
+                              <el-cascader
+                                  :options="areaOptions"
+                                  :show-all-levels="true"
+                                  v-model="personalEDit.area"
+                                  style='width: 300px;' 
+                              ></el-cascader>
+                            </el-form-item>
                         </p>
                     </div>
                 </li>
@@ -580,6 +584,56 @@ import { getSign } from "@/api/sign";
 
 export default {
   data() {
+         //身份证
+      var TECHIDCARD = (rule,value,callback) =>{
+        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+        var tip = "";
+        var pass= true;
+        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
+                tip = "身份证号格式错误";
+                callback(new Error(tip))
+                pass = false;
+        }else if(!city[value.substr(0,2)]){
+            tip = "地址编码错误";
+            callback(new Error(tip))
+            pass = false;
+        }else{
+          if(value.length == 18){
+            value = value.split('');
+            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+            var sum = 0;
+            var ai = 0;
+            var wi = 0;
+            for (var i = 0; i < 17; i++)
+                    {
+                        ai = value[i];
+                        wi = factor[i];
+                        sum += ai * wi;
+                    }
+            var last = parity[sum % 11];
+                    if(parity[sum % 11] != value[17]){
+                        tip = "校验位错误";
+                        callback(new Error(tip))
+                        pass =false;
+                    }
+          }
+        }
+       
+      }
+      //手机
+      var TECHPHONE = (rule,value,callback) =>{
+        if(value){
+          if(!(/^1[34578]\d{9}$/.test(value))){
+            callback(new Error('手机号码有误，请重填'))
+          }else{
+            callback()
+          }
+        }else{
+          callback(new Error('请输入手机号'))
+        }
+      }
+
     return {
         roomSel1Arr:[],
         teachArr:[],
@@ -607,7 +661,8 @@ export default {
         techPhone: "",
         techSex: "",
         techNation: "",
-        techBirthDate: ""
+        techBirthDate: "",
+        area:[]
       },
       rulesPerEdit: {
         techName: [
@@ -615,14 +670,18 @@ export default {
           { min: 3, max: 5, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         // 身份证
-        techIdCard: [{ required: true, message: "请输入身份证号", trigger: "blur" }],
+        techIdCard: [
+          { required: true, validator:TECHIDCARD, trigger: "blur" }
+        ],
         techPhone: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { min: 11, max: 11, message: "请输入正确的手机号", trigger: "blur" }
+          {required:true,validator:TECHPHONE,trigger:'blur'}
         ],
         techSex: [{ required: true, message: "请输入性别", trigger: "change" }],
         techBirthDate: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
+        ],
+        area:[
+            {required:true, message:'请选择地址', trigger:'blur'}
         ]
       },
       //服务信息
@@ -1105,6 +1164,7 @@ export default {
       dialogVisible: false
     };
   },
+  props:['areaOptions'],
   methods: {
     handlePreview(file){},
     deletes(index){

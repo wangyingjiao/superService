@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { error } from 'util';
 
 const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
@@ -36,6 +37,28 @@ export function getArea() {
 // export function getArea() {
 //   return instance.get(`/api/a/sys/area/getchildArea`)
 // }
+
+//选择城市
+export function ChooseTheCity(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/listData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//所属服务站
+export function serviceStation(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/station/serviceStation/getStationByArea`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
 
 
 
