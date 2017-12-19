@@ -6,8 +6,7 @@
 		  <el-select clearable style="width:200px;margin-left:30px;" class="filter-item" v-model="organizationName" placeholder="请选择服务机构">
 				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
 				</el-option>
-		  </el-select>
-      		  
+		  </el-select>      		  
 		  <button class="search-button" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<div class="second-bar">
@@ -16,8 +15,7 @@
 				    <el-table
 					  :data="tableData"
 						v-loading="listLoading"
-						tooltip-effect='light'
-					  
+						tooltip-effect='light'					  
 						stripe
 					  style="width:100%;"
 						>
@@ -29,50 +27,55 @@
 					  </el-table-column>
 					  <el-table-column
 					    align="center"
-						prop="customName"
+						prop="name"
 						label="姓名"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="customPhone"
+						prop="phone"
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="customSex"
 						label="性别">
 						    <template scope="scope">
-						    		<span v-if="scope.row.customSex =='1'">男</span>
-										<span v-if="scope.row.customSex =='2'">女</span>
+						    		<span v-if="scope.row.sex =='male'">男</span>
+										<span v-if="scope.row.sex =='female'">女</span>
 								</template>						
 					  </el-table-column>
-
 					  <el-table-column
 						align="center"
-						prop="officeName"
+						prop="orgName"
 						label="服务机构">
 					  </el-table-column>
-					 
+					  <el-table-column
+						align="center"
+						label="来源">
+						    <template scope="scope">
+						    		<span v-if="scope.row.source =='own'">本机构</span>
+										<span v-if="scope.row.source =='other'">第三方</span>
+								</template>							
+					  </el-table-column>											 
 						<el-table-column
 						align="center"
-						prop="customAddr"						
-						style="width:180px;"
+						prop="address"						
+						style="width:130px;"
 						label="地址"
 						:show-overflow-tooltip="true"
 						>						            
-					  </el-table-column>
-						
+					  </el-table-column>						
 					  <el-table-column
 						align="center"
-						label="操作">
+						label="操作"
+						width='230'>
 										<template scope="scope">
 												<el-button type="button" v-if="btnShow.indexOf('customer_update') != -1" @click="lookInf(scope.row)">下单</el-button>
 												<el-button type="button"  v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
 					</el-table>
-					<div  style="margin-top:20px;float:right;">
+					<div v-show="!listLoading" style="margin-top:20px;float:right;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
 						:page-sizes="[5, 10, 15, 20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
@@ -82,17 +85,17 @@
 		<!--新增客户弹窗-->
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
-					<el-form-item label="姓名:" prop="customName" >
-						<el-input v-model="ruleForm.customName" placeholder="请输入客户姓名" style="width:400px;"></el-input>
+					<el-form-item label="姓名:" prop="name" >
+						<el-input v-model="ruleForm.name" placeholder="请输入客户姓名" style="width:400px;"></el-input>
 					</el-form-item>
-					<el-form-item label="性别:"  prop="customSex">
-							<el-select clearable style="width:400px;" class="filter-item" v-model="ruleForm.customSex" placeholder="请选择性别" >
-									<el-option v-for="item in sex" :key="item.key" :label="item.sexName" :value="item.key">
+					<el-form-item label="性别:"  prop="sex">
+							<el-select  style="width:400px;" class="filter-item" v-model="ruleForm.sex" placeholder="请选择性别" >
+									<el-option v-for="(value,key,index) in sex" :key="index" :label="value" :value="key">
 									</el-option>
 							</el-select>
 					</el-form-item>
-					<el-form-item label="手机号:"  prop="customPhone">
-                <el-input  v-model="ruleForm.customPhone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
+					<el-form-item label="手机号:"  prop="phone">
+                <el-input  v-model="ruleForm.phone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" prop="areaCodes">
               <!-- 省市区 -->
@@ -103,34 +106,33 @@
                  style='width: 400px;' 
               ></el-cascader>							
 					</el-form-item>
-					<el-form-item label="详细地址:" prop="customAddr">
+					<el-form-item label="详细地址:" prop="address">
 		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input style="margin-left:-5px;width:200px;"  v-model="ruleForm.customAddr" placeholder="输入详细地址"></el-input>		
+								<el-input style="margin-left:-5px;width:200px;"  v-model="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
-					<el-form-item label="邮箱:" prop="customEmail" style="margin-left:10px;">
-						<el-input  v-model="ruleForm.customEmail" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
+					<el-form-item label="邮箱:" prop="email" style="margin-left:10px;">
+						<el-input  v-model="ruleForm.email" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
-				</el-form>
-						    
+				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
 						<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
-
 		</el-dialog>
-		<div style="float:left;margin-top:100px;background:red;">
-							  <div ref="gdMap" class="mapWrap"></div>
-              	
+		<div style="float:left;margin-top:100px;">
+			<div ref="gdMap" class="mapWrap"></div>              	
 		</div>
-
   </div>
 </template>
 
 <script>
-import { getCusTable,deleteCus,saveCus} from "@/api/customer";
+import { 
+	getCusTable,// 获取客户表格信息
+	deleteCus,  //删除客户
+	saveCus     //保存客户（新增）
+	} from "@/api/customer";
 import {getMech} from "@/api/base";
-//import { parseTime } from "@/utils";
 export default {
   name: "",
   data() {
@@ -161,47 +163,44 @@ export default {
 			  btnShow: this.$store.state.user.buttonshow,
 				testvalue:'',
 				areaOptions:this.$store.state.user.area,
-			  listLoading:true,
+			  listLoading:false,
         ruleForm: {
-					customName:'',
-					customPhone:'',
-					customAddr:'',
-					customEmail:'',
-					customSex:'',
-					cusProvId:'',
-					cusCityId:'',
-					cusTownId:'',
+					name:'',
+					phone:'',
+					address:'',
+					email:'',
+					sex:'',
+					provinceCode:'',
+					cityCode:'',
+					areaCode:'',
 					areaCodes:[],
-					customArea:'',
 					addrLongitude:'',
 					addrLatitude:'',
 				},
         rules: {
-          customName: [
+          name: [
             { required: true, message: '请输入客户姓名', trigger: 'blur' },
             { min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
           ],
-          customPhone: [
+          phone: [
             { required: true,validator: checkPhone, trigger: 'blur' }
 										
           ],
-          customAddr: [
+          address: [
             { required: true, message: '详细地址不能为空', trigger: 'blur' },
 					],
-					customEmail:[
+					email:[
 						{ required: false, validator: checkEmail, trigger: 'blur' }
 					],
-					customSex: [
+					sex: [
 						{ required: true, message: '请选择性别', trigger: 'change' }
 					],
 					areaCodes:[
 							{type:'array', required: true, message: '请选择区域', trigger: 'change' }
 					]					
         },
-		sex:[
-		  { key: "1", sexName: "男" },
-		  { key: "2", sexName: "女" }
-		],
+		dict:require("../../../static/dict.json"),
+		sex:'',
 		sexName:'',								
     tableData: [],	
 		//全局搜索下拉选项
@@ -210,232 +209,225 @@ export default {
 		dialogTableVisible:false,//新增弹窗开关
 		customName:'',//客户姓名
 		customPhone:'',//客户电话
-		pagetotal1:1,//表格总页数
+		pagetotal1:0,//表格总页数
 		pageSize1:10,//表格每页条数
 		pageNumber:1,		
     };
   },
   methods:{
-		//customSex
-		customSexselect(){
-      this.ruleForm.customSex=this.sex;
-		},
-		submitForm(formName) {
-			   if(this.$refs.pickerInput.value !=''){
-							this.ruleForm.customArea=this.$refs.pickerInput.value;
-							var str=this.$refs.pickerInput1.value;
-									str=str.split(',')
-									//经度
-									var lng=str[0];
-									this.ruleForm.addrLongitude=lng;
-									//纬度
-									var lat=str[1];
-									this.ruleForm.addrLatitude=lat;
-				 }else{
-					  // this.ruleForm.customAddr='';
-				 }			   
-					this.$refs[formName].validate((valid) => {
-						if (valid) {																								
-							var obj = this.ruleForm;
-							//省、市、区三级ID	
-							obj.cusProvId=ruleForm.areaCodes[0];
-							obj.cusCityId=ruleForm.areaCodes[1];
-							obj.cusTownId=ruleForm.areaCodes[2];
-							saveCus(obj).then(res => {
-								console.log(res)
-								if(res.data.code === 1){
+			//新增保存
+			submitForm(formName) {
+						if(this.$refs.pickerInput.value !=''){
+							 
+								this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
+								var str=this.$refs.pickerInput1.value;
+										str=str.split(',')
+										//经度
+										var lng=str[0];
+										this.ruleForm.addrLongitude=lng;
+										//纬度
+										var lat=str[1];
+										this.ruleForm.addrLatitude=lat;
+						}			   
+						this.$refs[formName].validate((valid) => {
+							if (valid) {																																
+								//省、市、区三级ID	
+								this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
+								this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
+								this.ruleForm.areaCode=this.ruleForm.areaCodes[2];
+								var obj = this.ruleForm;
+								saveCus(obj).then(res => {
+									if(res.data.code === 1){
+											this.$message({
+												type: 'success',
+												message: '新增成功!'
+											});
+											this.$refs['ruleForm'].resetFields();
+											this.dialogTableVisible = false
+											var obj={};
+											this.pageNumber=1;
+											this.getData(obj,this.pageNumber,this.pageSize1);
+									}else{
 										this.$message({
-											type: 'success',
-											message: '新增成功!'
-										});
-										this.$refs['ruleForm'].resetFields();
-										this.dialogTableVisible = false
-										var obj={};
-										this.pageNumber=1;
-										this.getData(obj,this.pageNumber,this.pageSize1);
-								}else{
-									this.$message({
-											type: 'warning',
-											message: '新增失败'
-										});
-								}													
-							}).catch(res=>{
-								
-							});							
-						} else {            
-							return false;
-						}
-					});				
-
-
-				
-			},
-			//弹窗cancel
-      resetForm(formName) {
-				this.$refs[formName].resetFields();
-				this.ruleForm.customSex='';
-				this.ruleForm.cusProvId='';
-				this.ruleForm.cusCityId='';
-				this.sexName='';
-				this.dialogTableVisible = false;
-      },		 
-	//全局搜索按钮
-	localSearch(){
-		var obj={
-				customName:this.customName,
-				customPhone:this.customPhone,
-				officeId:this.organizationName,
-		}
-		 this.getData(obj,this.pageNumber,this.pageSize1);
-	},
-	//表格页数改变
-    handleSizeChange1(val) {
-				this.pageSize1=val;
-				 var obj={
-					 	 customName:this.customName,
-						 customPhone:this.customPhone,
-						 officeId:this.organizationName,
-				 }
-				this.getData(obj,this.pageNumber,this.pageSize1);
-    },
-	 //表格当前页改变
-    handleCurrentChange1(val) {
-			  this.pageNumber=val;
-			   var obj={
-						 customName:this.customName,
-						 customPhone:this.customPhone,
-						 officeId:this.organizationName,
-				 }
-         this.getData(obj,this.pageNumber,this.pageSize1);
-    },	
-	 //新增
-		selectBut(){
-				this.dialogTableVisible=true;					
-				this.ruleForm.customSex='';
-				this.ruleForm.cusProvId='';
-				this.ruleForm.cusCityId='';
-				this.sexName='';
-				var id=''
-				this.$nextTick(() => {
-		   			this.test();
-		    })				
-		},
-		//表格查看操作按钮
-		lookInf(obj){
-			  var id=obj.id;
-        this.$router.push({path:'/clean/addorder',query: { coustomerId:id}})
-		},
-		//表格删除操作按钮
-		Delete(row){
-			this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-						confirmButtonText: '确定',
-						cancelButtonText: '取消',
-						type: 'warning'
-					}).then(() => {
-						var obj = {
-							id:row.id
-						}
-						deleteCus(obj).then(res=>{
-							if(res.data.code === 1){
-									this.$message({
-										type: 'success',
-										message: '删除成功!'
-									});
-									var obj1={};
-									this.pageNumber=1;
-									this.getData(obj1,this.pageNumber,this.pageSize1);
-							}else{
-								this.$message({
-										type: 'warning',
-										message: '删除失败'
-									});
+												type: 'warning',
+												message: '新增失败'
+											});
+									}													
+								}).catch(res=>{
+									
+								});							
+							} else {            
+								return false;
 							}
-						}).catch(()=>console.log("未知错误"))
-						
-					}).catch(() => {
-						this.$message({
-							type: 'info',
-							message: '已取消删除'
-						});          
-					});			
+						});								
+				},
+				//弹窗cancel
+				resetForm(formName) {
+					this.$refs[formName].resetFields();
+					this.ruleForm.provinceCode='';
+					this.ruleForm.cityCode='';
+					this.ruleForm.areaCode='';
+					this.ruleForm.sex='';
+					this.dialogTableVisible = false;
+				},		 
+				//全局搜索按钮
+				localSearch(){
+					var obj={
+							name:this.customName,
+							phone:this.customPhone,
+							orgId:this.organizationName,
+					}
+					this.getData(obj,this.pageNumber,this.pageSize1);
+				},
+				//表格页数改变
+					handleSizeChange1(val) {
+							this.pageSize1=val;
+							var obj={
+									name:this.customName,
+									phone:this.customPhone,
+									orgId:this.organizationName,
+							}
+							this.getData(obj,this.pageNumber,this.pageSize1);
+					},
+				//表格当前页改变
+					handleCurrentChange1(val) {
+							this.pageNumber=val;
+							var obj={
+									name:this.customName,
+									phone:this.customPhone,
+									orgId:this.organizationName,
+							}
+							this.getData(obj,this.pageNumber,this.pageSize1);
+					},	
+				//新增
+					selectBut(){
+							this.dialogTableVisible=true;					
+							this.ruleForm.provinceCode='';
+							this.ruleForm.cityCode='';
+							this.ruleForm.areaCode='';
+							this.ruleForm.sex='';
+							this.$nextTick(() => {
+									this.test();
+							})
+							this.$refs.pickerInput.value=''				
+					},
+					//表格下单操作按钮
+					lookInf(obj){
+							var id=obj.id;
+							this.$router.push({path:'/clean/addorder',query: { coustomerId:id}})
+					},
+					//表格删除操作按钮
+					Delete(row){
+						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+									confirmButtonText: '确定',
+									cancelButtonText: '取消',
+									type: 'warning'
+								}).then(() => {
+									var obj = {
+										id:row.id
+									}
+									deleteCus(obj).then(res=>{
+										if(res.data.code === 1){
+												this.$message({
+													type: 'success',
+													message: '删除成功!'
+												});
+												var obj1={};
+												this.pageNumber=1;
+												this.getData(obj1,this.pageNumber,this.pageSize1);
+										}else{
+											this.$message({
+													type: 'warning',
+													message: '删除失败'
+												});
+										}
+									}).catch(()=>console.log("未知错误"))
+									
+								}).catch(() => {
+									this.$message({
+										type: 'info',
+										message: '已取消删除'
+									});          
+								});			
 
-		},
-		getData(pramsObj,pageNo,pageSize){
-			this.listLoading = true;
-			var obj = pramsObj;
-      getCusTable(obj,pageNo,pageSize).then(res => {
-				this.tableData = res.data.data.list
+					},
+					//获取表格数据
+					getData(pramsObj,pageNo,pageSize){
+						this.listLoading = true;
+						var obj = pramsObj;
+						getCusTable(obj,pageNo,pageSize).then(res => {
+							if(res.data.code === 1){
+								this.tableData = res.data.data.page.list
+								this.organizationOptions=res.data.data.orgList;											
+								this.pagetotal1 = res.data.data.page.count;
+								if(this.pagetotal1 ===0){
+										this.$message({
+											type: 'warning',
+											message: '搜索项目不存在！'
+										});
+								}  								
+								this.listLoading = false
+							}
+						}).catch(res=>{
+							this.listLoading = false
+						});
+
+					},
+					//地图初始化
+					test(){
+							var inputname=this.$refs.pickerInput;
+							var inputname1=this.$refs.pickerInput1;
+							AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
+									var poiPicker = new PoiPicker({
+											city:'北京',
+											input: inputname
+									});
+									
+									//初始化poiPicker
+									poiPickerReady(poiPicker);
+							});
+							var obj='';
+							function poiPickerReady(poiPicker) {
+									window.poiPicker = poiPicker;
+									var marker = new AMap.Marker();
+									var infoWindow = new AMap.InfoWindow({
+											offset: new AMap.Pixel(0, -20)
+									});
+									//选取了某个POI
+									poiPicker.on('poiPicked', function(poiResult) {
+											var source = poiResult.source,
+													poi = poiResult.item,
+													info = {
+															source: source,
+															id: poi.id,
+															name: poi.name,
+															location: poi.location.toString(),
+															address: poi.address,
+															
+													};
+													inputname.value=info.name;
+													inputname1.value=info.location;										
+									});
+									
+									// poiPicker.onCityReady(function() {								
+									// 		poiPicker.searchByKeyword('附近小区');								
+									// });
+							}	
+											
+					},
+					initMap1(){
+						var id=this.$refs.gdMap;	
+						var map = new AMap.Map(id, {
+								zoom: 10
+						});
 				
-        this.listLoading = false
-				this.pagetotal1 = res.data.data.count;
-      }).catch(res=>{
-        this.listLoading = false
-			});
-
-		},
-		getorgin(){
-			getMech().then(res => {
-			  this.organizationOptions=res.data.data;
-      }).catch(res=>{
-        
-      });
-		},
-		test(){
-				var inputname=this.$refs.pickerInput;
-				var inputname1=this.$refs.pickerInput1;
-
-				AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
-						var poiPicker = new PoiPicker({
-								city:'北京',
-								input: inputname
-						});
-						
-						//初始化poiPicker
-						poiPickerReady(poiPicker);
-				});
-				var obj='';
-				function poiPickerReady(poiPicker) {
-						window.poiPicker = poiPicker;
-						var marker = new AMap.Marker();
-						var infoWindow = new AMap.InfoWindow({
-								offset: new AMap.Pixel(0, -20)
-						});
-						//选取了某个POI
-						poiPicker.on('poiPicked', function(poiResult) {
-								var source = poiResult.source,
-										poi = poiResult.item,
-										info = {
-												source: source,
-												id: poi.id,
-												name: poi.name,
-												location: poi.location.toString(),
-												address: poi.address,
-												
-										};
-										inputname.value=info.name;
-										inputname1.value=info.location;										
-						});
-						
-						// poiPicker.onCityReady(function() {								
-						// 		poiPicker.searchByKeyword('附近小区');								
-						// });
-				}	
-								
-		},
-	initMap1(){
-		var id=this.$refs.gdMap;	
-		var map = new AMap.Map(id, {
-				zoom: 10
-		});
-	
-	},
+	        },
 
   },
   mounted() {
 		 this.initMap1();
 		 this.getData();
-		 this.customSexselect();
-     this.getorgin();
+		 this.sex=this.dict.sex;
   }
 };
 </script>
@@ -444,7 +436,6 @@ export default {
   width:100%;
 	float:left;
 	background:#eef1f6;
-	margin-top: 20px;
 }
 .fist-bar{
   padding-top:20px;

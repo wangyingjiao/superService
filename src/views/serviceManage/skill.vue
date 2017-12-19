@@ -233,18 +233,32 @@
         this.getList(obj,this.pageNumber,this.pageSize);
       },
       //全局新增按钮
-      add(status,row){
-          this.dialogVisible = true;
+      add(status,row){     
+            var obj={}
+            this.listLoading = true;
+            //服务列表获取             
+            orderServer(obj).then(res => {      
+              if (res.data.code === 1) {            
+                  this.listorderServer=res.data.data.items;              
+                  this.options=res.data.data.stations 
+                  this.listTech=res.data.data.techs
+                  this.dialogVisible = true;                                                             
+              }else{
+
+              }          
+              this.listLoading = false;
+            }).catch(res=>{
+                
+            });
+          
           this.dialogStatus=status;
-          this.showRUles=true;
-          var obj={}
-          this.getOrderserver(obj);          		  		         
-          this.tabOptions=[];                  
+          this.showRUles=true;           
+          this.tabOptions=[];
+          this.ruleForm2.serItems=[];          		  		                          
          if(this.dialogStatus =='add'){
            //新增操作
-            this.ruleForm2={};
-            this.id='';            
-            this.ruleForm2.name='';
+           this.ruleForm2={}; 
+           this.id=''           
          }else if(this.dialogStatus =='edit'){
            this.showRUles=false;
            //编辑操作           
@@ -253,14 +267,10 @@
                 id:this.id
             }
             editTech(obj).then(res => {
-                let info=''
-                info=res.data.data.info
-                this.ruleForm2.name=info.name
-                this.tabOptions=info.technicians;
-                this.selectionreturn1();
-                this.middleA=info.items;
+                this.ruleForm2.name=res.data.data.info.name
+                this.middleA=res.data.data.info.items;
                 this.selectionreturn(); 
-                this.ruleForm2.serItems=info.items                
+                this.ruleForm2.serItems=res.data.data.info.items                             
                 var obj1=this.ruleForm2.serItems;
                 if(obj1.length){                    
                     for(var i=0;i<obj1.length;i++){                
@@ -275,7 +285,12 @@
                           this.ruleForm2.serItems[i].serItemCommoditys=objName.substring(1); 
                         }                                                                                          
                     } 
-                }                        
+                }
+                if(res.data.data.info.technicians != undefined){
+                    this.tabOptions=res.data.data.info.technicians;
+                    this.selectionreturn1();
+                }
+                        
             }).catch(res=>{
                 
             });                      
@@ -317,8 +332,7 @@
         this.ruleForm2.technicians=this.tabOptions                  	   
         this.$refs[formName].validate((valid) => {
           if (valid) {
-                if(this.ruleForm2.serItems.length !=0){
-                       
+                if(this.ruleForm2.serItems.length !=0){                       
                         var obj={
                           id:this.id,
                           name:this.ruleForm2.name,
@@ -472,7 +486,7 @@
 		  	var obj = pramsObj;
         getListdata(obj,pageNo,pageSize).then(res => {
            if(res.data.code === 1){
-           this.getListdata = res.data.data.list           
+           this.getListdata = res.data.data.list          
            this.total = res.data.data.count;
             if(this.total ===0){
                 this.$message({
@@ -536,24 +550,6 @@
       //选择服务按钮
       choseServer() {
             this.flagserver = true;                    	 		                                 
-      },
-      //服务列表获取
-      getOrderserver(pramsObj){ 
-        this.listLoading = true;             
-		    var obj = pramsObj;
-        orderServer(obj).then(res => {      
-          if (res.data.code === 1) {            
-              this.listorderServer=res.data.data.items;              
-              this.options=res.data.data.stations 
-              this.listTech=res.data.data.techs                                                             
-          }else{
-
-          }          
-          this.listLoading = false;
-        }).catch(res=>{
-            
-		    });
-
       },           
       //选择技师按钮
       orderTech() {

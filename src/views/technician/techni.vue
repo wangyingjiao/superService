@@ -485,7 +485,6 @@
   import {
     addTech,
     getTech,
-    getArea,
     getEducations,
     getStrong,
     getHeight,
@@ -1246,11 +1245,6 @@
       getTech().then(res => {
         this.ethnics = res.data;
         this.ethnic=res.data[32].label
-      });
-      getArea().then(res => {
-        console.log(res)
-        this.areas = res.data.data;
-        this.place= res.data.data
       });
       getEducations().then(res =>{
         this.education=res.data
