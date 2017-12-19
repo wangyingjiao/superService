@@ -233,12 +233,26 @@
         this.getList(obj,this.pageNumber,this.pageSize);
       },
       //全局新增按钮
-      add(status,row){
-          this.dialogVisible = true;
+      add(status,row){     
+            var obj={}
+            this.listLoading = true;
+            //服务列表获取             
+            orderServer(obj).then(res => {      
+              if (res.data.code === 1) {            
+                  this.listorderServer=res.data.data.items;              
+                  this.options=res.data.data.stations 
+                  this.listTech=res.data.data.techs
+                  this.dialogVisible = true;                                                             
+              }else{
+
+              }          
+              this.listLoading = false;
+            }).catch(res=>{
+                
+            });
+          
           this.dialogStatus=status;
-          this.showRUles=true;
-          var obj={}
-          this.getOrderserver(obj);
+          this.showRUles=true;           
           this.tabOptions=[];
           this.ruleForm2.serItems=[];          		  		                          
          if(this.dialogStatus =='add'){
@@ -472,7 +486,7 @@
 		  	var obj = pramsObj;
         getListdata(obj,pageNo,pageSize).then(res => {
            if(res.data.code === 1){
-           this.getListdata = res.data.data.list           
+           this.getListdata = res.data.data.list          
            this.total = res.data.data.count;
             if(this.total ===0){
                 this.$message({
@@ -536,24 +550,6 @@
       //选择服务按钮
       choseServer() {
             this.flagserver = true;                    	 		                                 
-      },
-      //服务列表获取
-      getOrderserver(pramsObj){ 
-        this.listLoading = true;             
-		    var obj = pramsObj;
-        orderServer(obj).then(res => {      
-          if (res.data.code === 1) {            
-              this.listorderServer=res.data.data.items;              
-              this.options=res.data.data.stations 
-              this.listTech=res.data.data.techs                                                             
-          }else{
-
-          }          
-          this.listLoading = false;
-        }).catch(res=>{
-            
-		    });
-
       },           
       //选择技师按钮
       orderTech() {

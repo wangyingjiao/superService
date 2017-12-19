@@ -306,10 +306,10 @@ export default {
 							this.ruleForm.cityCode='';
 							this.ruleForm.areaCode='';
 							this.ruleForm.sex='';
-							var id=''
 							this.$nextTick(() => {
 									this.test();
-							})				
+							})
+							this.$refs.pickerInput.value=''				
 					},
 					//表格下单操作按钮
 					lookInf(obj){
