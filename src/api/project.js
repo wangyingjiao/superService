@@ -89,4 +89,14 @@ export function serverEditPre(obj){
     })
 }
 
+export function sortList(obj){
+    return new Promise((resolve,reject)=>{
+        instance.post(`api/a/service/item/serItemInfo/upDataSortNum`,obj).then(data=>{
+            resolve(data)
+        }).catch(error=>{
+            reject(error)
+        })
+    })
+}
+
 // --------------------------------服务管理 结束----------------------------
