@@ -2,21 +2,23 @@
     <div class="addorder-container">
 		<div class="fist-bar">
 			  <el-tabs v-model="activeName" @tab-click="handleClick">
-						<el-tab-pane label="全部" name="1"></el-tab-pane>
+					<el-tab-pane label="全部" name="whole"></el-tab-pane>
+					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>
+						<!--<el-tab-pane label="全部" name="1"></el-tab-pane>
 						<el-tab-pane label="待派单" name="2"></el-tab-pane>
 						<el-tab-pane label="已派单" name="3"></el-tab-pane>
 						<el-tab-pane label="已取消" name="4"></el-tab-pane>
 						<el-tab-pane label="已上门" name="5"></el-tab-pane>
 						<el-tab-pane label="已完成" name="6"></el-tab-pane>
 						<el-tab-pane label="已成功" name="7"></el-tab-pane>
-						<el-tab-pane label="已暂停" name="8"></el-tab-pane>		
+						<el-tab-pane label="已暂停" name="8"></el-tab-pane>-->		
 			  </el-tabs>
 			  <el-select clearable style="width:200px" class="filter-item" v-model="payType" placeholder="选择支付方式">
-						<el-option v-for="item in payTypeOptions" :key="item.key" :label="item.name" :value="item.key">
+						<el-option v-for="(value,key,index) in payTypeOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
 			  <el-select clearable style="width:200px" class="filter-item" v-model="payStus" placeholder="选择支付状态">
-						<el-option v-for="item in payStusOptions" :key="item.id" :label="item.value" :value="item.id">
+						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
 			  <el-select clearable style="width:200px" class="filter-item" v-model="mechanism" placeholder="选择机构">
@@ -96,16 +98,15 @@
 
 <script>
 import {getTable} from "@/api/order";
+import util from "@/utils/date";
 //import { parseTime } from "@/utils";
 export default {
 	name: "",
   data() { 		
     return {
-	  payTypeOptions:[
-		  { key: "1", name: "微信" },
-		  { key: "2", name: "支付宝" },
-		  { key: "3", name: "银行卡" }
-	  ],
+		dict:require("../../../static/dict.json"),
+		payTypeOptions:[],
+		orderTest:[],
 	  payType:null,
 	  payStusOptions:[],
 		payStus:null,
@@ -121,7 +122,7 @@ export default {
 	  ],
 	  orderProject:null,
 	  searchCon:'',//搜索框的值初始化
-	  activeName: '1',//当前tabs
+	  activeName: 'whole',//当前tabs
 	  startTime:'',//开始时间
 	  endTime:'',//结束时间
 	  tabDataList:[
@@ -156,48 +157,58 @@ export default {
   },
   methods: {
     //获取表格数据
-	getTableData(){
-	 
+	getTableData(){ 
 	  //getTable().then(res => {
         //this.tabDataList = res.data.data.list;
       //});
 	},
-	//获取支付状态下拉
-	getpaySta(){
-			  this.payStusOptions=[
-		  { id: "1", value: "待支付" },
-		  { id: "2", value: "已支付" },
-		  { id: "3", value: "支付失败" }
-	  ]
-	},
 	//tabs操作(true)
 	handleClick(tab, event) {
-        console.log(tab.name);
+				this.activeName=tab.name
     },
 	//全局search按钮
 	localSearch(){
-	   
+		console.log(this.activeName);
+		if(this.startTime !=''){
+    		var startTime = util.formatDate.format(
+					new Date(this.startTime),
+					"yyyy-MM-dd hh:mm:ss"
+				);
+		}else{
+			  startTime=''
+		} 
+    if(this.endTime != ''){
+			var endTime = util.formatDate.format(
+				new Date(this.endTime),
+				"yyyy-MM-dd hh:mm:ss"
+			);
+		}else{
+			endTime=''
+		}
+			
+		console.log(endTime);
 	},
-	//exportOrder
+	//导出订单按钮
 	exportOrder(){
 	},
-	//Edit
-	handleUpdate(){
-	},
+	//查看
+	lookInf(row){
+		this.$router.push({path:'/clean/orderinfo'})
+	},	
 	//每页条数多少改变
 	handleSizeChange(val){
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
 	},
-	lookInf(row){
-		this.$router.push({path:'/clean/orderinfo'})
-	}
+
 	
   },
   mounted() {
     this.getTableData();
-    this.getpaySta();
+		this.payTypeOptions=this.dict.pay_platform;
+		this.payStusOptions=this.dict.pay_status;
+		this.orderTest=this.dict.order_status;
   }
 };
 </script>
@@ -206,7 +217,6 @@ export default {
     width:100%;
 	float:left;
 	background:#eef1f6;
-	margin-top: 20px;
 }
 .fist-bar{
   padding:20px 20px;

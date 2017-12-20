@@ -86,7 +86,7 @@
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 					<el-form-item label="姓名:" prop="name" >
-						<el-input v-model="ruleForm.name" placeholder="请输入客户姓名" style="width:400px;"></el-input>
+						<el-input v-model="ruleForm.name" placeholder="请输入2-15位客户姓名" style="width:400px;"></el-input>
 					</el-form-item>
 					<el-form-item label="性别:"  prop="sex">
 							<el-select  style="width:400px;" class="filter-item" v-model="ruleForm.sex" placeholder="请选择性别" >
@@ -116,7 +116,7 @@
 					</el-form-item>					
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-						<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
+						<button class="button-large"  @click="submitForm('ruleForm')">确 定</button>
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
 		</el-dialog>
@@ -138,10 +138,10 @@ export default {
   data() {
 		var checkPhone = (rule, value, callback) => {
 				if (!value) {
-					return callback(new Error('电话号码不能为空'));
+					return callback(new Error('请输入11位手机号码'));
 				}else{
 					if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
-						callback(new Error('手机号码必须为11位数字！'));
+						callback(new Error('请输入11位手机号码'));
 					} else {
 						callback();
 					}
@@ -179,8 +179,8 @@ export default {
 				},
         rules: {
           name: [
-            { required: true, message: '请输入客户姓名', trigger: 'blur' },
-            { min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+            { required: true, message: '请输入2-15位客户姓名', trigger: 'blur' },
+            { min:2, max: 15, message: '请输入2-15位客户姓名', trigger: 'blur' }
           ],
           phone: [
             { required: true,validator: checkPhone, trigger: 'blur' }
@@ -217,8 +217,7 @@ export default {
   methods:{
 			//新增保存
 			submitForm(formName) {
-						if(this.$refs.pickerInput.value !=''){
-							 
+						if(this.$refs.pickerInput.value !=''){							 
 								this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
 								var str=this.$refs.pickerInput1.value;
 										str=str.split(',')
@@ -243,6 +242,7 @@ export default {
 												message: '新增成功!'
 											});
 											this.$refs['ruleForm'].resetFields();
+											this.$refs.pickerInput.value=''	
 											this.dialogTableVisible = false
 											var obj={};
 											this.pageNumber=1;
@@ -268,6 +268,7 @@ export default {
 					this.ruleForm.cityCode='';
 					this.ruleForm.areaCode='';
 					this.ruleForm.sex='';
+					this.$refs.pickerInput.value=''	
 					this.dialogTableVisible = false;
 				},		 
 				//全局搜索按钮
@@ -306,10 +307,10 @@ export default {
 							this.ruleForm.cityCode='';
 							this.ruleForm.areaCode='';
 							this.ruleForm.sex='';
+						  this.areaOptions=this.$store.state.user.area;
 							this.$nextTick(() => {
 									this.test();
-							})
-							this.$refs.pickerInput.value=''				
+							})			
 					},
 					//表格下单操作按钮
 					lookInf(obj){
@@ -427,7 +428,7 @@ export default {
   mounted() {
 		 this.initMap1();
 		 this.getData();
-		 this.sex=this.dict.sex;
+		 this.sex=this.dict.sex;		 
   }
 };
 </script>

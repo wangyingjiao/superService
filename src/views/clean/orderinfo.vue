@@ -398,7 +398,6 @@ export default {
   font-size:12px;
 	float:left;
 	background:#eef1f6;
-  margin-top: 20px;
 }
 .custom-action{
 	margin-left:30px;

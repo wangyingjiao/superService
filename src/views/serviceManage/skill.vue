@@ -33,7 +33,7 @@
         <el-dialog title="新增技能" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
           <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
             <el-form-item label="技能名称" prop="name">
-              <el-input  v-model="ruleForm2.name"  style="width:300px"></el-input>
+              <el-input  v-model="ruleForm2.name"  style="width:300px" placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择服务" prop="serItems" required>            
               <div class="tech-order-jnsk" style="float:left;width:500px;" >
@@ -50,7 +50,9 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <div v-if="!ruleForm2.serItems || showRUles" v-cloak  style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;">请选择服务</div>
+                <div v-if="!ruleForm2.serItems || showRUles" v-cloak  style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;" ref='selfInf'>
+                  请选择服务
+                </div>
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians" style='margin-top:30px;'>
              <div class="tech-order-jnsk" style="float:left;width:500px;">
@@ -176,8 +178,8 @@
         techStationId:'',
         rules: {
           name: [
-          { required: true, message: '请输入技能名称', trigger: 'blur' },
-          { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur'}
+          { required: true, message: '请输入2-15位技能名称', trigger: 'blur' },
+          { min: 2, max: 15, message: '请输入2-15位技能名称', trigger: 'blur'}
           ]
         },
         ruleForm2: {
@@ -211,6 +213,11 @@
         middleA:[],
       }
     },
+    computed: {
+      showRUles1: function () {
+        return true
+      }
+   },  
     methods: {   
 		// 二级数据变化的时候
 		handleOneCheckedCitiesChange(item) {            		
@@ -252,7 +259,7 @@
             });
           
           this.dialogStatus=status;
-          this.showRUles=true;           
+          this.showRUles=true;          
           this.tabOptions=[];
           this.ruleForm2.serItems=[];          		  		                          
          if(this.dialogStatus =='add'){
@@ -583,8 +590,7 @@
         })                             
       },
       //选择技师弹出层查询按钮
-      searchTeh(){
-          
+      searchTeh(){        
             this.$nextTick( () => {
               //前端定位
               var falg1=0;              
