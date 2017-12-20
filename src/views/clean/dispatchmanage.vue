@@ -2,11 +2,14 @@
     <div class="addorder-container">
 		<div class="fist-bar">
 		  <el-select clearable style="width:200px;margin-left:30px;" class="filter-item" v-model="technicianName" placeholder="请选择">
-			<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
-			</el-option>
+				<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
+				</el-option>
 		  </el-select>
-          <el-input  style="width: 200px;margin-left:20px;"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
-		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch">搜索</button>
+      <el-input  v-if="technicianName =='1'" style="width: 200px;margin-left:20px;"       placeholder="请输入技师姓名" v-model="technicianName1"></el-input>
+			<el-input  v-else-if="technicianName =='2'" style="width: 200px;margin-left:20px;"  placeholder="请输入技师手机号" v-model="technicianName1"></el-input>
+			<el-input  v-else-if="technicianName =='3'" style="width: 200px;margin-left:20px;"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
+			<el-input  v-else style="width: 200px;margin-left:20px;"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
+		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 30px;">
@@ -67,11 +70,14 @@
 						</template>
 					  </el-table-column>
 					  <el-table-column
-					    width="140"
+					    width="230"
 						align="center"
 						label="操作">
 						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name" @click="selectBut(item.name)">{{item.name}}</div>						
+									<div class="selfTd" style="width:230px;" v-for=" item in scope.row.address" :key="item.name">
+										<el-button type="button" @click="selectBut(item.name)">改派</el-button>
+										<el-button type="button" >改派记录</el-button>
+									</div>						
 						</template>
 					  </el-table-column>					  
 					</el-table>
@@ -113,13 +119,9 @@
 
 <script>
 import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
 //import { parseTime } from "@/utils";
 export default {
   name: "",
-  directives: {
-    waves
-  },
   data() {
     return {
           tableData: [{
@@ -144,10 +146,9 @@ export default {
           }],	
 		//全局搜索下拉选项
 		technicianOptions:[
-		  { key: "1", technicianName: "请选择" },
-		  { key: "2", technicianName: "技师姓名" },
-		  { key: "3", technicianName: "技师手机号" },
-		  { key: "4", technicianName: "订单编号" }
+		  { key: "1", technicianName: "技师姓名" },
+		  { key: "2", technicianName: "技师手机号" },
+		  { key: "3", technicianName: "订单编号" }
 		],		
 		//服务站下拉选项
 		stationOptions:[
@@ -216,6 +217,7 @@ export default {
     },	
     //表格操作按钮
 	selectBut(obj){
+		  console.log(obj)
 	    this.dialogTableVisible=true;		
 	}	
   },
@@ -236,7 +238,6 @@ width:140px;margin-left:-20px;text-align:center;height:49px;line-height:49px;bor
     width:100%;
 	float:left;
 	background:#eef1f6;
-	margin-top: 20px;
 }
 .fist-bar{
   padding-top:20px;

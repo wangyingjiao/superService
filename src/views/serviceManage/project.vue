@@ -7,7 +7,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item" filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+      <el-select clearable style="width: 200px" class="filter-item"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
         <el-option v-for="(item,index) in sortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -35,7 +35,10 @@
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
-      <el-table-column align="center" type="index" label="排序号" width="100">
+      <el-table-column align="center" label="排序号" width="100">
+         <template scope="scope">
+          <input type="text" v-model="scope.row.sortNum" class="sortInput" @blur="indexBlur(scope.row)">
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="图片" prop="picture">
@@ -151,6 +154,7 @@
                           list-type="picture-card"
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
+                          :on-success = "handleAvatarSuccess1"
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
@@ -364,7 +368,7 @@ import { getProject, addProject ,delProject,getInfoPic} from "@/api/serviceManag
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-import {Taxonomy,Orienteering,Whether,ServerAdd,ServerDelete,ServerEdit,serverEditPre} from '@/api/project'
+import {Taxonomy,Orienteering,Whether,ServerAdd,ServerDelete,ServerEdit,serverEditPre,sortList} from '@/api/project'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -597,8 +601,19 @@ export default {
 
     this.orient({},0)  // 所属分类
     this.getList(1,10);   //搜索 ，分页
+    console.log(this.sign,"sign---------")
   },
   methods: {
+    //编号失焦事件
+    indexBlur(item){
+      console.log(item,"----------itemmmmmmmmm")
+      sortList({id:item.id,sortNum:item.sortNum}).then(data=>{
+        console.log(data,"更新排序----------")
+        this.getList(1,10);
+      }).catch(error=>{
+        console.log(error,"更新排序错误----")
+      })
+    },
     addImage(){
       this.ImageTextArr.push({"imageUrl":''})
     },
@@ -736,6 +751,10 @@ export default {
           this.total = res.data.data.count
           this.list = res.data.data.list;
           this.listLoading = false;
+          var num = 0;
+          for(var i = 0 ; i<this.list.length; i++){
+            this.list[i].num = ++num
+          }
           //this.total = res.data.data.count;
         })
         .catch(res => {
@@ -775,6 +794,10 @@ export default {
       };
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+         var num = 0;
+          for(var i = 0 ; i<this.list.length; i++){
+            this.list[i].num = ++num
+          }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -787,6 +810,10 @@ export default {
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+         var num = 0;
+          for(var i = 0 ; i<this.list.length; i++){
+            this.list[i].num = ++num
+          }
         this.listLoading = false;
         this.total = res.data.data.count;
       });
@@ -939,6 +966,12 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
+    handleAvatarSuccess1(res,file){
+      this.dialogImageUrl = URL.createObjectURL(file.raw);
+      console.log(this.dialogImageUrl,"dialogImageUrl-----")
+      console.log(res.path,"res----")
+      console.log(file.raw,"file----")
+    },
     handlePreview(file) {
       console.log(file);
     },
@@ -1068,6 +1101,12 @@ export default {
 };
 </script>
 <style>
+.el-dialog--small{
+  width: 55%;
+}
+.el-radio-group{
+  width: 100%
+}
 .btn_right {
   float: right;
   width: 100px;
@@ -1375,7 +1414,17 @@ hr{
     height: 100%;
     display: block;
   }
-
-
-
+.sortInput{
+  width:40px; 
+  text-align:center;
+  /* outline:none;  */
+  border:none;
+  /* background: red */
+}
+/* .sortInput:nth-child(2n){
+  background: #FAFAFA
+} */
+.el-table__body tr:nth-child(2n) .sortInput{
+  background:#FAFAFA
+}
 </style>
