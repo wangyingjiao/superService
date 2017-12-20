@@ -4,10 +4,20 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.addrCityId" placeholder="请选择城市">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
+      <el-select v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
+            <el-option-group
+              v-for="(group,index) in areaOptions"
+              :key="group.value"
+              :label="group.label">
+              <el-option
+                v-for="item in group.children"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-option-group>
+
+          </el-select>
       <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
@@ -36,13 +46,13 @@
 
         <el-table-column label="服务站类型" align="center" prop="type">
            <template scope="scope">
-            <span v-if="scope.row.type =='1'">加盟</span>
-            <span v-if="scope.row.type =='2'">直营</span>
+            <span v-if="scope.row.type =='join'">加盟</span>
+            <span v-if="scope.row.type =='self'">直营</span>
           </template>
           
         </el-table-column>
 
-        <el-table-column label="所属城市" align="center" prop="addrCityName">
+        <el-table-column label="所属城市" align="center" prop="cityName">
          
         </el-table-column>
 
@@ -51,16 +61,15 @@
         </el-table-column>
 
         <el-table-column label="员工数量" align="center" prop="employees">
+        </el-table-column>
+
+        <el-table-column label="技师数量" align="center" prop="techNum"> 
           
         </el-table-column>
 
-        <el-table-column label="阿姨数量" align="center" prop="aunts"> 
-          
-        </el-table-column>
-
-        <el-table-column align="center" label="状态" prop="userable">
+        <el-table-column align="center" label="状态" prop="isUseable">
           <template scope="scope">
-            <span v-if="scope.row.useable =='1'">启用</span>
+            <span v-if="scope.row.isUseable =='yes'">启用</span>
             <span v-else>停用</span>
           </template>
         </el-table-column>
@@ -76,7 +85,7 @@
 
       <div v-show="!listLoading" class="pagination-container">
         <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
       </div>
 
@@ -101,12 +110,12 @@
           </el-form-item>
           <el-form-item label="服务站类型" prop="type">
             <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
-              <el-option v-for="item in stationType" :key="item.id" :label="item.label" :value="item.value">
+              <el-option v-for="(val,key,index) in stationType" :key="index" :label="val" :value="key">
               </el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="所在区域"  prop="cusTownId">
+          <el-form-item label="所在区域"  prop="areaCodes">
               <el-cascader
                 :options="areaOptions"
                 :show-all-levels="true"
@@ -115,16 +124,16 @@
               ></el-cascader>
 				</el-form-item>
 
-          <el-form-item label="详细地址" prop="addr">
-            <el-input :maxlength="100" :minlength="6" style='width: 400px;' v-model="temp.addr" placeholder="请输入6-100位的详细地址"></el-input>
+          <el-form-item label="详细地址" prop="address">
+            <el-input :maxlength="100" :minlength="6" style='width: 400px;' v-model="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
           <el-form-item label="服务站电话" prop="phone">
             <el-input style='width: 400px;' v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
           </el-form-item>
 
-          <el-form-item label="状态" prop="state">
-            <el-select class="filter-item" v-model="temp.state">
+          <el-form-item label="状态" prop="isUseable">
+            <el-select class="filter-item" v-model="temp.isUseable">
               <el-option v-for="item in stationState" :key="item.id" :label="item.value" :value="item.id">
               </el-option>
             </el-select>
@@ -133,7 +142,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
           <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-          <button class="button-large" v-else @click="create('temp')">保 存</button>    
+          <button class="button-large"  v-else @click="create('temp')">保 存</button>    
           <button class="button-cancel" @click="resetForm('temp')">取 消</button>
         </div>
       </el-dialog>
@@ -251,15 +260,7 @@
 </template>
 
 <script>
-import {
-  getSite,
-  addSite,
-  delSite,
-  getType,
-  getMaster,
-  setMaster,
-  getOffcity
-} from "@/api/base";
+import { getSite, addSite, delSite, getMaster, setMaster } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -273,8 +274,12 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (!/^1[3|4|5|8][0-9]\d{8}$/.test(value)) {
-          callback(new Error("手机号码格式不正确！"));
+        if (
+          !/^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$|^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$|^0\d{2,3}-?\d{7,8}$/.test(
+            value
+          )
+        ) {
+          callback(new Error("号码格式不正确！"));
         } else {
           callback();
         }
@@ -294,17 +299,14 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 6,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: "+id"
+        limit: 6
       },
+      pageNumber: 1,
       pageSize: 10,
       total: 0,
       search: {
         name: "",
-        addrCityId: ""
+        cityCode: ""
       },
       rowInfo: {
         id: "",
@@ -315,11 +317,10 @@ export default {
       temp: {
         name: "",
         type: "",
-        addr: "",
+        address: "",
         areaCodes: [],
-        addrCityName: "",
         phone: "",
-        state: ""
+        isUseable: ""
       },
       tempStore: {
         tree: []
@@ -383,7 +384,7 @@ export default {
       },
       importanceOptions: [],
       stationType: [],
-      stationState: [{ id: "1", value: "启用" }, { id: "0", value: "停用" }],
+      stationState: [{ id: "yes", value: "启用" }, { id: "no", value: "停用" }],
       dialogFormVisible: false, //表格
       dialogMasterVisible: false, //店长
       dialogStoreVisible: false, //门店
@@ -393,7 +394,6 @@ export default {
         create: "添加"
       },
       tableKey: 0,
-      areaOptions: this.$store.state.user.area,
       master: [],
       rules: {
         name: [
@@ -407,16 +407,26 @@ export default {
             trigger: "change"
           }
         ],
-        cusTownId: [
-          { required: true, message: "服务城市地址不能为空", trigger: "change" }
+        areaCodes: [
+          {
+            required: true,
+            type: "array",
+            message: "所在区域不能为空",
+            trigger: "change"
+          }
         ],
-        addr: [
+        address: [
           { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
           { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
         ],
         phone: [{ required: true, validator: validatePhone, trigger: "blur" }]
       }
     };
+  },
+  computed:{
+    areaOptions:function(){
+      return this.$store.state.user.area
+    }
   },
   filters: {
     statusFilter(status) {
@@ -428,25 +438,22 @@ export default {
       return statusMap[status];
     }
   },
+  
   created() {
     this.getList();
-    getType().then(res => {
-      console.log(res.data);
-      this.stationType = res.data;
-    });
-    var obj = {
-      id: "437ce6ccb3c14c61b4d0e0cf8fb8e908"
-    };
-    getOffcity(obj).then(res => {
-      console.log(res);
-    });
+    var dict = require("../../../static/dict.json");
+    this.stationType = dict.service_station_type;
+    setTimeout(function(){
+
+    },30)
+    //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
     getList() {
       this.listLoading = true;
       var obj = {
         name: "",
-        addrCityId: ""
+        cityCode: ""
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
@@ -456,11 +463,11 @@ export default {
       });
     },
     handleFilter() {
-      console.log("搜索");
-      this.listQuery.page = 1;
+      this.listLoading = true
+      this.pageNumber = 1;
       var obj = {
         name: this.search.name,
-        addrCityId: "1"
+        cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
@@ -505,7 +512,6 @@ export default {
         roleName: this.search.name,
         mobile: this.search.phone
       };
-      console.log("size-change");
       this.pageSize = val;
       // var obj = {};
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
@@ -514,7 +520,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log("current-change");
       this.pageNumber = val;
       var obj = {
         roleName: this.search.name,
@@ -533,7 +538,7 @@ export default {
     },
     rowClick(row, event, column) {
       console.log(row);
-      this.rowInfo.serviceAreaType = row.office.serviceAreaType;
+      // this.rowInfo.serviceAreaType = row.office.serviceAreaType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
         this.rowInfo.masterId = "";
@@ -545,17 +550,19 @@ export default {
     handleCreate() {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      //this.areaOptions = this.$store.state.user.area;  
     },
     handleUpdate(row) {
+     // this.areaOptions = this.$store.state.user.area;
       console.log(row);
       this.temp = {
         id: row.id,
         name: row.name,
         type: row.type,
-        addr: row.addrDetailInfo,
-        areaCodes: [],
+        address: row.address,
+        areaCodes: [row.provinceCode, row.cityCode, row.areaCode],
         phone: row.phone,
-        state: row.useable
+        isUseable: row.isUseable
       };
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
@@ -583,14 +590,14 @@ export default {
               } else {
                 this.$message({
                   type: "warning",
-                  message: "删除失败"
+                  message: res.data.data
                 });
               }
             })
             .catch(() => {
               this.$message({
                 type: "warning",
-                message: "与服务器断开连接，请稍后再试"
+                message: "请稍后再试"
               });
             });
         })
@@ -605,16 +612,15 @@ export default {
       var obj = {
         name: this.temp.name,
         type: this.temp.type,
-        addrDetailInfo: this.temp.addr,
-        addrProvinceId: this.temp.cusProvId,
-        addrCityId: this.temp.cusCityId,
-        addrCityName: this.temp.addrCityName,
-        addrDistrictId: this.temp.cusTownId,
+        address: this.temp.address,
+        provinceCode: this.temp.areaCodes[0],
+        cityCode: this.temp.areaCodes[1],
+        areaCode: this.temp.areaCodes[2],
         phone: this.temp.phone,
-        useable: this.temp.state
+        isUseable: this.temp.isUseable
       };
       console.log(obj);
-
+      //return
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
@@ -631,7 +637,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "添加失败"
+                message: res.data.data
               });
             }
           });
@@ -679,19 +685,18 @@ export default {
     },
     update(formName) {
       var obj = {
-        id: this.temp.id,
+        id: this.rowInfo.id,
         name: this.temp.name,
         type: this.temp.type,
-        addrDetailInfo: this.temp.addr,
-        addrProvinceId: this.temp.cusProvId,
-        addrCityId: this.temp.cusCityId,
-        addrCityName: this.temp.addrCityName,
-        addrDistrictId: this.temp.cusTownId,
+        address: this.temp.address,
+        provinceCode: this.temp.areaCodes[0],
+        cityCode: this.temp.areaCodes[1],
+        areaCode: this.temp.areaCodes[2],
         phone: this.temp.phone,
-        useable: this.temp.state
+        isUseable: this.temp.isUseable
       };
       console.log(obj);
-
+      //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
@@ -708,7 +713,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "修改失败"
+                message: res.data.data
               });
             }
           });
@@ -721,11 +726,10 @@ export default {
       this.temp = {
         name: "",
         type: "",
-        addr: "",
-        addrCityName: "",
+        address: "",
         areaCodes: [],
         phone: "",
-        state: ""
+        isUseable: ""
       };
     },
     resetStore() {

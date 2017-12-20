@@ -105,19 +105,6 @@
         </el-form-item>
 
         <el-form-item label="所在区域"  prop="areaCodes">
-        <!-- <el-form-item label="所在区域"> -->
-							<!-- <el-select clearable style="width:130px;"  @change="provinceChange" class="filter-item" v-model="temp.cusProvId" placeholder="请选择省">
-									<el-option v-for="item in provinceOptions" :key="item.id" :label="item.name" :value="item.id">
-									</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;"  @change="cityChange" class="filter-item" v-model="temp.cusCityId" placeholder="请选择市">
-										<el-option v-for="item in cityOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select>
-							<el-select clearable style="width:130px;" class="filter-item" v-model="temp.cusTownId" placeholder="请选择县区">
-										<el-option v-for="item in countyOptions" :key="item.id" :label="item.name" :value="item.id">
-										</el-option>
-							</el-select> -->
 
 
               <!-- 省市区 -->
@@ -349,7 +336,6 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
-      areaOptions: this.$store.state.user.area,
       textarea: "",
       // serviceCity: this.$store.state.user.area,
       updateId: "",
@@ -436,6 +422,11 @@ export default {
         ]
       }
     };
+  },
+  computed:{
+    areaOptions:function(){
+      return this.$store.state.user.area
+    }
   },
   filters: {
     statusFilter(status) {
@@ -537,10 +528,12 @@ export default {
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      //this.areaOptions = this.$store.state.user.area;
       //this.resetTemp();
       //this.$refs[formName].resetFields();
     },
     handleUpdate(row) {
+      //this.areaOptions = this.$store.state.user.area;
       //console.log(row);
       this.listLoading = true;
       const obj = {
