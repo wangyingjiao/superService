@@ -24,39 +24,47 @@
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad ceshi ceshi5" @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
       </div>
+       <!-- <el-table 
+          v-loading="listLoadingTech" 
+          stripe
+          fit 
+          border
+          highlight-current-row 
+          element-loading-text="正在加载" 
+          style="width: 100%" > -->
       <ul class="tech-section-ul">
-        <li v-for="(item,$index) in infoname" @mousemove="mouser(item)" @mouseout="mousout(item)">
+        <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
               <div style="width:89px;height:89px;background:red;display:inline-block;border-radius:50%;"></div>
               <div style="margin-top:10px;">
-                <span>男</span>
-                <span>32</span>
+                <span>{{item.sexname}}</span>
+                <span>{{item.age}}</span>
               </div>
               <div class="tech-mouse-div">
-                <span class="tech-mouse">全职</span>
-                <span class="tech-mouse">在职</span>
+                <span class="tech-mouse">{{item.jobName}}</span>
+                <span class="tech-mouse">{{item.jobStateName}}</span>
               </div>
             </div>
             <div class="tech-xiu-div-two">
               <h4>{{item.name}}</h4>
               <div>              
                   <img src="../../../static/icon/服务机构.png" alt="" style="width:15px;height:15px;">              
-                  <div style="margin-left:5px;">国安社区</div>
+                  <div style="margin-left:5px;">{{item.orgName}}</div>
               </div>
               <div>
                 <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">呼家楼</div>
+                <div style="margin-left:5px;">{{item.stationName}}</div>
               </div>
               <div>
                 <img src="../../../static/icon/工作经验.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">3年</div>
+                <div style="margin-left:5px;">{{item.workTimeName}}</div>
               </div>
               <div>
                 <img src="../../../static/icon/手机.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">15660061100</div>
+                <div style="margin-left:5px;">{{item.phone}}</div>
               </div>
             </div>
           </div>
@@ -78,7 +86,7 @@
           </div>
         </li>
       </ul>
-
+       <!-- </el-table> -->
       <!-- 密码弹出层 -->
       <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages" style="top：10%">
 		<div class="mobel">
@@ -177,10 +185,10 @@
       <div class="tech-psoition" v-show="position">
 
         <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
-          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexType" :class="{'tech-green':item.show===true}">
-            {{item.sexName}}
+          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}" :key="$index">
+            {{item.name}}
             <div :class="{'triangle-bottomright':item.show===true}"></div>
-            <div class="tally">&#10004</div>
+            <div class="tally">&#10004;</div>
           </div>
         </div>
         <div class="tech-pos-btn">
@@ -198,7 +206,7 @@
     </div>
     <!-- 编辑技师 -->
 	<el-dialog title="新增技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
-		<techni-edit></techni-edit>
+		<techni-edit :areaOptions="areaOptions"></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
@@ -211,16 +219,16 @@
 					<div>
 					<!-- <p><span class="tech-span"></span>姓名:</p> -->
 					<p>
-						<el-form-item label="姓名:" prop="techName">
-							<el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="personal.techName"></el-input>
+						<el-form-item label="姓名:" prop="name">
+							<el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="personal.name"></el-input>
 						</el-form-item>
 					</p>
 					</div>
 					<div>
 					<!-- <p><span class="tech-span"></span>身份证号:</p> -->
 					<p>
-						<el-form-item label="身份证号:" prop="techIdCard">
-							<el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="personal.techIdCard"></el-input>
+						<el-form-item label="身份证号:" prop="idCard">
+							<el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="personal.idCard"></el-input>
 						</el-form-item>
 					</p>
 					</div>
@@ -229,18 +237,27 @@
 					<div>
 					<!-- <p><span class="tech-span"></span>手机号:</p> -->
 					<p>
-						<el-form-item label="手机号:" prop="techPhone">
-							<el-input placeholder="请输入11为手机号" style="width:300px" v-model="personal.techPhone"></el-input>
+						<el-form-item label="手机号:" prop="phone">
+							<el-input placeholder="请输入11为手机号" style="width:300px" v-model="personal.phone"></el-input>
 						</el-form-item>
 					</p>
 					</div>
 					<div>
-					<p><span class="tech-span"></span>现住地址:</p>
+					<!-- <p><span class="tech-span"></span>现住地址:</p> -->
 					<p>
-						<el-select v-model="area" clearable placeholder="请选择" style="width:300px">
+						<!-- <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
 						<el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
-						</el-select>
+						</el-select> -->
+            <el-form-item label="现住地址:" prop="area">
+              <el-cascader
+                  @change="nowAdd"
+                  :options="areaOptions"
+                  :show-all-levels="true"
+                  v-model="personal.area"
+                  style='width: 300px;' 
+              ></el-cascader>
+            </el-form-item>
 					</p>
 					</div>
 				</li>
@@ -248,42 +265,68 @@
 					<div>
 					<!-- <p><span class="tech-span"></span>性别:</p> -->
 					<p>
-						<el-form-item label="性别:" prop="techSex">
-							<el-select v-model="personal.techSex" clearable placeholder="请选择" style="width:300px">
-								<el-option v-for="(item,$index) in sex" :key="item.value" :label="item.label" :value="item.value">
+						<el-form-item label="性别:" prop="sex">
+							<el-select v-model="personal.sex" clearable placeholder="请选择" style="width:300px">
+								<el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
 								</el-option>
 							</el-select>
 						</el-form-item>
 					</p>
 					</div>
 					<div>
-					<p></p>
+					<!-- <p></p> -->
 					<p>
-						<el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="personal.addrDetailInfo"></el-input>
+              <el-form-item label="">
+                <el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="personal.address"></el-input>
+              </el-form-item>
 					</p>
 					</div>
 				</li>
 				<li>
 					<div>
-					<p><span class="tech-span"></span>民族:</p>
+					<!-- <p><span class="tech-span"></span>民族:</p> -->
 					<p>
-						<el-select v-model="personal.techNation" clearable placeholder="请选择" style="width:300px">
-							<el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-							</el-option>
-						</el-select>
+             <el-form-item label="民族:">
+              <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:300px">
+                <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+             </el-form-item>
 					</p>
 					</div>
 					<div>
 					<!-- <p><span class="tech-span"></span>出生日期:</p> -->
 					<p>
-						<el-form-item label="出生日期:" prop="techBirthDate">
-							<el-date-picker v-model="personal.techBirthDate" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
+						<el-form-item label="出生日期:" prop="birtStr">
+							<!-- <el-date-picker v-model="personal.birthDate" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
 							format="yyyy-MM-dd">
-							</el-date-picker>
+							</el-date-picker> -->
+              <el-date-picker 
+                  type="date" placeholder="选择日期" 
+                  v-model="personal.birtStr" 
+                  style="width: 300px;" format="yyyy-MM-dd"
+                  @change="dateChange"
+                  :picker-options="pickerOptions0">
+               </el-date-picker>
 						</el-form-item>
 					</p>
 					</div>
 				</li>
+        <li>
+          <div>
+            <p>
+              <el-form-item label="状态：" class="seize">
+                    <el-switch
+                      v-model="personal.status"
+                      on-text="上线"
+                      off-text="暂停"
+                      on-value="yes"
+                      off-value="no">
+                    </el-switch>
+                </el-form-item>
+            </p>
+          </div>
+        </li>
 				<li>
 					<div>
 					<p></p>
@@ -312,8 +355,8 @@
               <!-- <p><span class="tech-span">*</span>选择城市:</p> -->
               	<p>
 					<el-form-item label="选择城市:" prop="serviceCityName">
-						<el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:300px">
-							<el-option v-for="item in caty" :key="item.value" :label="item.label" :value="item.value">
+						<el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
+							<el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
 						</el-option>
 						</el-select>
 					</el-form-item>
@@ -322,9 +365,9 @@
             <div>
               <!-- <p><span class="tech-span">*</span>岗位性质:</p> -->
               <p>
-				<el-form-item label="岗位性质:" prop="jobNatrue">
-					<el-select v-model="personal.jobNatrue" clearable placeholder="请选择" style="width:300px">
-						<el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+				<el-form-item label="岗位性质:" prop="jobNature">
+					<el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:300px">
+						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -335,54 +378,51 @@
             <div>
               <!-- <p><span class="tech-span">*</span>所属服务站:</p> -->
               <p>
-				<el-form-item label="所属服务站:" prop="stationName">
-					<el-select v-model="personal.stationName" clearable placeholder="请选择" style="width:300px">
-						<el-option v-for="item in servery" :key="item.value" :label="item.label" :value="item.value">
-						</el-option>
-					</el-select>
-				</el-form-item>
+                <el-form-item label="所属服务站:" prop="stationId">
+                  <el-select v-model="personal.stationId" clearable placeholder="请选择" style="width:300px">
+                    <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </p>
             </div>
             <div>
               <!-- <p><span class="tech-span">*</span>岗位状态:</p> -->
               <p>
-				  	<el-form-item label="岗位状态:" prop="jobStatus">
-						<el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:300px">
-							<el-option v-for="item in statu" :key="item.value" :label="item.label" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
+                  <el-form-item label="岗位状态:" prop="jobStatus">
+                      <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:300px">
+                        <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                        </el-option>
+                      </el-select>
+                  </el-form-item>
               </p>
             </div>
           </li>
           <li>
             <div>
               <!-- <p><span class="tech-span">*</span>工作年限:</p> -->
-				<p>
-					<el-form-item label="工作年限:" prop="workTime">
-						<el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:300px">
-							<el-option v-for="item in workyear" :key="item.value" :label="item.label" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</p>
+                <p>
+                  <el-form-item label="工作年限:" prop="workTime">
+                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:300px">
+                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </p>
             </div>
-          </li>
-          <li>
             <div>
-              <!-- <p id="skill"><span class="tech-span">*</span>选择技能:</p> -->
-			  	<p>
-					<el-form-item label="选择技能:" prop="skills">
-						<el-select v-model="personal.skills" multiple placeholder="请选择" style="width:300px">
-							<el-option
-							v-for="(item,index) in sexTypeo"
-							:key="index"
-							:label="item.sexName"
-							:value="item.sexName">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</p>
+              <p>
+                <el-form-item label="选择技能:" prop="skillIds">
+                  <el-select v-model="personal.skillIds" multiple placeholder="请选择1" style="width:300px">
+                    <el-option
+                    v-for="(item,index) in sexTypeo"
+                    :key="index"
+                    :label="item.name"
+                    :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </p>
             </div>
           </li>
           <li v-show="flagso">
@@ -397,7 +437,7 @@
               <!-- <p><span class="tech-span">*</span>工作时间:</p> -->
 			          <div style="width:100px"><span class="tech-span">*</span>工作时间:</div>
                 <div class="tech-order-jn">
-                  <button class="tech-order-btn" @click="addtime"> &#10010 添加时间</button>
+                  <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
                   <div class="tech-order-jn-sons" v-show="isB">
                     <div style="margin:0 10px;">
                       <p>新增日期</p>
@@ -405,11 +445,14 @@
 
                         <div style="display:flex;">
                           <div class="selfCheckBoxsday">日期</div>
-                          <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :class="{'tech-green':item.show===true}">
-                            {{item.sexName}}
+                          <!--<div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.sexId)!=-1}">
+                            {{item.sexName}}-->
                             <!-- <div :class="{'triangle-bottomrightose':item.show===true}"></div> -->
                             <!-- <div class="tallyose">&#10004</div> -->
-                          </div>
+                          <!-- </div> -->
+                          <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
+                            {{item.name}}
+                          </button>
                         </div>
                       </div>
                       <div style="margin-top:10px;">
@@ -442,8 +485,8 @@
                 <li v-for="(item,index) in teachArr" :key="index">
                   <div>
                     <div class="woking-div">
-                      <div><span v-for="(data,i) in item.week" :key="i">{{data.sexName+"、"}}</span></div>
-                      <div class="time">{{item.start+"~"+item.end}}</div>
+                      <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
+                      <div class="time">{{item.startTime+"~"+item.endTime}}</div>
                     </div>
                   </div>
                   <div>
@@ -473,12 +516,16 @@
     getEducations,
     getStrong,
     getHeight,
-    getMatrimony
+    getMatrimony,
+    ChooseTheCity,
+    serviceStation,
+    Technician
   } from "@/api/tech";
   import {
     getSign
   } from "@/api/sign";
   import techniEdit from './techniEdit.vue'
+  import {Whether} from '@/api/project'
 
   export default {
     data() {
@@ -504,6 +551,58 @@
           callback();
         }
       };
+      //身份证
+      var TECHIDCARD = (rule,value,callback) =>{
+        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+        var tip = "";
+        var pass= true;
+        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
+                tip = "身份证号格式错误";
+                callback(new Error(tip))
+                pass = false;
+        }else if(!city[value.substr(0,2)]){
+            tip = "地址编码错误";
+            callback(new Error(tip))
+            pass = false;
+        }else{
+          if(value.length == 18){
+            value = value.split('');
+            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+            var sum = 0;
+            var ai = 0;
+            var wi = 0;
+            for (var i = 0; i < 17; i++)
+                    {
+                        ai = value[i];
+                        wi = factor[i];
+                        sum += ai * wi;
+                    }
+            var last = parity[sum % 11];
+                    if(parity[sum % 11] != value[17]){
+                        tip = "校验位错误";
+                        callback(new Error(tip))
+                        pass =false;
+                    }
+          }
+        }
+
+        if(pass){
+          callback()
+        }
+       
+      }
+      var TECHPHONE = (rule,value,callback) =>{
+        if(value){
+          if(!(/^1[34578]\d{9}$/.test(value))){
+            callback(new Error('手机号码有误，请重填'))
+          }else{
+            callback()
+          }
+        }else{
+          callback(new Error('请输入手机号'))
+        }
+      }
       return {
 		ruleForm: {
           date1: '',
@@ -531,58 +630,76 @@
 		},
 		// 个人资料验证
 		personal:{
-			techName: '',
-			techIdCard: '',
-			techPhone: '',
-			techSex:'',
-			addrDetailInfo:'',
-			techNation:'',
-			techBirthDate:'',
-			serviceCityName:'',
-			jobNatrue:'',
-			stationName:'',
-			jobStatus:'',
-			workTime:'',
-			skills:''
+			name: '',           //姓名
+			idCard: '',          //身份证
+			phone: '',            //手机
+			sex:'',              //性别
+			address:'',            //详细地址
+			nation:'',             //民族
+      birthDate:'',         //生日
+      birtStr:'',      //生日  假的
+			jobNature:'',           //岗位性质
+			stationId:'',           //
+			jobStatus:'',           //岗位状态
+			workTime:'',            //工作年限
+      skillIds:[],             //技能List
+      area:[],
+      status:'',             //状态
+      provinceCode:'',       //省
+      cityCode:'',         //市
+      areaCode:'',         //区
+      idCardPic:'adawd',       //身份证照片
+      headPic:'awdawdwad',        //头像
+      workTimes:[         //工作时间
+        {startTime:'',endTime:'',weeks:[]}      //开始时间,结束时间，星期几
+      ],
+      serviceCityName:''   //选择城市  不需要
+
 			
-		},
+    },
+    Choose:[],
+    mouserFlag:false,
 		rulesPer:{
-			techName:[
+			name:[
 				{ required: true, message: '请输入姓名', trigger: 'blur' },
-            	{ min: 3, max: 5, message: '长度在 2 到 15 个字符', trigger: 'blur' }
+        { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
 			],
 			// 身份证
-			techIdCard:[
-				{required: true, message: '请输入身份证号', trigger: 'blur'},
+			idCard:[
+        {required:true,trigger:'blur'}
+        // {required:true, validator:TECHIDCARD ,trigger:'blur'}
+      ],
+      //手机号
+			phone:[
+        {required:true, validator:TECHPHONE,trigger:'blur'}
 			],
-			techPhone:[
-				{required: true, message: '请输入手机号', trigger: 'blur'},
-				{ min: 11, max: 11, message: '请输入正确的手机号', trigger: 'blur' }
-			],
-			techSex:[
+			sex:[
 				{ required: true, message: '请输入性别', trigger: 'change' }
 			],
-			techBirthDate:[
+			birthDate:[
 				{ type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
 			],
 			serviceCityName:[
 				{ required: true, message: '请选择城市', trigger: 'change' }
 			],
-			jobNatrue:[
+			jobNature:[
 				{ required: true, message: '请选择岗位', trigger: 'change' }
 			],
-			stationName:[
-				{ required: true, message: '请选择服务站', trigger: 'change' }
-			],
+			// stationId:[
+			// 	{ required: true, message: '请选择服务站', trigger: 'blur' }
+			// ],
 			jobStatus:[
 				{ required: true, message: '请选择岗位状态', trigger: 'change' }
 			],
 			workTime:[
 				{ required: true, message: '请选择工作年限', trigger: 'change' }
 			],
-			skills:[
-				{ required: true, message: '请选择技能', trigger: 'blur' }
-			]
+			// skillIds:[
+			// 	{ required: true, message: '请选择技能', trigger: 'change' }
+      // ],
+      // area:[
+      //   {required:true, message:'请选择地址', trigger:'blur'}
+      // ]
 
 		},
         server: [{
@@ -601,54 +718,33 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
+        infoname:[],
+        // infoname: [{
+        //   value: '选项1',
+        //   name: '李阿姨',
+        //   addres: '国安社区',
+        //   year: '3年',
+        //   phone: '17188996644',
+        //   ismouse: false,
+        // }, {
+        //   value: '选项1',
+        //   name: '王阿姨',
+        //   addres: '国安社区',
+        //   year: '3年',
+        //   phone: '17188996644',
+        //   ismouse: false,
+        // }, {
+        //   value: '选项1',
+        //   name: '赵阿姨',
+        //   addres: '国安社区',
+        //   year: '3年',
+        //   phone: '17188996644',
+        //   ismouse: false,
+        // }],
 
-        infoname: [{
-          value: '选项1',
-          name: '李阿姨',
-          addres: '国安社区',
-          year: '3年',
-          phone: '17188996644',
-          ismouse: false,
-        }, {
-          value: '选项1',
-          name: '王阿姨',
-          addres: '国安社区',
-          year: '3年',
-          phone: '17188996644',
-          ismouse: false,
-        }, {
-          value: '选项1',
-          name: '赵阿姨',
-          addres: '国安社区',
-          year: '3年',
-          phone: '17188996644',
-          ismouse: false,
-        }],
-
-        servery: [{
-          value: '选项1',
-          label: '呼家楼'
-        }, {
-          value: '选项2',
-          label: '双桥'
-        }, {
-          value: '选项3',
-          label: '百子湾'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        servery: [],
         marriage: [],
-        station: [{
-          value: '选项1',
-          label: '全职'
-        }, {
-          value: '选项2',
-          label: '兼职'
-        }],
+        station: {},
         choose: [{
           value: '选项1',
           label: '姓名'
@@ -665,23 +761,11 @@
           label: '中国银行'
         }],
 
-        sex: [{
-          value: '1',
-          label: '男'
-        }, {
-          value: '2',
-          label: '女'
-        }],
+        sex:{},
         ethnics: [],
         areas: [],
         strong:{},
-        statu: [{
-          value: '选项1',
-          label: '在职'
-        }, {
-          value: '选项2',
-          label: '离职'
-        }],
+        statu:{},
         education: [],
         height: [],
         place: [],
@@ -711,22 +795,7 @@
           label: '河南'
         }],
 
-        workyear: [{
-          value: '选项1',
-          label: '1年以下'
-        }, {
-          value: '选项2',
-          label: '1年'
-        }, {
-          value: '选项3',
-          label: '2年'
-        }, {
-          value: '选项4',
-          label: '10年'
-        }, {
-          value: '选项5',
-          label: '10年以上'
-        }],
+        workyear: {},
 
         bind: [{
           value: '选项1',
@@ -749,7 +818,7 @@
         }],
         pickerOptions0: {
           disabledDate(time) {
-            return time.getTime() > Date.now();
+            return time.getTime() > Date.now()-8.64e7;
           }
         },
         sexType: [{
@@ -862,54 +931,34 @@
             key: 5
           }
         ],
-        sexTypeo: [{
-            sexName: '技能一',
-            show: false
-          },
-          {
-            sexName: '技能二',
-            show: false
-          },
-          {
-            sexName: '技能三我我',
-            show: false
-          },
-          {
-            sexName: '技能四',
-            show: false
-          },
-          {
-            sexName: '技能五',
-            show: false
-          }
-        ],
+        sexTypeo: [],
         sexDay: [{
-            sexName: '星期一',
-            show: false
+            name: '星期一',
+            id:1,
           },
           {
-            sexName: '星期二',
-            show: false
+            name: '星期二',
+            id:2,
           },
           {
-            sexName: '星期三',
-            show: false
+            name: '星期三',
+            id:3,
           },
           {
-            sexName: '星期四',
-            show: false
+            name: '星期四',
+            id:4,
           },
           {
-            sexName: '星期五',
-            show: false
+            name: '星期五',
+            id:5,
           },
           {
-            sexName: '星期六',
-            show: false
+            name: '星期六',
+            id:6,
           },
           {
-            sexName: '星期日',
-            show: false
+            name: '星期日',
+            id:7,
           },
         ],
         sign: getSign(),
@@ -932,7 +981,8 @@
         servers1: '',
         stationes: '',
         catys: '',
-        area: '',
+        area: [],
+        techniList:[],
         places: '',
         marriages: '',
         strongs: '',
@@ -956,10 +1006,15 @@
           {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
         position: false,
         listLoading: false,
+        // listLoadingTech:true,
         list: [1, 2, 3],
         total: null,
 		listLoading: false,
-		roomSel1Arr:[],
+    roomSel1Arr:[],
+    disbArr:[],
+    roomSelNum:[],
+    yesNo:{},
+    Duplicate:null,
 		teachArr:[],
         listQuery: {
           page: 1,
@@ -976,7 +1031,34 @@
     components:{
       techniEdit
     },
+    computed:{
+      //权限
+      btnShow(){
+        // console.log(this.$store.state.user.buttonshow,"this.$store.state.user.buttonshow")
+        return this.$store.state.user.buttonshow
+      },
+      areaOptions(){
+        return this.$store.state.user.area
+      }
+      
+    },
     methods: {
+      //现住地址
+      nowAdd(val){
+        this.personal.provinceCode = val[0]  //省
+        this.personal.cityCode = val[1]  //市
+        this.personal.areaCode = val[2] //区
+      },
+      //选择城市
+      chooseChange(value){
+        console.log(value,"value------")
+        serviceStation({"cityCode":value}).then(data=>{
+          console.log(data,"所属服务区---------")
+          this.servery = data.data.data
+        }).catch(error=>{
+          console.log(error,"error---techni.vue-----1071")
+        })
+      },
       handlePreview(file){},
      handleClose(formName){
        this.$refs[formName].resetFields();
@@ -1010,22 +1092,44 @@
       hiddenDiv() {
         this.position = false
       },
+      //数组去重
+      remove(num,arr,val){
+        for(var i = 0; i<num.length; i++){
+          if(num[i] == val){
+            num.splice(i,1)
+            arr.splice(i,1)
+            break;
+          }
+        }
+      },
       roomSel1(item) {
-        this.roomSel1Arr.push(item);
-        console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
-        console.log(this.teachArr,"this.arr-----")
+        if(this.roomSelNum.indexOf(item.id) == -1){
+          this.roomSelNum.push(item.id)
+          this.roomSel1Arr.push(item);
+        }else{
+           this.remove(this.roomSelNum,this.roomSel1Arr,item.id)
+        }
+        //  console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
+        // console.log(this.roomSelNum,"this.roomSelNum-----")
         item.show = !item.show;
         //  console.log(item)
 	  },
 	  techClick(){
+      if(this.disbArr.length>0){
+        this.disbArr.map(item=>{
+          if(this.roomSelNum.indexOf(item)!=-1){
+            this.remove(this.roomSelNum,this.roomSel1Arr,item)
+          }
+        })
+      }
       var obj = {};
-
-      obj.start = this.startTime;
-      obj.end = this.endTime
-      obj.week = [].concat( this.roomSel1Arr )
-		  this.teachArr.push(obj)
+      obj.startTime = this.startTime+":00";
+      obj.endTime = this.endTime+":00";
+      obj.weeks = [].concat( this.roomSel1Arr )
+      this.disbArr =this.disbArr.concat(this.roomSelNum)
+      this.teachArr.push(obj)
+      this.isB  = false;
 		  console.log(this.teachArr,"this.teachArr--12323--")
-		   this.isB  = false;
     },
     techDelete(){
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -1065,60 +1169,119 @@
       addtimeno() {
         this.isB = false;
       },
-      mouser(item) {
-        item.ismouse = true;
+      mouser(item,index) {
+        // this.infoname[item].ismouse = true
+        item.ismouse = true
+        this.$set(this.techniList,index,item)
+        console.log(this.techniList,"item------")
       },
-      mousout(item) {
-        item.ismouse = false;
+      mousout(item,index) {
+        item.ismouse = false
+        this.$set(this.techniList,index,item)
+        // item.ismouse  = false;
+        // console.log(item.ismouse,"item------")
       },
       savrTable() {
         this.isTab = true;
       },
       dateChange(val) {
-        this.value1 = val;
+        this.personal.birthDate = val
 	  },
 	  //个人资料保存
 	  submitFormPer(formName){
-		  this.$refs[formName].validate((valid) => {
-			  if(valid){
-				
-			  }else{
-				  return false;
-			  }
-		  })
-	  }
-    //   create() {
-    //     var time = String(this.value1);
-    //     var obj = {
-    //       'techName': this.techName,
-    //       'techldCard': this.techldCard,
-    //       'techPhone': this.techPhone,
-    //       'techSex': this.sexs,
-    //       'techNation': this.ethnic,
-    //       'addrDetailInfo': this.addrDetailInfo,
-    //       'techBirthDate': this.value1,
-    //       'images': [{
-    //         'id': '',
-    //         'imgType': '',
-    //         'imgUrl': '',
-    //       }]
-    //     }
-        // addTech(obj).then(res => {
-        //   console.log(res)
-        // })
-        // this.techName = '',
-        //   console.log(obj),
-        //   console.log(time)
-        // console.log(d)
-    //   },
-    //   handleRemove(file, fileList) {
-    //     console.log(file, fileList);
-    //   },
-    //   handlePreview(file) {
-    //     console.log(file);
-    //   }
+        // this.personal.workTimes.workTime = this.disbArr
+        // this.personal.workTimes = this.teachArr
+        // console.log(this.personal,"this.personal----")
+      this.$refs[formName].validate(val=>{
+        console.log(val,"val---")
+        if(val){
+          this.personal.workTimes = this.teachArr
+          delete this.personal.birtStr
+          delete this.personal.area
+          // console.log(this.personal,"this.personal------")
+          Technician(this.personal).then(data=>{
+            console.log(data,"data-------techni")
+            if(data.data.code){
+              this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              this.dialogVisible = false
+              this.this.techniList = [];
+            }else{
+              this.$message({
+                message:data.data.data,
+                type: 'warning'
+              });
+              return false
+            }
+          }).catch(error=>{
+            console.log(error,"error------technini ---tech")
+          })
+        }else{
+           this.$message.error('保存失败');
+           return false;
+        }
+      })
+	  },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      }
      },
     mounted() {
+      console.log(this.areaOptions,"areaOptions----")
+      //选择城市
+      ChooseTheCity({}).then(data=>{
+        // this.listLoadingTech = false
+        // console.log(data,"选择城市---------")
+        this.Choose = data.data.data.cityCodes
+        this.sexTypeo = data.data.data.skillInfos
+        this.infoname = data.data.data.page.list
+        var i = 0,
+            len = this.infoname.length,
+            date = new Date(),
+            year = date.getFullYear(),
+            birth = 0,
+            _infoname = this.infoname
+        for(i=0; i<len; i++){
+          //遮罩
+          _infoname[i].ismouse  = false
+          // 性别
+          _infoname[i].sexname = _infoname[i].sex == "male"?"男":"女"
+          // 年龄
+          _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+          // 岗位性质
+          _infoname[i].jobName = _infoname[i].jobNature == "full_time"?"全职":"兼职"
+          // 岗位状态
+          _infoname[i].jobStateName = _infoname[i].jobStatus == "online"?"在职":"离职"
+          //工作年限
+          if(_infoname[i].workTime == "0"){
+            _infoname[i].workTimeName = "1年以下"
+          }else if(_infoname[i].workTime == "11"){
+            _infoname[i].workTimeName = "10年以上"
+          }else{
+            _infoname[i].workTimeName = _infoname[i].workTime+"年"
+          }
+          console.log(birth,"birth----")
+        }
+        this.techniList = this.infoname
+        console.log(this.techniList,"this.techniList----------")
+      }).catch(error=>{
+        console.log(error,"error-----thechni.vue-----1211")
+      })
+      //性别,工作年限,岗位性质，岗位状态
+      Whether().then(({data})=>{
+        console.log(data,"xxxxxxx")
+        this.sex = data.sex;
+        this.workyear = data.work_time
+        this.station = data.job_natrue
+        this.statu = data.job_status
+      }).catch(error=>{
+        console.log(error,"error-----techni.vue--1255")
+      })
       getTech().then(res => {
         this.ethnics = res.data;
         this.ethnic=res.data[32].label
@@ -1203,7 +1366,7 @@
   .tech-section-ul {
     margin: 20px 0;
     display: flex;
-    justify-content: space-between;
+    flex-wrap:wrap
   }
 
   .tech-table {
@@ -1216,6 +1379,10 @@
     height: 200px;
     background: #fff;
     position: relative;
+    margin: 0 27px 10px 0;
+  }
+  .tech-section-ul li:nth-child(3n){
+    margin-right: 0;
   }
 
   .tech-section-ul-posi {
@@ -1618,7 +1785,7 @@
     height: 100%;
     padding: 20px 40px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
   }
 
   .tech-xiu-div-one {
@@ -1715,4 +1882,13 @@
 .button-large-fourth{
   margin-right: 40px;
 }
+.el-input__icon{
+  display: none
+}
 </style>
+
+<!--
+// 身份证图片
+// 头像图片
+-->
+
