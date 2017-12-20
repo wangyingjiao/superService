@@ -427,6 +427,9 @@ export default {
     areaOptions:function(){
       return this.$store.state.user.area
     }
+    // selectAccount:function(){
+    //   return this.accountData[0].YDHL
+    // }
   },
   filters: {
     statusFilter(status) {
@@ -484,6 +487,7 @@ export default {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
+          console.log(res)
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
         });
@@ -651,20 +655,17 @@ export default {
       this.dialogStoreVisible = false;
     },
     createMaster() {
-      var name = "";
-      for (var i = 0; i < this.master.length; i++) {
-        if (this.tempMaster.master == this.master[i].id) {
-          name = this.master[i].name;
-        }
-      }
+      // var name = "";
+      // for (var i = 0; i < this.master.length; i++) {
+      //   if (this.tempMaster.master == this.master[i].id) {
+      //     name = this.master[i].name;
+      //   }
+      // }
       var obj = {
-        user: {
-          id: this.tempMaster.master,
-          name: name
-        },
-        id: this.rowInfo.id
+        id: this.rowInfo.id,
+        userId:this.tempMaster.master
       };
-      console.log(this.master);
+      console.log(obj);
       setMaster(obj).then(res => {
         console.log(res);
         if (res.data.code == "1") {
@@ -677,7 +678,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "设置失败"
+            message: res.data.data
           });
           this.dialogMasterVisible = false;
         }

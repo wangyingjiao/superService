@@ -58,3 +58,11 @@ export function addMech(obj) {
 export function upMech(obj) {
   return instance.post(`/api/a/sys/organization/formData`, obj)
 }
+// 获取门店列表
+export function getStore(obj) {
+  return instance.post(`/api/a/service/station/serviceStation/getStoreList`, obj)
+}
+// 获取门店列表
+export function setStore(obj) {
+  return instance.post(`/api/a/service/station/serviceStation/saveStationStore`, obj)
+}

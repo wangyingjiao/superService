@@ -443,6 +443,8 @@ export default {
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     console.log(this.scopeType);
+    
+    
   },
   methods: {
     getList() {
