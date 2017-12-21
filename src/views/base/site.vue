@@ -322,7 +322,8 @@ export default {
         id: "",
         masterId: "",
         rangeType: "",
-        serviceAreaType: ""
+        serviceAreaType: "",
+        storeList: []
       },
       temp: {
         name: "",
@@ -417,6 +418,7 @@ export default {
         name: "",
         cityCode: ""
       };
+      this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
@@ -427,6 +429,7 @@ export default {
     handleFilter() {
       this.listLoading = true;
       this.pageNumber = 1;
+      this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
         cityCode: this.search.cityCode
@@ -442,7 +445,7 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        this.listLoading = true
+        this.listLoading = true;
         var obj = {
           stationId: this.rowInfo.id
         };
@@ -451,11 +454,8 @@ export default {
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
           this.dialogMasterVisible = true;
-          this.listLoading = false
+          this.listLoading = false;
         });
-        // setTimeout(() => {
-
-        // }, 100);
       }
     },
     handleSetRange() {
@@ -464,13 +464,17 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        this.listLoading = true
         if (this.rowInfo.serviceAreaType == "store") {
+          this.listLoading = true;
           getStore({}).then(res => {
             console.log(res);
-            this.listLoading = false
+            console.log(this.rowInfo.storeList);
+            this.listLoading = false;
             this.storeTree = res.data.data;
             this.dialogStoreVisible = true;
+            this.$nextTick(() => {
+              this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
+            });
           });
         } else {
           this.severSelectdialogVisible = true;
@@ -481,13 +485,13 @@ export default {
       }
     },
     handleSizeChange(val) {
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.phone
-      };
       this.pageSize = val;
-      // var obj = {};
+      var obj = {
+        name: this.search.name,
+        cityCode: this.search.cityCode
+      };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        console.log(res);
         this.list = res.data.data.list;
         this.listLoading = false;
       });
@@ -495,8 +499,8 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        roleName: this.search.name,
-        mobile: this.search.phone
+        name: this.search.name,
+        cityCode: this.search.cityCode
       };
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
@@ -517,6 +521,9 @@ export default {
         this.rowInfo.masterId = "";
       } else {
         this.rowInfo.masterId = row.user.id;
+      }
+      if (row.storeList != undefined) {
+        this.rowInfo.storeList = row.storeList;
       }
       console.log(this.rowInfo);
     },
@@ -631,14 +638,24 @@ export default {
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
           this.$message({
-                  type: "success",
-                  message: "保存成功!"
-                });
-        }else{
+            type: "success",
+            message: "保存成功!"
+          });
+          var obj = {
+            name: this.search.name,
+            cityCode: this.search.cityCode
+          };
+          getSite(obj, this.pageNumber, this.pageSize).then(res => {
+            console.log(res);
+            this.list = res.data.data.list;
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          });
+        } else {
           this.$message({
-                  type: "warning",
-                  message: res.data.data
-                });
+            type: "warning",
+            message: res.data.data
+          });
         }
       });
     },
