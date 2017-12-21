@@ -105,17 +105,17 @@
            label-width="160px" 
            >
 
-          <el-form-item label="服务站名称" prop="name">
+          <el-form-item label="服务站名称:" prop="name">
             <el-input :maxlength="15" :minlength="2" style='width: 400px;' v-model="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
           </el-form-item>
-          <el-form-item label="服务站类型" prop="type">
+          <el-form-item label="服务站类型:" prop="type">
             <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
               <el-option v-for="(val,key,index) in stationType" :key="index" :label="val" :value="key">
               </el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="所在区域"  prop="areaCodes">
+          <el-form-item label="所在区域:"  prop="areaCodes">
               <el-cascader
                 :options="areaOptions"
                 :show-all-levels="true"
@@ -124,15 +124,15 @@
               ></el-cascader>
 				</el-form-item>
 
-          <el-form-item label="详细地址" prop="address">
+          <el-form-item label="详细地址:" prop="address">
             <el-input :maxlength="100" :minlength="6" style='width: 400px;' v-model="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
-          <el-form-item label="服务站电话" prop="phone">
+          <el-form-item label="服务站电话:" prop="phone">
             <el-input style='width: 400px;' v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
           </el-form-item>
 
-          <el-form-item label="状态" prop="isUseable">
+          <el-form-item label="状态:" prop="isUseable">
             <el-select class="filter-item" v-model="temp.isUseable">
               <el-option v-for="item in stationState" :key="item.id" :label="item.value" :value="item.id">
               </el-option>
@@ -155,7 +155,7 @@
        :visible.sync="dialogMasterVisible">
 
         <el-form :model="tempMaster">
-          <el-form-item label="服务站长">
+          <el-form-item label="服务站长:">
             <el-select class="filter-item" v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -238,12 +238,14 @@
           label-position="left"
           label-width="160px" 
          >
-          <el-form-item label="设置门店">
+          <el-form-item label="设置门店:">
             <el-tree
               :data="storeTree"
               v-model="tempStore.tree"
+               ref="domTree"
               show-checkbox
               node-key="id"
+              :indent='40'
               :props="defaultProps">
             </el-tree>
 
@@ -260,7 +262,15 @@
 </template>
 
 <script>
-import { getSite, addSite, delSite, getMaster, setMaster } from "@/api/base";
+import {
+  getSite,
+  addSite,
+  delSite,
+  getMaster,
+  setMaster,
+  getStore,
+  setStore
+} from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -328,59 +338,10 @@ export default {
       tempMaster: {
         master: ""
       },
-      storeTree: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ],
+      storeTree: [],
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "storeName"
       },
       importanceOptions: [],
       stationType: [],
@@ -391,7 +352,7 @@ export default {
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "新增"
       },
       tableKey: 0,
       master: [],
@@ -423,10 +384,13 @@ export default {
       }
     };
   },
-  computed:{
-    areaOptions:function(){
-      return this.$store.state.user.area
+  computed: {
+    areaOptions: function() {
+      return this.$store.state.user.area;
     }
+    // selectAccount:function(){
+    //   return this.accountData[0].YDHL
+    // }
   },
   filters: {
     statusFilter(status) {
@@ -438,14 +402,12 @@ export default {
       return statusMap[status];
     }
   },
-  
+
   created() {
     this.getList();
     var dict = require("../../../static/dict.json");
     this.stationType = dict.service_station_type;
-    setTimeout(function(){
-
-    },30)
+    setTimeout(function() {}, 30);
     //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
@@ -463,7 +425,7 @@ export default {
       });
     },
     handleFilter() {
-      this.listLoading = true
+      this.listLoading = true;
       this.pageNumber = 1;
       var obj = {
         name: this.search.name,
@@ -480,25 +442,36 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
+        this.listLoading = true
         var obj = {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
+          console.log(res);
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
-        });
-        setTimeout(() => {
           this.dialogMasterVisible = true;
-        }, 100);
+          this.listLoading = false
+        });
+        // setTimeout(() => {
+
+        // }, 100);
       }
     },
     handleSetRange() {
       console.log("设置范围");
+      console.log(this.rowInfo.serviceAreaType);
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        if (this.rowInfo.serviceAreaType == "1") {
-          this.dialogStoreVisible = true;
+        this.listLoading = true
+        if (this.rowInfo.serviceAreaType == "store") {
+          getStore({}).then(res => {
+            console.log(res);
+            this.listLoading = false
+            this.storeTree = res.data.data;
+            this.dialogStoreVisible = true;
+          });
         } else {
           this.severSelectdialogVisible = true;
           this.$nextTick(() => {
@@ -538,7 +511,7 @@ export default {
     },
     rowClick(row, event, column) {
       console.log(row);
-      // this.rowInfo.serviceAreaType = row.office.serviceAreaType;
+      this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
         this.rowInfo.masterId = "";
@@ -550,10 +523,10 @@ export default {
     handleCreate() {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-      //this.areaOptions = this.$store.state.user.area;  
+      //this.areaOptions = this.$store.state.user.area;
     },
     handleUpdate(row) {
-     // this.areaOptions = this.$store.state.user.area;
+      // this.areaOptions = this.$store.state.user.area;
       console.log(row);
       this.temp = {
         id: row.id,
@@ -648,23 +621,39 @@ export default {
     },
     createStore() {
       //保存门店
-      this.dialogStoreVisible = false;
+      console.log(this.$refs.domTree.getCheckedKeys(true));
+      var obj = {
+        id: this.rowInfo.id,
+        storeList: this.$refs.domTree.getCheckedKeys(true)
+      };
+      setStore(obj).then(res => {
+        if (res.data.code == 1) {
+          this.dialogStoreVisible = false;
+          this.$refs.domTree.setCheckedKeys([]);
+          this.$message({
+                  type: "success",
+                  message: "保存成功!"
+                });
+        }else{
+          this.$message({
+                  type: "warning",
+                  message: res.data.data
+                });
+        }
+      });
     },
     createMaster() {
-      var name = "";
-      for (var i = 0; i < this.master.length; i++) {
-        if (this.tempMaster.master == this.master[i].id) {
-          name = this.master[i].name;
-        }
-      }
+      // var name = "";
+      // for (var i = 0; i < this.master.length; i++) {
+      //   if (this.tempMaster.master == this.master[i].id) {
+      //     name = this.master[i].name;
+      //   }
+      // }
       var obj = {
-        user: {
-          id: this.tempMaster.master,
-          name: name
-        },
-        id: this.rowInfo.id
+        id: this.rowInfo.id,
+        userId: this.tempMaster.master
       };
-      console.log(this.master);
+      console.log(obj);
       setMaster(obj).then(res => {
         console.log(res);
         if (res.data.code == "1") {
@@ -677,7 +666,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "设置失败"
+            message: res.data.data
           });
           this.dialogMasterVisible = false;
         }
@@ -734,7 +723,7 @@ export default {
     },
     resetStore() {
       //取消门店
-
+      this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
     resetMaster() {

@@ -72,7 +72,7 @@
          ref="temp" 
          style='width: 560px; margin-left:20px;'>
 
-        <el-form-item label="机构名称" prop="name">
+        <el-form-item label="机构名称:" prop="name">
           <el-input 
           :maxlength="15" 
           :minlength="2" 
@@ -81,14 +81,14 @@
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
-        <el-form-item label="机构电话" prop="telephone" >
+        <el-form-item label="机构电话:" prop="telephone" >
           <el-input 
             style='width: 400px;' 
             v-model="temp.telephone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
-        <el-form-item label="负责人姓名" prop="masterName">
+        <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
           :maxlength="15" 
           :minlength="2" 
@@ -97,14 +97,14 @@
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
-        <el-form-item label="负责人手机号" prop="masterPhone" >
+        <el-form-item label="负责人手机号:" prop="masterPhone" >
           <el-input 
             style='width: 400px;' 
             placeholder="请输入11位手机号" 
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
 
-        <el-form-item label="所在区域"  prop="areaCodes">
+        <el-form-item label="所在区域:"  prop="areaCodes">
 
 
               <!-- 省市区 -->
@@ -116,7 +116,7 @@
               ></el-cascader>
 				</el-form-item>
 
-        <el-form-item label="详细地址" prop="address">
+        <el-form-item label="详细地址:" prop="address">
           <el-input 
              :maxlength="100" 
              :minlength="6" 
@@ -125,7 +125,7 @@
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
-        <el-form-item label="服务范围类型" prop="scopeType">
+        <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select 
             style='width: 400px;' 
             class="filter-item" 
@@ -136,7 +136,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="服务城市" prop="cityCodes" >
+        <el-form-item label="服务城市:" prop="cityCodes" >
         <!-- <el-form-item label="服务城市"  > -->
          
            <el-select  style='width: 400px;'  v-model="temp.cityCodes" @change="changeCity"  multiple  placeholder="请选择">
@@ -164,28 +164,28 @@
           </el-switch>
         </el-form-item> -->
 
-        <el-form-item label=" 机构网址" prop="url">
+        <el-form-item label=" 机构网址:" prop="url">
           <el-input 
             style='width: 400px;' 
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 机构传真" prop="fax">
+        <el-form-item label=" 机构传真:" prop="fax">
           <el-input 
             style='width: 400px;' 
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
-        <el-form-item label="  400客服电话" prop="tel400">
+        <el-form-item label="  400客服电话:" prop="tel400">
           <el-input 
             style='width: 400px;' 
             v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 备注" >
+        <el-form-item label=" 备注:" >
           <el-input 
             type="textarea" 
             :rows="2" 
@@ -330,7 +330,7 @@ export default {
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "新增"
       },
       tableKey: 0,
       provinceOptions: [],
@@ -443,6 +443,8 @@ export default {
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     console.log(this.scopeType);
+    
+    
   },
   methods: {
     getList() {

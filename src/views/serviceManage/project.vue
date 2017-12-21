@@ -148,7 +148,9 @@
                   <div class="upload-demo upload_box">
                 
                       <el-upload
-                          action="https://jsonplaceholder.typicode.com/posts/"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          auto-upload
+                          :data="sign"
                           list-type="picture-card"
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
@@ -344,7 +346,7 @@
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                     <el-upload
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action="http://openservice.oss-cn-beijing.aliyuncs.com"
                         :show-file-list="false"
                         :on-success="(res,file)=>handleAvatarSuccess(res,file,index)"
                         :before-upload="beforeAvatarUpload">
@@ -562,7 +564,7 @@ export default {
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "新增"
       },
       tableKey: 0,
       city: ["1","2","3"],
