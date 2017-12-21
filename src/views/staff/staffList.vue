@@ -77,20 +77,20 @@
         ref="temp"
         style='width: 500px; margin-left:50px;'>
 
-        <el-form-item label=" 用户名"  prop="name" >
+        <el-form-item label=" 姓名:"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label=" 手机号" prop="mobile">
+        <el-form-item label=" 手机号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 密码" prop="password">
+        <el-form-item label=" 密码:" prop="password">
           <el-input 
             v-model="temp.password" 
             style='width: 400px;'
@@ -98,7 +98,7 @@
             placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 确认密码"  prop="password2">
+        <el-form-item label=" 确认密码:"  prop="password2">
           <el-input
 
             style='width: 400px;'
@@ -107,27 +107,27 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 服务机构"  prop="officeId">
+        <el-form-item label=" 服务机构:"  prop="officeId">
           <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 服务站" prop="stationId" >
+        <el-form-item label=" 服务站:" prop="stationId" >
           <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="  选择岗位" prop="role">
+        <el-form-item label="  选择岗位:" prop="role">
           <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <div class="btn_addStation" @click="addRole">新 增</div>
         </el-form-item>
-        <el-form-item  label="可用状态" >
+        <el-form-item  label="可用状态:" >
           <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -163,24 +163,24 @@
         label-width="80px" 
         style='width: 500px; margin-left:20px;'>
         
-        <el-form-item label=" 所属机构"  prop="officeId2">
+        <el-form-item label=" 所属机构:"  prop="officeId2">
           <el-select style='width: 400px;' class="filter-item"  v-model="temp2.officeId2" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="岗位名称" prop="name">
+        <el-form-item label="岗位名称:" prop="name">
           <el-input v-model="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级" prop="dataScope">
+        <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限" prop="check">
+        <el-form-item label="权限:" prop="check">
            <el-tree
               :data="data2"
               :indent= 10
@@ -351,7 +351,7 @@ export default {
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "创建"
+        create: "新增"
       },
       dialogPvVisible: false,
       tableKey: 0,

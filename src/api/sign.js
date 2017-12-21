@@ -12,13 +12,9 @@ export function getSign() {
     sign = JSON.parse(Cookies.get('sign'))
   } else {
     instance.get(`/api/oss/getSign`).then(res => {
+      console.log(res.data)
       var obj = res.data
-      // var expiresDate = new Date()
-      // expiresDate.setTime(expiresDate.getTime() + (30 * 60 * 1000))
-      // console.log(expiresDate)
-      // Cookies.set('sign', JSON.stringify(obj), { expires: expiresDate })
       Cookies.set('sign', JSON.stringify(obj), { expires: 0.35 })
-      // console.log(JSON.parse(Cookies.get('sign')))
       sign = JSON.parse(Cookies.get('sign'))
     })
   }

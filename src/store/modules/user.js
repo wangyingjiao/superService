@@ -1,5 +1,6 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
 import { getToken, setToken, removeToken, setSession } from '@/utils/auth'
+import { Message } from 'element-ui'
 const user = {
   state: {
     token: getToken(),
@@ -45,15 +46,19 @@ const user = {
           username: userInfo.username,
           password: userInfo.password
         }
-        console.log(obj)
         loginByUsername(obj).then(response => {
           console.log(response)
-          console.log(response.data.data.JSESSIONID)
-          localStorage.setItem('name', response.data.data.user.name)
-          const data = response.data
-          setSession(response.data.data.JSESSIONID)
-          setToken(data.token)
-          resolve()
+          if (response.data.code === 1) {
+            console.log(response.data.data.JSESSIONID)
+            localStorage.setItem('name', response.data.data.user.name)
+            const data = response.data
+            setSession(response.data.data.JSESSIONID)
+            setToken(data.token)
+            resolve()
+          } else {
+            Message.error('用户名不存在或者密码错误')
+            resolve()
+          }
         }).catch(error => {
           reject(error)
         })

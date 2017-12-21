@@ -57,25 +57,25 @@
         label-width="160px" 
         style='width: 500px; margin-left:20px;'>
 
-        <el-form-item label=" 所属机构"  prop="officeId">
+        <el-form-item label=" 所属机构:"  prop="officeId">
           <el-select style='width: 400px;' class="filter-item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="岗位名称" prop="name">
+        <el-form-item label="岗位名称:" prop="name">
           <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="等级" prop="dataScope">
+        <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限" prop="check">
+        <el-form-item label="权限:" prop="check">
             <el-tree
               :data="data2"
               :indent= 10
@@ -197,7 +197,7 @@ export default {
       dialogStatus: "",
       textMap: {
         update: "编辑",
-        create: "添加"
+        create: "新增"
       },
       dialogPvVisible: false,
       pvData: [],
@@ -563,13 +563,13 @@ export default {
       };
       console.log(obj);
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.dialogFormVisible = false;
+        if (valid) {         
           addStation(obj).then(res => {
             this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
             this.$refs[formName].resetFields();
             if (res.data.code === 1) {
+              this.dialogFormVisible = false;
               this.$message({
                 type: "success",
                 message: "修改成功"

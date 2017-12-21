@@ -39,8 +39,11 @@ export function getFuwu(obj) {
   return instance.post(`/api/a/service/station/serviceStation/listByOffice`, obj)
 }
 // 获取menudata
+// export function getMenudata() {
+//   return instance.get(`/api/a/sys/user/menuData`)
+// }
 export function getMenudata() {
-  return instance.get(`/api/a/sys/user/menuData`)
+  return instance.get(`/api/a/sys/menu/getMenuList`)
 }
 // 删除员工
 export function delStaff(obj) {
