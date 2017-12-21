@@ -66,7 +66,7 @@
 
       <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
-          <span class="branch" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
         </template>
       </el-table-column>
 
@@ -610,6 +610,11 @@ export default {
     }
   },
   created() {
+  //  var branch = document.getElementsByClassName("branchSpan")
+  //  console.log(branch,"---------branch")
+  //  for(var i =0 ;i<branch.length; i++){
+  //    branch[i].innerText = branch[i].innerText.Substring(0,branch.length-1)
+  //  }
     //所属分类
     // console.log(without,"_without_without")
     Taxonomy()
@@ -1272,13 +1277,16 @@ body {
   height: 30px;
   text-align: center;
 }
-.branch {
+.branch,.branchSpan {
   width: 100%;
   height: 45px;
   line-height: 45px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
 }
 .branch:nth-of-type(even) {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 .el-table .cell {
   padding: 0;

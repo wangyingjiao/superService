@@ -52,7 +52,7 @@ export function ChooseTheCity(obj) {
 // 所属服务站
 export function serviceStation(obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`api/a/service/station/serviceStation/getStationByArea`, obj).then(data => {
+    instance.post(`api/a/service/station/serviceStation/getStationByAreaTech`, obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)
@@ -64,6 +64,27 @@ export function serviceStation(obj) {
 export function Technician(obj) {
   return new Promise((resolve, reject) => {
     instance.post(`api/a/service/technician/serviceTechnicianInfo/saveData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+// 技师编辑获取ID
+export function technicianEditId(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/formData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 技师编辑保存
+export function technicianEdit(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/upData`, obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)

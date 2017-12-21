@@ -77,7 +77,8 @@
             <div  @click="flags = true">
               <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
-            <div style="margin-left:20px;" @click="dialogVisibleEdit = true">
+             <!-- dialogVisibleEdit = true -->
+            <div style="margin-left:20px;" @click="technician(item)">
               <img src="../../../static/icon/修改.png" alt="" style="width:30px">
             </div>
             <div style="margin-left:20px;" @click="techDelete">
@@ -206,7 +207,10 @@
     </div>
     <!-- 编辑技师 -->
 	<el-dialog title="新增技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
-		<techni-edit :areaOptions="areaOptions"></techni-edit>
+		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
+                  :sex="sex" :choose="Choose" :workyear="workyear"
+                  :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
+                  ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
@@ -432,10 +436,11 @@
               </div>
             </div>
           </li>
-          <li>
+          <li v-if="personal.jobNature!='part_time'">
             <div>
               <!-- <p><span class="tech-span">*</span>工作时间:</p> -->
-			          <div style="width:100px"><span class="tech-span">*</span>工作时间:</div>
+              <el-form-item label="工作时间:" prop="workTimes">
+			          <!-- <div style="width:100px"><span class="tech-span">*</span>工作时间:</div> -->
                 <div class="tech-order-jn">
                   <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
                   <div class="tech-order-jn-sons" v-show="isB">
@@ -478,6 +483,7 @@
                     </div>
                   </div>
                 </div>
+              </el-form-item>
               </div>
 
             <div v-show="teachArr.length>0">
@@ -497,8 +503,8 @@
             </div>
           </li>
           <li id="confirmation">
-                <button class="button-large-fourth" @click="submitFormPer('personal')">保存信息</button>
-                <el-button @click="handleClose('personal')">取消</el-button>
+                <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span>
+                <span class="button-cancel-fourth" @click="handleClose('personal')">取消</span>
           </li>
         </ul>
 		 </ul>
@@ -519,7 +525,8 @@
     getMatrimony,
     ChooseTheCity,
     serviceStation,
-    Technician
+    Technician,
+    technicianEditId
   } from "@/api/tech";
   import {
     getSign
@@ -530,12 +537,11 @@
   export default {
     data() {
       var validatePass = (rule, value, callback) => {
-		  console.log(value.length,"------")
         if (value === '') {
          	 callback(new Error('请输入密码'));
-        } else if(value.length<8){
-			callback(new Error('至少8个字符'));
-		} else {
+            } else if(value.length<8){
+          callback(new Error('至少8个字符'));
+        } else {
           if (this.ruleForm2.checkPass !== '') {
             this.$refs.ruleForm2.validateField('checkPass');
           }
@@ -592,6 +598,7 @@
         }
        
       }
+      //手机号
       var TECHPHONE = (rule,value,callback) =>{
         if(value){
           if(!(/^1[34578]\d{9}$/.test(value))){
@@ -602,6 +609,32 @@
         }else{
           callback(new Error('请输入手机号'))
         }
+      }
+      //现住地址
+      var ADDRESS = (rule,value,callback) =>{
+        console.log(rule,value,"value----现住地址")
+        callback()
+        // if(value.length>0){
+        //   callback()
+        // }else{
+        //   callback(new Error("请选择现住地址"))
+        // }
+      }
+      //选择技能
+      var SKILLIDS = (rule,value,callback) =>{
+        if(value.length>0){
+          callback()
+        }else{
+          callback(new Error("请选择技能"))
+        }
+      }
+      //工作时间
+      var WORKTIMES = (rule,value,callback) =>{
+          if(this.teachArr.length>0){
+            callback()
+          }else{
+            callback(new Error("请选择工作时间"))
+          }
       }
       return {
 		ruleForm: {
@@ -676,7 +709,7 @@
 			sex:[
 				{ required: true, message: '请输入性别', trigger: 'change' }
 			],
-			birthDate:[
+			birtStr:[
 				{ type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
 			],
 			serviceCityName:[
@@ -685,21 +718,24 @@
 			jobNature:[
 				{ required: true, message: '请选择岗位', trigger: 'change' }
 			],
-			// stationId:[
-			// 	{ required: true, message: '请选择服务站', trigger: 'blur' }
-			// ],
+			stationId:[
+				{ required: true, message: '请选择服务站', trigger: 'change' }
+			],
 			jobStatus:[
 				{ required: true, message: '请选择岗位状态', trigger: 'change' }
 			],
 			workTime:[
 				{ required: true, message: '请选择工作年限', trigger: 'change' }
 			],
-			// skillIds:[
-			// 	{ required: true, message: '请选择技能', trigger: 'change' }
-      // ],
-      // area:[
-      //   {required:true, message:'请选择地址', trigger:'blur'}
-      // ]
+			skillIds:[
+				{ required: true,validator:SKILLIDS, trigger: 'change' }
+      ],
+      area:[
+        {required:true,validator:ADDRESS, trigger:'change'}
+      ],
+      workTimes:[
+        {required:true,validator:WORKTIMES, trigger: 'blur'}
+      ]
 
 		},
         server: [{
@@ -910,27 +946,8 @@
             show: false
           }
         ],
-        sexTypes: [{
-            sexName: '技能一',
-            key: 1
-          },
-          {
-            sexName: '技能二',
-            key: 2
-          },
-          {
-            sexName: '技能三',
-            key: 3
-          },
-          {
-            sexName: '技能四',
-            key: 4
-          },
-          {
-            sexName: '技能五',
-            key: 5
-          }
-        ],
+        technicianData:[],
+        sexTypes:{},
         sexTypeo: [],
         sexDay: [{
             name: '星期一',
@@ -1038,11 +1055,22 @@
         return this.$store.state.user.buttonshow
       },
       areaOptions(){
+        console.log(this.$store.state.user.area,"this.$store.state.user.area")
         return this.$store.state.user.area
       }
       
     },
     methods: {
+      //技师编辑获取ID
+      technician(item){
+        // console.log(item,"item-------")
+        technicianEditId({"id":item.id}).then(data=>{
+          this.technicianData = data.data.data
+          this.dialogVisibleEdit = true
+        }).catch(error=>{
+          console.log(error,"error---技师编辑")
+        })
+      },
       //现住地址
       nowAdd(val){
         this.personal.provinceCode = val[0]  //省
@@ -1051,9 +1079,10 @@
       },
       //选择城市
       chooseChange(value){
-        console.log(value,"value------")
+         console.log(value,"value------")
+        this.personal.stationId = ''
         serviceStation({"cityCode":value}).then(data=>{
-          console.log(data,"所属服务区---------")
+          // console.log(data,"所属服务区---------")
           this.servery = data.data.data
         }).catch(error=>{
           console.log(error,"error---techni.vue-----1071")
@@ -1170,16 +1199,16 @@
         this.isB = false;
       },
       mouser(item,index) {
-        // this.infoname[item].ismouse = true
-        item.ismouse = true
-        this.$set(this.techniList,index,item)
-        console.log(this.techniList,"item------")
+        if(!item.ismouse){
+            item.ismouse = true
+            this.$set(this.techniList,index,item)
+        }
       },
       mousout(item,index) {
-        item.ismouse = false
-        this.$set(this.techniList,index,item)
-        // item.ismouse  = false;
-        // console.log(item.ismouse,"item------")
+        if(item.ismouse){
+          item.ismouse = false
+          this.$set(this.techniList,index,item)
+        }
       },
       savrTable() {
         this.isTab = true;
@@ -1217,6 +1246,7 @@
             }
           }).catch(error=>{
             console.log(error,"error------technini ---tech")
+            return false
           })
         }else{
            this.$message.error('保存失败');
@@ -1232,11 +1262,12 @@
       }
      },
     mounted() {
-      console.log(this.areaOptions,"areaOptions----")
+      //技师编辑获取ID
+      // console.log(this.areaOptions,"areaOptions----")
       //选择城市
       ChooseTheCity({}).then(data=>{
         // this.listLoadingTech = false
-        // console.log(data,"选择城市---------")
+         console.log(data,"选择城市---------")
         this.Choose = data.data.data.cityCodes
         this.sexTypeo = data.data.data.skillInfos
         this.infoname = data.data.data.page.list
@@ -1252,7 +1283,7 @@
           // 性别
           _infoname[i].sexname = _infoname[i].sex == "male"?"男":"女"
           // 年龄
-          _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+          // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
           // 岗位性质
           _infoname[i].jobName = _infoname[i].jobNature == "full_time"?"全职":"兼职"
           // 岗位状态
@@ -1279,6 +1310,7 @@
         this.workyear = data.work_time
         this.station = data.job_natrue
         this.statu = data.job_status
+        this.sexTypes = data.assess_grade
       }).catch(error=>{
         console.log(error,"error-----techni.vue--1255")
       })
@@ -1879,8 +1911,19 @@
   justify-content: center;
   margin-top: 30px;
 }
-.button-large-fourth{
+.button-large-fourth,.button-cancel-fourth{
   margin-right: 40px;
+  display: block;
+  line-height: 34px;
+}
+.button-cancel-fourth{
+  cursor: pointer;
+  border:none;
+  height: 34px;
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  border: 1px solid #4c70e8
 }
 .el-input__icon{
   display: none
