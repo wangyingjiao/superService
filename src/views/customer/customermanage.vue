@@ -217,7 +217,7 @@ export default {
   methods:{
 			//新增保存
 			submitForm(formName) {
-						if(this.$refs.pickerInput.value !=''){							 
+						if(this.$refs.pickerInput.value !=''){						 
 								this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
 								var str=this.$refs.pickerInput1.value;
 										str=str.split(',')
@@ -227,6 +227,7 @@ export default {
 										//纬度
 										var lat=str[1];
 										this.ruleForm.addrLatitude=lat;
+						}else{
 						}			   
 						this.$refs[formName].validate((valid) => {
 							if (valid) {																																
@@ -250,8 +251,10 @@ export default {
 									}else{
 										this.$message({
 												type: 'warning',
-												message: '新增失败'
-											});
+												message: res.data.data
+										});
+										this.$refs.pickerInput.value=''
+										this.ruleForm.address=''
 									}													
 								}).catch(res=>{
 									
@@ -360,13 +363,7 @@ export default {
 							if(res.data.code === 1){
 								this.tableData = res.data.data.page.list
 								this.organizationOptions=res.data.data.orgList;											
-								this.pagetotal1 = res.data.data.page.count;
-								if(this.pagetotal1 ===0){
-										this.$message({
-											type: 'warning',
-											message: '搜索项目不存在！'
-										});
-								}  								
+								this.pagetotal1 = res.data.data.page.count;  								
 								this.listLoading = false
 							}
 						}).catch(res=>{

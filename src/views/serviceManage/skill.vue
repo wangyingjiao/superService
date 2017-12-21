@@ -50,8 +50,8 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <div v-if="!ruleForm2.serItems || showRUles" v-cloak  style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;" ref='selfInf'>
-                  请选择服务
+                <div  v-if="!ruleForm2.serItems || showRUles"   style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;" >
+                  <span v-show="spanFlag">请选择服务</span>
                 </div>
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians" style='margin-top:30px;'>
@@ -130,14 +130,14 @@
                           <td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
-                          <td style="height:30px;" align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                          <td style="height:30px;" align="center">{{item.headPic}}</td>
-                          <td style="height:30px;" align="center">{{item.techName}}</td>
-                          <td style="height:30px;" align="center">
+                          <td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
+                          <td  style="height:100px;" align="center"><div style="width:85px;height:90px;line-height:90px;border:1px solid #ccc;">{{item.headPic}}</div></td>
+                          <td  align="center">{{item.techName}}</td>
+                          <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
                             <span v-if="item.techSex =='female'">女</span>									
                           </td>
-                          <td style="height:30px;" align="center">{{item.techStationName}}</td>							
+                          <td  align="center">{{item.techStationName}}</td>							
                         </tr>
                       </table>
                     </div>            
@@ -211,6 +211,7 @@
         promInf:'搜索内容不存在!',
         promInf1:'搜索内容不存在!',
         middleA:[],
+        spanFlag:true
       }
     },
     computed: {
@@ -249,23 +250,27 @@
                   this.listorderServer=res.data.data.items;              
                   this.options=res.data.data.stations 
                   this.listTech=res.data.data.techs
-                  this.dialogVisible = true;                                                             
-              }else{
-
-              }          
+                  this.dialogVisible = true;
+                  this.$nextTick( () => {
+                      if(this.ruleForm2.serItems == undefined){
+                        this.spanFlag=false;
+                      }else{
+                        this.spanFlag=true;
+                      }
+                  })                                                                              
+              }         
               this.listLoading = false;
             }).catch(res=>{
                 
-            });
-          
-          this.dialogStatus=status;
+            });         
+          this.dialogStatus=status;       
           this.showRUles=true;          
           this.tabOptions=[];
-          this.ruleForm2.serItems=[];          		  		                          
+          this.ruleForm2.serItems=[];                  		  		                          
          if(this.dialogStatus =='add'){
-           //新增操作
-           this.ruleForm2={}; 
-           this.id=''           
+           //新增操作                     
+           this.ruleForm2={};           
+           this.id=''                      
          }else if(this.dialogStatus =='edit'){
            this.showRUles=false;
            //编辑操作           
@@ -305,7 +310,7 @@
       },
       //服务数据回显二级选中
       selectionreturn(){
-           if(this.middleA.length !='undefined'){
+           if(this.middleA.length != undefined){
               for(let a=0;a<this.listorderServer.length;a++){
                 for(let b=0;b<this.middleA.length;b++){
                     if(this.middleA[b].id == this.listorderServer[a].id){
@@ -324,7 +329,7 @@
       },
       //技师数据回显二级选中
       selectionreturn1(){
-        if(this.tabOptions.length != 'undefined'){
+        if(this.tabOptions.length != undefined){
             for(let a=0;a<this.listTech.length;a++){
               for(let b=0;b<this.tabOptions.length;b++){
                   if(this.tabOptions[b].techId == this.listTech[a].techId){
@@ -336,10 +341,11 @@
       },      
       //新增或编辑弹窗保存
       submitForm(formName) {
+        this.spanFlag=true;
         this.ruleForm2.technicians=this.tabOptions                  	   
         this.$refs[formName].validate((valid) => {
           if (valid) {
-                if(this.ruleForm2.serItems.length !=0){                       
+                if( this.ruleForm2.serItems != undefined &&  this.ruleForm2.serItems.length != 0){                       
                         var obj={
                           id:this.id,
                           name:this.ruleForm2.name,
@@ -381,7 +387,8 @@
         });								
 			},
 			//新增或编辑弹窗cancel
-      resetForm(formName) {        
+      resetForm(formName) {
+        this.spanFlag=true;        
         if(this.dialogStatus == 'add'){
              this.ruleForm2.name='';
              this.ruleForm2={};
@@ -396,7 +403,7 @@
       },
       //新增或编辑弹窗选择服务回传表格删除
       staticDelete(row){
-           if(this.ruleForm2.serItems.length){
+           if(this.ruleForm2.serItems !=undefined && this.ruleForm2.serItems.length !=0){
                 for(let a=0 ;a<this.listorderServer.length;a++){
                     if(row.id ==this.listorderServer[a].id ){
                        this.listorderServer[a].itemChecked=false
@@ -410,7 +417,7 @@
       },
       //新增或编辑弹窗选择技师回传TAB删除
       errorClose(obj){
-          if(this.tabOptions.length){
+          if(this.tabOptions !=undefined && this.tabOptions.length !=0){
                 for(let a=0 ;a<this.listTech.length;a++){
                     if(obj.techId ==this.listTech[a].techId ){
                        this.listTech[a].techChecked=false
@@ -422,7 +429,7 @@
       //选择服务弹窗保存
       submitForm1() {
       //先遍历数据中选中的再保存
-      if(this.listorderServer.length){
+      if(this.listorderServer != undefined && this.listorderServer.length !=0){
                 this.showRUles=false;
                 var arr=[];
                 for(var i=0 ;i<this.listorderServer.length;i++){             
@@ -473,7 +480,7 @@
       submitForm2() {
 		    //先遍历数据中选中的再保存
         var arr=[];
-        if(this.listTech.length){
+        if(this.listTech != undefined &&  this.listTech.length != 0){
             for(let a=0;a<this.listTech.length;a++){
                 if(this.listTech[a].techChecked == true){
                   arr.push(this.listTech[a]);
@@ -494,13 +501,7 @@
         getListdata(obj,pageNo,pageSize).then(res => {
            if(res.data.code === 1){
            this.getListdata = res.data.data.list          
-           this.total = res.data.data.count;
-            if(this.total ===0){
-                this.$message({
-                  type: 'warning',
-                  message: '搜索项目不存在！'
-                });
-            }           
+           this.total = res.data.data.count;           
           }
           this.listLoading = false
         }).catch(res=>{
