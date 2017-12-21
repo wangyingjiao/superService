@@ -6,8 +6,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import '../static/plupload.full.min'
-import '../static/upload'
 import '@/icons' // icon
 import '@/permission' // 权限
 // axios.defaults.withCredentials = true
