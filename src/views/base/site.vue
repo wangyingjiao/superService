@@ -22,9 +22,9 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px"  v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -76,8 +76,8 @@
 
         <el-table-column align="center" label="操作" width="150">
           <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('station_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('station_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
 
@@ -296,6 +296,7 @@ export default {
       }
     };
     return {
+      btnShow: this.$store.state.user.buttonshow,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
       myMap: {}, //地图对象
