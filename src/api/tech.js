@@ -54,7 +54,7 @@ export function ChooseTheCity(obj){
 //所属服务站
 export function serviceStation(obj){
   return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/station/serviceStation/getStationByArea`,obj).then(data=>{
+    instance.post(`api/a/service/station/serviceStation/getStationByAreaTech`,obj).then(data=>{
       resolve(data)
     }).catch(error=>{
       reject(error)
@@ -72,7 +72,27 @@ export function Technician(obj){
     })
   })
 }
+//技师编辑获取ID
+export function technicianEditId(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/formData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
 
+//技师编辑保存
+export function technicianEdit(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/upData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
 
 
 // 获取休假列表（不要删，上面没用的接口可以删掉，下面的是我加的）
