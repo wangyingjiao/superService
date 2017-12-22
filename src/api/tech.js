@@ -94,7 +94,7 @@ export function technicianEdit(obj) {
 
 // 获取休假列表（不要删，上面没用的接口可以删掉，下面的是我加的）
 export function getHoliday(obj, pageNumber, pageSize) {
-  return instance.get(`/api/a/service/technician/serviceTechnicianHoliday/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+  return instance.post(`/api/a/service/technician/serviceTechnicianHoliday/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 // 删除休假
 export function delHoliday(obj) {
