@@ -66,7 +66,7 @@
 
       <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
-          <span class="branch" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
         </template>
       </el-table-column>
 
@@ -146,15 +146,33 @@
 
                 <el-form-item label="服务图片：" prop="picture">
                   <div class="upload-demo upload_box">
+                    <!-- <form id="myForm" name="myForm">
+  <div>
+    <label for="username">Enter name:</label>
+    <input type="text" id="username" name="username">
+  </div>
+  <div>
+    <label for="useracc">Enter account number:</label>
+    <input type="text" id="useracc" name="useracc">
+  </div>
+  <div>
+    <label for="userfile">Upload file:</label>
+    <input type="file" id="userfile" name="userfile">
+  </div>
+<input type="submit" value="Submit!" @click="aaaaa">
+</form> -->
                 
                       <el-upload
-                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          action=""
                           auto-upload
-                          :data="sign"
+                          
+                          ref="formdata"
                           list-type="picture-card"
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
                           :on-success = "handleAvatarSuccess1"
+                          :before-upload="aaaaa"
+                          
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
@@ -346,7 +364,8 @@
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                     <el-upload
                         class="avatar-uploader"
-                        action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                        action="h"
+                        :auto-upload="true"
                         :show-file-list="false"
                         :on-success="(res,file)=>handleAvatarSuccess(res,file,index)"
                         :before-upload="beforeAvatarUpload">
@@ -364,11 +383,25 @@
 </template>
 
 <script>
-import { getProject, addProject ,delProject,getInfoPic} from "@/api/serviceManage";
+import {
+  getProject,
+  addProject,
+  delProject,
+  getInfoPic
+} from "@/api/serviceManage";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-import {Taxonomy,Orienteering,Whether,ServerAdd,ServerDelete,ServerEdit,serverEditPre,sortList} from '@/api/project'
+import {
+  Taxonomy,
+  Orienteering,
+  Whether,
+  ServerAdd,
+  ServerDelete,
+  ServerEdit,
+  serverEditPre,
+  sortList
+} from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -379,152 +412,147 @@ export default {
     waves
   },
   data() {
-    var UNIT = (rule,value,callback)=>{
+    var UNIT = (rule, value, callback) => {
       var reg = /^\d+$/;
-      if(value){
-        if(value.length>=1 && value.length<=5){
-          if(reg.test(value)){
-            callback()
-          }else{
-            callback(new Error("商品单位必须为数字值"))
+      if (value) {
+        if (value.length >= 1 && value.length <= 5) {
+          if (reg.test(value)) {
+            callback();
+          } else {
+            callback(new Error("商品单位必须为数字值"));
           }
-        }else{
-           callback(new Error("长度在 1 到 5 个字符"))
+        } else {
+          callback(new Error("长度在 1 到 5 个字符"));
         }
-      }else{
-        callback(new Error("请输入商品单位"))
+      } else {
+        callback(new Error("请输入商品单位"));
       }
-    }
-    var PRICE = (rule,value,callback)=>{
+    };
+    var PRICE = (rule, value, callback) => {
       var reg = /^\d+$/;
-      if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-           callback(new Error("价格必须为数字值"))
+      if (value) {
+        if (reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("价格必须为数字值"));
         }
-      }else{
-        callback(new Error("请输入价格"))
+      } else {
+        callback(new Error("请输入价格"));
       }
-    }
-    var CONVERTHOURS = (rule,value,callback)=>{
-       var reg = /^\d+$/;
-      if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error("折算时长必须为数字值"))
-        }
-      }else{
-        callback(new Error("请输入折算时长"))
-      }
-    }
-    var PERSONS = (rule,value,callback)=>{
+    };
+    var CONVERTHOURS = (rule, value, callback) => {
       var reg = /^\d+$/;
-      console.log(rule,"rule-------")
-      console.log(value,"value---------111")
-      if(value.length>0){
-        for(var i =0 ;i<value.length; i++){
-          if(reg.test(value[i].critical)){
-            if(reg.test(value[i].quantity)){
-              callback()
-            }else{
-               callback(new Error("人数必须为数字值"))
+      if (value) {
+        if (reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("折算时长必须为数字值"));
+        }
+      } else {
+        callback(new Error("请输入折算时长"));
+      }
+    };
+    var PERSONS = (rule, value, callback) => {
+      var reg = /^\d+$/;
+      console.log(rule, "rule-------");
+      console.log(value, "value---------111");
+      if (value.length > 0) {
+        for (var i = 0; i < value.length; i++) {
+          if (reg.test(value[i].critical)) {
+            if (reg.test(value[i].quantity)) {
+              callback();
+            } else {
+              callback(new Error("人数必须为数字值"));
             }
-          }else{
-             callback(new Error("临界值必须为数字值"))
+          } else {
+            callback(new Error("临界值必须为数字值"));
           }
         }
-      }else{
-        callback(new Error("请输入派人数量"))
+      } else {
+        callback(new Error("请输入派人数量"));
       }
-    }
+    };
     return {
-      ImageTextArr:[{"imageUrl":''}],
-      ImageText:false,
-    tabs:'all',
-    editId:'',
-    total:null,
-    houseStr:'',
-    whole:{},
-    serverCityArr:[],
-    wholeTable:{},
-    directional:[],
-    cityArr:[],
-    personsTime:false,
-    addComm:false,
-		critical:'',
-		quantity:'',
-		commoditysObj:{
-			
-		},
-		persons:[],
-      commoditys:[
-       
-      ],
-      imageUrl:'',
-       dialogImageUrl: '',
+      ossData: new FormData(),
+      ImageTextArr: [{ imageUrl: "" }],
+      ImageText: false,
+      tabs: "all",
+      editId: "",
+      total: null,
+      houseStr: "",
+      whole: {},
+      serverCityArr: [],
+      wholeTable: {},
+      directional: [],
+      cityArr: [],
+      personsTime: false,
+      addComm: false,
+      critical: "",
+      quantity: "",
+      commoditysObj: {},
+      persons: [],
+      commoditys: [],
+      imageUrl: "",
+      dialogImageUrl: "",
       dialogVisible: false,
-      measure:[
+      measure: [
         {
-          label:"按居室",
-          value:"一居室"
-          },
+          label: "按居室",
+          value: "一居室"
+        },
         {
-          label:"按面积",
-          value:"平米"
-          },
+          label: "按面积",
+          value: "平米"
+        },
         {
-          label:"按数量",
-          value:"个"
-          },
-        ],
+          label: "按数量",
+          value: "个"
+        }
+      ],
       sign: getSign(),
+      signobj: {
+        OSSAccessKeyId: getSign().accessid,
+        policy: getSign().policy,
+        Signature: getSign().signature,
+        key: getSign().dir
+      },
       list: [],
       listLoading: true,
       whether: true,
-      sortList:[],
+      sortList: [],
       goods: {
         name: [
           { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
-        unit: [
-          {required: true,validator:UNIT,trigger:'blur'}
-        ],
+        unit: [{ required: true, validator: UNIT, trigger: "blur" }],
         type: [{ required: true, message: "请选择计量方式", trigger: "change" }],
-        price:[
-          {required:true,validator:PRICE,trigger:"blur"}
+        price: [{ required: true, validator: PRICE, trigger: "blur" }],
+        convertHours: [
+          { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        convertHours:[
-           { required: true, validator:CONVERTHOURS, trigger: "blur" }
-		    ],
-        peoNum:[
-          { required: true, message: "请输入折算时长", trigger: "blur" }
-        ],
-        persons:[
-          {require:true,validator:PERSONS, trigger:"change"}
-        ]
+        peoNum: [{ required: true, message: "请输入折算时长", trigger: "blur" }],
+        persons: [{ require: true, validator: PERSONS, trigger: "change" }]
       },
-      basicForm:{
-        name:'',
-        picture:'123123132',   //服务图片
-        sortId:'',
-        sale:'yes',
-        sortNum:'',
+      basicForm: {
+        name: "",
+        picture: "123123132", //服务图片
+        sortId: "",
+        sale: "yes",
+        sortNum: "",
         majorSort: "all",
-        commoditys:[],
-		cityCodes:[],
-		description:''
+        commoditys: [],
+        cityCodes: [],
+        description: ""
       },
       basicRles: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" },
-          { min:2,max:10,message:"请输入2-10位的项目名称", trigger: "blur"}
+          { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
         // picture: [{ required: true, message: "请上传至少一张图片" }],
-		info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-		description:[{ required: true, message: "请输入服务描述", trigger: "blur" }]
+        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
+        description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
 
       goods_info: {
@@ -535,12 +563,12 @@ export default {
         time: "",
         peoNum: "",
         num: "",
-        persons:[],
-        minPurchase:''
+        persons: [],
+        minPurchase: ""
       },
       listQuery: {
         sort: "+id",
-        page:1
+        page: 1
       },
       search: {
         sortId: "",
@@ -567,9 +595,8 @@ export default {
         create: "新增"
       },
       tableKey: 0,
-      city: ["1","2","3"],
-      option1: [],
-     
+      city: ["1", "2", "3"],
+      option1: []
     };
   },
   filters: {
@@ -583,60 +610,100 @@ export default {
     }
   },
   created() {
+  //  var branch = document.getElementsByClassName("branchSpan")
+  //  console.log(branch,"---------branch")
+  //  for(var i =0 ;i<branch.length; i++){
+  //    branch[i].innerText = branch[i].innerText.Substring(0,branch.length-1)
+  //  }
     //所属分类
     // console.log(without,"_without_without")
-    Taxonomy().then(data=>{
-      this.sortList = data.data.data.list
-    }).catch(error=>{
-      console.log(error,"error-----project")
-    })
+    Taxonomy()
+      .then(data => {
+        this.sortList = data.data.data.list;
+      })
+      .catch(error => {
+        console.log(error, "error-----project");
+      });
     //是否 计量方式 全部 保洁 家修
-    Whether().then(({data})=>{
-      console.log(data,"-------------data--------------")
-       this.measure = data.meterage
-       this.whole = data.ser_sort
-    }).catch(error=>{
-      console.log(error,"error-----project")
-    })
+    Whether()
+      .then(({ data }) => {
+        console.log(data, "-------------data--------------");
+        this.measure = data.meterage;
+        this.whole = data.ser_sort;
+      })
+      .catch(error => {
+        console.log(error, "error-----project");
+      });
 
-    this.orient({},0)  // 所属分类
-    this.getList(1,10);   //搜索 ，分页
-    console.log(this.sign,"sign---------")
+    this.orient({}, 0); // 所属分类
+    this.getList(1, 10); //搜索 ，分页
+    console.log(this.sign, "sign---------");
   },
   methods: {
-    //编号失焦事件
-    indexBlur(item){
-      console.log(item,"----------itemmmmmmmmm")
-      sortList({id:item.id,sortNum:item.sortNum}).then(data=>{
-        console.log(data,"更新排序----------")
-        this.getList(1,10);
-      }).catch(error=>{
-        console.log(error,"更新排序错误----")
+    aaaaa(file) {
+      console.log(file);
+      console.log(getSign())
+      console.log(this.$refs.formdata);
+      var data = getSign();
+      var ossData = new FormData();
+
+      ossData.append("name", file.name);
+      ossData.append("key", data.dir+ '/' + file.name);
+      ossData.append("policy", data.policy);
+      ossData.append("OSSAccessKeyId", data.accessid);
+      ossData.append("success_action_status", 200);
+      ossData.append("signature", data.signature);
+      // 添加文件
+      ossData.append("file",file,1);
+      console.log(ossData)
+      this.ossData = ossData
+      this.$http.post(data.host,ossData,{
+       headers:{'Content-Type': 'multipart/form-data; boundary={boundary}'} 
+      }).then(res=>{
+        console.log(res)
       })
     },
-    addImage(){
-      this.ImageTextArr.push({"imageUrl":''})
+    //编号失焦事件
+    indexBlur(item) {
+      console.log(item, "----------itemmmmmmmmm");
+      sortList({ id: item.id, sortNum: item.sortNum })
+        .then(data => {
+          console.log(data, "更新排序----------");
+          this.getList(1, 10);
+        })
+        .catch(error => {
+          console.log(error, "更新排序错误----");
+        });
     },
-    handleAvatarSuccess(res, file,index) {
-        this.ImageTextArr[index]["imageUrl"] = URL.createObjectURL(file.raw)
-        this.imageUrl = URL.createObjectURL(file.raw);
-        console.log(this.ImageTextArr[0]["imageUrl"],"this.ImageTextArr[0]['imageUrl']---")
-        console.log(this.imageUrl,"this.imageurl------")
-      },
-      beforeAvatarUpload(file) {
-        // const isJPG = file.type === 'image/jpeg';
-        // const isLt2M = file.size / 1024 / 1024 < 2;
+    addImage() {
+      this.ImageTextArr.push({ imageUrl: "" });
+    },
+    handleAvatarSuccess(res, file, index) {
+      this.ImageTextArr[index]["imageUrl"] = URL.createObjectURL(file.raw);
+      this.imageUrl = URL.createObjectURL(file.raw);
+      console.log(
+        this.ImageTextArr[0]["imageUrl"],
+        "this.ImageTextArr[0]['imageUrl']---"
+      );
+      console.log(this.imageUrl, "this.imageurl------");
+    },
+    beforeAvatarUpload(file) {
+      // const isJPG = file.type === 'image/jpeg';
+      // const isLt2M = file.size / 1024 / 1024 < 2;
 
-        // if (!isJPG) {
-        //   this.$message.error('上传头像图片只能是 JPG 格式!');
-        // }
-        // if (!isLt2M) {
-        //   this.$message.error('上传头像图片大小不能超过 2MB!');
-        // }
-        // return isJPG && isLt2M;
-      },
-    cjw(val){
-      console.log(val,'------------------')
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      // }
+      // if (!isLt2M) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!');
+      // }
+      // return isJPG && isLt2M;
+      var ossData = new formData();
+      console.log(1111111111111111111);
+      console.log(this.getSign());
+    },
+    cjw(val) {
+      console.log(val, "------------------");
     },
     //所属分类搜索
     // queryClass(val){
@@ -648,112 +715,114 @@ export default {
     //   })
     // },
     //表格编辑
-    handleEdit(index,val){
-      console.log(this.goods_info,"this.goods_info.name")
-	  console.log(val,"this.commoditys.name")
-	  this.addComm = true
-      this.goods_info = val
-      this.basicForm.commoditys.splice(index,1)
+    handleEdit(index, val) {
+      console.log(this.goods_info, "this.goods_info.name");
+      console.log(val, "this.commoditys.name");
+      this.addComm = true;
+      this.goods_info = val;
+      this.basicForm.commoditys.splice(index, 1);
     },
     //表格删除
-    tableHandleDelete(index,item){
-      this.basicForm.commoditys.splice(index,1)
+    tableHandleDelete(index, item) {
+      this.basicForm.commoditys.splice(index, 1);
     },
-    houseClick(val){
-      	// this.$refs['basic'].resetFields()  //基本信息重置
-        // this.basicForm.sortNum = ''  //排序号好清空
-        // this.basicForm.cityCodes = '' //定向城市
-        // this.resetForm('goods_info')  //添加商品
-        // this.goods_info.minPurchase = '' //起够数量
-        // this.basicForm.commoditys = [] //商品信息表格
-      this.houseStr = val
-       console.log(val,"val----")
+    houseClick(val) {
+      // this.$refs['basic'].resetFields()  //基本信息重置
+      // this.basicForm.sortNum = ''  //排序号好清空
+      // this.basicForm.cityCodes = '' //定向城市
+      // this.resetForm('goods_info')  //添加商品
+      // this.goods_info.minPurchase = '' //起够数量
+      // this.basicForm.commoditys = [] //商品信息表格
+      this.houseStr = val;
+      console.log(val, "val----");
     },
-    isNo(bl){
-      console.log(bl,"adawd")
+    isNo(bl) {
+      console.log(bl, "adawd");
     },
     //定向城市
-    orient(obj,id){
-      Orienteering(obj).then(data=>{
-        if(id == 1){
-          this.serverCityArr = data.data.data
-        }else if(id == 2){
-          this.cityArr = data.data.data
-        }else{
-          this.serverCityArr = data.data.data
-           this.cityArr = data.data.data
-        }
-      }).catch(error=>{
-        console.log(error,"error-----project")
-      })
+    orient(obj, id) {
+      Orienteering(obj)
+        .then(data => {
+          if (id == 1) {
+            this.serverCityArr = data.data.data;
+          } else if (id == 2) {
+            this.cityArr = data.data.data;
+          } else {
+            this.serverCityArr = data.data.data;
+            this.cityArr = data.data.data;
+          }
+        })
+        .catch(error => {
+          console.log(error, "error-----project");
+        });
     },
     //数组去重
-    remove(arr,val){
-      for(var i = 0; i<arr.length; i++){
-        if(arr[i] == val){
-          arr.splice(i,1)
+    remove(arr, val) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == val) {
+          arr.splice(i, 1);
           break;
         }
       }
-      return arr
+      return arr;
     },
-    clickClick(item){
+    clickClick(item) {
       var arr = this.basicForm.cityCodes;
-      if(arr.indexOf(item.cityCode) == -1){
-        arr.push(item.cityCode)
-      }else{
-        this.remove(arr,item.cityCode)
+      if (arr.indexOf(item.cityCode) == -1) {
+        arr.push(item.cityCode);
+      } else {
+        this.remove(arr, item.cityCode);
       }
-      console.log(arr,"arr--------")
-      item.haveItem = !item.haveItem
+      console.log(arr, "arr--------");
+      item.haveItem = !item.haveItem;
     },
-    open(val,id){
-      console.log(val,"val----")
-      console.log(id,"id-----")
-      this.orient({"sortId":val},id)
+    open(val, id) {
+      console.log(val, "val----");
+      console.log(id, "id-----");
+      this.orient({ sortId: val }, id);
       // console.log(id,'------------')
     },
-    tableDelete(id){
-      this.goods_info.persons.splice(id,1)
+    tableDelete(id) {
+      this.goods_info.persons.splice(id, 1);
     },
-    addTable(){
+    addTable() {
       // arr.push({critical:'',quantity:''})
-      if(this.goods_info.persons.length>=4){
+      if (this.goods_info.persons.length >= 4) {
         this.$notify({
-          title: '警告',
-          message: '派人数量最多4个',
-          type: 'warning'
+          title: "警告",
+          message: "派人数量最多4个",
+          type: "warning"
         });
-      }else{
-         this.goods_info.persons.push({critical:'',quantity:''})
+      } else {
+        this.goods_info.persons.push({ critical: "", quantity: "" });
       }
       this.personsTime = false;
     },
-    getList(page,size) {
+    getList(page, size) {
       this.listLoading = true;
-      var obj = {}
-      if(this.basicForm.majorSort){
-        obj.majorSort = this.tabs
+      var obj = {};
+      if (this.basicForm.majorSort) {
+        obj.majorSort = this.tabs;
       }
-      if(this.search.sortId){
-        obj.sortId = this.search.sortId
+      if (this.search.sortId) {
+        obj.sortId = this.search.sortId;
       }
-      if(this.search.cityId){
-        obj.cityCode =this.search.cityId
+      if (this.search.cityId) {
+        obj.cityCode = this.search.cityId;
       }
-      if(this.search.name){
-        obj.name = this.search.name
+      if (this.search.name) {
+        obj.name = this.search.name;
       }
 
-      getProject(obj,page,size)
+      getProject(obj, page, size)
         .then(res => {
-          console.log(res.data,"res.data-------");
-          this.total = res.data.data.count
+          console.log(res.data, "res.data-------");
+          this.total = res.data.data.count;
           this.list = res.data.data.list;
           this.listLoading = false;
           var num = 0;
-          for(var i = 0 ; i<this.list.length; i++){
-            this.list[i].num = ++num
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].num = ++num;
           }
           //this.total = res.data.data.count;
         })
@@ -763,7 +832,7 @@ export default {
     },
     refbtn1() {
       //  this.cancel('basic')
-      alert("dawdaw")
+      alert("dawdaw");
       // console.log(this.$refs);
       // this.$refs.refbtn1.className = "tabBtn tabBtnclick";
       // this.$refs.refbtn2.className = "tabBtn";
@@ -778,12 +847,12 @@ export default {
     },
     // 搜索
     handleFilter() {
-      var obj = {}
-      obj.majorSort = this.basicForm.majorSort
-      obj.sortId = this.search.sortId
-      obj.cityCode =this.search.cityId
-      obj.name = this.search.name
-      console.log(obj,"搜索--------")
+      var obj = {};
+      obj.majorSort = this.basicForm.majorSort;
+      obj.sortId = this.search.sortId;
+      obj.cityCode = this.search.cityId;
+      obj.name = this.search.name;
+      console.log(obj, "搜索--------");
     },
     handleSizeChange(val) {
       // alert(val)
@@ -794,10 +863,10 @@ export default {
       };
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-         var num = 0;
-          for(var i = 0 ; i<this.list.length; i++){
-            this.list[i].num = ++num
-          }
+        var num = 0;
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].num = ++num;
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -810,10 +879,10 @@ export default {
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-         var num = 0;
-          for(var i = 0 ; i<this.list.length; i++){
-            this.list[i].num = ++num
-          }
+        var num = 0;
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].num = ++num;
+        }
         this.listLoading = false;
         this.total = res.data.data.count;
       });
@@ -830,34 +899,36 @@ export default {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
-	  this.dialogFormVisible = true;
-	  this.editId = row.id
-      ServerEdit({"id":this.editId}).then(data=>{
-        // console.log(data,"data-----编辑")
-        // this.basicForm = data.data.data
-        var arr = data.data.data;
-        for(var i = 0; i<arr.commoditys.length; i++){
-          if(arr.commoditys[i].id){
-            delete arr.commoditys[i].id
-          }
-          for(var j = 0; j<arr.commoditys[i].persons.length; j++){
-            if(arr.commoditys[i].persons[j].id){
-              delete arr.commoditys[i].persons[j].id
+      this.dialogFormVisible = true;
+      this.editId = row.id;
+      ServerEdit({ id: this.editId })
+        .then(data => {
+          // console.log(data,"data-----编辑")
+          // this.basicForm = data.data.data
+          var arr = data.data.data;
+          for (var i = 0; i < arr.commoditys.length; i++) {
+            if (arr.commoditys[i].id) {
+              delete arr.commoditys[i].id;
+            }
+            for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
+              if (arr.commoditys[i].persons[j].id) {
+                delete arr.commoditys[i].persons[j].id;
+              }
             }
           }
-        }
-        this.basicForm = arr
-        console.log(this.basicForm,"basicForm------")
-      }).catch(error=>{
-        console.log(error)
-      })
+          this.basicForm = arr;
+          console.log(this.basicForm, "basicForm------");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     handleUplode(row) {
       // console.log("上传");
-      this.ImageText = true
+      this.ImageText = true;
     },
     handleDelete(row) {
-      console.log(row,"-----row---")
+      console.log(row, "-----row---");
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -958,132 +1029,136 @@ export default {
       });
     },
     handleClick(tab, event) {
-      console.log(tab,event,"-------tab")
-      var size = this.pageSize
-      this.getList(1,size);
+      console.log(tab, event, "-------tab");
+      var size = this.pageSize;
+      this.getList(1, size);
       this.listQuery.page = 1;
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handleAvatarSuccess1(res,file){
+    handleAvatarSuccess1(res, file) {
       this.dialogImageUrl = URL.createObjectURL(file.raw);
-      console.log(this.dialogImageUrl,"dialogImageUrl-----")
-      console.log(res.path,"res----")
-      console.log(file.raw,"file----")
+      console.log(this.dialogImageUrl, "dialogImageUrl-----");
+      console.log(res.path, "res----");
+      console.log(file.raw, "file----");
     },
     handlePreview(file) {
       console.log(file);
     },
     resetTemp() {
       this.temp = {};
-	},
-	//取消
-	cancel(fromName){
-		// console.log(fromName,"-----")
-    this.dialogFormVisible = false
-		this.$refs[fromName].resetFields()  //基本信息重置
-    this.basicForm.sortNum = ''  //排序号好清空
-    this.basicForm.cityCodes = [] //定向城市
-    this.resetForm('goods_info')  //添加商品
-    this.goods_info.minPurchase = '' //起够数量
-    this.basicForm.commoditys = [] //商品信息表格
-	},
-	//保存
-    subForm(formName){
-      var that = this
+    },
+    //取消
+    cancel(fromName) {
+      // console.log(fromName,"-----")
+      this.dialogFormVisible = false;
+      this.$refs[fromName].resetFields(); //基本信息重置
+      this.basicForm.sortNum = ""; //排序号好清空
+      this.basicForm.cityCodes = []; //定向城市
+      this.resetForm("goods_info"); //添加商品
+      this.goods_info.minPurchase = ""; //起够数量
+      this.basicForm.commoditys = []; //商品信息表格
+    },
+    //保存
+    subForm(formName) {
+      var that = this;
       this.$refs[formName].validate(valid => {
-         console.log(this.basicForm,"basicForm------")
+        console.log(this.basicForm, "basicForm------");
         if (valid) {
           // var obj = {}
-          // obj.majorSort = that.basicForm.majorSort;    //所属分类    
+          // obj.majorSort = that.basicForm.majorSort;    //所属分类
           // obj.sortId = that.basicForm.sortId;  //所属分类编号
           // obj.commoditys = that.basicForm.commoditys;   //商品信息
           // obj.name = that.basicForm.name;   //项目名称
           // obj.picture = that.dialogVisible;    //服务图片缩略图   有问题
           // obj.description = that.basicForm.description;   //服务描述
-          // obj.sale =   that.basicForm.sale   //是否上架    
+          // obj.sale =   that.basicForm.sale   //是否上架
           // obj.sortNum = that.basicForm.sortNum     //排序号
           // obj.cityCodes = that.basicForm.cityCodes;     //定向城市
           // console.log(obj,"-----------------------------------")
           //==update 是编辑   create是添加
-          if(this.dialogStatus == "update"){
-              // that.basicForm.id = this.editId
-              console.log(that.basicForm,"that.basicForm----")
-              serverEditPre(that.basicForm).then(data=>{
-                if(data.data.code){
-                    this.$message({
-                      message: data.data.data,
-                      type: 'success'
-                    });
-                    this.dialogFormVisible = false
-                    this.getList(1,10);
-                  }else{
-                    this.$message({
-                      message: data.data.data,
-                      type: 'warning'
-                    });
-                  }
-              }).catch(error=>{
-                console.log(error,"error---project---857")
+          if (this.dialogStatus == "update") {
+            // that.basicForm.id = this.editId
+            console.log(that.basicForm, "that.basicForm----");
+            serverEditPre(that.basicForm)
+              .then(data => {
+                if (data.data.code) {
+                  this.$message({
+                    message: data.data.data,
+                    type: "success"
+                  });
+                  this.dialogFormVisible = false;
+                  this.getList(1, 10);
+                } else {
+                  this.$message({
+                    message: data.data.data,
+                    type: "warning"
+                  });
+                }
               })
-          }else{
-            ServerAdd(that.basicForm).then(data=>{
-            console.log(data,"添加成功")
-              if(data.data.code){
-                this.$message({
-                  message: data.data.data,
-                  type: 'success'
-                });
-                this.cancel("basic")
-                this.getList(1,10);
-              }else{
-                this.$message({
-                  message: data.data.data,
-                  type: 'warning'
-                });
-              }
-            }).catch(error=>{
-            console.log(error,"error--project--770")
-            })
-			}
-        }else{
-          this.$message.error('不能为空');
+              .catch(error => {
+                console.log(error, "error---project---857");
+              });
+          } else {
+            ServerAdd(that.basicForm)
+              .then(data => {
+                console.log(data, "添加成功");
+                if (data.data.code) {
+                  this.$message({
+                    message: data.data.data,
+                    type: "success"
+                  });
+                  this.cancel("basic");
+                  this.getList(1, 10);
+                } else {
+                  this.$message({
+                    message: data.data.data,
+                    type: "warning"
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error, "error--project--770");
+              });
+          }
+        } else {
+          this.$message.error("不能为空");
           return false;
         }
-      })
+      });
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if(this.goods_info.persons.length>0){
-            this.personsTime = false
-          }else{
+          if (this.goods_info.persons.length > 0) {
+            this.personsTime = false;
+          } else {
             this.personsTime = true;
-            return false
+            return false;
           }
-            console.log("保存表格测试");
+          console.log("保存表格测试");
 
-            console.log(this.goods_info.persons,"this.persons----")
-            var obj = {};
-            var goods = this.goods_info;
-            obj.name = goods.name;
-            obj.unit = goods.unit;
-            obj.type = goods.type;
-            obj.price = goods.price;
-            obj.convertHours = goods.convertHours;
-            obj.minPurchase = goods.minPurchase;
-            obj.persons = goods.persons;
-            this.basicForm.commoditys.push(obj)
-			// arr = []
-			goods.persons = [];
-            this.goods_info.minPurchase = ''
-            this.resetForm('goods_info')
-            console.log(obj,'obj-----')
+          console.log(this.goods_info.persons, "this.persons----");
+          var obj = {};
+          var goods = this.goods_info;
+          obj.name = goods.name;
+          obj.unit = goods.unit;
+          obj.type = goods.type;
+          obj.price = goods.price;
+          obj.convertHours = goods.convertHours;
+          obj.minPurchase = goods.minPurchase;
+          obj.persons = goods.persons;
+          this.basicForm.commoditys.push(obj);
+          // arr = []
+          goods.persons = [];
+          this.goods_info.minPurchase = "";
+          this.resetForm("goods_info");
+          console.log(obj, "obj-----");
         } else {
-          if(this.persons.length>0){
-            this.personsTime = false
-          }else{
+          if (this.persons.length > 0) {
+            this.personsTime = false;
+          } else {
             this.personsTime = true;
           }
           console.log("error submit!!");
@@ -1092,20 +1167,20 @@ export default {
       });
     },
     resetForm(formName) {
-      var str = formName || 'goods_info'
+      var str = formName || "goods_info";
       this.$refs[str].resetFields();
       this.goods_info.persons = [];
-      this.goods_info.minPurchase = '';
+      this.goods_info.minPurchase = "";
     }
-  },
+  }
 };
 </script>
 <style>
-.el-dialog--small{
+.el-dialog--small {
   width: 55%;
 }
-.el-radio-group{
-  width: 100%
+.el-radio-group {
+  width: 100%;
 }
 .btn_right {
   float: right;
@@ -1202,13 +1277,16 @@ body {
   height: 30px;
   text-align: center;
 }
-.branch {
+.branch,.branchSpan {
   width: 100%;
   height: 45px;
   line-height: 45px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
 }
 .branch:nth-of-type(even) {
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 .el-table .cell {
   padding: 0;
@@ -1272,50 +1350,61 @@ body {
   font-weight: bold;
   padding: 10px 0 5px 0;
 }
-.el-upload--picture-card{
+.el-upload--picture-card {
   width: 80px;
   height: 80px;
   line-height: 80px;
 }
-.upload-back{
+.upload-back {
   display: inline-block;
-  background: url('../../../static/icon/sctp.png') no-repeat;
-  background-size:100%; 
-  background-position:33.33333% 33.33333%;
+  background: url("../../../static/icon/sctp.png") no-repeat;
+  background-size: 100%;
+  background-position: 33.33333% 33.33333%;
   width: 50px;
   height: 50px;
 }
-.upload-back::before{
-  content:'点击上传';
+.upload-back::before {
+  content: "点击上传";
   font-size: 12px;
   line-height: 110px;
-  }
-.table-pro,.table-pro tr th, .table-pro tr td { border:1px solid #dececb; }
-.table-pro { width: 350px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}  
-.table-pro tr td:nth-child(1),.table-pro tr th:nth-child(1){
+}
+.table-pro,
+.table-pro tr th,
+.table-pro tr td {
+  border: 1px solid #dececb;
+}
+.table-pro {
+  width: 350px;
+  line-height: 25px;
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
+}
+.table-pro tr td:nth-child(1),
+.table-pro tr th:nth-child(1) {
   background: #ccc;
   padding: 0 10px;
 }
-.table-input{
-	border: none;
-	outline:none;
-	text-align: center;
+.table-input {
+  border: none;
+  outline: none;
+  text-align: center;
 }
-.basic{
-	padding: 0 20px;
+.basic {
+  padding: 0 20px;
 }
-.send>label::before{
+.send > label::before {
   content: "*";
   margin-right: 4px;
   color: red;
-  }
-.seize>label::before{
+}
+.seize > label::before {
   content: "";
   margin-right: 8px;
   color: red;
 }
 .tech-center {
-  margin:0px 20px 10px 0;
+  margin: 0px 20px 10px 0;
   display: flex;
   justify-content: center;
 }
@@ -1331,56 +1420,57 @@ body {
   font-size: 12px;
   cursor: pointer;
 }
-.cityClass{
-  display:flex;
-  flex-wrap:wrap;
-  width:400px; 
-  overflow:hidden;
+.cityClass {
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px;
+  overflow: hidden;
 }
-.cityClass>div:nth-child(1),.cityClass>div:nth-child(5n){
+.cityClass > div:nth-child(1),
+.cityClass > div:nth-child(5n) {
+}
+.techTime-green {
+  background-size: 15px 15px;
+  border: solid 1px green;
+  background: url("../../../static/icon/Selected.png") no-repeat;
+  background-size: 20px 20px;
+  background-position: bottom right;
+}
 
+hr {
+  border-top: 1px solid #ccc;
 }
-.techTime-green{
-     background-size:15px 15px;
-    border: solid 1px green;
-    background:url('../../../static/icon/Selected.png') no-repeat;
-    background-size:20px 20px;
-    background-position: bottom right;
-}
-
-hr{
-  border-top:1px solid #ccc;
-}
-.image-text .el-dialog__body,.image-text .el-dialog__header{
+.image-text .el-dialog__body,
+.image-text .el-dialog__header {
   padding: 0;
 }
 
-.image-text-header{
+.image-text-header {
   overflow: hidden;
   width: 100%;
   height: 44px;
   background: rgb(228, 225, 225);
-  font-size:16px;
+  font-size: 16px;
   font-weight: bolder;
   line-height: 44px;
   padding: 0 20px;
 }
-.image-text-header p:nth-child(1){
+.image-text-header p:nth-child(1) {
   float: left;
 }
-.image-text p:nth-child(2){
+.image-text p:nth-child(2) {
   float: right;
 }
-.image-text p:nth-child(2) span{
+.image-text p:nth-child(2) span {
   margin: 0 5px;
 }
-.image-text-body{
-  width:100%;
+.image-text-body {
+  width: 100%;
   height: 100%;
   box-sizing: border-box;
   padding: 20px;
 }
-.image-border{
+.image-border {
   width: 100%;
   background: rgb(182, 180, 180);
   box-sizing: border-box;
@@ -1388,43 +1478,42 @@ hr{
   margin: 10px 0;
 }
 
-
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #20a0ff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-.sortInput{
-  width:40px; 
-  text-align:center;
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #20a0ff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.sortInput {
+  width: 40px;
+  text-align: center;
   /* outline:none;  */
-  border:none;
+  border: none;
   /* background: red */
 }
 /* .sortInput:nth-child(2n){
   background: #FAFAFA
 } */
-.el-table__body tr:nth-child(2n) .sortInput{
-  background:#FAFAFA
+.el-table__body tr:nth-child(2n) .sortInput {
+  background: #fafafa;
 }
 </style>

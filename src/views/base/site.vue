@@ -22,9 +22,9 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px"  v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -76,8 +76,8 @@
 
         <el-table-column align="center" label="操作" width="150">
           <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('station_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('station_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
 
@@ -298,6 +298,7 @@ export default {
       }
     };
     return {
+      btnShow: this.$store.state.user.buttonshow,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
       myMap: {}, //地图对象
@@ -323,7 +324,8 @@ export default {
         id: "",
         masterId: "",
         rangeType: "",
-        serviceAreaType: ""
+        serviceAreaType: "",
+        storeList: []
       },
       temp: {
         name: "",
@@ -418,6 +420,7 @@ export default {
         name: "",
         cityCode: ""
       };
+      this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
@@ -428,6 +431,7 @@ export default {
     handleFilter() {
       this.listLoading = true;
       this.pageNumber = 1;
+      this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
         cityCode: this.search.cityCode
@@ -443,7 +447,7 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        this.listLoading = true
+        this.listLoading = true;
         var obj = {
           stationId: this.rowInfo.id
         };
@@ -452,11 +456,8 @@ export default {
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
           this.dialogMasterVisible = true;
-          this.listLoading = false
+          this.listLoading = false;
         });
-        // setTimeout(() => {
-
-        // }, 100);
       }
     },
     handleSetRange() {
@@ -465,13 +466,21 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
+<<<<<<< HEAD
         this.listLoading = false
+=======
+>>>>>>> eb0580ba4f7353b65acb42f7207a4bedc95360c1
         if (this.rowInfo.serviceAreaType == "store") {
+          this.listLoading = true;
           getStore({}).then(res => {
             console.log(res);
-            this.listLoading = false
+            console.log(this.rowInfo.storeList);
+            this.listLoading = false;
             this.storeTree = res.data.data;
             this.dialogStoreVisible = true;
+            this.$nextTick(() => {
+              this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
+            });
           });
         } else {
           this.severSelectdialogVisible = true;
@@ -482,13 +491,13 @@ export default {
       }
     },
     handleSizeChange(val) {
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.phone
-      };
       this.pageSize = val;
-      // var obj = {};
+      var obj = {
+        name: this.search.name,
+        cityCode: this.search.cityCode
+      };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        console.log(res);
         this.list = res.data.data.list;
         this.listLoading = false;
       });
@@ -496,8 +505,8 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        roleName: this.search.name,
-        mobile: this.search.phone
+        name: this.search.name,
+        cityCode: this.search.cityCode
       };
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
@@ -518,6 +527,9 @@ export default {
         this.rowInfo.masterId = "";
       } else {
         this.rowInfo.masterId = row.user.id;
+      }
+      if (row.storeList != undefined) {
+        this.rowInfo.storeList = row.storeList;
       }
       console.log(this.rowInfo);
     },
@@ -632,14 +644,24 @@ export default {
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
           this.$message({
-                  type: "success",
-                  message: "保存成功!"
-                });
-        }else{
+            type: "success",
+            message: "保存成功!"
+          });
+          var obj = {
+            name: this.search.name,
+            cityCode: this.search.cityCode
+          };
+          getSite(obj, this.pageNumber, this.pageSize).then(res => {
+            console.log(res);
+            this.list = res.data.data.list;
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          });
+        } else {
           this.$message({
-                  type: "warning",
-                  message: res.data.data
-                });
+            type: "warning",
+            message: res.data.data
+          });
         }
       });
     },

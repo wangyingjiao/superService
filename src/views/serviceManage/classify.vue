@@ -804,7 +804,7 @@ body {
   color: rgb(72, 87, 106);
 }
 .mark {
-  background: url(../../../static/icon/mark.png) right bottom no-repeat;
+  background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
 </style>

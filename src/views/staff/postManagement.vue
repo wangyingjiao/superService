@@ -563,13 +563,13 @@ export default {
       };
       console.log(obj);
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.dialogFormVisible = false;
+        if (valid) {         
           addStation(obj).then(res => {
             this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
             this.$refs[formName].resetFields();
             if (res.data.code === 1) {
+              this.dialogFormVisible = false;
               this.$message({
                 type: "success",
                 message: "修改成功"
