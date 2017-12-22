@@ -7,7 +7,7 @@
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <el-select clearable style="width: 200px" v-model="search.cityName" class="filter-item" placeholder="请选择城市">
-        <el-option v-for="item in city" :key="item.id" :label="item.areaName" :value="item.areaName">
+        <el-option v-for="item in city" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
@@ -68,14 +68,47 @@
           <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group @change="tabChange" v-model="activeName">
-            <el-radio-button label="clean"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="repair" @click="refbtn2">家修</el-radio-button>
-            <el-radio-button label="repair" @click="refbtn2" style="display:none"></el-radio-button>
+            <el-radio-button label="clean"   style="display:none"></el-radio-button>
+            <el-radio-button style="width:100%;" size='large' label="clean" >保洁</el-radio-button>
+            <el-radio-button style="width:100%" label="repair" >家修</el-radio-button>
+            <el-radio-button label="repair" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
         <div class="tabRight fl">
           <el-form 
+          v-if="aaa == 'clean'"
+            class="small-space" 
+            ref="temp" 
+            :rules="rules" 
+            :model="temp" 
+            label-position="left" 
+            label-width="100px" 
+            style='width: 500px; margin-left:20px;'>
+
+            <el-form-item label="分类名称"  prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
+            </el-form-item>
+            
+
+            <el-form-item label="定向城市">   
+              <div class="cityBox">
+                  <div style="display:inline-block;margin-left:-20px;" >
+                    <div 
+                      class="selfCheckBox cityBtn" 
+                      ref="cityOption" 
+                      @click="cityChange(item,index)" 
+                      v-for="(item,index) in city"
+                      :key="index">{{item.cityName}}</div>
+								  	</div>
+              </div>
+                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
+            </el-form-item>
+            
+          </el-form>
+           <el-form 
+          v-if="aaa =='repair'"
             class="small-space" 
             ref="temp" 
             :rules="rules" 
@@ -195,6 +228,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       active: true,
+      aaa:"",
       list: [],
       total: null,
       listLoading: true,
@@ -249,6 +283,7 @@ export default {
   created() {
     this.getList();
     getCity().then(res => {
+      console.log(res.data.data ,"城市列表")
       this.city = res.data.data;
       this.cityIndex = res.data.data.length;
       //console.log(this.cityIndex)
@@ -256,7 +291,8 @@ export default {
   },
   methods: {
     tabChange() {
-      this.resetCity();
+      // this.resetCity();
+      console.log(this.activeName)
     },
     cityChange(item, index) {
       var obj = {
@@ -275,14 +311,11 @@ export default {
       }
     },
     cityUpdate(item, index) {
-      console.log(this.checkCity);
+      console.log();
       console.log("城市编辑");
       if (this.$refs.allCity.style.borderColor == "green") {
         console.log(item);
-        var obj = {
-          id: this.rowId,
-          cityid: item.id
-        };
+        //for(var)
         // getSuccess(obj).then(res => {
         //   if (res.data.data != "success") {
         //     this.$message({
@@ -294,7 +327,7 @@ export default {
         this.$refs.allCity.style.color = "#48576a";
         this.$refs.cityOption2[index].style.borderColor = "";
         this.$refs.cityOption2[index].style.color = "#48576a";
-        console.log(this.checkCity);
+        this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
         //   }
         // });
       } else {
@@ -313,24 +346,18 @@ export default {
           //       message: "该城市已关联服务项目，不可移除其选中状态"
           //     });
           //   } else {
-          console.log("测试是编辑或者新增");
-          this.checkCity.remove(this.$refs.cityOption[index].innerText);
-          console.log(11111);
+          console.log("测试是编辑或者新增"); 
           this.$refs.cityOption2[index].style.borderColor = "";
-          console.log(222222);
           this.$refs.cityOption2[index].style.color = "#48576a";
-          console.log(33333);
-          console.log(this.checkCity);
+          this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
+          console.log(111111111111111111111111111111111111111111111);
           //   }
           // });
         } else {
           this.$refs.cityOption2[index].style.borderColor = "green";
-          console.log(444444);
           this.$refs.cityOption2[index].style.color = "green";
-          console.log(555555);
-          this.checkCity.push(this.$refs.cityOption2[index].innerText);
-          console.log(6666);
-          console.log(this.checkCity);
+          this.$refs.cityOption2[index].className = "selfCheckBox cityBtn mark";
+          console.log(22222222222222222222222222222222222222);
         }
       }
     },
@@ -343,24 +370,24 @@ export default {
             cityId: this.getCityId(this.city[i].areaName)
           };
           console.log(obj);
-          getSuccess(obj).then(res => {
-            console.log(res);
-            if (res.data.data != "success") {
-              this.$message({
-                type: "warning",
-                message: "该城市已关联服务项目，不可移除其选中状态"
-              });
-              return;
-            } else {
+          //getSuccess(obj).then(res => {
+            // console.log(res);
+            // if (res.data.data != "success") {
+            //   this.$message({
+            //     type: "warning",
+            //     message: "该城市已关联服务项目，不可移除其选中状态"
+            //   });
+            //   return;
+            // } else {
               this.$refs.allCity.style.borderColor = "";
               this.$refs.allCity.style.color = "#48576a";
               for (var i = 0; i < this.city.length; i++) {
                 this.$refs.cityOption2[i].style.borderColor = "";
                 this.$refs.cityOption2[i].style.color = "#48576a";
+                this.$refs.cityOption2[i].className = "selfCheckBox cityBtn";
               }
-              this.checkCity = [];
-            }
-          });
+          //  }
+          //});
         }
       } else {
         var arr = [];
@@ -370,11 +397,9 @@ export default {
           console.log(2);
           this.$refs.cityOption2[i].style.borderColor = "green";
           this.$refs.cityOption2[i].style.color = "green";
-          arr.push(this.city[i].areaName);
-          this.checkCity = arr;
+          this.$refs.cityOption2[i].className = "selfCheckBox cityBtn mark";   
         }
       }
-      console.log(this.checkCity);
     },
     refbtn1() {
       console.log(121);
@@ -409,7 +434,7 @@ export default {
       };
       getClass(obj, this.pageNumber, this.pageSize)
         .then(res => {
-          console.log(res);
+          console.log(res,"分类列表");
           this.list = res.data.data.list;
           this.listLoading = false;
           this.total = res.data.data.count;
@@ -420,13 +445,15 @@ export default {
     },
     handleFilter() {
       var obj = {
-        cityId: this.getCityId(this.search.cityName),
+        cityCode: this.search.cityName,
         name: this.search.name,
         majorSort: this.activeName
       };
+      console.log(obj,"搜索参数")
       this.listLoading = true;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.listLoading = false;
+        this.listQuery.page = 1
         this.list = res.data.data.list;
         this.total = res.data.data.count;
       });
@@ -435,6 +462,8 @@ export default {
       this.pageSize = val;
       // this.getList();
       var obj = {
+        cityCode: this.search.cityName,
+        name: this.search.name,
         majorSort: this.activeName
       };
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
@@ -446,6 +475,8 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
+        cityCode: this.search.cityName,
+        name: this.search.name,
         majorSort: this.activeName
       };
       this.listLoading = true;
@@ -460,19 +491,20 @@ export default {
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
-      console.log(row)
+      this.listLoading = true
+      console.log(row);
       var obj = {
         id: row.id
       };
       setClass(obj).then(res => {
         console.log(res);
-        this.listLoading = true
+        this.listLoading = true;
         if (res.data.code == 1) {
-          this.listLoading = false
+          this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({}, row);
           this.dialogFormUpdate = true;
-          this.activeName = res.data.data.majorSort
+          this.activeName = res.data.data.majorSort;
 
           if (row.allCity == "yes") {
             this.$nextTick(() => {
@@ -481,30 +513,37 @@ export default {
               for (var i = 0; i < this.city.length; i++) {
                 this.$refs.cityOption2[i].style.borderColor = "green";
                 this.$refs.cityOption2[i].style.color = "green";
-                this.$refs.cityOption2[i].className = "selfCheckBox cityBtn mark";
+                this.$refs.cityOption2[i].className =
+                  "selfCheckBox cityBtn mark";
               }
             });
           } else {
             this.$nextTick(() => {
               this.$refs.allCity.style.borderColor = "";
               this.$refs.allCity.style.color = "#48576a";
-              for (var i = 0; i < row.cityCodes.length; i++) {
+              for (var i = 0; i < res.data.data.citys.length; i++) {
+                console.log(i + "citys个数");
                 for (var j = 0; j < this.city.length; j++) {
-                  if (row.cityNames[i] == this.$refs.cityOption2[j].innerText) {
+                  if (
+                    res.data.data.citys[i].cityName ==
+                    this.$refs.cityOption2[j].innerText
+                  ) {
                     console.log("编辑时被选中");
                     this.$refs.cityOption2[j].style.borderColor = "green";
                     this.$refs.cityOption2[j].style.color = "green";
+                    this.$refs.cityOption2[j].className =
+                      "selfCheckBox cityBtn mark";
                   }
                 }
               }
             });
           }
-        }else{
-           this.listLoading = false;
-            this.$message({
-              type: "error",
-              message: "请求错误"
-            });
+        } else {
+          this.listLoading = false;
+          this.$message({
+            type: "error",
+            message: "请求错误"
+          });
         }
       });
     },

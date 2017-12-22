@@ -74,8 +74,6 @@
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
-          :maxlength="15" 
-          :minlength="2" 
           v-model="temp.name"
           style='width: 400px;' 
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
@@ -185,10 +183,12 @@
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 备注:" >
+        <el-form-item label=" 备注:">
           <el-input 
             type="textarea" 
             :rows="2" 
+            :maxlength="200"
+             placeholder="请输入0-200字符备注"
             v-model="temp.remark"></el-input>
         </el-form-item>
         

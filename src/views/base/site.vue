@@ -223,7 +223,13 @@
 							</el-table>							
 						</div>
 					</div>													    
-				</div>							
+				</div>
+        <br/>
+        <br/>
+        <div slot="footer" class="dialog-footer" style="text-align:center">
+           <button class="button-large"  @click="createMap">保 存</button>    
+           <button class="button-cancel" @click="resetMap">取 消</button>
+        </div>					
 	    </el-dialog>
 
 
@@ -390,9 +396,6 @@ export default {
     areaOptions: function() {
       return this.$store.state.user.area;
     }
-    // selectAccount:function(){
-    //   return this.accountData[0].YDHL
-    // }
   },
   filters: {
     statusFilter(status) {
@@ -661,12 +664,6 @@ export default {
       });
     },
     createMaster() {
-      // var name = "";
-      // for (var i = 0; i < this.master.length; i++) {
-      //   if (this.tempMaster.master == this.master[i].id) {
-      //     name = this.master[i].name;
-      //   }
-      // }
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
@@ -690,6 +687,11 @@ export default {
         }
       });
     },
+    createMap() {
+      console.log(this.tableData)
+      console.log(getOverlays())
+    },
+    resetMap() {},
     update(formName) {
       var obj = {
         id: this.rowInfo.id,
@@ -773,6 +775,20 @@ export default {
         map.addControl(tool);
       });
       that.myMap = map;
+     var polygonArr = new Array();//多边形覆盖物节点坐标数组
+    polygonArr.push([116.403322, 39.920255]);
+    polygonArr.push([116.410703, 39.897555]);
+    polygonArr.push([116.402292, 39.892353]);
+    polygonArr.push([116.389846, 39.891365]);
+    var  polygon = new AMap.Polygon({
+        path: polygonArr,//设置多边形边界路径
+        strokeColor: "blue", //线颜色
+        strokeOpacity: 0.1, //线透明度
+        strokeWeight: 1,    //线宽
+        fillColor: "blue", //填充色
+        fillOpacity: 0.35//填充透明度
+    });
+    polygon.setMap(map);
       var styleOptions = {
         strokeColor: "blue", //边线颜色。
         fillColor: "blue", //填充颜色。当参数为空时，圆形将没有填充效果。
@@ -803,6 +819,7 @@ export default {
       AMap.event.addListener(mouseTool, "draw", function callback(e) {
         var eObject = e.obj; //obj属性就是鼠标事件完成所绘制的覆盖物对象。
         that.index++;
+        console.log(e.obj)
         that.testalert(eObject, that.index);
       });
       AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
@@ -872,6 +889,8 @@ export default {
     //删除地图所有的覆盖物
     removeOverlay() {
       var overlays = this.myMap.getAllOverlays();
+
+      console.log(overlays[0].getPath(),"111111111")
       this.tableData = [];
       this.myMap.remove(overlays);
       this.number = "0";
