@@ -94,6 +94,27 @@ export function technicianEdit(obj){
   })
 }
 
+//添加家庭成员
+export function familyAdd(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/saveFamilyMembers`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      console.log(error,"error------")
+    })
+  })
+}
+
+//删除家庭成员
+export function familyDelete(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/deleteFamilyMembers`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      console.log(error,"error------")
+    })
+  })
+}
 
 // 获取休假列表（不要删，上面没用的接口可以删掉，下面的是我加的）
 export function getHoliday(obj, pageNumber, pageSize) {
