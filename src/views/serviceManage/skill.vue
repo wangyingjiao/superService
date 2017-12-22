@@ -1,8 +1,7 @@
 <template>
   <div class="box">
-    <div class="filter-container bgWhite" style="padding-bottom:20px;">
-      <el-input  style="width: 200px;" class="filter-item" placeholder="请输入搜索的技能名称" v-model="localSearch">
-      </el-input>
+    <div class="filter-container bgWhite padBot20">
+      <el-input  style="width: 200px;" class="filter-item" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
       <button @click="search" class="search-button btn_right el-icon-search"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
@@ -50,7 +49,7 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <div  v-if="!ruleForm2.serItems || showRUles"   style="font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;" >
+                <div  v-if="!ruleForm2.serItems || showRUles"  class="showRules" style="" >
                   <span v-show="spanFlag">请选择服务</span>
                 </div>
             </el-form-item>
@@ -570,7 +569,7 @@
             var falg=0;
             var len = this.listorderServer.length;
               for(var i=0;i<len;i++){
-                if(this.listorderServer[i].name == this.xingmu){
+                if(this.listorderServer[i].name.indexOf(this.xingmu) >0){
                       falg=1;
                       this.$refs.tableItem[i].scrollIntoView()
                       this.$refs.tableItem[i].style.backgroundColor='#eee'                    
@@ -597,7 +596,7 @@
               var falg1=0;              
                     var len = this.listTech.length;
                       for(var i=0;i<len;i++){
-                        if(this.listTech[i].techName == this.techName || this.listTech[i].techStationId== this.techStationId ){
+                        if(this.listTech[i].techName == this.techName.trim() || this.listTech[i].techStationId== this.techStationId ){
                             falg1=1;
                               this.$refs.tableItem1[i].scrollIntoView()
                               this.$refs.tableItem1[i].style.background='#eee'                    
@@ -627,6 +626,8 @@
 
 </script>
 <style  scoped>
+   .padBot20{padding-bottom:20px;}
+   .showRules{font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;}
    .active{background:#ddd}
    .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
    .selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;} 
