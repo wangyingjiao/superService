@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { error } from 'util';
 
 const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
@@ -30,65 +29,64 @@ export function getHeight() {
   return instance.get(`/api/a/sys/dict/techHeightList`)
 }
 
-
-//获取省级区域
+// 获取省级区域
 export function getArea() {
-    return instance.get(`/api/a/sys/area/getchildArea`)
+  return instance.get(`/api/a/sys/area/getchildArea`)
 }
 // //获取省
 // export function getArea() {
 //   return instance.get(`/api/a/sys/area/getchildArea`)
 // }
 
-//选择城市
-export function ChooseTheCity(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/technician/serviceTechnicianInfo/listData`,obj).then(data=>{
+// 选择城市
+export function ChooseTheCity(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/listData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//所属服务站
-export function serviceStation(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/station/serviceStation/getStationByAreaTech`,obj).then(data=>{
+// 所属服务站
+export function serviceStation(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/station/serviceStation/getStationByAreaTech`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//技师保存
-export function Technician(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/technician/serviceTechnicianInfo/saveData`,obj).then(data=>{
+// 技师保存
+export function Technician(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/saveData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
-//技师编辑获取ID
-export function technicianEditId(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/technician/serviceTechnicianInfo/formData`,obj).then(data=>{
+// 技师编辑获取ID
+export function technicianEditId(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/formData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//技师编辑保存
-export function technicianEdit(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`api/a/service/technician/serviceTechnicianInfo/upData`,obj).then(data=>{
+// 技师编辑保存
+export function technicianEdit(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/upData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
@@ -118,7 +116,7 @@ export function familyDelete(obj){
 
 // 获取休假列表（不要删，上面没用的接口可以删掉，下面的是我加的）
 export function getHoliday(obj, pageNumber, pageSize) {
-  return instance.get(`/api/a/service/technician/serviceTechnicianHoliday/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+  return instance.post(`/api/a/service/technician/serviceTechnicianHoliday/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 // 删除休假
 export function delHoliday(obj) {

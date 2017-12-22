@@ -37,31 +37,25 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" >
+      <el-table-column align="center" label="编号" type="index" width="100">
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" >
-       
+      <el-table-column align="center" label="姓名" prop="techName">      
       </el-table-column>
       
-      <el-table-column align="center" label="手机号" >
-       
+      <el-table-column align="center" label="手机号" prop="techPhone">      
       </el-table-column>
       
-      <el-table-column align="center" label="服务站" >
-        
+      <el-table-column align="center" label="服务站" prop="techStationName">      
       </el-table-column>
       
-      <el-table-column align="center" label="开始时间" >
-        
+      <el-table-column align="center" label="开始时间" prop="startTime">     
       </el-table-column>
       
-      <el-table-column align="center" label="结束时间" >
-        
+      <el-table-column align="center" label="结束时间" prop="endTime">      
       </el-table-column>
       
-      <el-table-column align="center" label="备注" >
-        
+      <el-table-column align="center" label="备注" prop="remark">      
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -127,39 +121,59 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = false;
+      getHoliday({},this.pageNumber,this.pageSize).then(res => {
+        console.log(res,"休假列表");
+        this.list = res.data.data.list;
+        this.total = res.data.data.count;
+        this.listLoading = false;
+      });
     },
     handleFilter() {
-      var startTime = util.formatDate.format(
-        new Date(this.search.startTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
-      var endTime = util.formatDate.format(
-        new Date(this.search.endTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      var obj = {};
+      //console.log(this.search.startTime)
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
+        console.log(start);
+      }
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+        console.log(end);
+      }
       if (this.search.type == "techName") {
-        var obj = {
-          techName: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+        var name = {
+          techName: this.search.val
         };
+        obj = Object.assign(obj, name);
       } else {
-        var obj = {
-          techPhone: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+        var phone = {
+          techPhone: this.search.val
         };
+        obj = Object.assign(obj, phone);
       }
 
       console.log(obj);
       this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
+        console.log(res,"搜索")
         if (res.data.code == 1) {
+          this.listQuery.page = 1;
           this.list = res.data.data.list;
           this.total = res.data.data.count;
           this.listLoading = false;
-          this.listQuery.page = 1;
         }
       });
     },
@@ -221,7 +235,7 @@ export default {
         if (res.data.code == 1) {
           this.list = res.data.data.list;
           this.total = res.data.data.count;
-          this.listLoading = false;    
+          this.listLoading = false;
         }
       });
     },

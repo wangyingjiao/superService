@@ -22,9 +22,9 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px"  v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
         :key='tableKey' 
@@ -76,8 +76,8 @@
 
         <el-table-column align="center" label="操作" width="150">
           <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('station_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('station_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
 
@@ -202,8 +202,10 @@
                   label="服务范围"
                   align="center"
                   width='120'
-                  prop="index"
                   >
+                  <template scope="scope">
+                    {{scope.row.name+scope.row.index}}
+                  </template>
                   </el-table-column>
                   <el-table-column
                   prop="radius"
@@ -223,7 +225,13 @@
 							</el-table>							
 						</div>
 					</div>													    
-				</div>							
+				</div>
+        <br/>
+        <br/>
+        <div slot="footer" class="dialog-footer" style="text-align:center">
+           <button class="button-large"  @click="createMap">保 存</button>    
+           <button class="button-cancel" @click="resetMap">取 消</button>
+        </div>					
 	    </el-dialog>
 
 
@@ -296,12 +304,12 @@ export default {
       }
     };
     return {
+      btnShow: this.$store.state.user.buttonshow,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
       myMap: {}, //地图对象
       number: "0",
       tableData: [],
-      index: 0,
       promitInf: "",
       showPromit: false,
       list: [],
@@ -389,9 +397,6 @@ export default {
     areaOptions: function() {
       return this.$store.state.user.area;
     }
-    // selectAccount:function(){
-    //   return this.accountData[0].YDHL
-    // }
   },
   filters: {
     statusFilter(status) {
@@ -464,6 +469,7 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
+        this.listLoading = false
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
           getStore({}).then(res => {
@@ -660,12 +666,6 @@ export default {
       });
     },
     createMaster() {
-      // var name = "";
-      // for (var i = 0; i < this.master.length; i++) {
-      //   if (this.tempMaster.master == this.master[i].id) {
-      //     name = this.master[i].name;
-      //   }
-      // }
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
@@ -689,6 +689,11 @@ export default {
         }
       });
     },
+    createMap() {
+      console.log(this.tableData)
+      console.log(getOverlays())
+    },
+    resetMap() {},
     update(formName) {
       var obj = {
         id: this.rowInfo.id,
@@ -771,7 +776,6 @@ export default {
         var tool = new AMap.ToolBar();
         map.addControl(tool);
       });
-      that.myMap = map;
       var styleOptions = {
         strokeColor: "blue", //边线颜色。
         fillColor: "blue", //填充颜色。当参数为空时，圆形将没有填充效果。
@@ -779,7 +783,34 @@ export default {
         strokeOpacity: 0.1, //边线透明度，取值范围0 - 1。
         fillOpacity: 0.3, //填充的透明度，取值范围0 - 1。
         strokeStyle: "solid" //边线的样式，solid或dashed。
-      };
+      };      
+      that.myMap = map;
+      var polygonArr = new Array();//多边形覆盖物节点坐标数组
+      polygonArr.push([116.403322, 39.920255]);
+      polygonArr.push([116.410703, 39.897555]);
+      polygonArr.push([116.402292, 39.892353]);
+      polygonArr.push([116.389846, 39.891365]);
+      var  polygon = new AMap.Polygon({
+          path: polygonArr,//设置多边形边界路径
+      });
+      polygon.setOptions(styleOptions)//设置多边形的样式
+      polygon.setMap(map);
+      var polygonArr1 = new Array();//多边形覆盖物节点坐标数组
+      polygonArr1.push([116.403322, 39.920255]);
+      polygonArr1.push([116.410703, 39.897555]);
+      polygonArr1.push([116.402292, 39.892353]);
+      var  polygon1 = new AMap.Polygon({
+          path: polygonArr,//设置多边形边界路径
+      });
+      polygon1.setOptions(styleOptions)//设置多边形的样式
+      polygon1.setMap(map);      
+      var overlays = this.myMap.getAllOverlays();
+      var len=overlays.length;//地图原覆盖物数量
+      if(overlays.length !=0){
+        for(var a=0 ;a< len ;a++){
+          that.testalert(overlays[a]);
+        }
+      }
       var mouseTool = new AMap.MouseTool(map);
       var polygon = this.$refs.polygon;
       var circle = this.$refs.circle;
@@ -801,8 +832,7 @@ export default {
       );
       AMap.event.addListener(mouseTool, "draw", function callback(e) {
         var eObject = e.obj; //obj属性就是鼠标事件完成所绘制的覆盖物对象。
-        that.index++;
-        that.testalert(eObject, that.index);
+        that.testalert(eObject);
       });
       AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
         var poiPicker = new PoiPicker({
@@ -841,7 +871,7 @@ export default {
         });
       }
     },
-    testalert(obj, index) {
+    testalert(obj) {
       //获取多边形轮廓线节点数组。其中lat和lng是经纬度参数
       var path = "";
       //圆半径，单位:米
@@ -863,20 +893,23 @@ export default {
         row.path = "";
         row.center = obj.getCenter();
       }
-      row.index = "范围" + index;
+      row.name = "范围";
+      row.index='';
       row.id = obj._amap_id;
       this.tableData.push(row);
+      for(var a=0;a<this.tableData.length;a++){
+          this.tableData[a].index=a+1;
+      }
       this.number = overlays.length;
     },
     //删除地图所有的覆盖物
     removeOverlay() {
-      var overlays = this.myMap.getAllOverlays();
+      var overlays = this.myMap.getAllOverlays()
       this.tableData = [];
       this.myMap.remove(overlays);
       this.number = "0";
-      this.index = 0;
     },
-    //
+    //删除地图覆盖物
     Delete(row) {
       var overlays = this.myMap.getAllOverlays();
       for (var i = 0; i < overlays.length; i++) {
@@ -895,11 +928,12 @@ export default {
         this.number = 0;
       }
     },
+    //保存到服务站区域到后台
     saveOverlays() {
       if (this.tableData == "") {
         this.promitInf = "请选择一个服务区域";
         this.showPromit = true;
-      } else if (this.tableData.length > 1) {
+      } else if (this.tableData.length >1) {
         this.promitInf = "只能选择一个服务区域";
         this.showPromit = true;
       } else {
@@ -914,7 +948,7 @@ export default {
     closeMap() {
       this.tableData = [];
       this.number = "0";
-      this.index = 0;
+
       this.promitInf = "";
       this.showPromit = false;
       this.severSelectdialogVisible = false;
