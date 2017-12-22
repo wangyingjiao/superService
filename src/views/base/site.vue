@@ -466,10 +466,7 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-<<<<<<< HEAD
         this.listLoading = false
-=======
->>>>>>> eb0580ba4f7353b65acb42f7207a4bedc95360c1
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
           getStore({}).then(res => {
