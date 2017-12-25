@@ -732,7 +732,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "修改失败"
+            message: res.data.data
           });
         }
       });

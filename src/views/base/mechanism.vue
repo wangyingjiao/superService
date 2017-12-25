@@ -88,8 +88,6 @@
 
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
-          :maxlength="15" 
-          :minlength="2" 
           style='width: 400px;' 
           v-model="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
@@ -116,8 +114,6 @@
 
         <el-form-item label="详细地址:" prop="address">
           <el-input 
-             :maxlength="100" 
-             :minlength="6" 
              style='width: 400px;' 
              v-model="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
