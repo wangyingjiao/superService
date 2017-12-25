@@ -2,24 +2,26 @@
   <div class="tech">
     <div class="tech-index">
       <div>
-        <el-select v-model="servers" clearable placeholder="选择服务站">
-          <el-option v-for="item in server" :key="item.value" :label="item.label" :value="item.value">
+        <el-select v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+          <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="stations" clearable placeholder="岗位性质" style="margin-left:40px;">
-          <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
-          </el-option>
+        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" style="margin-left:20px;">
+          <!-- <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
+          </el-option> -->
+						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+						</el-option>
         </el-select>
-        <el-select v-model="chooses" clearable placeholder="请选择" style="margin-left:40px;">
+        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" style="margin-left:20px;">
           <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-input placeholder="输入要搜索的内容" style="width:200px;margin-left:5px;"></el-input>
-        <button class="tech-btn" @click="order">选择技能1</button>
+        <el-input v-model="chooContent" placeholder="输入要搜索的内容" style="width:200px;margin-left:20px;"></el-input>
+        <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
       <div>
-        <button class="search-button el-icon-search"> 搜索</button>
+        <button class="search-button el-icon-search" @click="techniSearchs"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">
@@ -28,12 +30,9 @@
       </div>
        <!-- <el-table 
           v-loading="listLoadingTech" 
-          stripe
-          fit 
-          border
-          highlight-current-row 
-          element-loading-text="正在加载" 
           style="width: 100%" > -->
+    <p class="p-show" v-show="techniList.length<=0">没有数据</p>
+    <div v-loading="listLoadingTech">
       <ul class="tech-section-ul">
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
@@ -71,22 +70,23 @@
 
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div style="margin-right:20px;" @click="password = true">
+            <div style="margin-right:20px;" @click="appPassword(item)">
               <img src="../../../static/icon/密码.png" alt="" style="width:30px">
             </div>
-            <div  @click="flags = true">
+            <div  @click="vacation(item)">
               <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
              <!-- dialogVisibleEdit = true -->
             <div style="margin-left:20px;" @click="technician(item)">
               <img src="../../../static/icon/修改.png" alt="" style="width:30px">
             </div>
-            <div style="margin-left:20px;" @click="techDelete">
+            <div style="margin-left:20px;" @click="techDelete(item)">
               <img src="../../../static/icon/删除.jpg" alt="" style="width:30px">
             </div>
           </div>
         </li>
       </ul>
+    </div>
        <!-- </el-table> -->
       <!-- 密码弹出层 -->
       <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages" style="top：10%">
@@ -103,25 +103,77 @@
 					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary">保存</el-button>
-					<el-button >取消</el-button>
+					<el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
+					<el-button @click="passwordCancel('ruleForm2')">取消</el-button>
 				</el-form-item>
 			</el-form>
 		</div>
       </el-dialog>
       <!-- 休息弹出层 -->
       <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
+        <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
         <ul class="tech-section-xiu">
           <li class="mobel">
             <p>姓名:</p>
-            <p>李阿姨</p>
+            <p>{{vacationName}}</p>
           </li>
-          <li>
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        </ul>
+        <div>
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+              <el-form-item label="开始时间:" required>
+                <el-col :span="11">
+                  <el-form-item prop="startDate">
+                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col class="line" :span="2">-</el-col>
+                <el-col :span="11">
+                  <el-form-item prop="startTime">
+                    	<el-time-select
+                          v-model="ruleForm.startTime"
+                          :picker-options="{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00'
+                          }"
+                          placeholder="选择时间">
+                      </el-time-select>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+              <el-form-item label="结束时间:" required>
+                <el-col :span="11">
+                  <el-form-item prop="endDate">
+                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.endDate" style="width: 100%;" format="yyyy-MM-dd" @change="endDateChange"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col class="line" :span="2">-</el-col>
+                <el-col :span="11">
+                  <el-form-item prop="endTime">
+                    <el-time-select
+                          v-model="ruleForm.endTime"
+                          :picker-options="{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00'
+                          }"
+                          placeholder="选择时间">
+                    </el-time-select>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+              <el-form-item label="备注:" prop="desc">
+                 <el-col :span="23">
+                    <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+                 </el-col>
+              </el-form-item>
+          </el-form>
+        </div>
+          <!-- <li>
 				<el-form-item label="开始时间" required>
 					<el-col :span="11">
 						<el-form-item prop="date1">
-							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 200px;"></el-date-picker>
 						</el-form-item>
 					</el-col>
 					<el-col class="line" :span="2">-</el-col>
@@ -139,21 +191,21 @@
 						</el-form-item>
 					</el-col>
 				</el-form-item>
-			</el-form>
-          </li>
-          <li>
-			  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-				<el-form-item label="结束时间" required>
+			
+          </li> -->
+          <!-- <li> -->
+			  <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
+				<!-- <el-form-item label="结束时间" required>
 					<el-col :span="11">
 						<el-form-item prop="date1">
-							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date3" style="width: 100%;"></el-date-picker>
 						</el-form-item>
 					</el-col>
 					<el-col class="line" :span="2">-</el-col>
 					<el-col :span="11">
 						<el-form-item prop="date2">
 							<el-time-select
-								v-model="ruleForm.date2"
+								v-model="ruleForm.date4"
 								:picker-options="{
 									start: '00:00',
 									step: '00:30',
@@ -163,30 +215,29 @@
 							</el-time-select>
 						</el-form-item>
 					</el-col>
-				</el-form-item>
-			</el-form>
-          </li>
-          <li>
+				</el-form-item> -->
+			<!-- </el-form> -->
+          <!-- </li>
+          <li> -->
             <!-- <div>备注</div>
             <div>
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
               </el-input>
             </div> -->
-          </li>
-          <li>
+          <!-- </li> -->
+          <div>
             <div style="display:flex;justify-content: center;width:100%">
-              <button class="button-large" style="margin-right:10px;">保存</button>
-              <button class="button-cancel">取消</button>
+              <button class="button-large" style="margin-right:10px;" @click="vacationPreser('ruleForm')">保存</button>
+              <button class="button-cancel" @click="vacationCancel('ruleForm')">取消</button>
             </div>
-          </li>
-
-        </ul>
+          </div>
+        <!-- </el-form> -->
       </el-dialog>
       <!-- 选择技能 -->
-      <div class="tech-psoition" v-show="position">
+      <div class="tech-psoition" v-if="position">
 
         <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
-          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':item.show===true}" :key="$index">
+          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
             {{item.name}}
             <div :class="{'triangle-bottomright':item.show===true}"></div>
             <div class="tally">&#10004;</div>
@@ -201,8 +252,8 @@
     </div>
     <!-- 分页 -->
     <div v-show="!listLoading" class="pagination-container fy">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
+        :page-sizes="[6,12,18,24]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
     <!-- 编辑技师 -->
@@ -522,7 +573,10 @@ import {
   ChooseTheCity,
   serviceStation,
   Technician,
-  technicianEditId
+  technicianEditId,
+  technicianDelete,
+  appPassWord,
+  addVacation
 } from "@/api/tech";
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
@@ -669,17 +723,34 @@ export default {
         callback(new Error("请选择工作时间"));
       }
     };
+
     return {
+      //搜索
+      techniSearch:{
+        stationId:'',
+        jobNature:'',
+        skillIds:[],
+        chooses:''
+      },
       ruleForm: {
-        date1: "",
-        date2: ""
+        startTime:'',
+        startDate:'',
+        endTime:'',
+        endDate:'',
+        desc:''
       },
       rules: {
-        date1: [
-          { type: "date", required: true, message: "请选择日期", trigger: "blur" }
+        startTime: [
+          { required: true, message: '请选择时间', trigger: 'change' }
         ],
-        date2: [
-          { type: "date", required: true, message: "请选择时间", trigger: "blur" }
+        endDate:[
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        startDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        endTime:[
+          {required: true, message: '请选择时间', trigger: 'change' }
         ]
       },
       ruleForm2: {
@@ -729,8 +800,8 @@ export default {
         ],
         // 身份证
         idCard: [
-          { required: true, trigger: "blur" }
-          // {required:true, validator:TECHIDCARD ,trigger:'blur'}
+          // { required: true, trigger: "blur" }
+          {required:true, validator:TECHIDCARD ,trigger:'blur'}
         ],
         //手机号
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
@@ -772,6 +843,7 @@ export default {
         }
       ],
       infoname: [],
+      chooContent:'',
       // infoname: [{
       //   value: '选项1',
       //   name: '李阿姨',
@@ -800,11 +872,11 @@ export default {
       station: {},
       choose: [
         {
-          value: "选项1",
+          value: "name",
           label: "姓名"
         },
         {
-          value: "选项2",
+          value: "phone",
           label: "手机"
         }
       ],
@@ -1023,6 +1095,7 @@ export default {
       sign: getSign(),
       key: false,
       isA: false,
+      passwordId:null,
       isB: false,
       isTab: false,
       sexLen: "",
@@ -1044,7 +1117,9 @@ export default {
       techniList: [],
       places: "",
       marriages: "",
+      vacationName:'',
       strongs: "",
+      roomSel2Arr:[],
       heights: "",
       educations: "",
       sexs: "",
@@ -1070,7 +1145,7 @@ export default {
       ],
       position: false,
       listLoading: false,
-      // listLoadingTech:true,
+      listLoadingTech:true,
       list: [1, 2, 3],
       total: null,
       listLoading: false,
@@ -1086,10 +1161,15 @@ export default {
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: "+id"
+        sort: "+id",
+        sync:1
       },
       dialogVisible: false,
-      dialogVisibleEdit: false
+      dialogVisibleEdit: false,
+      storeEnd:{
+        endDate:'',
+        storeDate:''
+      }
     };
   },
   components: {
@@ -1107,6 +1187,111 @@ export default {
     }
   },
   methods: {
+    //搜索
+    techniSearchs(){
+      console.log(this.techniSearch,"techniSearch--------")
+      var obj = {}
+      if(this.techniSearch.stationId){
+        obj.stationId = this.techniSearch.stationId
+      }
+      if(this.techniSearch.jobNature){
+        obj.jobNature = this.techniSearch.jobNature
+      }
+      if(this.techniSearch.chooses){
+        obj[this.techniSearch.chooses] = this.chooContent
+      }
+      if(this.roomSel2Arr.length>0){
+        obj.skillIds = this.roomSel2Arr
+      }
+      console.log(obj,"------------------")
+      this.getList(1,6,obj)
+    },
+    startDateChange(val){
+      this.storeEnd.storeDate = val
+    },
+    endDateChange(val){
+      this.storeEnd.endDate = val
+    },
+    //休假取消
+    vacationCancel(formName){
+      this.$refs[formName].resetFields();
+    },
+    //休假保存
+    vacationPreser(formName){
+      this.$refs[formName].validate(val=>{
+        if(val){
+          var obj = {}
+            obj.techId = this.passwordId
+            obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+":00"
+            obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+":00"
+            obj.remark = this.ruleForm.desc
+            console.log(obj)
+            addVacation(obj).then(data=>{
+              console.log(data,"data---休假")
+              if(data.data.code){
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.flags = false
+              }else{
+                this.$message.error(data.data.data)
+                return false
+              }
+            }).catch(error=>{
+              console.log(error,"error-----")
+              return false
+            })
+        }else{
+          this.$message.error("保存失败")
+          return false
+        }
+      })
+      //  console.log(this.ruleForm,"this.ruleForm")
+      //  console.log(this.storeEnd,"storeEnd----")
+    },
+    //休假
+    vacation(item){
+      this.flags = true
+      this.passwordId = item.id
+      this.vacationName = item.name
+    },
+    //修改密码取消
+    passwordCancel(formName){
+      this.$refs[formName].resetFields();
+    },
+    //修改密码保存
+    passwordPrese(formName){
+      this.$refs[formName].validate(val=>{
+        if(val){
+          appPassWord({"id":this.passwordId,"appLoginPassword":this.ruleForm2.checkPass}).then(data=>{
+            if(data.data.code){
+              this.$message({
+                message: "设置密码成功",
+                type: "success"
+              });
+              this.passwordCancel('ruleForm2')
+              this.password = false
+            }else{
+              this.$message.error("设置失败")
+              return false
+            }
+          }).catch(error=>{
+            this.$message.error("设置失败")
+              return false
+            console.log(error,"error---app密码错误")
+          })
+        }else{
+          return false
+        }
+      })
+    },
+    //修改app密码
+    appPassword(item){
+      this.password = true
+      this.passwordId = item.id
+      // console.log(item,"item-----")
+    },
     //技师编辑获取ID
     technician(item) {
       // console.log(item,"item-------")
@@ -1149,11 +1334,13 @@ export default {
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.getList();
+       this.getList(val,this.listQuery.limit,{});
+      console.log(val)
     },
     handleSizeChange(val) {
+      this.listQuery.sync = 1
       this.listQuery.limit = val;
-      this.getList();
+      this.getList(this.listQuery.page,val,{});
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -1210,17 +1397,23 @@ export default {
       this.isB = false;
       console.log(this.teachArr, "this.teachArr--12323--");
     },
-    techDelete() {
+    techDelete(item) {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
+          console.log(item,"item----")
+          technicianDelete({"id":item.id}).then(data=>{
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+             this.getList(1,6,{})
+          }).catch(error=>{
+            console.log(error,"error,----删除失败")
+          })
         })
         .catch(() => {
           this.$message({
@@ -1229,7 +1422,13 @@ export default {
           });
         });
     },
-    roomSel2(index, obj) {
+    roomSel2(index) {
+      if(this.roomSel2Arr.indexOf(index.id)!=-1){
+        this.remove(this.roomSel2Arr,[],index.id)
+      }else{
+        this.roomSel2Arr.push(index.id)
+      }
+      console.log(this.roomSel2Arr,"roomSel2Arr---------")
       this.isA = index;
     },
     // 添加技能
@@ -1270,43 +1469,94 @@ export default {
     },
     //个人资料保存
     submitFormPer(formName) {
+      this.$refs[formName].validate(val=>{
+        if(val){
+          // this.personal.workTimes.workTime = this.disbArr
+          this.personal.workTimes = this.teachArr;
+          Technician(this.personal).then(data=>{
+            if(data.data.code){
+              this.$message({
+                message:"保存成功",
+                type:"success"
+              })
+               this.dialogVisible = false;
+               this.this.techniList = [];
+               this.getList(1,6,{})
+            }else{
+              this.$message({
+                message:data.data.data,
+                type:"warning"
+              })
+              return false
+            }
+          }).catch(error=>{
+            console.log(error,"error---techni----添加保存")
+            return false
+          })
+        }else{
+          console.log(val,"false")
+          return false
+        }
+      })
       // this.personal.workTimes.workTime = this.disbArr
       // this.personal.workTimes = this.teachArr
       // console.log(this.personal,"this.personal----")
-      this.$refs[formName].validate(val => {
-        console.log(val, "val---");
-        if (val) {
-          this.personal.workTimes = this.teachArr;
-          delete this.personal.birtStr;
-          delete this.personal.area;
-          // console.log(this.personal,"this.personal------")
-          Technician(this.personal)
-            .then(data => {
-              console.log(data, "data-------techni");
-              if (data.data.code) {
-                this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
-                this.dialogVisible = false;
-                this.this.techniList = [];
+      // this.$refs[formName].validate(val => {
+      //   console.log(val, "val---");
+      //   if (val) {
+      //     this.personal.workTimes = this.teachArr;
+      //     delete this.personal.birtStr;
+      //     delete this.personal.area;
+    },
+    getList(num,size,obj){
+          //技师编辑获取ID
+    // console.log(this.areaOptions,"areaOptions----")
+    //选择城市
+        this.listLoadingTech = true
+        ChooseTheCity(num,size,obj)
+          .then(data => {
+            this.listLoadingTech = false
+            console.log(data, "选择城市---------");
+            this.Choose = data.data.data.cityCodes;
+            this.sexTypeo = data.data.data.skillInfos;
+            this.infoname = data.data.data.page.list || [];
+            this.server = data.data.data.stations
+            this.total = data.data.data.page.count
+            var i = 0,
+              len = this.infoname.length,
+              date = new Date(),
+              year = date.getFullYear(),
+              birth = 0,
+              _infoname = this.infoname;
+            for (i = 0; i < len; i++) {
+              //遮罩
+              _infoname[i].ismouse = false;
+              // 性别
+              _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
+              // 年龄
+              // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+              // 岗位性质
+              _infoname[i].jobName =
+                _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
+              // 岗位状态
+              _infoname[i].jobStateName =
+                _infoname[i].jobStatus == "online" ? "在职" : "离职";
+              //工作年限
+              if (_infoname[i].workTime == "0") {
+                _infoname[i].workTimeName = "1年以下";
+              } else if (_infoname[i].workTime == "11") {
+                _infoname[i].workTimeName = "10年以上";
               } else {
-                this.$message({
-                  message: data.data.data,
-                  type: "warning"
-                });
-                return false;
+                _infoname[i].workTimeName = _infoname[i].workTime + "年";
               }
-            })
-            .catch(error => {
-              console.log(error, "error------technini ---tech");
-              return false;
-            });
-        } else {
-          this.$message.error("保存失败");
-          return false;
-        }
-      });
+              console.log(birth, "birth----");
+            }
+            this.techniList = this.infoname;
+            console.log(this.techniList, "this.techniList----------");
+          })
+          .catch(error => {
+            console.log(error, "error-----thechni.vue-----1211");
+          });
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -1316,51 +1566,7 @@ export default {
     }
   },
   mounted() {
-    //技师编辑获取ID
-    // console.log(this.areaOptions,"areaOptions----")
-    //选择城市
-    ChooseTheCity({})
-      .then(data => {
-        // this.listLoadingTech = false
-        console.log(data, "选择城市---------");
-        this.Choose = data.data.data.cityCodes;
-        this.sexTypeo = data.data.data.skillInfos;
-        this.infoname = data.data.data.page.list;
-        var i = 0,
-          len = this.infoname.length,
-          date = new Date(),
-          year = date.getFullYear(),
-          birth = 0,
-          _infoname = this.infoname;
-        for (i = 0; i < len; i++) {
-          //遮罩
-          _infoname[i].ismouse = false;
-          // 性别
-          _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
-          // 年龄
-          // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
-          // 岗位性质
-          _infoname[i].jobName =
-            _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
-          // 岗位状态
-          _infoname[i].jobStateName =
-            _infoname[i].jobStatus == "online" ? "在职" : "离职";
-          //工作年限
-          if (_infoname[i].workTime == "0") {
-            _infoname[i].workTimeName = "1年以下";
-          } else if (_infoname[i].workTime == "11") {
-            _infoname[i].workTimeName = "10年以上";
-          } else {
-            _infoname[i].workTimeName = _infoname[i].workTime + "年";
-          }
-          console.log(birth, "birth----");
-        }
-        this.techniList = this.infoname;
-        console.log(this.techniList, "this.techniList----------");
-      })
-      .catch(error => {
-        console.log(error, "error-----thechni.vue-----1211");
-      });
+    this.getList(1,6,{})
     //性别,工作年限,岗位性质，岗位状态
     Whether()
       .then(({ data }) => {
@@ -1429,7 +1635,7 @@ body {
   background: #fff;
   border: 1px solid #4c70e8;
   color: #4c70e8;
-  margin-left: 40px;
+  margin-left: 20px;
   cursor: pointer;
   /* border: none; */
   outline: none;
@@ -1608,15 +1814,17 @@ body {
   top: 77px;
   left: 0;
   z-index: 1;
-  animation: show 1s;
-  -moz-animation: show 1s;
+  transition-duration: 5s;
+
+  /* animation: show 1s; */
+  /* -moz-animation: show 1s; */
   /* Firefox */
-  -webkit-animation: show 1s;
+  /* -webkit-animation: show 1s; */
   /* Safari 和 Chrome */
-  -o-animation: show 1s;
+  /* -o-animation: show 1s; */
 }
 
-@keyframes show {
+/* @keyframes show {
   0% {
     height: 100px;
   }
@@ -1626,7 +1834,7 @@ body {
   100% {
     height: 320px;
   }
-}
+} */
 
 @keyframes hidden {
   0% {
@@ -1642,6 +1850,9 @@ body {
 
 .positionbox {
   margin: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tech-positon-odvi {
@@ -1847,7 +2058,7 @@ body {
 }
 
 .tech-section-xiu {
-  padding: 10px 30px;
+ 
 }
 
 .tech-section-xiu > li {
@@ -1927,7 +2138,7 @@ body {
 .mobel > p:nth-child(1) {
   width: 100px;
   text-align: right;
-  padding-right: 12px;
+  padding-right: 21px;
 }
 .line {
   text-align: center;
@@ -1981,6 +2192,14 @@ body {
 }
 .el-input__icon {
   display: none;
+}
+.el-pagination{
+  padding-bottom: 50px;
+  text-align: right;
+}
+.p-show{
+  text-align: center;
+  color: rgb(102, 102, 102)
 }
 </style>
 

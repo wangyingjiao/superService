@@ -31,7 +31,7 @@
                     <div>
                        <!-- <p><span class="tech-span"></span>现住地址:</p> -->
                         <p>
-                            <el-form-item label="现住地址1:" prop="area">
+                            <el-form-item label="现住地址:" prop="area">
                               <el-cascader
                                   :options="areaOptions"
                                   :show-all-levels="true"
@@ -246,7 +246,7 @@
                                 </div>
                             </div>
                             <div>
-                                <i class="i-delete" @click="deletes(index)">X</i>
+                                <i class="i-delete" @click="deletes(item,index)">X</i>
                             </div>
                             </li>
                         </ul>
@@ -576,7 +576,7 @@ import {
   getMatrimony,
   technicianEdit,
   familyAdd,
-  familyDelete
+  familyDelete,
 } from "@/api/tech";
 
 import { getSign } from "@/api/sign";
@@ -1104,7 +1104,14 @@ export default {
           val,
           "------------------------w-a-t-c-h--------------------------------"
         );
+        //获取技师id
         this.techniEditId = val.id;
+        this.disbArr = [];
+
+        /*
+        **个人资料
+        **
+        */
         this.personalEDit = Object.assign({}, val);
         this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
         this.personalEDit.techBirthDate = val.birthDate;
@@ -1115,6 +1122,7 @@ export default {
         **/
         this.perServer = Object.assign({}, val);
         this.servery = val.stations;
+        this.perServer.stationId = val.stationId
         // this.perServer.serviceCityName = val.stationCityCode;
         // //工作时间默认选中
         var work = val.workTimes || [],
@@ -1154,7 +1162,6 @@ export default {
         }
         console.log(this.disbArr,"this.disbArr-------")
 
-        // console.log(this.personalEDit,"val-----")
 
         /*
         ** 补充个人信息
@@ -1232,6 +1239,7 @@ export default {
       this.perServer.stationId = "";
       serviceStation({ cityCode: value })
         .then(data => {
+          console.log(data,"data-------")
           this.servery = data.data.data;
         })
         .catch(error => {
@@ -1240,8 +1248,32 @@ export default {
     },
 
     handlePreview(file) {},
-    deletes(index) {
-      this.teachArr.splice(index, 1);
+    //工作时间删除
+    deletes(item,index) {
+      this.disbArr = []
+      var arr = [].concat(this.perServer.workTimes)
+      arr.splice(index,1)
+      this.perServer.workTimes = arr
+
+      for(var i =0 ; i<arr.length ; i++){
+        for(var j =0 ; j<arr[i].weeks.length ; j++){
+          this.disbArr.push(arr[i].weeks[j].id*1)
+        }
+      }
+
+      // disbArr
+      // console.log(this.disbArr,"this.disbArr-----")
+      // for(var i = 0; i<item.weeks.length; i++){
+      //   if(this.disbArr.indexOf(item.weeks[i].id*1)!=-1){
+      //     this.disbArr.splice(i+1,1)
+      //   }
+      //   // this.remove(this.disbArr,item.weeks[i].id*1)
+      //   // this.remove(this.disbArr,item.weeks[i].id)
+      //   // if(this.disbArr.indexOf(item.weeks[i].id*1)>-1){
+      //   //   this.disbArr.splice(index,1)
+      //   // }
+      // }
+      console.log(this.disbArr,"this.disbArr222222-----------")
     },
     //个人资料保存
     perSubmitForm(formName) {
@@ -1300,7 +1332,18 @@ export default {
       console.log(obj,"this.perServer--------")
       technicianEdit(obj).then(data=>{
         console.log(data,"服务保存-----")
+        if(data.data.code){
+              this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+        }else{
+          this.$message.error("保存失败");
+          return false;
+        }
       }).catch(error=>{
+        this.$message.error("保存失败");
+        return false;
         console.log(error,"error-------")
       })
       // this.$refs[formName].validate(valid => {
@@ -1401,6 +1444,9 @@ export default {
       obj.startTime = this.startTime+":00";
       obj.endTime = this.endTime+":00";
       obj.weeks = [].concat(this.roomSel1Arr);
+      for(var i = 0; i<obj.weeks.length; i++){
+        this.disbArr.push(obj.weeks[i].id)
+      }
       // console.log(obj,"roomSel1Arr-----")
       arr.push(obj)
       this.perServer.workTimes =  this.perServer.workTimes.concat(arr)

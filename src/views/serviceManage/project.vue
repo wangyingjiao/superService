@@ -873,9 +873,8 @@ export default {
       // alert(val)
       this.pageSize = val;
       // this.getList();
-      var obj = {
-        majorSort: this.basicForm.majorSort
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.basicForm.majorSort
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
         var num = 0;
@@ -888,9 +887,8 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {
-        majorSort: this.tabs
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.tabs
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
