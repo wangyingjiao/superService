@@ -1,12 +1,12 @@
 <template>
   <div class="box">
     <div class="filter-container bgWhite padBot20">
-      <el-input  style="width: 200px;" class="filter-item" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
+      <el-input   class="filter-item width200" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
       <button @click="search" class="search-button btn_right el-icon-search"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
       <div class="">
-        <div class="bgWhite">
+        <div class="bgWhite bgbot70" >
           <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
@@ -21,7 +21,7 @@
                         </template>
                       </el-table-column>
               </el-table>
-              <div v-show="!listLoading" class="pagination-container" style="float:right;margin-top:20px;">
+              <div v-show="!listLoading" class="pagination-container techPag">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
                   layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total">
                 </el-pagination>
@@ -32,13 +32,13 @@
         <el-dialog title="新增技能" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
           <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
             <el-form-item label="技能名称" prop="name">
-              <el-input  v-model="ruleForm2.name"  style="width:300px" placeholder="请输入2-15位技能名称"></el-input>
+              <el-input  v-model="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择服务" prop="serItems" required>            
-              <div class="tech-order-jnsk" style="float:left;width:500px;" >
+              <div class="tech-order-jnsk selfBottonSt">
                   <div class="tech-order-btnsk"  @click="choseServer">&#10010 请选择</div>
               </div>
-              <el-table :data="ruleForm2.serItems"  v-loading="listLoading"  border style="width:500px;margin:0px;float:left" >
+              <el-table :data="ruleForm2.serItems"  v-loading="listLoading"  border class="selfTableSt" >
                   <el-table-column prop="name" label="项目名称" width="100" height="30" align="center">
                   </el-table-column>
                   <el-table-column prop="serItemCommoditys" label="商品名称" width="180" align="center">
@@ -49,13 +49,13 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <div  v-if="!ruleForm2.serItems || showRUles"  class="showRules" style="" >
+                <div  v-if="!ruleForm2.serItems || showRUles"  class="showRules">
                   <span v-show="spanFlag">请选择服务</span>
                 </div>
             </el-form-item>
-            <el-form-item label="选择技师" prop="technicians" style='margin-top:30px;'>
-             <div class="tech-order-jnsk" style="float:left;width:500px;">
-                  <div class="tech-order-btnsk" style="background:none;"  @click="orderTech"> &#10010 请选择</div>
+            <el-form-item label="选择技师" prop="technicians" class="selfst3">
+             <div class="tech-order-jnsk selfst2">
+                  <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>
             <el-form-item label=""> 
@@ -74,11 +74,11 @@
         <!-- 选择服务弹出层 -->
         <el-dialog title="选择服务" :visible.sync="flagserver"   :close-on-click-modal="false">
               <div style="float:left">
-                <el-input placeholder="输入要搜索的项目名称" style="width:220px" v-model="xingmu"></el-input>
-                <span v-show="promShow" style="font-size: 12px; margin-top: 10px; color: red;">{{promInf}}</span>
+                <el-input placeholder="输入要搜索的项目名称" class="width220"  v-model="xingmu"></el-input>
+                <span v-show="promShow" class="selfInmpotInf">{{promInf}}</span>
               </div>
-              <div style="float:right"><button class="button-large" @click="quiry">查询</button></div>
-              <div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;">
+              <div class="selfFLORight"><button class="button-large" @click="quiry">查询</button></div>
+              <div class="selfOVerflow">
                 <ul class="role-table">
                   <li class="header">
                     <div class="left">项目名称</div>
@@ -107,30 +107,30 @@
 
         <!-- 选择技师弹出层 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
-              <div style="float:left;width:120px">
-                <el-input placeholder="输入要搜索的姓名" v-model="techName" style="width:120px"></el-input>                
+              <div class="selfFLOLeft width120">
+                <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
               </div>
-              <div style="float:left;margin-left:10px;">
+              <div class="selfFLOLeft selfMarLef10">
                 <el-select clearable placeholder="请选择服务站" v-model="techStationId">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
-                <span v-show="promShow1" style="font-size: 12px; margin-top: 10px; color: red;">{{promInf1}}</span>
+                <span v-show="promShow1" class="selfInmpotInf">{{promInf1}}</span>
               </div>
-              <div style="float:right"><button class="button-large" @click="searchTeh">查询</button></div>              
-              <div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;">
+              <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>              
+              <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
                       <table width="100%" class="selfTable">
                         <tr>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">头像</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="28%">姓名</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="10%">性别</td>
-                          <td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
+                          <td  class="selfTdStyle" align="center" width="8%">选择</td>
+                          <td  class="selfTdStyle"  align="center" width="28%">头像</td>
+                          <td  class="selfTdStyle"  align="center" width="28%">姓名</td>
+                          <td  class="selfTdStyle"  align="center" width="10%">性别</td>
+                          <td  class="selfTdStyle"  align="center" width="26%">服务站</td>							
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                           <td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                          <td  style="height:100px;" align="center"><div style="width:85px;height:90px;line-height:90px;border:1px solid #ccc;">{{item.headPic}}</div></td>
+                          <td  class="height100" align="center"><div class="userHeaderStyle">{{item.headPic}}</div></td>
                           <td  align="center">{{item.techName}}</td>
                           <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
@@ -141,7 +141,7 @@
                       </table>
                     </div>            
               </div>             
-              <div slot="footer" class="dialog-footer" style="text-align:center;margin-top:30px;">
+              <div slot="footer" class="dialog-footer selfFooter">
                   <button class="button-large"   @click="submitForm2()">保存</button>
                   <button class="button-cancel"  @click="resetForm2()">取消</button>
               </div>           
@@ -627,6 +627,26 @@
 </script>
 <style  scoped>
    .padBot20{padding-bottom:20px;}
+   .width200{width:200px;}
+   .width220{width:220px;}
+   .width300{width:300px;}
+   .selfMarLef10{margin-left:10px;}
+   .selfInmpotInf{font-size: 12px; margin-top: 10px; color: red;}
+   .selfFLORight{float:right}
+   .selfFLOLeft{float:left;} 
+   .width120{width:120px;}
+   .height100{height:100px;}
+   .selfFooter{text-align:center;margin-top:30px;}
+   .selfTdStyle{background: #F8F8F9;height:30px;}
+   .userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
+   .selfOVerflow{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+   .selfOVerflow1{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+   .selfBottonSt{float:left;width:500px;}
+   .selfTableSt{width:500px;margin:0px;float:left}
+   .selfst1{background:none;}
+   .selfst2{float:left;width:500px;}
+   .selfst3{margin-top:30px;}
+   .techPag{float:right;margin-top:20px;}
    .showRules{font-size:12px;color:red;width:100%;height:30px;line-height:30px;display:inline-block;}
    .active{background:#ddd}
    .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
@@ -636,7 +656,9 @@
     .bgWhite {
       background-color: #ffffff;
       padding: 20px;
-      padding-bottom: 70px;
+    }
+    .bgbot70{
+      padding-bottom:70px;
     }
     .btn_pad {
       margin: 0px 0px 10px 20px;
@@ -655,7 +677,6 @@
     }
 
     .tech-order-btnsk {
-      background: #fff;
       color: #4c70e8;
       border: none;
       outline: none;

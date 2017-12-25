@@ -181,9 +181,9 @@
           </div>
           <div class="buttonWrap">
             <input type="button" class="mapButton" value="绘制多边形" ref="polygon"/>
-            <input type="button" class="mapButton" value="绘制圆" ref="circle"/>
+            <!--<input type="button" class="mapButton" value="绘制圆" ref="circle"/>-->
             <button type="button" class="mapButton" @click="saveOverlays">保存</button>
-            <button class="mapButton"  @click="closeMap">关闭</button>			
+            <button class="mapButton"  @click="closeMap">取消</button>			
           </div> 		
           <div class="pickerBox">
             <div class="headerWrap">
@@ -208,10 +208,10 @@
                   </template>
                   </el-table-column>
                   <el-table-column
-                  prop="radius"
+                  prop="area"
                   align="center"
                   width='160'
-                  label="圆形半径"
+                  label="面积"
                   >
                   </el-table-column>
                   <el-table-column
@@ -277,7 +277,8 @@ import {
   getMaster,
   setMaster,
   getStore,
-  setStore
+  setStore,
+  setScope
 } from "@/api/base";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -331,7 +332,8 @@ export default {
         masterId: "",
         rangeType: "",
         serviceAreaType: "",
-        storeList: []
+        storeList: [],
+        servicePoint:'',
       },
       temp: {
         name: "",
@@ -425,7 +427,6 @@ export default {
       };
       this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
         this.listLoading = false;
@@ -440,7 +441,6 @@ export default {
         cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
         this.list = res.data.data.list;
         this.total = res.data.data.count;
         this.listLoading = false;
@@ -455,7 +455,6 @@ export default {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
-          console.log(res);
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
           this.dialogMasterVisible = true;
@@ -464,8 +463,6 @@ export default {
       }
     },
     handleSetRange() {
-      console.log("设置范围");
-      console.log(this.rowInfo.serviceAreaType);
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -473,8 +470,6 @@ export default {
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
           getStore({}).then(res => {
-            console.log(res);
-            console.log(this.rowInfo.storeList);
             this.listLoading = false;
             this.storeTree = res.data.data;
             this.dialogStoreVisible = true;
@@ -497,7 +492,6 @@ export default {
         cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
         this.list = res.data.data.list;
         this.listLoading = false;
       });
@@ -520,7 +514,6 @@ export default {
       this.$refs[formName].resetFields();
     },
     rowClick(row, event, column) {
-      console.log(row);
       this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
@@ -531,7 +524,9 @@ export default {
       if (row.storeList != undefined) {
         this.rowInfo.storeList = row.storeList;
       }
-      console.log(this.rowInfo);
+      if (row.servicePoint != undefined) {
+        this.rowInfo.servicePoint = row.servicePoint;
+      }      
     },
     handleCreate() {
       this.dialogStatus = "create";
@@ -540,7 +535,6 @@ export default {
     },
     handleUpdate(row) {
       // this.areaOptions = this.$store.state.user.area;
-      console.log(row);
       this.temp = {
         id: row.id,
         name: row.name,
@@ -560,13 +554,11 @@ export default {
         type: "warning"
       })
         .then(() => {
-          console.log(row);
           var obj = {
             id: row.id
           };
           delSite(obj)
             .then(res => {
-              console.log(res);
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -605,12 +597,10 @@ export default {
         phone: this.temp.phone,
         isUseable: this.temp.isUseable
       };
-      console.log(obj);
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
-            console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -652,7 +642,6 @@ export default {
             cityCode: this.search.cityCode
           };
           getSite(obj, this.pageNumber, this.pageSize).then(res => {
-            console.log(res);
             this.list = res.data.data.list;
             this.total = res.data.data.count;
             this.listLoading = false;
@@ -670,9 +659,7 @@ export default {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
       };
-      console.log(obj);
       setMaster(obj).then(res => {
-        console.log(res);
         if (res.data.code == "1") {
           this.$message({
             type: "success",
@@ -706,12 +693,10 @@ export default {
         phone: this.temp.phone,
         isUseable: this.temp.isUseable
       };
-      console.log(obj);
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
           addSite(obj).then(res => {
-            console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -764,9 +749,10 @@ export default {
       var id = this.$refs.gdMap;
       var inputname = this.$refs.pickerInput;
       var map = new AMap.Map(id, {
-        center: new AMap.LngLat(116.368904, 39.913423),
+        center:[116.459771,39.922132],
         zoom: 15
       });
+
       map.plugin(["AMap.Scale"], function() {
         var scale = new AMap.Scale();
         map.addControl(scale);
@@ -785,48 +771,31 @@ export default {
         strokeStyle: "solid" //边线的样式，solid或dashed。
       };      
       that.myMap = map;
-      var polygonArr = new Array();//多边形覆盖物节点坐标数组
-      polygonArr.push([116.403322, 39.920255]);
-      polygonArr.push([116.410703, 39.897555]);
-      polygonArr.push([116.402292, 39.892353]);
-      polygonArr.push([116.389846, 39.891365]);
-      var  polygon = new AMap.Polygon({
-          path: polygonArr,//设置多边形边界路径
-      });
-      polygon.setOptions(styleOptions)//设置多边形的样式
-      polygon.setMap(map);
-      var polygonArr1 = new Array();//多边形覆盖物节点坐标数组
-      polygonArr1.push([116.403322, 39.920255]);
-      polygonArr1.push([116.410703, 39.897555]);
-      polygonArr1.push([116.402292, 39.892353]);
-      var  polygon1 = new AMap.Polygon({
-          path: polygonArr,//设置多边形边界路径
-      });
-      polygon1.setOptions(styleOptions)//设置多边形的样式
-      polygon1.setMap(map);      
-      var overlays = this.myMap.getAllOverlays();
-      var len=overlays.length;//地图原覆盖物数量
-      if(overlays.length !=0){
-        for(var a=0 ;a< len ;a++){
-          that.testalert(overlays[a]);
-        }
+      if(this.rowInfo.servicePoint != ''){
+            var retPoitArr=this.rowInfo.servicePoint.split(" ")     
+            var polygonArr = new Array();//多边形覆盖物节点坐标数组
+            for(var a=0;a<retPoitArr.length;a++){
+                polygonArr.push(retPoitArr[a].split(","))
+            }
+            map.panTo(polygonArr[0]);//改变中心点
+            var  polygon = new AMap.Polygon({
+                path: polygonArr,//设置多边形边界路径
+            });
+            polygon.setOptions(styleOptions)//设置多边形的样式
+            polygon.setMap(map);
+            var overlays = this.myMap.getAllOverlays();
+            var len=overlays.length;//地图原覆盖物数量
+            if(overlays.length !=0){
+                that.testalert(overlays[0]);
+            }
       }
       var mouseTool = new AMap.MouseTool(map);
       var polygon = this.$refs.polygon;
-      var circle = this.$refs.circle;
       AMap.event.addDomListener(
         polygon,
         "click",
         function() {
           mouseTool.polygon(styleOptions);
-        },
-        false
-      );
-      AMap.event.addDomListener(
-        circle,
-        "click",
-        function() {
-          mouseTool.circle(styleOptions);
         },
         false
       );
@@ -866,32 +835,18 @@ export default {
           infoWindow.setMap(map);
           marker.setPosition(poi.location);
           infoWindow.setPosition(poi.location);
-          infoWindow.setContent(inputname.value);
-          infoWindow.open(map, marker.getPosition());
         });
       }
     },
     testalert(obj) {
       //获取多边形轮廓线节点数组。其中lat和lng是经纬度参数
       var path = "";
-      //圆半径，单位:米
-      var radius = "";
-      var row = {};
-      //覆盖物对象
-      var overlays = this.myMap.getAllOverlays();
+      var row = {};      
       if (obj.CLASS_NAME === "AMap.Polygon") {
         path = obj.getPath();
         row.type = "Polygon";
         row.path = path;
-        row.radius = "---";
-        row.center = "";
-      }
-      if (obj.CLASS_NAME === "AMap.Circle") {
-        radius = obj.getRadius();
-        row.type = "Circle";
-        row.radius = (radius * 1000).toFixed(3) + "公里";
-        row.path = "";
-        row.center = obj.getCenter();
+        row.area = parseInt(obj.getArea()/1000000*100)/100+'平方公里';
       }
       row.name = "范围";
       row.index='';
@@ -900,7 +855,7 @@ export default {
       for(var a=0;a<this.tableData.length;a++){
           this.tableData[a].index=a+1;
       }
-      this.number = overlays.length;
+      this.number = this.tableData.length;
     },
     //删除地图所有的覆盖物
     removeOverlay() {
@@ -939,17 +894,41 @@ export default {
       } else {
         this.promitInf = "";
         this.showPromit = false;
-        //搜索的经纬度
-        //this.inputvalue
-        //区域对象
-        //this.tableData[0]
+        //setScope
+        var obj={
+           id:this.rowInfo.id,
+           servicePoint:this.tableData[0].path.join(" ")
+        };
+        setScope(obj).then(res => {
+          if (res.data.code == "1") {
+            this.$message({
+              type: "success",
+              message: "设置成功"
+            });
+            this.getList();
+            this.rowInfo.servicePoint='';
+            this.tableData=[];
+            this.inputvalue=[];
+            this.$refs.pickerInput.value='';
+            this.severSelectdialogVisible = false;
+          } else {
+            this.$message({
+              type: "error",
+              message: res.data.data
+            });
+            this.severSelectdialogVisible = false;
+            this.inputvalue=[];
+            this.$refs.pickerInput.value='';
+          }
+        });        
       }
     },
     closeMap() {
       this.tableData = [];
       this.number = "0";
-
       this.promitInf = "";
+      this.inputvalue=[];
+      this.$refs.pickerInput.value='';      
       this.showPromit = false;
       this.severSelectdialogVisible = false;
     }
@@ -1021,7 +1000,7 @@ body {
 .buttonWrap {
   position: absolute;
   z-index: 9999;
-  bottom: 10%;
+  bottom: 20%;
   right: 35%;
 }
 .pickerBox {
