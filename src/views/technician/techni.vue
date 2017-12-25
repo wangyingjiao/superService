@@ -206,10 +206,11 @@
       </el-pagination>
     </div>
     <!-- 编辑技师 -->
-	<el-dialog title="新增技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
+	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
 		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
                   :sex="sex" :choose="Choose" :workyear="workyear"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
+                  :marriage="marriage" :education="education" :relation = "relation"
                   ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
@@ -450,11 +451,6 @@
 
                         <div style="display:flex;">
                           <div class="selfCheckBoxsday">日期</div>
-                          <!--<div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.sexId)!=-1}">
-                            {{item.sexName}}-->
-                            <!-- <div :class="{'triangle-bottomrightose':item.show===true}"></div> -->
-                            <!-- <div class="tallyose">&#10004</div> -->
-                          <!-- </div> -->
                           <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
                             {{item.name}}
                           </button>
@@ -516,1417 +512,1475 @@
   </div>
 </template>
 <script>
-  import {
-    addTech,
-    getTech,
-    getEducations,
-    getStrong,
-    getHeight,
-    getMatrimony,
-    ChooseTheCity,
-    serviceStation,
-    Technician,
-    technicianEditId
-  } from "@/api/tech";
-  import {
-    getSign
-  } from "@/api/sign";
-  import techniEdit from './techniEdit.vue'
-  import {Whether} from '@/api/project'
+import {
+  addTech,
+  getTech,
+  getEducations,
+  getStrong,
+  getHeight,
+  getMatrimony,
+  ChooseTheCity,
+  serviceStation,
+  Technician,
+  technicianEditId
+} from "@/api/tech";
+import { getSign } from "@/api/sign";
+import techniEdit from "./techniEdit.vue";
+import { Whether } from "@/api/project";
 
-  export default {
-    data() {
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-         	 callback(new Error('请输入密码'));
-            } else if(value.length<8){
-          callback(new Error('至少8个字符'));
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
+export default {
+  data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else if (value.length < 8) {
+        callback(new Error("至少8个字符"));
+      } else {
+        if (this.ruleForm2.checkPass !== "") {
+          this.$refs.ruleForm2.validateField("checkPass");
+        }
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.ruleForm2.pass) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    //身份证
+    var TECHIDCARD = (rule, value, callback) => {
+      var city = {
+        11: "北京",
+        12: "天津",
+        13: "河北",
+        14: "山西",
+        15: "内蒙古",
+        21: "辽宁",
+        22: "吉林",
+        23: "黑龙江 ",
+        31: "上海",
+        32: "江苏",
+        33: "浙江",
+        34: "安徽",
+        35: "福建",
+        36: "江西",
+        37: "山东",
+        41: "河南",
+        42: "湖北 ",
+        43: "湖南",
+        44: "广东",
+        45: "广西",
+        46: "海南",
+        50: "重庆",
+        51: "四川",
+        52: "贵州",
+        53: "云南",
+        54: "西藏 ",
+        61: "陕西",
+        62: "甘肃",
+        63: "青海",
+        64: "宁夏",
+        65: "新疆",
+        71: "台湾",
+        81: "香港",
+        82: "澳门",
+        91: "国外 "
+      };
+      var tip = "";
+      var pass = true;
+      if (
+        !value ||
+        !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+          value
+        )
+      ) {
+        tip = "身份证号格式错误";
+        callback(new Error(tip));
+        pass = false;
+      } else if (!city[value.substr(0, 2)]) {
+        tip = "地址编码错误";
+        callback(new Error(tip));
+        pass = false;
+      } else {
+        if (value.length == 18) {
+          value = value.split("");
+          var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+          var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+          var sum = 0;
+          var ai = 0;
+          var wi = 0;
+          for (var i = 0; i < 17; i++) {
+            ai = value[i];
+            wi = factor[i];
+            sum += ai * wi;
           }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      //身份证
-      var TECHIDCARD = (rule,value,callback) =>{
-        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
-        var tip = "";
-        var pass= true;
-        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
-                tip = "身份证号格式错误";
-                callback(new Error(tip))
-                pass = false;
-        }else if(!city[value.substr(0,2)]){
-            tip = "地址编码错误";
-            callback(new Error(tip))
+          var last = parity[sum % 11];
+          if (parity[sum % 11] != value[17]) {
+            tip = "校验位错误";
+            callback(new Error(tip));
             pass = false;
-        }else{
-          if(value.length == 18){
-            value = value.split('');
-            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
-            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
-            var sum = 0;
-            var ai = 0;
-            var wi = 0;
-            for (var i = 0; i < 17; i++)
-                    {
-                        ai = value[i];
-                        wi = factor[i];
-                        sum += ai * wi;
-                    }
-            var last = parity[sum % 11];
-                    if(parity[sum % 11] != value[17]){
-                        tip = "校验位错误";
-                        callback(new Error(tip))
-                        pass =false;
-                    }
           }
         }
+      }
 
-        if(pass){
-          callback()
+      if (pass) {
+        callback();
+      }
+    };
+    //手机号
+    var TECHPHONE = (rule, value, callback) => {
+      if (value) {
+        if (!/^1[34578]\d{9}$/.test(value)) {
+          callback(new Error("手机号码有误，请重填"));
+        } else {
+          callback();
         }
-       
+      } else {
+        callback(new Error("请输入手机号"));
       }
-      //手机号
-      var TECHPHONE = (rule,value,callback) =>{
-        if(value){
-          if(!(/^1[34578]\d{9}$/.test(value))){
-            callback(new Error('手机号码有误，请重填'))
-          }else{
-            callback()
-          }
-        }else{
-          callback(new Error('请输入手机号'))
-        }
+    };
+    //现住地址
+    var ADDRESS = (rule, value, callback) => {
+      console.log(rule, value, "value----现住地址");
+      callback();
+      // if(value.length>0){
+      //   callback()
+      // }else{
+      //   callback(new Error("请选择现住地址"))
+      // }
+    };
+    //选择技能
+    var SKILLIDS = (rule, value, callback) => {
+      if (value.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择技能"));
       }
-      //现住地址
-      var ADDRESS = (rule,value,callback) =>{
-        console.log(rule,value,"value----现住地址")
-        callback()
-        // if(value.length>0){
-        //   callback()
-        // }else{
-        //   callback(new Error("请选择现住地址"))
-        // }
+    };
+    //工作时间
+    var WORKTIMES = (rule, value, callback) => {
+      if (this.teachArr.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择工作时间"));
       }
-      //选择技能
-      var SKILLIDS = (rule,value,callback) =>{
-        if(value.length>0){
-          callback()
-        }else{
-          callback(new Error("请选择技能"))
-        }
-      }
-      //工作时间
-      var WORKTIMES = (rule,value,callback) =>{
-          if(this.teachArr.length>0){
-            callback()
-          }else{
-            callback(new Error("请选择工作时间"))
-          }
-      }
-      return {
-		ruleForm: {
-          date1: '',
-          date2: '',
-		},
-		rules: {
-          date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'blur' }
-          ],
-        },
-		ruleForm2: {
-          pass: '',
-          checkPass: '',
-        },
-        rules2: {
-          pass: [
-            {required: true, validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            {required: true, validator: validatePass2, trigger: 'blur' }
-          ],
-		},
-		// 个人资料验证
-		personal:{
-			name: '',           //姓名
-			idCard: '',          //身份证
-			phone: '',            //手机
-			sex:'',              //性别
-			address:'',            //详细地址
-			nation:'',             //民族
-      birthDate:'',         //生日
-      birtStr:'',      //生日  假的
-			jobNature:'',           //岗位性质
-			stationId:'',           //
-			jobStatus:'',           //岗位状态
-			workTime:'',            //工作年限
-      skillIds:[],             //技能List
-      area:[],
-      status:'',             //状态
-      provinceCode:'',       //省
-      cityCode:'',         //市
-      areaCode:'',         //区
-      idCardPic:'adawd',       //身份证照片
-      headPic:'awdawdwad',        //头像
-      workTimes:[         //工作时间
-        {startTime:'',endTime:'',weeks:[]}      //开始时间,结束时间，星期几
-      ],
-      serviceCityName:''   //选择城市  不需要
-
-			
-    },
-    Choose:[],
-    mouserFlag:false,
-		rulesPer:{
-			name:[
-				{ required: true, message: '请输入姓名', trigger: 'blur' },
-        { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
-			],
-			// 身份证
-			idCard:[
-        {required:true,trigger:'blur'}
-        // {required:true, validator:TECHIDCARD ,trigger:'blur'}
-      ],
-      //手机号
-			phone:[
-        {required:true, validator:TECHPHONE,trigger:'blur'}
-			],
-			sex:[
-				{ required: true, message: '请输入性别', trigger: 'change' }
-			],
-			birtStr:[
-				{ type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
-			],
-			serviceCityName:[
-				{ required: true, message: '请选择城市', trigger: 'change' }
-			],
-			jobNature:[
-				{ required: true, message: '请选择岗位', trigger: 'change' }
-			],
-			stationId:[
-				{ required: true, message: '请选择服务站', trigger: 'change' }
-			],
-			jobStatus:[
-				{ required: true, message: '请选择岗位状态', trigger: 'change' }
-			],
-			workTime:[
-				{ required: true, message: '请选择工作年限', trigger: 'change' }
-			],
-			skillIds:[
-				{ required: true,validator:SKILLIDS, trigger: 'change' }
-      ],
-      area:[
-        {required:true,validator:ADDRESS, trigger:'change'}
-      ],
-      workTimes:[
-        {required:true,validator:WORKTIMES, trigger: 'blur'}
-      ]
-
-		},
-        server: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        infoname:[],
-        // infoname: [{
-        //   value: '选项1',
-        //   name: '李阿姨',
-        //   addres: '国安社区',
-        //   year: '3年',
-        //   phone: '17188996644',
-        //   ismouse: false,
-        // }, {
-        //   value: '选项1',
-        //   name: '王阿姨',
-        //   addres: '国安社区',
-        //   year: '3年',
-        //   phone: '17188996644',
-        //   ismouse: false,
-        // }, {
-        //   value: '选项1',
-        //   name: '赵阿姨',
-        //   addres: '国安社区',
-        //   year: '3年',
-        //   phone: '17188996644',
-        //   ismouse: false,
-        // }],
-
-        servery: [],
-        marriage: [],
-        station: {},
-        choose: [{
-          value: '选项1',
-          label: '姓名'
-        }, {
-          value: '选项2',
-          label: '手机'
-        }],
-
-        card: [{
-          value: '选项1',
-          label: '中国建行'
-        }, {
-          value: '选项2',
-          label: '中国银行'
-        }],
-
-        sex:{},
-        ethnics: [],
-        areas: [],
-        strong:{},
-        statu:{},
-        education: [],
-        height: [],
-        place: [],
-        caty: [{
-          value: '选项1',
-          label: '北京'
-        }, {
-          value: '选项2',
-          label: '天津'
-        }, {
-          value: '选项3',
-          label: '上海'
-        }, {
-          value: '选项4',
-          label: '重庆'
-        }, {
-          value: '选项5',
-          label: '河北'
-        }, {
-          value: '选项6',
-          label: '山西'
-        }, {
-          value: '选项7',
-          label: '辽宁'
-        }, {
-          value: '选项8',
-          label: '河南'
-        }],
-
-        workyear: {},
-
-        bind: [{
-          value: '选项1',
-          label: '夫妻'
-        }, {
-          value: '选项2',
-          label: '父母'
-        }, {
-          value: '选项3',
-          label: '母女'
-        }, {
-          value: '选项4',
-          label: '母子'
-        }, {
-          value: '选项5',
-          label: '兄弟姐妹'
-        }, {
-          value: '选项6',
-          label: '亲戚'
-        }],
-        pickerOptions0: {
-          disabledDate(time) {
-            return time.getTime() > Date.now()-8.64e7;
-          }
-        },
-        sexType: [{
-            sexName: '技能一',
-            show: false
-          },
-          {
-            sexName: '技能二',
-            show: false
-          },
-          {
-            sexName: '技能三',
-            show: false
-          },
-          {
-            sexName: '技能四',
-            show: false
-          },
-          {
-            sexName: '技能五',
-            show: false
-          },
-          {
-            sexName: '技能六',
-            show: false
-          },
-          {
-            sexName: '技能七',
-            show: false
-          },
-          {
-            sexName: '技能八',
-            show: false
-          },
-          {
-            sexName: '技能一',
-            show: false
-          },
-          {
-            sexName: '技能二',
-            show: false
-          },
-          {
-            sexName: '技能三',
-            show: false
-          },
-          {
-            sexName: '技能四',
-            show: false
-          },
-          {
-            sexName: '技能五',
-            show: false
-          },
-          {
-            sexName: '技能六',
-            show: false
-          },
-          {
-            sexName: '技能七',
-            show: false
-          },
-          {
-            sexName: '技能八',
-            show: false
-          },
-          {
-            sexName: '技能四',
-            show: false
-          },
-          {
-            sexName: '技能五',
-            show: false
-          },
-          {
-            sexName: '技能六',
-            show: false
-          },
-          {
-            sexName: '技能七',
-            show: false
-          },
-          {
-            sexName: '技能八',
-            show: false
-          },
-          {
-            sexName: '技能八',
-            show: false
-          }
+    };
+    return {
+      ruleForm: {
+        date1: "",
+        date2: ""
+      },
+      rules: {
+        date1: [
+          { type: "date", required: true, message: "请选择日期", trigger: "blur" }
         ],
-        technicianData:[],
-        sexTypes:{},
-        sexTypeo: [],
-        sexDay: [{
-            name: '星期一',
-            id:1,
-          },
-          {
-            name: '星期二',
-            id:2,
-          },
-          {
-            name: '星期三',
-            id:3,
-          },
-          {
-            name: '星期四',
-            id:4,
-          },
-          {
-            name: '星期五',
-            id:5,
-          },
-          {
-            name: '星期六',
-            id:6,
-          },
-          {
-            name: '星期日',
-            id:7,
-          },
-        ],
-        sign: getSign(),
-        key: false,
-        isA: false,
-        isB: false,
-        isTab: false,
-        sexLen: '',
-        binds: '',
-        flagso: false,
-        flags: false,
-        password:false,
-        flage:false,
-        tableKey: '',
-        cards: '',
-        textarea3: '',
-        radio8: '1',
-        workyears: '',
-        status: '',
-        servers1: '',
-        stationes: '',
-        catys: '',
+        date2: [
+          { type: "date", required: true, message: "请选择时间", trigger: "blur" }
+        ]
+      },
+      ruleForm2: {
+        pass: "",
+        checkPass: ""
+      },
+      rules2: {
+        pass: [{ required: true, validator: validatePass, trigger: "blur" }],
+        checkPass: [
+          { required: true, validator: validatePass2, trigger: "blur" }
+        ]
+      },
+      // 个人资料验证
+      personal: {
+        name: "", //姓名
+        idCard: "", //身份证
+        phone: "", //手机
+        sex: "", //性别
+        address: "", //详细地址
+        nation: "", //民族
+        birthDate: "", //生日
+        birtStr: "", //生日  假的
+        jobNature: "", //岗位性质
+        stationId: "", //
+        jobStatus: "", //岗位状态
+        workTime: "", //工作年限
+        skillIds: [], //技能List
         area: [],
-        techniList:[],
-        places: '',
-        marriages: '',
-        strongs: '',
-        heights: '',
-        educations: '',
-        sexs: '',
-        ethnic: '',
-        servers: '',
-        stations: '',
-        chooses: '',
-        input: '',
-        value1: '',
-        value2: '',
-        value3: '',
-        value4: '',
-        startTime: '',
-        endTime: '',
-        startTimes: '',
-        endTimes: '',
-        fileList2: [
-          {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-        position: false,
-        listLoading: false,
-        // listLoadingTech:true,
-        list: [1, 2, 3],
-        total: null,
-		listLoading: false,
-    roomSel1Arr:[],
-    disbArr:[],
-    roomSelNum:[],
-    yesNo:{},
-    Duplicate:null,
-		teachArr:[],
-        listQuery: {
-          page: 1,
-          limit: 6,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+        status: "", //状态
+        provinceCode: "", //省
+        cityCode: "", //市
+        areaCode: "", //区
+        idCardPic: "adawd", //身份证照片
+        headPic: "awdawdwad", //头像
+        workTimes: [
+          //工作时间
+          { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
+        ],
+        serviceCityName: "" //选择城市  不需要
+      },
+      Choose: [],
+      mouserFlag: false,
+      rulesPer: {
+        name: [
+          { required: true, message: "请输入姓名", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        // 身份证
+        idCard: [
+          { required: true, trigger: "blur" }
+          // {required:true, validator:TECHIDCARD ,trigger:'blur'}
+        ],
+        //手机号
+        phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
+        sex: [{ required: true, message: "请输入性别", trigger: "change" }],
+        birtStr: [
+          { type: "date", required: true, message: "请选择日期", trigger: "blur" }
+        ],
+        serviceCityName: [
+          { required: true, message: "请选择城市", trigger: "change" }
+        ],
+        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
+        jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
+        workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
+        skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
+        area: [{ required: true, validator: ADDRESS, trigger: "change" }],
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }]
+      },
+      server: [
+        {
+          value: "选项1",
+          label: "黄金糕"
         },
-        dialogVisible: false,
-        dialogVisibleEdit:false,
-      }
-    },
-    components:{
-      techniEdit
-    },
-    computed:{
-      //权限
-      btnShow(){
-        // console.log(this.$store.state.user.buttonshow,"this.$store.state.user.buttonshow")
-        return this.$store.state.user.buttonshow
-      },
-      areaOptions(){
-        console.log(this.$store.state.user.area,"this.$store.state.user.area")
-        return this.$store.state.user.area
-      }
-      
-    },
-    methods: {
-      //技师编辑获取ID
-      technician(item){
-        // console.log(item,"item-------")
-        technicianEditId({"id":item.id}).then(data=>{
-          this.technicianData = data.data.data
-          this.dialogVisibleEdit = true
-        }).catch(error=>{
-          console.log(error,"error---技师编辑")
-        })
-      },
-      //现住地址
-      nowAdd(val){
-        this.personal.provinceCode = val[0]  //省
-        this.personal.cityCode = val[1]  //市
-        this.personal.areaCode = val[2] //区
-      },
-      //选择城市
-      chooseChange(value){
-         console.log(value,"value------")
-        this.personal.stationId = ''
-        serviceStation({"cityCode":value}).then(data=>{
-          // console.log(data,"所属服务区---------")
-          this.servery = data.data.data
-        }).catch(error=>{
-          console.log(error,"error---techni.vue-----1071")
-        })
-      },
-      handlePreview(file){},
-     handleClose(formName){
-       this.$refs[formName].resetFields();
-       this.teachArr = [];
-     },
-      // 工作时间删除
-      deletes(index){
-        this.teachArr.splice(index,1)
-      },
-      handleCurrentChange(val) {
-        this.listQuery.page = val
-        this.getList()
-      },
-      handleSizeChange(val) {
-        this.listQuery.limit = val
-        this.getList()
-      },
-      handleModifyStatus(row, status) {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
-        })
-        row.status = status
-      },
-      showTabl() {
-        this.flagso = !this.flagso
-      },
-      order() {
-        this.position = true
-      },
-      hiddenDiv() {
-        this.position = false
-      },
-      //数组去重
-      remove(num,arr,val){
-        for(var i = 0; i<num.length; i++){
-          if(num[i] == val){
-            num.splice(i,1)
-            arr.splice(i,1)
-            break;
-          }
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      infoname: [],
+      // infoname: [{
+      //   value: '选项1',
+      //   name: '李阿姨',
+      //   addres: '国安社区',
+      //   year: '3年',
+      //   phone: '17188996644',
+      //   ismouse: false,
+      // }, {
+      //   value: '选项1',
+      //   name: '王阿姨',
+      //   addres: '国安社区',
+      //   year: '3年',
+      //   phone: '17188996644',
+      //   ismouse: false,
+      // }, {
+      //   value: '选项1',
+      //   name: '赵阿姨',
+      //   addres: '国安社区',
+      //   year: '3年',
+      //   phone: '17188996644',
+      //   ismouse: false,
+      // }],
+
+      servery: [],
+      marriage: {},
+      station: {},
+      choose: [
+        {
+          value: "选项1",
+          label: "姓名"
+        },
+        {
+          value: "选项2",
+          label: "手机"
+        }
+      ],
+
+      card: [
+        {
+          value: "选项1",
+          label: "中国建行"
+        },
+        {
+          value: "选项2",
+          label: "中国银行"
+        }
+      ],
+
+      sex: {},
+      ethnics: [],
+      areas: [],
+      strong: {},
+      statu: {},
+      education: {},
+      height: [],
+      place: [],
+      caty: [
+        {
+          value: "选项1",
+          label: "北京"
+        },
+        {
+          value: "选项2",
+          label: "天津"
+        },
+        {
+          value: "选项3",
+          label: "上海"
+        },
+        {
+          value: "选项4",
+          label: "重庆"
+        },
+        {
+          value: "选项5",
+          label: "河北"
+        },
+        {
+          value: "选项6",
+          label: "山西"
+        },
+        {
+          value: "选项7",
+          label: "辽宁"
+        },
+        {
+          value: "选项8",
+          label: "河南"
+        }
+      ],
+
+      workyear: {},
+
+      bind: [
+        {
+          value: "选项1",
+          label: "夫妻"
+        },
+        {
+          value: "选项2",
+          label: "父母"
+        },
+        {
+          value: "选项3",
+          label: "母女"
+        },
+        {
+          value: "选项4",
+          label: "母子"
+        },
+        {
+          value: "选项5",
+          label: "兄弟姐妹"
+        },
+        {
+          value: "选项6",
+          label: "亲戚"
+        }
+      ],
+      pickerOptions0: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e7;
         }
       },
-      roomSel1(item) {
-        if(this.roomSelNum.indexOf(item.id) == -1){
-          this.roomSelNum.push(item.id)
-          this.roomSel1Arr.push(item);
-        }else{
-           this.remove(this.roomSelNum,this.roomSel1Arr,item.id)
+      sexType: [
+        {
+          sexName: "技能一",
+          show: false
+        },
+        {
+          sexName: "技能二",
+          show: false
+        },
+        {
+          sexName: "技能三",
+          show: false
+        },
+        {
+          sexName: "技能四",
+          show: false
+        },
+        {
+          sexName: "技能五",
+          show: false
+        },
+        {
+          sexName: "技能六",
+          show: false
+        },
+        {
+          sexName: "技能七",
+          show: false
+        },
+        {
+          sexName: "技能八",
+          show: false
+        },
+        {
+          sexName: "技能一",
+          show: false
+        },
+        {
+          sexName: "技能二",
+          show: false
+        },
+        {
+          sexName: "技能三",
+          show: false
+        },
+        {
+          sexName: "技能四",
+          show: false
+        },
+        {
+          sexName: "技能五",
+          show: false
+        },
+        {
+          sexName: "技能六",
+          show: false
+        },
+        {
+          sexName: "技能七",
+          show: false
+        },
+        {
+          sexName: "技能八",
+          show: false
+        },
+        {
+          sexName: "技能四",
+          show: false
+        },
+        {
+          sexName: "技能五",
+          show: false
+        },
+        {
+          sexName: "技能六",
+          show: false
+        },
+        {
+          sexName: "技能七",
+          show: false
+        },
+        {
+          sexName: "技能八",
+          show: false
+        },
+        {
+          sexName: "技能八",
+          show: false
         }
-        //  console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
-        // console.log(this.roomSelNum,"this.roomSelNum-----")
-        item.show = !item.show;
-        //  console.log(item)
-	  },
-	  techClick(){
-      if(this.disbArr.length>0){
-        this.disbArr.map(item=>{
-          if(this.roomSelNum.indexOf(item)!=-1){
-            this.remove(this.roomSelNum,this.roomSel1Arr,item)
-          }
-        })
-      }
-      var obj = {};
-      obj.startTime = this.startTime+":00";
-      obj.endTime = this.endTime+":00";
-      obj.weeks = [].concat( this.roomSel1Arr )
-      this.disbArr =this.disbArr.concat(this.roomSelNum)
-      this.teachArr.push(obj)
-      this.isB  = false;
-		  console.log(this.teachArr,"this.teachArr--12323--")
+      ],
+      technicianData: [],
+      sexTypes: {},
+      sexTypeo: [],
+      sexDay: [
+        {
+          name: "星期一",
+          id: 1
+        },
+        {
+          name: "星期二",
+          id: 2
+        },
+        {
+          name: "星期三",
+          id: 3
+        },
+        {
+          name: "星期四",
+          id: 4
+        },
+        {
+          name: "星期五",
+          id: 5
+        },
+        {
+          name: "星期六",
+          id: 6
+        },
+        {
+          name: "星期日",
+          id: 7
+        }
+      ],
+      relation: {},
+      sign: getSign(),
+      key: false,
+      isA: false,
+      isB: false,
+      isTab: false,
+      sexLen: "",
+      binds: "",
+      flagso: false,
+      flags: false,
+      password: false,
+      flage: false,
+      tableKey: "",
+      cards: "",
+      textarea3: "",
+      radio8: "1",
+      workyears: "",
+      status: "",
+      servers1: "",
+      stationes: "",
+      catys: "",
+      area: [],
+      techniList: [],
+      places: "",
+      marriages: "",
+      strongs: "",
+      heights: "",
+      educations: "",
+      sexs: "",
+      ethnic: "",
+      servers: "",
+      stations: "",
+      chooses: "",
+      input: "",
+      value1: "",
+      value2: "",
+      value3: "",
+      value4: "",
+      startTime: "",
+      endTime: "",
+      startTimes: "",
+      endTimes: "",
+      fileList2: [
+        {
+          name: "food.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+        }
+      ],
+      position: false,
+      listLoading: false,
+      // listLoadingTech:true,
+      list: [1, 2, 3],
+      total: null,
+      listLoading: false,
+      roomSel1Arr: [],
+      disbArr: [],
+      roomSelNum: [],
+      yesNo: {},
+      Duplicate: null,
+      teachArr: [],
+      listQuery: {
+        page: 1,
+        limit: 6,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: "+id"
+      },
+      dialogVisible: false,
+      dialogVisibleEdit: false
+    };
+  },
+  components: {
+    techniEdit
+  },
+  computed: {
+    //权限
+    btnShow() {
+      // console.log(this.$store.state.user.buttonshow,"this.$store.state.user.buttonshow")
+      return this.$store.state.user.buttonshow;
     },
-    techDelete(){
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+    areaOptions() {
+      console.log(this.$store.state.user.area, "this.$store.state.user.area");
+      return this.$store.state.user.area;
+    }
+  },
+  methods: {
+    //技师编辑获取ID
+    technician(item) {
+      // console.log(item,"item-------")
+      technicianEditId({ id: item.id })
+        .then(data => {
+          this.technicianData = data.data.data;
+          this.dialogVisibleEdit = true;
+        })
+        .catch(error => {
+          console.log(error, "error---技师编辑");
         });
     },
-      roomSel2(index, obj) {
-        this.isA = index;
-      },
-      // 添加技能
-      orderson() {
-        this.flage = true;
-      },
-      skill() {
-        this.flage = false;
-        this.flagso = true;
-      },
-      skillq() {
-        this.flage = false;
-      },
-      // 添加时间
-      addtime() {
-        this.isB = true;
-      },
-      addtimeno() {
-        this.isB = false;
-      },
-      mouser(item,index) {
-        if(!item.ismouse){
-            item.ismouse = true
-            this.$set(this.techniList,index,item)
+    //现住地址
+    nowAdd(val) {
+      this.personal.provinceCode = val[0]; //省
+      this.personal.cityCode = val[1]; //市
+      this.personal.areaCode = val[2]; //区
+    },
+    //选择城市
+    chooseChange(value) {
+      console.log(value, "value------");
+      this.personal.stationId = "";
+      serviceStation({ cityCode: value })
+        .then(data => {
+          // console.log(data,"所属服务区---------")
+          this.servery = data.data.data;
+        })
+        .catch(error => {
+          console.log(error, "error---techni.vue-----1071");
+        });
+    },
+    handlePreview(file) {},
+    handleClose(formName) {
+      this.$refs[formName].resetFields();
+      this.teachArr = [];
+    },
+    // 工作时间删除
+    deletes(index) {
+      this.teachArr.splice(index, 1);
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val;
+      this.getList();
+    },
+    handleSizeChange(val) {
+      this.listQuery.limit = val;
+      this.getList();
+    },
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: "操作成功",
+        type: "success"
+      });
+      row.status = status;
+    },
+    showTabl() {
+      this.flagso = !this.flagso;
+    },
+    order() {
+      this.position = true;
+    },
+    hiddenDiv() {
+      this.position = false;
+    },
+    //数组去重
+    remove(num, arr, val) {
+      for (var i = 0; i < num.length; i++) {
+        if (num[i] == val) {
+          num.splice(i, 1);
+          arr.splice(i, 1);
+          break;
         }
-      },
-      mousout(item,index) {
-        if(item.ismouse){
-          item.ismouse = false
-          this.$set(this.techniList,index,item)
-        }
-      },
-      savrTable() {
-        this.isTab = true;
-      },
-      dateChange(val) {
-        this.personal.birthDate = val
-	  },
-	  //个人资料保存
-	  submitFormPer(formName){
-        // this.personal.workTimes.workTime = this.disbArr
-        // this.personal.workTimes = this.teachArr
-        // console.log(this.personal,"this.personal----")
-      this.$refs[formName].validate(val=>{
-        console.log(val,"val---")
-        if(val){
-          this.personal.workTimes = this.teachArr
-          delete this.personal.birtStr
-          delete this.personal.area
-          // console.log(this.personal,"this.personal------")
-          Technician(this.personal).then(data=>{
-            console.log(data,"data-------techni")
-            if(data.data.code){
-              this.$message({
-                message: '保存成功',
-                type: 'success'
-              });
-              this.dialogVisible = false
-              this.this.techniList = [];
-            }else{
-              this.$message({
-                message:data.data.data,
-                type: 'warning'
-              });
-              return false
-            }
-          }).catch(error=>{
-            console.log(error,"error------technini ---tech")
-            return false
-          })
-        }else{
-           this.$message.error('保存失败');
-           return false;
-        }
-      })
-	  },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
       }
-     },
-    mounted() {
-      //技师编辑获取ID
-      // console.log(this.areaOptions,"areaOptions----")
-      //选择城市
-      ChooseTheCity({}).then(data=>{
+    },
+    roomSel1(item) {
+      if (this.roomSelNum.indexOf(item.id) == -1) {
+        this.roomSelNum.push(item.id);
+        this.roomSel1Arr.push(item);
+      } else {
+        this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
+      }
+      //  console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
+      // console.log(this.roomSelNum,"this.roomSelNum-----")
+      item.show = !item.show;
+      //  console.log(item)
+    },
+    techClick() {
+      if (this.disbArr.length > 0) {
+        this.disbArr.map(item => {
+          if (this.roomSelNum.indexOf(item) != -1) {
+            this.remove(this.roomSelNum, this.roomSel1Arr, item);
+          }
+        });
+      }
+      var obj = {};
+      obj.startTime = this.startTime + ":00";
+      obj.endTime = this.endTime + ":00";
+      obj.weeks = [].concat(this.roomSel1Arr);
+      this.disbArr = this.disbArr.concat(this.roomSelNum);
+      this.teachArr.push(obj);
+      this.isB = false;
+      console.log(this.teachArr, "this.teachArr--12323--");
+    },
+    techDelete() {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    roomSel2(index, obj) {
+      this.isA = index;
+    },
+    // 添加技能
+    orderson() {
+      this.flage = true;
+    },
+    skill() {
+      this.flage = false;
+      this.flagso = true;
+    },
+    skillq() {
+      this.flage = false;
+    },
+    // 添加时间
+    addtime() {
+      this.isB = true;
+    },
+    addtimeno() {
+      this.isB = false;
+    },
+    mouser(item, index) {
+      if (!item.ismouse) {
+        item.ismouse = true;
+        this.$set(this.techniList, index, item);
+      }
+    },
+    mousout(item, index) {
+      if (item.ismouse) {
+        item.ismouse = false;
+        this.$set(this.techniList, index, item);
+      }
+    },
+    savrTable() {
+      this.isTab = true;
+    },
+    dateChange(val) {
+      this.personal.birthDate = val;
+    },
+    //个人资料保存
+    submitFormPer(formName) {
+      // this.personal.workTimes.workTime = this.disbArr
+      // this.personal.workTimes = this.teachArr
+      // console.log(this.personal,"this.personal----")
+      this.$refs[formName].validate(val => {
+        console.log(val, "val---");
+        if (val) {
+          this.personal.workTimes = this.teachArr;
+          delete this.personal.birtStr;
+          delete this.personal.area;
+          // console.log(this.personal,"this.personal------")
+          Technician(this.personal)
+            .then(data => {
+              console.log(data, "data-------techni");
+              if (data.data.code) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.dialogVisible = false;
+                this.this.techniList = [];
+              } else {
+                this.$message({
+                  message: data.data.data,
+                  type: "warning"
+                });
+                return false;
+              }
+            })
+            .catch(error => {
+              console.log(error, "error------technini ---tech");
+              return false;
+            });
+        } else {
+          this.$message.error("保存失败");
+          return false;
+        }
+      });
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    }
+  },
+  mounted() {
+    //技师编辑获取ID
+    // console.log(this.areaOptions,"areaOptions----")
+    //选择城市
+    ChooseTheCity({})
+      .then(data => {
         // this.listLoadingTech = false
-         console.log(data,"选择城市---------")
-        this.Choose = data.data.data.cityCodes
-        this.sexTypeo = data.data.data.skillInfos
-        this.infoname = data.data.data.page.list
+        console.log(data, "选择城市---------");
+        this.Choose = data.data.data.cityCodes;
+        this.sexTypeo = data.data.data.skillInfos;
+        this.infoname = data.data.data.page.list;
         var i = 0,
-            len = this.infoname.length,
-            date = new Date(),
-            year = date.getFullYear(),
-            birth = 0,
-            _infoname = this.infoname
-        for(i=0; i<len; i++){
+          len = this.infoname.length,
+          date = new Date(),
+          year = date.getFullYear(),
+          birth = 0,
+          _infoname = this.infoname;
+        for (i = 0; i < len; i++) {
           //遮罩
-          _infoname[i].ismouse  = false
+          _infoname[i].ismouse = false;
           // 性别
-          _infoname[i].sexname = _infoname[i].sex == "male"?"男":"女"
+          _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
           // 年龄
           // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
           // 岗位性质
-          _infoname[i].jobName = _infoname[i].jobNature == "full_time"?"全职":"兼职"
+          _infoname[i].jobName =
+            _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
           // 岗位状态
-          _infoname[i].jobStateName = _infoname[i].jobStatus == "online"?"在职":"离职"
+          _infoname[i].jobStateName =
+            _infoname[i].jobStatus == "online" ? "在职" : "离职";
           //工作年限
-          if(_infoname[i].workTime == "0"){
-            _infoname[i].workTimeName = "1年以下"
-          }else if(_infoname[i].workTime == "11"){
-            _infoname[i].workTimeName = "10年以上"
-          }else{
-            _infoname[i].workTimeName = _infoname[i].workTime+"年"
+          if (_infoname[i].workTime == "0") {
+            _infoname[i].workTimeName = "1年以下";
+          } else if (_infoname[i].workTime == "11") {
+            _infoname[i].workTimeName = "10年以上";
+          } else {
+            _infoname[i].workTimeName = _infoname[i].workTime + "年";
           }
-          console.log(birth,"birth----")
+          console.log(birth, "birth----");
         }
-        this.techniList = this.infoname
-        console.log(this.techniList,"this.techniList----------")
-      }).catch(error=>{
-        console.log(error,"error-----thechni.vue-----1211")
+        this.techniList = this.infoname;
+        console.log(this.techniList, "this.techniList----------");
       })
-      //性别,工作年限,岗位性质，岗位状态
-      Whether().then(({data})=>{
-        console.log(data,"xxxxxxx")
+      .catch(error => {
+        console.log(error, "error-----thechni.vue-----1211");
+      });
+    //性别,工作年限,岗位性质，岗位状态
+    Whether()
+      .then(({ data }) => {
+        console.log(data, "xxxxxxx");
         this.sex = data.sex;
-        this.workyear = data.work_time
-        this.station = data.job_natrue
-        this.statu = data.job_status
-        this.sexTypes = data.assess_grade
-      }).catch(error=>{
-        console.log(error,"error-----techni.vue--1255")
+        this.workyear = data.work_time;
+        this.station = data.job_natrue;
+        this.statu = data.job_status;
+        this.sexTypes = data.assess_grade;
+        this.marriage = data.matrimony;
+        this.education = data.education;
+        this.relation = data.relation;
       })
-      getTech().then(res => {
-        this.ethnics = res.data;
-        this.ethnic=res.data[32].label
+      .catch(error => {
+        console.log(error, "error-----techni.vue--1255");
       });
-      getEducations().then(res =>{
-        this.education=res.data
-        this.educations=res.data[2].value
-      });
-      getStrong().then(res =>{
-        this.strong=res.data
-        this.strongs=res.data[22].value
-      });
-      getHeight().then(res =>{
-        this.height=res.data
-        this.heights=res.data[18].value 
-      });
-      getMatrimony().then(res =>{ 
-        if(res.status==200){
-          this.marriage=res.data
-          this.marriages=res.data[0].label
-          // console.log(this.marriage)
-        }else{
-          console.log("错误")
-        }
-      })
-    }
+    getTech().then(res => {
+      this.ethnics = res.data;
+      this.ethnic = res.data[32].label;
+    });
+    getStrong().then(res => {
+      this.strong = res.data;
+      this.strongs = res.data[22].value;
+    });
+    getHeight().then(res => {
+      this.height = res.data;
+      this.heights = res.data[18].value;
+    });
+    // getMatrimony().then(res =>{
+    //   if(res.status==200){
+    //     // this.marriage=res.data
+    //     // this.marriages=res.data[0].label
+    //     // console.log(this.marriage)
+    //   }else{
+    //     console.log("错误")
+    //   }
+    // })
   }
-
+};
 </script>
 <style>
-  * {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+* {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 
-  body {
-    background: #eef1f6;
-  }
+body {
+  background: #eef1f6;
+}
 
-  .tech-index {
-    background: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
- 
-  .tech {
-    position: relative;
-  }
+.tech-index {
+  background: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .tech-btn {
-    background: #fff;
-    border: 1px solid #4c70e8;
-    color: #4c70e8;
-    margin-left: 40px;
-    cursor: pointer;
-    /* border: none; */
-    outline: none;
-    height: 36px;
-    font-size: 12px;
-    text-align: center;
-    width: 80px;
-  }
+.tech {
+  position: relative;
+}
 
-  .tech-btn-right {
-    margin-left: 300px;
-  }
+.tech-btn {
+  background: #fff;
+  border: 1px solid #4c70e8;
+  color: #4c70e8;
+  margin-left: 40px;
+  cursor: pointer;
+  /* border: none; */
+  outline: none;
+  height: 36px;
+  font-size: 12px;
+  text-align: center;
+  width: 80px;
+}
 
-  .tech-section {
-    margin: 20px;
-  }
+.tech-btn-right {
+  margin-left: 300px;
+}
 
-  .tech-section-right {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 45px;
-  }
+.tech-section {
+  margin: 20px;
+}
 
-  .tech-section-ul {
-    margin: 20px 0;
-    display: flex;
-    flex-wrap:wrap
-  }
+.tech-section-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 45px;
+}
 
-  .tech-table {
-    margin: 20px;
-    padding-bottom: 20px;
-  }
+.tech-section-ul {
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+}
 
-  .tech-section-ul li {
-    width: 32%;
-    height: 200px;
-    background: #fff;
-    position: relative;
-    margin: 0 27px 10px 0;
-  }
-  .tech-section-ul li:nth-child(3n){
-    margin-right: 0;
-  }
+.tech-table {
+  margin: 20px;
+  padding-bottom: 20px;
+}
 
-  .tech-section-ul-posi {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
+.tech-section-ul li {
+  width: 32%;
+  height: 200px;
+  background: #fff;
+  position: relative;
+  margin: 0 27px 10px 0;
+}
+.tech-section-ul li:nth-child(3n) {
+  margin-right: 0;
+}
 
-  .fy {
-    margin: 0 20px;
-  }
+.tech-section-ul-posi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .tech-section-lage {
-    /* margin: 0px; */
-    padding: 0px;
-    left: 40px;
-    width: 60%;
-  }
-  .tech-section-lage>div{
-    margin: 0px;
-    padding: 0px;
-  }
+.fy {
+  margin: 0 20px;
+}
 
-  .tech-section-lage>div:nth-of-type(1){
-    padding: 20px 20px 0 20px;
-    font-size: 14;
-    font-weight: 700;
-  }
+.tech-section-lage {
+  /* margin: 0px; */
+  padding: 0px;
+  left: 40px;
+  width: 60%;
+}
+.tech-section-lage > div {
+  margin: 0px;
+  padding: 0px;
+}
 
-  .tech-tc-prson {
-    margin: 0px 20px;
-    padding: 30px 20px 10px 0;  
-    border-bottom: #f3f1f1 solid 1px;
-    font-size: 14px;
-    font-weight: 700;
-    color: black;
-  }
+.tech-section-lage > div:nth-of-type(1) {
+  padding: 20px 20px 0 20px;
+  font-size: 14;
+  font-weight: 700;
+}
 
-  .tech-ul {
-    padding: 20px 40px 10px 25px;
-    /* border-bottom: solid 20px #f3f1f1; */
-  }
+.tech-tc-prson {
+  margin: 0px 20px;
+  padding: 30px 20px 10px 0;
+  border-bottom: #f3f1f1 solid 1px;
+  font-size: 14px;
+  font-weight: 700;
+  color: black;
+}
 
-  .tech-ul>li {
-    display: flex;
-    justify-content: space-between;
-    /* padding-bottom: 20px; */
-  }
- .tech-ul .el-form-item__label{
-	 text-align: left;
- }
-  .tech-center {
-    display: flex;
-    justify-content: center;
-  }
+.tech-ul {
+  padding: 20px 40px 10px 25px;
+  /* border-bottom: solid 20px #f3f1f1; */
+}
 
+.tech-ul > li {
+  display: flex;
+  justify-content: space-between;
+  /* padding-bottom: 20px; */
+}
+.tech-ul .el-form-item__label {
+  text-align: left;
+}
+.tech-center {
+  display: flex;
+  justify-content: center;
+}
 
-  .tech-ul li>div {
-	  width: 400px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-  }
+.tech-ul li > div {
+  width: 400px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
 
-  .tech-ul li div>p {
-    display: flex;
-  }
+.tech-ul li div > p {
+  display: flex;
+}
 
-  .tech-span {
-    color: red;
-    width: 10px;
-    /* display: block; */
-    margin-right: 4px;
-  }
+.tech-span {
+  color: red;
+  width: 10px;
+  /* display: block; */
+  margin-right: 4px;
+}
 
-  .tech-ul li div p:nth-of-type(1) {
-    width: 100px;
-  }
+.tech-ul li div p:nth-of-type(1) {
+  width: 100px;
+}
 
-  /* .el-button{
+/* .el-button{
     border-radius:0px;
   } */
 
-  .tech-family-btn{
-    border-radius: 0px;
-  }
+.tech-family-btn {
+  border-radius: 0px;
+}
 
+.tech-fourth {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  height: 36px;
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  color: #4c70e8;
+  background: #fff;
+  border: 1px solid #4c70e8;
+}
 
-  .tech-fourth {
-    cursor: pointer;
-    border: none;
-    outline: none;
-    height: 36px;
-    font-size: 12px;
-    text-align: center;
-    width: 100px;
-    color: #4c70e8;
-    background: #fff;
-    border: 1px solid #4c70e8;
-  }
+.tech-fourth-rigth {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  height: 36px;
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  color: red;
+  background: #fff;
+  border: 1px solid red;
+  /* margin-left: 40px; */
+}
 
-  .tech-fourth-rigth {
-    cursor: pointer;
-    border: none;
-    outline: none;
-    height: 36px;
-    font-size: 12px;
-    text-align: center;
-    width: 100px;
-    color: red;
-    background: #fff;
-    border: 1px solid red;
-    /* margin-left: 40px; */
-  }
-  
+.el-textarea__inner {
+  border-radius: 0px;
+}
 
-  .el-textarea__inner {
-    border-radius: 0px;
-  }
+.el-upload-list {
+  width: 80px;
+  height: 100px;
+}
+.tech-psoition {
+  width: 100%;
+  height: 320px;
+  background: #fff;
+  position: absolute;
+  top: 77px;
+  left: 0;
+  z-index: 1;
+  animation: show 1s;
+  -moz-animation: show 1s;
+  /* Firefox */
+  -webkit-animation: show 1s;
+  /* Safari 和 Chrome */
+  -o-animation: show 1s;
+}
 
-  .el-upload-list{
-    width: 80px;
+@keyframes show {
+  0% {
     height: 100px;
   }
-  .tech-psoition {
-    width: 100%;
+  50% {
+    height: 200px;
+  }
+  100% {
     height: 320px;
-    background: #fff;
-    position: absolute;
-    top: 77px;
-    left: 0;
-    z-index: 1;
-    animation: show 1s;
-    -moz-animation: show 1s;
-    /* Firefox */
-    -webkit-animation: show 1s;
-    /* Safari 和 Chrome */
-    -o-animation: show 1s;
   }
+}
 
-  @keyframes show {
-    0% {
-      height: 100px
-    }
-    50% {
-      height: 200px
-    }
-    100% {
-      height: 320px
-    }
+@keyframes hidden {
+  0% {
+    height: 320px;
   }
+  50% {
+    height: 200px;
+  }
+  100% {
+    height: 100px;
+  }
+}
 
-  @keyframes hidden {
-    0% {
-      height: 320px
-    }
-    50% {
-      height: 200px
-    }
-    100% {
-      height: 100px
-    }
-  }
+.positionbox {
+  margin: 20px;
+}
 
-  .positionbox {
-    margin: 20px;
-  }
+.tech-positon-odvi {
+  display: flex;
+  justify-content: space-between;
+}
 
-  .tech-positon-odvi {
-    display: flex;
-    justify-content: space-between;
-  }
+.tech-pos-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
 
-  .tech-pos-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-  }
-
-  .tech-green {
-    border: solid 1px green;
-     background:url('../../../static/icon/Selected.png') no-repeat;
-    background-size:15px 15px;
-    background-position: bottom right;
-  }
-  /* .tech-green::after{
+.tech-green {
+  border: solid 1px green;
+  background: url("../../../static/icon/Selected.png") no-repeat;
+  background-size: 15px 15px;
+  background-position: bottom right;
+}
+/* .tech-green::after{
     content:"✔";
     width: 10px;
     height: 10px;
     margin-top:6px;
     margin-left:0px;  */
-    /* border-bottom:10px solid green;
+/* border-bottom:10px solid green;
     border-left:10px solid transparent;
     color: #fff;
     margin-top: 3px; */
-    /* border-bottom:10px solid green;
+/* border-bottom:10px solid green;
     border-left:10px solid transparent;
     width: 10px;
     height: 10px;
     margin-top:12px;
     margin-left:0px; 
     color: #fff; */
-  /* } */
+/* } */
 
-  .tallys {
-    color: #fff;
-    font-size: 12px;
-    position: absolute;
-    margin-top: 10px;
-    margin-left: 35px;
-  }
-
-  .triangle-bottomrights {
-    width: 0;
-    height: 0;
-    border-bottom: 15px solid green;
-    border-left: 15px solid transparent;
-    position: absolute;
-    margin-top: 17px;
-    margin-left: 32px;
-  }
-
-  .tech-order-btn {
-    background: #fff;
-    color: #4c70e8;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-
-  .tech-order-jn {
-    width: 300px;
-    height: 36px;
-    border: 1px solid #bfcbd9;
-    position: relative;
-    line-height: 36px;
-  }
-
-  .tech-order-jn-son,
-  .tech-order-jn-sons {
-    width: 545px;
-    /* height: 100px; */
-    border: 1px solid #bfcbd9;
-    border-top: none;
-    /* display: flex; */
-    position: absolute;
-    background: #fff;
-    z-index: 2;
-    top: 35px;
-    left: -1px;
-  }
-
-  .tech-order-jn-sont {
-    width: 545px;
-    height: 40px;
-    /* margin-top: 15px; */
-    border: 1px solid #bfcbd9;
-    /* border-top: none; */
-    /* display: flex; */
-    /* position: absolute; */
-    background: #fff;
-    z-index: 1;
-    top: 35px;
-    left: -1px;
-  }
-
-  .tech-order-posi {
-    margin: 15px 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .tech-order-posis {
-    margin: 0 5px;
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    line-height: 26px;
-    padding: 0 7px; 
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .tallyo {
-    color: #fff;
-    font-size: 12px;
-    position: absolute;
-    margin-top: 10px;
-    margin-left: 35px;
-  }
-
-  .tallyos {
-    color: #fff;
-    font-size: 12px;
-    position: absolute;
-    margin-top: 10px;
-    margin-left: 35px;
-  }
-
-  .tallyose {
-    color: #fff;
-    /* color: red; */
-    font-size: 6px;
-    position: absolute;
-    margin-top: 6px;
-    margin-left: 22px;
-  }
-
-  .triangle-bottomrighto {
-    width: 0;
-    height: 0;
-    border-bottom: 15px solid green;
-    border-left: 15px solid transparent;
-    position: absolute;
-    margin-top: 17px;
-    margin-left: 32px;
-  }
-
-  .triangle-bottomrightos {
-    width: 0;
-    height: 0;
-    border-bottom: 15px solid green;
-    border-left: 15px solid transparent;
-    position: absolute;
-    margin-top: 17px;
-    margin-left: 32px;
-  }
-
-  .triangle-bottomrightose {
-    width: 0;
-    height: 0;
-    border-bottom: 10px solid green;
-    border-left: 10px solid transparent;
-    position: absolute;
-    margin-top: 12px;
-    margin-left: 19px;
-  }
-
-  .btn-styl {
-    height: 25px;
-    width: 60px;
-  }
-
-
-  .selfCheckBoxsday {
-    width: 30px;
-    height: 24px;
-    line-height: 24px;
-    /* border: 1px solid #bfcbd9; */
-    display: inline-block;
-    /* text-align: center; */
-    position: relative;
-    /* margin-left: 20px; */
-    font-size: 12px;
-    cursor: pointer;
-  }
-
-  .tech-daytim {
-    margin-left: 2px;
-  }
-
-  .tech-section-lages {
-    width: 40%;
-    left: 5%;
-	padding-right: 30px;
-  }
-
-  .tech-section-xiu {
-    padding: 10px 30px;
-  }
-
-  .tech-section-xiu>li {
-    display: flex;
-    padding: 10px;
-  }
-
-  .tech-section-xiu>li>div:nth-of-type(1) {
-    width: 120px;
-    height: 35px;
-    line-height: 35px;
-  }
-
-  .tech-section-xiu>li>div:nth-of-type(2) {
-    line-height: 35px;
-  }
-
-  .tech-xiu-div {
-    width: 100%;
-    height: 100%;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .tech-xiu-div-one {
-    width: 50%;
-    text-align: center;
-    /* display: flex;
-     justify-content: center; */
-  }
-
-  .tech-xiu-div-two {
-    margin: 10px 0;
-    width: 50%;
-    /* text-align: center; */
-  }
-
-  .tech-xiu-div-two>div {
-    margin-top: 14px;
-    display: flex;
-  }
-
-  .tech-mouse{
-    width: 50px;
-    height: 20px;
-    line-height: 18px;
-    background: #fff;
-    display: block;
-    
-    text-align: center;
-  }
-  
-  .tech-mouse-div{
-    margin-top: 10px;
-    /* width: 120px; */
-    display: inline-block;
-    display: flex;
-    justify-content: center;
-  }
-  .tech-mouse-div>span:nth-of-type(1){
-    margin-right: 5px;
-    border: 1px solid #707cd2;
-    color: #707cd2;
-  }
-
-  .tech-mouse-div>span:nth-of-type(2){
-    margin-left: 5px;
-    border: 1px solid #ff7676;
-    color: #ff7676;
-  }
-
-.mobel{
-	margin-bottom:22px; 
-	display: flex;
+.tallys {
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 35px;
 }
-.mobel>p:nth-child(1){
-	width: 100px;
-	text-align: right;
-	padding-right:12px; 
+
+.triangle-bottomrights {
+  width: 0;
+  height: 0;
+  border-bottom: 15px solid green;
+  border-left: 15px solid transparent;
+  position: absolute;
+  margin-top: 17px;
+  margin-left: 32px;
+}
+
+.tech-order-btn {
+  background: #fff;
+  color: #4c70e8;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.tech-order-jn {
+  width: 300px;
+  height: 36px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+  line-height: 36px;
+}
+
+.tech-order-jn-son,
+.tech-order-jn-sons {
+  width: 545px;
+  /* height: 100px; */
+  border: 1px solid #bfcbd9;
+  border-top: none;
+  /* display: flex; */
+  position: absolute;
+  background: #fff;
+  z-index: 2;
+  top: 35px;
+  left: -1px;
+}
+
+.tech-order-jn-sont {
+  width: 545px;
+  height: 40px;
+  /* margin-top: 15px; */
+  border: 1px solid #bfcbd9;
+  /* border-top: none; */
+  /* display: flex; */
+  /* position: absolute; */
+  background: #fff;
+  z-index: 1;
+  top: 35px;
+  left: -1px;
+}
+
+.tech-order-posi {
+  margin: 15px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tech-order-posis {
+  margin: 0 5px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  line-height: 26px;
+  padding: 0 7px;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tallyo {
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 35px;
+}
+
+.tallyos {
+  color: #fff;
+  font-size: 12px;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 35px;
+}
+
+.tallyose {
+  color: #fff;
+  /* color: red; */
+  font-size: 6px;
+  position: absolute;
+  margin-top: 6px;
+  margin-left: 22px;
+}
+
+.triangle-bottomrighto {
+  width: 0;
+  height: 0;
+  border-bottom: 15px solid green;
+  border-left: 15px solid transparent;
+  position: absolute;
+  margin-top: 17px;
+  margin-left: 32px;
+}
+
+.triangle-bottomrightos {
+  width: 0;
+  height: 0;
+  border-bottom: 15px solid green;
+  border-left: 15px solid transparent;
+  position: absolute;
+  margin-top: 17px;
+  margin-left: 32px;
+}
+
+.triangle-bottomrightose {
+  width: 0;
+  height: 0;
+  border-bottom: 10px solid green;
+  border-left: 10px solid transparent;
+  position: absolute;
+  margin-top: 12px;
+  margin-left: 19px;
+}
+
+.btn-styl {
+  height: 25px;
+  width: 60px;
+}
+
+.selfCheckBoxsday {
+  width: 30px;
+  height: 24px;
+  line-height: 24px;
+  /* border: 1px solid #bfcbd9; */
+  display: inline-block;
+  /* text-align: center; */
+  position: relative;
+  /* margin-left: 20px; */
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tech-daytim {
+  margin-left: 2px;
+}
+
+.tech-section-lages {
+  width: 40%;
+  left: 5%;
+  padding-right: 30px;
+}
+
+.tech-section-xiu {
+  padding: 10px 30px;
+}
+
+.tech-section-xiu > li {
+  display: flex;
+  padding: 10px;
+}
+
+.tech-section-xiu > li > div:nth-of-type(1) {
+  width: 120px;
+  height: 35px;
+  line-height: 35px;
+}
+
+.tech-section-xiu > li > div:nth-of-type(2) {
+  line-height: 35px;
+}
+
+.tech-xiu-div {
+  width: 100%;
+  height: 100%;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.tech-xiu-div-one {
+  width: 50%;
+  text-align: center;
+  /* display: flex;
+     justify-content: center; */
+}
+
+.tech-xiu-div-two {
+  margin: 10px 0;
+  width: 50%;
+  /* text-align: center; */
+}
+
+.tech-xiu-div-two > div {
+  margin-top: 14px;
+  display: flex;
+}
+
+.tech-mouse {
+  width: 50px;
+  height: 20px;
+  line-height: 18px;
+  background: #fff;
+  display: block;
+
+  text-align: center;
+}
+
+.tech-mouse-div {
+  margin-top: 10px;
+  /* width: 120px; */
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+}
+.tech-mouse-div > span:nth-of-type(1) {
+  margin-right: 5px;
+  border: 1px solid #707cd2;
+  color: #707cd2;
+}
+
+.tech-mouse-div > span:nth-of-type(2) {
+  margin-left: 5px;
+  border: 1px solid #ff7676;
+  color: #ff7676;
+}
+
+.mobel {
+  margin-bottom: 22px;
+  display: flex;
+}
+.mobel > p:nth-child(1) {
+  width: 100px;
+  text-align: right;
+  padding-right: 12px;
 }
 .line {
-	text-align:center;
+  text-align: center;
 }
-.tech-service{
-	padding: 20px 0 10px 0;
+.tech-service {
+  padding: 20px 0 10px 0;
 }
-.working{
-  border: 1px solid #F2F2F2;
+.working {
+  border: 1px solid #f2f2f2;
   width: 400px;
   box-sizing: border-box;
-  padding: 0 0 0 20px;;
+  padding: 0 0 0 20px;
 }
-.working>li{
+.working > li {
   position: relative;
-  border-bottom:1px solid #F2F2F2; 
-  padding-top:15px; 
+  border-bottom: 1px solid #f2f2f2;
+  padding-top: 15px;
 }
 
-.woking-div{
+.woking-div {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
 }
-.i-delete{
+.i-delete {
   position: absolute;
-  right:20px;
-  top: 20px; 
+  right: 20px;
+  top: 20px;
 }
-.time{
+.time {
   padding: 10px 0;
 }
-#confirmation{
+#confirmation {
   display: flex;
   justify-content: center;
   margin-top: 30px;
 }
-.button-large-fourth,.button-cancel-fourth{
+.button-large-fourth,
+.button-cancel-fourth {
   margin-right: 40px;
   display: block;
   line-height: 34px;
 }
-.button-cancel-fourth{
+.button-cancel-fourth {
   cursor: pointer;
-  border:none;
+  border: none;
   height: 34px;
   font-size: 12px;
   text-align: center;
   width: 100px;
-  border: 1px solid #4c70e8
+  border: 1px solid #4c70e8;
 }
-.el-input__icon{
-  display: none
+.el-input__icon {
+  display: none;
 }
 </style>
 

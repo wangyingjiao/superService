@@ -225,7 +225,13 @@
 							</el-table>							
 						</div>
 					</div>													    
-				</div>							
+				</div>
+        <br/>
+        <br/>
+        <div slot="footer" class="dialog-footer" style="text-align:center">
+           <button class="button-large"  @click="createMap">保 存</button>    
+           <button class="button-cancel" @click="resetMap">取 消</button>
+        </div>					
 	    </el-dialog>
 
 
@@ -393,9 +399,6 @@ export default {
     areaOptions: function() {
       return this.$store.state.user.area;
     }
-    // selectAccount:function(){
-    //   return this.accountData[0].YDHL
-    // }
   },
   filters: {
     statusFilter(status) {
@@ -652,12 +655,6 @@ export default {
       });
     },
     createMaster() {
-      // var name = "";
-      // for (var i = 0; i < this.master.length; i++) {
-      //   if (this.tempMaster.master == this.master[i].id) {
-      //     name = this.master[i].name;
-      //   }
-      // }
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
@@ -679,6 +676,11 @@ export default {
         }
       });
     },
+    createMap() {
+      console.log(this.tableData)
+      console.log(getOverlays())
+    },
+    resetMap() {},
     update(formName) {
       var obj = {
         id: this.rowInfo.id,

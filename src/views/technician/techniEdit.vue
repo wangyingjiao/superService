@@ -112,13 +112,13 @@
         
         <!-- 服务信息 -->
         <h3 class="tech-tc-prson">服务信息</h3>
-        <el-form :model="supplement" :rules="rulesServer" ref="supplement" label-width="100px" class="demo-ruleForm">
+        <el-form :model="perServer" :rules="rulesServer" ref="perServer" label-width="100px" class="demo-ruleForm">
             <ul class="tech-ul">
                 <li>
                     <div>
                         <p>
-                            <el-form-item label="选择城市:" prop="serviceCityName">
-                                <el-select v-model="perServer.serviceCityName" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
+                            <el-form-item label="选择城市:" prop="stationCityCode">
+                                <el-select v-model="perServer.stationCityCode" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
                                     <el-option v-for="item in choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
                                 </el-option>
                                 </el-select>
@@ -203,11 +203,12 @@
 
                                 <div style="display:flex;">
                                     <div class="selfCheckBoxsday">日期</div>
-                                    <div class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" :class="{'techTime-green':item.show===true}">
-                                    {{item.sexName}}
+                                    <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
+                                    :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
+                                    {{item.name}}
                                     <!-- <div :class="{'triangle-bottomrightose':item.show===true}"></div>
                                     <div class="tallyose">&#10004</div> -->
-                                    </div>
+                                    </button>
                                 </div>
                                 </div>
                                 <div style="margin-top:10px;">
@@ -235,12 +236,12 @@
                         </div>
                     </div>
                      
-                    <div v-show="perServer.workTimes.length>0">
+                    <div>
                         <ul class="working">
                             <li v-for="(item,index) in perServer.workTimes" :key="index">
                             <div>
                                 <div class="woking-div">
-                                <div><span v-for="(data,i) in item.week" :key="i">{{"星期"+data}}</span></div>
+                                <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
                                 <div class="time">{{item.startTime+"~"+item.endTime}}</div>
                                 </div>
                             </div>
@@ -251,28 +252,6 @@
                         </ul>
                     </div>
                 </li>
-                <!-- <li>
-                    <div>
-                    <p><span class="tech-span"></span>级别:</p>
-                    <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
-                        <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2($index,item)" v-for="(item,$index) in sexTypes"
-                        :class="{'tech-green':isA==$index}" style="margin:0">
-                        {{item.sexName}}
-                        <div :class="{'triangle-bottomrights':isA==$index}"></div>
-                        <div class="tallys">&#10004</div>
-                        </div>
-                    </div>
-                    </div>
-                </li> -->
-                <!-- <li>
-                    <div>
-                    <p><span class="tech-span"></span>经验描述:</p>
-                    <p>
-                        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
-                        </el-input>
-                    </p>
-                    </div>
-                </li> -->
                 <li>
                     <div>
                     <p></p>
@@ -285,7 +264,7 @@
         </el-form>
         <!-- 补充个人资料 -->
         <h3 class="tech-tc-prson">补充个人资料</h3>
-        <el-form :model="perServer" :rules="rulesServer" ref="perServer" label-width="100px" class="demo-ruleForm">
+        <el-form :model="supplement" :rules="rulesServer" ref="supplement" label-width="100px" class="demo-ruleForm">
           <ul class="tech-ul">
             <li>
               <div>
@@ -300,9 +279,9 @@
               <div>
                 <!-- <p>学历:</p> -->
                 <p>
-                  <el-form-item label="邮箱:">
+                  <el-form-item label="学历:">
                     <el-select v-model="supplement.education" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in education" :key="item.value" :label="item.label" :value="item.value">
+                      <el-option v-for="(item,key,index) in education" :key="index" :label="item" :value="key">
                       </el-option>
                     </el-select>
                    </el-form-item>
@@ -315,7 +294,7 @@
                 <p>
                   <el-form-item label="身高:">
                     <el-select v-model="supplement.height" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.value">
+                      <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.label">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -326,7 +305,7 @@
                 <p>
                   <el-form-item label="体重:">
                     <el-select v-model="supplement.weight" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.value">
+                      <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.label">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -339,7 +318,7 @@
                 <p>
                   <el-form-item label="婚姻状况:">
                     <el-select v-model="supplement.marryStatus" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in marriage" :key="item.value" :label="item.label" :value="item.value">
+                      <el-option v-for="(item,key,index) in marriage" :key="index" :label="item" :value="key">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -380,7 +359,7 @@
                     <p>
                       <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
                           <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2(index,key)" v-for="(item,key,index) in sexTypes"
-                          :class="{'tech-green':isA==index}" :key="key">
+                          :class="{'tech-green':isA==index+1}" :key="key">
                           {{item}}
                           <!-- <div :class="{'triangle-bottomrights':isA==$index}"></div>
                           <div class="tallys">&#10004</div> -->
@@ -434,46 +413,42 @@
         </el-form>
         <!--家庭成员（选填） -->
         <h3 class="tech-tc-prson">家庭成员（选填）</h3>
-        <div class="tech-table" v-show="techTable">
-          <el-table :key='tableKey' :data="list" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
-            style="width: 100%" v-show="isTab">
+        <div class="tech-table" v-show="familyList.length>0">
+          <!-- v-show="techTable" -->
+          <el-table :key='tableKey' v-show="familyList.length>0" :data="familyList" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
+            style="width: 100%">
+            <!-- v-show="isTab" -->
 
-            <el-table-column align="center" label="关系">
+            <el-table-column align="center" label="关系" prop="relation">
               <template scope="scope">
-                <span>同事</span>
+                <span v-if="scope.row.relation=='parent'">父母</span>
+                <span v-if="scope.row.relation=='siblings'">兄弟姐妹</span>
+                <span v-if="scope.row.relation=='children'">子女</span>
+                <span v-if="scope.row.relation=='spouse'">夫妻</span>
+                <span v-if="scope.row.relation=='relative'">亲戚</span>
               </template>
             </el-table-column>
 
-            <el-table-column align="center" label="姓名">
-              <template scope="scope">
-                <span>张三</span>
-              </template>
+            <el-table-column align="center" label="姓名" prop="memberName">
             </el-table-column>
 
-            <el-table-column align="center" label="手机号">
-              <template scope="scope">
-                <span>1111</span>
-              </template>
+            <el-table-column align="center" label="手机号" prop="memberPhone">
             </el-table-column>
 
-            <el-table-column align="center" label="单位">
-              <template scope="scope">
-                <span>呼家楼</span>
-              </template>
+            <el-table-column align="center" label="单位" prop="memberCompany">
             </el-table-column>
 
-            <el-table-column align="center" label="职务">
-              <template scope="scope">
-                <span>无</span>
-              </template>
+            <el-table-column align="center" label="职务" prop="memberJob">
             </el-table-column>
 
             <el-table-column align="center" label="操作">
               <template scope="scope">
-                <el-button size="small" type="primary" @click="handleModifyStatus(scope.row,'deleted')">编辑
+                <span class="operation"  @click="handleModifyStatus(scope.row,scope,'deleted')">编辑</span>
+                <span class="operation" @click="handleModifyDelete(scope.row,scope,'deleted')">删除</span>
+                <!-- <el-button size="small" @click="handleModifyStatus(scope.row,scope,'deleted')">编辑
                 </el-button>
-                <el-button size="small" type="danger" @click="handleModifyStatus(scope.row,'deleted')">删除
-                </el-button>
+                <el-button size="small" type="danger" @click="handleModifyDelete(scope.row,scope,'deleted')">删除
+                </el-button> -->
               </template>
             </el-table-column>
 
@@ -490,7 +465,7 @@
                         <p>
                             <el-form-item label="关系:" prop="relation">
                                 <el-select v-model="perFamily.relation" clearable placeholder="请选择" style="width:200px">
-                                    <el-option v-for="(item,$index) in bind" :key="$index" :label="item.label" :value="item.value">
+                                    <el-option v-for="(item,key,index) in relation" :key="index" :label="item" :value="key">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -511,7 +486,7 @@
                     <div>
                     <!-- <p><span class="tech-span"></span>手机号:</p> -->
                         <p>
-                            <el-form-item label="手机号:">
+                            <el-form-item label="手机号:" prop="memberPhone">
                                 <el-input placeholder="请输入11位手机号" style="width:200px" v-model="perFamily.memberPhone"></el-input>
                             </el-form-item>
                         </p>
@@ -521,8 +496,8 @@
                     <div>
                     <!-- <p><span class="tech-span"></span>单位:</p> -->
                     <p>
-                        <el-form-item label="单位:">
-                            <el-input placeholder="请输入工作单位名称" style="width:200px" v-model="perFamily.memberUnit"></el-input>
+                        <el-form-item label="单位:" prop= "memberCompany">
+                            <el-input placeholder="请输入工作单位名称" style="width:200px" v-model="perFamily.memberCompany"></el-input>
                         </el-form-item>
                     </p>
                     </div>
@@ -530,7 +505,7 @@
                 <li>
                     <div>
                     <p>
-                         <el-form-item label="职务:">
+                         <el-form-item label="职务:" prop="memberJob">
                             <el-input placeholder="请输入职务" style="width:200px" v-model="perFamily.memberJob"></el-input>
                         </el-form-item>
                     </p>
@@ -541,7 +516,7 @@
                     <p></p>
                     <p>
                         <button class="button-large" @click="savrTable('perFamily')">保存</button>
-                        <button class="button-cancel" style="margin-left:20px">取消</button>
+                        <button class="button-cancel" @click="familyTable('perFamily')" style="margin-left:20px">取消</button>
                     </p>
                     </div>
                 </li>
@@ -581,7 +556,7 @@
                 <div>
                     <p></p>
                     <p>
-                        <span class="button-large-fourth" @click="submitForm('perServer')">保存信息</span>
+                        <span class="button-large-fourth" @click="sumitFormSub('perServer')">保存信息</span>
                     </p>
                 </div>
             </li>
@@ -599,120 +574,170 @@ import {
   getHeight,
   serviceStation,
   getMatrimony,
-  technicianEdit
+  technicianEdit,
+  familyAdd,
+  familyDelete
 } from "@/api/tech";
 
 import { getSign } from "@/api/sign";
 
 export default {
   data() {
-         //身份证
-      var TECHIDCARD = (rule,value,callback) =>{
-        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
-        var tip = "";
-        var pass= true;
-        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
-                tip = "身份证号格式错误";
-                callback(new Error(tip))
-                pass = false;
-        }else if(!city[value.substr(0,2)]){
-            tip = "地址编码错误";
-            callback(new Error(tip))
+    //身份证
+    var TECHIDCARD = (rule, value, callback) => {
+      var city = {
+        11: "北京",
+        12: "天津",
+        13: "河北",
+        14: "山西",
+        15: "内蒙古",
+        21: "辽宁",
+        22: "吉林",
+        23: "黑龙江 ",
+        31: "上海",
+        32: "江苏",
+        33: "浙江",
+        34: "安徽",
+        35: "福建",
+        36: "江西",
+        37: "山东",
+        41: "河南",
+        42: "湖北 ",
+        43: "湖南",
+        44: "广东",
+        45: "广西",
+        46: "海南",
+        50: "重庆",
+        51: "四川",
+        52: "贵州",
+        53: "云南",
+        54: "西藏 ",
+        61: "陕西",
+        62: "甘肃",
+        63: "青海",
+        64: "宁夏",
+        65: "新疆",
+        71: "台湾",
+        81: "香港",
+        82: "澳门",
+        91: "国外 "
+      };
+      var tip = "";
+      var pass = true;
+      if (
+        !value ||
+        !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+          value
+        )
+      ) {
+        tip = "身份证号格式错误";
+        callback(new Error(tip));
+        pass = false;
+      } else if (!city[value.substr(0, 2)]) {
+        tip = "地址编码错误";
+        callback(new Error(tip));
+        pass = false;
+      } else {
+        if (value.length == 18) {
+          value = value.split("");
+          var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+          var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+          var sum = 0;
+          var ai = 0;
+          var wi = 0;
+          for (var i = 0; i < 17; i++) {
+            ai = value[i];
+            wi = factor[i];
+            sum += ai * wi;
+          }
+          var last = parity[sum % 11];
+          if (parity[sum % 11] != value[17]) {
+            tip = "校验位错误";
+            callback(new Error(tip));
             pass = false;
-        }else{
-          if(value.length == 18){
-            value = value.split('');
-            var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
-            var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
-            var sum = 0;
-            var ai = 0;
-            var wi = 0;
-            for (var i = 0; i < 17; i++)
-                    {
-                        ai = value[i];
-                        wi = factor[i];
-                        sum += ai * wi;
-                    }
-            var last = parity[sum % 11];
-                    if(parity[sum % 11] != value[17]){
-                        tip = "校验位错误";
-                        callback(new Error(tip))
-                        pass =false;
-                    }
           }
         }
-        if(pass){
-          callback()
-        }
-       
       }
-      //手机
-      var TECHPHONE = (rule,value,callback) =>{
-        if(value){
-          if(!(/^1[34578]\d{9}$/.test(value))){
-            callback(new Error('手机号码有误，请重填'))
-          }else{
-            callback()
-          }
-        }else{
-          callback(new Error('请输入手机号'))
-        }
+      if (pass) {
+        callback();
       }
+    };
+    //手机
+    var TECHPHONE = (rule, value, callback) => {
+      if (value) {
+        if (!/^1[34578]\d{9}$/.test(value)) {
+          callback(new Error("手机号码有误，请重填"));
+        } else {
+          callback();
+        }
+      } else {
+        callback(new Error("请输入手机号"));
+      }
+    };
 
-      //现住地址
-      var ADDRESS = (rule,value,callback) =>{
-        console.log(rule,value,"value----现住地址")
-        callback()
-        // if(value.length>0){
-        //   callback()
-        // }else{
-        //   callback(new Error("请选择现住地址"))
-        // }
-      }
+    //现住地址
+    var ADDRESS = (rule, value, callback) => {
+      console.log(rule, value, "value----现住地址");
+      callback();
+      // if(value.length>0){
+      //   callback()
+      // }else{
+      //   callback(new Error("请选择现住地址"))
+      // }
+    };
 
-      //出生日期
-      var BIRTHDATE = (rule,value,callback) =>{
-        if(value){
-          callback()
-        }else{
-          callback(new Error("请输入出生日期"))
-        }
+    //出生日期
+    var BIRTHDATE = (rule, value, callback) => {
+      if (value) {
+        callback();
+      } else {
+        callback(new Error("请输入出生日期"));
       }
+    };
+
+    //现住地址
+    var SKILLIDS = (rule, value, callback) => {
+      console.log(value, "value------");
+      if (value.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择技能"));
+      }
+    };
 
     return {
-        techniEditId:'',
-        roomSel1Arr:[],
-        teachArr:[],
-        perFamily:{
-            relation:'',
-            memberName:'',
-            memberPhone:'',
-            memberUnit:'',
-            memberJob:''
-        },
-        rulesFamily:{
-            relation:[
-                { required: true, message: "请输入关系", trigger: "change" }
-            ],
-            memberName:[
-                { required: true, message: "请输入名字", trigger: "blur" },
-                { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
-            ]
-        },
-        //补充个人资料
-      supplement:{
-        email:'',
-        education:'',
-        weight:'',
-        height:'',
-        marryStatus:'',
-        nativeProvinceCode:'',
-        inJobTime:'',
-        jobLevel:'',
-        description:''
+      roomSelNum:[],
+      techniEditId: "",
+      roomSel1Arr: [],
+      teachArr: [],
+      perFamily: {
+        relation: "",
+        memberName: "",
+        memberPhone: "",
+        memberCompany: "",
+        memberJob: ""
+      },
+      rulesFamily: {
+        relation: [{ required: true, message: "请输入关系", trigger: "change" }],
+        memberName: [
+          { required: true, message: "请输入名字", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ]
+      },
+      //补充个人资料
+      supplement: {
+        email: "",
+        education: "",
+        weight: "",
+        height: "",
+        marryStatus: "",
+        nativeProvinceCode: "",
+        inJobTime: "",
+        jobLevel: "",
+        description: ""
       },
       // 个人资料
-      techTable:false,
+      techTable: false,
       personalEDit: {
         name: "",
         idCard: "",
@@ -720,10 +745,10 @@ export default {
         sex: "",
         phone: "",
         birthDate: "",
-        area:[],
-        address:'',
-        idCardPic:"",
-        headPic:''
+        area: [],
+        address: "",
+        idCardPic: "",
+        headPic: ""
       },
       rulesPerEdit: {
         name: [
@@ -731,50 +756,32 @@ export default {
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         // 身份证
-        idCard: [
-          { required: true, validator:TECHIDCARD, trigger: "blur" }
-        ],
-        phone: [
-          {required:true,validator:TECHPHONE,trigger:'blur'}
-        ],
-        sex: [
-          { required: true, message: "请输入性别", trigger: "change" }
-          ],
+        idCard: [{ required: true, validator: TECHIDCARD, trigger: "blur" }],
+        phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
+        sex: [{ required: true, message: "请输入性别", trigger: "change" }],
         birthDate: [
-          {required: true,validator:BIRTHDATE , trigger: "change" }
+          { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
-        area:[
-          {required:true,validator:ADDRESS, trigger:'change'}
-        ],
+        area: [{ required: true, validator: ADDRESS, trigger: "change" }]
       },
       //服务信息
-      perServer:{
-          serviceCityName:'',
-          jobNature:'',
-          stationId:'',
-          jobStatus:'',
-          workTime:'',
-          skillIds:''
+      perServer: {
+        stationCityCode: "",
+        jobNature: "",
+        stationId: "",
+        jobStatus: "",
+        workTime: "",
+        skillIds: ""
       },
-      rulesServer:{
-          serviceCityName:[
-				{ required: true, message: '请选择城市', trigger: 'change' }
-			],
-			jobNature:[
-				{ required: true, message: '请选择岗位', trigger: 'change' }
-			],
-			stationId:[
-				{ required: true, message: '请选择服务站', trigger: 'change' }
-			],
-			jobStatus:[
-				{ required: true, message: '请选择岗位状态', trigger: 'change' }
-			],
-			workTime:[
-				{ required: true, message: '请选择工作年限', trigger: 'change' }
-			],
-			skillIds:[
-				{ required: true, message: '请选择技能', trigger: 'blur' }
-			]
+      rulesServer: {
+        stationCityCode: [
+          { required: true, message: "请选择城市", trigger: "change" }
+        ],
+        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
+        jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
+        workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
+        skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }]
       },
       server: [
         {
@@ -827,7 +834,6 @@ export default {
       ],
 
       servery: [],
-      marriage: [],
 
       card: [
         {
@@ -842,11 +848,9 @@ export default {
       ethnics: [],
       areas: [],
       strong: {},
-      education: [],
       height: [],
       place: [],
       caty: [],
-
 
       bind: [
         {
@@ -992,38 +996,40 @@ export default {
         }
       ],
       sexDay: [
-        {
-          sexName: "星期一",
-          show: false
+         {
+          name: "星期一",
+          id: 1
         },
         {
-          sexName: "星期二",
-          show: false
+          name: "星期二",
+          id: 2
         },
         {
-          sexName: "星期三",
-          show: false
+          name: "星期三",
+          id: 3
         },
         {
-          sexName: "星期四",
-          show: false
+          name: "星期四",
+          id: 4
         },
         {
-          sexName: "星期五",
-          show: false
+          name: "星期五",
+          id: 5
         },
         {
-          sexName: "星期六",
-          show: false
+          name: "星期六",
+          id: 6
         },
         {
-          sexName: "星期日",
-          show: false
+          name: "星期日",
+          id: 7
         }
       ],
       sign: getSign(),
+      scopeId: null,
+      scopeItem: {},
       key: false,
-      isA: false,
+      isA: null,
       isB: false,
       isTab: false,
       sexLen: "",
@@ -1033,6 +1039,7 @@ export default {
       password: false,
       flage: false,
       tableKey: "",
+      familyFlag: false,
       cards: "",
       textarea3: "",
       radio8: "1",
@@ -1041,7 +1048,7 @@ export default {
       servers1: "",
       stationes: "",
       catys: "",
-      area:[],
+      area: [],
       places: "",
       marriages: "",
       strongs: "",
@@ -1060,6 +1067,7 @@ export default {
       value4: "",
       startTime: "",
       endTime: "",
+      disbArr:[],
       startTimes: "",
       endTimes: "",
       techName: "",
@@ -1074,7 +1082,7 @@ export default {
       ],
       position: false,
       listLoading: false,
-      list: [1, 2, 3],
+      familyList: [],
       total: null,
       listLoading: false,
       listQuery: {
@@ -1088,95 +1096,221 @@ export default {
       dialogVisible: false
     };
   },
-  watch:{
-    technicianData:{
-      immediate:true,
-      handler(val,oldval){
-        this.techniEditId = val.id
-        this.personalEDit = Object.assign({},val)
-        this.personalEDit.area = [val.provinceCode,val.cityCode,val.areaCode]
-        this.personalEDit.techBirthDate = val.birthDate
+  watch: {
+    technicianData: {
+      immediate: true,
+      handler(val, oldval) {
+        console.log(
+          val,
+          "------------------------w-a-t-c-h--------------------------------"
+        );
+        this.techniEditId = val.id;
+        this.personalEDit = Object.assign({}, val);
+        this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
+        this.personalEDit.techBirthDate = val.birthDate;
 
-        this.perServer = Object.assign({},val)
-        this.servery = val.stations
-        this.perServer.serviceCityName = val.stationCityCode
-        console.log(this.personalEDit,"val-----")
+        /*
+        ** 服务信息
+        ** 
+        **/
+        this.perServer = Object.assign({}, val);
+        this.servery = val.stations;
+        // this.perServer.serviceCityName = val.stationCityCode;
+        // //工作时间默认选中
+        var work = val.workTimes || [],
+            i,j,weeks_i;
+        if(work.length>0){
+          for(i = 0 ; i<work.length;i++){
+            weeks_i = work[i].weeks
+            for( j =0 ; j<weeks_i.length ; j++){
+              switch ( weeks_i[j].id*1) {
+                case 1:
+                   weeks_i[j].name = "星期一"
+                  break;
+                case 2:
+                   weeks_i[j].name = "星期二"
+                  break;
+                case 3:
+                  weeks_i[j].name = "星期三"
+                  break;
+                case 4:;
+                 weeks_i[j].name = "星期四"
+                  break;
+                case 5:
+                  weeks_i[j].name = "星期五"
+                  break;
+                case 6:
+                  weeks_i[j].name = "星期六"
+                  break;
+                case 6:
+                  weeks_i[j].name = "星期日"
+                  break;
+                default:
+                  break;
+              }
+              this.disbArr.push(weeks_i[j].id*1)
+            }
+          }
+        }
+        console.log(this.disbArr,"this.disbArr-------")
+
+        // console.log(this.personalEDit,"val-----")
+
+        /*
+        ** 补充个人信息
+        ** 无法直接给supplement复制val,会无法重新复制
+        **/
+        this.supplement.weight = val.weight || "";
+        this.supplement.email = val.email || "";
+        this.supplement.education = val.education || "";
+        this.supplement.height = val.height || "";
+        this.supplement.marryStatus = val.marryStatus || "";
+        this.supplement.nativeProvinceCode = val.nativeProvinceCode || "";
+        this.value1 = val.inJobTime || "";
+        this.isA = val.jobLevel * 1 || null;
+        this.supplement.description = val.description || "";
+
+        this.familyList = val.familyMembers ? [].concat(val.familyMembers) : [];
       },
-      deep:true
+      deep: true
     }
   },
-  props:['areaOptions','technicianData',"sex","choose","workyear","station","statu","sextypeo","sexTypes"],
+  props: [
+    "areaOptions",
+    "technicianData",
+    "sex",
+    "choose",
+    "workyear",
+    "station",
+    "statu",
+    "sextypeo",
+    "sexTypes",
+    "marriage",
+    "education",
+    "relation"
+  ],
   methods: {
-      eneryDate(val){
-        this.supplement.inJobTime = val
-      },
-      supplSub(){
-        console.log(this.supplement,"supplement--------")
-      },
-     chooseChange(value){
-       alert(value)
-      //  this.perServer.stationId = ''
-      //   serviceStation({"cityCode":value}).then(data=>{
-      //     this.servery = data.data.data
-      //   }).catch(error=>{
-      //     console.log(error,"error---techni.vue-----1071")
-      //   })
-      },
+    familyTable(formName) {
+      this.$refs[formName].resetFields();
+    },
+    eneryDate(val) {
+      this.supplement.inJobTime = val;
+    },
+    //补充个人资料
+    supplSub() {
+      var obj = {},
+        _supplement = this.supplement;
+      obj.id = this.techniEditId;
+      obj.email = _supplement.email;
+      obj.education = _supplement.education;
+      obj.weight = _supplement.weight;
+      obj.height = _supplement.height;
+      obj.marryStatus = _supplement.marryStatus;
+      obj.nativeProvinceCode = _supplement.nativeProvinceCode;
+      obj.inJobTime = _supplement.inJobTime;
+      obj.jobLevel = _supplement.jobLevel;
+      obj.description = _supplement.description;
+      console.log(obj, "objobjobj-------");
+      technicianEdit(obj)
+        .then(data => {
+          if (data.data.code) {
+            this.$message({
+              message: "保存成功",
+              type: "success"
+            });
+          } else {
+            this.$message.error("保存失败");
+            return false;
+          }
+          // console.log(data,"-----------datathis.supplement----")
+        })
+        .catch(error => {
+          console.log(error, "error------techniEdit");
+        });
+    },
+    chooseChange(value) {
+      this.perServer.stationId = "";
+      serviceStation({ cityCode: value })
+        .then(data => {
+          this.servery = data.data.data;
+        })
+        .catch(error => {
+          console.log(error, "error---techni.vue-----1071");
+        });
+    },
 
-    handlePreview(file){},
-    deletes(index){
-        this.teachArr.splice(index,1)
+    handlePreview(file) {},
+    deletes(index) {
+      this.teachArr.splice(index, 1);
     },
-    perSubmitForm(formName){
+    //个人资料保存
+    perSubmitForm(formName) {
       // console.log(this.personalEDit,"personalEDit-------")
-      this.$refs[formName].validate((valid)=>{
-        if(valid){
-            var obj = {},
-              _personalEDit = this.personalEDit;
-            obj.id = this.techniEditId
-            obj.name = _personalEDit.name
-            obj.idCard = _personalEDit.idCard
-            obj.phone = _personalEDit.phone
-            obj.provinceCode = _personalEDit.area[0]
-            obj.cityCode = _personalEDit.area[1]
-            obj.areaCode = _personalEDit.area[2]
-            obj.address = _personalEDit.address
-            obj.sex = _personalEDit.sex
-            obj.nation = _personalEDit.nation
-            obj.birthDate = _personalEDit.birthDate
-            obj.idCardPic = "aaaaaaaaaa"
-            obj.headPic = "bbbbbbbb"
-            console.log(obj,"obj-----")
-            technicianEdit(obj).then(data=>{
-              if(data.data.code){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var obj = {},
+            _personalEDit = this.personalEDit;
+          obj.id = this.techniEditId;
+          obj.name = _personalEDit.name;
+          obj.idCard = _personalEDit.idCard;
+          obj.phone = _personalEDit.phone;
+          obj.provinceCode = _personalEDit.area[0];
+          obj.cityCode = _personalEDit.area[1];
+          obj.areaCode = _personalEDit.area[2];
+          obj.address = _personalEDit.address;
+          obj.sex = _personalEDit.sex;
+          obj.nation = _personalEDit.nation;
+          obj.birthDate = _personalEDit.birthDate;
+          obj.idCardPic = "aaaaaaaaaa";
+          obj.headPic = "bbbbbbbb";
+          console.log(obj, "obj-----");
+          technicianEdit(obj)
+            .then(data => {
+              if (data.data.code) {
                 this.$message({
-                    message: '保存成功',
-                    type: 'success'
-                  });
-              }else{
-                return false
+                  message: "保存成功",
+                  type: "success"
+                });
+              } else {
+                return false;
               }
-            }).catch(error=>{
-              this.$message.error('保存失败');
-              console.log(error,"error---个人技师编辑保存-")
-              return false
             })
-        }else{
-          this.$message.error('保存失败');
-          return false
+            .catch(error => {
+              this.$message.error("保存失败");
+              console.log(error, "error---个人技师编辑保存-");
+              return false;
+            });
+        } else {
+          this.$message.error("保存失败");
+          return false;
         }
-      })
+      });
     },
-      //个人,服务保存
-    submitForm(formName){
-       this.$refs[formName].validate((valid) => {
-			  if(valid){
-				alert('true')
-			  }else{
-                  alert('false')
-				  return false;
-			  }
-		  })
+    //服务保存
+    submitForm(formName) {
+      var obj = {},
+          _perServer = this.perServer;
+      obj.id = this.techniEditId
+      obj.stationId = _perServer.stationId
+      obj.jobNature = _perServer.jobNature
+      obj.jobStatus = _perServer.jobStatus
+      obj.workTime = _perServer.workTime
+      obj.workTimes = _perServer.workTimes
+      obj.skillIds = _perServer.skillIds
+      console.log(obj,"this.perServer--------")
+      technicianEdit(obj).then(data=>{
+        console.log(data,"服务保存-----")
+      }).catch(error=>{
+        console.log(error,"error-------")
+      })
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     // alert('true')
+      //   } else {
+      //     alert("false");
+      //     return false;
+      //   }
+      // });
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
@@ -1186,12 +1320,39 @@ export default {
       this.listQuery.limit = val;
       this.getList();
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      });
-      row.status = status;
+    //家庭表格删除
+    handleModifyDelete(row, scope, name) {
+      familyDelete({ id: row.id })
+        .then(data => {
+          if (data.data.code == 1) {
+            this.familyList.splice(scope.$index, 1);
+            this.$message({
+              message: "删除成功",
+              type: "success"
+            });
+          } else {
+            this.$message.error("删除失败");
+            return false;
+          }
+        })
+        .catch(error => {
+          console.log(error, "error----家庭表格删除");
+          this.$message.error("删除失败");
+          return false;
+        });
+    },
+    //家庭表格编辑
+    handleModifyStatus(row, scope, status) {
+      this.scopeId = scope.$index;
+      this.flagso = true;
+      this.perFamily = Object.assign({}, row);
+      console.log(this.perFamily, "row-------");
+      this.familyFlag = true;
+      // this.$message({
+      //   message: "操作成功",
+      //   type: "success"
+      // });
+      // row.status = status;
     },
     showTabl() {
       this.flagso = !this.flagso;
@@ -1202,26 +1363,56 @@ export default {
     hiddenDiv() {
       this.position = false;
     },
+    //数组去重
+    remove(num, arr, val) {
+      for (var i = 0; i < num.length; i++) {
+        if (num[i] == val) {
+          num.splice(i, 1);
+          arr.splice(i, 1);
+          break;
+        }
+      }
+    },
     roomSel1(item) {
-        this.roomSel1Arr.push(item);
-        console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
-        console.log(this.teachArr,"this.arr-----")
-        item.show = !item.show;
+      // console.log(item,"item----")
+      if(this.roomSelNum.indexOf(item.id) == -1){
+        this.roomSelNum.push(item.id)
+        this.roomSel1Arr.push(item)
+      }else{
+        this.remove(this.roomSelNum,this.roomSel1Arr,item.id)
+      }
+      // this.roomSel1Arr.push(item);
+      // console.log(this.roomSel1Arr, "this.roomSel1Arr-------");
+      // console.log(this.teachArr, "this.arr-----");
+      // item.show = !item.show;
       //  console.log(item)
     },
-    techClick(){
+    techClick() {
+      if (this.disbArr.length > 0) {
+        this.disbArr.map(item => {
+          if (this.roomSelNum.indexOf(item) != -1) {
+            this.remove(this.roomSelNum, this.roomSel1Arr, item);
+          }
+        });
+      }
+      // console.log(this.perServer.workTimes,"perServer.workTimes----")
       var obj = {};
-
-      obj.start = this.startTime;
-      obj.end = this.endTime
-      obj.week = [].concat( this.roomSel1Arr )
-		  this.teachArr.push(obj)
-		  console.log(this.teachArr,"this.teachArr--12323--")
-		   this.isB  = false;
-	  },
+      var arr = []
+      obj.startTime = this.startTime+":00";
+      obj.endTime = this.endTime+":00";
+      obj.weeks = [].concat(this.roomSel1Arr);
+      // console.log(obj,"roomSel1Arr-----")
+      arr.push(obj)
+      this.perServer.workTimes =  this.perServer.workTimes.concat(arr)
+      // this.perServer.workTimes.push(obj)
+      // this.teachArr.push(obj);
+      // console.log(this.teachArr, "this.teachArr--12323--");
+      this.isB = false;
+    },
     roomSel2(index, key) {
-      this.supplement.jobLevel = key
-      this.isA = index;
+      this.supplement.jobLevel = key;
+      console.log(index, key);
+      this.isA = key;
     },
     // 添加技能
     orderson() {
@@ -1250,16 +1441,43 @@ export default {
     mousout(item) {
       item.ismouse = false;
     },
+    //家庭成员
     savrTable(formName) {
-        this.$refs[formName].validate((valid)=>{
-            if(valid){
-                alert("true")
-            }else{
-                alert('false')
-                return false
-            }
-        })
-      this.isTab = true;
+      var arr = [];
+      var obj = Object.assign({}, this.perFamily);
+      arr.push(obj);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          familyAdd({ id: this.techniEditId, familyMembers: arr })
+            .then(data => {
+              if (data.data.code) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                if (this.familyFlag) {
+                  this.$set(this.familyList, this.scopeId, obj);
+                } else {
+                  this.familyList.push(obj);
+                }
+                this.familyFlag = false;
+                this.$refs[formName].resetFields();
+              } else {
+                this.$message.error("保存失败");
+                return false;
+              }
+            })
+            .catch(error => {
+              this.$message.error("保存失败");
+              return false;
+              console.log(error, "error-----techniEdit");
+            });
+        } else {
+          this.$message.error("不能为空");
+          return false;
+        }
+      });
+      // this.isTab = true;
     },
     dateChange(val) {
       // console.log(val,"------------")
@@ -1301,10 +1519,6 @@ export default {
       this.ethnics = res.data;
       this.ethnic = res.data[32].label;
     });
-    getEducations().then(res => {
-      this.education = res.data;
-      this.educations = res.data[2].value;
-    });
     getStrong().then(res => {
       this.strong = res.data;
       this.strongs = res.data[22].value;
@@ -1312,15 +1526,6 @@ export default {
     getHeight().then(res => {
       this.height = res.data;
       this.heights = res.data[18].value;
-    });
-    getMatrimony().then(res => {
-      if (res.status == 200) {
-        this.marriage = res.data;
-        this.marriages = res.data[0].label;
-        // console.log(this.marriage)
-      } else {
-        console.log("错误");
-      }
     });
   }
 };
@@ -1484,7 +1689,6 @@ body {
   padding: 5px;
 }
 
-
 .tech-fourth {
   cursor: pointer;
   border: none;
@@ -1576,14 +1780,15 @@ body {
   margin-top: 20px;
 }
 
-.tech-green,.techTime-green {
-    border: solid 1px green;
-    background:url('../../../static/icon/Selected.png') no-repeat;
-    background-size:20px 20px;
-    background-position: bottom right;
+.tech-green,
+.techTime-green {
+  border: solid 1px green;
+  background: url("../../../static/icon/Selected.png") no-repeat;
+  background-size: 20px 20px;
+  background-position: bottom right;
 }
-.techTime-green{
-     background-size:15px 15px;
+.techTime-green {
+  background-size: 15px 15px;
 }
 
 .tallys {
@@ -1824,43 +2029,52 @@ body {
   border: 1px solid #ff7676;
   color: #ff7676;
 }
-.working{
-    border: 1px solid #F2F2F2;
-    width: 400px;
-    box-sizing: border-box;
-    padding: 0 0 0 20px;;
+.working {
+  border: 1px solid #f2f2f2;
+  width: 400px;
+  box-sizing: border-box;
+  padding: 0 0 0 20px;
 }
-.working>li{
+.working > li {
   position: relative;
-  border-bottom:1px solid #F2F2F2; 
-  padding-top:15px; 
+  border-bottom: 1px solid #f2f2f2;
+  padding-top: 15px;
 }
-.woking-div{
+.woking-div {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
 }
-.i-delete{
+.i-delete {
   position: absolute;
-  right:20px;
-  top: 20px; 
+  right: 20px;
+  top: 20px;
 }
-.time{
+.time {
   padding: 10px 0;
 }
-#confirmation{
+#confirmation {
   display: flex;
   justify-content: center;
   margin-top: 30px;
 }
-.button-large-fourth{
-    display: block;
-    text-align:center;
-    line-height: 34px;
+.button-large-fourth {
+  display: block;
+  text-align: center;
+  line-height: 34px;
 }
-.level{
-    flex: 1;
+.level {
+  flex: 1;
 }
-.hours{
-    align-items: flex-start;
+.hours {
+  align-items: flex-start;
+}
+.operation {
+  display: inline-block;
+  padding: 0 10px;
+  cursor: pointer;
+  color: red;
+}
+.operation:nth-child(1) {
+  color: #4c70e8;
 }
 </style>

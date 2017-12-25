@@ -146,34 +146,20 @@
 
                 <el-form-item label="服务图片：" prop="picture">
                   <div class="upload-demo upload_box">
-                    <!-- <form id="myForm" name="myForm">
-  <div>
-    <label for="username">Enter name:</label>
-    <input type="text" id="username" name="username">
-  </div>
-  <div>
-    <label for="useracc">Enter account number:</label>
-    <input type="text" id="useracc" name="useracc">
-  </div>
-  <div>
-    <label for="userfile">Upload file:</label>
-    <input type="file" id="userfile" name="userfile">
-  </div>
-<input type="submit" value="Submit!" @click="aaaaa">
-</form> -->
                 
                       <el-upload
-                          action=""
-                          auto-upload
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           
-                          ref="formdata"
-                          list-type="picture-card"
+                         list-type="picture"
+                          ref="upload"
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
                           :on-success = "handleAvatarSuccess1"
-                          :before-upload="aaaaa"
+                          :file-list="fileList"
                           
+                          :http-request="upload"            
                           >
+                          
                           <i class="el-icon-plus"></i>
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
@@ -510,12 +496,7 @@ export default {
         }
       ],
       sign: getSign(),
-      signobj: {
-        OSSAccessKeyId: getSign().accessid,
-        policy: getSign().policy,
-        Signature: getSign().signature,
-        key: getSign().dir
-      },
+      signobj: {},
       list: [],
       listLoading: true,
       whether: true,
@@ -576,11 +557,11 @@ export default {
         name: ""
       },
       pageSize: 10,
-      fileList2: [
+      fileList: [
         {
           name: "food2.jpeg",
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            "http://openservice.oss-cn-beijing.aliyuncs.com//openservice/2017/11/22/qwe.jpg"
         }
       ],
       temp: {
@@ -610,11 +591,11 @@ export default {
     }
   },
   created() {
-  //  var branch = document.getElementsByClassName("branchSpan")
-  //  console.log(branch,"---------branch")
-  //  for(var i =0 ;i<branch.length; i++){
-  //    branch[i].innerText = branch[i].innerText.Substring(0,branch.length-1)
-  //  }
+    //  var branch = document.getElementsByClassName("branchSpan")
+    //  console.log(branch,"---------branch")
+    //  for(var i =0 ;i<branch.length; i++){
+    //    branch[i].innerText = branch[i].innerText.Substring(0,branch.length-1)
+    //  }
     //所属分类
     // console.log(without,"_without_without")
     Taxonomy()
@@ -638,30 +619,64 @@ export default {
     this.orient({}, 0); // 所属分类
     this.getList(1, 10); //搜索 ，分页
     console.log(this.sign, "sign---------");
+    
   },
+  // computed:{
+  //    signobj:function(){
+  //      return {
+  //     name: this.sign.name,
+  //       key: this.sign.dir,
+  //       policy: this.sign.policy,
+  //       OSSAccessKeyId: this.sign.accessid,
+  //       success_action_status: 200,
+  //       signature: this.sign.signature
+  //   }
+  //    }
+  // },
   methods: {
-    aaaaa(file) {
-      console.log(file);
-      console.log(getSign())
-      console.log(this.$refs.formdata);
+     submitUpload() {
+       this.$http
+        .post(data.host, ossData2, {
+          headers: {
+            "Content-Type": "multipart/form-data; boundary={boundary}"
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
+        this.$refs.upload.submit();
+      },
+    upload(file) {
+      console.log(file,"图片信息");
       var data = getSign();
       var ossData = new FormData();
-
-      ossData.append("name", file.name);
-      ossData.append("key", data.dir+ '/' + file.name);
+      var date = new Date()
+      var y =date.getFullYear()      
+      var m =date.getMonth()
+      var d =date.getDate()      
+      console.log(date.getFullYear())
+      console.log(date.getMonth()+1)
+      console.log(date.getDate())
+      ossData.append("name", file.file.name);
+      ossData.append("key", data.dir + "/"+ y +'/'+ m + '/' + d + '/' + file.file.name);
       ossData.append("policy", data.policy);
       ossData.append("OSSAccessKeyId", data.accessid);
-      ossData.append("success_action_status", 200);
+      ossData.append("success_action_status", 201);
       ossData.append("signature", data.signature);
       // 添加文件
-      ossData.append("file",file,1);
-      console.log(ossData)
-      this.ossData = ossData
-      this.$http.post(data.host,ossData,{
-       headers:{'Content-Type': 'multipart/form-data; boundary={boundary}'} 
-      }).then(res=>{
-        console.log(res)
-      })
+      ossData.append("file", file.file, file.file.name);
+      this.ossData = ossData;
+      console.log(ossData.get('name'))
+      console.log(ossData.get('key'))
+      this.$http
+        .post(data.host, ossData, {
+          headers: {
+            "Content-Type": "multipart/form-data; boundary={boundary}"
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     },
     //编号失焦事件
     indexBlur(item) {
@@ -1038,6 +1053,7 @@ export default {
       console.log(file, fileList);
     },
     handleAvatarSuccess1(res, file) {
+      console.log(res,"1111111111")
       this.dialogImageUrl = URL.createObjectURL(file.raw);
       console.log(this.dialogImageUrl, "dialogImageUrl-----");
       console.log(res.path, "res----");
@@ -1277,13 +1293,14 @@ body {
   height: 30px;
   text-align: center;
 }
-.branch,.branchSpan {
+.branch,
+.branchSpan {
   width: 100%;
   height: 45px;
   line-height: 45px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
@@ -1340,9 +1357,7 @@ body {
 .el-upload .el-button span {
   color: #ffffff;
 }
-.el-upload-list--picture .el-upload-list__item {
-  width: 24%;
-}
+
 .el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
 }
