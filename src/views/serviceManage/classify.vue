@@ -497,9 +497,11 @@ export default {
         id: row.id
       };
       setClass(obj).then(res => {
-        console.log(res);
+        console.log(res,'编辑');
         this.listLoading = true;
         if (res.data.code == 1) {
+          var data = res.data
+          this.city = data.citys
           this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({}, row);

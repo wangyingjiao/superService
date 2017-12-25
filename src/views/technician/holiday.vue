@@ -165,7 +165,7 @@ export default {
         obj = Object.assign(obj, phone);
       }
 
-      console.log(obj);
+      console.log(obj)
       this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res,"搜索")
