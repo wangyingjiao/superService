@@ -66,3 +66,7 @@ export function getStore(obj) {
 export function setStore(obj) {
   return instance.post(`/api/a/service/station/serviceStation/saveStationStore`, obj)
 }
+// 设置服务站范围
+export function setScope(obj) {
+  return instance.post(`/api/a/service/station/serviceStation/setScope`, obj)
+}
