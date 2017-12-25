@@ -1053,7 +1053,7 @@ export default {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
-
+      this.picList = []
       this.editId = row.id;
       ServerEdit({ id: this.editId })
         .then(data => {
