@@ -23,7 +23,7 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片" prop="picture">
+      <el-table-column align="center" label="图片" prop="pictures">
         <template scope="scope">
-          <span><img :src='scope.row.picture'/></span>
+          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -343,7 +343,8 @@
           <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
             <div class="image-text-header">
                 <p>添加图文详情</p>
-                <p><span class="el-icon-plus" @click="addImage"></span><span class="el-icon-close" @click="ImageText = false"></span></p>
+                <!-- <span class="el-icon-plus" @click="addImage"> -->
+                <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
@@ -358,7 +359,6 @@
                           :before-upload="handleBefore"
                           :http-request="upload"   
                           >
-                          
                           <i class="el-icon-plus"></i>
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
@@ -696,11 +696,11 @@ export default {
     },
     subImgText(a) {
       console.log(this.imgText);
-
       var obj = {
         id: this.editId,
         pictureDetails: this.imgText
       };
+      console.log(obj,"obj-------")
       sortList(obj).then(res => {
         console.log(res);
         if (res.data.code == 1) {
@@ -1039,11 +1039,14 @@ export default {
         this.total = res.data.data.count;
       });
     },
-    handleCreate() {
-      this.resetTemp();
+    handleCreate(formName) {
+      // this.$refs[formName].resetFields();
+      // this.resetTemp();
+      // this.picList = []
+      this.dialogFormVisible = true;
+      // this.cancel()
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
-      this.dialogFormVisible = true;
     },
     //编辑方法
     handleUpdate(row) {
@@ -1089,6 +1092,7 @@ export default {
         });
     },
     handleUplode(row) {
+      this.imgText = []
       // console.log("上传");
       this.editId = row.id;
       this.picList = [];
@@ -1097,7 +1101,7 @@ export default {
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(res => {
-          console.log(res);
+          console.log(res,"res---------------");
           if (res.data.code == 1) {
             var data = res.data.data;
             this.listLoading = false;
@@ -1114,10 +1118,10 @@ export default {
               }
             }
             this.ImageText = true;
-            console.log(this.fileList, "编辑图文");
-            console.log(this.imgText, "编辑图文");
+            // console.log(this.fileList, "编辑图文");
+            // console.log(this.imgText, "编辑图文");
           }
-          console.log(res, "列表信息");
+          // console.log(res, "列表信息");
         })
         .catch(err => {
           console.log(err);
@@ -1267,8 +1271,9 @@ export default {
     //取消
     cancel(fromName) {
       // console.log(fromName,"-----")
-      this.dialogFormVisible = false;
-      this.$refs[fromName].resetFields(); //基本信息重置
+      // this.dialogFormVisible = false;
+      var str = "basic"
+      this.$refs[str].resetFields(); //基本信息重置
       this.basicForm.sortNum = ""; //排序号好清空
       this.basicForm.cityCodes = []; //定向城市
       this.resetForm("goods_info"); //添加商品
@@ -1276,6 +1281,7 @@ export default {
       this.basicForm.commoditys = []; //商品信息表格
       this.picFile = [] //清空图片
       this.picList = [] //清空图片
+      this.dialogFormVisible = false;
     },
     //保存
     subForm(formName) {
@@ -1390,7 +1396,10 @@ export default {
     },
     resetForm(formName) {
       var str = formName || "goods_info";
-      this.$refs[str].resetFields();
+      if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
+        console.log("--------")
+         this.$refs[str].resetFields();
+      }
       this.goods_info.persons = [];
       this.goods_info.minPurchase = "";
     }
@@ -1695,7 +1704,7 @@ hr {
   width: 100%;
   background: rgb(182, 180, 180);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 100px 20px;
   margin: 10px 0;
 }
 
@@ -1705,6 +1714,7 @@ hr {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  text-align: center
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
@@ -1743,6 +1753,18 @@ hr {
 }
 .imgText .el-upload-list__item-thumbnail {
   height: 100%;
+  width: 100%;
+}
+.imgList{
+  width: 50px;
+  height: 50px;
+  margin-top: 5px;
+}
+.el-icon-plus{
+  text-align: center;
+  font-size: 20px;
+}
+.el-upload--picture{
   width: 100%;
 }
 </style>
