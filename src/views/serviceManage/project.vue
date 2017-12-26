@@ -654,9 +654,32 @@ export default {
         return false;
       }
     },
-    handleRemovePic(file) {
+    handleRemove(file, fileList) {//删除图文
+      console.log(file, "删除一张图片");
+      console.log(fileList,'文件')
+      console.log(this.imgText,'imgtext')
+      console.log(this.fileList,'filelist')
+      var str = "";
+      var index = file.url.lastIndexOf("/");
+      str = file.url.substring(index + 1, file.url.length);
+      
+      let newarr = []
+      for(var i = 0;i<this.imgText.length;i++){
+        var index = this.imgText[i].lastIndexOf("/");
+        var newstr = ''
+        newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
+        newarr.push(newstr)
+      }
+        console.log(str);
+        console.log(newarr,'截取')
+      var delIndex = newarr.indexOf(str)
+      console.log(delIndex,'删除图片的下标')
+      this.imgText.del(delIndex);
+      console.log(this.imgText);
+    },
+    handleRemovePic(file,fileList) {
       //删除服务图片
-      console.log(file);
+      console.log(fileList);
       console.log(file, "删除一张图片");
 
       var str = "";
@@ -667,11 +690,20 @@ export default {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       var d = date.getDate();
-      if (file.name != undefined) {
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-      } else {
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + str;
-      }
+      // if (file.name != undefined) {
+      //   var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+      // } else {
+      //   var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + str;
+      // }
+      // let newarr = []
+      // for(var i = 0;i<this.imgText.length;i++){
+      //   var index = this.imgText[i].lastIndexOf("/");
+      //   var newstr = ''
+      //   newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
+      //   newarr.push(newstr)
+      // }
+      //   console.log(str);
+      //   console.log(newarr,'截取')
 
       console.log(src, "src");
       this.picFile.remove(src);
@@ -1237,22 +1269,7 @@ export default {
       this.getList(1, size);
       this.listQuery.page = 1;
     },
-    handleRemove(file, fileList) {
-      console.log(file, "删除一张图片");
-      var str = "";
-      var index = file.url.lastIndexOf("/");
-      str = file.url.substring(index + 1, file.url.length);
-      console.log(str);
-      var date = new Date();
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      var d = date.getDate();
-      var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + str;
-
-      console.log(src, "src");
-      this.imgText.remove(src);
-      console.log(this.imgText);
-    },
+    
     handleAvatarSuccess1(res, file) {
       console.log(res, "触发事件");
       this.dialogImageUrl = URL.createObjectURL(file.raw);
