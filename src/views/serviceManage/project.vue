@@ -679,10 +679,10 @@ export default {
     },
     handleRemovePic(file,fileList) {
       //删除服务图片
-      console.log(fileList,'文件');
-      console.log(file, "删除一张图片");
-      console.log(this.picFile,'imgtext')
-      console.log(this.picList,'filelist')
+      // console.log(fileList,'文件');
+      // console.log(file, "删除一张图片");
+      // console.log(this.picFile,'imgtext')
+      // console.log(this.picList,'filelist')
 
       var str = "";
       var index = file.url.lastIndexOf("/");
@@ -701,11 +701,12 @@ export default {
         newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
         newarr.push(newstr)
       }
-        console.log(newarr,'截取')
+        // console.log(newarr,'截取')
       var delIndex = newarr.indexOf(src)
-      console.log(delIndex,'删除图片的下标')
+      console.log(newarr,src,"newarr---------------------------")
+      // console.log(delIndex,'删除图片的下标')
       this.picFile.del(delIndex);
-      console.log(this.picFile);
+      // console.log(this.picFile);
     },
     handleBefore(file) {
       // 去重
