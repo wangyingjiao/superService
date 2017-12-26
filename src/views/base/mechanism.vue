@@ -23,7 +23,10 @@
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
-      <el-table-column align="center" label="机构编号" type="index" width="100">
+      <el-table-column align="center" label="机构编号" width="100">
+         <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
       </el-table-column>
 
       <el-table-column  label="机构名称" align="center" min-width="150px" prop="name" >
@@ -105,6 +108,7 @@
 
               <!-- 省市区 -->
               <el-cascader
+                
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
@@ -325,8 +329,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑机构",
+        create: "新增机构"
       },
       tableKey: 0,
       provinceOptions: [],
@@ -449,6 +453,12 @@ export default {
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -472,6 +482,12 @@ export default {
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -497,6 +513,12 @@ export default {
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -520,6 +542,12 @@ export default {
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+
+        }
         this.listLoading = false;
       });
     },
@@ -576,6 +604,9 @@ export default {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
+    },
+    itemActive(arr){
+        console.log(arr,'arr')
     },
     searchChange(val) {
       console.log(val);
