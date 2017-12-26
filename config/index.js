@@ -44,7 +44,11 @@ module.exports = {
        // }
      // }
       '/api': {
+<<<<<<< HEAD
         target: 'http://10.16.70.136:8800/',
+=======
+        target: 'http://10.16.70.133:8800/',
+>>>>>>> 178f91e8aa6726fafa2f2dd5fac4e8adb038f239
         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {
           '^/api': ''

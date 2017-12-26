@@ -84,17 +84,24 @@
                     <div>
                     <p></p>
                     <p>
-                        <!-- <button class="tech-fourth">上传头像</button> -->
-                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                        :file-list="fileList2" list-type="picture" :data="sign">
-                        <el-button class="tech-fourth"><span>*</span>上传头像</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                       <el-upload
+                          class="avatar-uploader"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          :show-file-list="false"
+                          :http-request="(val)=>picUpload(val,'head')"
+                          >
+                          <el-button class="tech-fourth"><span></span>*上传头像</el-button>
+                          <img v-if="personalEDit.headPic" :src="personalEDit.headPic" class="avatar">
                         </el-upload>
-                        <!-- <button class="tech-fourth-rigth">上传身份证</button> -->
-                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                        :file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
-                        <el-button class="tech-fourth-rigth">上传身份证</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        <el-upload
+                          class="avatar-uploader"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          :show-file-list="false"
+                          :http-request="(val)=>picUpload(val,'id')"
+                          style="margin-left:20px;" 
+                          >
+                          <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button>
+                          <img v-if="personalEDit.idCardPic" :src="personalEDit.idCardPic" class="avatar">
                         </el-upload>
                     </p>
                     </div>
@@ -361,34 +368,10 @@
                           <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2(index,key)" v-for="(item,key,index) in sexTypes"
                           :class="{'tech-green':isA==index+1}" :key="key">
                           {{item}}
-                          <!-- <div :class="{'triangle-bottomrights':isA==$index}"></div>
-                          <div class="tallys">&#10004</div> -->
                           </div>
                       </div>
                     </p>
                 </div>
-                  <!-- <li>
-                      <div>
-                      <p><span class="tech-span"></span>级别:</p>
-                      <div style="display:flex;justify-content:space-between;width:545px; overflow:hidden;">
-                          <div class="selfCheckBox tech-selfbox tech-center" ref="sexOption" @click="roomSel2($index,item)" v-for="(item,$index) in sexTypes"
-                          :class="{'tech-green':isA==$index}" style="margin:0">
-                          {{item.sexName}}
-                          <div :class="{'triangle-bottomrights':isA==$index}"></div>
-                          <div class="tallys">&#10004</div>
-                          </div>
-                      </div>
-                      </div>
-                  </li> -->
-                  <!-- <li>
-                      <div>
-                      <p><span class="tech-span"></span>经验描述:</p>
-                      <p>
-                          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:545px;">
-                          </el-input>
-                      </p>
-                      </div>
-                  </li> -->
             </li>
             <li>
                 <div style="flex:1">
@@ -529,17 +512,24 @@
                 <div>
                     <p></p>
                     <p>
-                        <!-- <button class="tech-fourth">上传头像</button> -->
-                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                        :file-list="fileList2" list-type="picture" :data="sign">
-                        <el-button class="tech-fourth"><span></span>上传证件照</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        <el-upload
+                          class="avatar-uploader"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          :show-file-list="false"
+                          :http-request="(val)=>picUpload(val,'cert')"
+                          >
+                          <el-button class="tech-fourth"><span></span>上传证件照</el-button>
+                          <img v-if="otherInfo.jobPic" :src="otherInfo.jobPic" class="avatar">
                         </el-upload>
-                        <!-- <button class="tech-fourth-rigth">上传身份证</button> -->
-                        <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-                        :file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
-                        <el-button class="tech-fourth-rigth">上传生活照</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        <el-upload
+                          class="avatar-uploader"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          :show-file-list="false"
+                          :http-request="(val)=>picUpload(val,'life')"
+                          style="margin-left:20px;" 
+                          >
+                          <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button>
+                          <img v-if="otherInfo.lifePic" :src="otherInfo.lifePic" class="avatar">
                         </el-upload>
                     </p>
                 </div>
@@ -548,7 +538,7 @@
                 <div style="flex:1">
                   <p>备注:</p>
                   <p>
-                     <el-input type="textarea" v-model="input" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下" style="width:545px;"></el-input>
+                     <el-input type="textarea" v-model="otherInfo.remark" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下" style="width:545px;"></el-input>
                   </p>
               </div>
             </li>
@@ -580,6 +570,7 @@ import {
 } from "@/api/tech";
 
 import { getSign } from "@/api/sign";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -710,6 +701,12 @@ export default {
       techniEditId: "",
       roomSel1Arr: [],
       teachArr: [],
+      //其他信息
+      otherInfo:{
+        jobPic:'',
+        lifePic:'',
+        remark:''
+      },
       perFamily: {
         relation: "",
         memberName: "",
@@ -1025,7 +1022,6 @@ export default {
           id: 7
         }
       ],
-      sign: getSign(),
       scopeId: null,
       scopeItem: {},
       key: false,
@@ -1117,11 +1113,23 @@ export default {
         this.personalEDit.techBirthDate = val.birthDate;
 
         /*
+        **其他信息
+        **
+        */
+        
+        this.otherInfo.jobPic = val.jobPic
+        this.otherInfo.lifePic = val.lifePic
+        this.otherInfo.remark = val.remark
+
+
+
+        /*
         ** 服务信息
         ** 
         **/
         this.perServer = Object.assign({}, val);
         this.servery = val.stations;
+        this.perServer.workTime = val.workTime+''
         this.perServer.stationId = val.stationId
         // this.perServer.serviceCityName = val.stationCityCode;
         // //工作时间默认选中
@@ -1197,6 +1205,63 @@ export default {
     "relation"
   ],
   methods: {
+    //其他信息保存
+    sumitFormSub(formName){
+      this.otherInfo.id = this.techniEditId;
+      this.technicianEdit(this.otherInfo)
+    },
+    //上传图片
+    picUpload(file,flag){
+      let pro = new Promise((resolve, rej) => {
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if (res.expire - 3 > timestamp) {
+          console.log("签名没过期");
+          resolve(res);
+        } else {
+          this.$http.get("/api/oss/getSign").then(res => {
+            console.log(res, "签名过期");
+            Cookies.set("sign", JSON.stringify(res.data));
+            resolve(res.data);
+          });
+        }
+      });
+      var that = this;
+      pro.then(success=>{
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth()+1;
+        var d = date.getDate();
+        ossData.append("name",file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+        );
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        // 添加文件
+        ossData.append("file", file.file, file.file.name);
+        //this.ossData = ossData;
+        console.log(ossData.get("name"),"ossData-----");
+        console.log(ossData.get("key"),"ossData------");
+        if(flag == "head"){
+          this.personalEDit.headPic = success.host+"/"+ossData.get("key")
+        }else if(flag == "life"){
+          this.otherInfo.lifePic = success.host+"/"+ossData.get("key")
+        }else if(flag == 'cert'){
+          this.otherInfo.jobPic = success.host+"/"+ossData.get("key")
+        }else{
+          this.personalEDit.idCardPic = success.host+"/"+ossData.get("key")
+        }
+        
+        // console.log(this.headerBack,"this.headerBack")
+      })
+    },
     familyTable(formName) {
       this.$refs[formName].resetFields();
     },
@@ -1218,6 +1283,10 @@ export default {
       obj.jobLevel = _supplement.jobLevel;
       obj.description = _supplement.description;
       console.log(obj, "objobjobj-------");
+      this.technicianEdit(obj)
+    },
+    //提交信息
+    technicianEdit(obj){
       technicianEdit(obj)
         .then(data => {
           if (data.data.code) {
@@ -1225,6 +1294,7 @@ export default {
               message: "保存成功",
               type: "success"
             });
+            // this.$emit("getlist",[1,6,obj])
           } else {
             this.$message.error("保存失败");
             return false;
@@ -1233,6 +1303,7 @@ export default {
         })
         .catch(error => {
           console.log(error, "error------techniEdit");
+          return false
         });
     },
     chooseChange(value) {
@@ -1293,25 +1364,10 @@ export default {
           obj.sex = _personalEDit.sex;
           obj.nation = _personalEDit.nation;
           obj.birthDate = _personalEDit.birthDate;
-          obj.idCardPic = "aaaaaaaaaa";
-          obj.headPic = "bbbbbbbb";
+          obj.idCardPic = _personalEDit.idCardPic;
+          obj.headPic = _personalEDit.headPic;
           console.log(obj, "obj-----");
-          technicianEdit(obj)
-            .then(data => {
-              if (data.data.code) {
-                this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
-              } else {
-                return false;
-              }
-            })
-            .catch(error => {
-              this.$message.error("保存失败");
-              console.log(error, "error---个人技师编辑保存-");
-              return false;
-            });
+          this.technicianEdit(obj)
         } else {
           this.$message.error("保存失败");
           return false;
@@ -1330,22 +1386,7 @@ export default {
       obj.workTimes = _perServer.workTimes
       obj.skillIds = _perServer.skillIds
       console.log(obj,"this.perServer--------")
-      technicianEdit(obj).then(data=>{
-        console.log(data,"服务保存-----")
-        if(data.data.code){
-              this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
-        }else{
-          this.$message.error("保存失败");
-          return false;
-        }
-      }).catch(error=>{
-        this.$message.error("保存失败");
-        return false;
-        console.log(error,"error-------")
-      })
+      this.technicianEdit(obj)
       // this.$refs[formName].validate(valid => {
       //   if (valid) {
       //     // alert('true')
@@ -1357,11 +1398,11 @@ export default {
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.getList();
+      // this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      this.getList();
+      // this.getList();
     },
     //家庭表格删除
     handleModifyDelete(row, scope, name) {
@@ -1573,6 +1614,11 @@ export default {
       this.height = res.data;
       this.heights = res.data[18].value;
     });
+  },
+  computed:{
+    sign(){
+      return getSign();
+    }
   }
 };
 </script>
@@ -2122,5 +2168,10 @@ body {
 }
 .operation:nth-child(1) {
   color: #4c70e8;
+}
+.avatar{
+    width: 100px;
+  height: 100px;
+  margin-top: 10px;
 }
 </style>

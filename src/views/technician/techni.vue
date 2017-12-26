@@ -31,13 +31,13 @@
        <!-- <el-table 
           v-loading="listLoadingTech" 
           style="width: 100%" > -->
-    <p class="p-show" v-show="techniList.length<=0">没有数据</p>
+    <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech">
       <ul class="tech-section-ul">
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div style="width:89px;height:89px;background:red;display:inline-block;border-radius:50%;"></div>
+              <div class="headImag"><img :src="item.headPic" alt=""></div>
               <div style="margin-top:10px;">
                 <span>{{item.sexname}}</span>
                 <span>{{item.age}}</span>
@@ -261,7 +261,7 @@
 		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
                   :sex="sex" :choose="Choose" :workyear="workyear"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
-                  :marriage="marriage" :education="education" :relation = "relation"
+                  :marriage="marriage" :education="education" :relation = "relation" @getlist="getList"
                   ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
@@ -387,18 +387,33 @@
 					<div>
 					<p></p>
 					<p>
-						<!-- <button class="tech-fourth">上传头像</button> -->
-						<el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-						:file-list="fileList2" list-type="picture" :data="sign">
-						<el-button class="tech-fourth"><span></span>上传头像</el-button>
-						<!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-						</el-upload>
+            <el-upload
+              class="avatar-uploader"
+              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+              :show-file-list="false"
+              :http-request="(val)=>picUpload(val,'head')"
+              >
+              <el-button class="tech-fourth"><span></span>*上传头像</el-button>
+              <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
+            </el-upload>
+			
 						<!-- <button class="tech-fourth-rigth">上传身份证</button> -->
-						<el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
+						<!-- <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
 						:file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
-						<el-button class="tech-fourth-rigth">上传身份证</el-button>
+						<el-button class="tech-fourth-rigth">上传身份证</el-button> -->
 						<!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-						</el-upload>
+						<!-- </el-upload> -->
+
+             <el-upload
+              class="avatar-uploader"
+              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+              :show-file-list="false"
+              :http-request="(val)=>picUpload(val,'id')"
+              style="margin-left:20px;" 
+              >
+              <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button>
+              <img v-if="personal.idCardPic" :src="personal.idCardPic" class="avatar">
+            </el-upload>
 					</p>
 					</div>
 				</li>
@@ -581,6 +596,7 @@ import {
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
 import { Whether } from "@/api/project";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -725,6 +741,8 @@ export default {
     };
 
     return {
+      backId:'',//身份证头像
+      headerBack:'',//头像
       //搜索
       techniSearch:{
         stationId:'',
@@ -783,8 +801,8 @@ export default {
         provinceCode: "", //省
         cityCode: "", //市
         areaCode: "", //区
-        idCardPic: "adawd", //身份证照片
-        headPic: "awdawdwad", //头像
+        idCardPic: "", //身份证照片
+        headPic: "", //头像
         workTimes: [
           //工作时间
           { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
@@ -1092,7 +1110,6 @@ export default {
         }
       ],
       relation: {},
-      sign: getSign(),
       key: false,
       isA: false,
       passwordId:null,
@@ -1145,6 +1162,7 @@ export default {
       ],
       position: false,
       listLoading: false,
+      picFile:[],
       listLoadingTech:true,
       list: [1, 2, 3],
       total: null,
@@ -1184,9 +1202,59 @@ export default {
     areaOptions() {
       console.log(this.$store.state.user.area, "this.$store.state.user.area");
       return this.$store.state.user.area;
+    },
+    sign(){
+      return getSign();
     }
   },
   methods: {
+    picUpload(file,flag){
+      let pro = new Promise((resolve, rej) => {
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if (res.expire - 3 > timestamp) {
+          console.log("签名没过期");
+          resolve(res);
+        } else {
+          this.$http.get("/api/oss/getSign").then(res => {
+            console.log(res, "签名过期");
+            Cookies.set("sign", JSON.stringify(res.data));
+            resolve(res.data);
+          });
+        }
+      });
+      var that = this;
+      pro.then(success=>{
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth()+1;
+        var d = date.getDate();
+        ossData.append("name",file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+        );
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        // 添加文件
+        ossData.append("file", file.file, file.file.name);
+        //this.ossData = ossData;
+        console.log(ossData.get("name"),"ossData-----");
+        console.log(ossData.get("key"),"ossData------");
+        if(flag == "head"){
+          this.personal.headPic = success.host+"/"+ossData.get("key")
+        }else{
+          this.personal.idCardPic = success.host+"/"+ossData.get("key")
+        }
+        
+        // console.log(this.headerBack,"this.headerBack")
+      })
+    },
     //搜索
     techniSearchs(){
       console.log(this.techniSearch,"techniSearch--------")
@@ -1292,6 +1360,7 @@ export default {
       this.passwordId = item.id
       // console.log(item,"item-----")
     },
+
     //技师编辑获取ID
     technician(item) {
       // console.log(item,"item-------")
@@ -1806,6 +1875,9 @@ body {
   width: 80px;
   height: 100px;
 }
+.el-upload{
+  width: 100px;
+}
 .tech-psoition {
   width: 100%;
   height: 320px;
@@ -2054,7 +2126,7 @@ body {
 .tech-section-lages {
   width: 40%;
   left: 5%;
-  padding-right: 30px;
+  /* padding-right: 30px; */
 }
 
 .tech-section-xiu {
@@ -2200,6 +2272,34 @@ body {
 .p-show{
   text-align: center;
   color: rgb(102, 102, 102)
+}
+.avatar{
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+}
+.passBox .el-form-item__content{
+  display: flex;
+  justify-content: center;
+  margin-left: 0 !important;
+}
+.passBox .el-form-item__content button{
+  padding: 10px 30px;
+}
+.passBox .el-form-item__content button:nth-child(1){
+  color: #fff
+}
+.headImag{
+  width:89px;
+  height:89px;
+  display:inline-block;
+  border-radius:50%;
+  overflow: hidden;
+}
+.headImag img{
+  width: 89px;
+  height: 89px;
+  overflow: hidden;
 }
 </style>
 
