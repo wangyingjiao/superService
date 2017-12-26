@@ -39,9 +39,9 @@ export function getArea() {
 // }
 
 // 选择城市
-export function ChooseTheCity(obj) {
+export function ChooseTheCity(pageNumber,pageSize,obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`api/a/service/technician/serviceTechnicianInfo/listData`, obj).then(data => {
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)
@@ -110,6 +110,39 @@ export function familyDelete(obj){
       resolve(data)
     }).catch(error=>{
       console.log(error,"error------")
+    })
+  })
+}
+
+//删除技师
+export function technicianDelete(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/deleteData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      console.log(error,"error-----")
+    })
+  })
+}
+
+//设置app密码
+export function appPassWord(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianInfo/saveAppPassWordData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      console.log(error,"error------")
+    })
+  })
+}
+
+//新增休假
+export function addVacation(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`api/a/service/technician/serviceTechnicianHoliday/saveData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      console.log(error)
     })
   })
 }

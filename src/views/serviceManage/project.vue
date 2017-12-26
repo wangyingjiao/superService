@@ -23,7 +23,7 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片" prop="picture">
+      <el-table-column align="center" label="图片" prop="pictures">
         <template scope="scope">
-          <span><img :src='scope.row.picture'/></span>
+          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -66,7 +66,7 @@
 
       <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
-          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName}}&nbsp;</span>
         </template>
       </el-table-column>
 
@@ -151,13 +151,12 @@
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           
                          list-type="picture"
-                          ref="upload"
+                         
                           :on-preview="handlePreview"
-                          :on-remove="handleRemove"
-                          :on-success = "handleAvatarSuccess1"
-                          :file-list="fileList"
-                          
-                          :http-request="upload"            
+                          :on-remove="handleRemovePic"
+                          :before-upload="handPic"
+                          :file-list="picList"
+                          :http-request="picUpload"            
                           >
                           
                           <i class="el-icon-plus"></i>
@@ -198,7 +197,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
               <el-table
-                v-if="basicForm.commoditys.length>0"
+                v-show="basicForm.commoditys.length>0"
                 border 
                 :data="basicForm.commoditys"
                 class="goods_info">
@@ -209,7 +208,11 @@
                   
                 </el-table-column>
                 <el-table-column align="center" label="计量方式" prop="type">
-                 
+                  <template scope="scope">
+                    <span v-show="scope.row.type=='num'">按数量</span>
+                    <span v-show="scope.row.type=='area'">按面积</span>
+                    <span v-show="scope.row.type=='house'">按居室</span>
+                  </template>
                 </el-table-column>
                 <el-table-column align="center" label="价格" prop="price">
                   
@@ -257,7 +260,7 @@
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-form 
-                v-if="addComm"
+                v-show="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
@@ -327,7 +330,7 @@
 
                 <el-form-item>
                   <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('goods_info')">取 消</button> 
+                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
                 </el-form-item>
               </el-form>
          </div>
@@ -344,22 +347,33 @@
           <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
             <div class="image-text-header">
                 <p>添加图文详情</p>
-                <p><span class="el-icon-plus" @click="addImage"></span><span class="el-icon-close" @click="ImageText = false"></span></p>
+                <!-- <span class="el-icon-plus" @click="addImage"> -->
+                <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
-                    <el-upload
-                        class="avatar-uploader"
-                        action="h"
-                        :auto-upload="true"
-                        :show-file-list="false"
-                        :on-success="(res,file)=>handleAvatarSuccess(res,file,index)"
-                        :before-upload="beforeAvatarUpload">
-                        <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar">
-                        <i v-if="!item.imageUrl" class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
+                   <el-upload
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          class="imgText"
+                          list-type="picture"
+                          ref="upload"                    
+                          :on-remove="handleRemove"
+                          :file-list="fileList"
+                          :limit="3"
+                          :before-upload="handleBefore"
+                          :http-request="upload"   
+                          >
+                          <i class="el-icon-plus"></i>
+                      </el-upload>
+                      <el-dialog v-model="dialogVisible" size="tiny">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                      </el-dialog>
                 </div>
             </div>
+            <div slot="footer" class="dialog-footer" style="text-align:center">
+        <button class="button-large" @click="subImgText('a')">保 存</button>    
+        <button class="button-cancel" @click="resImgText('a')">取 消</button>
+      </div>
         </el-dialog>
       </div>
 
@@ -375,6 +389,7 @@ import {
   delProject,
   getInfoPic
 } from "@/api/serviceManage";
+import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -458,6 +473,14 @@ export default {
         callback(new Error("请输入派人数量"));
       }
     };
+    //服务图片
+    var PICTURE = (rule,value,callback)=>{
+      if(this.picFile.length>0){
+        callback()
+      }else{
+        callback(new Error("请添加服务图片"))
+      }
+    }
     return {
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
@@ -495,8 +518,6 @@ export default {
           value: "个"
         }
       ],
-      sign: getSign(),
-      signobj: {},
       list: [],
       listLoading: true,
       whether: true,
@@ -531,7 +552,9 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" },
           { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
-        // picture: [{ required: true, message: "请上传至少一张图片" }],
+         picture: [
+           { required: true, validator:PICTURE, trigger:"blur"}
+          ],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
@@ -558,12 +581,14 @@ export default {
       },
       pageSize: 10,
       fileList: [
-        {
-          name: "food2.jpeg",
-          url:
-            "http://openservice.oss-cn-beijing.aliyuncs.com//openservice/2017/11/22/qwe.jpg"
-        }
+        // {
+        //   url:
+        //     "http://openservice.oss-cn-beijing.aliyuncs.com//openservice/2017/11/22/qwe.jpg?x-oss-process=image/resize,h_1200"
+        // }
       ],
+      picFile: [],
+      imgText: [],
+      picList: [],
       temp: {
         option1: "",
         val: true
@@ -591,13 +616,6 @@ export default {
     }
   },
   created() {
-    //  var branch = document.getElementsByClassName("branchSpan")
-    //  console.log(branch,"---------branch")
-    //  for(var i =0 ;i<branch.length; i++){
-    //    branch[i].innerText = branch[i].innerText.Substring(0,branch.length-1)
-    //  }
-    //所属分类
-    // console.log(without,"_without_without")
     Taxonomy()
       .then(data => {
         this.sortList = data.data.data.list;
@@ -619,64 +637,244 @@ export default {
     this.orient({}, 0); // 所属分类
     this.getList(1, 10); //搜索 ，分页
     console.log(this.sign, "sign---------");
-    
   },
-  // computed:{
-  //    signobj:function(){
-  //      return {
-  //     name: this.sign.name,
-  //       key: this.sign.dir,
-  //       policy: this.sign.policy,
-  //       OSSAccessKeyId: this.sign.accessid,
-  //       success_action_status: 200,
-  //       signature: this.sign.signature
-  //   }
-  //    }
-  // },
+  computed: {
+    sign: function() {
+      return getSign();
+    }
+  },
   methods: {
-     submitUpload() {
-       this.$http
-        .post(data.host, ossData2, {
-          headers: {
-            "Content-Type": "multipart/form-data; boundary={boundary}"
-          }
-        })
-        .then(res => {
-          console.log(res);
+    handPic(file) {
+      //服务图片
+      console.log(file, "上传前");
+      console.log(this.picFile);
+      var date = new Date();
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+      if (this.picFile.indexOf(src) > -1) {
+        this.$message({
+          type: "warning",
+          message: "此图片已经上传"
         });
-        this.$refs.upload.submit();
-      },
+        return false;
+      }
+      if (this.picFile.length >= 4) {
+        this.$message({
+          type: "warning",
+          message: "最多上传4张图片"
+        });
+        return false;
+      }
+    },
+    handleRemove(file, fileList) {//删除图文
+      console.log(file, "删除一张图片");
+      console.log(fileList,'文件')
+      console.log(this.imgText,'imgtext')
+      console.log(this.fileList,'filelist')
+      var str = "";
+      var index = file.url.lastIndexOf("/");
+      str = file.url.substring(index + 1, file.url.length);
+      
+      let newarr = []
+      for(var i = 0;i<this.imgText.length;i++){
+        var index = this.imgText[i].lastIndexOf("/");
+        var newstr = ''
+        newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
+        newarr.push(newstr)
+      }
+        console.log(str);
+        console.log(newarr,'截取')
+      var delIndex = newarr.indexOf(str)
+      console.log(delIndex,'删除图片的下标')
+      this.imgText.del(delIndex);
+      console.log(this.imgText);
+    },
+    handleRemovePic(file,fileList) {
+      //删除服务图片
+      // console.log(fileList,'文件');
+      // console.log(file, "删除一张图片");
+      // console.log(this.picFile,'imgtext')
+      // console.log(this.picList,'filelist')
+
+      var str = "";
+      var index = file.url.lastIndexOf("/");
+      str = file.url.substring(index + 1, file.url.length);
+      var src = ''
+      if (file.name != undefined) {
+         src = file.name;
+      } else {
+         src = str;
+      }
+      console.log(src,'src');
+      let newarr = []
+      for(var i = 0;i<this.picFile.length;i++){
+        var index = this.picFile[i].lastIndexOf("/");
+        var newstr = ''
+        newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
+        newarr.push(newstr)
+      }
+        // console.log(newarr,'截取')
+      var delIndex = newarr.indexOf(src)
+      console.log(newarr,src,"newarr---------------------------")
+      // console.log(delIndex,'删除图片的下标')
+      this.picFile.del(delIndex);
+      // console.log(this.picFile);
+    },
+    handleBefore(file) {
+      // 去重
+      console.log(this.imgText, "imgtext");
+      console.log(file);
+      var date = new Date();
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+      if (this.imgText.indexOf(src) > -1) {
+        this.$message({
+          type: "warning",
+          message: "此图片已经上传"
+        });
+        return false;
+      }
+    },
+    subImgText(a) {
+      console.log(this.imgText);
+      var obj = {
+        id: this.editId,
+        pictureDetails: this.imgText
+      };
+      console.log(obj,"obj-------")
+      sortList(obj).then(res => {
+        console.log(res);
+        if (res.data.code == 1) {
+          this.ImageText = false;
+          this.$message({
+            type: "success",
+            message: "图片上传成功"
+          });
+        }
+      });
+      console.log(obj);
+    }, // 保存图文
+    resImgText(a) {
+      console.log(a);
+      console.log(this.$refs.upload);
+      this.fileList = [];
+      this.ImageText = false;
+    }, // 关闭图文
     upload(file) {
-      console.log(file,"图片信息");
-      var data = getSign();
-      var ossData = new FormData();
-      var date = new Date()
-      var y =date.getFullYear()      
-      var m =date.getMonth()
-      var d =date.getDate()      
-      console.log(date.getFullYear())
-      console.log(date.getMonth()+1)
-      console.log(date.getDate())
-      ossData.append("name", file.file.name);
-      ossData.append("key", data.dir + "/"+ y +'/'+ m + '/' + d + '/' + file.file.name);
-      ossData.append("policy", data.policy);
-      ossData.append("OSSAccessKeyId", data.accessid);
-      ossData.append("success_action_status", 201);
-      ossData.append("signature", data.signature);
-      // 添加文件
-      ossData.append("file", file.file, file.file.name);
-      this.ossData = ossData;
-      console.log(ossData.get('name'))
-      console.log(ossData.get('key'))
-      this.$http
-        .post(data.host, ossData, {
-          headers: {
-            "Content-Type": "multipart/form-data; boundary={boundary}"
-          }
-        })
-        .then(res => {
-          console.log(res);
-        });
+      // 图文上传
+      let pro = new Promise((resolve, rej) => {
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if (res.expire - 3 > timestamp) {
+          console.log("签名没过期");
+          resolve(res);
+        } else {
+          this.$http.get("/api/oss/getSign").then(res => {
+            console.log(res, "签名过期");
+            Cookies.set("sign", JSON.stringify(res.data));
+            resolve(res.data);
+          });
+        }
+      });
+      var that = this;
+      pro.then(success => {
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        ossData.append("name", file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+        );
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        // 添加文件
+        ossData.append("file", file.file, file.file.name);
+        //this.ossData = ossData;
+        console.log(ossData.get("name"));
+        console.log(ossData.get("key"));
+
+        that.$http
+          .post(data.host, ossData, {
+            headers: {
+              "Content-Type": "multipart/form-data; boundary={boundary}"
+            }
+          })
+          .then(res => {
+            console.log(this.fileList);
+            this.imgText.push(ossData.get("key"));
+            console.log(this.imgText, "imgtext");
+          })
+          .catch(error => {
+            console.log(error, "错误");
+          });
+      });
+    },
+    picUpload(file) {
+      // 图片上传
+      let pro = new Promise((resolve, rej) => {
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if (res.expire - 3 > timestamp) {
+          console.log("签名没过期");
+          resolve(res);
+        } else {
+          this.$http.get("/api/oss/getSign").then(res => {
+            console.log(res, "签名过期");
+            Cookies.set("sign", JSON.stringify(res.data));
+            resolve(res.data);
+          });
+        }
+      });
+      var that = this;
+      pro.then(success => {
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        ossData.append("name", file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+        );
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        // 添加文件
+        ossData.append("file", file.file, file.file.name);
+        //this.ossData = ossData;
+        console.log(ossData.get("name"));
+        console.log(ossData.get("key"));
+
+        that.$http
+          .post(data.host, ossData, {
+            headers: {
+              "Content-Type": "multipart/form-data; boundary={boundary}"
+            }
+          })
+          .then(res => {
+            console.log(this.picList);
+            this.picFile.push(ossData.get("key"));
+            console.log(this.picFile, "picfile");
+          })
+          .catch(error => {
+            console.log(error, "错误");
+          });
+      });
     },
     //编号失焦事件
     indexBlur(item) {
@@ -705,7 +903,6 @@ export default {
     beforeAvatarUpload(file) {
       // const isJPG = file.type === 'image/jpeg';
       // const isLt2M = file.size / 1024 / 1024 < 2;
-
       // if (!isJPG) {
       //   this.$message.error('上传头像图片只能是 JPG 格式!');
       // }
@@ -713,9 +910,6 @@ export default {
       //   this.$message.error('上传头像图片大小不能超过 2MB!');
       // }
       // return isJPG && isLt2M;
-      var ossData = new formData();
-      console.log(1111111111111111111);
-      console.log(this.getSign());
     },
     cjw(val) {
       console.log(val, "------------------");
@@ -848,18 +1042,8 @@ export default {
     refbtn1() {
       //  this.cancel('basic')
       alert("dawdaw");
-      // console.log(this.$refs);
-      // this.$refs.refbtn1.className = "tabBtn tabBtnclick";
-      // this.$refs.refbtn2.className = "tabBtn";
-      // this.activeName = "1";
     },
-    refbtn2() {
-      // this.cancel('basic')
-      // console.log(this.$refs.refbtn2);
-      // this.$refs.refbtn2.className = "tabBtn tabBtnclick";
-      // this.$refs.refbtn1.className = "tabBtn";
-      // this.activeName = "2";
-    },
+    refbtn2() {},
     // 搜索
     handleFilter() {
       var obj = {};
@@ -871,11 +1055,11 @@ export default {
     },
     handleSizeChange(val) {
       // alert(val)
+      this.listQuery.page = 1
       this.pageSize = val;
       // this.getList();
-      var obj = {
-        majorSort: this.basicForm.majorSort
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.basicForm.majorSort
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
         var num = 0;
@@ -888,9 +1072,8 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {
-        majorSort: this.tabs
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.tabs
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
@@ -902,11 +1085,14 @@ export default {
         this.total = res.data.data.count;
       });
     },
-    handleCreate() {
-      this.resetTemp();
+    handleCreate(formName) {
+      // this.$refs[formName].resetFields();
+      // this.resetTemp();
+      // this.picList = []
+      this.dialogFormVisible = true;
+      // this.cancel()
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
-      this.dialogFormVisible = true;
     },
     //编辑方法
     handleUpdate(row) {
@@ -914,11 +1100,12 @@ export default {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
-      this.dialogFormVisible = true;
+      this.picList = []
       this.editId = row.id;
       ServerEdit({ id: this.editId })
         .then(data => {
-          // console.log(data,"data-----编辑")
+          this.dialogFormVisible = true;
+          console.log(data, "data-----编辑");
           // this.basicForm = data.data.data
           var arr = data.data.data;
           for (var i = 0; i < arr.commoditys.length; i++) {
@@ -931,6 +1118,18 @@ export default {
               }
             }
           }
+          if (data.data.data.pictures != undefined) {
+            this.picFile = data.data.data.pictures;
+            for (var i = 0; i < data.data.data.pictures.length; i++) {
+              console.log(data.data.data.pictures, "tupian");
+              var obj = {
+                url:
+                  "https://openservice.guoanshequ.com/" +
+                  data.data.data.pictures[i]
+              };
+              this.picList.push(obj);
+            }
+          }
           this.basicForm = arr;
           console.log(this.basicForm, "basicForm------");
         })
@@ -939,8 +1138,45 @@ export default {
         });
     },
     handleUplode(row) {
+      this.imgText = []
       // console.log("上传");
-      this.ImageText = true;
+      this.editId = row.id;
+      this.picList = [];
+      this.fileList = [];
+      this.editId = row.id;
+      this.listLoading = true;
+      ServerEdit({ id: this.editId })
+        .then(res => {
+          console.log(res,"res---------------");
+          if (res.data.code == 1) {
+            var data = res.data.data;
+            this.listLoading = false;
+
+            if (data.pictureDetails != undefined) {
+              this.imgText = data.pictureDetails;
+              for (var i = 0; i < data.pictureDetails.length; i++) {
+                var obj = {
+                  url:
+                    "https://openservice.guoanshequ.com/" +
+                    data.pictureDetails[i]
+                };
+                this.fileList.push(obj);
+              }
+            }
+            this.ImageText = true;
+            // console.log(this.fileList, "编辑图文");
+            // console.log(this.imgText, "编辑图文");
+          }
+          // console.log(res, "列表信息");
+        })
+        .catch(err => {
+          console.log(err);
+          this.listLoading = false;
+          this.$message({
+            type: "warning",
+            message: "获取数据失败"
+          });
+        });
     },
     handleDelete(row) {
       console.log(row, "-----row---");
@@ -1016,7 +1252,7 @@ export default {
         sortId: "00ea9c6db7f242c49eb40b43b38ad7b7",
         sortName: "日常保洁", //所属分类
         name: "保洁家修1", //项目名称（验重）
-        picture:
+        pictures:
           "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
         description: "服务描述测试",
         sale: "1", //是否上架
@@ -1049,11 +1285,9 @@ export default {
       this.getList(1, size);
       this.listQuery.page = 1;
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
+    
     handleAvatarSuccess1(res, file) {
-      console.log(res,"1111111111")
+      console.log(res, "触发事件");
       this.dialogImageUrl = URL.createObjectURL(file.raw);
       console.log(this.dialogImageUrl, "dialogImageUrl-----");
       console.log(res.path, "res----");
@@ -1068,31 +1302,37 @@ export default {
     //取消
     cancel(fromName) {
       // console.log(fromName,"-----")
-      this.dialogFormVisible = false;
-      this.$refs[fromName].resetFields(); //基本信息重置
-      this.basicForm.sortNum = ""; //排序号好清空
-      this.basicForm.cityCodes = []; //定向城市
-      this.resetForm("goods_info"); //添加商品
-      this.goods_info.minPurchase = ""; //起够数量
-      this.basicForm.commoditys = []; //商品信息表格
+      // this.dialogFormVisible = false;
+      this.resetEmpty()
+      // var str = "basic"
+      // this.$refs[str].resetFields(); //基本信息重置
+      // this.basicForm.sortNum = ""; //排序号好清空
+      // this.basicForm.cityCodes = []; //定向城市
+      // this.resetForm("goods_info"); //添加商品
+      // this.goods_info.minPurchase = ""; //起够数量
+      // this.basicForm.commoditys = []; //商品信息表格
+      // this.picFile = [] //清空图片
+      // this.picList = [] //清空图片
+      // this.dialogFormVisible = false;
     },
     //保存
     subForm(formName) {
       var that = this;
+      console.log(this.picFile, "选中的图片列表");
       this.$refs[formName].validate(valid => {
-        console.log(this.basicForm, "basicForm------");
+        // console.log(this.basicForm, "basicForm------");
         if (valid) {
-          // var obj = {}
-          // obj.majorSort = that.basicForm.majorSort;    //所属分类
-          // obj.sortId = that.basicForm.sortId;  //所属分类编号
-          // obj.commoditys = that.basicForm.commoditys;   //商品信息
-          // obj.name = that.basicForm.name;   //项目名称
-          // obj.picture = that.dialogVisible;    //服务图片缩略图   有问题
-          // obj.description = that.basicForm.description;   //服务描述
-          // obj.sale =   that.basicForm.sale   //是否上架
-          // obj.sortNum = that.basicForm.sortNum     //排序号
-          // obj.cityCodes = that.basicForm.cityCodes;     //定向城市
-          // console.log(obj,"-----------------------------------")
+          var obj = {};
+          obj.majorSort = that.basicForm.majorSort; //所属分类
+          obj.sortId = that.basicForm.sortId; //所属分类编号
+          obj.commoditys = that.basicForm.commoditys; //商品信息
+          obj.name = that.basicForm.name; //项目名称
+          obj.pictures = this.picFile; //服务图片缩略图   有问题
+          obj.description = that.basicForm.description; //服务描述
+          obj.sale = that.basicForm.sale; //是否上架
+          obj.sortNum = that.basicForm.sortNum; //排序号
+          obj.cityCodes = that.basicForm.cityCodes; //定向城市
+          console.log(obj, "-----------------------------------");
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             // that.basicForm.id = this.editId
@@ -1106,6 +1346,8 @@ export default {
                   });
                   this.dialogFormVisible = false;
                   this.getList(1, 10);
+                  this.picFile = [];
+                  this.picList = [];
                 } else {
                   this.$message({
                     message: data.data.data,
@@ -1117,7 +1359,8 @@ export default {
                 console.log(error, "error---project---857");
               });
           } else {
-            ServerAdd(that.basicForm)
+            console.log(obj);
+            ServerAdd(obj)
               .then(data => {
                 console.log(data, "添加成功");
                 if (data.data.code) {
@@ -1127,6 +1370,7 @@ export default {
                   });
                   this.cancel("basic");
                   this.getList(1, 10);
+                  this.picFile = [];
                 } else {
                   this.$message({
                     message: data.data.data,
@@ -1169,7 +1413,7 @@ export default {
           // arr = []
           goods.persons = [];
           this.goods_info.minPurchase = "";
-          this.resetForm("goods_info");
+          this.resetForm("ser");
           console.log(obj, "obj-----");
         } else {
           if (this.persons.length > 0) {
@@ -1182,11 +1426,33 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      var str = formName || "goods_info";
-      this.$refs[str].resetFields();
-      this.goods_info.persons = [];
-      this.goods_info.minPurchase = "";
+    resetForm(ser) {
+      this.resetEmpty(ser)
+      // this.goods_info.persons = [];
+      // var str = formName || "goods_info";
+      // if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
+      //   console.log("--------")
+      //    this.$refs[str].resetFields();
+      // }
+      // this.goods_info.persons = [];
+      // this.goods_info.minPurchase = "";
+    },
+    resetEmpty(txt){
+      if(txt == "ser"){
+        this.$refs["goods_info"].resetFields()
+        this.goods_info.minPurchase = "";
+      }else{
+        this.$refs["goods_info"].resetFields()
+        this.$refs["basic"].resetFields()
+        this.goods_info.minPurchase = "";
+        this.basicForm.sortNum = ""; //排序号好清空
+        this.basicForm.cityCodes = []; //定向城市
+        this.goods_info.minPurchase = ""; //起够数量
+        this.basicForm.commoditys = []; //商品信息表格
+        this.picFile = [] //清空图片
+        this.picList = [] //清空图片
+        this.dialogFormVisible = false;
+      }
     }
   }
 };
@@ -1489,7 +1755,7 @@ hr {
   width: 100%;
   background: rgb(182, 180, 180);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 100px 20px;
   margin: 10px 0;
 }
 
@@ -1499,8 +1765,7 @@ hr {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  width: 100%;
-  height: 100%;
+  text-align: center
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
@@ -1514,8 +1779,8 @@ hr {
   text-align: center;
 }
 .avatar {
-  width: 100%;
-  height: 100%;
+  width: 178px;
+  height: 178px;
   display: block;
 }
 .sortInput {
@@ -1530,5 +1795,27 @@ hr {
 } */
 .el-table__body tr:nth-child(2n) .sortInput {
   background: #fafafa;
+}
+.imgText .el-upload-list__item {
+  height: 100%;
+}
+.imgText .el-upload-list__item-name {
+  display: none;
+}
+.imgText .el-upload-list__item-thumbnail {
+  height: 100%;
+  width: 100%;
+}
+.imgList{
+  width: 50px;
+  height: 50px;
+  margin-top: 5px;
+}
+.el-icon-plus{
+  text-align: center;
+  font-size: 20px;
+}
+.el-upload--picture{
+  width: 100%;
 }
 </style>
