@@ -22,7 +22,10 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" width="100" type="index">
+      <el-table-column align="center" label="编号" width="100">
+        <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="姓名" prop="name" >
@@ -95,7 +98,7 @@
             v-model="temp.password" 
             style='width: 400px;'
              type="password"
-            placeholder="建议使用6-20位字母、数字和符号两种以上组合"></el-input>
+            placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
         <el-form-item label=" 确认密码:"  prop="password2">
@@ -137,8 +140,82 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <!-- <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>     -->
+        <button class="button-large"  @click="create('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+      </div>
+    
+      
+  </el-dialog>
+    <el-dialog 
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisibleup" 
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+      minwidth = "700px">
+      <el-form 
+        class="small-space" 
+        :model="temp" 
+        label-position="left" 
+        label-width="160px"
+        :rules="rules"
+        ref="temp"
+        style='width: 500px; margin-left:50px;'>
+
+        <el-form-item label=" 姓名:"  prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
+            </el-form-item>
+        
+        <el-form-item label=" 手机号:" prop="mobile">
+          <el-input 
+            v-model="temp.mobile"
+            style='width: 400px;'
+            placeholder="请输入11位手机号"></el-input>
+        </el-form-item>
+
+        <el-form-item label="   密码:" prop="password3">
+          <el-input 
+            v-model="temp.password3" 
+            style='width: 400px;'
+             type="password"
+            placeholder="请使用6-20位字母、数字两种组合"></el-input>
+        </el-form-item>
+
+        <el-form-item label=" 服务机构:"  prop="officeId">
+          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
+            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label=" 服务站:" prop="stationId" >
+          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
+            <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="  选择岗位:" prop="role">
+          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
+            <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+           <div class="btn_addStation" @click="addRole">新 增</div>
+        </el-form-item>
+        <el-form-item  label="可用状态:" >
+          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
+            <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <button class="button-large"  @click="update('temp')">保 存</button>    
+        <!-- <button class="button-large"  @click="create('temp')">保 存</button>     -->
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
@@ -243,12 +320,8 @@ export default {
       if (value === "") {
         callback(new Error("请输入6-20位密码"));
       } else {
-        if (
-          !/^(?![\d]+$)(?![a-zA-Z]+$)(?![!#$%^&*]+$)[\da-zA-Z!#$%^&*]{6,20}$/.test(
-            value
-          )
-        ) {
-          callback(new Error("密码由6-20位数字、字母、字符任意两种组成"));
+        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
+          callback(new Error("密码必须由6-20位数字、字母组成"));
         } else {
           callback();
         }
@@ -265,6 +338,18 @@ export default {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
+      }
+    };
+    var validatePass3 = (rule, value, callback) => {
+      console.log(value, "value");
+      if (value == undefined) {
+        callback();
+      } else {
+        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/.test(value)) {
+          callback(new Error("密码必须由6-20位数字、字母两种组成"));
+        } else {
+          callback();
+        }
       }
     };
     var validatePhone = (rule, value, callback) => {
@@ -305,6 +390,7 @@ export default {
         name: "",
         password: "",
         password2: "",
+        password3: "",
         officeId: "",
         stationId: "",
         roles: "",
@@ -340,18 +426,16 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
-      stationStateCheck: [
-        { id: "1", name: "可用" },
-        { id: "0", name: "不可用" }
-      ],
+      stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
 
       dialogFormVisible: false,
+      dialogFormVisibleup: false,
       dialogFormStation: false,
 
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑员工",
+        create: "新增员工"
       },
       dialogPvVisible: false,
       tableKey: 0,
@@ -373,18 +457,15 @@ export default {
         password2: [
           { required: true, validator: validatePass2, trigger: "blur" }
         ],
-        officeId: [
-          { required: true, message: "机构不能为空", trigger: "change" }
+        password3: [
+          { required: true, validator: validatePass3, trigger: "blur" }
         ],
-        stationId: [
-          { required: true, message: "服务站不能为空", trigger: "change" }
-        ],
+        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        stationId: [{ required: true, message: "服务站不能为空", trigger: "change" }],
         role: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       },
       rules2: {
-        officeId2: [
-          { required: true, message: "机构不能为空", trigger: "change" }
-        ],
+        officeId2: [{ required: true, message: "机构不能为空", trigger: "change" }],
         name: [
           {
             required: true,
@@ -393,9 +474,7 @@ export default {
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [
-          { required: true, message: "等级不能为空", trigger: "change" }
-        ],
+        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
         check: [
           {
             type: "array",
@@ -442,6 +521,11 @@ export default {
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res.data);
         this.list = res.data.data.list;
+        if (this.list != undefined) {
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
         //this.pageSize = res.data.data.pageSize;
         this.listLoading = false;
@@ -458,6 +542,11 @@ export default {
           console.log(res);
           if (res.data.code === 1) {
             this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
             this.total = res.data.data.count;
             this.listLoading = false;
             this.listQuery.page = 1;
@@ -473,8 +562,8 @@ export default {
         this.getList();
       }
     },
-    addRole(){
-      this.dialogFormStation = true
+    addRole() {
+      this.dialogFormStation = true;
       if (this.mechanismCheck.length == 1) {
         console.log(this.mechanismCheck[0].id);
         this.temp2.officeId2 = this.mechanismCheck[0].id;
@@ -490,6 +579,11 @@ export default {
       // var obj = {};
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if (this.list != undefined) {
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
       });
     },
@@ -503,6 +597,11 @@ export default {
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if (this.list != undefined) {
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
       });
     },
@@ -529,7 +628,7 @@ export default {
     },
     handleUpdate(row) {
       //this.handleCreate();
-      this.dialogFormVisible = true;
+      this.dialogFormVisibleup = true;
       console.log(row);
       this.dialogStatus = "update";
       this.temp = {
@@ -706,12 +805,12 @@ export default {
         }
       });
     },
-    update() {
+    update(formName) {
       var obj = {
         id: this.temp.id,
         mobile: this.temp.mobile,
         name: this.temp.name,
-        newPassword: this.temp.password,
+        newPassword: this.temp.password3,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
@@ -719,21 +818,27 @@ export default {
       };
       console.log(obj);
       //this.dialogFormVisible = false;
-      addStaff(obj).then(res => {
-        console.log(res);
-        if (res.data.code === 1) {
-          this.dialogFormVisible = false;
-          this.pageNumber = 1
-          this.getList();
-          this.$message({
-            type: "success",
-            message: "修改成功"
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          addStaff(obj).then(res => {
+            console.log(res);
+            if (res.data.code === 1) {
+              this.dialogFormVisibleup = false;
+              this.pageNumber = 1;
+              this.getList();
+              this.$message({
+                type: "success",
+                message: "修改成功"
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+            }
           });
         } else {
-          this.$message({
-            type: "error",
-            message: res.data.data
-          });
+          return false;
         }
       });
     },
@@ -743,6 +848,7 @@ export default {
         name: "",
         password: "",
         password2: "",
+        password3: "",
         officeId: "",
         stationId: "",
         role: "",
@@ -751,7 +857,7 @@ export default {
     },
     resetTemp2() {
       this.temp2 = {
-        officeId:"",
+        officeId: "",
         name: "",
         dataScope: "",
         check: []
@@ -760,11 +866,12 @@ export default {
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
+      this.dialogFormVisibleup = false;
       this.$refs[formName].resetFields();
     },
     resetForm2(formName) {
       this.temp2 = {
-        officeId:"",
+        officeId: "",
         name: "",
         dataScope: "",
         check: []
