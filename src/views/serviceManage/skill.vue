@@ -11,7 +11,11 @@
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
-                      <el-table-column align="center" label="编号" width="100" type="index"></el-table-column>
+                      <el-table-column align="center" label="编号" width="100">
+                          <template scope="scope">
+                            {{scope.row.index+(pageNumber-1)*pageSize}}
+                          </template>
+                      </el-table-column>
                       <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
@@ -22,14 +26,14 @@
                       </el-table-column>
               </el-table>
               <div v-show="!listLoading" class="pagination-container techPag">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
                   layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total">
                 </el-pagination>
               </div>
           </div>          
         </div>
         <!-- 弹出层新增技能 -->
-        <el-dialog title="新增技能" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
+        <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
           <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
             <el-form-item label="技能名称" prop="name">
               <el-input  v-model="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
@@ -164,7 +168,22 @@
   export default {
     name: '',
     data() {
+      var checkName = (rule, value, callback) => {
+          value=value.trim()
+          if (!value) {
+              callback(new Error('请输入2-15位技能名称'));
+          }else{
+            if(value.length>=2 && value.length<=15){
+                callback()
+            }else{
+              callback(new Error('请输入2-15位技能名称'));
+            }
+              
+          }			
+      };      
       return {
+        jumpPage:1,
+        title:'新增技能',
         btnShow: this.$store.state.user.buttonshow,
         showRUles:false,
         promShow:false,
@@ -177,8 +196,7 @@
         techStationId:'',
         rules: {
           name: [
-          { required: true, message: '请输入2-15位技能名称', trigger: 'blur' },
-          { min: 2, max: 15, message: '请输入2-15位技能名称', trigger: 'blur'}
+          { required: true, validator:checkName, trigger: 'blur' },
           ]
         },
         ruleForm2: {
@@ -237,6 +255,8 @@
         var obj={
               name:this.localSearch,
         }
+        this.pageNumber=1;
+        this.jumpPage=1;
         this.getList(obj,this.pageNumber,this.pageSize);
       },
       //全局新增按钮
@@ -267,10 +287,12 @@
           this.tabOptions=[];
           this.ruleForm2.serItems=[];                  		  		                          
          if(this.dialogStatus =='add'){
+           this.title='新增技能'
            //新增操作                     
            this.ruleForm2={};           
            this.id=''                      
          }else if(this.dialogStatus =='edit'){
+           this.title='编辑技能'
            this.showRUles=false;
            //编辑操作           
            this.id=row.id;
@@ -353,22 +375,45 @@
                         }
                         if(this.dialogStatus =='add'){
                             saveServer(obj).then(res => {
-                              this.dialogVisible = false;	
-                              var obj1={}
-                              this.listLoading = false
-                              this.pageNumber=1;
-                              this.getList(obj1,this.pageNumber,this.pageSize);
+                                if(res.data.code === 1){
+                                    this.$message({
+                                      type: 'success',
+                                      message: '新增成功!'
+                                    });
+                                    this.dialogVisible = false;	
+                                    var obj1={}
+                                    this.listLoading = false
+                                    this.pageNumber=1;
+                                    this.jumpPage=1;
+                                    this.getList(obj1,this.pageNumber,this.pageSize);                                    
+                                }else{
+                                  this.$message({
+                                      type: 'warning',
+                                      message: res.data.data
+                                  });
+                                }	
+
                             }).catch(res=>{
                                 this.listLoading = false
                             });
                         }
                         if(this.dialogStatus =='edit'){
                             upDataTech(obj).then(res => {
-                              this.dialogVisible = false;	
-                              var obj1={}
-                              this.listLoading = false
-                              this.pageNumber=1;
-                              this.getList(obj1,this.pageNumber,this.pageSize);
+                                if(res.data.code === 1){
+                                    this.$message({
+                                      type: 'success',
+                                      message: '编辑成功!'
+                                    });
+                                    this.dialogVisible = false;	
+                                    var obj1={}
+                                    this.listLoading = false
+                                    this.getList(obj1,this.pageNumber,this.pageSize);                                  
+                                }else{
+                                  this.$message({
+                                      type: 'warning',
+                                      message: res.data.data
+                                  });
+                                }
                             }).catch(res=>{
                               this.listLoading = false
                             });
@@ -499,7 +544,12 @@
 		  	var obj = pramsObj;
         getListdata(obj,pageNo,pageSize).then(res => {
            if(res.data.code === 1){
-           this.getListdata = res.data.data.list          
+           this.getListdata = res.data.data.list;
+           if(res.data.data.list != undefined){
+              for(var a=0;a<this.getListdata.length;a++){
+                this.getListdata[a].index=a+1;
+              }
+           }                     
            this.total = res.data.data.count;           
           }
           this.listLoading = false

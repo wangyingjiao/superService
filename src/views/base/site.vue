@@ -228,10 +228,10 @@
 				</div>
         <br/>
         <br/>
-        <div slot="footer" class="dialog-footer" style="text-align:center">
+        <!--<div slot="footer" class="dialog-footer" style="text-align:center">
            <button class="button-large"  @click="createMap">保 存</button>    
            <button class="button-cancel" @click="resetMap">取 消</button>
-        </div>					
+        </div>-->					
 	    </el-dialog>
 
 
