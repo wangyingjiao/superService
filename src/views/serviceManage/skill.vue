@@ -134,7 +134,7 @@
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                           <td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                          <td  class="height100" align="center"><div class="userHeaderStyle">{{item.headPic}}</div></td>
+                          <td  class="height100" align="center"><div class="userHeaderStyle"><img :src="item.headPic" style="width:100%;height:100%;"/></div></td>
                           <td  align="center">{{item.techName}}</td>
                           <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
