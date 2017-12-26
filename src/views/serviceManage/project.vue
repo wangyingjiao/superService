@@ -66,7 +66,7 @@
 
       <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
-          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName}}&nbsp;</span>
         </template>
       </el-table-column>
 
@@ -197,7 +197,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
               <el-table
-                v-if="basicForm.commoditys.length>0"
+                v-show="basicForm.commoditys.length>0"
                 border 
                 :data="basicForm.commoditys"
                 class="goods_info">
@@ -208,7 +208,11 @@
                   
                 </el-table-column>
                 <el-table-column align="center" label="计量方式" prop="type">
-                 
+                  <template scope="scope">
+                    <span v-show="scope.row.type=='num'">按数量</span>
+                    <span v-show="scope.row.type=='area'">按面积</span>
+                    <span v-show="scope.row.type=='house'">按居室</span>
+                  </template>
                 </el-table-column>
                 <el-table-column align="center" label="价格" prop="price">
                   
@@ -256,7 +260,7 @@
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-form 
-                v-if="addComm"
+                v-show="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
@@ -326,7 +330,7 @@
 
                 <el-form-item>
                   <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('goods_info')">取 消</button> 
+                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
                 </el-form-item>
               </el-form>
          </div>
@@ -469,6 +473,14 @@ export default {
         callback(new Error("请输入派人数量"));
       }
     };
+    //服务图片
+    var PICTURE = (rule,value,callback)=>{
+      if(this.picFile.length>0){
+        callback()
+      }else{
+        callback(new Error("请添加服务图片"))
+      }
+    }
     return {
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
@@ -526,7 +538,7 @@ export default {
       },
       basicForm: {
         name: "",
-        pictures: "123123132", //服务图片
+        picture: "123123132", //服务图片
         sortId: "",
         sale: "yes",
         sortNum: "",
@@ -540,7 +552,9 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" },
           { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
-        // picture: [{ required: true, message: "请上传至少一张图片" }],
+         picture: [
+           { required: true, validator:PICTURE, trigger:"blur"}
+          ],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
@@ -1041,6 +1055,7 @@ export default {
     },
     handleSizeChange(val) {
       // alert(val)
+      this.listQuery.page = 1
       this.pageSize = val;
       // this.getList();
       var obj = Object.assign({},this.search)
@@ -1288,16 +1303,17 @@ export default {
     cancel(fromName) {
       // console.log(fromName,"-----")
       // this.dialogFormVisible = false;
-      var str = "basic"
-      this.$refs[str].resetFields(); //基本信息重置
-      this.basicForm.sortNum = ""; //排序号好清空
-      this.basicForm.cityCodes = []; //定向城市
-      this.resetForm("goods_info"); //添加商品
-      this.goods_info.minPurchase = ""; //起够数量
-      this.basicForm.commoditys = []; //商品信息表格
-      this.picFile = [] //清空图片
-      this.picList = [] //清空图片
-      this.dialogFormVisible = false;
+      this.resetEmpty()
+      // var str = "basic"
+      // this.$refs[str].resetFields(); //基本信息重置
+      // this.basicForm.sortNum = ""; //排序号好清空
+      // this.basicForm.cityCodes = []; //定向城市
+      // this.resetForm("goods_info"); //添加商品
+      // this.goods_info.minPurchase = ""; //起够数量
+      // this.basicForm.commoditys = []; //商品信息表格
+      // this.picFile = [] //清空图片
+      // this.picList = [] //清空图片
+      // this.dialogFormVisible = false;
     },
     //保存
     subForm(formName) {
@@ -1397,7 +1413,7 @@ export default {
           // arr = []
           goods.persons = [];
           this.goods_info.minPurchase = "";
-          this.resetForm("goods_info");
+          this.resetForm("ser");
           console.log(obj, "obj-----");
         } else {
           if (this.persons.length > 0) {
@@ -1410,14 +1426,33 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      var str = formName || "goods_info";
-      if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
-        console.log("--------")
-         this.$refs[str].resetFields();
+    resetForm(ser) {
+      this.resetEmpty(ser)
+      // this.goods_info.persons = [];
+      // var str = formName || "goods_info";
+      // if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
+      //   console.log("--------")
+      //    this.$refs[str].resetFields();
+      // }
+      // this.goods_info.persons = [];
+      // this.goods_info.minPurchase = "";
+    },
+    resetEmpty(txt){
+      if(txt == "ser"){
+        this.$refs["goods_info"].resetFields()
+        this.goods_info.minPurchase = "";
+      }else{
+        this.$refs["goods_info"].resetFields()
+        this.$refs["basic"].resetFields()
+        this.goods_info.minPurchase = "";
+        this.basicForm.sortNum = ""; //排序号好清空
+        this.basicForm.cityCodes = []; //定向城市
+        this.goods_info.minPurchase = ""; //起够数量
+        this.basicForm.commoditys = []; //商品信息表格
+        this.picFile = [] //清空图片
+        this.picList = [] //清空图片
+        this.dialogFormVisible = false;
       }
-      this.goods_info.persons = [];
-      this.goods_info.minPurchase = "";
     }
   }
 };
