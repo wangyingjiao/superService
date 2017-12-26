@@ -679,34 +679,32 @@ export default {
     },
     handleRemovePic(file,fileList) {
       //删除服务图片
-      console.log(fileList);
+      console.log(fileList,'文件');
       console.log(file, "删除一张图片");
+      console.log(this.picFile,'imgtext')
+      console.log(this.picList,'filelist')
 
       var str = "";
       var index = file.url.lastIndexOf("/");
       str = file.url.substring(index + 1, file.url.length);
-      console.log(str);
-      var date = new Date();
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      var d = date.getDate();
-      // if (file.name != undefined) {
-      //   var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-      // } else {
-      //   var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + str;
-      // }
-      // let newarr = []
-      // for(var i = 0;i<this.imgText.length;i++){
-      //   var index = this.imgText[i].lastIndexOf("/");
-      //   var newstr = ''
-      //   newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
-      //   newarr.push(newstr)
-      // }
-      //   console.log(str);
-      //   console.log(newarr,'截取')
-
-      console.log(src, "src");
-      this.picFile.remove(src);
+      var src = ''
+      if (file.name != undefined) {
+         src = file.name;
+      } else {
+         src = str;
+      }
+      console.log(src,'src');
+      let newarr = []
+      for(var i = 0;i<this.picFile.length;i++){
+        var index = this.picFile[i].lastIndexOf("/");
+        var newstr = ''
+        newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
+        newarr.push(newstr)
+      }
+        console.log(newarr,'截取')
+      var delIndex = newarr.indexOf(src)
+      console.log(delIndex,'删除图片的下标')
+      this.picFile.del(delIndex);
       console.log(this.picFile);
     },
     handleBefore(file) {
