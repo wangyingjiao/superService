@@ -1,8 +1,12 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
+      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="请选择">
+        <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
@@ -18,12 +22,17 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" type="index" width="300">
+      <el-table-column align="center" label="编号" width="300">
+        <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
       </el-table-column>
 
       <el-table-column  label="岗位名称" align="center" prop="name" >
       </el-table-column>
 
+      <el-table-column  label="机构名称" align="center" prop="organization.name" >
+      </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
@@ -49,7 +58,7 @@
        :close-on-press-escape="false"
        class="diatable">
       <el-form 
-        class="small-space" 
+        class="small-space"
         :model="temp" 
         label-position="left"
         :rules="rules"
@@ -157,7 +166,10 @@ export default {
       total: null,
       listLoading: false,
       state: false,
-      search: "",
+      search: {
+        name: "",
+        officeId: ""
+      },
       listQuery: {
         page: 1,
         limit: 10,
@@ -196,8 +208,8 @@ export default {
       state: state,
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑岗位",
+        create: "新增岗位"
       },
       dialogPvVisible: false,
       pvData: [],
@@ -231,19 +243,6 @@ export default {
       }
     };
   },
-  // watch: {
-  //   "temp.check": {
-  //     handler(curVal, oldVal) {
-  //       // 判断顺序（增，删，改）
-  //       // 员工
-  //       var len = curVal.length
-  //      for(var i = 0;i<len;i++){
-  //        console.log(123);
-
-  //      }
-  //     }
-  //   }
-  // },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -262,7 +261,7 @@ export default {
       this.data2 = res.data.data;
     });
     getSList({}).then(res => {
-      console.log("所属机构");
+      console.log("所属机构,机构搜索");
       console.log(res);
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
@@ -278,6 +277,12 @@ export default {
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -285,14 +290,22 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       var obj = {
-        name: this.search
+        name: this.search.name,
+        "organization.id": this.search.officeId
       };
-      if (this.search) {
+      console.log(obj);
+      
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
             this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
             this.total = res.data.data.count;
             this.listLoading = false;
           } else {
@@ -302,17 +315,20 @@ export default {
             });
           }
         });
-      } else {
-        this.getList();
-      }
     },
     handleSizeChange(val) {
       this.pageSize = val;
       var obj = {
-        name: this.search
+        // name: this.search.name,
+        // organization: {
+        //   id: this.search.officeId
+        // }
       };
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].index = i + 1;
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -320,11 +336,16 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        name: this.search
+        // name: this.search
       };
       this.listLoading = true;
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
       });
     },
@@ -378,7 +399,8 @@ export default {
           this.temp.dataScope = a.dataScope;
           this.temp.check = a.menuIdList;
           console.log(a.menuIdList);
-          for (let i = 0; i < this.data2.length; i++) { //特殊首页处理
+          for (let i = 0; i < this.data2.length; i++) {
+            //特殊首页处理
             if (this.data2[i].permission == "index") {
               console.log(this.data2[i].permission);
               //this.temp.check.remove(this.data2[i].id);
@@ -476,6 +498,7 @@ export default {
       }
     },
     create(formName) {
+      this.search = "";
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       // console.log(arr);
@@ -546,6 +569,7 @@ export default {
       });
     },
     update(formName) {
+      this.search = "";
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
@@ -563,7 +587,7 @@ export default {
       };
       console.log(obj);
       this.$refs[formName].validate(valid => {
-        if (valid) {         
+        if (valid) {
           addStation(obj).then(res => {
             this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
