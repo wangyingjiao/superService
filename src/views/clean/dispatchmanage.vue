@@ -13,74 +13,55 @@
 		</div>
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 30px;">
-				    <el-table
-					  :data="tableData"
-					  border
-					  style="width:100%;">
-					  <el-table-column
-						prop="date"
-						align="center"
-						label="订单编号"
-						width="120">
+					<el-table :data="tableData" border style="width:100%">
+					  <el-table-column prop="date" style="padding:0" align="center" label="订单编号"></el-table-column>
+					  <el-table-column align="center" prop="name" label="服务时间"></el-table-column>
+					  <el-table-column style="padding:0" align="center" label="头像">
+								<template scope="scope">
+										<div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
+								</template>
 					  </el-table-column>
-					  <el-table-column
-					    align="center"
-						prop="name"
-						label="服务时间"
-						width="120">
+
+					  <el-table-column align="center" label="技师">
+								<template scope="scope">
+										<div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
+								</template>
 					  </el-table-column>
-					  <el-table-column
-					    width="140"
-						align="center"
-						label="头像">
-						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
-						</template>
+
+					  <el-table-column align="center" label="性别">
+								<template scope="scope">
+										<div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
+								</template>
 					  </el-table-column>
-					  <el-table-column
-					    width="140"
-						align="center"
-						label="技师">
-						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
-						</template>
+
+					  <el-table-column align="center" label="电话">
+								<template scope="scope">
+										<div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
+								</template>
 					  </el-table-column>
-					  <el-table-column
-					    width="140"
-						align="center"
-						label="性别">
-						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
-						</template>
+
+					  <el-table-column align="center" label="所属服务站">
+								<template scope="scope">
+										<div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
+								</template>
 					  </el-table-column>
-					  <el-table-column
-					    width="140"
-						align="center"
-						label="电话">
-						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
-						</template>
-					  </el-table-column>
-					  <el-table-column
-					    width="140"
-						align="center"
-						label="所属服务站">
-						<template scope="scope">
-                             <div class="selfTd" v-for=" item in scope.row.address" :key="item.name">{{item.name}}</div>						
-						</template>
-					  </el-table-column>
-					  <el-table-column
-					    width="230"
-						align="center"
-						label="操作">
-						<template scope="scope">
-									<div class="selfTd" style="width:230px;" v-for=" item in scope.row.address" :key="item.name">
-										<el-button type="button" @click="selectBut(item.name)">改派</el-button>
+
+					  <el-table-column align="center" label="操作" :colspan="2" ref="column">
+								<template scope="scope">
+										<div class="selfTd"  v-for=" item in scope.row.address" :key="item.name">
+											<el-button type="button" @click="selectBut(item.name)">改派</el-button>
+											<el-button type="button" >改派记录</el-button>
+										</div>						
+								</template>
+					  </el-table-column>		
+						<!-- <el-table-column align="center">
+							<template scope="scope">
+								<div>
 										<el-button type="button" >改派记录</el-button>
-									</div>						
-						</template>
-					  </el-table-column>					  
-					</el-table>
+								</div>
+							</template>	
+						</el-table-column>			   -->
+				</el-table>
 					<div  style="margin-top:20px;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
 						:page-sizes="[10,20,30, 50]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
@@ -222,14 +203,18 @@ export default {
 	}	
   },
   mounted() {
-
+		this.$refs['column'].columnConfig.colSpan = 2
+		console.log(this.$refs['column'],"column-------")
 
   }
 };
 </script>
-<style lang="scss" scoped>
+<style>
+.el-table_1_column_8{
+	border-right:none; 
+}
 .selfTd{
-width:140px;margin-left:-20px;text-align:center;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
+text-align:center;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
 }
 .selfTd:last-child{
    border:none;
@@ -253,5 +238,9 @@ width:140px;margin-left:-20px;text-align:center;height:49px;line-height:49px;bor
   margin-left:20px;
   margin-right:20px;
   
+}
+
+.el-table .cell{
+	padding: 0;
 }
 </style>
