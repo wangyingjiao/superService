@@ -291,7 +291,7 @@ export default {
       this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
-        "organization.id": this.search.officeId
+        organization: {id:this.search.officeId}
       };
       console.log(obj);
       
@@ -309,6 +309,7 @@ export default {
             this.total = res.data.data.count;
             this.listLoading = false;
           } else {
+            this.listLoading = false;
             this.$message({
               type: "warning",
               message: "岗位名不存在"

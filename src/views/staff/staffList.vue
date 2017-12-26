@@ -714,6 +714,16 @@ export default {
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });
+      var obj2 ={
+       organization:{
+         id:val
+       }
+      }
+      getStation(obj2).then(res => {
+        console.log(res,'岗位');
+        //this.servicestationCheck = res.data.data;
+        // console.log(res.data)
+      });
     },
     getId(str) {
       for (var i = 0; i < this.objOptions.length; i++) {
