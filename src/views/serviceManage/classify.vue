@@ -28,7 +28,10 @@
     element-loading-text="正在加载" 
     style="width: 100%" >
 
-      <el-table-column align="center" label="编号" type="index" width="100">
+      <el-table-column align="center" label="编号" width="100">
+        <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
       </el-table-column>
 
       <el-table-column  label="分类名称" align="center" prop="name">
@@ -76,7 +79,7 @@
         </div>
         <div class="tabRight fl">
           <el-form 
-          v-if="aaa == 'clean'"
+         
             class="small-space" 
             ref="temp" 
             :rules="rules" 
@@ -85,14 +88,33 @@
             label-width="100px" 
             style='width: 500px; margin-left:20px;'>
 
-            <el-form-item label="分类名称"  prop="name" >
+            <el-form-item label="分类名称" v-if="activeName == 'repair'"  prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
+            </el-form-item>
+
+            <el-form-item label="分类名称" v-if="activeName == 'clean'"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
             </el-form-item>
             
 
-            <el-form-item label="定向城市">   
+            <el-form-item label="定向城市" v-if="activeName == 'repair'">   
+              <div class="cityBox">
+                  <div style="display:inline-block;margin-left:-20px;" >
+                    <div 
+                      class="selfCheckBox cityBtn" 
+                      ref="cityOption" 
+                      @click="cityChange(item,index)" 
+                      v-for="(item,index) in city"
+                      :key="index">{{item.cityName}}</div>
+								  	</div>
+              </div>
+                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
+            </el-form-item>
+            <el-form-item label="定向城市" v-if="activeName == 'clean'">   
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
                     <div 
@@ -239,6 +261,7 @@ export default {
         type: undefined,
         sort: "+id"
       },
+      pageNumber:1,
       pageSize: 10,
       total: 1,
       temp: {
@@ -258,8 +281,8 @@ export default {
       dialogFormUpdate: false,
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "添加"
+        update: "编辑分类",
+        create: "新增分类"
       },
       tableKey: 0,
       activeName: "all",
@@ -328,10 +351,11 @@ export default {
             this.$refs.cityOption2[index].style.borderColor = "";
             this.$refs.cityOption2[index].style.color = "#48576a";
             this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
-          }else{
+          } else {
             this.$refs.cityOption2[index].style.borderColor = "green";
             this.$refs.cityOption2[index].style.color = "green";
-            this.$refs.cityOption2[index].className = "selfCheckBox cityBtn mark";
+            this.$refs.cityOption2[index].className =
+              "selfCheckBox cityBtn mark";
           }
           console.log(11111111111);
         }
@@ -348,10 +372,11 @@ export default {
             this.$refs.cityOption2[index].style.borderColor = "";
             this.$refs.cityOption2[index].style.color = "#48576a";
             this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
-          }else{
+          } else {
             this.$refs.cityOption2[index].style.borderColor = "green";
             this.$refs.cityOption2[index].style.color = "green";
-            this.$refs.cityOption2[index].className = "selfCheckBox cityBtn mark";
+            this.$refs.cityOption2[index].className =
+              "selfCheckBox cityBtn mark";
           }
         }
       }
@@ -362,15 +387,6 @@ export default {
         console.log(this.city, "city");
         for (var i = 0; i < this.city.length; i++) {
           console.log(this.city[i], "全不选");
-          //getSuccess(obj).then(res => {
-          // console.log(res);
-          // if (res.data.data != "success") {
-          //   this.$message({
-          //     type: "warning",
-          //     message: "该城市已关联服务项目，不可移除其选中状态"
-          //   });
-          //   return;
-          // } else {
           if (!this.city[i].haveItem) {
             this.$refs.cityOption2[i].style.borderColor = "";
             this.$refs.cityOption2[i].style.color = "#48576a";
@@ -426,6 +442,11 @@ export default {
         .then(res => {
           console.log(res, "分类列表");
           this.list = res.data.data.list;
+          if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
           this.listLoading = false;
           this.total = res.data.data.count;
         })
@@ -445,6 +466,11 @@ export default {
         this.listLoading = false;
         this.listQuery.page = 1;
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
       });
     },
@@ -458,6 +484,11 @@ export default {
       };
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -472,12 +503,18 @@ export default {
       this.listLoading = true;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
         this.total = res.data.data.count;
       });
     },
     handleCreate() {
       this.activeName = "clean";
+      this.temp.name = ""
       this.dialogFormVisible = true;
     },
     handleUpdate(row) {
@@ -522,21 +559,7 @@ export default {
                     "selfCheckBox cityBtn mark";
                 }
               }
-              // for (var i = 0; i < data.citys.length; i++) {
-              //   console.log(i + "citys个数");
-              //   for (var j = 0; j < this.city.length; j++) {
-              //     if (
-              //       data.citys[i].cityName ==
-              //       this.$refs.cityOption2[j].innerText
-              //     ) {
-              //       console.log("编辑时被选中");
-              //       this.$refs.cityOption2[j].style.borderColor = "green";
-              //       this.$refs.cityOption2[j].style.color = "green";
-              //       this.$refs.cityOption2[j].className =
-              //         "selfCheckBox cityBtn mark";
-              //     }
-              //   }
-              // }
+              
             });
           }
         } else {
@@ -618,9 +641,10 @@ export default {
           addClass(obj).then(res => {
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
-              this.checkCity = [];
               this.activeName = "all";
+              this.temp.name = "";
               this.resetCity();
+              this.resetSearch()
               this.getList();
               this.$message({
                 type: "success",
@@ -657,14 +681,21 @@ export default {
       this.$refs[formName].resetFields();
       this.checkCity = [];
     },
+    resetSearch(){
+      this.search = {
+        cityCode: '',
+        name: '',
+        majorSort:''
+      };
+    },
     update(formName) {
-      console.log(1111)
+      console.log(1111);
       var obj = {
-            id: this.rowId,
-            cityCodes: [],
-            majorSort: this.activeName,
-            name: this.temp.name
-          };
+        id: this.rowId,
+        cityCodes: [],
+        majorSort: this.activeName,
+        name: this.temp.name
+      };
       if (this.$refs.allCity.style.borderColor == "green") {
         this.cityCodes = [];
       } else {
@@ -672,20 +703,21 @@ export default {
         for (var i = 0; i < this.city.length; i++) {
           if (this.$refs.cityOption2[i].style.borderColor == "green") {
             console.log(this.city[i].cityCode);
-            obj.cityCodes.push(this.city[i].cityCode)
+            obj.cityCodes.push(this.city[i].cityCode);
           }
         }
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.dialogFormUpdate = false;
               this.activeName = "all";
               this.checkCity = [];
+              this.temp.name = ""
               this.resetCity2();
+              this.resetSearch()
               this.getList();
               this.$message({
                 type: "success",
@@ -704,7 +736,10 @@ export default {
       });
     },
     resetTemp() {
-      this.temp = {};
+      this.temp = {
+        name:''
+
+      };
     },
     resetCity() {
       for (var i = 0; i < this.city.length; i++) {

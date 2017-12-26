@@ -37,7 +37,10 @@
         @row-click = "rowClick"
         style="width: 100%">
 
-        <el-table-column align="center" label="编号" type="index" width="100">
+        <el-table-column align="center" label="编号"  width="100">
+          <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
         </el-table-column>
 
         <el-table-column label="服务站名称" align="center" prop="name">
@@ -228,10 +231,10 @@
 				</div>
         <br/>
         <br/>
-        <div slot="footer" class="dialog-footer" style="text-align:center">
+        <!--<div slot="footer" class="dialog-footer" style="text-align:center">
            <button class="button-large"  @click="createMap">保 存</button>    
            <button class="button-cancel" @click="resetMap">取 消</button>
-        </div>					
+        </div>-->					
 	    </el-dialog>
 
 
@@ -362,8 +365,8 @@ export default {
       dialogStoreVisible: false, //门店
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑服务站",
+        create: "新增服务站"
       },
       tableKey: 0,
       master: [],
@@ -428,6 +431,11 @@ export default {
       this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -442,6 +450,11 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -493,6 +506,11 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
       });
     },
@@ -505,6 +523,11 @@ export default {
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
+        if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.listLoading = false;
       });
     },
@@ -643,6 +666,11 @@ export default {
           };
           getSite(obj, this.pageNumber, this.pageSize).then(res => {
             this.list = res.data.data.list;
+            if(this.list != undefined){
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
             this.total = res.data.data.count;
             this.listLoading = false;
           });

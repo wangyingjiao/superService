@@ -24,9 +24,9 @@ export function addStation(obj) {
 export function delStation(obj) {
   return instance.post(`/api/a/sys/role/deleteRole`, obj)
 }
-export function searchStation(obj) {
-  return instance.post(`/api/a/sys/role/search`, obj)
-}
+// export function searchStation(obj) {
+//   return instance.post(`/api/a/sys/role/search`, obj)
+// }
 export function getPower(str) {
   return instance.get(`/api/a/sys/role/getRoleDetail?id=` + str)
 }

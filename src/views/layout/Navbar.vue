@@ -20,7 +20,7 @@
           <div>退出</div>
         </li>
       </ul>
-      <ul style="position:absolute;width: 50px;height: 200px;top:52px;z-index: 1;right: 240px;" class="nav-posi" v-show="show">
+      <ul style="position:fixed;width: 50px;height: 200px;top:52px;z-index: 1;right: 240px;" class="nav-posi" v-show="show">
         <li>新增订单</li>
         <li>新增技师</li>
         <li>新增服务站</li>
@@ -84,9 +84,11 @@
   .navbar {
     height: 88px;
     line-height: 88px;
+    overflow:hidden;
     border-radius: 0px !important;
     margin-bottom: 20px;
     background: #eef1f6;
+    overflow: hidden;
     .hamburger-container {
       line-height: 50px;
       height: 50px;
