@@ -23,7 +23,7 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片" prop="picture">
+      <el-table-column align="center" label="图片" prop="pictures">
         <template scope="scope">
-          <span><img :src='scope.row.picture'/></span>
+          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -66,7 +66,7 @@
 
       <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
-          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName+","}}</span>
+          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName}}&nbsp;</span>
         </template>
       </el-table-column>
 
@@ -197,7 +197,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
               <el-table
-                v-if="basicForm.commoditys.length>0"
+                v-show="basicForm.commoditys.length>0"
                 border 
                 :data="basicForm.commoditys"
                 class="goods_info">
@@ -208,7 +208,11 @@
                   
                 </el-table-column>
                 <el-table-column align="center" label="计量方式" prop="type">
-                 
+                  <template scope="scope">
+                    <span v-show="scope.row.type=='num'">按数量</span>
+                    <span v-show="scope.row.type=='area'">按面积</span>
+                    <span v-show="scope.row.type=='house'">按居室</span>
+                  </template>
                 </el-table-column>
                 <el-table-column align="center" label="价格" prop="price">
                   
@@ -256,7 +260,7 @@
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-form 
-                v-if="addComm"
+                v-show="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
@@ -326,7 +330,7 @@
 
                 <el-form-item>
                   <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('goods_info')">取 消</button> 
+                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
                 </el-form-item>
               </el-form>
          </div>
@@ -343,7 +347,8 @@
           <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
             <div class="image-text-header">
                 <p>添加图文详情</p>
-                <p><span class="el-icon-plus" @click="addImage"></span><span class="el-icon-close" @click="ImageText = false"></span></p>
+                <!-- <span class="el-icon-plus" @click="addImage"> -->
+                <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
@@ -358,7 +363,6 @@
                           :before-upload="handleBefore"
                           :http-request="upload"   
                           >
-                          
                           <i class="el-icon-plus"></i>
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
@@ -469,6 +473,14 @@ export default {
         callback(new Error("请输入派人数量"));
       }
     };
+    //服务图片
+    var PICTURE = (rule,value,callback)=>{
+      if(this.picFile.length>0){
+        callback()
+      }else{
+        callback(new Error("请添加服务图片"))
+      }
+    }
     return {
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
@@ -526,7 +538,7 @@ export default {
       },
       basicForm: {
         name: "",
-        pictures: "123123132", //服务图片
+        picture: "123123132", //服务图片
         sortId: "",
         sale: "yes",
         sortNum: "",
@@ -540,7 +552,9 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" },
           { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
-        // picture: [{ required: true, message: "请上传至少一张图片" }],
+         picture: [
+           { required: true, validator:PICTURE, trigger:"blur"}
+          ],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
@@ -679,10 +693,10 @@ export default {
     },
     handleRemovePic(file,fileList) {
       //删除服务图片
-      console.log(fileList,'文件');
-      console.log(file, "删除一张图片");
-      console.log(this.picFile,'imgtext')
-      console.log(this.picList,'filelist')
+      // console.log(fileList,'文件');
+      // console.log(file, "删除一张图片");
+      // console.log(this.picFile,'imgtext')
+      // console.log(this.picList,'filelist')
 
       var str = "";
       var index = file.url.lastIndexOf("/");
@@ -701,11 +715,12 @@ export default {
         newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
         newarr.push(newstr)
       }
-        console.log(newarr,'截取')
+        // console.log(newarr,'截取')
       var delIndex = newarr.indexOf(src)
-      console.log(delIndex,'删除图片的下标')
+      console.log(newarr,src,"newarr---------------------------")
+      // console.log(delIndex,'删除图片的下标')
       this.picFile.del(delIndex);
-      console.log(this.picFile);
+      // console.log(this.picFile);
     },
     handleBefore(file) {
       // 去重
@@ -726,11 +741,11 @@ export default {
     },
     subImgText(a) {
       console.log(this.imgText);
-
       var obj = {
         id: this.editId,
         pictureDetails: this.imgText
       };
+      console.log(obj,"obj-------")
       sortList(obj).then(res => {
         console.log(res);
         if (res.data.code == 1) {
@@ -1040,11 +1055,11 @@ export default {
     },
     handleSizeChange(val) {
       // alert(val)
+      this.listQuery.page = 1
       this.pageSize = val;
       // this.getList();
-      var obj = {
-        majorSort: this.basicForm.majorSort
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.basicForm.majorSort
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
         var num = 0;
@@ -1057,9 +1072,8 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {
-        majorSort: this.tabs
-      };
+      var obj = Object.assign({},this.search)
+      obj.majorSort = this.tabs
       this.listLoading = true;
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
@@ -1071,11 +1085,14 @@ export default {
         this.total = res.data.data.count;
       });
     },
-    handleCreate() {
-      this.resetTemp();
+    handleCreate(formName) {
+      // this.$refs[formName].resetFields();
+      // this.resetTemp();
+      // this.picList = []
+      this.dialogFormVisible = true;
+      // this.cancel()
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
-      this.dialogFormVisible = true;
     },
     //编辑方法
     handleUpdate(row) {
@@ -1121,6 +1138,7 @@ export default {
         });
     },
     handleUplode(row) {
+      this.imgText = []
       // console.log("上传");
       this.editId = row.id;
       this.picList = [];
@@ -1129,7 +1147,7 @@ export default {
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(res => {
-          console.log(res);
+          console.log(res,"res---------------");
           if (res.data.code == 1) {
             var data = res.data.data;
             this.listLoading = false;
@@ -1146,10 +1164,10 @@ export default {
               }
             }
             this.ImageText = true;
-            console.log(this.fileList, "编辑图文");
-            console.log(this.imgText, "编辑图文");
+            // console.log(this.fileList, "编辑图文");
+            // console.log(this.imgText, "编辑图文");
           }
-          console.log(res, "列表信息");
+          // console.log(res, "列表信息");
         })
         .catch(err => {
           console.log(err);
@@ -1284,15 +1302,18 @@ export default {
     //取消
     cancel(fromName) {
       // console.log(fromName,"-----")
-      this.dialogFormVisible = false;
-      this.$refs[fromName].resetFields(); //基本信息重置
-      this.basicForm.sortNum = ""; //排序号好清空
-      this.basicForm.cityCodes = []; //定向城市
-      this.resetForm("goods_info"); //添加商品
-      this.goods_info.minPurchase = ""; //起够数量
-      this.basicForm.commoditys = []; //商品信息表格
-      this.picFile = [] //清空图片
-      this.picList = [] //清空图片
+      // this.dialogFormVisible = false;
+      this.resetEmpty()
+      // var str = "basic"
+      // this.$refs[str].resetFields(); //基本信息重置
+      // this.basicForm.sortNum = ""; //排序号好清空
+      // this.basicForm.cityCodes = []; //定向城市
+      // this.resetForm("goods_info"); //添加商品
+      // this.goods_info.minPurchase = ""; //起够数量
+      // this.basicForm.commoditys = []; //商品信息表格
+      // this.picFile = [] //清空图片
+      // this.picList = [] //清空图片
+      // this.dialogFormVisible = false;
     },
     //保存
     subForm(formName) {
@@ -1392,7 +1413,7 @@ export default {
           // arr = []
           goods.persons = [];
           this.goods_info.minPurchase = "";
-          this.resetForm("goods_info");
+          this.resetForm("ser");
           console.log(obj, "obj-----");
         } else {
           if (this.persons.length > 0) {
@@ -1405,11 +1426,33 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      var str = formName || "goods_info";
-      this.$refs[str].resetFields();
-      this.goods_info.persons = [];
-      this.goods_info.minPurchase = "";
+    resetForm(ser) {
+      this.resetEmpty(ser)
+      // this.goods_info.persons = [];
+      // var str = formName || "goods_info";
+      // if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
+      //   console.log("--------")
+      //    this.$refs[str].resetFields();
+      // }
+      // this.goods_info.persons = [];
+      // this.goods_info.minPurchase = "";
+    },
+    resetEmpty(txt){
+      if(txt == "ser"){
+        this.$refs["goods_info"].resetFields()
+        this.goods_info.minPurchase = "";
+      }else{
+        this.$refs["goods_info"].resetFields()
+        this.$refs["basic"].resetFields()
+        this.goods_info.minPurchase = "";
+        this.basicForm.sortNum = ""; //排序号好清空
+        this.basicForm.cityCodes = []; //定向城市
+        this.goods_info.minPurchase = ""; //起够数量
+        this.basicForm.commoditys = []; //商品信息表格
+        this.picFile = [] //清空图片
+        this.picList = [] //清空图片
+        this.dialogFormVisible = false;
+      }
     }
   }
 };
@@ -1712,7 +1755,7 @@ hr {
   width: 100%;
   background: rgb(182, 180, 180);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 100px 20px;
   margin: 10px 0;
 }
 
@@ -1722,6 +1765,7 @@ hr {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  text-align: center
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
@@ -1760,6 +1804,18 @@ hr {
 }
 .imgText .el-upload-list__item-thumbnail {
   height: 100%;
+  width: 100%;
+}
+.imgList{
+  width: 50px;
+  height: 50px;
+  margin-top: 5px;
+}
+.el-icon-plus{
+  text-align: center;
+  font-size: 20px;
+}
+.el-upload--picture{
   width: 100%;
 }
 </style>
