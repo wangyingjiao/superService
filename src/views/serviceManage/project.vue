@@ -50,14 +50,23 @@
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称         价格单位" align="center" min-width="150" style="padding:0">
+      <el-table-column  label="商品名称" align="center">
         <template scope="scope">
           <div 
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-              {{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}
+              {{item.name}}
           </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="价格/单位" align="center">
+        <template scope="scope">
+          <div
+          class="branch"  
+            v-for="(item,index) in scope.row.commoditys" 
+            :key="index"
+          >{{item.price}}/{{item.unit}}</div>
         </template>
       </el-table-column>
 
@@ -339,7 +348,7 @@
          </div>
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" @click="subForm('basic')">保 存</button>    
+        <button class="button-large" :disabled="btnState" @click="subForm('basic')">保 存</button>    
         <button class="button-cancel" @click="cancel('basic')">取 消</button>
       </div>
     </el-dialog>
@@ -484,6 +493,7 @@ export default {
       }
     }
     return {
+      btnState:false,
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
       ImageText: false,
@@ -1320,6 +1330,10 @@ export default {
     },
     //保存
     subForm(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       var that = this;
       console.log(this.picFile, "选中的图片列表");
       this.$refs[formName].validate(valid => {
@@ -1822,5 +1836,6 @@ hr {
 }
 .el-upload-list{
   width: 100%;
+  height: 100%;
 }
 </style>
