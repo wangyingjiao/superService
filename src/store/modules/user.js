@@ -39,9 +39,8 @@ const user = {
   actions: {
     // 登录
     LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+      // const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-
         var obj = {
           username: userInfo.username,
           password: userInfo.password
