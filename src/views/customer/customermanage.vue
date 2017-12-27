@@ -95,7 +95,7 @@
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 					<el-form-item label="姓名:" prop="name"  >
-						<el-input v-model="ruleForm.name"  placeholder="请输入2-15位客户姓名"  class="width400" ></el-input>
+						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  class="width400" ></el-input>
 					</el-form-item>
 					<el-form-item label="性别:"  prop="sex">
 							<el-select  class="filter-item width400" v-model="ruleForm.sex" placeholder="请选择性别" >
@@ -119,10 +119,10 @@
 					<el-form-item label="详细地址:" prop="address">
 		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input style="margin-left:-5px;width:200px;"  v-model="ruleForm.address" placeholder="输入详细地址"></el-input>		
+								<el-input style="margin-left:-5px;width:200px;"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="email" style="margin-left:10px;">
-						<el-input  v-model="ruleForm.email" class="width400" style="margin-left:-10px;" placeholder="请输入常用邮箱"></el-input>
+						<el-input  v-model.trim="ruleForm.email" class="width400" style="margin-left:-10px;" placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
@@ -149,8 +149,7 @@ import {getMech} from "@/api/base";
 export default {
   name: "",
   data() {
-		var checkPhone = (rule, value, callback) => {	
-			  value=value.trim()		  
+		var checkPhone = (rule, value, callback) => {			  
 				if (!value) {
 					return callback(new Error('请输入11位手机号码'));
 				}else{
@@ -162,7 +161,6 @@ export default {
 				}
 		};
 		var checkEmail = (rule, value, callback) => {
-			  value=value.trim()
 				if (!value) {
             callback();
 				}else{
@@ -178,7 +176,6 @@ export default {
 				}			
 		};
 		var checkName = (rule, value, callback) => {
-			  value=value.trim()
 				if (!value) {
             callback(new Error('请输入2-15位客户姓名'));
 				}else{
@@ -190,7 +187,6 @@ export default {
 				}			
 		};
 		var checkAddress = (rule, value, callback) => {			  
-			  value=value.trim()
 				if (!value) {
             callback(new Error('请选取地点,并填写详细地址'));
 				}else{

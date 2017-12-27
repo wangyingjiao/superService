@@ -36,7 +36,7 @@
         <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
           <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
             <el-form-item label="技能名称" prop="name">
-              <el-input  v-model="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
+              <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择服务" prop="serItems" required>            
               <div class="tech-order-jnsk selfBottonSt">
@@ -169,7 +169,6 @@
     name: '',
     data() {
       var checkName = (rule, value, callback) => {
-          value=value.trim()
           if (!value) {
               callback(new Error('请输入2-15位技能名称'));
           }else{
