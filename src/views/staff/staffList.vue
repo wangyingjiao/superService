@@ -166,7 +166,7 @@
         <el-form-item label=" 姓名:"  prop="name" >
               <el-input        
               style='width: 400px;' 
-              placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
+              placeholder="请输入2-15位的姓名" v-model.trim="temp.name"></el-input>
             </el-form-item>
         
         <el-form-item label=" 手机号:" prop="mobile">
@@ -248,7 +248,7 @@
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp2.dataScope" placeholder="请选择">

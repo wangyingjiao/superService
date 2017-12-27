@@ -97,7 +97,7 @@
             <el-form-item label="分类名称" v-if="activeName == 'clean'"  prop="name" >
               <el-input        
               style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
+              placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
             </el-form-item>
             
 
@@ -142,7 +142,7 @@
             <el-form-item label="分类名称"  prop="name" >
               <el-input        
               style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
+              placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
             </el-form-item>
             
 

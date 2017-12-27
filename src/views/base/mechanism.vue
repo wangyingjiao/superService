@@ -77,7 +77,7 @@
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
-          v-model="temp.name"
+          v-model.trim="temp.name"
           style='width: 400px;' 
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
@@ -92,7 +92,7 @@
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
           style='width: 400px;' 
-          v-model="temp.masterName"
+          v-model.trim="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
@@ -119,7 +119,7 @@
         <el-form-item label="详细地址:" prop="address">
           <el-input 
              style='width: 400px;' 
-             v-model="temp.address"
+             v-model.trim="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 

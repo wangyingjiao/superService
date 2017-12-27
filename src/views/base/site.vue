@@ -109,7 +109,7 @@
            >
 
           <el-form-item label="服务站名称:" prop="name">
-            <el-input style='width: 400px;' v-model="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
+            <el-input style='width: 400px;' v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
           </el-form-item>
           <el-form-item label="服务站类型:" prop="type">
             <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
@@ -129,7 +129,7 @@
 				</el-form-item>
 
           <el-form-item label="详细地址:" prop="address">
-            <el-input  style='width: 400px;' v-model="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
+            <el-input  style='width: 400px;' v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
           <el-form-item label="服务站电话:" prop="phone">

@@ -74,7 +74,7 @@
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
@@ -592,7 +592,7 @@ export default {
               // this.resetTemp();
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -639,7 +639,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
