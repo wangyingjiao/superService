@@ -237,7 +237,7 @@
       <div class="tech-psoition" v-if="position">
 
         <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
-          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':techniSearch.skillIds.indexOf(item.id)!=-1}" :key="$index">
+          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
             {{item.name}}
             <div :class="{'triangle-bottomright':item.show===true}"></div>
             <div class="tally">&#10004;</div>
@@ -659,7 +659,7 @@
                         </div>
                       </div>
                       <div>
-                        <i class="i-delete" @click="deletes(item,index)">X</i>
+                        <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
                       </div>
                     </li>
                   </ul>
@@ -1437,8 +1437,8 @@ export default {
       if(this.techniSearch.chooses){
         obj[this.techniSearch.chooses] = this.chooContent
       }
-      if(!(this.techniSearch.skillIds === undefined || this.techniSearch.skillIds.length == 0)){
-        obj.skillIds = this.techniSearch.skillIds
+      if(!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)){
+        obj.skillIds = this.roomSel2Arr
       }
       console.log(obj,"------------------")
       this.getList(1,6,obj)
@@ -1452,6 +1452,7 @@ export default {
     //休假取消
     vacationCancel(formName){
       this.$refs[formName].resetFields();
+      this.flags = false
     },
     //休假保存
     vacationPreser(formName){
@@ -1496,6 +1497,7 @@ export default {
     //修改密码取消
     passwordCancel(formName){
       this.$refs[formName].resetFields();
+      this.password = false
     },
     //修改密码保存
     passwordPrese(formName){
@@ -1569,6 +1571,7 @@ export default {
       this.personal.idCardPic = ''
       this.personal.headPic = ''
       this.teachArr = [];
+      this.dialogVisible = false
     },
     // 工作时间删除
     deletes(item,index) {
@@ -1587,9 +1590,9 @@ export default {
       // this.teachArr.splice(index, 1);
     },
     handleCurrentChange(val) {
+      console.log(this.techniSearch.skillIds,"this.techniSearch.skillIds-------")
       this.listQuery.page = val;
-      console.log(this.techniSearch.skillIds,"this.techniSearch.skillIds------")
-      if(this.techniSearch.skillIds === undefined || this.techniSearch.skillIds.length == 0){
+      if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
         delete this.techniSearch.skillIds
       }
       this.getList(val,this.listQuery.limit,this.techniSearch);
@@ -1598,10 +1601,10 @@ export default {
     handleSizeChange(val) {
       this.listQuery.sync = 1
       this.listQuery.limit = val;
-      if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
-        delete this.techniSearch.skillIds
-      }
-      this.getList(this.listQuery.page,val,this.techniSearch);
+      // if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
+      //   delete this.techniSearch.skillIds
+      // }
+      this.getList(this.listQuery.page,val,{});
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -1690,12 +1693,13 @@ export default {
         });
     },
     roomSel2(index) {
-      if(this.techniSearch.skillIds.indexOf(index.id)!=-1){
-        this.remove(this.techniSearch.skillIds,[],index.id)
+      if(this.roomSel2Arr.indexOf(index.id)!=-1){
+        this.remove(this.roomSel2Arr,[],index.id)
       }else{
-        this.techniSearch.skillIds.push(index.id)
+        this.roomSel2Arr.push(index.id)
       }
-      // console.log(this.techniSearch.skillIds,"roomSel2Arr---------")
+       this.techniSearch.skillIds = this.roomSel2Arr
+      console.log(this.roomSel2Arr,"roomSel2Arr---------")
       this.isA = index;
     },
     // 添加技能

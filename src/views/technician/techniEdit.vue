@@ -297,7 +297,7 @@
                                 </div>
                             </div>
                             <div>
-                                <i class="i-delete" @click="deletes(item,index)">X</i>
+                                <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
                             </div>
                             </li>
                         </ul>
@@ -644,7 +644,7 @@
         <h3 class="tech-tc-prson">家庭成员（选填）</h3>
         <div class="tech-table" v-show="familyList.length>0">
           <!-- v-show="techTable" -->
-          <el-table :key='tableKey' v-show="familyList.length>0" :data="familyList" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
+          <el-table :key='tableKey' border v-show="familyList.length>0" :data="familyList" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
             style="width: 100%">
             <!-- v-show="isTab" -->
 
