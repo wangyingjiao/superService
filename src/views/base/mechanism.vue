@@ -124,7 +124,7 @@
         </el-form-item>
 
         <el-form-item label="服务范围类型:" prop="scopeType">
-          <el-select 
+          <el-select
             style='width: 400px;' 
             class="filter-item" 
             v-model="temp.scopeType" 
@@ -195,7 +195,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer" style="text-align:center">       
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState"  v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -283,6 +283,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
+      btnState:false,
       list: [],
       total: null,
       listLoading: true,
@@ -473,10 +474,12 @@ export default {
         var obj = {
           masterName: value
         };
-      } else {
+      } else if (this.search.key == "masterPhone") {
         var obj = {
           masterPhone: value
         };
+      }else{
+         var obj = {}
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -616,6 +619,10 @@ export default {
       console.log(val);
     },
     create(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       console.log(this.temp.cityCodes);
       var arr = [];
       for (var i = 0; i < this.temp.cityCodes.length; i++) {
@@ -647,6 +654,7 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          
           addMech(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
