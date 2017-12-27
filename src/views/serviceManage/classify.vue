@@ -165,7 +165,7 @@
       </div>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">    
-        <button class="button-large" @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -249,6 +249,7 @@ export default {
   data() {
     return {
       btnShow: this.$store.state.user.buttonshow,
+      btnState:false,
       active: true,
       aaa: "",
       list: [],
@@ -616,6 +617,10 @@ export default {
       }
     },
     create(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       var obj = {
         cityCodes: [],
         majorSort: this.activeName,
