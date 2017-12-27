@@ -642,8 +642,9 @@ export default {
         role: row.role.id,
         useable: row.useable
       };
-      setTimeout(() => (this.temp.officeId = row.organization.id), 80);
-      setTimeout(() => (this.temp.stationId = row.station.id), 80);
+      setTimeout(() => (this.temp.officeId = row.organization.id), 30);
+      setTimeout(() => (this.temp.stationId = row.station.id), 30);
+      setTimeout(() => (this.temp.role =  row.role.id), 30);
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -707,6 +708,7 @@ export default {
     mechChange(val) { // 机构发生改变
       this.temp.officeId = val;
       this.temp.stationId = "";
+      this.temp.role = "";
       console.log(val,'选中机构的id');
       var obj = {
         orgId: val
@@ -724,8 +726,12 @@ export default {
       console.log(obj2,'岗位参数')
       getStation(obj2).then(res => { // 请求岗位
         console.log(res,'岗位');
-        //this.servicestationCheck = res.data.data;
-        // console.log(res.data)
+        if(typeof res.data.data != 'string') {
+          this.stationCheck = res.data.data;
+        }else{
+          this.stationCheck = [];
+
+        }
       }).catch(err=>{
         console.log(err)
       });
