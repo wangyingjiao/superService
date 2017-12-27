@@ -47,9 +47,11 @@ const user = {
         }
         loginByUsername(obj).then(response => {
           console.log(response)
+          console.log(response.data.data.user.role.dataScope,'岗位等级')
           if (response.data.code === 1) {
             console.log(response.data.data.JSESSIONID)
             localStorage.setItem('name', response.data.data.user.name)
+            localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             const data = response.data
             setSession(response.data.data.JSESSIONID)
             setToken(data.token)
