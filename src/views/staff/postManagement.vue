@@ -79,7 +79,7 @@
 
         <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
+            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -206,6 +206,7 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
+      roleLv:[],
       dialogFormVisible: false,
       state: state,
       dialogStatus: "",
@@ -268,6 +269,12 @@ export default {
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
     });
+    var lv = localStorage.getItem('dataScope')
+    console.log(lv,'用户等级')
+    for(var i = 0;i < lv;i++){
+      this.roleLv.push(this.stationLv[i])
+    }
+    console.log(this.roleLv,'用户看到的等级')
   },
   methods: {
     aaa(val) {
@@ -618,10 +625,11 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {
-            this.resetTemp();
+            
+            if (res.data.code === 1) {
+              this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
             this.$refs[formName].resetFields();
-            if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.$message({
                 type: "success",
