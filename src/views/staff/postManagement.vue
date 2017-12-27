@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" v-model="search.name" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" >
       </el-input>
-      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="请选择">
+      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -110,7 +110,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -161,6 +161,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
+      btnState: false,
       list: [],
       officeIds: [],
       total: null,
@@ -277,11 +278,10 @@ export default {
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
         this.total = res.data.data.count;
         this.listLoading = false;
@@ -291,10 +291,10 @@ export default {
       this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
-        organization: {id:this.search.officeId}
+        organization: { id: this.search.officeId }
       };
       console.log(obj);
-      
+      if (obj.name != "" || obj.organization.id != "") {
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
@@ -316,6 +316,23 @@ export default {
             });
           }
         });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -342,7 +359,7 @@ export default {
       this.listLoading = true;
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -499,7 +516,14 @@ export default {
       }
     },
     create(formName) {
-      this.search = "";
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
+      this.search = {
+        name: "",
+        officeId: ""
+      };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       // console.log(arr);
@@ -570,7 +594,10 @@ export default {
       });
     },
     update(formName) {
-      this.search = "";
+      this.search = {
+        name: "",
+        officeId: ""
+      };
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
