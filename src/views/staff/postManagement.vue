@@ -84,8 +84,9 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限:" prop="check">
+        <el-form-item label="权限:" prop="check" >
             <el-tree
+            class="scrollBox"
               :data="data2"
               :indent= 10
               show-checkbox
@@ -755,5 +756,10 @@ body {
 }
 .dialog-footer {
   text-align: center;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y:scroll;
+  overflow-x:hidden;
 }
 </style>

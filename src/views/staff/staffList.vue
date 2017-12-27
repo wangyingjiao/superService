@@ -141,7 +141,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <!-- <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>     -->
-        <button class="button-large"  @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
@@ -259,6 +259,7 @@
 
         <el-form-item label="权限:" prop="check">
            <el-tree
+              class="scrollBox"
               :data="data2"
               :indent= 10
               show-checkbox
@@ -365,6 +366,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
+      btnState:false,
       list: null,
       total: null,
       listLoading: true,
@@ -384,7 +386,7 @@ export default {
         name: ""
       },
       mechanismCheck: [],
-      servicestationCheck: [],
+      servicestationCheck: [],// 服务站
       temp: {
         mobile: "",
         name: "",
@@ -411,7 +413,7 @@ export default {
         stationState: ""
       },
       stationState: "",
-      stationCheck: [],
+      stationCheck: [],// 岗位
       useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
       stationLv: [
@@ -502,10 +504,10 @@ export default {
       // 服务机构
       this.mechanismCheck = res.data.data.list;
     });
-    getStation().then(res => {
-      // console.log(res.data.data);
-      this.stationCheck = res.data.data;
-    });
+    // getStation().then(res => {
+    //   // console.log(res.data.data);
+    //   this.stationCheck = res.data.data;
+    // });
     getMenudata().then(res => {
       console.log(res);
       this.data2 = res.data.data;
@@ -702,14 +704,14 @@ export default {
       // console.log(val);
       // this.temp.stationId = val;
     },
-    mechChange(val) {
+    mechChange(val) { // 机构发生改变
       this.temp.officeId = val;
       this.temp.stationId = "";
-      console.log(val);
+      console.log(val,'选中机构的id');
       var obj = {
         orgId: val
       };
-      getFuwu(obj).then(res => {
+      getFuwu(obj).then(res => { // 请求服务站
         console.log(res);
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
@@ -719,10 +721,13 @@ export default {
          id:val
        }
       }
-      getStation(obj2).then(res => {
+      console.log(obj2,'岗位参数')
+      getStation(obj2).then(res => { // 请求岗位
         console.log(res,'岗位');
         //this.servicestationCheck = res.data.data;
         // console.log(res.data)
+      }).catch(err=>{
+        console.log(err)
       });
     },
     getId(str) {
@@ -733,6 +738,10 @@ export default {
       }
     },
     create(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       console.log(this.temp);
       //var arr = [this]
       var obj = {
@@ -1025,5 +1034,10 @@ body {
   line-height: 34px;
   color: #4c70e8;
   cursor: pointer;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y:scroll;
+  overflow-x:hidden;
 }
 </style>
