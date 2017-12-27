@@ -108,7 +108,7 @@
 
               <!-- 省市区 -->
               <el-cascader
-                
+                @active-item-change = "codeChange"
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
@@ -125,6 +125,7 @@
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
+            :disabled = "typeState"
             style='width: 400px;' 
             class="filter-item" 
             v-model="temp.scopeType" 
@@ -284,6 +285,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState:false,
+      typeState:false,
       list: [],
       total: null,
       listLoading: true,
@@ -570,11 +572,14 @@ export default {
       };
       upMech(obj)
         .then(res => {
-          console.log(res);
+          console.log(res,'编辑');
 
           if (res.data.code == "1") {
             this.listLoading = false;
-            console.log(res.data.data.cityCodes);
+            console.log(res.data.data.haveStation,'是否存在服务站');
+            if(res.data.data.haveStation !== 0){
+              this.typeState = true
+            }
             this.temp = Object.assign({}, res.data.data);
             // this.temp.cityCodes = res.data.data.cityCodes;
             this.dialogStatus = "update";
@@ -598,7 +603,7 @@ export default {
           this.listLoading = false;
           this.$message({
             type: "error",
-            message: "网络原因，稍后再试"
+            message: "与服务器断开链接，稍后再试"
           });
         });
       // console.log(this.temp.visable);
@@ -610,6 +615,9 @@ export default {
     },
     itemActive(arr){
         console.log(arr,'arr')
+    },
+    codeChange(val){
+       this.temp.areaCodes.splice(0,this.temp.areaCodes.length)
     },
     searchChange(val) {
       console.log(val);
