@@ -12,7 +12,7 @@
         </el-option>
       </el-select>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityId" placeholder="定向城市" @change="cjw">
+      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
@@ -50,14 +50,23 @@
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
-      <el-table-column  label="商品名称         价格单位" align="center" min-width="150" style="padding:0">
+      <el-table-column  label="商品名称" align="center">
         <template scope="scope">
           <div 
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-              {{item.name}}&nbsp;&nbsp;&nbsp;{{item.price}}/{{item.unit}}
+              {{item.name}}
           </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="价格/单位" align="center">
+        <template scope="scope">
+          <div
+          class="branch"  
+            v-for="(item,index) in scope.row.commoditys" 
+            :key="index"
+          >{{item.price}}/{{item.unit}}</div>
         </template>
       </el-table-column>
 
@@ -122,13 +131,13 @@
                 :rules="basicRles" >
                 <el-form-item label="项目名称：" prop="name">
                   <el-input
-                  style="width:400px"
+                  style="width:75%"
                   v-model="basicForm.name"
                   placeholder="请输入2-10位的服务站名称"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:400px" @change="(val)=>open(val,2)">
+                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:75%" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -145,11 +154,10 @@
                 </el-form-item>
 
                 <el-form-item label="服务图片：" prop="picture">
-                  <div class="upload-demo upload_box">
+                  <div class="upload-demo upload_box" style="width:75%">
                 
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                          
                          list-type="picture"
                          
                           :on-preview="handlePreview"
@@ -171,7 +179,7 @@
 
                 <el-form-item label="服务描述：" prop="description">
                   <el-input
-                  style="width:400px"
+                  style="width:75%"
                   v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
@@ -191,7 +199,7 @@
                 <el-form-item label="排序号：" class="seize">
                     <el-input
                       v-model="basicForm.sortNum"
-                      style="width:400px"
+                      style="width:75%"
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
                 </el-form-item>
               </el-form>
@@ -264,24 +272,26 @@
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
-                label-width="80px" 
-                style='width: 450px; padding:20px 0 0 20px'
+                label-width="90px" 
+                style='padding:20px 0 0 20px'
                 :rules = "goods"
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
                     placeholder="请输入商品名称（2-10位）"
+                    style="width:60%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
+                    style="width:60%"
                     placeholder="请输入单位名称（1-5位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:350px">
+                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:60%">
                      <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
                      </el-option> -->
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
@@ -289,12 +299,12 @@
                 </el-form-item>
                 
                 <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price">
+                  <el-input v-model="goods_info.price" style="width:60%">
                      <template slot="append">元/{{goods_info.unit}}</template>
                   </el-input>
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours">
+                  <el-input v-model="goods_info.convertHours" style="width:60%">
                     <!-- <template slot="append">小时/{{goods_info.convertHours}}</template> -->
                     <template slot="append">小时/{{goods_info.unit}}</template>
                   </el-input>
@@ -303,7 +313,7 @@
                 
 
                 <el-form-item label="派人数量:" class="send" prop="persons">
-                   <table class="table-pro">
+                   <table class="table-pro" style="width:60%">
                      <tr>
                        <th @click="addTable">+</th>
                        <th>临界值</th>
@@ -325,6 +335,7 @@
                 <el-form-item label="起够数量:" class="seize">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
+                    style="width:60%"
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
 
@@ -337,7 +348,7 @@
          </div>
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" @click="subForm('basic')">保 存</button>    
+        <button class="button-large" :disabled="btnState" @click="subForm('basic')">保 存</button>    
         <button class="button-cancel" @click="cancel('basic')">取 消</button>
       </div>
     </el-dialog>
@@ -482,6 +493,7 @@ export default {
       }
     }
     return {
+      btnState:false,
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
       ImageText: false,
@@ -576,7 +588,7 @@ export default {
       },
       search: {
         sortId: "",
-        cityId: "",
+        cityCode: "",
         name: ""
       },
       pageSize: 10,
@@ -1016,8 +1028,8 @@ export default {
       if (this.search.sortId) {
         obj.sortId = this.search.sortId;
       }
-      if (this.search.cityId) {
-        obj.cityCode = this.search.cityId;
+      if (this.search.cityCode) {
+        obj.cityCode = this.search.cityCode;
       }
       if (this.search.name) {
         obj.name = this.search.name;
@@ -1049,7 +1061,7 @@ export default {
       var obj = {};
       obj.majorSort = this.basicForm.majorSort;
       obj.sortId = this.search.sortId;
-      obj.cityCode = this.search.cityId;
+      obj.cityCode = this.search.cityCode;
       obj.name = this.search.name;
       console.log(obj, "搜索--------");
     },
@@ -1075,6 +1087,7 @@ export default {
       var obj = Object.assign({},this.search)
       obj.majorSort = this.tabs
       this.listLoading = true;
+      console.log(obj,"_______")
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
         var num = 0;
@@ -1317,6 +1330,10 @@ export default {
     },
     //保存
     subForm(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       var that = this;
       console.log(this.picFile, "选中的图片列表");
       this.$refs[formName].validate(valid => {
@@ -1576,7 +1593,6 @@ body {
 }
 .tabBox {
   width: 100%;
-  overflow: hidden;
   border: 1px #f5f5f5 solid;
   background-color: #f5f5f5;
 }
@@ -1704,7 +1720,7 @@ body {
 .cityClass {
   display: flex;
   flex-wrap: wrap;
-  width: 400px;
+  width: 90%;
   overflow: hidden;
 }
 .cityClass > div:nth-child(1),
@@ -1817,5 +1833,9 @@ hr {
 }
 .el-upload--picture{
   width: 100%;
+}
+.el-upload-list{
+  width: 100%;
+  height: 100%;
 }
 </style>

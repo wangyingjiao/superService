@@ -12,8 +12,8 @@ export function addStaff(obj) {
 export function getStationPage(obj, pageNumber, pageSize) {
   return instance.post(`/api/a/sys/role/listPageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-export function getStation() {
-  return instance.get(`/api/a/sys/role/listData`)
+export function getStation(obj) {
+  return instance.post(`/api/a/sys/role/listData`, obj)
 }
 export function getStaff(obj, pageNumber, pageSize) {
   return instance.post(`/api/a/sys/user/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)

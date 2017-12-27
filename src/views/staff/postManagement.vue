@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" v-model="search.name" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" >
       </el-input>
-      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="请选择">
+      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -74,18 +74,19 @@
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
+            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限:" prop="check">
+        <el-form-item label="权限:" prop="check" >
             <el-tree
+            class="scrollBox"
               :data="data2"
               :indent= 10
               show-checkbox
@@ -110,7 +111,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" v-else @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -161,6 +162,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
+      btnState: false,
       list: [],
       officeIds: [],
       total: null,
@@ -204,6 +206,7 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
+      roleLv:[],
       dialogFormVisible: false,
       state: state,
       dialogStatus: "",
@@ -266,6 +269,12 @@ export default {
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
     });
+    var lv = localStorage.getItem('dataScope')
+    console.log(lv,'用户等级')
+    for(var i = 0;i < lv;i++){
+      this.roleLv.push(this.stationLv[i])
+    }
+    console.log(this.roleLv,'用户看到的等级')
   },
   methods: {
     aaa(val) {
@@ -277,11 +286,10 @@ export default {
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
         this.total = res.data.data.count;
         this.listLoading = false;
@@ -291,10 +299,10 @@ export default {
       this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
-        "organization.id": this.search.officeId
+        organization: { id: this.search.officeId }
       };
       console.log(obj);
-      
+      if (obj.name != "" || obj.organization.id != "") {
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
@@ -309,12 +317,30 @@ export default {
             this.total = res.data.data.count;
             this.listLoading = false;
           } else {
+            this.listLoading = false;
             this.$message({
               type: "warning",
               message: "岗位名不存在"
             });
           }
         });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -341,7 +367,7 @@ export default {
       this.listLoading = true;
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -498,7 +524,14 @@ export default {
       }
     },
     create(formName) {
-      this.search = "";
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
+      this.search = {
+        name: "",
+        officeId: ""
+      };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       // console.log(arr);
@@ -559,7 +592,7 @@ export default {
               // this.resetTemp();
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -569,7 +602,10 @@ export default {
       });
     },
     update(formName) {
-      this.search = "";
+      this.search = {
+        name: "",
+        officeId: ""
+      };
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
@@ -589,10 +625,11 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {
-            this.resetTemp();
+            
+            if (res.data.code === 1) {
+              this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
             this.$refs[formName].resetFields();
-            if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.$message({
                 type: "success",
@@ -602,7 +639,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -727,5 +764,10 @@ body {
 }
 .dialog-footer {
   text-align: center;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y:scroll;
+  overflow-x:hidden;
 }
 </style>
