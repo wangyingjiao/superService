@@ -271,9 +271,37 @@
         <h3 class="tech-tc-prson">个人资料</h3>
 		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
 			<ul class="tech-ul">
-				<li>
+        <el-row :gutter="80">
+          <el-col :span="12">
+              <el-form-item label="姓名:" prop="name">
+                <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
+              </el-form-item>
+          </el-col>
+          <el-col :span="12">
+              <el-form-item label="身份证号:" prop="idCard">
+                <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="80">
+          <el-col :span="12">
+              <el-form-item label="手机号:" prop="phone">
+                <el-input placeholder="请输入11为手机号" v-model="personal.phone"></el-input>
+              </el-form-item>
+          </el-col>
+          <el-col :span="12">
+              <el-form-item label="现住地址:" prop="area">
+                <el-cascader
+                    @change="nowAdd"
+                    :options="areaOptions"
+                    :show-all-levels="true"
+                    v-model="personal.area"
+                ></el-cascader>
+            </el-form-item>
+          </el-col>
+        </el-row>
+				<!-- <li>
 					<div>
-					<!-- <p><span class="tech-span"></span>姓名:</p> -->
 					<p>
 						<el-form-item label="姓名:" prop="name">
 							<el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="personal.name"></el-input>
@@ -281,17 +309,15 @@
 					</p>
 					</div>
 					<div>
-					<!-- <p><span class="tech-span"></span>身份证号:</p> -->
 					<p>
 						<el-form-item label="身份证号:" prop="idCard">
 							<el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="personal.idCard"></el-input>
 						</el-form-item>
 					</p>
 					</div>
-				</li>
-				<li>
+				</li> -->
+				<!-- <li>
 					<div>
-					<!-- <p><span class="tech-span"></span>手机号:</p> -->
 					<p>
 						<el-form-item label="手机号:" prop="phone">
 							<el-input placeholder="请输入11为手机号" style="width:300px" v-model="personal.phone"></el-input>
@@ -299,12 +325,7 @@
 					</p>
 					</div>
 					<div>
-					<!-- <p><span class="tech-span"></span>现住地址:</p> -->
 					<p>
-						<!-- <el-select v-model="area" clearable placeholder="请选择" style="width:300px">
-						<el-option v-for="item in areas" :key="item.id" :label="item.name" :value="item.id">
-						</el-option>
-						</el-select> -->
             <el-form-item label="现住地址:" prop="area">
               <el-cascader
                   @change="nowAdd"
@@ -316,10 +337,9 @@
             </el-form-item>
 					</p>
 					</div>
-				</li>
+				</li> -->
 				<li>
 					<div>
-					<!-- <p><span class="tech-span"></span>性别:</p> -->
 					<p>
 						<el-form-item label="性别:" prop="sex">
 							<el-select v-model="personal.sex" clearable placeholder="请选择" style="width:300px">
@@ -330,7 +350,6 @@
 					</p>
 					</div>
 					<div>
-					<!-- <p></p> -->
 					<p>
               <el-form-item label="">
                 <el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="personal.address"></el-input>
@@ -340,7 +359,6 @@
 				</li>
 				<li>
 					<div>
-					<!-- <p><span class="tech-span"></span>民族:</p> -->
 					<p>
              <el-form-item label="民族:">
               <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:300px">
@@ -351,12 +369,8 @@
 					</p>
 					</div>
 					<div>
-					<!-- <p><span class="tech-span"></span>出生日期:</p> -->
 					<p>
 						<el-form-item label="出生日期:" prop="birtStr">
-							<!-- <el-date-picker v-model="personal.birthDate" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:300px" @change="dateChange"
-							format="yyyy-MM-dd">
-							</el-date-picker> -->
               <el-date-picker 
                   type="date" placeholder="选择日期" 
                   v-model="personal.birtStr" 
@@ -396,13 +410,6 @@
               <el-button class="tech-fourth"><span></span>*上传头像</el-button>
               <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
             </el-upload>
-			
-						<!-- <button class="tech-fourth-rigth">上传身份证</button> -->
-						<!-- <el-upload class="upload-demo" action="http://gemini-wlcb.oss-cn-beijing.aliyuncs.com" :on-preview="handlePreview" :on-remove="handleRemove"
-						:file-list="fileList2" list-type="picture" style="margin-left:40px;" :data="sign">
-						<el-button class="tech-fourth-rigth">上传身份证</el-button> -->
-						<!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-						<!-- </el-upload> -->
 
              <el-upload
               class="avatar-uploader"
@@ -423,7 +430,6 @@
         <ul class="tech-ul tech-service">
           <li>
             <div>
-              <!-- <p><span class="tech-span">*</span>选择城市:</p> -->
               	<p>
 					<el-form-item label="选择城市:" prop="serviceCityName">
 						<el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
@@ -434,7 +440,6 @@
               </p>
             </div>
             <div>
-              <!-- <p><span class="tech-span">*</span>岗位性质:</p> -->
               <p>
 				<el-form-item label="岗位性质:" prop="jobNature">
 					<el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:300px">
@@ -447,7 +452,6 @@
           </li>
           <li>
             <div>
-              <!-- <p><span class="tech-span">*</span>所属服务站:</p> -->
               <p>
                 <el-form-item label="所属服务站:" prop="stationId">
                   <el-select v-model="personal.stationId" clearable placeholder="请选择" style="width:300px">
@@ -458,7 +462,6 @@
               </p>
             </div>
             <div>
-              <!-- <p><span class="tech-span">*</span>岗位状态:</p> -->
               <p>
                   <el-form-item label="岗位状态:" prop="jobStatus">
                       <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:300px">
@@ -471,7 +474,6 @@
           </li>
           <li>
             <div>
-              <!-- <p><span class="tech-span">*</span>工作年限:</p> -->
                 <p>
                   <el-form-item label="工作年限:" prop="workTime">
                     <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:300px">
@@ -505,9 +507,7 @@
           </li>
           <li v-if="personal.jobNature!='part_time'">
             <div>
-              <!-- <p><span class="tech-span">*</span>工作时间:</p> -->
               <el-form-item label="工作时间:" prop="workTimes">
-			          <!-- <div style="width:100px"><span class="tech-span">*</span>工作时间:</div> -->
                 <div class="tech-order-jn">
                   <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
                   <div class="tech-order-jn-sons" v-show="isB">
@@ -1744,7 +1744,7 @@ body {
   height: 200px;
   background: #fff;
   position: relative;
-  margin: 0 27px 10px 0;
+  margin: 0 2% 10px 0;
 }
 .tech-section-ul li:nth-child(3n) {
   margin-right: 0;
