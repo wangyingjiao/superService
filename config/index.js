@@ -37,7 +37,7 @@ module.exports = {
         }
       }
      // '/api': {
-       // target: 'http://www.li.com:8800/',
+       // target: 'http://www.localhost.8800/',
        // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
        // pathRewrite: {
         //  '^/api': ''
