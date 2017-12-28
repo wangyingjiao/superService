@@ -31,7 +31,7 @@
       <el-table-column align="center" label="姓名" prop="name" >
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="手机号" prop="mobile">
+      <el-table-column width="180px" align="center" label="登录账号" prop="mobile">
       </el-table-column>
 
       <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
@@ -80,20 +80,20 @@
         ref="temp"
         style='width: 500px; margin-left:50px;'>
 
-        <el-form-item label=" 姓名:"  prop="name" >
+        <el-form-item label="姓名:"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label=" 手机号:" prop="mobile">
+        <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 密码:" prop="password">
+        <el-form-item label="密码:" prop="password">
           <el-input 
             v-model="temp.password" 
             style='width: 400px;'
@@ -101,7 +101,7 @@
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 确认密码:"  prop="password2">
+        <el-form-item label="确认密码:"  prop="password2">
           <el-input
 
             style='width: 400px;'
@@ -110,20 +110,20 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 服务机构:"  prop="officeId">
+        <el-form-item label="服务机构:"  prop="officeId">
           <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 服务站:" prop="stationId" >
+        <el-form-item label="服务站:" prop="stationId" >
           <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="  选择岗位:" prop="role">
+        <el-form-item label="选择岗位:" prop="role">
           <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -156,56 +156,56 @@
       minwidth = "700px">
       <el-form 
         class="small-space" 
-        :model="temp" 
+        :model="temp1" 
         label-position="left" 
         label-width="160px"
         :rules="rules"
-        ref="temp"
+        ref="temp1"
         style='width: 500px; margin-left:50px;'>
 
         <el-form-item label=" 姓名:"  prop="name" >
               <el-input        
               style='width: 400px;' 
-              placeholder="请输入2-15位的姓名" v-model.trim="temp.name"></el-input>
+              placeholder="请输入2-15位的姓名" v-model.trim="temp1.name"></el-input>
             </el-form-item>
         
-        <el-form-item label=" 手机号:" prop="mobile">
+        <el-form-item label=" 登录账号:" prop="mobile">
           <el-input 
-            v-model="temp.mobile"
+            v-model="temp1.mobile"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
         <el-form-item label="   密码:" prop="password3">
           <el-input 
-            v-model="temp.password3" 
+            v-model="temp1.password3" 
             style='width: 400px;'
              type="password"
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
         <el-form-item label=" 服务机构:"  prop="officeId">
-          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp1.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label=" 服务站:" prop="stationId" >
-          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp1.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="  选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
+          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp1.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <div class="btn_addStation" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
+          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp1.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -214,9 +214,9 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large"  @click="update('temp')">保 存</button>    
+        <button class="button-large"  @click="update('temp1')">保 存</button>    
         <!-- <button class="button-large"  @click="create('temp')">保 存</button>     -->
-        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+        <button class="button-cancel" @click="resetForm1('temp1')">取 消</button>
       </div>
     
       
@@ -346,7 +346,7 @@ export default {
       if (value == undefined) {
         callback();
       } else {
-        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/.test(value)) {
+        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
           callback(new Error("密码必须由6-20位数字、字母两种组成"));
         } else {
           callback();
@@ -366,7 +366,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
-      btnState:false,
+      btnState: false,
       list: null,
       total: null,
       listLoading: true,
@@ -386,8 +386,22 @@ export default {
         name: ""
       },
       mechanismCheck: [],
-      servicestationCheck: [],// 服务站
+      servicestationCheck: [], // 服务站
       temp: {
+        mobile: "",
+        name: "",
+        password: "",
+        password2: "",
+        password3: "",
+        officeId: "",
+        stationId: "",
+        roles: "",
+        useable: "1",
+        child: {
+          check: []
+        }
+      },
+      temp1: {
         mobile: "",
         name: "",
         password: "",
@@ -413,7 +427,7 @@ export default {
         stationState: ""
       },
       stationState: "",
-      stationCheck: [],// 岗位
+      stationCheck: [], // 岗位
       useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
       stationLv: [
@@ -617,7 +631,6 @@ export default {
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
     handleCreate() {
-      this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
     },
@@ -633,7 +646,7 @@ export default {
       this.dialogFormVisibleup = true;
       console.log(row);
       this.dialogStatus = "update";
-      this.temp = {
+      this.temp1 = {
         id: row.id,
         name: row.name,
         mobile: row.mobile,
@@ -642,9 +655,9 @@ export default {
         role: row.role.id,
         useable: row.useable
       };
-      setTimeout(() => (this.temp.officeId = row.organization.id), 30);
-      setTimeout(() => (this.temp.stationId = row.station.id), 30);
-      setTimeout(() => (this.temp.role =  row.role.id), 30);
+      setTimeout(() => (this.temp1.officeId = row.organization.id), 30);
+      setTimeout(() => (this.temp1.stationId = row.station.id), 30);
+      setTimeout(() => (this.temp1.role = row.role.id), 30);
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -705,36 +718,40 @@ export default {
       // console.log(val);
       // this.temp.stationId = val;
     },
-    mechChange(val) { // 机构发生改变
+    mechChange(val) {
+      // 机构发生改变
       this.temp.officeId = val;
       this.temp.stationId = "";
       this.temp.role = "";
-      console.log(val,'选中机构的id');
+      console.log(val, "选中机构的id");
       var obj = {
         orgId: val
       };
-      getFuwu(obj).then(res => { // 请求服务站
+      getFuwu(obj).then(res => {
+        // 请求服务站
         console.log(res);
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });
-      var obj2 ={
-       organization:{
-         id:val
-       }
-      }
-      console.log(obj2,'岗位参数')
-      getStation(obj2).then(res => { // 请求岗位
-        console.log(res,'岗位');
-        if(typeof res.data.data != 'string') {
-          this.stationCheck = res.data.data;
-        }else{
-          this.stationCheck = [];
-
+      var obj2 = {
+        organization: {
+          id: val
         }
-      }).catch(err=>{
-        console.log(err)
-      });
+      };
+      console.log(obj2, "岗位参数");
+      getStation(obj2)
+        .then(res => {
+          // 请求岗位
+          console.log(res, "岗位");
+          if (typeof res.data.data != "string") {
+            this.stationCheck = res.data.data;
+          } else {
+            this.stationCheck = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     getId(str) {
       for (var i = 0; i < this.objOptions.length; i++) {
@@ -744,10 +761,10 @@ export default {
       }
     },
     create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
       console.log(this.temp);
       //var arr = [this]
       var obj = {
@@ -849,7 +866,8 @@ export default {
             console.log(res);
             if (res.data.code === 1) {
               this.dialogFormVisibleup = false;
-              this.pageNumber = 1;
+              this.resetTemp();
+              this.$refs[formName].resetFields();
               this.getList();
               this.$message({
                 type: "success",
@@ -869,8 +887,19 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        mobile: "",
         name: "",
+        mobile: "",
+        password: "",
+        password2: "",
+        password3: "",
+        officeId: "",
+        stationId: "",
+        role: "",
+        useable: "1"
+      };
+      this.temp1 = {
+        name: "",
+        mobile: "",
         password: "",
         password2: "",
         password3: "",
@@ -892,6 +921,13 @@ export default {
     resetForm(formName) {
       this.dialogFormVisible = false;
       this.dialogFormVisibleup = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
+    },
+    resetForm1(formName) {
+      this.dialogFormVisible = false;
+      this.dialogFormVisibleup = false;
+       this.resetTemp();
       this.$refs[formName].resetFields();
     },
     resetForm2(formName) {
@@ -1043,7 +1079,7 @@ body {
 }
 .scrollBox {
   height: 400px;
-  overflow-y:scroll;
-  overflow-x:hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>

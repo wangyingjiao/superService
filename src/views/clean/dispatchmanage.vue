@@ -50,7 +50,8 @@
 								<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.address" :key="item.name">
 											<el-button type="button" @click="selectBut(item.name)">改派</el-button>
-											<el-button type="button" >改派记录</el-button>
+											<el-button type="button">改派记录</el-button>
+											<!-- <router-link  to="/sys/role/list">改派记录</router-link> -->
 										</div>						
 								</template>
 					  </el-table-column>		

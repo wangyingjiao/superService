@@ -5,7 +5,6 @@ const _import = require('./_import_' + process.env.NODE_ENV)
 
 /* layout */
 import Layout from '../views/layout/Layout'
-//import Staff from '../views/staff'
 
 Vue.use(Router)
 
@@ -46,7 +45,7 @@ export const constantRouterMap = [
     name: '基础服务',
     children: [
     { path: 'organization', name: '服务机构', component: _import('base/mechanism') }
-    
+
     ]
   },
 
@@ -83,7 +82,8 @@ export const constantRouterMap = [
     { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
     { path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
     { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
-    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') }
+    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
+    { path: 'orderRefund', name: '退款管理', component: _import('clean/orderRefund') }
     ]
   },
   {
@@ -101,9 +101,9 @@ export const constantRouterMap = [
 ]
 
 export default new Router({
-  //mode: 'history', //后端支持可开
+  // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
-  //base: '/ttms/',
+  // base: '/ttms/',
   routes: constantRouterMap
 })
 
