@@ -559,6 +559,7 @@ export default {
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.typeState = false
       //this.areaOptions = this.$store.state.user.area;
       //this.resetTemp();
       //this.$refs[formName].resetFields();
