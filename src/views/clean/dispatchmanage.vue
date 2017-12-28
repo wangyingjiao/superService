@@ -46,21 +46,25 @@
 								</template>
 					  </el-table-column>
 
-					  <el-table-column align="center" label="操作" :colspan="2" ref="column">
-								<template scope="scope">
+						<el-table-column label="操作" align="center">
+							<el-table-column align="center" label="操作" :colspan="2" ref="column">
+									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.address" :key="item.name">
 											<el-button type="button" @click="selectBut(item.name)">改派</el-button>
-											<el-button type="button" >改派记录</el-button>
+											<!-- <el-button type="button" >改派记录</el-button> -->
 										</div>						
-								</template>
-					  </el-table-column>		
-						<!-- <el-table-column align="center">
-							<template scope="scope">
-								<div>
-										<el-button type="button" >改派记录</el-button>
-								</div>
-							</template>	
-						</el-table-column>			   -->
+									</template>
+							</el-table-column>		
+							<el-table-column align="center">
+								<template scope="scope">
+									<div>
+										<el-button type="button">
+											<router-link to="/clean/dispatchReass">改派记录</router-link>
+										</el-button>
+									</div>
+								</template>	
+							</el-table-column>			  
+						</el-table-column>
 				</el-table>
 					<div  style="margin-top:20px;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
@@ -173,7 +177,7 @@ export default {
 		pageSize1:10,//表格每页条数		
     };
   },
-  methods:{ 
+  methods:{
 	//全局搜索按钮
 	localSearch(){
 	},
@@ -242,5 +246,11 @@ text-align:center;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
 
 .el-table .cell{
 	padding: 0;
+}
+.el-table__header tr:nth-of-type(2){
+	display: none;
+}
+.el-pagination{
+	text-align: right;
 }
 </style>
