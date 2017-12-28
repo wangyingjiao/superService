@@ -23,7 +23,7 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
 
     <el-table 
     :key='tableKey' 
@@ -66,7 +66,7 @@
           class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
-          >{{item.price}}/{{item.unit}}</div>
+          >{{item.price+"元"}} / {{item.unit}}</div>
         </template>
       </el-table-column>
 
@@ -86,11 +86,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="166px">
+      <el-table-column align="center" label="操作" min-width="200px">
         <template scope="scope">
             <el-button class="el-icon-upload ceshi3" @click="handleUplode(scope.row)"></el-button>
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
           </template>
       </el-table-column>
 
@@ -115,8 +115,8 @@
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
             <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="repair" @click="refbtn2">家修</el-radio-button>
+            <el-radio-button class="tableCleaning" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
+            <el-radio-button style="width:100%;" label="repair" @click="refbtn2">家修</el-radio-button>
             <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
@@ -131,13 +131,13 @@
                 :rules="basicRles" >
                 <el-form-item label="项目名称：" prop="name">
                   <el-input
-                  style="width:75%"
+                  style="width:90%"
                   v-model="basicForm.name"
                   placeholder="请输入2-10位的服务站名称"></el-input>
                 </el-form-item>
 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:75%" @change="(val)=>open(val,2)">
+                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -154,11 +154,24 @@
                 </el-form-item>
 
                 <el-form-item label="服务图片：" prop="picture">
-                  <div class="upload-demo upload_box" style="width:75%">
-                
+                  <div class="upload-demo upload_box" style="width:90%">
+                      <!-- <el-upload
+                        action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                        list-type="picture-card"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemovePic"
+                        :before-upload="handPic"
+                        :http-request="picUpload"
+                        :file-list="picList"
+                        >
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                    <el-dialog v-model="dialogVisible" size="tiny">
+                        <img width="100%" :src="dialogImageUrl" alt="">
+                    </el-dialog> -->
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                         list-type="picture"
+                         list-type="picture-card"
                          
                           :on-preview="handlePreview"
                           :on-remove="handleRemovePic"
@@ -179,7 +192,8 @@
 
                 <el-form-item label="服务描述：" prop="description">
                   <el-input
-                  style="width:75%"
+                  :rows="4"
+                  style="width:90%"
                   v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
@@ -199,7 +213,7 @@
                 <el-form-item label="排序号：" class="seize">
                     <el-input
                       v-model="basicForm.sortNum"
-                      style="width:75%"
+                      style="width:90%"
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
                 </el-form-item>
               </el-form>
@@ -253,13 +267,11 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="150">
                  <template scope="scope">
-                    <el-button
-                      size="small"
-                      @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                      size="small"
-                      type="danger"
-                      @click="tableHandleDelete(scope.$index, scope.row)">删除</el-button>
+                   <span></span>
+                    <!-- <el-button type="text" size="small"  @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+                    <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
+                    <span class="tableSer"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
+                    <!-- <el-button type="danger" size="small"  @click="tableHandleDelete(scope.$index, scope.row)">删除</el-button> -->
                   </template>
                 </el-table-column>
               </el-table>
@@ -279,19 +291,19 @@
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
                     placeholder="请输入商品名称（2-10位）"
-                    style="width:60%"
+                    style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
-                    style="width:60%"
+                    style="width:70%"
                     placeholder="请输入单位名称（1-5位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:60%">
+                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:70%">
                      <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
                      </el-option> -->
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
@@ -299,21 +311,21 @@
                 </el-form-item>
                 
                 <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price" style="width:60%">
-                     <template slot="append">元/{{goods_info.unit}}</template>
+                  <el-input v-model="goods_info.price" style="width:70%">
+                     <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours" style="width:60%">
+                  <el-input v-model="goods_info.convertHours" style="width:70%">
                     <!-- <template slot="append">小时/{{goods_info.convertHours}}</template> -->
-                    <template slot="append">小时/{{goods_info.unit}}</template>
+                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
              
                 
 
                 <el-form-item label="派人数量:" class="send" prop="persons">
-                   <table class="table-pro" style="width:60%">
+                   <table class="table-pro" style="width:70%">
                      <tr>
                        <th @click="addTable">+</th>
                        <th>临界值</th>
@@ -332,10 +344,10 @@
                    <!-- <div class="el-form-item__error" v-if="personsTime">请输入折算时长</div> -->
                 </el-form-item>
 
-                <el-form-item label="起够数量:" class="seize">
+                <el-form-item label="起购数量:" class="seize">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
-                    style="width:60%"
+                    style="width:70%"
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
 
@@ -414,6 +426,7 @@ import {
   serverEditPre,
   sortList
 } from "@/api/project";
+import './project.css'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -653,7 +666,10 @@ export default {
   computed: {
     sign: function() {
       return getSign();
-    }
+    },
+    btnShow() {
+      return this.$store.state.user.buttonshow;
+    },
   },
   methods: {
     handPic(file) {
@@ -1211,7 +1227,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList();
+                this.getList(this.pageNumber, this.pageSize);
               } else {
                 this.$message({
                   type: "warning",
@@ -1362,7 +1378,7 @@ export default {
                     type: "success"
                   });
                   this.dialogFormVisible = false;
-                  this.getList(1, 10);
+                  this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
                   this.picList = [];
                 } else {
@@ -1445,6 +1461,7 @@ export default {
     },
     resetForm(ser) {
       this.resetEmpty(ser)
+      this.addComm = false;
       // this.goods_info.persons = [];
       // var str = formName || "goods_info";
       // if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
@@ -1474,9 +1491,10 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
+
 .el-dialog--small {
-  width: 55%;
+  width: 60%;
 }
 .el-radio-group {
   width: 100%;
@@ -1533,7 +1551,6 @@ body {
 }
 .upload_box {
   /* text-align: center; */
-  max-width: 400px;
   box-sizing: border-box;
   padding: 10px;
   border: 1px #ccc dashed;
@@ -1631,6 +1648,7 @@ body {
   border: 0px solid #bfcbd9;
 }
 .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  width: 100%;
   color: #fff;
   background-color: #4c70e8;
   border-color: #4c70e8;
@@ -1648,9 +1666,7 @@ body {
   padding: 10px 0 5px 0;
 }
 .el-upload--picture-card {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
+  width: 148px;
 }
 .upload-back {
   display: inline-block;
@@ -1735,7 +1751,7 @@ body {
 }
 
 hr {
-  border-top: 1px solid #ccc;
+  border: .5px solid #cccccc
 }
 .image-text .el-dialog__body,
 .image-text .el-dialog__header {
@@ -1769,9 +1785,9 @@ hr {
 }
 .image-border {
   width: 100%;
-  background: rgb(182, 180, 180);
+  /* background: rgb(182, 180, 180); */
   box-sizing: border-box;
-  padding: 100px 20px;
+  /* padding: 100px 20px; */
   margin: 10px 0;
 }
 
@@ -1837,5 +1853,19 @@ hr {
 .el-upload-list{
   width: 100%;
   height: 100%;
+}
+.imgText .el-icon-plus{
+  position: absolute;
+  top: 0;
+  line-height: 44px;
+  right: 60px;
+}
+.tableSer{
+  padding: 5px 10px;
+  cursor: pointer;
+  color: #6d8dfc
+}
+.tableSer:nth-of-type(3){
+  color: red
 }
 </style>
