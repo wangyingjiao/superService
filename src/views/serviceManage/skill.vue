@@ -64,14 +64,14 @@
             </el-form-item>
             <el-form-item label=""> 
                   <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                    {{item.techName}}
+                    <div class="techNameStyle">{{item.techName}}</div>
                     <div class="closePic" @click="errorClose(item)">&#10005</div>
                   </div>              
             </el-form-item>           
           </el-form>
     
           <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large"   @click="submitForm('ruleForm2')">保存</button>
+              <button class="button-large"  :disabled="submitFlag"  @click="submitForm('ruleForm2')">保存</button>
               <button class="button-cancel"  @click="resetForm('ruleForm2')">取消</button>
           </div>          
         </el-dialog>
@@ -134,7 +134,7 @@
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                           <td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                          <td  class="height100" align="center"><div class="userHeaderStyle"><img :src="item.headPic" style="width:100%;height:100%;"/></div></td>
+                          <td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
                           <td  align="center">{{item.techName}}</td>
                           <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
@@ -181,6 +181,7 @@
           }			
       };      
       return {
+        submitFlag:false,
         jumpPage:1,
         title:'新增技能',
         btnShow: this.$store.state.user.buttonshow,
@@ -379,7 +380,8 @@
                                       type: 'success',
                                       message: '新增成功!'
                                     });
-                                    this.dialogVisible = false;	
+                                    this.dialogVisible = false;
+                                    this.localSearch='';	
                                     var obj1={}
                                     this.listLoading = false
                                     this.pageNumber=1;
@@ -675,6 +677,7 @@
 
 </script>
 <style  scoped>
+   .techNameStyle{width:80px;height:25px;line-height:25px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
    .padBot20{padding-bottom:20px;}
    .width200{width:200px;}
    .width220{width:220px;}
@@ -684,10 +687,10 @@
    .selfFLORight{float:right}
    .selfFLOLeft{float:left;} 
    .width120{width:120px;}
-   .height100{height:100px;}
+   .height110{height:110px;}
    .selfFooter{text-align:center;margin-top:30px;}
    .selfTdStyle{background: #F8F8F9;height:30px;}
-   .userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
+   .imgStyle{display:block;}
    .selfOVerflow{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
    .selfOVerflow1{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
    .selfBottonSt{float:left;width:500px;}

@@ -1,65 +1,62 @@
 <template>
     <div class="addorder-container">
 		<div class="fist-bar">
+			  <!--选项卡开始-->
 			  <el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="全部" name="whole"></el-tab-pane>
-					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>
-						<!--<el-tab-pane label="全部" name="1"></el-tab-pane>
-						<el-tab-pane label="待派单" name="2"></el-tab-pane>
-						<el-tab-pane label="已派单" name="3"></el-tab-pane>
-						<el-tab-pane label="已取消" name="4"></el-tab-pane>
-						<el-tab-pane label="已上门" name="5"></el-tab-pane>
-						<el-tab-pane label="已完成" name="6"></el-tab-pane>
-						<el-tab-pane label="已成功" name="7"></el-tab-pane>
-						<el-tab-pane label="已暂停" name="8"></el-tab-pane>-->		
+					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
 			  </el-tabs>
-			  <el-select clearable style="width:200px" class="filter-item" v-model="payStus" placeholder="选择支付状态">
+				<!--选项卡结束-->
+				<!--搜索条件选择开始-->
+			  <el-select clearable class="width200"   v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable style="width:200px" class="filter-item" v-model="mechanism" placeholder="选择机构">
+			  <el-select clearable class="width200"  v-model="mechanism" placeholder="选择机构">
 						<el-option v-for="item in mechanismOptions" :key="item.key" :label="item.name" :value="item.key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable style="width:200px" class="filter-item" v-model="payType" placeholder="选择服务站">
+			  <el-select clearable class="width200"  v-model="payType" placeholder="选择服务站">
 						<el-option v-for="item in payTypeOptions" :key="item" :label="item" :value="item">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable style="width:200px" class="filter-item" v-model="orderProject" placeholder="请选择" >
+			  <el-select clearable class="width200"  v-model="orderProject" placeholder="请选择" >
 						<el-option v-for="item in orderProjectOptions" :key="item.key" :label="item.name" :value="item.key">
 						</el-option>
 			  </el-select>
-				<el-input  v-if="orderProject === '1'" style="width: 200px;"  placeholder="请输入客户姓名" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '2'" style="width: 200px;"  placeholder="请输入客户手机号" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '3'" style="width: 200px;"  placeholder="请输入订单编号" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '4'" style="width: 200px;"  placeholder="请输入项目名称" v-model="searchCon"></el-input>
-				<el-input  v-else style="width: 200px;"  placeholder="请输入" v-model="searchCon"></el-input>			  
+				<el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="searchCon"></el-input>
+				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="searchCon"></el-input>
+				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="searchCon"></el-input>
+				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="searchCon"></el-input>
+				<el-input  v-else class="width200"  placeholder="请输入" v-model="searchCon"></el-input>			  
 			  <button type="button" class="search-button"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
-				<el-date-picker
-				  v-model="startTime"
-				  type="datetime"
-				  style="width:200px;"
-				  placeholder="选择开始时间">
-				</el-date-picker>
-				<el-date-picker
-				  v-model="endTime"
-				  type="datetime"
-				  style="width:200px;"
-				  placeholder="选择结束时间">
-				</el-date-picker>
-				<el-date-picker
-				  v-model="severTime"
-				  type="datetime"
-					format='yyyy-MM-dd hh:00'
-				  style="width:200px;"
-				  placeholder="选择服务时间">
-				</el-date-picker>							  
-			  </div>				
+					<el-date-picker
+						v-model="startTime"
+						type="datetime"
+						class="width200"
+						placeholder="选择开始时间">
+					</el-date-picker>
+					<el-date-picker
+						v-model="endTime"
+						type="datetime"
+						class="width200"
+						placeholder="选择结束时间">
+					</el-date-picker>
+					<el-date-picker
+						v-model="severTime"
+						type="datetime"
+						format='yyyy-MM-dd hh:00'
+						class="width200"
+						placeholder="选择服务时间">
+					</el-date-picker>							  
+			  </div>
+				<!--搜索条件选择结束-->				
 		</div>
+		<!--表格显示区域开始-->
     <div class="orderMangeWarp">
-		  <button type="button" class="add-button" style="float:right;margin-bottom:10px;" @click="exportOrder">导出订单</button>
-			<div style="width:100%;background:#fff;padding:20px 20px 40px 20px;">	
+		  <button type="button" class="add-button exprotStyle"  @click="exportOrder">导出订单</button>
+			<div class="ordermanageTableWrap">	
 				<el-table 
 					:data="tabDataList" 
 					element-loading-text="正在加载" 
@@ -93,13 +90,14 @@
 							</template>
 							</el-table-column>
 				</el-table>
-				<div style="margin-top:20px;float:right;">
+				<div class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
 					:page-sizes="[10,20,30, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 					</el-pagination>
 				</div>
 			</div>
 		</div>
+		<!--表格显示区域结束-->
 	</div>
 </template>
 
@@ -113,7 +111,7 @@ export default {
     return {
 		severTime:'',
 		dict:require("../../../static/dict.json"),
-		payTypeOptions:[],
+		payTypeOptions:[1,2,3],
 		orderTest:[],
 	  payType:null,
 	  payStusOptions:[],
@@ -164,19 +162,20 @@ export default {
     };
   },
   methods: {
-    //获取表格数据
+  //获取表格数据
 	getTableData(){ 
 	  //getTable().then(res => {
         //this.tabDataList = res.data.data.list;
       //});
 	},
-	//tabs操作(true)
+	//tabs操作需要请求表格数据
 	handleClick(tab, event) {
 				this.activeName=tab.name
 				console.log(this.activeName);
     },
 	//全局search按钮
-	localSearch(){		
+	localSearch(){
+		//服务时间格式化		
 		if(this.severTime !=''){
     		var severTime = util.formatDate.format(
 					new Date(this.severTime),
@@ -184,7 +183,8 @@ export default {
 				);
 		}else{
 			  severTime=''
-		}		
+		}	
+		//开始时间格式化	
 		if(this.startTime !=''){
     		var startTime = util.formatDate.format(
 					new Date(this.startTime),
@@ -192,7 +192,8 @@ export default {
 				);
 		}else{
 			  startTime=''
-		} 
+		}
+		//结束时间格式化 
     if(this.endTime != ''){
 			var endTime = util.formatDate.format(
 				new Date(this.endTime),
@@ -229,10 +230,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .addorder-container{
-    width:100%;
+  width:100%;
 	float:left;
 	background:#eef1f6;
 }
+.width200{width:200px;}
 .fist-bar{
   padding:20px 20px;
   background:#fff;
@@ -245,4 +247,7 @@ export default {
 	background:#fff;
 	padding:20px 20px;
 }
+.exprotStyle{float:right;margin-bottom:10px;}
+.ordermanageTableWrap{width:100%;background:#fff;padding:20px 20px 40px 20px;}
+.ordermanagePagination{margin-top:20px;float:right;}
 </style>

@@ -935,7 +935,7 @@ export default {
     //现住地址
     var SKILLIDS = (rule, value, callback) => {
       console.log(value, "value------");
-      if (value.length > 0) {
+      if (value!=undefined && value.length) {
         callback();
       } else {
         callback(new Error("请选择技能"));
@@ -1434,9 +1434,10 @@ export default {
         this.familyList = val.familyMembers ? [].concat(val.familyMembers) : [];
       },
       deep: true
-    }
+	},
   },
   props: [
+	"listquer",
     "areaOptions",
     "technicianData",
     "sex",
@@ -1550,7 +1551,7 @@ export default {
               type: "success"
 			});
 			this.$emit("dialogvisibleedit")
-            this.$emit("getlist",[1,6,obj])
+            this.$emit("getlist",this.listquer.page)
           } else {
             this.$message.error("保存失败");
             return false;
