@@ -384,15 +384,18 @@
               </el-form-item>
           </el-col>
           <el-col :span="12">
-              <el-form-item label="出生日期:" prop="birtStr">
-                <el-date-picker 
-                    type="date" placeholder="选择日期" 
-                    v-model="personal.birtStr" 
-                    style="width:100%"
-                     format="yyyy-MM-dd"
-                    @change="dateChange"
-                    :picker-options="pickerOptions0">
-                </el-date-picker>
+              <el-form-item label="出生日期:" required>
+                 <el-form-item prop="birtStr">
+                  <el-date-picker 
+                      type="date" placeholder="选择日期" 
+                      v-model="personal.birtStr" 
+                      style="width:100%"
+                      format="yyyy-MM-dd"
+                      @change="dateChange"
+                      >
+                      <!-- :picker-options="pickerOptions0" -->
+                  </el-date-picker>
+                 </el-form-item>
 						</el-form-item>
           </el-col>
         </el-row>

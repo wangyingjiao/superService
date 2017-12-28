@@ -59,7 +59,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="出生日期:" prop="birthDate">
-							<el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" :picker-options="pickerOptions0" style="width:100%" @change="dateChange"
+							<el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
 							format="yyyy-MM-dd">
 							</el-date-picker>
 						</el-form-item>
