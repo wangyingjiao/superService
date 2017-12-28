@@ -74,18 +74,19 @@
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
+            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="权限:" prop="check">
+        <el-form-item label="权限:" prop="check" >
             <el-tree
+            class="scrollBox"
               :data="data2"
               :indent= 10
               show-checkbox
@@ -205,6 +206,7 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
+      roleLv:[],
       dialogFormVisible: false,
       state: state,
       dialogStatus: "",
@@ -267,6 +269,12 @@ export default {
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
     });
+    var lv = localStorage.getItem('dataScope')
+    console.log(lv,'用户等级')
+    for(var i = 0;i < lv;i++){
+      this.roleLv.push(this.stationLv[i])
+    }
+    console.log(this.roleLv,'用户看到的等级')
   },
   methods: {
     aaa(val) {
@@ -584,7 +592,7 @@ export default {
               // this.resetTemp();
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -617,10 +625,11 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {
-            this.resetTemp();
+            
+            if (res.data.code === 1) {
+              this.resetTemp();
             this.$refs.domTree.setCheckedKeys([]);
             this.$refs[formName].resetFields();
-            if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.$message({
                 type: "success",
@@ -630,7 +639,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -755,5 +764,10 @@ body {
 }
 .dialog-footer {
   text-align: center;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y:scroll;
+  overflow-x:hidden;
 }
 </style>

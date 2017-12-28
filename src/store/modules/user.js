@@ -39,18 +39,19 @@ const user = {
   actions: {
     // 登录
     LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+      // const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-
         var obj = {
           username: userInfo.username,
           password: userInfo.password
         }
         loginByUsername(obj).then(response => {
           console.log(response)
+          console.log(response.data.data.user.role.dataScope, '岗位等级')
           if (response.data.code === 1) {
             console.log(response.data.data.JSESSIONID)
             localStorage.setItem('name', response.data.data.user.name)
+            localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             const data = response.data
             setSession(response.data.data.JSESSIONID)
             setToken(data.token)

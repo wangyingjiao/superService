@@ -17,7 +17,7 @@
 										<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
 										</el-option>
 									</el-select>
-									<div  style="width:80px;height:34px;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8" @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
+									<div  class="selftSerchBut"  @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
 								</el-form-item>
 								<el-form-item label="客户姓名:" prop="customName">
 									<span style="font-size:12px;">{{form.customName}}</span>
@@ -208,38 +208,38 @@
 				<button class="button-cancel"  @click="resetForm1('ruleForm1')">取 消</button>
 		</div>				
 	</el-dialog>
-	<!--技师选择弹窗-->
+	<!--技师选择弹窗开始-->
 	<el-dialog title="选择技师" :visible.sync="dialogTableVisible">
-		<div style="float:left;width:120px">
-		<el-input placeholder="输入要搜索的姓名" v-model="techName" style="width:120px"></el-input>                
+		<div class="selectTechHL">
+		<el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
 		</div>
-		<div style="float:left;margin-left:10px;">
+		<div  class="selectTechHR">
 		<el-select clearable placeholder="请选择服务站" v-model="techStationId">
 			<el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
 			</el-option>
 		</el-select>
-		<span v-show="promShow1" style="font-size: 12px; margin-top: 10px; color: red;">{{promInf1}}</span>
+		<span v-show="promShow1" class="selfPromINF">{{promInf1}}</span>
 		</div>
-		<div style="float:right"><button class="button-large" @click="searchTeh">查询</button></div> 	
-		<div style="float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;">
+		<div class="FloatRight"><button class="button-large" @click="searchTeh">查询</button></div> 	
+		<div class="selfTableWrapONE">
 			<div class="table-d">
 				<table width="100%" class="selfTable">
 				<tr>
-					<td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
-					<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">头像</td>
-					<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">姓名</td>
-					<td  style="background: #F8F8F9;height:30px;" align="center" width="10%">性别</td>
-					<td  style="background: #F8F8F9;height:30px;" align="center" width="26%">服务站</td>							
+					<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
+					<td  class="selfTableHEADTD" align="center" width="28%">头像</td>
+					<td  class="selfTableHEADTD" align="center" width="28%">姓名</td>
+					<td  class="selfTableHEADTD" align="center" width="10%">性别</td>
+					<td  class="selfTableHEADTD" align="center" width="26%">服务站</td>							
 				</tr>
 				<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
-					<td style="height:30px;" align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-					<td style="height:30px;" align="center">{{item.headPic}}</td>
-					<td style="height:30px;" align="center">{{item.techName}}</td>
-					<td style="height:30px;" align="center">
+					<td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
+					<td class="height100" align="center"><div class="userHeaderStyle"><img :src="item.headPic" style="width:100%;height:100%;"/></div></td>
+					<td  align="center">{{item.techName}}</td>
+					<td  align="center">
 					<span v-if="item.techSex =='male'">男</span>
 					<span v-if="item.techSex =='female'">女</span>									
 					</td>
-					<td style="height:30px;" align="center">{{item.techStationName}}</td>							
+					<td  align="center">{{item.techStationName}}</td>							
 				</tr>
 				</table>
 			</div>            
@@ -249,6 +249,7 @@
 			<button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
 		</div>
 	</el-dialog>
+	<!--技师选择弹窗结束-->
 	<div ref="gdMap" class="mapWrap"></div>
   </div>
 </template>
@@ -304,7 +305,7 @@ export default {
 		},
 		//弹窗表格数据
 		listTech:[],
-		selectCommidty:[
+		selectCommidty:[	
 			{
 			  id:'1',
 			  checkAll:false,
@@ -813,6 +814,18 @@ export default {
 };
 </script>
 <style  lang="scss" scoped>
+.selectTechHL{float:left;width:120px}
+.selectTechHR{float:left;margin-left:10px;}
+.width120{width:120px;}
+.selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
+.FloatRight{float:right;}
+.selfTableWrapONE{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+.selfTableHEADTD{background: #F8F8F9;height:30px;}
+.height100{height:100px;}
+.userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
+
+
+.selftSerchBut{width:80px;height:34px;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8}
 .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
 .selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;} 
 .tabWrap{width:100px;margin-right:20px;font-size:12px;display:inline-block;height:25px;text-align:center;line-height:25px;border-radius:12px;border:1px solid #bfcbd9;position:relative;}

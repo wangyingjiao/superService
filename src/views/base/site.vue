@@ -109,7 +109,7 @@
            >
 
           <el-form-item label="服务站名称:" prop="name">
-            <el-input style='width: 400px;' v-model="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
+            <el-input style='width: 400px;' v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
           </el-form-item>
           <el-form-item label="服务站类型:" prop="type">
             <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
@@ -120,6 +120,7 @@
 
           <el-form-item label="所在区域:"  prop="areaCodes">
               <el-cascader
+               @active-item-change = "codeChange"
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
@@ -128,7 +129,7 @@
 				</el-form-item>
 
           <el-form-item label="详细地址:" prop="address">
-            <el-input  style='width: 400px;' v-model="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
+            <el-input  style='width: 400px;' v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
           <el-form-item label="服务站电话:" prop="phone">
@@ -309,7 +310,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
-      btnState:false,
+      btnState: false,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
       myMap: {}, //地图对象
@@ -337,7 +338,7 @@ export default {
         rangeType: "",
         serviceAreaType: "",
         storeList: [],
-        servicePoint:'',
+        servicePoint: ""
       },
       temp: {
         name: "",
@@ -431,8 +432,9 @@ export default {
       };
       this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        console.log(res,'服务站列表')
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -451,7 +453,7 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -480,7 +482,7 @@ export default {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
-        this.listLoading = false
+        this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
           getStore({}).then(res => {
@@ -507,7 +509,7 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -524,7 +526,7 @@ export default {
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -550,7 +552,7 @@ export default {
       }
       if (row.servicePoint != undefined) {
         this.rowInfo.servicePoint = row.servicePoint;
-      }      
+      }
     },
     handleCreate() {
       this.dialogStatus = "create";
@@ -611,10 +613,10 @@ export default {
         });
     },
     create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
       var obj = {
         name: this.temp.name,
         type: this.temp.type,
@@ -671,11 +673,11 @@ export default {
           };
           getSite(obj, this.pageNumber, this.pageSize).then(res => {
             this.list = res.data.data.list;
-            if(this.list != undefined){
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
-          }
-        }
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
             this.total = res.data.data.count;
             this.listLoading = false;
           });
@@ -710,8 +712,8 @@ export default {
       });
     },
     createMap() {
-      console.log(this.tableData)
-      console.log(getOverlays())
+      console.log(this.tableData);
+      console.log(getOverlays());
     },
     resetMap() {},
     update(formName) {
@@ -771,6 +773,9 @@ export default {
       this.tempMaster.master = "";
       this.dialogMasterVisible = false;
     },
+    codeChange(val) {
+      this.temp.areaCodes.splice(0, this.temp.areaCodes.length);
+    },
     showdialog() {
       this.severSelectdialogVisible = true;
       this.$nextTick(() => {
@@ -782,7 +787,7 @@ export default {
       var id = this.$refs.gdMap;
       var inputname = this.$refs.pickerInput;
       var map = new AMap.Map(id, {
-        center:[116.459771,39.922132],
+        center: [116.459771, 39.922132],
         zoom: 15
       });
 
@@ -802,25 +807,25 @@ export default {
         strokeOpacity: 0.1, //边线透明度，取值范围0 - 1。
         fillOpacity: 0.3, //填充的透明度，取值范围0 - 1。
         strokeStyle: "solid" //边线的样式，solid或dashed。
-      };      
+      };
       that.myMap = map;
-      if(this.rowInfo.servicePoint != ''){
-            var retPoitArr=this.rowInfo.servicePoint.split(" ")     
-            var polygonArr = new Array();//多边形覆盖物节点坐标数组
-            for(var a=0;a<retPoitArr.length;a++){
-                polygonArr.push(retPoitArr[a].split(","))
-            }
-            map.panTo(polygonArr[0]);//改变中心点
-            var  polygon = new AMap.Polygon({
-                path: polygonArr,//设置多边形边界路径
-            });
-            polygon.setOptions(styleOptions)//设置多边形的样式
-            polygon.setMap(map);
-            var overlays = this.myMap.getAllOverlays();
-            var len=overlays.length;//地图原覆盖物数量
-            if(overlays.length !=0){
-                that.testalert(overlays[0]);
-            }
+      if (this.rowInfo.servicePoint != "") {
+        var retPoitArr = this.rowInfo.servicePoint.split(" ");
+        var polygonArr = new Array(); //多边形覆盖物节点坐标数组
+        for (var a = 0; a < retPoitArr.length; a++) {
+          polygonArr.push(retPoitArr[a].split(","));
+        }
+        map.panTo(polygonArr[0]); //改变中心点
+        var polygon = new AMap.Polygon({
+          path: polygonArr //设置多边形边界路径
+        });
+        polygon.setOptions(styleOptions); //设置多边形的样式
+        polygon.setMap(map);
+        var overlays = this.myMap.getAllOverlays();
+        var len = overlays.length; //地图原覆盖物数量
+        if (overlays.length != 0) {
+          that.testalert(overlays[0]);
+        }
       }
       var mouseTool = new AMap.MouseTool(map);
       var polygon = this.$refs.polygon;
@@ -874,25 +879,25 @@ export default {
     testalert(obj) {
       //获取多边形轮廓线节点数组。其中lat和lng是经纬度参数
       var path = "";
-      var row = {};      
+      var row = {};
       if (obj.CLASS_NAME === "AMap.Polygon") {
         path = obj.getPath();
         row.type = "Polygon";
         row.path = path;
-        row.area = parseInt(obj.getArea()/1000000*100)/100+'平方公里';
+        row.area = parseInt(obj.getArea() / 1000000 * 100) / 100 + "平方公里";
       }
       row.name = "范围";
-      row.index='';
+      row.index = "";
       row.id = obj._amap_id;
       this.tableData.push(row);
-      for(var a=0;a<this.tableData.length;a++){
-          this.tableData[a].index=a+1;
+      for (var a = 0; a < this.tableData.length; a++) {
+        this.tableData[a].index = a + 1;
       }
       this.number = this.tableData.length;
     },
     //删除地图所有的覆盖物
     removeOverlay() {
-      var overlays = this.myMap.getAllOverlays()
+      var overlays = this.myMap.getAllOverlays();
       this.tableData = [];
       this.myMap.remove(overlays);
       this.number = "0";
@@ -921,16 +926,16 @@ export default {
       if (this.tableData == "") {
         this.promitInf = "请选择一个服务区域";
         this.showPromit = true;
-      } else if (this.tableData.length >1) {
+      } else if (this.tableData.length > 1) {
         this.promitInf = "只能选择一个服务区域";
         this.showPromit = true;
       } else {
         this.promitInf = "";
         this.showPromit = false;
         //setScope
-        var obj={
-           id:this.rowInfo.id,
-           servicePoint:this.tableData[0].path.join(" ")
+        var obj = {
+          id: this.rowInfo.id,
+          servicePoint: this.tableData[0].path.join(" ")
         };
         setScope(obj).then(res => {
           if (res.data.code == "1") {
@@ -939,10 +944,10 @@ export default {
               message: "设置成功"
             });
             this.getList();
-            this.rowInfo.servicePoint='';
-            this.tableData=[];
-            this.inputvalue=[];
-            this.$refs.pickerInput.value='';
+            this.rowInfo.servicePoint = "";
+            this.tableData = [];
+            this.inputvalue = [];
+            this.$refs.pickerInput.value = "";
             this.severSelectdialogVisible = false;
           } else {
             this.$message({
@@ -950,18 +955,18 @@ export default {
               message: res.data.data
             });
             this.severSelectdialogVisible = false;
-            this.inputvalue=[];
-            this.$refs.pickerInput.value='';
+            this.inputvalue = [];
+            this.$refs.pickerInput.value = "";
           }
-        });        
+        });
       }
     },
     closeMap() {
       this.tableData = [];
       this.number = "0";
       this.promitInf = "";
-      this.inputvalue=[];
-      this.$refs.pickerInput.value='';      
+      this.inputvalue = [];
+      this.$refs.pickerInput.value = "";
       this.showPromit = false;
       this.severSelectdialogVisible = false;
     }

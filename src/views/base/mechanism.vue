@@ -77,7 +77,7 @@
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
-          v-model="temp.name"
+          v-model.trim="temp.name"
           style='width: 400px;' 
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
@@ -92,7 +92,7 @@
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
           style='width: 400px;' 
-          v-model="temp.masterName"
+          v-model.trim="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
@@ -108,7 +108,7 @@
 
               <!-- 省市区 -->
               <el-cascader
-                
+                @active-item-change = "codeChange"
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
@@ -119,12 +119,13 @@
         <el-form-item label="详细地址:" prop="address">
           <el-input 
              style='width: 400px;' 
-             v-model="temp.address"
+             v-model.trim="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
+            :disabled = "typeState"
             style='width: 400px;' 
             class="filter-item" 
             v-model="temp.scopeType" 
@@ -284,6 +285,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState:false,
+      typeState:false,
       list: [],
       total: null,
       listLoading: true,
@@ -570,11 +572,14 @@ export default {
       };
       upMech(obj)
         .then(res => {
-          console.log(res);
+          console.log(res,'编辑');
 
           if (res.data.code == "1") {
             this.listLoading = false;
-            console.log(res.data.data.cityCodes);
+            console.log(res.data.data.haveStation,'是否存在服务站');
+            if(res.data.data.haveStation !== 0){
+              this.typeState = true
+            }
             this.temp = Object.assign({}, res.data.data);
             // this.temp.cityCodes = res.data.data.cityCodes;
             this.dialogStatus = "update";
@@ -598,7 +603,7 @@ export default {
           this.listLoading = false;
           this.$message({
             type: "error",
-            message: "网络原因，稍后再试"
+            message: "与服务器断开链接，稍后再试"
           });
         });
       // console.log(this.temp.visable);
@@ -610,6 +615,9 @@ export default {
     },
     itemActive(arr){
         console.log(arr,'arr')
+    },
+    codeChange(val){
+       this.temp.areaCodes.splice(0,this.temp.areaCodes.length)
     },
     searchChange(val) {
       console.log(val);

@@ -13,10 +13,6 @@
 						<el-tab-pane label="已成功" name="7"></el-tab-pane>
 						<el-tab-pane label="已暂停" name="8"></el-tab-pane>-->		
 			  </el-tabs>
-			  <el-select clearable style="width:200px" class="filter-item" v-model="payType" placeholder="选择支付方式">
-						<el-option v-for="(value,key,index) in payTypeOptions" :key="index" :label="value" :value="key">
-						</el-option>
-			  </el-select>
 			  <el-select clearable style="width:200px" class="filter-item" v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
@@ -25,6 +21,10 @@
 						<el-option v-for="item in mechanismOptions" :key="item.key" :label="item.name" :value="item.key">
 						</el-option>
 			  </el-select>
+			  <el-select clearable style="width:200px" class="filter-item" v-model="payType" placeholder="选择服务站">
+						<el-option v-for="item in payTypeOptions" :key="item" :label="item" :value="item">
+						</el-option>
+			  </el-select>				
 			  <el-select clearable style="width:200px" class="filter-item" v-model="orderProject" placeholder="请选择" >
 						<el-option v-for="item in orderProjectOptions" :key="item.key" :label="item.name" :value="item.key">
 						</el-option>
@@ -47,7 +47,14 @@
 				  type="datetime"
 				  style="width:200px;"
 				  placeholder="选择结束时间">
-				</el-date-picker>			  
+				</el-date-picker>
+				<el-date-picker
+				  v-model="severTime"
+				  type="datetime"
+					format='yyyy-MM-dd hh:00'
+				  style="width:200px;"
+				  placeholder="选择服务时间">
+				</el-date-picker>							  
 			  </div>				
 		</div>
     <div class="orderMangeWarp">
@@ -104,6 +111,7 @@ export default {
 	name: "",
   data() { 		
     return {
+		severTime:'',
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
 		orderTest:[],
@@ -165,10 +173,18 @@ export default {
 	//tabs操作(true)
 	handleClick(tab, event) {
 				this.activeName=tab.name
+				console.log(this.activeName);
     },
 	//全局search按钮
-	localSearch(){
-		console.log(this.activeName);
+	localSearch(){		
+		if(this.severTime !=''){
+    		var severTime = util.formatDate.format(
+					new Date(this.severTime),
+					"yyyy-MM-dd hh:00"
+				);
+		}else{
+			  severTime=''
+		}		
 		if(this.startTime !=''){
     		var startTime = util.formatDate.format(
 					new Date(this.startTime),
@@ -186,7 +202,7 @@ export default {
 			endTime=''
 		}
 			
-		console.log(endTime);
+		console.log(severTime);
 	},
 	//导出订单按钮
 	exportOrder(){
@@ -206,7 +222,6 @@ export default {
   },
   mounted() {
     this.getTableData();
-		this.payTypeOptions=this.dict.pay_platform;
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;
   }
