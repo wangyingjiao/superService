@@ -370,7 +370,7 @@
               </tr>
               <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                 <td class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                <td  class="height100" align="center"><div class="userHeaderStyle"><img :src="item.headPic" style="width:100%;height:100%;"/></div></td>
+                <td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
                 <td class="fontSize12" align="center">{{item.techName}}</td>
                 <td  class="fontSize12" align="center">
                 <span class="fontSize12" v-if="item.techSex =='male'">男</span>
@@ -396,7 +396,7 @@
               <el-form-item label="选择时间" required>
                     <el-date-picker
                       v-model="value1"                      
-                      placeholder="选择日期"                     
+                      placeholder="年-月-日"                     
                       :type="select"
                       class="selfDateStyle"
                       @change='dateChange'
@@ -404,15 +404,15 @@
                     </el-date-picker>
               </el-form-item>
               <el-form-item label="选择时间" required>
-                    <div style="margin-top:-10px;">
+                    <div class="marginTopDec10">
                       <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(value,index,key) in 20" :key="index" @click="timeChange(index)">08:30</div>
                     </div>                    
               </el-form-item>              
 
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large"   @click="dialogVisible = false">确 定</button>
-              <button class="button-cancel"  @click="dialogVisible = false">取 消</button>
+              <button class="button-large"   @click="submitTime">确 定</button>
+              <button class="button-cancel"  @click="cancelTime">取 消</button>
             </div>
         </el-dialog>
         <!--修改服务时间弹窗结束-->
@@ -654,9 +654,17 @@ export default {
     };
   },
   methods:{
+    //更换时间的确定
+    submitTime(){
+       this.dialogVisible = false
+    },
+    //更换时间取消
+    cancelTime(){
+      this.dialogVisible = false
+    },
     //日期变化时改变时间对象
-    dateChange(){
-      console.log(this.value1)
+    dateChange(value){
+      console.log(this.value)
     },
     //时间选项点击
     timeChange(index){
@@ -674,8 +682,6 @@ export default {
           }
 
       }
-
-
     },
     //技师数据回显二级选中
     selectionreturn1(){
@@ -790,6 +796,7 @@ export default {
   background-size: 20px 20px;
 }
 .selfDateStyle{width:200px;margin-left:20px;}
+.marginTopDec10{margin-top:-10px;}
 .selfSeverTimeSt{
     width: 80px;
     height: 34px;
@@ -814,7 +821,8 @@ export default {
 .FloatLeft{float:left;}
 .selfTableWrapONE{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
 .selfTableHEADTD{background: #F8F8F9;height:30px;}
-.height100{height:100px;}
+.height110{height:110px;}
+.imgStyle{display:block;}
 .fontSize12{font-size:12px;}
 .techTabWrap{width:690px;float:left;padding-left:30px;padding-bottom:20px;}
 .userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
