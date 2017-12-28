@@ -388,3 +388,6 @@ body {
 .pagination-container {
   overflow: hidden;
 }
+#tableColor tbody tr.current-row>td{
+  background-color: rgba(10, 104, 226, 0.26);
+}

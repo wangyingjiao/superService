@@ -314,9 +314,6 @@ export default {
         masterName: "",
         masterPhone: "",
         remark: "",
-        // cusProvId: "",
-        // cusCityId: "",
-        // cusTownId: "",
         areaCodes: [],
         scopeType: "",
         cityCodes: [],
@@ -481,7 +478,16 @@ export default {
           masterPhone: value
         };
       }else{
-         var obj = {}
+        if(this.search.value != ''){
+           this.$message({
+            type: "warning",
+            message: "搜索条件不足,不能搜索"
+          });
+          return
+        }else{
+          var obj = {}
+        }
+        
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -559,6 +565,7 @@ export default {
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.typeState = false
       //this.areaOptions = this.$store.state.user.area;
       //this.resetTemp();
       //this.$refs[formName].resetFields();

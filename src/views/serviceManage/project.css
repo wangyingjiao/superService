@@ -1,4 +1,4 @@
-.el-radio-button__inner{
+/* .el-radio-button__inner{
     display: block;
     border: none;
 }
@@ -6,7 +6,7 @@
     width: 60%;
 }
 .el-table{
-    /* margin-bottom: 20px; */
+   
 }
 /* .el-table td, .el-table th{
     height: 0 !important;

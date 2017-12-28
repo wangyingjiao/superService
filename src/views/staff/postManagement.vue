@@ -345,35 +345,96 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       var obj = {
-        // name: this.search.name,
-        // organization: {
-        //   id: this.search.officeId
-        // }
+        name: this.search.name,
+        organization: { id: this.search.officeId }
       };
-      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        for (var i = 0; i < this.list.length; i++) {
-          this.list[i].index = i + 1;
-        }
-        this.total = res.data.data.count;
-        this.listLoading = false;
-      });
+      console.log(obj);
+      if (obj.name != "" || obj.organization.id != "") {
+        this.listLoading = true;
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
+          }
+        });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        // name: this.search
+        name: this.search.name,
+        organization: { id: this.search.officeId }
       };
-      this.listLoading = true;
-      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      console.log(obj);
+      if (obj.name != "" || obj.organization.id != "") {
+        this.listLoading = true;
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
           }
-        }
-        this.listLoading = false;
-      });
+        });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handTreechange(a, b, c) {
       //console.log(this.$refs.domTree.getCheckedKeys(false));
@@ -534,30 +595,7 @@ export default {
       };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
-      // console.log(arr);
-      // var parentId = []
-      // for (var i = 0; i < this.data2.length; i++) {
-      //   //console.log("i" + i);
-      //   //console.log(this.data2[i].subMenus);
-      //   for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-      //     //console.log("j" + j);
-      //     //console.log(this.data2[i].subMenus[j].subMenus);
-      //     var a = this.data2[i].subMenus[j]
-      //     if(a.subMenus != undefined){
-      //       for (var k=0;k< a.subMenus.length;k++){
-      //         if(arr.indexOf(a.subMenus[k].id) > -1){
-      //           console.log(a.subMenus[k].parentIds)
-      //         }
-      //       }
-      //     }else{
-      //       console.log("第二层")
-      //       if(arr.indexOf(this.data2[i].subMenus[j].id) > -1){
-      //          console.log(this.data2[i].subMenus[j].parentIds)
-      //       }
-      //     }
-      //   }
-      // }
-
+      
       var str = "";
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
@@ -637,10 +675,18 @@ export default {
               });
               this.getList();
             } else {
-              this.$message({
-                type: "error",
-                message: res.data.data[0]
-              });
+              if(typeof res.data.data == 'string'){
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+
+              }else{
+                this.$message({
+                  type: "error",
+                  message: res.data.data[0]
+                });
+              }
             }
           });
         } else {

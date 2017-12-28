@@ -92,7 +92,7 @@
 			</div>
 		</div>
 		<!--新增客户弹窗开始-->
-		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false">	
+		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false" :close-on-click-modal="false">	
 				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 					<el-form-item label="姓名:" prop="name"  >
 						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  class="width400" ></el-input>
@@ -117,7 +117,7 @@
               ></el-cascader>							
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="address">
-		    				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
+		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputBlur" value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
 								<el-input style="margin-left:-5px;width:200px;"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
@@ -126,7 +126,7 @@
 					</el-form-item>					
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-						<button class="button-large"  @click="submitForm('ruleForm')">确 定</button>
+						<button class="button-large"  :disabled="submitFlag"  @click="submitForm('ruleForm')">确 定</button>
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
 		</el-dialog>
@@ -198,6 +198,8 @@ export default {
 				}			
 		};				 		 		
     return {
+				showDis:true,
+				submitFlag:false,
 			  jumpPage:1,
 			  btnShow: this.$store.state.user.buttonshow,
 				testvalue:'',
@@ -249,38 +251,43 @@ export default {
 		pagetotal1:0,//表格总页数
 		pageSize1:10,//表格每页条数
 		pageNumber:1,
-		testObj:{
-			city:'',
-			input:'',
-		},
+		kkkk:'',
 		mymap:{},	
     };
   },
   methods:{
+		  inputBlur(){
+				if(this.kkkk == ''){
+					this.$refs.pickerInput.value='';
+				}				
+			},
 		  testFun(value){
 					this.$nextTick(() => {
 							this.test(value[1]);
 					})	
 			},
 			//新增保存
-			submitForm(formName) {
-						if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
-								this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
-								var str=this.$refs.pickerInput1.value;
-										str=str.split(',')
-										//经度
-										var lng=str[0];
-										this.ruleForm.addrLongitude=lng;
-										//纬度
-										var lat=str[1];
-										this.ruleForm.addrLatitude=lat;
-						}else{
-							 this.$refs.pickerInput.value='';
-							 this.ruleForm.address='';
-						}			   
+			submitForm(formName) {		   
 						this.$refs[formName].validate((valid) => {
+							this.submitFlag=false;
+							setTimeout(function() {
+								this.submitFlag=true;
+							},1000);							
 							if (valid) {
-
+									if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
+											this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
+											var str=this.$refs.pickerInput1.value;
+													str=str.split(',')
+													//经度
+													var lng=str[0];
+													this.ruleForm.addrLongitude=lng;
+													//纬度
+													var lat=str[1];
+													this.ruleForm.addrLatitude=lat;
+									}else{
+										this.$refs.pickerInput.value='';
+										this.ruleForm.address='';
+									}	
 								//省、市、区三级ID	
 								this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
 								this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
@@ -293,6 +300,9 @@ export default {
 												message: '新增成功!'
 											});
 											this.$refs['ruleForm'].resetFields();
+										  this.customName='';
+							        this.customPhone='';
+							        this.organizationName='';
 											this.$refs.pickerInput.value=''	
 											this.dialogTableVisible = false
 											var obj={};
@@ -310,9 +320,7 @@ export default {
 								}).catch(res=>{
 									
 								});							
-							} else {
-								this.$refs.pickerInput.value='';
-								this.ruleForm.address='';            
+							} else {         
 								return false;
 							}
 						});								
@@ -360,15 +368,13 @@ export default {
 					},	
 				//新增
 					selectBut(){
-							this.dialogTableVisible=true;					
+							this.dialogTableVisible=true;
+							this.showDis=true;					
 							this.ruleForm.provinceCode='';
 							this.ruleForm.cityCode='';
 							this.ruleForm.areaCode='';
 							this.ruleForm.sex='';
-						  this.areaOptions=this.$store.state.user.area;
-						  	//this.$nextTick(() => {
-									//this.test('010');
-						//	})			
+						  this.areaOptions=this.$store.state.user.area;		
 					},
 					//表格下单操作按钮
 					lookInf(obj){
@@ -432,31 +438,26 @@ export default {
 					},
 					//地图初始化
 					test(area){
-						  var that=this;
+							var that=this;							
 							var inputname=this.$refs.pickerInput;
 							var inputname1=this.$refs.pickerInput1;
 							AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
+								  that.showDis=false;
 									var obj={
 										city:area,
 										input:inputname,
 									}							                        
-									var poiPicker = new PoiPicker(obj);	
-									  poiPicker.onCityReady(function() {
-												poiPicker.searchByKeyword(inputname.value);
-												poiPicker.clearSearchResults()
-										    poiPicker.clearSuggest()	
-										});						
+									var poiPicker = new PoiPicker(obj);						
 									//初始化poiPicker
+								  
 									poiPickerReady(poiPicker);
+									poiPicker.clearSearchResults()
+									poiPicker.onCityReady(function() {																							  
+											poiPicker.searchByKeyword(inputname.value);	
+									});									
 							});
-
 							function poiPickerReady(poiPicker) {
-									window.poiPicker = poiPicker;
-									var marker = new AMap.Marker();
-									var infoWindow = new AMap.InfoWindow({
-											offset: new AMap.Pixel(0, -20)
-									});
-									//选取了某个POI
+									//选取了某个POI									
 									poiPicker.on('poiPicked', function(poiResult) {
 											var source = poiResult.source,
 													poi = poiResult.item,                          
@@ -465,14 +466,14 @@ export default {
 															id: poi.id,
 															name: poi.name,
 															location: poi.location.toString(),
-															address: poi.address,
-															
+															address: poi.address,															
 													};
 													inputname.value=info.name;
+													that.kkkk=info.name
 													inputname1.value=info.location;									
 									});
 							}	
-											
+										
 					},
 					initMap1(){
 						var id=this.$refs.gdMap;	
@@ -480,8 +481,7 @@ export default {
 								zoom: 10
 						});
 						this.mymap=map;
-	        },
-
+	        }
   },
   mounted() {
 		 this.initMap1();

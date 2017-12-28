@@ -79,7 +79,7 @@
         </div>
         <div class="tabRight fl">
           <el-form 
-         
+             
             class="small-space" 
             ref="temp" 
             :rules="rules" 
@@ -87,21 +87,57 @@
             label-position="left" 
             label-width="100px" 
             style='width: 500px; margin-left:20px;'>
+            <div v-if="activeName == 'clean'">
 
-            <el-form-item label="分类名称" v-if="activeName == 'repair'"  prop="name" >
+            <!-- <el-form-item label="分类名称" v-if="activeName == 'repair'"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
-            </el-form-item>
+            </el-form-item> -->
 
-            <el-form-item label="分类名称" v-if="activeName == 'clean'"  prop="name" >
+            <el-form-item label="分类名称" prop="name" >
               <el-input        
               style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
+              placeholder="请输入2-10位的保洁分类名" v-model.trim="temp.name"></el-input>
+            </el-form-item>
+          
+            <el-form-item label="定向城市" >   
+              <div class="cityBox">
+                  <div style="display:inline-block;margin-left:-20px;" >
+                    <div 
+                      class="selfCheckBox cityBtn" 
+                      ref="cityOption" 
+                      @click="cityChange(item,index)" 
+                      v-for="(item,index) in city"
+                      :key="index">{{item.cityName}}</div>
+								  	</div>
+              </div>
+                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
+            </el-form-item>
+            </div>
+
+            <div v-if="activeName == 'repair'">
+            <el-form-item label="分类名称" prop="name" >
+              <el-input        
+              style='width: 400px;' 
+              placeholder="请输入2-10位的家修分类名" v-model.trim="temp.name"></el-input>
             </el-form-item>
             
 
-            <el-form-item label="定向城市" v-if="activeName == 'repair'">   
+            <!-- <el-form-item label="定向城市" v-if="activeName == 'repair'">   
+              <div class="cityBox">
+                  <div style="display:inline-block;margin-left:-20px;" >
+                    <div 
+                      class="selfCheckBox cityBtn" 
+                      ref="cityOption" 
+                      @click="cityChange(item,index)" 
+                      v-for="(item,index) in city"
+                      :key="index">{{item.cityName}}</div>
+								  	</div>
+              </div>
+                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
+            </el-form-item> -->
+            <el-form-item label="定向城市" >   
               <div class="cityBox">
                   <div style="display:inline-block;margin-left:-20px;" >
                     <div 
@@ -114,22 +150,9 @@
               </div>
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
             </el-form-item>
-            <el-form-item label="定向城市" v-if="activeName == 'clean'">   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption" 
-                      @click="cityChange(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item>
-            
+            </div>
           </el-form>
-           <el-form 
+           <!-- <el-form 
           v-if="aaa =='repair'"
             class="small-space" 
             ref="temp" 
@@ -160,7 +183,7 @@
                 <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
             </el-form-item>
             
-          </el-form>
+          </el-form> -->
         </div>
       </div>
       
@@ -189,7 +212,7 @@
         </div>
         <div class="tabRight fl">
           <el-form class="small-space" ref="temp" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
-
+            
             <el-form-item label="分类名称"  prop="name" >
               <el-input        
               style='width: 400px;' 
@@ -316,6 +339,7 @@ export default {
   methods: {
     tabChange() {
       // this.resetCity();
+      // this.$refs["temp"].resetFields();
       console.log(this.activeName);
     },
     cityChange(item, index) {

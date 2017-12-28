@@ -1,68 +1,76 @@
 <template>
     <div class="addorder-container">
-		<div style="width:100%;height:600px;background:#fff;padding-top:20px;">
-			<div style="width:100%;padding-left:30px;">
-					<el-steps :space="300" :active="active"  align-center >
+		<div class="addorderStepWrap">
+			<!--步骤条开始-->
+			<div class="stepControl">				
+				<el-steps :space="300" :active="active"  align-center >
 					<el-step title="选择客户"></el-step>
 					<el-step title="服务信息"></el-step>
 					<el-step title="选择技师"></el-step>
 					<el-step title="服务时间"></el-step>
-					</el-steps>
+				</el-steps>
 			</div>
-			<div style="width:100%;height:400px;padding-left:30px;margin-top:50px;">
-				<div style="width:100%;height:350px;" v-if="active == 1">
-						<el-form ref="form" :model="form" label-width="100px" label-position="left">
-								<el-form-item label="选择客户:" prop="custom">
-									<el-select  style="width:280px;margin-right:20px;" class="filter-item" v-model="custom" placeholder="请选择">
-										<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
-										</el-option>
-									</el-select>
-									<div  class="selftSerchBut"  @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
-								</el-form-item>
-								<el-form-item label="客户姓名:" prop="customName">
-									<span style="font-size:12px;">{{form.customName}}</span>
-								</el-form-item>
-								<el-form-item label="客户电话:" prop="phone">
-									<el-input  style="width:280px;"  placeholder="请输入搜索内容" v-model="form.phone"></el-input>
-								</el-form-item>
-								<el-form-item label="服务地址:" prop="serverAddress">
-									{{form.serverAddress}}<div  style="margin-left:30px;height:20px;line-height:20px;display:inline-block;cursor: pointer;border: 1px solid #4c70e8;text-align: center;font-size: 12px;width: 80px; color: #4c70e8;" @click="changeAddress">更换地址</div>
-								</el-form-item>
-								<el-form-item label="所属服务站:" prop="serverStation">
-									<span style="font-size:12px;">{{form.serverStation}}</span>
-								</el-form-item>																											
-						</el-form>						
+			<!--步骤条结束-->
+			<!--步骤显示区域开始-->
+			<div class="stepContentWrap">
+				<!--步骤1显示区域开始-->
+				<div class="stepContent"  v-if="active == 1">
+					<el-form ref="form" :model="form" label-width="100px" label-position="left">
+						<el-form-item label="选择客户:" prop="custom">
+							<el-select  clearable class="customSelName"  v-model="custom" placeholder="请选择" @change="changeCustom">
+								<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
+								</el-option>
+							</el-select>
+							<div  class="selftSerchBut"  @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
+						</el-form-item>
+						<div v-if="customKeyFlag">
+							<el-form-item label="客户姓名:" prop="customName">
+								<span class="fontSize12">{{form.customName}}</span>
+							</el-form-item>
+							<el-form-item label="客户电话:"    prop="phone">
+								{{form.phone}}
+							</el-form-item>
+							<el-form-item label="服务地址:" prop="serverAddress">
+								{{form.serverAddress}}
+							</el-form-item>
+							<el-form-item label="所属服务站:" prop="serverStation">
+								<span class="fontSize12">{{form.serverStation}}</span>
+							</el-form-item>	
+						</div>																										
+					</el-form>						
 				</div>
-				<div style="width:100%;height:350px;" v-if="active == 2">
-				<el-form ref="form1" :model="form1" label-width="100px" label-position="left">
+				<!--步骤1显示区域结束-->
+				<!--步骤2显示区域开始-->
+				<div class="stepContent"  v-if="active == 2">
+					<el-form ref="form1" :model="form1" label-width="100px" label-position="left">
 						<el-form-item label="服务项目:" prop="serverPro" required>
-								<el-select clearable style="width:400px;margin-right:20px;" class="filter-item" v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
-									<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
-									</el-option>
-								</el-select>
+							<el-select clearable  class="severChangeStyle" v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
+								<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
+								</el-option>
+							</el-select>
 						</el-form-item>
 						<el-form-item label="选择商品:" prop="serverPro" required>
-								<div class="table-d">
-									<table width="80%" border="0" cellspacing="1" cellpadding="0">
-										<tr>
-										<td  style="background: #F8F8F9;height:30px;" align="center" width="8%">选择</td>
-										<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">商品名称</td>
-										<td  style="background: #F8F8F9;height:30px;" align="center" width="28%">单价</td>
-										<td  style="background: #F8F8F9;height:30px;" align="center" width="10%">起购数</td>
-										<td  style="background: #F8F8F9;height:30px;" align="center" width="26%">数量</td>							
-										</tr>
-										<tr v-for="item in selectCommidty" :key="item.id" >
-										<td style="height:30px;" align="center"><el-checkbox  v-model="item.checkAll"></el-checkbox></td>
-										<td style="height:30px;" align="center">
+							<div class="table-d">
+								<table width="80%" class="selfTable">
+									<tr>
+										<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
+										<td  class="selfTableHEADTD" align="center" width="28%">商品名称</td>
+										<td  class="selfTableHEADTD" align="center" width="28%">单价</td>
+										<td  class="selfTableHEADTD" align="center" width="10%">起购数</td>
+										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>							
+									</tr>
+									<tr v-for="item in selectCommidty" :key="item.id" >
+										<td  align="center"><el-checkbox  v-model="item.checkAll"></el-checkbox></td>
+										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
 											<span v-if="item.type=='3'">
-												<el-select  style="width:120px;margin-top:3px;margin-bottom:3px;" v-model="item.roomId" placeholder="请选择">
+												<el-select  class="roomTypeStyle"  v-model="item.roomId" placeholder="请选择">
 													<el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
 													</el-option>
 												</el-select>
 											</span>
 										</td>
-										<td style="height:30px;" align="center">
+										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
 											<span v-if="item.type=='3'">
 												<span v-if="item.roomId =='1'">{{item.testprice[item.roomId-1].pirce}}</span>
@@ -70,144 +78,121 @@
 												<span v-if="item.roomId =='3'">{{item.testprice[item.roomId-1].pirce}}</span>
 											</span>
 										</td>
-										<td style="height:30px;" align="center">{{item.payNum}}</td>
-										<td style="height:30px;" align="center">
-											<span v-if="item.type=='1'"><el-input-number style="width:120px;margin-top:3px;margin-bottom:3px;" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
-											<span v-if="item.type=='2'"><el-input  style="width: 120px;margin-top:3px;margin-bottom:3px;"  placeholder="请输入技师姓名" v-model="item.number"></el-input></span>
-											<span v-if="item.type=='3'">{{item.number}}</span>
-											
+										<td  align="center">{{item.payNum}}</td>
+										<td class="height30" align="center">
+											<span v-if="item.type=='1'"><el-input-number class="selfINputNumStyle" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
+											<span v-if="item.type=='2'"><el-input  class="NumberINputStyle"   placeholder="请输入技师姓名" v-model="item.number"></el-input></span>
+											<span v-if="item.type=='3'">{{item.number}}</span>											
 										</td>							
-										</tr>
-									</table>
+									</tr>
+								</table>
 							</div>   																																
-
-
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice" required>
 							<span>{{form1.sumPrice}}元</span>
 						</el-form-item>																																														
-				</el-form>
+					</el-form>
 				</div>
-				<div style="width:100%;height:350px;" v-if="active == 3">
+				<!--步骤2显示区域结束-->
+				<!--步骤3显示区域开始-->
+				<div class="stepContent" v-if="active == 3">
 					<el-form ref="form2" :model="form2" label-width="100px" label-position="left">
-						<el-form-item label="技师性别:" prop="sex" required>
-								<el-select style="width:200px;" class="filter-item" v-model="form2.sex" placeholder="请选择">
-									<el-option v-for="item in sexType" :key="item.key" :label="item.sexName" :value="item.key">
-									</el-option>
-								</el-select>
-						</el-form-item>
 						<el-form-item label="技师:" prop="" required>
-							<span  class="button-cancel" style="width:200px;height:34px;line-height:34px;display:inline-block;" @click="technicianSel">+选择技师</span>
-							<div class="custom-action" style="margin-top:20px;margin-left:-46px;">
-								<div class="customNamevalue" style="width:100%;height:40px;">
+							<span  class="button-cancel stepThreeBut" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
+							<div class="custom-action stepThreeSelfTop">
+								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-										{{item.techName}}
+										<div class="techNameStyle">{{item.techName}}</div>
 										<div class="closePic" @click="errorClose(item)">&#10005</div>
 									</div> 					
 								</div>
-							</div>										
+							</div>																	
 						</el-form-item>																																													
 					</el-form>
 				</div>
-				<div style="width:100%;height:350px;" v-if="active == 4">
+				<!--步骤3显示区域结束-->
+				<!--步骤4显示区域开始-->
+				<div class="stepContent" v-if="active == 4">
 					<el-form ref="form3" :model="form3" label-width="100px" label-position="left">
 						<el-form-item label="选择日期:" prop="severTime" required>
 							<el-date-picker
 								v-model="severTime"                      
 								placeholder="年-月-日"                     
 								:type="select"
-								style="display:inline-block;width:400px;"
+								 class="width400 marginLeft20"
+								 @change='dateChange'
 								:picker-options="pickerOptions0"
-
 								>
 							</el-date-picker>							
 						</el-form-item>
-						<el-form-item label="选择时间:" prop="severTime" required>							
+						<el-form-item label="选择时间:" prop="severTime1" required>
+							<div class="marginTopDec10">
+							   <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(value,index,key) in 20" :key="index" @click="timeChange(index)">08:30</div>
+							</div>														
 						</el-form-item>									
-						<el-form-item label="客户备注:" prop="textarea" style="margin-left:10px;font-size:12px;">
+						<el-form-item label="客户备注:" prop="textarea" class="marginLeft10 fontSize12">
 							<el-input
 								type="textarea"
 								:rows="3"
 								placeholder="请输入内容"
 								v-model="textarea"
-								style="width:400px;margin-left:-10px;"
+								class="width400  marginLeft10"
 								>
 							</el-input>						
 						</el-form-item>	
 					</el-form>
 				</div>
+				<!--步骤4显示区域结束-->
 			</div>
-			<div style="margin-bottom:20px;text-align:center;">
-				<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 2 || active == 3 || active == 4" @click="prev">上一步</span>
-				<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 1 || active == 2|| active == 3"  @click="next">下一步</span>					
-				<span class="button-large" style="display:inline-block;line-height:30px;" v-if="active == 4" @click="confirmOrder">保存</span>		
+			<!--步骤显示区域结束-->
+			<!--上、下步按钮开始-->
+			<div class="NextPrevWrap">
+				<span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3 || active == 4" @click="prev">上一步</span>
+				<span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2|| active == 3"  @click="next">下一步</span>					
+				<span class="button-large NextPrevStyle"  v-if="active == 4" @click="confirmOrder">保存</span>		
 			</div>
+			<!--上、下步按钮结束-->
 	</div>
-	<!--新增客户弹窗-->
+	<!--新增客户弹窗开始-->
 	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">	
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 			<el-form-item label="姓名:" prop="name" >
-				<el-input v-model="ruleForm.name" placeholder="请输入客户姓名" style="width:400px;"></el-input>
+				<el-input class="width400" v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
-				<el-select clearable style="width:400px;" class="filter-item" v-model="ruleForm.sex" placeholder="请选择性别" >
+				<el-select clearable class="width400" v-model="ruleForm.sex" placeholder="请选择性别" >
 					<el-option v-for="(value,key,index) in sex" :key="index" :label="value" :value="key">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="手机号:"  prop="phone">
-		    <el-input  v-model="ruleForm.phone" style="width:400px;" placeholder="请输入11位手机号"></el-input>
+		    <el-input  v-model="ruleForm.phone" class="width400" placeholder="请输入11位手机号"></el-input>
 			</el-form-item>
 			<el-form-item label="所在区域:" prop="areaCodes">
 				<!-- 省市区 -->
 				<el-cascader
 					:options="areaOptions"
 					:show-all-levels="true"
+					@change="testFun"
 					v-model="ruleForm.areaCodes"
-					style='width: 400px;' 
+					class="width400" 
 				></el-cascader>								
 			</el-form-item>
 			<el-form-item label="详细地址:" prop="address">
 				<input class="pickerInput" ref="pickerInput"  value='' placeholder="输入关键字选取地点">
 				<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-				<el-input style="margin-left:-5px;width:200px;"  v-model="ruleForm.address" placeholder="输入详细地址"></el-input>		
+				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 			</el-form-item>
-			<el-form-item label="邮箱:" prop="email" style="margin-left:10px;">
-				<el-input  v-model="ruleForm.email" style="margin-left:-10px;width:400px;" placeholder="请输入常用邮箱"></el-input>
+			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
+				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle"  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
 		</el-form>					
 		<div slot="footer" class="dialog-footer" style="text-align:center;">
 				<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
 				<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 		</div>
-
-	</el-dialog>		
-	<!--更换地址弹窗-->
-	<el-dialog
-		:visible.sync="dialogVisible"
-		title="更换地址"
-		size="small"
-	>
-		<el-form :model="ruleForm1" :rules="rules1" ref="ruleForm1" label-width="130px" label-position="left" class="demo-ruleForm">
-			<el-form-item label="所在区域:" prop="areaCodes">
-				<el-cascader
-					:options="areaOptions"
-					:show-all-levels="true"
-					v-model="ruleForm1.areaCodes"
-					style='width: 436px;' 
-				></el-cascader>								
-			</el-form-item>
-			<el-form-item label="详细地址:" prop="customAddr">
-					<input class="pickerInput" style="width:220px;" ref="pickerInput2"  value='' placeholder="输入关键字选取地点">
-					<input type="hidden" class="pickerInput" ref="pickerInput21"  value=''>
-					<el-input style="margin-left:-5px;width:220px;"  v-model="ruleForm1.customAddr" placeholder="输入详细地址"></el-input>		
-			</el-form-item>				
-		</el-form>
-		<div slot="footer" class="dialog-footer" style="text-align:center;">
-				<button class="button-large" @click="submitForm1('ruleForm1')">确 定</button>
-				<button class="button-cancel"  @click="resetForm1('ruleForm1')">取 消</button>
-		</div>				
 	</el-dialog>
+	<!--新增客户弹窗结束-->		
 	<!--技师选择弹窗开始-->
 	<el-dialog title="选择技师" :visible.sync="dialogTableVisible">
 		<div class="selectTechHL">
@@ -233,7 +218,7 @@
 				</tr>
 				<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
 					<td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-					<td class="height100" align="center"><div class="userHeaderStyle"><img :src="item.headPic" style="width:100%;height:100%;"/></div></td>
+					<td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
 					<td  align="center">{{item.techName}}</td>
 					<td  align="center">
 					<span v-if="item.techSex =='male'">男</span>
@@ -275,18 +260,30 @@ export default {
 				}
 			}
 	};
-		var checkEmail = (rule, value, callback) => {
-				if (!value) {
-            callback();
+	var checkEmail = (rule, value, callback) => {
+			if (!value) {
+				callback();
+			}else{
+				if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
+					callback(new Error('请输入正确的邮箱'));
+				} else {
+					callback();
+				}
+			}			
+	};
+	var checkAddress = (rule, value, callback) => {			  
+			if (!value) {
+		        callback(new Error('请选取地点,并填写详细地址'));
+			}else{
+				if(value.length>=1 && value.length<=100){
+						callback()
 				}else{
-					if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
-						callback(new Error('请输入正确的邮箱'));
-					} else {
-						callback();
-					}
-				}			
-		};	  
+					callback(new Error('请输入1-100位详细地址'));
+				}
+			}			
+	};		  
     return {
+		form2:{},
 		//服务站下拉选项
 		options:[],
 		techName:'',
@@ -365,7 +362,7 @@ export default {
 		],		
 		form: {
 		  custom:'',
-          phone: '',
+          phone: '13800138000',
 		  customName:"李四",
 		  serverAddress:'北京市朝阳区关东街11呼家楼',
 		  serverStation:'呼家楼服务站',		  
@@ -373,9 +370,6 @@ export default {
 		form1: {
 		  serverPro:'',
           sumPrice:'1000',
-		},
-		form2:{
-			sex:'',
 		},
 		form3:{
 			date:'',
@@ -386,10 +380,6 @@ export default {
             { validator: checkPhone, trigger: 'blur' }
           ]
         },
-        customPhone1:{
-			phone:'',
-			customName:'李四'
-		},
         ruleForm: {
 			name:'',
 			phone:'',
@@ -403,7 +393,6 @@ export default {
 			addrLongitude:'',
 			addrLatitude:'',
 		},
-
         rules: {
           name: [
             { required: true, message: '请输入客户姓名', trigger: 'blur' },
@@ -414,7 +403,7 @@ export default {
 										
           ],
           address: [
-            { required: true, message: '详细地址不能为空', trigger: 'blur' },
+            { required: true,validator:checkAddress, trigger: 'blur' },
 			],
 			email:[
 				{ required: false, validator: checkEmail, trigger: 'blur' }
@@ -428,29 +417,11 @@ export default {
         },
 		dict:require("../../../static/dict.json"),
 		sex:'',
-		sexName:'',
-		ruleForm1: {
-			customAddr:'',
-			cusProvId:'',
-			cusCityId:'',
-			cusTownId:'',
-			areaCodes:[],
-			customArea:'',
-			addrLongitude:'',
-			addrLatitude:'',
-		},
-		rules1: {
-			customAddr: [
-				{ required: true, message: '详细地址不能为空', trigger: 'blur' },
-			],
-			areaCodes:[
-					{ type:'array',required: true, message: '请选择区域', trigger: 'change' }
-			]					
-		},								
+		sexName:'',								
 		select:'date',
 		//tabName
 		tabOptions:[],
-		//
+		//服务类型下拉
 		serverOptions:[
 			{ key: "1", serverName: "平米保洁" },
 			{ key: "2", serverName: "灯具清洁" },
@@ -458,34 +429,27 @@ export default {
 		],		
 		//客户下拉选项
 		customOptions:[
-			{ key: "1", customName: "日常保洁" },
-			{ key: "2", customName: "除尘除螨" },
-			{ key: "3", customName: "家电清洗" },
-			{ key: "4", customName: "擦玻璃" }
+			{ key: "1", customName: "张三" },
+			{ key: "2", customName: "李四" }
 		],
 		//客户备注
         textarea:'',				
 		//服务时间
 		severTime:'',
 		severTime1:'',		
-		//当前客户
-		custom:"1",
 		//当前电话
 		customPhone:13821209999,
 		//当前客户姓名		
 		customName:"李四",
 		serverAddress:'北京市朝阳区关东街11呼家楼',
 		serverStation:'呼家楼服务站',
-		dialogVisible:false,//更换地址弹窗开关
 		dialogTableVisible:false,//选择技师弹窗开关
 		dialogTableVisible1:false,//选择客户弹窗开关
 		serverType:2,//服务类型
-		sexType:[
-		  { key: "0", sexName: "不限制" },
-		  { key: "1", sexName: "男" },
-		  { key: "2", sexName: "女" }
-		],//技师信息
-		technicianName:'',//技师姓名		
+		technicianName:'',//技师姓名
+		//当前客户
+		custom:"",		
+		customKeyFlag:false		
     };
   },
   computed: {
@@ -498,32 +462,44 @@ export default {
 	next(){
 		if (this.active++ >= 4) this.active = 1;
 		
-		if(this.active==3 && this.form2.sex==''){
-				this.form2.sex="0";
-		}
 	},
 	//上一步
 	prev(){
-		if (this.active-- <= 1) this.active = 1;
-		if(this.active==3 && this.form2.sex==''){
-				this.form2.sex="0"				 
-		}		   
+		if (this.active-- <= 1) this.active = 1;	   
+	},
+	//客户改变事件
+	changeCustom(value){
+		console.log(value)
+		if(value != ''){
+			this.customKeyFlag=true;
+		}else{
+			this.customKeyFlag=false;
+		}
+		if(value == '1'){
+			this.form.customName='张三'
+		}else{
+			this.form.customName='李四'
+		}
+		
 	},
 	//新增客户保存				
 	submitForm(formName) {
-		if(this.$refs.pickerInput.value !=''){
-					this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
-					var str=this.$refs.pickerInput1.value;
-					str=str.split(',')
-					//经度
-					var lng=str[0];
-					this.ruleForm.addrLongitude=lng;
-					//纬度
-					var lat=str[1];
-					this.ruleForm.addrLatitude=lat;
+		if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
+			this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
+			var str=this.$refs.pickerInput1.value;
+			str=str.split(',')
+			//经度
+			var lng=str[0];
+			this.ruleForm.addrLongitude=lng;
+			//纬度
+			var lat=str[1];
+			this.ruleForm.addrLatitude=lat;
+		}else{
+			this.$refs.pickerInput.value='';
+			this.ruleForm.address='';
 		}			   
 		this.$refs[formName].validate((valid) => {
-			if (valid) {																			
+			if (valid) {
 				//省、市、区三级ID	
 				this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
 				this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
@@ -531,26 +507,35 @@ export default {
 				var obj = this.ruleForm;
 				saveCus(obj).then(res => {
 					if(res.data.code === 1){
-							this.$message({
-								type: 'success',
-								message: '新增成功!'
-							});
-							this.$refs['ruleForm'].resetFields();
-							this.$refs.pickerInput.value=''	
-							this.dialogTableVisible1 = false
+						this.$message({
+							type: 'success',
+							message: '新增成功!'
+						});
+						this.$refs['ruleForm'].resetFields();
+						this.$refs.pickerInput.value=''	
+						this.dialogTableVisible1 = false;
+						var obj={};
+						this.pageNumber=1;
+						this.jumpPage=1;
+						this.getData(obj,this.pageNumber,this.pageSize1);
 					}else{
 						this.$message({
-								type: 'warning',
-								message: '新增失败'
-							});
+							type: 'warning',
+							message: res.data.data
+						});
+						this.$refs.pickerInput.value=''
+						this.ruleForm.address=''
 					}													
 				}).catch(res=>{
 					
 				});							
-			} else {            
+			} else {
+				this.$refs.pickerInput.value='';
+				this.ruleForm.address='';            
 				return false;
 			}
-		});								
+		});	
+								
 	},
 	//新增客户弹窗取消
 	resetForm(formName) {
@@ -561,51 +546,6 @@ export default {
 		this.ruleForm.sex='';
 		this.$refs.pickerInput.value='';	
 		this.dialogTableVisible1 = false;
-	},
-	//更换地址弹窗“确认”	
-	submitForm1(formName) {
-		if(this.$refs.pickerInput2.value !=''){
-			this.ruleForm1.customArea=this.$refs.pickerInput2.value;
-			var str=this.$refs.pickerInput21.value;
-			str=str.split(',')
-			//经度
-			var lng=str[0];
-			this.ruleForm1.addrLongitude=lng;
-			//纬度
-			var lat=str[1];
-			this.ruleForm1.addrLatitude=lat;
-		}			   
-		this.$refs[formName].validate((valid) => {
-			if (valid) {																			
-				var obj = this.ruleForm1
-				saveCus(obj).then(res => {
-					if(res.data.code === 1){
-							this.$message({
-								type: 'success',
-								message: '新增成功!'
-							});
-							this.$refs['ruleForm1'].resetFields();
-							this.dialogVisible = false;
-					}else{
-						this.$message({
-								type: 'warning',
-								message: '新增失败'
-						});
-					}													
-				}).catch(res=>{
-					
-				});							
-			} else {            
-				return false;
-			}
-		});								
-	},
-	//更换地址弹窗cancel
-	resetForm1(formName) {
-		this.$refs[formName].resetFields();
-		this.ruleForm1.cusProvId='';
-		this.ruleForm1.cusCityId='';
-		this.dialogVisible = false;
 	},								
 	//获取客户数据
 	getcustomerList(){
@@ -619,18 +559,14 @@ export default {
 		this.ruleForm.provinceCode='';
 		this.ruleForm.cityCode='';
 		this.ruleForm.areaCode='';
-		this.ruleForm.sex='';
-		this.$nextTick(() => {
-			this.test();
-		})					
-    },
-	//更换地址按钮
-	changeAddress(){
-	    this.dialogVisible=true;
-		this.$nextTick(() => {
-				this.test1();
-		})						
+		this.ruleForm.sex='';							
 	},
+	//地址变化时开始POI搜索
+	testFun(value){
+		this.$nextTick(() => {
+			this.test(value[1]);
+		})	
+	},	
 	//服务类型下拉改变
 	serverchange(value){
 	   //this.serverType=value;
@@ -691,19 +627,26 @@ export default {
 	//确认下单按钮点击
 	confirmOrder(){
 	},
-	test(){
+	//POI搜索功能调起
+	test(area){
+		var that=this;
 		var inputname=this.$refs.pickerInput;
-		var inputname1=this.$refs.pickerInput1;		
-		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
-				var poiPicker = new PoiPicker({
-						city:'北京',
-						input: inputname
-				});
-				
-				//初始化poiPicker
-				poiPickerReady(poiPicker);
+		var inputname1=this.$refs.pickerInput1;
+		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
+			var obj={
+				city:area,
+				input:inputname,
+			}							                        
+			var poiPicker = new PoiPicker(obj);	
+				poiPicker.onCityReady(function() {
+					poiPicker.searchByKeyword(inputname.value);
+					poiPicker.clearSearchResults()
+					poiPicker.clearSuggest()	
+				});						
+			//初始化poiPicker
+			poiPickerReady(poiPicker);
 		});
-		var obj='';
+
 		function poiPickerReady(poiPicker) {
 			window.poiPicker = poiPicker;
 			var marker = new AMap.Marker();
@@ -712,74 +655,45 @@ export default {
 			});
 			//选取了某个POI
 			poiPicker.on('poiPicked', function(poiResult) {
-					var source = poiResult.source,
-							poi = poiResult.item,
-							info = {
-									source: source,
-									id: poi.id,
-									name: poi.name,
-									location: poi.location.toString(),
-									address: poi.address,
-									
-							};
-							inputname.value=info.name;
-							inputname1.value=info.location;										
-			});			
-			//poiPicker.onCityReady(function() {								
-					//poiPicker.searchByKeyword('附近小区');								
-			//});
-		}	
+				var source = poiResult.source,
+				poi = poiResult.item,                          
+				info = {
+						source: source,
+						id: poi.id,
+						name: poi.name,
+						location: poi.location.toString(),
+						address: poi.address,
 						
-    },
-	test1(){
-			var inputname=this.$refs.pickerInput2;
-			var inputname1=this.$refs.pickerInput21;		
-			AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {                         
-					var poiPicker = new PoiPicker({
-							city:'北京',
-							input: inputname
-					});					
-					//初始化poiPicker
-					poiPickerReady(poiPicker);
+				};
+				inputname.value=info.name;
+				inputname1.value=info.location;									
 			});
-			var obj='';
-			function poiPickerReady(poiPicker) {
-				window.poiPicker = poiPicker;
-				var marker = new AMap.Marker();
-				var infoWindow = new AMap.InfoWindow({
-						offset: new AMap.Pixel(0, -20)
-				});
-				//选取了某个POI
-				poiPicker.on('poiPicked', function(poiResult) {
-						var source = poiResult.source,
-								poi = poiResult.item,
-								info = {
-										source: source,
-										id: poi.id,
-										name: poi.name,
-										location: poi.location.toString(),
-										address: poi.address,
-										
-								};
-								inputname.value=info.name;
-								inputname1.value=info.location;										
-				});
-				
-				//poiPicker.onCityReady(function() {								
-						//poiPicker.searchByKeyword('附近小区');								
-				//});
-			}	
+		}	
 							
 	},
-	initMap1(){
-		var id=this.$refs.gdMap;	
-		var map = new AMap.Map(id, {
-				zoom: 10
-		});
-	
+    //日期变化时改变时间对象
+    dateChange(value){
+      console.log(value)
 	},
-      //选择技师弹出层查询按钮
-      searchTeh(){        
+    //时间选项点击
+    timeChange(index){
+      console.log(index)
+      for(var a=0;a<this.$refs.TimeWrap.length;a++){
+          if(a==index){
+              this.$refs.TimeWrap[a].style.borderColor = "green";
+              this.$refs.TimeWrap[a].style.color = "green";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark'
+          }else{
+              this.$refs.TimeWrap[a].style.borderColor = "#fff";
+              this.$refs.TimeWrap[a].style.color = "#000";
+              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';                           
+          }
+
+      }
+    },			
+	//选择技师弹出层查询按钮
+	searchTeh(){        
 		this.$nextTick( () => {
 			//前端定位
 			var falg1=0;              
@@ -803,25 +717,67 @@ export default {
 				this.promShow1=false;
 			}
 		})             
-      }	
+    }	
 	
   },
   mounted() {
 		 this.getcustomerList();
-		 this.initMap1();
 		 this.sex=this.dict.sex;		 
   }
 };
 </script>
 <style  lang="scss" scoped>
+.mark {
+  background: url(../../../static/icon/Selected.png) right bottom no-repeat;
+  background-size: 20px 20px;
+}
+.marginTopDec10{margin-top:-10px;max-width:400px;}
+.selfSeverTimeSt{
+    width: 80px;
+    height: 34px;
+    line-height: 34px;
+    border: 1px solid #bfcbd9;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    margin-left: 20px;
+    margin-top:10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.addorderStepWrap{width:100%;height:600px;background:#fff;padding-top:20px;}
+.techNameStyle{width:80px;height:25px;line-height:25px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stepControl{width:100%;padding-left:30px;}
+.stepContentWrap{width:100%;height:400px;padding-left:30px;margin-top:50px;}
+.stepContent{width:100%;height:350px;}
+.customSelName{width:280px;margin-right:20px;}
+.fontSize12{font-size:12px;}
+.width280{width:280px;}
+.changeAddressBut{margin-left:30px;height:20px;line-height:20px;display:inline-block;cursor: pointer;border: 1px solid #4c70e8;text-align: center;font-size: 12px;width: 80px; color: #4c70e8;}
+.stepThreeBut{width:200px;height:34px;line-height:34px;display:inline-block;}
+.stepThreeSelfTop{margin-top:20px;margin-left:-46px;}
+.selfPromInfStyle{display:inline-block;heihgt:30px;line-height:30px;margin-left:30px;color:#8391a5;font-size:12px;}
+.severChangeStyle{width:400px;margin-right:20px;}
 .selectTechHL{float:left;width:120px}
 .selectTechHR{float:left;margin-left:10px;}
 .width120{width:120px;}
+.width400{width:400px;}
+.selfAddressStyle{margin-left:-5px;width:200px;}
+.marginLeft10{margin-left:10px;}
+.marginLeft20{margin-left:20px;}
+.NextPrevWrap{margin-bottom:20px;text-align:center;}
+.NextPrevStyle{display:inline-block;line-height:30px;}
+.selfEmailStyle{margin-left:-10px;width:400px;}
 .selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
 .FloatRight{float:right;}
 .selfTableWrapONE{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
 .selfTableHEADTD{background: #F8F8F9;height:30px;}
-.height100{height:100px;}
+.roomTypeStyle{width:120px;margin-top:3px;margin-bottom:3px;}
+.selfINputNumStyle{width:120px;margin-top:3px;margin-bottom:3px;}
+.NumberINputStyle{width: 120px;margin-top:3px;margin-bottom:3px;}
+.height30{height:30px;}
+.height110{height:110px;}
+.imgStyle{display:block;}
 .userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
 
 
@@ -888,7 +844,9 @@ export default {
 	padding-bottom:20px;	
 }
 .customNamevalue{
-	padding-left:48px;
+	width:100%;
+	height:40px;
+	margin-left: -30px;
 	font-size:12px;	
 }
 .changeserver{
