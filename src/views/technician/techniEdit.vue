@@ -1,5 +1,5 @@
 <template>
-      <div>
+      <div class="techniEdit">
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
         <el-form :model="personalEDit"  ref="personalEDit"  label-width="100px" :rules="rulesPerEdit">
@@ -150,7 +150,8 @@
                           :show-file-list="false"
                           :http-request="(val)=>picUpload(val,'head')"
                           >
-                          <el-button class="tech-fourth"><span></span>*上传头像</el-button>
+                          <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
+						   <div class="upload-head"><span>*上传头像</span></div>
                           <img v-if="personalEDit.headPic" :src="personalEDit.headPic" class="avatar">
                         </el-upload>
                         <el-upload
@@ -160,7 +161,8 @@
                           :http-request="(val)=>picUpload(val,'id')"
                           style="margin-left:20px;" 
                           >
-                          <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button>
+                          <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
+						  <div class="upload-id"><span>上传身份证</span></div>
                           <img v-if="personalEDit.idCardPic" :src="personalEDit.idCardPic" class="avatar">
                         </el-upload>
                     </p>
@@ -226,6 +228,8 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
+        		</el-row>
+				<el-row :gutter="60">
 					<el-col :span="12">
 						<el-form-item label="选择技能:" prop="skillIds">
 							<el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
@@ -238,9 +242,9 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-        		</el-row>
+				</el-row>
 				<el-row :gutter="60">
-					<el-col :span="12" class="workHours">
+					<el-col :span="17" class="workHours">
 						<p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
                             <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
@@ -287,22 +291,26 @@
                             </div>
                         </div>
 					</el-col>
-					<el-col :span="12">
-						<ul class="working">
-                            <li v-for="(item,index) in perServer.workTimes" :key="index">
-                            <div>
-                                <div class="woking-div">
-                                <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
-                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
-                            </div>
-                            </li>
-                        </ul>
-					</el-col>
         		</el-row>
+				<el-row :gutter="60">
+					<el-col :span="17">
+						<el-form-item>
+							<ul class="working">
+								<li v-for="(item,index) in perServer.workTimes" :key="index">
+								<div>
+									<div class="woking-div">
+									<div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
+									<div class="time">{{item.startTime+"~"+item.endTime}}</div>
+									</div>
+								</div>
+								<div>
+									<i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
+								</div>
+								</li>
+							</ul>
+						</el-form-item>
+					</el-col>
+				</el-row>
                 <!-- <li>
                     <div>
                         <p>
@@ -687,7 +695,7 @@
           <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button>
         </div>
         <el-form :model="perFamily"  ref="perFamily"  label-width="100px" :rules="rulesFamily">
-            <ul class="tech-ul" v-show="flagso" style="padding-left:50px">
+            <ul class="tech-ul ferFamilyClass" v-show="flagso" style="padding-left:50px">
                 <li>
                     <div>
                         <!-- <p><span class="tech-span">*</span>关系:</p> -->
@@ -764,7 +772,8 @@
                           :show-file-list="false"
                           :http-request="(val)=>picUpload(val,'cert')"
                           >
-                          <el-button class="tech-fourth"><span></span>上传证件照</el-button>
+                          <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
+						  <div class="upload-head"><span>上传证件照</span></div>
                           <img v-if="otherInfo.jobPic" :src="otherInfo.jobPic" class="avatar">
                         </el-upload>
                         <el-upload
@@ -774,7 +783,8 @@
                           :http-request="(val)=>picUpload(val,'life')"
                           style="margin-left:20px;" 
                           >
-                          <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button>
+                          <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
+						  <div class="upload-id"><span>上传生活照</span></div>
                           <img v-if="otherInfo.lifePic" :src="otherInfo.lifePic" class="avatar">
                         </el-upload>
                     </p>
@@ -1880,7 +1890,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 * {
   list-style: none;
   margin: 0;
@@ -1889,6 +1899,10 @@ export default {
 
 body {
   background: #eef1f6;
+}
+
+.tech-section-lage .el-form-item__content{
+	line-height: 20px;
 }
 
 .tech-index {
@@ -2039,7 +2053,7 @@ body {
   padding: 5px;
 }
 
-.tech-fourth {
+.tech-edit .tech-fourth {
   cursor: pointer;
   border: none;
   outline: none;
@@ -2047,12 +2061,12 @@ body {
   font-size: 12px;
   text-align: center;
   width: 100px;
-  color: #4c70e8;
+  color: #4c70e8 !important;
   background: #fff;
   border: 1px solid #4c70e8;
 }
 
-.tech-fourth-rigth {
+.tech-edit .tech-fourth-rigth {
   cursor: pointer;
   border: none;
   outline: none;
@@ -2060,7 +2074,7 @@ body {
   font-size: 12px;
   text-align: center;
   width: 100px;
-  color: red;
+  color: red !important;
   background: #fff;
   border: 1px solid red;
   /* margin-left: 40px; */
@@ -2070,10 +2084,15 @@ body {
   border-radius: 0px;
 }
 
-.el-upload-list {
+.tech-edit .avatar-uploader .el-upload{
+  border: none;
+  border-radius: 0;
+}
+
+/* .el-upload-list {
   width: 80px;
   height: 100px;
-}
+} */
 .tech-psoition {
   width: 100%;
   height: 320px;
@@ -2174,7 +2193,7 @@ body {
   border: 1px solid #bfcbd9;
   position: relative;
   line-height: 36px;
-  margin-left:23px
+  margin-left:17px
 }
 
 .tech-order-jn-son,
@@ -2296,6 +2315,10 @@ body {
   /* margin-left: 20px; */
   font-size: 12px;
   cursor: pointer;
+}
+
+.selfCheckBox:nth-of-type(1){
+	margin-left:0; 
 }
 
 .tech-daytim {
@@ -2428,8 +2451,8 @@ body {
 .operation:nth-child(1) {
   color: #4c70e8;
 }
-.avatar{
-    width: 100px;
+.tech-edit .avatar{
+  width: 100px;
   height: 100px;
   margin-top: 10px;
 }
@@ -2438,5 +2461,23 @@ body {
 }
 .workHours{
 	display: flex
+}
+.ferFamilyClass>li{
+	padding-bottom: 0;
+}
+.upload-head,.upload-id{
+  cursor:pointer;
+  height: 36px;
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  color: #4c70e8;
+  background: #fff;
+  border: 1px solid #4c70e8;
+  line-height: 36px;
+}
+.upload-id{
+  border: 1px solid red;
+  color: red;
 }
 </style>

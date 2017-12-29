@@ -23,19 +23,19 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 9528,
+    port: 2345,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/apiservice': {
-        'target': 'https://apiservice.guoanshequ.wang/',
+      '/api': {
+        'target': 'https://apiservice.guoanshequ.wang//apiservice',
         'secure': false, 
         'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
         'pathRewrite': {
-          '^/apiservice': '/apiservice'
+          '^/api': ''
         }
-      }
+      },
      // '/api': {
        // target: 'http://www.localhost.8800/',
        // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -50,6 +50,7 @@ module.exports = {
       //     '^/api': ''
       //   }
       // }
+
       
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

@@ -2,7 +2,7 @@
   <div class="tech">
     <div class="tech-index">
       <div>
-        <el-select v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+        <el-select class="abc" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -67,7 +67,6 @@
               </div>
             </div>
           </div>
-          
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
             <div class="mousehover"  @click="appPassword(item)">
@@ -257,7 +256,7 @@
       </el-pagination>
     </div>
     <!-- 编辑技师 -->
-	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-qj">
+	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit">
 		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
@@ -267,7 +266,7 @@
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-      <div>
+      <div class="techniAdd">
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
 		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -450,7 +449,8 @@
               :http-request="(val)=>picUpload(val,'head')"
               >
               <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
-              <input type="button" class="tech-fourth" value="*上传头像">
+              <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
+              <div class="upload-head"><span>*上传头像</span></div>
               <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
             </el-upload>
 
@@ -462,7 +462,8 @@
               style="margin-left:20px;" 
               >
               <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
-              <input type="button" class="tech-fourth-rigth" value="*上传身份证">
+              <!-- <input type="button" class="tech-fourth-rigth" value="*上传身份证"> -->
+              <div class="upload-id"><span>上传身份证</span></div>
               <img v-if="personal.idCardPic" :src="personal.idCardPic" class="avatar">
             </el-upload>
 					</p>
@@ -2020,7 +2021,7 @@ body {
   margin-right: 0;
 }
 
-.tech-section-ul-posi {
+.tech-section-ul .tech-section-ul-posi {
   position: absolute;
   top: 0;
   left: 0;
@@ -2142,15 +2143,12 @@ body {
   border-radius: 0px;
 }
 
-.el-upload-list {
+/* .el-upload-list {
   width: 80px;
   height: 100px;
-}
+} */
 .el-upload--text{
   width: 100px;
-}
-.el-upload{
-  /* width: 100px; */
 }
 .tech-psoition {
   width: 100%;
@@ -2493,6 +2491,9 @@ body {
 .tech-service {
   padding: 20px 0 10px 0;
 }
+.tech-service .tech-order-jn{
+  margin-left:0; 
+}
 .working {
   border: 1px solid #f2f2f2;
   width: 400px;
@@ -2548,7 +2549,7 @@ body {
   text-align: center;
   color: rgb(102, 102, 102)
 }
-.avatar{
+.tech-qj .avatar{
   width: 100px;
   height: 100px;
   margin-top: 10px;
@@ -2585,6 +2586,25 @@ body {
   border: 1px solid #ffffff;
   border-radius: 50%;
   padding: 10px;
+}
+.upload-head,.upload-id{
+  cursor:pointer;
+  height: 36px;
+  font-size: 12px;
+  text-align: center;
+  width: 100px;
+  color: #4c70e8;
+  background: #fff;
+  border: 1px solid #4c70e8;
+  line-height: 36px;
+}
+.upload-id{
+  border: 1px solid red;
+  color: red;
+}
+.tech-qj .avatar-uploader .el-upload{
+  border: none;
+  border-radius: 0;
 }
 </style>
 

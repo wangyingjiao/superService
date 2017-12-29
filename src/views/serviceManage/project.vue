@@ -108,7 +108,7 @@
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
-      class="diatable">
+      id="diatable">
       <div class="tabBox">
           <div class="tabLeft fl" ref="refTab">
           <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
@@ -389,9 +389,9 @@
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
-                      <el-dialog v-model="dialogVisible" size="tiny">
+                      <!-- <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="">
-                      </el-dialog>
+                      </el-dialog> -->
                 </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -427,7 +427,6 @@ import {
   serverEditPre,
   sortList
 } from "@/api/project";
-import './project.css'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -1493,11 +1492,8 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 
-.el-dialog--small {
-  width: 60%;
-}
 .el-radio-group {
   width: 100%;
 }
@@ -1643,11 +1639,6 @@ body {
 }
 .el-radio-button {
   width: 100%;
-}
-.el-radio-button__inner {
-  width: 100%;
-  color: #333333;
-  border: 0px solid #bfcbd9;
 }
 .el-radio-button__orig-radio:checked + .el-radio-button__inner {
   width: 100%;
@@ -1870,4 +1861,7 @@ hr {
 .tableSer:nth-of-type(3){
   color: red
 }
+/* .filter-container .diatable .el-dialog--small{
+  width: 60% !important;
+} */
 </style>

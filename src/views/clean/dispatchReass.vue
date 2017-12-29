@@ -65,7 +65,6 @@
 <script>
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
-import './dispatchReass.css'
 export default{
     name:"",
     data(){
