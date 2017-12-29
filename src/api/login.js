@@ -1,18 +1,13 @@
-import fetch from '@/utils/fetch'
+import axios from 'axios'
+import { getSession, setSession } from '@/utils/auth'
 
-// export function loginByUsername(data) {
-//   const obj = {
-//     'username': 'admin',
-//     'password': 'admin'
-//   }
-//   return fetch({
-//     url: '/a/login',
-//     method: 'post',
-//     data
-//   })
-// }
+const instance = axios.create({
+  headers: { 'content-type': 'application/json;charset=UTF-8' }
+
+})
+
 export function loginByUsername(obj) {
- return fetch.post(`/api/a/login`, obj)
+  return instance.post(`/api/a/login`, obj)
 }
 
 // export function requestUserRole(username, password) {
@@ -28,11 +23,7 @@ export function logout() {  // 退出
 }
 
 export function getUserInfo() { // 侧边栏
-  //return instance.get(`/api/a/sys/user/menuData;JSESSIONID=` + getSession('JSESSIONID'))
-  return fetch({
-    url: '/a/sys/user/menuData',
-    method: 'get'
-  })
+  return instance.get(`/api/a/sys/user/menuData;JSESSIONID=` + getSession('JSESSIONID'))
 }
 
 export function getArea() { // 省市区

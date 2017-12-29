@@ -35,7 +35,11 @@ module.exports = {
       //   'pathRewrite': {
       //     '^/apiservice': '/apiservice'
       //   }
+<<<<<<< HEAD
       // }
+=======
+      // },
+>>>>>>> 3de529997b565880e9c762b11032e00aaa1a2e30
      // '/api': {
        // target: 'http://www.localhost.8800/',
        // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -44,7 +48,11 @@ module.exports = {
        // }
      // }
       '/api': {
+<<<<<<< HEAD
         target: 'http://10.16.70.133:8800/',
+=======
+        target: 'http://10.16.70.130:8800/',
+>>>>>>> 3de529997b565880e9c762b11032e00aaa1a2e30
         changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
         pathRewrite: {
           '^/api': ''
