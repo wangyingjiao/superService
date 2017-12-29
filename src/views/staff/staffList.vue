@@ -40,7 +40,11 @@
       <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" prop="station.name">
+      <el-table-column  min-width="110px" align="center" label="服务站" >
+        <template scope="scope">
+              <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
+              <span v-else>{{scope.row.station.name}}</span>
+        </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
          <template scope="scope">
@@ -466,7 +470,7 @@ export default {
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res.data);
+        console.log(res.data,'员工列表');
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -488,7 +492,7 @@ export default {
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
+          console.log(res,'搜索');
           if (res.data.code === 1) {
             this.list = res.data.data.list;
             if (this.list != undefined) {
