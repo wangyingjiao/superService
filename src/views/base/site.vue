@@ -27,6 +27,7 @@
       <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
+      id="tableColor"
         :key='tableKey' 
         :data="list" 
         v-loading="listLoading" 
@@ -154,12 +155,18 @@
       <el-dialog 
         title="设置站长"
         :show-close= "false"
+        size='tiny'
        :close-on-click-modal="false"
        :close-on-press-escape="false" 
        :visible.sync="dialogMasterVisible">
 
-        <el-form :model="tempMaster">
-          <el-form-item label="服务站长:">
+        <el-form 
+          label-width='100px' 
+          class="masterForm" 
+          :rules="rulesMaster"
+          ref="tempMaster"
+          :model="tempMaster">
+          <el-form-item label="服务站长:" prop="master">
             <el-select class="filter-item" v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -167,8 +174,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large"  @click="createMaster">保 存</button>    
-           <button class="button-cancel" @click="resetMaster">取 消</button>
+           <button class="button-large"  @click="createMaster('tempMaster')">保 存</button>    
+           <button class="button-cancel" @click="resetMaster('tempMaster')">取 消</button>
         </div>
       </el-dialog>
 
@@ -248,10 +255,11 @@
         <el-form 
           :model="tempStore"
           label-position="left"
-          label-width="160px" 
+          label-width="100px" 
          >
           <el-form-item label="设置门店:">
             <el-tree
+            class="scrollBox"
               :data="storeTree"
               v-model="tempStore.tree"
                ref="domTree"
@@ -397,6 +405,9 @@ export default {
           { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
         ],
         phone: [{ required: true, validator: validatePhone, trigger: "blur" }]
+      },
+      rulesMaster: {
+        master: [{ required: true, message: "站长不能为空", trigger: "change" }]
       }
     };
   },
@@ -432,7 +443,7 @@ export default {
       };
       this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res,'服务站列表')
+        console.log(res, "服务站列表");
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -557,6 +568,7 @@ export default {
     handleCreate() {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.temp.isUseable = "yes";
       //this.areaOptions = this.$store.state.user.area;
     },
     handleUpdate(row) {
@@ -689,25 +701,31 @@ export default {
         }
       });
     },
-    createMaster() {
+    createMaster(formName) {
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
       };
-      setMaster(obj).then(res => {
-        if (res.data.code == "1") {
-          this.$message({
-            type: "success",
-            message: "设置成功"
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          setMaster(obj).then(res => {
+            if (res.data.code == "1") {
+              this.$message({
+                type: "success",
+                message: "设置成功"
+              });
+              this.getList();
+              this.dialogMasterVisible = false;
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+              this.dialogMasterVisible = false;
+            }
           });
-          this.getList();
-          this.dialogMasterVisible = false;
         } else {
-          this.$message({
-            type: "error",
-            message: res.data.data
-          });
-          this.dialogMasterVisible = false;
+          return false;
         }
       });
     },
@@ -768,8 +786,9 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
-    resetMaster() {
+    resetMaster(formName) {
       //取消店长
+      this.$refs[formName].resetFields();
       this.tempMaster.master = "";
       this.dialogMasterVisible = false;
     },
@@ -1068,5 +1087,14 @@ body {
 .pickerInput {
   width: 150px;
   padding: 5px 5px;
+}
+.masterForm {
+  width: 90%;
+  margin: 0 auto;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>

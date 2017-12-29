@@ -388,3 +388,16 @@ body {
 .pagination-container {
   overflow: hidden;
 }
+#tableColor tbody tr.current-row>td{
+  background-color: rgba(10, 104, 226, 0.26);
+}
+#diatable>.el-dialog--small {
+  width: 60% !important;
+}
+.bgWhite .el-radio-button__inner {
+  display: block;
+  border: none;
+  width: 100%;
+  color: #333333;
+  border: 0px solid #bfcbd9;
+}

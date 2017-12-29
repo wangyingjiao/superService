@@ -31,7 +31,7 @@
       <el-table-column align="center" label="姓名" prop="name" >
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="手机号" prop="mobile">
+      <el-table-column width="180px" align="center" label="登录账号" prop="mobile">
       </el-table-column>
 
       <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
@@ -40,7 +40,11 @@
       <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" prop="station.name">
+      <el-table-column  min-width="110px" align="center" label="服务站" >
+        <template scope="scope">
+              <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
+              <span v-else>{{scope.row.station.name}}</span>
+        </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
          <template scope="scope">
@@ -80,20 +84,20 @@
         ref="temp"
         style='width: 500px; margin-left:50px;'>
 
-        <el-form-item label=" 姓名:"  prop="name" >
+        <el-form-item label="姓名:"  prop="name" >
               <el-input        
               style='width: 400px;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label=" 手机号:" prop="mobile">
+        <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
             style='width: 400px;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 密码:" prop="password">
+        <el-form-item label="密码:" prop="password">
           <el-input 
             v-model="temp.password" 
             style='width: 400px;'
@@ -101,7 +105,7 @@
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 确认密码:"  prop="password2">
+        <el-form-item label="确认密码:" v-if="dialogStatus == 'create'"  prop="password2">
           <el-input
 
             style='width: 400px;'
@@ -110,28 +114,28 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 服务机构:"  prop="officeId">
+        <el-form-item label="服务机构:"  prop="officeId">
           <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label=" 服务站:" prop="stationId" >
+        <el-form-item label="服务站:" prop="stationId" >
           <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="  选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
+        <el-form-item label="选择岗位:" prop="role">
+          <el-select  filterable ref="domSelect"  class="filter-item" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
            <div class="btn_addStation" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
+          <el-select style='width: 400px;' class="filter-item" v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -140,87 +144,14 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <!-- <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>     -->
-        <button class="button-large" :disabled="btnState"  @click="create('temp')">保 存</button>    
+        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" v-else :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
       
   </el-dialog>
-    <el-dialog 
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisibleup" 
-      :show-close= "false"
-       :close-on-click-modal="false"
-       :close-on-press-escape="false"
-      minwidth = "700px">
-      <el-form 
-        class="small-space" 
-        :model="temp" 
-        label-position="left" 
-        label-width="160px"
-        :rules="rules"
-        ref="temp"
-        style='width: 500px; margin-left:50px;'>
-
-        <el-form-item label=" 姓名:"  prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-15位的姓名" v-model.trim="temp.name"></el-input>
-            </el-form-item>
-        
-        <el-form-item label=" 手机号:" prop="mobile">
-          <el-input 
-            v-model="temp.mobile"
-            style='width: 400px;'
-            placeholder="请输入11位手机号"></el-input>
-        </el-form-item>
-
-        <el-form-item label="   密码:" prop="password3">
-          <el-input 
-            v-model="temp.password3" 
-            style='width: 400px;'
-             type="password"
-            placeholder="请使用6-20位字母、数字两种组合"></el-input>
-        </el-form-item>
-
-        <el-form-item label=" 服务机构:"  prop="officeId">
-          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
-            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label=" 服务站:" prop="stationId" >
-          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
-            <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="  选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect"  class="filter-item" @change="postChange" v-model="temp.role" placeholder="请选择">
-            <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-           <div class="btn_addStation" @click="addRole">新 增</div>
-        </el-form-item>
-        <el-form-item  label="可用状态:" >
-          <el-select style='width: 400px;' @change="useableChange" class="filter-item" v-model="temp.useable" placeholder="请选择">
-            <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <button class="button-large"  @click="update('temp')">保 存</button>    
-        <!-- <button class="button-large"  @click="create('temp')">保 存</button>     -->
-        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
-      </div>
-    
-      
-  </el-dialog>
+   
   <el-dialog 
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
@@ -251,8 +182,8 @@
           <el-input v-model.trim="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp2.dataScope" placeholder="请选择">
-            <el-option v-for="item in stationLv" :key="item.id" :label="item.value" :value="item.id">
+          <el-select style='width: 400px;' class="filter-item" v-model="temp2.dataScope" placeholder="请选择">
+            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -318,18 +249,30 @@ export default {
   },
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入6-20位密码"));
-      } else {
-        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
-          callback(new Error("密码必须由6-20位数字、字母组成"));
+      if (this.dialogStatus == "create") {
+        if (value === "") {
+          callback(new Error("请输入6-20位密码"));
         } else {
+          if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
+            callback(new Error("密码必须由6-20位数字、字母组成"));
+          } else {
+            callback();
+          }
+          if (this.temp.password2 !== "") {
+            this.$refs.temp.validateField("password2");
+          }
           callback();
         }
-        if (this.temp.password2 !== "") {
-          this.$refs.temp.validateField("password2");
+      } else {
+        if (value == undefined) {
+          callback();
+        } else {
+          if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
+            callback(new Error("密码必须由6-20位数字、字母两种组成"));
+          } else {
+            callback();
+          }
         }
-        callback();
       }
     };
     var validatePass2 = (rule, value, callback) => {
@@ -346,7 +289,7 @@ export default {
       if (value == undefined) {
         callback();
       } else {
-        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/.test(value)) {
+        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
           callback(new Error("密码必须由6-20位数字、字母两种组成"));
         } else {
           callback();
@@ -366,7 +309,7 @@ export default {
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
-      btnState:false,
+      btnState: false,
       list: null,
       total: null,
       listLoading: true,
@@ -386,7 +329,7 @@ export default {
         name: ""
       },
       mechanismCheck: [],
-      servicestationCheck: [],// 服务站
+      servicestationCheck: [], // 服务站
       temp: {
         mobile: "",
         name: "",
@@ -401,6 +344,7 @@ export default {
           check: []
         }
       },
+
       data2: [],
       defaultProps: {
         children: "subMenus",
@@ -413,7 +357,7 @@ export default {
         stationState: ""
       },
       stationState: "",
-      stationCheck: [],// 岗位
+      stationCheck: [], // 岗位
       useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
       stationLv: [
@@ -428,10 +372,10 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
+      roleLv:[],
       stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
 
       dialogFormVisible: false,
-      dialogFormVisibleup: false,
       dialogFormStation: false,
 
       dialogStatus: "",
@@ -512,6 +456,11 @@ export default {
       console.log(res);
       this.data2 = res.data.data;
     });
+    var lv = localStorage.getItem('dataScope')
+    console.log(lv,'用户等级')
+    for(var i = 0;i < lv;i++){
+      this.roleLv.push(this.stationLv[i])
+    }
   },
   methods: {
     getList() {
@@ -521,7 +470,7 @@ export default {
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res.data);
+        console.log(res.data,'员工列表');
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -534,6 +483,8 @@ export default {
       });
     },
     handleFilter() {
+      this.listQuery.page = 1;
+      this.pageNumber = 1;
       var obj = {
         roleName: this.search.name,
         mobile: this.search.mobile
@@ -541,7 +492,7 @@ export default {
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
+          console.log(res,'搜索');
           if (res.data.code === 1) {
             this.list = res.data.data.list;
             if (this.list != undefined) {
@@ -554,10 +505,6 @@ export default {
             this.listQuery.page = 1;
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "warning",
-              message: "员工不存在"
-            });
           }
         });
       } else {
@@ -617,9 +564,9 @@ export default {
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
     handleCreate() {
-      this.resetTemp();
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.resetTemp();
     },
     addstation() {
       this.resetTemptwo();
@@ -630,7 +577,7 @@ export default {
     },
     handleUpdate(row) {
       //this.handleCreate();
-      this.dialogFormVisibleup = true;
+      this.dialogFormVisible = true;
       console.log(row);
       this.dialogStatus = "update";
       this.temp = {
@@ -644,7 +591,7 @@ export default {
       };
       setTimeout(() => (this.temp.officeId = row.organization.id), 30);
       setTimeout(() => (this.temp.stationId = row.station.id), 30);
-      setTimeout(() => (this.temp.role =  row.role.id), 30);
+      setTimeout(() => (this.temp.role = row.role.id), 30);
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -665,7 +612,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList();
+                this.handleFilter();
               } else {
                 this.$message({
                   type: "warning",
@@ -687,54 +634,44 @@ export default {
           });
         });
     },
-    lvChange(value) {
-      // console.log(value);
-      // console.log(this.dataScope);
-      // this.temp2.dataScope = value;
-      // console.log(this.temp2.dataScope);
-    },
-    useableChange(val) {
-      // console.log(val);
-      // this.temp.useable = val;
-    },
-    postChange(val) {
-      // console.log(val);
-      // this.temp.station = val;
-    },
     stationChange(val) {
       // console.log(val);
       // this.temp.stationId = val;
     },
-    mechChange(val) { // 机构发生改变
+    mechChange(val) {
+      // 机构发生改变
       this.temp.officeId = val;
       this.temp.stationId = "";
       this.temp.role = "";
-      console.log(val,'选中机构的id');
+      console.log(val, "选中机构的id");
       var obj = {
         orgId: val
       };
-      getFuwu(obj).then(res => { // 请求服务站
+      getFuwu(obj).then(res => {
+        // 请求服务站
         console.log(res);
         this.servicestationCheck = res.data.data;
         // console.log(res.data)
       });
-      var obj2 ={
-       organization:{
-         id:val
-       }
-      }
-      console.log(obj2,'岗位参数')
-      getStation(obj2).then(res => { // 请求岗位
-        console.log(res,'岗位');
-        if(typeof res.data.data != 'string') {
-          this.stationCheck = res.data.data;
-        }else{
-          this.stationCheck = [];
-
+      var obj2 = {
+        organization: {
+          id: val
         }
-      }).catch(err=>{
-        console.log(err)
-      });
+      };
+      console.log(obj2, "岗位参数");
+      getStation(obj2)
+        .then(res => {
+          // 请求岗位
+          console.log(res, "岗位");
+          if (typeof res.data.data != "string") {
+            this.stationCheck = res.data.data;
+          } else {
+            this.stationCheck = [];
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     getId(str) {
       for (var i = 0; i < this.objOptions.length; i++) {
@@ -744,10 +681,10 @@ export default {
       }
     },
     create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
       console.log(this.temp);
       //var arr = [this]
       var obj = {
@@ -768,7 +705,26 @@ export default {
               this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
-              this.getList();
+              this.listQuery.page = 1;
+              this.pageNumber = 1
+              this.search.mobile = ""
+              this.search.name = ""
+              var obj={}
+              getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+                console.log(res);
+                if (res.data.code === 1) {
+                  this.list = res.data.data.list;
+                  if (this.list != undefined) {
+                    for (var i = 0; i < this.list.length; i++) {
+                      this.list[i].index = i + 1;
+                    }
+                  }
+                  this.total = res.data.data.count;
+                  this.listLoading = false;
+                } else {
+                  this.listLoading = false;
+                }
+              });
               this.$message({
                 type: "success",
                 message: "新增成功"
@@ -832,14 +788,14 @@ export default {
     },
     update(formName) {
       var obj = {
-        id: this.temp.id,
-        mobile: this.temp.mobile,
-        name: this.temp.name,
-        newPassword: this.temp.password3,
-        officeId: this.temp.officeId,
-        stationId: this.temp.stationId,
-        roles: [this.temp.role],
-        useable: this.temp.useable
+        id: this.temp1.id,
+        mobile: this.temp1.mobile,
+        name: this.temp1.name,
+        newPassword: this.temp1.password3,
+        officeId: this.temp1.officeId,
+        stationId: this.temp1.stationId,
+        roles: [this.temp1.role],
+        useable: this.temp1.useable
       };
       console.log(obj);
       //this.dialogFormVisible = false;
@@ -848,9 +804,10 @@ export default {
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.dialogFormVisibleup = false;
-              this.pageNumber = 1;
-              this.getList();
+              this.dialogFormVisible = false;
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.handleFilter()
               this.$message({
                 type: "success",
                 message: "修改成功"
@@ -869,8 +826,8 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        mobile: "",
         name: "",
+        mobile: "",
         password: "",
         password2: "",
         password3: "",
@@ -891,7 +848,7 @@ export default {
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
-      this.dialogFormVisibleup = false;
+      this.resetTemp();
       this.$refs[formName].resetFields();
     },
     resetForm2(formName) {
@@ -1043,7 +1000,7 @@ body {
 }
 .scrollBox {
   height: 400px;
-  overflow-y:scroll;
-  overflow-x:hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>

@@ -108,7 +108,7 @@
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
-      class="diatable">
+      id="diatable">
       <div class="tabBox">
           <div class="tabLeft fl" ref="refTab">
           <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
@@ -187,7 +187,7 @@
                       </el-dialog>
                   </div>
       
-                    <div class="el-upload__tip">请选择上传的图片，且不超过4张</div>
+                    <div class="el-upload__tip">*请选择上传的图片，且不超过4张</div>
                 </el-form-item>
 
                 <el-form-item label="服务描述：" prop="description">
@@ -379,7 +379,8 @@
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           class="imgText"
                           list-type="picture"
-                          ref="upload"                    
+                          ref="upload"
+                          accept="image"              
                           :on-remove="handleRemove"
                           :file-list="fileList"
                           :limit="3"
@@ -388,9 +389,9 @@
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
-                      <el-dialog v-model="dialogVisible" size="tiny">
+                      <!-- <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="">
-                      </el-dialog>
+                      </el-dialog> -->
                 </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -426,7 +427,6 @@ import {
   serverEditPre,
   sortList
 } from "@/api/project";
-import './project.css'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -712,12 +712,12 @@ export default {
         newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
         newarr.push(newstr)
       }
-        console.log(str);
-        console.log(newarr,'截取')
+      console.log(str);
+      console.log(newarr,'截取')
       var delIndex = newarr.indexOf(str)
-      console.log(delIndex,'删除图片的下标')
+      //console.log(delIndex,'删除图片的下标')
       this.imgText.del(delIndex);
-      console.log(this.imgText);
+      //console.log(this.imgText);
     },
     handleRemovePic(file,fileList) {
       //删除服务图片
@@ -743,7 +743,7 @@ export default {
         newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
         newarr.push(newstr)
       }
-        // console.log(newarr,'截取')
+        //console.log(newarr,'截取')
       var delIndex = newarr.indexOf(src)
       console.log(newarr,src,"newarr---------------------------")
       // console.log(delIndex,'删除图片的下标')
@@ -795,7 +795,6 @@ export default {
     upload(file) {
       // 图文上传
       let pro = new Promise((resolve, rej) => {
-        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
@@ -814,13 +813,14 @@ export default {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
+        var s = date.getTime()
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/" +s+file.file.name
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -870,13 +870,14 @@ export default {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
+        var s = date.getTime()
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + file.file.name
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1491,11 +1492,8 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 
-.el-dialog--small {
-  width: 60%;
-}
 .el-radio-group {
   width: 100%;
 }
@@ -1641,11 +1639,6 @@ body {
 }
 .el-radio-button {
   width: 100%;
-}
-.el-radio-button__inner {
-  width: 100%;
-  color: #333333;
-  border: 0px solid #bfcbd9;
 }
 .el-radio-button__orig-radio:checked + .el-radio-button__inner {
   width: 100%;
@@ -1868,4 +1861,7 @@ hr {
 .tableSer:nth-of-type(3){
   color: red
 }
+/* .filter-container .diatable .el-dialog--small{
+  width: 60% !important;
+} */
 </style>

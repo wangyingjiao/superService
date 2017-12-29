@@ -15,11 +15,14 @@ export default {
     },
     menu() {
       let loadingInstance = Loading.service({fullscreen: true });
-      if(this.$store.state.user.menu.length != 0 ){
+      if(this.$store.state.user.menu.length > 0 ){
           loadingInstance.close();
        }else{
           loadingInstance = Loading.service({fullscreen: true });  
        }     
+       setTimeout(() => {
+         loadingInstance.close();
+       }, 1000);
       return this.$store.state.user.menu
     }
   },
