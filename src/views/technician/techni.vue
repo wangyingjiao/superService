@@ -2,7 +2,7 @@
   <div class="tech">
     <div class="tech-index">
       <div>
-        <el-select v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+        <el-select class="abc" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -2492,6 +2492,9 @@ body {
 }
 .tech-service {
   padding: 20px 0 10px 0;
+}
+.tech-service .tech-order-jn{
+  margin-left:0; 
 }
 .working {
   border: 1px solid #f2f2f2;

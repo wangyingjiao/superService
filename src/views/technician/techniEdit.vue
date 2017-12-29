@@ -226,6 +226,8 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
+        		</el-row>
+				<el-row :gutter="60">
 					<el-col :span="12">
 						<el-form-item label="选择技能:" prop="skillIds">
 							<el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
@@ -238,9 +240,9 @@
 							</el-select>
 						</el-form-item>
 					</el-col>
-        		</el-row>
+				</el-row>
 				<el-row :gutter="60">
-					<el-col :span="12" class="workHours">
+					<el-col :span="17" class="workHours">
 						<p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
                             <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
@@ -287,22 +289,26 @@
                             </div>
                         </div>
 					</el-col>
-					<el-col :span="12">
-						<ul class="working">
-                            <li v-for="(item,index) in perServer.workTimes" :key="index">
-                            <div>
-                                <div class="woking-div">
-                                <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
-                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
-                            </div>
-                            </li>
-                        </ul>
-					</el-col>
         		</el-row>
+				<el-row :gutter="60">
+					<el-col :span="17">
+						<el-form-item>
+							<ul class="working">
+								<li v-for="(item,index) in perServer.workTimes" :key="index">
+								<div>
+									<div class="woking-div">
+									<div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
+									<div class="time">{{item.startTime+"~"+item.endTime}}</div>
+									</div>
+								</div>
+								<div>
+									<i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
+								</div>
+								</li>
+							</ul>
+						</el-form-item>
+					</el-col>
+				</el-row>
                 <!-- <li>
                     <div>
                         <p>
@@ -1880,7 +1886,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 * {
   list-style: none;
   margin: 0;
@@ -1889,6 +1895,10 @@ export default {
 
 body {
   background: #eef1f6;
+}
+
+.tech-section-lage .el-form-item__content{
+	line-height: 20px;
 }
 
 .tech-index {
@@ -2174,7 +2184,7 @@ body {
   border: 1px solid #bfcbd9;
   position: relative;
   line-height: 36px;
-  margin-left:23px
+  margin-left:17px
 }
 
 .tech-order-jn-son,
@@ -2296,6 +2306,10 @@ body {
   /* margin-left: 20px; */
   font-size: 12px;
   cursor: pointer;
+}
+
+.selfCheckBox:nth-of-type(1){
+	margin-left:0; 
 }
 
 .tech-daytim {
