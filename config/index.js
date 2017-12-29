@@ -23,19 +23,19 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 9528,
+    port: 2345,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/apiservice': {
-        'target': 'https://apiservice.guoanshequ.wang/',
-        'secure': false, 
-        'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
-        'pathRewrite': {
-          '^/apiservice': '/apiservice'
-        }
-      }
+      // '/apiservice': {
+      //   'target': 'https://apiservice.guoanshequ.wang/',
+      //   'secure': false, 
+      //   'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
+      //   'pathRewrite': {
+      //     '^/apiservice': '/apiservice'
+      //   }
+      // }
      // '/api': {
        // target: 'http://www.localhost.8800/',
        // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -43,13 +43,13 @@ module.exports = {
         //  '^/api': ''
        // }
      // }
-      // '/api': {
-      //   target: 'http://10.16.70.130:8800/',
-      //   changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
-      //   pathRewrite: {
-      //     '^/api': ''
-      //   }
-      // }
+      '/api': {
+        target: 'http://10.16.70.133:8800/',
+        changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
       
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

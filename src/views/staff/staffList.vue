@@ -633,6 +633,7 @@ export default {
     handleCreate() {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.resetTemp()
     },
     addstation() {
       this.resetTemptwo();
@@ -849,14 +850,14 @@ export default {
     },
     update(formName) {
       var obj = {
-        id: this.temp.id,
-        mobile: this.temp.mobile,
-        name: this.temp.name,
-        newPassword: this.temp.password3,
-        officeId: this.temp.officeId,
-        stationId: this.temp.stationId,
-        roles: [this.temp.role],
-        useable: this.temp.useable
+        id: this.temp1.id,
+        mobile: this.temp1.mobile,
+        name: this.temp1.name,
+        newPassword: this.temp1.password3,
+        officeId: this.temp1.officeId,
+        stationId: this.temp1.stationId,
+        roles: [this.temp1.role],
+        useable: this.temp1.useable
       };
       console.log(obj);
       //this.dialogFormVisible = false;
