@@ -389,9 +389,9 @@
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
-                      <el-dialog v-model="dialogVisible" size="tiny">
+                      <!-- <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="">
-                      </el-dialog>
+                      </el-dialog> -->
                 </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -1492,7 +1492,7 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 
 .el-radio-group {
   width: 100%;
