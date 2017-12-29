@@ -12,12 +12,12 @@
         </el-option>
       </el-select>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
+      <el-select clearable style="width: 200px; margin-left:20px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
 
-      <el-input style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
+      <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
       <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
   </div>
@@ -374,6 +374,7 @@
                 <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
+                <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -1566,7 +1567,7 @@ body {
 }
 .content-rowspan div {
   line-height: 30px;
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid #dfe6ec;
 }
 .content-rowspan div:last-child {
   border-bottom: 0;
@@ -1860,6 +1861,9 @@ hr {
 }
 .tableSer:nth-of-type(3){
   color: red
+}
+.details{
+  text-align: center;
 }
 /* .filter-container .diatable .el-dialog--small{
   width: 60% !important;

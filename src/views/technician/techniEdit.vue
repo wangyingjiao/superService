@@ -243,11 +243,11 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
-				<el-row :gutter="60">
+				<el-row :gutter="60" v-if="perServer.jobNature!='part_time'">
 					<el-col :span="17" class="workHours">
 						<p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
-                            <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
+                            <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
                             <div class="tech-order-jn-sons" v-show="isB">
                             <div style="margin:0 10px;">
                                 <p>新增日期</p>
@@ -285,14 +285,14 @@
                                 </div>
                             </div>
                             <div style="margin:0px 10px 10px;">
-                                <button class="button-large btn-styl" @click="techClick">确认</button>
-                                <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
+                                <span class="button-large btn-styl" @click="techClick">确认</span>
+                                <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span>
                             </div>
                             </div>
                         </div>
 					</el-col>
         		</el-row>
-				<el-row :gutter="60">
+				<el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0">
 					<el-col :span="17">
 						<el-form-item>
 							<ul class="working">
@@ -311,142 +311,7 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
-                <!-- <li>
-                    <div>
-                        <p>
-                            <el-form-item label="选择城市:" prop="stationCityCode">
-                                <el-select v-model="perServer.stationCityCode" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
-                                    <el-option v-for="item in choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
-                                </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            <el-form-item label="岗位性质:" prop="jobNature">
-                                <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:300px">
-                                    <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-						                        </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                </li> -->
-                <!-- <li>
-                    <div>
-                        <p>
-                            <el-form-item label="所属服务站:" prop="stationId">
-                                <el-select v-model="perServer.stationId" clearable placeholder="请选择" style="width:300px">
-                                    <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            <el-form-item label="岗位状态:" prop="jobStatus">
-                                <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:300px">
-                                    <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                </li> -->
-                <!-- <li>
-                    <div>
-                        <p>
-                            <el-form-item label="工作年限:" prop="workTime">
-                                <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:300px">
-                                     <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                                      </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                    <div>
-                        <p>
-                            <el-form-item label="选择技能:" prop="skillIds">
-                                <el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:300px">
-                                    <el-option
-                                    v-for="(item,index) in sextypeo"
-                                    :key="index"
-                                    :label="item.name"
-                                    :value="item.id">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </p>
-                    </div>
-                </li> -->
-                <!-- <li v-show="flagso">
-                    <div>
-                    <p><span class="tech-span"></span></p>
-                    <div class="tech-order-jn-sont">
-                    </div>
-                    </div>
-                </li> -->
-                <!-- <li class="hours">
-                    <div>
-                        <p><span class="tech-span">*</span>工作时间:</p>
-                        <div class="tech-order-jn">
-                            <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
-                            <div class="tech-order-jn-sons" v-show="isB">
-                            <div style="margin:0 10px;">
-                                <p>新增日期</p>
-                                <div>
-
-                                <div style="display:flex;">
-                                    <div class="selfCheckBoxsday">日期</div>
-                                    <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
-                                    :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
-                                    {{item.name}}
-                                    </button>
-                                </div>
-                                </div>
-                                <div style="margin-top:10px;">
-                                <div class="selfCheckBoxsday">时段</div>
-                                <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                                    start: '00:00',
-                                    step: '00:30',
-                                    end: '24:00'
-                                    }" class="tech-daytim">
-                                </el-time-select>
-                                <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                                    start: '00:00',
-                                    step: '00:30',
-                                    end: '24:00',
-                                    minTime: startTime
-                                    }">
-                                </el-time-select>
-                                </div>
-                            </div>
-                            <div style="margin:0px 10px 10px;">
-                                <button class="button-large btn-styl" @click="techClick">确认</button>
-                                <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                     
-                    <div>
-                        <ul class="working">
-                            <li v-for="(item,index) in perServer.workTimes" :key="index">
-                            <div>
-                                <div class="woking-div">
-                                <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
-                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <i class="i-delete" @click="deletes(item,index)">X</i>
-                            </div>
-                            </li>
-                        </ul>
-                    </div>
-                </li> -->
+                
                 <li>
                     <div>
                     <p></p>
@@ -529,85 +394,6 @@
 						
 					</el-col>
         		</el-row>
-            <!-- <li>
-              <div>
-                <p>
-                  <el-form-item label="邮箱:">
-                      <el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="supplement.email"></el-input>
-                  </el-form-item>
-                </p>
-              </div>
-              <div>
-                <p>
-                  <el-form-item label="学历:">
-                    <el-select v-model="supplement.education" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="(item,key,index) in education" :key="index" :label="item" :value="key">
-                      </el-option>
-                    </el-select>
-                   </el-form-item>
-                </p>
-              </div>
-            </li> -->
-            <!-- <li>
-              <div>
-                <p>
-                  <el-form-item label="身高:">
-                    <el-select v-model="supplement.height" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.label">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </p>
-              </div>
-              <div>
-                <p>
-                  <el-form-item label="体重:">
-                    <el-select v-model="supplement.weight" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.label">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </p>
-              </div>
-            </li> -->
-            <!-- <li>
-              <div>
-                <p>
-                  <el-form-item label="婚姻状况:">
-                    <el-select v-model="supplement.marryStatus" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="(item,key,index) in marriage" :key="index" :label="item" :value="key">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </p>
-              </div>
-              <div>
-                <p>
-                  <el-form-item label="籍贯:">
-                    <el-select v-model="supplement.nativeProvinceCode" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="(item,index) in areaOptions" :key="index" :label="item.label" :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </p>
-              </div>
-            </li> -->
-            <!-- <li>
-                <div>
-                    <p>
-                      <el-form-item label="入职日期:">
-                        <el-date-picker
-                            style="width:300px;"
-                            v-model="value1"
-                            type="date"
-                            placeholder="选择日期"
-                            @change="eneryDate"
-                            :picker-options="pickerOptions0">
-                        </el-date-picker>
-                      </el-form-item>
-                    </p>
-                </div>
-            </li> -->
             <li>
                 <div class="level">
                     <p>级别:</p>
@@ -1750,15 +1536,17 @@ export default {
       // console.log(this.perServer.workTimes,"perServer.workTimes----")
       var obj = {};
       var arr = []
-      obj.startTime = this.startTime+":00";
-      obj.endTime = this.endTime+":00";
+      obj.startTime = this.startTime
+      obj.endTime = this.endTime
       obj.weeks = [].concat(this.roomSel1Arr);
       for(var i = 0; i<obj.weeks.length; i++){
         this.disbArr.push(obj.weeks[i].id)
       }
       // console.log(obj,"roomSel1Arr-----")
-      arr.push(obj)
-      this.perServer.workTimes =  this.perServer.workTimes.concat(arr)
+	  arr.push(obj)
+	//   console.log(arr,"arr--------")
+	//   console.log(this.perServer.workTimes,"this.perServer.workTimes----------------")
+      this.perServer.workTimes =  this.perServer.workTimes||[].concat(arr)
       // this.perServer.workTimes.push(obj)
       // this.teachArr.push(obj);
       // console.log(this.teachArr, "this.teachArr--12323--");
@@ -2460,7 +2248,8 @@ body {
 	margin-bottom: 22px;
 }
 .workHours{
-	display: flex
+	display: flex;
+	margin-bottom: 20px;
 }
 .ferFamilyClass>li{
 	padding-bottom: 0;
