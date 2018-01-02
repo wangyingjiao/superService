@@ -536,7 +536,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList();
+                this.handleFilter();
               } else {
                 this.$message({
                   type: "warning",
@@ -624,7 +624,9 @@ export default {
                 message: "添加成功"
               });
               this.dialogFormVisible = false;
-              this.getList();
+              this.listQuery.page = 1
+              this.pageNumber = 1
+              this.handleFilter();
             } else {
               //this.$refs.domTree.setCheckedKeys([]);
               // this.resetTemp();
@@ -640,10 +642,6 @@ export default {
       });
     },
     update(formName) {
-      this.search = {
-        name: "",
-        officeId: ""
-      };
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
@@ -673,7 +671,7 @@ export default {
                 type: "success",
                 message: "修改成功"
               });
-              this.getList();
+              this.handleFilter();
             } else {
               if(typeof res.data.data == 'string'){
                 this.$message({

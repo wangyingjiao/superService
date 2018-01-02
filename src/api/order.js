@@ -5,8 +5,8 @@ let instance = axios.create({
 
 })
 export function getTable() {
-  return instance.get(`/api/a/sys/user/listData?orderBy=update_date`)
+  return instance.get(`/apiservice/a/sys/user/listData?orderBy=update_date`)
 }
 // export function addMana(obj) {
-//   return instance.post(`/api//a/sys/office/saveData`, obj)
+//   return instance.post(`/apiservice//a/sys/office/saveData`, obj)
 // }

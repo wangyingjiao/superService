@@ -17,9 +17,9 @@
     <el-table 
     :key='tableKey' 
     :data="list" 
-    v-loading="listLoading" 
+    v-loading="listLoading"
     stripe
-    fit 
+    fit
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%" >
