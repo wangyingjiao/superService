@@ -71,7 +71,8 @@
       addpage(){
         this.show=!this.show  
       }
-    }
+    }  
+    
   }
 
 </script>

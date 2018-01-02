@@ -20,16 +20,15 @@
 						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable class="width200"  v-model="orderProject" placeholder="请选择">
-						<el-option v-for="item in orderProjectOptions" :key="item.key" :label="item.name" :value="item.key">
+			  <el-select clearable class="width200"  v-model="sevicerStustas" placeholder="请选择服务状态">
+						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-				<el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="customerName"></el-input>
+				<!-- <el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="customerName"></el-input>
 				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="customerPhone"></el-input>
 				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>
-				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input>
-				<el-input  v-else class="width200"  placeholder="请输入" v-model="searchCon"></el-input>			  
-			  <button type="button" class="search-button"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input> -->							  
+			  <button type="button" class="search-button floatRight"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
 					<el-date-picker
 						v-model="startTime"
@@ -49,7 +48,8 @@
 						@change="TimeChange"
 						class="width200"
 						placeholder="选择服务时间">
-					</el-date-picker>							  
+					</el-date-picker>
+					<el-input   class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
 			  </div>
 				<!--搜索条件选择结束-->				
 		</div>
@@ -79,14 +79,21 @@
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
 							</el-table-column>
-							<el-table-column  align="center" width="150" label="订单状态"  prop="">
-						    <template scope="scope">
+							<el-table-column  align="center" width="150" label="服务状态">
+						        <template scope="scope">
+						    		<span v-if="scope.row.serviceStatus =='waitservice'">待服务</span>
+									<span v-if="scope.row.serviceStatus =='started'">已上门</span>
+						    		<span v-if="scope.row.serviceStatus =='finish'">已完成</span>																													
+								</template>									
+							</el-table-column>														
+							<el-table-column  align="center" width="150" label="订单状态">
+						        <template scope="scope">
 						    		<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
-										<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
+									<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
 						    		<span v-if="scope.row.orderStatus =='finish'">已完成</span>
-										<span v-if="scope.row.orderStatus =='started'">已上门</span>
+									<span v-if="scope.row.orderStatus =='started'">已上门</span>
 						    		<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
-										<span v-if="scope.row.orderStatus =='success'">已成功</span>
+									<span v-if="scope.row.orderStatus =='success'">已成功</span>
 						    		<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 								</template>									
 							</el-table-column>
@@ -127,28 +134,23 @@ export default {
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
 		orderTest:[],
-	  payType:'',
-	  payStusOptions:[],
+		payType:'',
+		payStusOptions:[],
 		payStus:'',
-	  mechanismOptions:[],
-	  mechanism:'',
-	  orderProjectOptions:[
-		  { key: "1", name: "客户姓名" },
-		  { key: "2", name: "客户手机号" },
-		  { key: "3", name: "订单编号" },
-		  { key: "4", name: "项目名称" }
-	  ],
-	  orderProject:'',
+		mechanismOptions:[],
+		mechanism:'',
+		sevicerStustasOptions:[],
+		sevicerStustas:'',//服务状态
 		searchCon:'',//搜索框的值初始化
 		customerName:'',
 		customerPhone:'',
 		orderNumber:'',
 		orderContent:'',
-	  activeName:'whole',//当前tabs
-	  startTime:'',//开始时间
-	  endTime:'',//结束时间
-	  tabDataList:[],//表格数据
-	  size:10,
+		activeName:'whole',//当前tabs
+		startTime:'',//开始时间
+		endTime:'',//结束时间
+		tabDataList:[],//表格数据
+		size:10,
 		total:null,
 		jumpPage:1,
 		pageNumber:1,
@@ -157,71 +159,71 @@ export default {
   },
   methods: {
 	TimeChange(value){
-			if(value != undefined){ 
-					var str=value.substring(14,16)						
-          if(Number(str) >= 30){
-							this.severTime=util.formatDate.format(
-					      new Date(this.severTime),
-					       "yyyy-MM-dd hh:30:00"
-			       	);
-					}else{
-							this.severTime=util.formatDate.format(
-					      new Date(this.severTime),
-					       "yyyy-MM-dd hh:00:00"
-			       	);
-					}
-			}			
+		if(value != undefined){ 
+			var str=value.substring(14,16)						
+            if(Number(str) >= 30){
+				this.severTime=util.formatDate.format(
+				new Date(this.severTime),
+				"yyyy-MM-dd hh:30:00"
+				);
+			}else{
+				this.severTime=util.formatDate.format(
+					new Date(this.severTime),
+					"yyyy-MM-dd hh:00:00"
+				);
+			}
+		}			
 	},
 	//机构变化事件
 	orgChange(val){
 		if(val != ''){
-				var obj={
-					orgId:val,
+			var obj={
+				orgId:val,
+			}
+			getFuwu(obj).then(res => {
+				if(res.data.code === 1){
+						this.payTypeOptions=res.data.data;
+				}else{
 				}
-				getFuwu(obj).then(res => {
-						if(res.data.code === 1){
-								this.payTypeOptions=res.data.data;
-						}else{
-						}
-				});	
+			});	
 		}
 	},
   //获取表格数据
 	getTableData(pramsObj,pageNo,pageSize){
 		this.listLoading = true;
 		var obj=pramsObj; 
-	  getOrderTable(obj,pageNo,pageSize).then(res => {
-			  if(res.data.code === 1){
-					  this.tabDataList = res.data.data.page.list;										
-						this.mechanismOptions=res.data.data.orgList
-						this.total=res.data.data.page.count
-						this.listLoading = false
-				}else{
-            this.listLoading = false
-				}
-    });
+	    getOrderTable(obj,pageNo,pageSize).then(res => {
+			if(res.data.code === 1){
+				this.tabDataList = res.data.data.page.list;										
+				this.mechanismOptions=res.data.data.orgList;
+				this.total=res.data.data.page.count;
+				this.listLoading = false;
+			}else{
+				this.listLoading = false;
+			}
+        });
 	},
 	//tabs操作需要请求表格数据
 	handleClick(tab, event) {
-				if(tab.name == 'whole'){
-					this.activeName='';
-				}else{
-					this.activeName=tab.name;
-				}				
-				this.payStus='';
-				this.mechanism='';
-				this.payType='';
-				this.orderProject='';
-				this.searchCon='';
-				this.startTime='';
-				this.endTime='';
-				this.severTime='';
-	      var obj={
-					orderStatus:this.activeName
-				};
-				this.pageNumber=1;
-				this.jumpPage=1;
-				this.getTableData(obj,this.pageNumber,this.size);				
+		if(tab.name == 'whole'){
+			this.activeName='';
+		}else{
+			this.activeName=tab.name;
+		}				
+		this.payStus='';
+		this.mechanism='';
+		this.payType='';
+		this.sevicerStustas='';
+		this.orderNumber='';
+		this.startTime='';
+		this.endTime='';
+		this.severTime='';
+		var obj={
+			orderStatus:this.activeName
+		};
+		this.pageNumber=1;
+		this.jumpPage=1;
+		this.getTableData(obj,this.pageNumber,this.size);				
     },
 	//全局search按钮
 	localSearch(){
@@ -241,7 +243,7 @@ export default {
 			  startTime=null
 		}
 		//结束时间格式化 
-    if(this.endTime != ''){
+        if(this.endTime != ''){
 			var endTime = util.formatDate.format(
 				new Date(this.endTime),
 				"yyyy-MM-dd hh:mm:ss"
@@ -254,21 +256,14 @@ export default {
 		}else{
 			this.activeName=this.activeName;
 		}
-		if(this.orderProject == ''){
-			  this.customerName='';
-			  this.customerPhone='';
-			  this.orderNumber='';
-			  this.orderContent='';
-		}	
+		//	
 		var obj={
 			orderStatus:this.activeName,
+			//服务状态 serviceStatus:this.sevicerStustas,
 			payStatus:this.payStus,
 			orgId:this.mechanism,
 			stationId:this.payType,
-			customerName:this.customerName,
-			customerPhone:this.customerPhone,
 			orderNumber:this.orderNumber,
-			orderContent:this.orderContent,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
 			serviceTime:this.severTime,
@@ -280,9 +275,9 @@ export default {
 	//导出订单按钮
 	exportOrder(){
 	},
-	//查看
+	//查看跳转到订单详情页
 	lookInf(id){
-		this.$router.push({path:'/clean/orderinfo',query: { id:id}})
+		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
 	},	
 	//每页条数多少改变
 	handleSizeChange(val){
@@ -305,6 +300,7 @@ export default {
 		this.getTableData();
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;
+		this.sevicerStustasOptions=this.dict.service_status;
   }
 };
 </script>
@@ -315,6 +311,7 @@ export default {
 	background:#eef1f6;
 }
 .width200{width:200px;}
+.floatRight{float:right}
 .fist-bar{
   padding:20px 20px;
   background:#fff;
