@@ -347,7 +347,7 @@
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item class="seize bottimPro" style="width:70%">
                   <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                   <!-- <span class="button-large" @click="submitForm('goods_info')">添 加</span>     -->
@@ -358,8 +358,8 @@
          </div>
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" :disabled="btnState" @click="subForm('basic')">保 存</button>    
-        <button class="button-cancel" @click="cancel('basic')">取 消</button>
+        <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
+        <input type="button" class="button-cancel" style="margin-left:30px" @click="cancel('basic')" value="取 消">
       </div>
     </el-dialog>
 
@@ -394,9 +394,9 @@
                 </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" @click="subImgText('a')">保 存</button>    
-        <button class="button-cancel" @click="resImgText('a')">取 消</button>
-      </div>
+              <input type="button" class="button-large" @click="subImgText('a')" value="保 存">
+              <input type="button" class="button-cancel" @click="resImgText('a')" value="取 消">
+            </div>
         </el-dialog>
       </div>
 
@@ -464,15 +464,35 @@ export default {
         callback(new Error("请输入价格"));
       }
     };
+    //折算时长
     var CONVERTHOURS = (rule, value, callback) => {
       var reg = /^\d+$/;
       if (value) {
-        if (reg.test(value)) {
-          callback();
-        } else {
-          callback(new Error("折算时长必须为数字值"));
-        }
-      } else {
+          if(this.goods_info.type == 'num'){
+            // console.log(value)
+            if(value>0.01 && value<1.5){
+              callback();
+            }else{
+              callback(new Error('请正确输入(0.01~1.5小时)'))
+            }
+          }
+
+         if(this.goods_info.type == 'area'){
+            if(value>0.01 && value<0.5){
+              callback()
+            }else{
+              callback(new Error('请正确输入(0.01~0.5小时)'))
+            }
+          }
+
+        if(this.goods_info.type == 'house'){
+            if(value>=2 && value<=12){
+                callback()
+            }else{
+              callback(new Error('请正确输入(2~12小时)'))
+            }
+      }
+     }else {
         callback(new Error("请输入折算时长"));
       }
     };
@@ -558,7 +578,10 @@ export default {
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        peoNum: [{ required: true, message: "请输入折算时长", trigger: "blur" }],
+        peoNum: [
+            { required: true, message: "请输入折算时长", trigger: "blur" }
+            // {required:true,validator:PEONUM,trigger:'blur'}
+          ],
         persons: [{ require: true, validator: PERSONS, trigger: "change" }]
       },
       basicForm: {
@@ -861,7 +884,7 @@ export default {
           this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
-            resolve(res.data);
+            rej(res.data);
           });
         }
       });
@@ -1865,6 +1888,15 @@ hr {
 }
 .details{
   text-align: center;
+}
+.tabRight .bottimPro .el-form-item__content{
+  /* margin-left: 0; */
+  width: 100%;
+  display: flex;
+  justify-content:center;
+}
+.tabRight .bottimPro .el-form-item__content input:nth-child(2){
+  margin-left: 30px;
 }
 /* .filter-container .diatable .el-dialog--small{
   width: 60% !important;

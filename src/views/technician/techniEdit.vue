@@ -244,7 +244,7 @@
 					</el-col>
 				</el-row>
 				<el-row :gutter="60" v-if="perServer.jobNature!='part_time'">
-					<el-col :span="17" class="workHours">
+					<el-col :span="18" class="workHours">
 						<p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p>
                         <div class="tech-order-jn">
                             <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
@@ -286,14 +286,15 @@
                             </div>
                             <div style="margin:0px 10px 10px;">
                                 <span class="button-large btn-styl" @click="techClick">确认</span>
-                                <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消1</span>
+                                <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                                <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
                             </div>
                             </div>
                         </div>
 					</el-col>
         		</el-row>
 				<el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0">
-					<el-col :span="17">
+					<el-col :span="18">
 						<el-form-item>
 							<ul class="working">
 								<li v-for="(item,index) in perServer.workTimes" :key="index">
@@ -1375,14 +1376,19 @@ export default {
     //工作时间删除
     deletes(item,index) {
       this.disbArr = []
+      this.roomSelNum = []
       var arr = [].concat(this.perServer.workTimes)
       arr.splice(index,1)
       this.perServer.workTimes = arr
 
+      // for(var i = 0; i<item.weeks.length; i++){
+      //   this.remove(this.roomSelNum,this.disbArr,item.weeks[i].id)
+      // }
+
       for(var i =0 ; i<arr.length ; i++){
         for(var j =0 ; j<arr[i].weeks.length ; j++){
-		  this.disbArr.push(arr[i].weeks[j].id*1)
-		  this.roomSelNum.push(arr[i].weeks[j].id*1)
+          this.disbArr.push(arr[i].weeks[j].id*1)
+          this.roomSelNum.push(arr[i].weeks[j].id*1)
         }
       }
 
@@ -1526,6 +1532,30 @@ export default {
       //  console.log(item)
     },
     techClick() {
+
+      if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
+          var obj = {};
+          var arr = []
+          obj.startTime = this.startTime
+          obj.endTime = this.endTime
+          obj.weeks = [].concat(this.roomSel1Arr);
+          for(var i = 0; i<obj.weeks.length; i++){
+            this.disbArr.push(obj.weeks[i].id)
+          }
+          arr.push(obj)
+          if(this.perServer.workTimes!=undefined&&this.perServer.workTimes.length>0){
+            this.perServer.workTimes = this.perServer.workTimes.concat(arr)
+          }else{
+            this.perServer.workTimes = [].concat(arr)
+          }
+          this.isB = false;
+          this.startTime = ''
+          this.endTime = ''
+      }else{
+          this.$message.error("请选择日期、时段")
+          return false
+      }
+
       if (this.disbArr.length > 0) {
         this.disbArr.map(item => {
           if (this.roomSelNum.indexOf(item) != -1) {
@@ -1533,24 +1563,7 @@ export default {
           }
         });
       }
-      // console.log(this.perServer.workTimes,"perServer.workTimes----")
-      var obj = {};
-      var arr = []
-      obj.startTime = this.startTime
-      obj.endTime = this.endTime
-      obj.weeks = [].concat(this.roomSel1Arr);
-      for(var i = 0; i<obj.weeks.length; i++){
-        this.disbArr.push(obj.weeks[i].id)
-      }
-      // console.log(obj,"roomSel1Arr-----")
-	  arr.push(obj)
-	//   console.log(arr,"arr--------")
-	//   console.log(this.perServer.workTimes,"this.perServer.workTimes----------------")
-      this.perServer.workTimes =  this.perServer.workTimes||[].concat(arr)
-      // this.perServer.workTimes.push(obj)
-      // this.teachArr.push(obj);
-      // console.log(this.teachArr, "this.teachArr--12323--");
-      this.isB = false;
+
     },
     roomSel2(index, key) {
       this.supplement.jobLevel = key;

@@ -561,14 +561,17 @@
                           <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
                               start: '00:00',
                               step: '00:30',
-                              end: '24:00'
+                              end: '24:00',
+                              minTime:'09:00',
+                              maxTime:'16:00'
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime: startTime
+                              minTime: startTime,
+                              maxTime:'16:00'
                             }">
                           </el-time-select>
                         </div>
@@ -1190,8 +1193,8 @@ export default {
       value2: "",
       value3: "",
       value4: "",
-      startTime: "",
-      endTime: "",
+      startTime: "09:00",
+      endTime: "05:00",
       startTimes: "",
       endTimes: "",
       fileList2: [
@@ -2133,7 +2136,7 @@ body {
 
 .tech-order-posis {
   background-color: #fff;
-  border: 1px solid #cccccc;
+  border: 1px solid #48576a;
   margin: 0 5px;
   display: flex;
   flex-wrap: wrap;
