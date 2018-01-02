@@ -8,7 +8,7 @@ import store from './store'
 import axios from 'axios'
 import '@/icons' // icon
 import '@/permission' // 权限
-//axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
