@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { getSession, setSession } from '@/utils/auth'
-
+import { getSession } from '@/utils/auth'
+const root = 'https://apiservice.guoanshequ.wang/'
 const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 

@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片" prop="pictures">
-        <template scope="scope">
-          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
+      <el-table-column align="center" label="图片">
+        <template scope="scope" >
+          <span v-if="scope.row.pictures != undefined"><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -171,8 +171,7 @@
                     </el-dialog> -->
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                         list-type="picture-card"
-                         
+                          list-type="picture-card"
                           :on-preview="handlePreview"
                           :on-remove="handleRemovePic"
                           :before-upload="handPic"
@@ -304,8 +303,6 @@
 
                 <el-form-item label="计量方式:" prop="type">
                   <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:70%">
-                     <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
-                     </el-option> -->
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
@@ -317,7 +314,6 @@
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
                   <el-input v-model="goods_info.convertHours" style="width:70%">
-                    <!-- <template slot="append">小时/{{goods_info.convertHours}}</template> -->
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
@@ -801,7 +797,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -858,7 +854,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -900,9 +896,9 @@ export default {
             this.picFile.push(ossData.get("key"));
             console.log(this.picFile, "picfile");
           })
-          .catch(error => {
-            console.log(error, "错误");
-          });
+          // .catch(error => {
+          //   console.log(error, "错误");
+          // });
       });
     },
     //编号失焦事件
