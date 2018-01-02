@@ -60,11 +60,11 @@
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>							
 									</tr>
 									<tr v-for="item in selectCommidty" :key="item.id" >
-										<td  align="center"><el-checkbox  v-model="item.checkAll"></el-checkbox></td>
+										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.checkAll"></el-checkbox></td>
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
 											<span v-if="item.type=='3'">
-												<el-select  class="roomTypeStyle"  v-model="item.roomId" placeholder="请选择">
+												<el-select  class="roomTypeStyle"  @change="roomChange(item,item.roomId)" v-model="item.roomId" placeholder="请选择">
 													<el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
 													</el-option>
 												</el-select>
@@ -80,8 +80,8 @@
 										</td>
 										<td  align="center">{{item.payNum}}</td>
 										<td class="height30" align="center">
-											<span v-if="item.type=='1'"><el-input-number class="selfINputNumStyle" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
-											<span v-if="item.type=='2'"><el-input  class="NumberINputStyle"   placeholder="请输入技师姓名" v-model="item.number"></el-input></span>
+											<span v-if="item.type=='1'"><el-input-number class="selfINputNumStyle" @change="numberChange(item)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
+											<span v-if="item.type=='2'"><el-input  class="NumberINputStyle"  @change="inputChange(item)" placeholder="" v-model="item.number"></el-input></span>
 											<span v-if="item.type=='3'">{{item.number}}</span>											
 										</td>							
 									</tr>
@@ -313,6 +313,15 @@ export default {
 			  number:2
 			},
 			{
+			  id:'5',
+			  checkAll:false,
+			  name:'小型灯',
+			  type:'1',
+			  pirce:'13',
+			  payNum:'2',
+			  number:2
+			},			
+			{
 			  id:'4',
 			  checkAll:true,
 			  roomId:'1',
@@ -458,6 +467,26 @@ export default {
     }
   },
   methods:{
+	//选中行改变
+	rowChange(item){
+		console.log(item)
+		if(item.checkAll){
+			console.log(item.pirce*item.number)
+		}
+	},
+	//计数器改变
+	numberChange(item){
+		//console.log(item)
+	},
+	//居室改变
+	roomChange(item,roomId){
+		//console.log(roomId)
+       // console.log(item)
+	},
+	//按面积数量变化
+	inputChange(item){
+       // console.log(item)
+	},
 	//下一步
 	next(){
 		if (this.active++ >= 4) this.active = 1;
