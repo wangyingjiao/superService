@@ -22,7 +22,7 @@ export default {
     AppMain
   },
   computed: {
-    sidebar() {
+    sidebar() {      
       return this.$store.state.app.sidebar
     }
   }

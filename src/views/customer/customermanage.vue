@@ -267,13 +267,14 @@ export default {
 					})	
 			},
 			//新增保存
-			submitForm(formName) {		   
-						this.$refs[formName].validate((valid) => {
-							this.submitFlag=false;
-							setTimeout(function() {
-								this.submitFlag=true;
-							},1000);							
-							if (valid) {
+			submitForm(formName) {
+				    var that=this
+						this.submitFlag=true;
+						setTimeout(function() {
+							that.submitFlag=false;
+						},1000);		   
+						this.$refs[formName].validate((valid) => {							
+							if (valid) {								
 									if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
 											this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
 											var str=this.$refs.pickerInput1.value;

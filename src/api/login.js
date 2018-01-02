@@ -7,7 +7,7 @@ const instance = axios.create({
 })
 
 export function loginByUsername(obj) {
-  return instance.post(`/api/a/login`, obj)
+  return instance.post(`/apiservice/a/login`, obj)
 }
 
 // export function requestUserRole(username, password) {
@@ -15,20 +15,20 @@ export function loginByUsername(obj) {
 //     username,
 //     password
 //   }
-//   return instance.post(`/api/a/sys/user/roleData`, qs.stringify(data))
+//   return instance.post(`/apiservice/a/sys/user/roleData`, qs.stringify(data))
 // }
 
 export function logout() {  // 退出
-  return instance.post(`/api/a/logout`)
+  return instance.post(`/apiservice/a/logout`)
 }
 
 export function getUserInfo() { // 侧边栏
-  return instance.get(`/api/a/sys/user/menuData;JSESSIONID=` + getSession('JSESSIONID'))
+  return instance.get(`/apiservice/a/sys/user/menuData;JSESSIONID=` + getSession('JSESSIONID'))
 }
 
 export function getArea() { // 省市区
-  return instance.get(`/api/a/sys/area/listData`)
+  return instance.get(`/apiservice/a/sys/area/listData`)
 }
 export function getButton() { // 按钮
-  return instance.get(`/api/a/sys/user/getButtons`)
+  return instance.get(`/apiservice/a/sys/user/getButtons`)
 }

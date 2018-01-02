@@ -10,7 +10,7 @@
                 {{item.name}}          
               </template>          
               <el-menu-item v-for="child in item.subMenus" :index="child.id" :key="child.id">
-                  <router-link  class="menu-indent" :to="child.href"  >
+                  <router-link  class="menu-indent" :to="{path:child.href}">
                     <span style="display:inline-block;width:160px;">•&nbsp;&nbsp;&nbsp;&nbsp;{{child.name}}</span>
                   </router-link>   
               </el-menu-item>               
