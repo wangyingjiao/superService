@@ -127,28 +127,28 @@ export default {
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
 		orderTest:[],
-	  payType:'',
-	  payStusOptions:[],
+		payType:'',
+		payStusOptions:[],
 		payStus:'',
-	  mechanismOptions:[],
-	  mechanism:'',
-	  orderProjectOptions:[
-		  { key: "1", name: "客户姓名" },
-		  { key: "2", name: "客户手机号" },
-		  { key: "3", name: "订单编号" },
-		  { key: "4", name: "项目名称" }
-	  ],
-	  orderProject:'',
+		mechanismOptions:[],
+		mechanism:'',
+		orderProjectOptions:[
+			{ key: "1", name: "客户姓名" },
+			{ key: "2", name: "客户手机号" },
+			{ key: "3", name: "订单编号" },
+			{ key: "4", name: "项目名称" }
+		],
+		orderProject:'',
 		searchCon:'',//搜索框的值初始化
 		customerName:'',
 		customerPhone:'',
 		orderNumber:'',
 		orderContent:'',
-	  activeName:'whole',//当前tabs
-	  startTime:'',//开始时间
-	  endTime:'',//结束时间
-	  tabDataList:[],//表格数据
-	  size:10,
+		activeName:'whole',//当前tabs
+		startTime:'',//开始时间
+		endTime:'',//结束时间
+		tabDataList:[],//表格数据
+		size:10,
 		total:null,
 		jumpPage:1,
 		pageNumber:1,
@@ -160,15 +160,15 @@ export default {
 			if(value != undefined){ 
 					var str=value.substring(14,16)						
           if(Number(str) >= 30){
-							this.severTime=util.formatDate.format(
-					      new Date(this.severTime),
-					       "yyyy-MM-dd hh:30:00"
-			       	);
+					 this.severTime=util.formatDate.format(
+					    new Date(this.severTime),
+					    "yyyy-MM-dd hh:30:00"
+			       	  );
 					}else{
-							this.severTime=util.formatDate.format(
+						this.severTime=util.formatDate.format(
 					      new Date(this.severTime),
 					       "yyyy-MM-dd hh:00:00"
-			       	);
+			       	  );
 					}
 			}			
 	},
@@ -192,12 +192,12 @@ export default {
 		var obj=pramsObj; 
 	  getOrderTable(obj,pageNo,pageSize).then(res => {
 			  if(res.data.code === 1){
-					  this.tabDataList = res.data.data.page.list;										
-						this.mechanismOptions=res.data.data.orgList
-						this.total=res.data.data.page.count
-						this.listLoading = false
+					this.tabDataList = res.data.data.page.list;										
+					this.mechanismOptions=res.data.data.orgList;
+					this.total=res.data.data.page.count;
+					this.listLoading = false;
 				}else{
-            this.listLoading = false
+            		this.listLoading = false;
 				}
     });
 	},

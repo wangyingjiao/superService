@@ -13,25 +13,25 @@ const instance = axios.create({
 // 所属分类
 export function Taxonomy(){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/sort/serSortInfo/listData`).then(data=>{
+        instance.post(`api/a/service/sort/serSortInfo/listData`).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
         })
     })
-    // return instance.post(`apiservice/a/service/sort/serSortInfo/listData`)
+    // return instance.post(`api/a/service/sort/serSortInfo/listData`)
 }
 
 //定向城市
 export function Orienteering(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/getAllCityCodes`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/getAllCityCodes`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
         })
     })
-    // return instance.post(`apiservice/a/service/item/serItemInfo/getAllCityCodes`)
+    // return instance.post(`api/a/service/item/serItemInfo/getAllCityCodes`)
 }
 
 //是否
@@ -48,7 +48,7 @@ export function Whether(){
 //服务项目添加
 export function ServerAdd(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/saveData`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/saveData`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
@@ -59,7 +59,7 @@ export function ServerAdd(obj){
 //项目删除
 export function ServerDelete(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/deleteData`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/deleteData`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
@@ -70,7 +70,7 @@ export function ServerDelete(obj){
 //项目编辑
 export function ServerEdit(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/formData`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/formData`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
@@ -81,7 +81,7 @@ export function ServerEdit(obj){
 //项目编辑保存
 export function serverEditPre(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/upData`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/upData`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
@@ -91,7 +91,7 @@ export function serverEditPre(obj){
 
 export function sortList(obj){
     return new Promise((resolve,reject)=>{
-        instance.post(`apiservice/a/service/item/serItemInfo/upDataSortNum`,obj).then(data=>{
+        instance.post(`api/a/service/item/serItemInfo/upDataSortNum`,obj).then(data=>{
             resolve(data)
         }).catch(error=>{
             reject(error)
