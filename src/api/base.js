@@ -6,44 +6,44 @@ const instance = axios.create({
 })
 // 获取机构
 export function getMech() {
-  return instance.get(`/apiservice/a/sys/office/listData`)
+  return instance.get(`/apiserviceservice/a/sys/office/listData`)
 }
 
 export function getSerstation() {
-  return instance.get(`/apiservice/a/sys/dict/listData?type=service_area_type`)
+  return instance.get(`/apiserviceservice/a/sys/dict/listData?type=service_area_type`)
 }
 
 // 获取服务城市
 export function getCity() {
-  return instance.get(`/apiservice/a/sys/area/listData1`)
+  return instance.get(`/apiserviceservice/a/sys/area/listData1`)
 }
 // 获取服务站
 export function getSite(obj, pageNumber, pageSize) {
-  return instance.post(`/apiservice/a/service/station/serviceStation/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+  return instance.post(`/apiserviceserviceservice/a/service/station/serviceStation/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 // 新增服务站
 export function addSite(obj) {
-  return instance.post(`/apiservice/a/service/station/serviceStation/saveData`, obj)
+  return instance.post(`/apiserviceserviceservice/a/service/station/serviceStation/saveData`, obj)
 }
 // 删除服务站
 export function delSite(obj) {
-  return instance.post(`/apiservice/a/service/station/serviceStation/deleteStation`, obj)
+  return instance.post(`/apiserviceservice/a/service/station/serviceStation/deleteStation`, obj)
 }
 // 获取站长列表
 export function getMaster(obj) {
-  return instance.post(`/apiservice/a/sys/user/listData?pageSize=-1`, obj)
+  return instance.post(`/apiserviceservice/a/sys/user/listData?pageSize=-1`, obj)
 }
 // 设置站长
 export function setMaster(obj) {
-  return instance.post(`/apiservice/a/service/station/serviceStation/setManager`, obj)
+  return instance.post(`/apiserviceservice/a/service/station/serviceStation/setManager`, obj)
 }
 // 字典量 获取服务站类型
 export function getType() {
-  return instance.post(`/apiservice/a/sys/dict/listData?type=service_station_type`)
+  return instance.post(`/apiserviceservice/a/sys/dict/listData?type=service_station_type`)
 }
 // 当前机构的服务城市
 export function getOffcity(obj) {
-  return instance.post(`/apiservice/a/sys/office/officeServerCity`, obj)
+  return instance.post(`/apiserviceservice/a/sys/office/officeServerCity`, obj)
 }
 //  修改后
 // 获取机构带分页

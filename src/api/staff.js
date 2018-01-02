@@ -52,3 +52,25 @@ export function delStaff(obj) {
 export function chkName(name) { // 岗位重名检测
   return instance.get(`/apiservice/a/sys/role/chkName?name=` + name)
 }
+
+//改派管理分页
+export function Reassignment(page,size,obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/order/orderDispatch/listData?pageNo=${page}&pageSize=${size}`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//根据id获取改派记录
+export function reassId(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/order/orderDispatch/formData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}

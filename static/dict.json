@@ -123,6 +123,11 @@
         "finish": "已完成",
         "started": "已上门"
     },
+    "service_status": {
+        "waitservice": "待服务",
+        "finish": "已完成",
+        "started": "已上门"
+    },    
     "pay_status": {
         "waitpay": "待支付",
         "payed": "已支付"

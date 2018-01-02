@@ -2,36 +2,70 @@
     <div class="addorder-container">
        <!--订单信息开始-->
         <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息<div class="orderInf-cancel" @click="cancelOrder">取消订单</div></div>
+            <div class="custom-action orderOneBar">订单信息
+               <!--<div class="orderInf-cancel" @click="cancelOrder">取消订单</div> -->
+            </div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">订单编号:</span>
-                      <span class="lineContent">20170829144443318882</span>
+                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
                    </p>
                    <p class="contentLine">
+                      <span class="lineTitle">服务状态:</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.serviceStatus =='waitservice'">待服务</span>
+                        <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
+                        <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                      </span>
+                   </p>                   
+                   <p class="contentLine">
                       <span class="lineTitle">订单来源:</span>
-                      <span class="lineContent">国安社区</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.orderSource =='app'">app</span>
+                        <span v-if="otherInfo.orderSource =='callcenter'">400呼叫中心</span>
+                        <span v-if="otherInfo.orderSource =='store'">门店</span>
+                        <span v-if="otherInfo.orderSource =='wechat'">微信</span>
+                        <span v-if="otherInfo.orderSource =='score'">积分商城</span>
+                        <span v-if="otherInfo.orderSource =='web'">PC</span>
+                        <span v-if="otherInfo.orderSource =='tv'">电视</span>
+                      </span>
                    </p>
-                    <p class="contentLine">
+                   <p class="contentLine">
                       <span class="lineTitle">服务机构:</span>
-                      <span class="lineContent">中信国安</span>
-                   </p>                                     
+                      <span class="lineContent">{{otherInfo.orgName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">订单类型:</span>
+                      <span class="lineContent">{{otherInfo.orderType}}</span>
+                   </p>                                                         
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">订单状态:</span>
-                      <span class="lineContent">待服务</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
+                          <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
+                          <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.orderStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
+                          <span v-if="otherInfo.orderStatus =='success'">已成功</span>
+                          <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">下单时间:</span>
-                      <span class="lineContent">2017-08-29 14:44</span>
+                      <span class="lineContent">{{otherInfo.orderTime}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
-                      <span class="lineContent">呼家楼</span>
-                   </p>                                       
+                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">订单分类:</span>
+                      <span class="lineContent">{{otherInfo.orderClass}}</span>
+                   </p>                                                           
                 </div> 
             </div>                                     		
 		    </div>
@@ -44,7 +78,7 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">交易单号:</span>
-                      <span class="lineContent">20170829144443318882</span>
+                      <span class="lineContent"></span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付方式:</span>
@@ -73,7 +107,7 @@
 		    </div>
         <!--支付信息结束-->
         <!--退款信息开始-->
-        <div class="thrid-bar marginTop20">
+        <!-- <div class="thrid-bar marginTop20" v-if="refundInfo != undefined">
             <div class="custom-action">退款信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -102,7 +136,7 @@
                    </p>                   
                 </div> 
             </div>                                     		
-		    </div>
+		    </div> -->
         <!--退款信息结束-->
         <!--服务地址信息开始-->
         <div class="thrid-bar marginTop20">
@@ -112,17 +146,17 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">姓名:</span>
-                      <span class="lineContent">李阿姨</span>
+                      <span class="lineContent">{{addressInfo.name}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">地址:</span>
-                      <span class="lineContent">北京市朝阳区关东街呼家楼宾馆</span>
+                      <span class="lineContentWidth">{{addressInfo.address}}</span>
                    </p>                                     
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">电话:</span>
-                      <span class="lineContent">13821208877</span>
+                      <span class="lineContent">{{addressInfo.phone}}</span>
                    </p>                  
                 </div> 
             </div>                                     		
@@ -142,7 +176,7 @@
                 <div class="rightArea width390">
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
-                      <span class="lineContent">2017-08-29 14:44</span>
+                      <span class="lineContent">{{goodsInfo.serviceTime}}</span>
                       <span class="selfMarLeft70"><button type="button"  @click="changeTime" class="button-cancel height25">更换时间</button></span>
                    </p>                  
                 </div> 
@@ -481,7 +515,7 @@
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import {getOrderInf,CancelOrderInf} from "@/api/order";
   import {
     orderServer
   } from '@/api/skill'
@@ -500,6 +534,11 @@ export default {
 			}
 	};  
     return {
+          addressInfo:[],//服务地址信息
+          otherInfo:[],
+          payInfo:[],//支付信息
+          refundInfo:[],//退款信息
+          goodsInfo:[],//服务信息
           options:[],
           techName:'',
           techStationId:'',
@@ -654,6 +693,28 @@ export default {
     };
   },
   methods:{
+    getOrderAllInf(orderId){
+      //getOrderInf
+      var obj={
+        id:orderId
+      }
+      getOrderInf(obj).then(res => {      
+          if (res.data.code === 1) {                         
+             console.log(res.data.data.info)
+             var AllInfo=res.data.data.info;
+             this.otherInfo=AllInfo;
+             this.addressInfo=AllInfo.addressInfo; //服务地址信息
+             this.payInfo=AllInfo.payInfo;//支付信息
+             this.refundInfo=AllInfo.refundInfo//退款信息
+             this.goodsInfo=AllInfo.goodsInfo//服务信息
+             console.log(this.goodsInfo);
+
+          }else{
+          }          
+        }).catch(res=>{
+          
+        });
+    },
     //更换时间的确定
     submitTime(){
        this.dialogVisible = false
@@ -780,13 +841,33 @@ export default {
     },
     //取消订单弹窗确定
     orderCancelOk(){
-       this.orderCancelFlag=false;
+        var obj={
+           id:this.$route.query.id
+        };             
+        CancelOrderInf(obj).then(res => {      
+          if (res.data.code === 1) {
+						this.$message({
+							type: 'success',
+							message: '取消成功!'
+						});                                                 
+            this.orderCancelFlag=false;
+            this.$router.push({path:'/clean/ordermanage'})                                                         
+          }else{
+            this.$message({
+							type: 'warning',
+							message: res.data.data
+						});
+          }          
+        }).catch(res=>{
+          
+        });     
+       
     }
 	
   },
   mounted() {
-
-
+    console.log(this.$route.query.id);
+    this.getOrderAllInf(this.$route.query.id)
   }
 };
 </script>
@@ -897,4 +978,10 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
 .lineTitle{display:inline-block;width:80px;}
 .lineContent{display:inline-block;margin-left:20px;width:170px;}
 .lineContent1{display:inline-block;}
+.lineContentWidth{
+    display: block;
+    width: 900px;
+    margin-left: 100px;
+    margin-top: -14px;
+}
 </style>

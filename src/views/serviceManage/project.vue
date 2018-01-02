@@ -12,12 +12,12 @@
         </el-option>
       </el-select>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
+      <el-select clearable style="width: 200px; margin-left:20px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
 
-      <el-input style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
+      <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
       <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
   </div>
@@ -27,7 +27,7 @@
 
     <el-table 
     :key='tableKey' 
-    :data="list" 
+    :data="listTable" 
     v-loading="listLoading" 
     stripe
     fit 
@@ -347,17 +347,19 @@
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
 
-                <el-form-item>
-                  <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
+                <el-form-item class="seize bottimPro" style="width:70%">
+                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
+                  <!-- <span class="button-large" @click="submitForm('goods_info')">添 加</span>     -->
+                  <!-- <button class="button-cancel" @click="resetForm('ser')">取 消</button>  -->
                 </el-form-item>
               </el-form>
          </div>
          </div>
 
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" :disabled="btnState" @click="subForm('basic')">保 存</button>    
-        <button class="button-cancel" @click="cancel('basic')">取 消</button>
+        <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
+        <input type="button" class="button-cancel" style="margin-left:30px" @click="cancel('basic')" value="取 消">
       </div>
     </el-dialog>
 
@@ -370,6 +372,7 @@
                 <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
+                <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -391,9 +394,9 @@
                 </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align:center">
-        <button class="button-large" @click="subImgText('a')">保 存</button>    
-        <button class="button-cancel" @click="resImgText('a')">取 消</button>
-      </div>
+              <input type="button" class="button-large" @click="subImgText('a')" value="保 存">
+              <input type="button" class="button-cancel" @click="resImgText('a')" value="取 消">
+            </div>
         </el-dialog>
       </div>
 
@@ -461,15 +464,35 @@ export default {
         callback(new Error("请输入价格"));
       }
     };
+    //折算时长
     var CONVERTHOURS = (rule, value, callback) => {
       var reg = /^\d+$/;
       if (value) {
-        if (reg.test(value)) {
-          callback();
-        } else {
-          callback(new Error("折算时长必须为数字值"));
-        }
-      } else {
+          if(this.goods_info.type == 'num'){
+            // console.log(value)
+            if(value>0.01 && value<1.5){
+              callback();
+            }else{
+              callback(new Error('请正确输入(0.01~1.5小时)'))
+            }
+          }
+
+         if(this.goods_info.type == 'area'){
+            if(value>0.01 && value<0.5){
+              callback()
+            }else{
+              callback(new Error('请正确输入(0.01~0.5小时)'))
+            }
+          }
+
+        if(this.goods_info.type == 'house'){
+            if(value>=2 && value<=12){
+                callback()
+            }else{
+              callback(new Error('请正确输入(2~12小时)'))
+            }
+      }
+     }else {
         callback(new Error("请输入折算时长"));
       }
     };
@@ -495,7 +518,8 @@ export default {
     };
     //服务图片
     var PICTURE = (rule,value,callback)=>{
-      if(this.picFile.length>0){
+      // callback()
+      if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
         callback(new Error("请添加服务图片"))
@@ -539,7 +563,7 @@ export default {
           value: "个"
         }
       ],
-      list: [],
+      listTable: [],
       listLoading: true,
       whether: true,
       sortList: [],
@@ -554,7 +578,10 @@ export default {
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        peoNum: [{ required: true, message: "请输入折算时长", trigger: "blur" }],
+        peoNum: [
+            { required: true, message: "请输入折算时长", trigger: "blur" }
+            // {required:true,validator:PEONUM,trigger:'blur'}
+          ],
         persons: [{ require: true, validator: PERSONS, trigger: "change" }]
       },
       basicForm: {
@@ -857,7 +884,7 @@ export default {
           this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
-            resolve(res.data);
+            rej(res.data);
           });
         }
       });
@@ -884,7 +911,7 @@ export default {
         //this.ossData = ossData;
         console.log(ossData.get("name"));
         console.log(ossData.get("key"));
-
+        console.log(that.$http,"that.$http")
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -894,6 +921,7 @@ export default {
           .then(res => {
             console.log(this.picList);
             this.picFile.push(ossData.get("key"));
+            // console.log(this.picFile,"this.picFile------------------")
             console.log(this.picFile, "picfile");
           })
           // .catch(error => {
@@ -1052,7 +1080,8 @@ export default {
         .then(res => {
           console.log(res.data, "res.data-------");
           this.total = res.data.data.count;
-          this.list = res.data.data.list;
+          this.listTable = res.data.data.list;
+          console.log(this.listTable,"listTable")
           this.listLoading = false;
           var num = 0;
           for (var i = 0; i < this.list.length; i++) {
@@ -1357,7 +1386,7 @@ export default {
           obj.sortId = that.basicForm.sortId; //所属分类编号
           obj.commoditys = that.basicForm.commoditys; //商品信息
           obj.name = that.basicForm.name; //项目名称
-          obj.pictures = this.picFile; //服务图片缩略图   有问题
+          obj.pictures = this.picFile; //服务图片缩略图
           obj.description = that.basicForm.description; //服务描述
           obj.sale = that.basicForm.sale; //是否上架
           obj.sortNum = that.basicForm.sortNum; //排序号
@@ -1562,7 +1591,7 @@ body {
 }
 .content-rowspan div {
   line-height: 30px;
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid #dfe6ec;
 }
 .content-rowspan div:last-child {
   border-bottom: 0;
@@ -1828,8 +1857,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   margin-top: 5px;
 }
 .el-icon-plus{
@@ -1856,6 +1885,18 @@ hr {
 }
 .tableSer:nth-of-type(3){
   color: red
+}
+.details{
+  text-align: center;
+}
+.tabRight .bottimPro .el-form-item__content{
+  /* margin-left: 0; */
+  width: 100%;
+  display: flex;
+  justify-content:center;
+}
+.tabRight .bottimPro .el-form-item__content input:nth-child(2){
+  margin-left: 30px;
 }
 /* .filter-container .diatable .el-dialog--small{
   width: 60% !important;
