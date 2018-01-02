@@ -4,9 +4,7 @@ let instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 
 })
-export function getTable() {
-  return instance.get(`/apiservice/a/sys/user/listData?orderBy=update_date`)
-}
-// export function addMana(obj) {
-//   return instance.post(`/apiservice//a/sys/office/saveData`, obj)
-// }
+//订单列表（分页）
+ export function getOrderTable(obj,pageNumber,pageSize) {
+   return instance.post(`/apiservice/a/service/order/orderInfo/listData?pageNo=`+pageNumber+'&pageSize='+pageSize, obj)
+ }

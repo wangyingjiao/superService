@@ -12,22 +12,22 @@
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="width200"  v-model="mechanism" placeholder="选择机构">
-						<el-option v-for="item in mechanismOptions" :key="item.key" :label="item.name" :value="item.key">
+			  <el-select clearable class="width200"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
+						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
 			  <el-select clearable class="width200"  v-model="payType" placeholder="选择服务站">
-						<el-option v-for="item in payTypeOptions" :key="item" :label="item" :value="item">
+						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable class="width200"  v-model="orderProject" placeholder="请选择" >
+			  <el-select clearable class="width200"  v-model="orderProject" placeholder="请选择">
 						<el-option v-for="item in orderProjectOptions" :key="item.key" :label="item.name" :value="item.key">
 						</el-option>
 			  </el-select>
-				<el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="searchCon"></el-input>
-				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="searchCon"></el-input>
+				<el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="customerName"></el-input>
+				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="customerPhone"></el-input>
+				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>
+				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input>
 				<el-input  v-else class="width200"  placeholder="请输入" v-model="searchCon"></el-input>			  
 			  <button type="button" class="search-button"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
@@ -46,7 +46,7 @@
 					<el-date-picker
 						v-model="severTime"
 						type="datetime"
-						format='yyyy-MM-dd hh:00'
+						@change="TimeChange"
 						class="width200"
 						placeholder="选择服务时间">
 					</el-date-picker>							  
@@ -58,40 +58,54 @@
 		  <button type="button" class="add-button exprotStyle"  @click="exportOrder">导出订单</button>
 			<div class="ordermanageTableWrap">	
 				<el-table 
-					:data="tabDataList" 
+					:data="tabDataList"
+					v-loading="listLoading" 
 					element-loading-text="正在加载" 
 					highlight-current-row
 					style="width:100%;"
 					stripe
 					>
-							<el-table-column align="center" width="110" label="订单编号"  prop="orderNum">
+							<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 							</el-table-column>
-							<el-table-column align="center"  width="150" label="客户姓名"  prop="custName">
+							<el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
 							</el-table-column>
-							<el-table-column  align="center" width="150" label="客户电话"  prop="custPhone">
+							<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
 							</el-table-column>
-							<el-table-column  align="center" width="150"  label="服务机构" prop="serverOffice">
+							<el-table-column  align="center" width="150"  label="服务机构" prop="orgName">
 							</el-table-column>
-							<el-table-column  align="center"  width="150" label="服务内容"  prop="serverCon">
+							<el-table-column  align="center"  width="150" label="服务内容"  prop="orderContent">
 							</el-table-column>
-							<el-table-column   align="center" width="150" label="服务费"    prop="serverFei">
+							<el-table-column   align="center" width="150" label="服务费"    prop="payPrice">
 							</el-table-column>
-							<el-table-column   align="center" width="150" label="服务时间"  prop="serverTime">	
+							<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
 							</el-table-column>
-							<el-table-column  align="center" width="150" label="订单状态"  prop="orderStatus">
+							<el-table-column  align="center" width="150" label="订单状态"  prop="">
+						    <template scope="scope">
+						    		<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
+										<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
+						    		<span v-if="scope.row.orderStatus =='finish'">已完成</span>
+										<span v-if="scope.row.orderStatus =='started'">已上门</span>
+						    		<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
+										<span v-if="scope.row.orderStatus =='success'">已成功</span>
+						    		<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
+								</template>									
 							</el-table-column>
-							<el-table-column   align="center" width="150" label="支付状态"  prop="payStatus">
+							<el-table-column   align="center" width="150" label="支付状态"  >
+						    <template scope="scope">
+						    		<span v-if="scope.row.payStatus =='payed'">已支付</span>
+										<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
+								</template>	
 							</el-table-column>
-							<el-table-column   align="center" width="150" label="下单时间"  prop="downTime">
+							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 							</el-table-column>	  
 							<el-table-column align="center" label="操作" width="150" >
 							<template scope="scope">
-									<el-button type="button" @click="lookInf(scope.row)">查看</el-button>
+									<el-button type="button" @click="lookInf(scope.row.id)">查看</el-button>
 							</template>
 							</el-table-column>
 				</el-table>
-				<div class="ordermanagePagination">
-					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
+				<div v-show="!listLoading" class="ordermanagePagination">
+					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
 					:page-sizes="[10,20,30, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 					</el-pagination>
 				</div>
@@ -102,87 +116,120 @@
 </template>
 
 <script>
-import {getTable} from "@/api/order";
+import {getOrderTable} from "@/api/order";
+import {getFuwu} from "@/api/staff";
 import util from "@/utils/date";
-//import { parseTime } from "@/utils";
 export default {
 	name: "",
   data() { 		
     return {
 		severTime:'',
 		dict:require("../../../static/dict.json"),
-		payTypeOptions:[1,2,3],
+		payTypeOptions:[],
 		orderTest:[],
-	  payType:null,
+	  payType:'',
 	  payStusOptions:[],
-		payStus:null,
-	  mechanismOptions:[
-		  { key: "1", name: "请选择机构" }
-	  ],
-	  mechanism:null,
+		payStus:'',
+	  mechanismOptions:[],
+	  mechanism:'',
 	  orderProjectOptions:[
 		  { key: "1", name: "客户姓名" },
 		  { key: "2", name: "客户手机号" },
 		  { key: "3", name: "订单编号" },
 		  { key: "4", name: "项目名称" }
 	  ],
-	  orderProject:null,
-	  searchCon:'',//搜索框的值初始化
-	  activeName: 'whole',//当前tabs
+	  orderProject:'',
+		searchCon:'',//搜索框的值初始化
+		customerName:'',
+		customerPhone:'',
+		orderNumber:'',
+		orderContent:'',
+	  activeName:'whole',//当前tabs
 	  startTime:'',//开始时间
 	  endTime:'',//结束时间
-	  tabDataList:[
-			{
-				orderNum:'2222',
-				custName:'***',
-				custPhone:'13800138000',
-				serverOffice:'国安社区',
-				serverCon:'服务内容',
-				serverFei:'服务费',
-				serverTime:'2017-10-10 20:04:30',
-				orderStatus:'已取消',
-				payStatus:'已支付',
-				downTime:'2017-10-09 20:04:30'
-			},
-			{
-				orderNum:'11111',
-				custName:'***',
-				custPhone:'13800138001',
-				serverOffice:'国安社区',
-				serverCon:'服务内容',
-				serverFei:'服务费',
-				serverTime:'2017-10-10 20:04:30',
-				orderStatus:'已取消',
-				payStatus:'已支付',
-				downTime:'2017-10-09 20:04:30'
-			}			
-		],//表格数据初始化
-	  size:5,
-	  total:100,
+	  tabDataList:[],//表格数据
+	  size:10,
+		total:null,
+		jumpPage:1,
+		pageNumber:1,
+		listLoading:false,
     };
   },
   methods: {
+	TimeChange(value){
+			if(value != undefined){ 
+					var str=value.substring(14,16)						
+          if(Number(str) >= 30){
+							this.severTime=util.formatDate.format(
+					      new Date(this.severTime),
+					       "yyyy-MM-dd hh:30:00"
+			       	);
+					}else{
+							this.severTime=util.formatDate.format(
+					      new Date(this.severTime),
+					       "yyyy-MM-dd hh:00:00"
+			       	);
+					}
+			}			
+	},
+	//机构变化事件
+	orgChange(val){
+		if(val != ''){
+				var obj={
+					orgId:val,
+				}
+				getFuwu(obj).then(res => {
+						if(res.data.code === 1){
+								this.payTypeOptions=res.data.data;
+						}else{
+						}
+				});	
+		}
+	},
   //获取表格数据
-	getTableData(){ 
-	  //getTable().then(res => {
-        //this.tabDataList = res.data.data.list;
-      //});
+	getTableData(pramsObj,pageNo,pageSize){
+		this.listLoading = true;
+		var obj=pramsObj; 
+	  getOrderTable(obj,pageNo,pageSize).then(res => {
+			  if(res.data.code === 1){
+					  this.tabDataList = res.data.data.page.list;										
+						this.mechanismOptions=res.data.data.orgList
+						this.total=res.data.data.page.count
+						this.listLoading = false
+				}else{
+            this.listLoading = false
+				}
+    });
 	},
 	//tabs操作需要请求表格数据
 	handleClick(tab, event) {
-				this.activeName=tab.name
-				console.log(this.activeName);
+				if(tab.name == 'whole'){
+					this.activeName='';
+				}else{
+					this.activeName=tab.name;
+				}				
+				this.payStus='';
+				this.mechanism='';
+				this.payType='';
+				this.orderProject='';
+				this.searchCon='';
+				this.startTime='';
+				this.endTime='';
+				this.severTime='';
+	      var obj={
+					orderStatus:this.activeName
+				};
+				this.pageNumber=1;
+				this.jumpPage=1;
+				this.getTableData(obj,this.pageNumber,this.size);				
     },
 	//全局search按钮
 	localSearch(){
 		//服务时间格式化		
 		if(this.severTime !=''){
-    		var severTime = util.formatDate.format(
-					new Date(this.severTime),
-					"yyyy-MM-dd hh:00"
-				);
+          
 		}else{
-			  severTime=''
+			  this.severTime=null
 		}	
 		//开始时间格式化	
 		if(this.startTime !=''){
@@ -191,7 +238,7 @@ export default {
 					"yyyy-MM-dd hh:mm:ss"
 				);
 		}else{
-			  startTime=''
+			  startTime=null
 		}
 		//结束时间格式化 
     if(this.endTime != ''){
@@ -200,29 +247,62 @@ export default {
 				"yyyy-MM-dd hh:mm:ss"
 			);
 		}else{
-			endTime=''
+			endTime=null
 		}
-			
-		console.log(severTime);
+		if(this.activeName == 'whole'){
+			this.activeName='';
+		}else{
+			this.activeName=this.activeName;
+		}
+		if(this.orderProject == ''){
+			  this.customerName='';
+			  this.customerPhone='';
+			  this.orderNumber='';
+			  this.orderContent='';
+		}	
+		var obj={
+			orderStatus:this.activeName,
+			payStatus:this.payStus,
+			orgId:this.mechanism,
+			stationId:this.payType,
+			customerName:this.customerName,
+			customerPhone:this.customerPhone,
+			orderNumber:this.orderNumber,
+			orderContent:this.orderContent,
+			orderTimeStart:startTime,
+			orderTimeEnd:endTime,
+			serviceTime:this.severTime,
+		};
+		this.pageNumber=1;
+		this.jumpPage=1;		
+		this.getTableData(obj,this.pageNumber,this.size);	
 	},
 	//导出订单按钮
 	exportOrder(){
 	},
 	//查看
-	lookInf(row){
-		this.$router.push({path:'/clean/orderinfo'})
+	lookInf(id){
+		this.$router.push({path:'/clean/orderinfo',query: { id:id}})
 	},	
 	//每页条数多少改变
 	handleSizeChange(val){
+				this.size=val;
+				var obj={
+				}
+				this.getTableData(obj,this.pageNumber,this.size);		
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
+			this.pageNumber=val;
+			var obj={
+			}
+			this.getTableData(obj,this.pageNumber,this.size);		
 	},
 
 	
   },
   mounted() {
-    this.getTableData();
+		this.getTableData();
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;
   }

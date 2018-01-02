@@ -27,7 +27,7 @@
 
     <el-table 
     :key='tableKey' 
-    :data="list" 
+    :data="listTable" 
     v-loading="listLoading" 
     stripe
     fit 
@@ -43,7 +43,7 @@
 
       <el-table-column align="center" label="图片" prop="pictures">
         <template scope="scope">
-          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
+          <span v-if="scope.row.pictures!=undefined"><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -352,8 +352,10 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
+                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
+                  <!-- <span class="button-large" @click="submitForm('goods_info')">添 加</span>     -->
+                  <!-- <button class="button-cancel" @click="resetForm('ser')">取 消</button>  -->
                 </el-form-item>
               </el-form>
          </div>
@@ -500,7 +502,8 @@ export default {
     };
     //服务图片
     var PICTURE = (rule,value,callback)=>{
-      if(this.picFile.length>0){
+      // callback()
+      if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
         callback(new Error("请添加服务图片"))
@@ -544,7 +547,7 @@ export default {
           value: "个"
         }
       ],
-      list: [],
+      listTable: [],
       listLoading: true,
       whether: true,
       sortList: [],
@@ -802,7 +805,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -859,7 +862,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -889,7 +892,7 @@ export default {
         //this.ossData = ossData;
         console.log(ossData.get("name"));
         console.log(ossData.get("key"));
-
+        console.log(that.$http,"that.$http")
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -899,6 +902,7 @@ export default {
           .then(res => {
             console.log(this.picList);
             this.picFile.push(ossData.get("key"));
+            // console.log(this.picFile,"this.picFile------------------")
             console.log(this.picFile, "picfile");
           })
           .catch(error => {
@@ -1057,7 +1061,8 @@ export default {
         .then(res => {
           console.log(res.data, "res.data-------");
           this.total = res.data.data.count;
-          this.list = res.data.data.list;
+          this.listTable = res.data.data.list;
+          console.log(this.listTable,"listTable")
           this.listLoading = false;
           var num = 0;
           for (var i = 0; i < this.list.length; i++) {
@@ -1362,7 +1367,7 @@ export default {
           obj.sortId = that.basicForm.sortId; //所属分类编号
           obj.commoditys = that.basicForm.commoditys; //商品信息
           obj.name = that.basicForm.name; //项目名称
-          obj.pictures = this.picFile; //服务图片缩略图   有问题
+          obj.pictures = this.picFile; //服务图片缩略图
           obj.description = that.basicForm.description; //服务描述
           obj.sale = that.basicForm.sale; //是否上架
           obj.sortNum = that.basicForm.sortNum; //排序号
@@ -1833,8 +1838,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   margin-top: 5px;
 }
 .el-icon-plus{

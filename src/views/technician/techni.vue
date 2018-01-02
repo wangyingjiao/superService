@@ -1257,7 +1257,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -2391,15 +2391,15 @@ body {
   color: #fff
 }
 .headImag{
-  width:89px;
-  height:89px;
+  width:100px;
+  height:100px;
   display:inline-block;
   border-radius:50%;
   overflow: hidden;
 }
 .headImag img{
-  width: 89px;
-  height: 89px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
 }
 .button-large{

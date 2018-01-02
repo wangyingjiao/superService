@@ -286,7 +286,7 @@
                             </div>
                             <div style="margin:0px 10px 10px;">
                                 <span class="button-large btn-styl" @click="techClick">确认</span>
-                                <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span>
+                                <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消1</span>
                             </div>
                             </div>
                         </div>
@@ -1263,7 +1263,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
