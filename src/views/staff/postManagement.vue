@@ -11,7 +11,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi" v-if="btnShow.indexOf('role_insert') >= 0"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
     <el-table
       :key="tableKey"
       :data="list"
@@ -36,8 +36,8 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') >= 0" @click="handleUpdate(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('role_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
+          <el-button class="el-icon-edit ceshi3"  @click="handleUpdate(scope.row)"></el-button>
+          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
 
         </template>
       </el-table-column>
