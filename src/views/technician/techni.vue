@@ -16,7 +16,7 @@
           <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" style="width:200px;margin-left:20px;"></el-input>
+        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" style="width:200px;"></el-input>
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
@@ -533,7 +533,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row v-if="personal.jobNature!='part_time'">
             <el-col :span="17">
               <el-form-item label="工作时间:" prop="workTimes">
                   <div class="tech-order-jn" style="width:100%">
@@ -575,135 +575,15 @@
                       </div>
                       <div style="margin:0px 10px 10px;">
                         <span class="button-large btn-styl" @click="techClick">确认</span>
-                        <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
+                        <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                        <!-- <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button> -->
                       </div>
                     </div>
                   </div>
                 </el-form-item>
             </el-col>
           </el-row>
-          <!-- <li>
-            <div>
-              	<p>
-					<el-form-item label="选择城市:" prop="serviceCityName">
-						<el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:300px" @change="chooseChange">
-							<el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
-						</el-option>
-						</el-select>
-					</el-form-item>
-              </p>
-            </div>
-            <div>
-              <p>
-				<el-form-item label="岗位性质:" prop="jobNature">
-					<el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:300px">
-						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-						</el-option>
-					</el-select>
-				</el-form-item>
-              </p>
-            </div>
-          </li> -->
-          <!-- <li>
-            <div>
-              <p>
-                <el-form-item label="所属服务站:" prop="stationId">
-                  <el-select v-model="personal.stationId" clearable placeholder="请选择" style="width:300px">
-                    <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-              </p>
-            </div>
-            <div>
-              <p>
-                  <el-form-item label="岗位状态:" prop="jobStatus">
-                      <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:300px">
-                        <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
-                        </el-option>
-                      </el-select>
-                  </el-form-item>
-              </p>
-            </div>
-          </li> -->
-          <!-- <li>
-            <div>
-                <p>
-                  <el-form-item label="工作年限:" prop="workTime">
-                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:300px">
-                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </p>
-            </div>
-            <div>
-              <p>
-                <el-form-item label="选择技能:" prop="skillIds">
-                  <el-select v-model="personal.skillIds" multiple placeholder="请选择1" style="width:300px">
-                    <el-option
-                    v-for="(item,index) in sexTypeo"
-                    :key="index"
-                    :label="item.name"
-                    :value="item.id">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-              </p>
-            </div>
-          </li> -->
-          <!-- <li v-show="flagso">
-            <div>
-              <p><span class="tech-span"></span></p>
-              <div class="tech-order-jn-sont">
-              </div>
-            </div>
-          </li> -->
           <el-row>
-              <!-- <el-col :span="12">
-                <el-form-item label="工作时间:" prop="workTimes">
-                  <div class="tech-order-jn" style="width:100%">
-                    <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                    <div class="tech-order-jn-sons" v-show="isB">
-                      <div style="margin:0 10px;">
-                        <p>新增日期</p>
-                        <div>
-
-                          <div style="display:flex;">
-                            <div class="selfCheckBoxsday">日期</div>
-                            <input type="button" class="selfCheckBoxs tech-order-posis"
-                              :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
-                              @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
-                              :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}"
-                              :value="item.name"
-                            >
-                          </div>
-                        </div>
-                        <div style="margin-top:10px;">
-                          <div class="selfCheckBoxsday">时段</div>
-                          <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                              start: '00:00',
-                              step: '00:30',
-                              end: '24:00'
-                            }" class="tech-daytim">
-                          </el-time-select>
-                          <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                              start: '00:00',
-                              step: '00:30',
-                              end: '24:00',
-                              minTime: startTime
-                            }">
-                          </el-time-select>
-                        </div>
-                      </div>
-                      <div style="margin:0px 10px 10px;">
-                        <span class="button-large btn-styl" @click="techClick">确认1</span>
-                        <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
-                      </div>
-                    </div>
-                  </div>
-                </el-form-item>
-              </el-col> -->
               <el-col :span="17" v-show="teachArr.length>0">
                 <el-form-item>
                   <ul class="working" style="width:100%">
@@ -722,75 +602,15 @@
                 </el-form-item>
               </el-col>
           </el-row>
-          <!-- <li v-if="personal.jobNature!='part_time'">
-            <div>
-              <el-form-item label="工作时间:" prop="workTimes">
-                <div class="tech-order-jn">
-                  <button class="tech-order-btn" @click="addtime"> &#10010; 添加时间</button>
-                  <div class="tech-order-jn-sons" v-show="isB">
-                    <div style="margin:0 10px;">
-                      <p>新增日期</p>
-                      <div>
-
-                        <div style="display:flex;">
-                          <div class="selfCheckBoxsday">日期</div>
-                          <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
-                            {{item.name}}
-                          </button>
-                        </div>
-                      </div>
-                      <div style="margin-top:10px;">
-                        <div class="selfCheckBoxsday">时段</div>
-                        <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                            start: '00:00',
-                            step: '00:30',
-                            end: '24:00'
-                          }" class="tech-daytim">
-                        </el-time-select>
-                        <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                            start: '00:00',
-                            step: '00:30',
-                            end: '24:00',
-                            minTime: startTime
-                          }">
-                        </el-time-select>
-                      </div>
-                    </div>
-                    <div style="margin:0px 10px 10px;">
-                      <button class="button-large btn-styl" @click="techClick">确认</button>
-                      <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button>
-                    </div>
-                  </div>
-                </div>
-              </el-form-item>
-              </div>
-
-            <div v-show="teachArr.length>0">
-              <ul class="working">
-                <li v-for="(item,index) in teachArr" :key="index">
-                  <div>
-                    <div class="woking-div">
-                      <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
-                      <div class="time">{{item.startTime+"~"+item.endTime}}</div>
-                    </div>
-                  </div>
-                  <div>
-                    <i class="i-delete" @click="deletes(index)">X</i>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </li> -->
           <li id="confirmation">
-                <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span>
+                <input type="button" class="button-large-fourth" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
+                <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
                 <span class="button-cancel-fourth" @click="handleClose('personal')">取消</span>
           </li>
         </ul>
 		 </ul>
 		</el-form>
       </div>
-
-      <!-- <span slot="footer" class="dialog-footer"></span> -->
     </el-dialog>
   </div>
 </template>
@@ -959,6 +779,7 @@ export default {
     };
 
     return {
+      btnState:false,
       kaishi:'',
       jiehsu:'',
       backId:'',//身份证头像
@@ -1436,7 +1257,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -1700,19 +1521,12 @@ export default {
       } else {
         this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
       }
-      //  console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
+       console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
       // console.log(this.roomSelNum,"this.roomSelNum-----")
       item.show = !item.show;
       //  console.log(item)
     },
     techClick() {
-      if (this.disbArr.length > 0) {
-        this.disbArr.map(item => {
-          if (this.roomSelNum.indexOf(item) != -1) {
-            this.remove(this.roomSelNum, this.roomSel1Arr, item);
-          }
-        });
-      }
       if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
         var obj = {};
         obj.startTime = this.startTime
@@ -1725,7 +1539,14 @@ export default {
         this.endTime = ''
       }else{
         this.$message.error("请选择日期、时段")
-        return
+        return false
+      }
+      if (this.disbArr.length > 0) {
+        this.disbArr.map(item => {
+          if (this.roomSelNum.indexOf(item) != -1) {
+            this.remove(this.roomSelNum, this.roomSel1Arr, item);
+          }
+        });
       }
     },
     techDelete(item) {
@@ -1801,6 +1622,10 @@ export default {
     },
     //个人资料保存
     submitFormPer(formName) {
+      this.btnState = true
+      setTimeout(()=>{
+        this.btnState = false
+      },1000)
       this.$refs[formName].validate(val=>{
         if(val){
           // this.personal.workTimes.workTime = this.disbArr
@@ -1811,9 +1636,9 @@ export default {
                 message:"保存成功",
                 type:"success"
               })
+              this.dialogVisible = false;
                this.getList(1,6,{})
                this.this.techniList = [];
-               this.dialogVisible = false;
             }else{
               this.$message({
                 message:data.data.data,
@@ -1996,7 +1821,7 @@ body {
 .tech-section-right {
   display: flex;
   justify-content: flex-end;
-  margin-top: 45px;
+  /* margin-top: 45px; */
 }
 
 .tech-section-ul {
@@ -2566,15 +2391,15 @@ body {
   color: #fff
 }
 .headImag{
-  width:89px;
-  height:89px;
+  width:100px;
+  height:100px;
   display:inline-block;
   border-radius:50%;
   overflow: hidden;
 }
 .headImag img{
-  width: 89px;
-  height: 89px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
 }
 .button-large{

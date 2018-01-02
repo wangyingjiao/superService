@@ -12,12 +12,12 @@
         </el-option>
       </el-select>
 
-      <el-select clearable style="width: 200px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
+      <el-select clearable style="width: 200px; margin-left:20px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
       </el-select>
 
-      <el-input style="width: 200px;" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
+      <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
       <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
   </div>
@@ -27,7 +27,7 @@
 
     <el-table 
     :key='tableKey' 
-    :data="list" 
+    :data="listTable" 
     v-loading="listLoading" 
     stripe
     fit 
@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片" prop="pictures">
-        <template scope="scope">
-          <span><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
+      <el-table-column align="center" label="图片">
+        <template scope="scope" >
+          <span v-if="scope.row.pictures != undefined"><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -171,8 +171,7 @@
                     </el-dialog> -->
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                         list-type="picture-card"
-                         
+                          list-type="picture-card"
                           :on-preview="handlePreview"
                           :on-remove="handleRemovePic"
                           :before-upload="handPic"
@@ -304,8 +303,6 @@
 
                 <el-form-item label="计量方式:" prop="type">
                   <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:70%">
-                     <!-- <el-option v-for="item in measure" :key="item.value" :label="item.label" :value="item.value">
-                     </el-option> -->
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
@@ -317,7 +314,6 @@
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
                   <el-input v-model="goods_info.convertHours" style="width:70%">
-                    <!-- <template slot="append">小时/{{goods_info.convertHours}}</template> -->
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
@@ -352,8 +348,10 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <button class="button-large" @click="submitForm('goods_info')">添 加</button>    
-                  <button class="button-cancel" @click="resetForm('ser')">取 消</button> 
+                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
+                  <!-- <span class="button-large" @click="submitForm('goods_info')">添 加</span>     -->
+                  <!-- <button class="button-cancel" @click="resetForm('ser')">取 消</button>  -->
                 </el-form-item>
               </el-form>
          </div>
@@ -374,6 +372,7 @@
                 <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
+                <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -499,7 +498,8 @@ export default {
     };
     //服务图片
     var PICTURE = (rule,value,callback)=>{
-      if(this.picFile.length>0){
+      // callback()
+      if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
         callback(new Error("请添加服务图片"))
@@ -543,7 +543,7 @@ export default {
           value: "个"
         }
       ],
-      list: [],
+      listTable: [],
       listLoading: true,
       whether: true,
       sortList: [],
@@ -801,7 +801,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -858,7 +858,7 @@ export default {
           console.log("签名没过期");
           resolve(res);
         } else {
-          this.$http.get("/api/oss/getSign").then(res => {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
@@ -888,7 +888,7 @@ export default {
         //this.ossData = ossData;
         console.log(ossData.get("name"));
         console.log(ossData.get("key"));
-
+        console.log(that.$http,"that.$http")
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -898,11 +898,12 @@ export default {
           .then(res => {
             console.log(this.picList);
             this.picFile.push(ossData.get("key"));
+            // console.log(this.picFile,"this.picFile------------------")
             console.log(this.picFile, "picfile");
           })
-          .catch(error => {
-            console.log(error, "错误");
-          });
+          // .catch(error => {
+          //   console.log(error, "错误");
+          // });
       });
     },
     //编号失焦事件
@@ -1056,7 +1057,8 @@ export default {
         .then(res => {
           console.log(res.data, "res.data-------");
           this.total = res.data.data.count;
-          this.list = res.data.data.list;
+          this.listTable = res.data.data.list;
+          console.log(this.listTable,"listTable")
           this.listLoading = false;
           var num = 0;
           for (var i = 0; i < this.list.length; i++) {
@@ -1361,7 +1363,7 @@ export default {
           obj.sortId = that.basicForm.sortId; //所属分类编号
           obj.commoditys = that.basicForm.commoditys; //商品信息
           obj.name = that.basicForm.name; //项目名称
-          obj.pictures = this.picFile; //服务图片缩略图   有问题
+          obj.pictures = this.picFile; //服务图片缩略图
           obj.description = that.basicForm.description; //服务描述
           obj.sale = that.basicForm.sale; //是否上架
           obj.sortNum = that.basicForm.sortNum; //排序号
@@ -1566,7 +1568,7 @@ body {
 }
 .content-rowspan div {
   line-height: 30px;
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid #dfe6ec;
 }
 .content-rowspan div:last-child {
   border-bottom: 0;
@@ -1832,8 +1834,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   margin-top: 5px;
 }
 .el-icon-plus{
@@ -1860,6 +1862,9 @@ hr {
 }
 .tableSer:nth-of-type(3){
   color: red
+}
+.details{
+  text-align: center;
 }
 /* .filter-container .diatable .el-dialog--small{
   width: 60% !important;
