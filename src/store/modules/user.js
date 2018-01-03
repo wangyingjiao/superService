@@ -52,6 +52,7 @@ const user = {
             console.log(response.data.data.JSESSIONID)
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
+            localStorage.setItem('orgId', response.data.data.user.organization.id)
             const data = response.data
             setSession(response.data.data.JSESSIONID)
             setToken(data.token)
@@ -112,6 +113,8 @@ const user = {
           commit('SET_ROLES', [])
           removeToken()
           localStorage.removeItem('name')
+          localStorage.removeItem('dataScope')
+          localStorage.removeItem('orgId')
           resolve()
         }).catch(error => {
           reject(error)
