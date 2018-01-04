@@ -720,5 +720,8 @@ export default {
 [v-cloak] {
   display: none;
 }
+.el-select .el-tag span{
+  line-height: 23px;
+}
 </style>
 
