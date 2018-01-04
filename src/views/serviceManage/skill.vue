@@ -39,7 +39,7 @@
               <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" class="width300">
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" style="width:300px;"  class="selfTabs">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -241,8 +241,10 @@
             editTech(obj).then(res => {
                 if (res.data.code === 1) {
                   this.ruleForm2.name=res.data.data.info.name;
-                  var ids=res.data.data.info.sortIds
-                  this.selectionreturn(ids);//分类回显                                            
+                  if(res.data.data.info.sortIds != undefined){
+                      var ids=res.data.data.info.sortIds
+                      this.selectionreturn(ids);//分类回显
+                  }                                           
                   if(res.data.data.info.technicians != undefined){
                       this.tabOptions=res.data.data.info.technicians;
                       this.selectionreturn1();
@@ -485,6 +487,9 @@
    .width200{width:200px;}
    .width220{width:220px;}
    .width300{width:300px;}
+   .selfTabs .el-select .el-tag{
+     line-height:23px;
+   }
    .selfMarLef10{margin-left:10px;}
    .selfInmpotInf{font-size: 12px; margin-top: 10px; color: red;}
    .selfFLORight{float:right}
