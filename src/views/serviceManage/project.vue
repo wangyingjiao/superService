@@ -1187,6 +1187,7 @@ export default {
     upload(file) {
       // 图文上传
       let pro = new Promise((resolve, rej) => {
+        // 从cookies中取签名，判断签名有没有过期
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
@@ -1218,12 +1219,7 @@ export default {
         ossData.append("OSSAccessKeyId", data.accessid);
         ossData.append("success_action_status", 201);
         ossData.append("signature", data.signature);
-        // 添加文件
         ossData.append("file", file.file, file.file.name);
-        //this.ossData = ossData;
-        console.log(ossData.get("name"));
-        console.log(ossData.get("key"));
-
         that.$http
           .post(data.host, ossData, {
             headers: {
