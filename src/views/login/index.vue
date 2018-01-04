@@ -7,14 +7,14 @@
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="登录账号" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="登录账号(手机号)" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <icon-svg icon-class="mima"></icon-svg>
         </span>
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
-          placeholder="密码"></el-input>
+          placeholder="密码(6-20位数字、字母组成)"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -43,8 +43,8 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
+      if (value == "") {
+        callback(new Error('密码不能为空'))
       } else {
         callback()
       }
