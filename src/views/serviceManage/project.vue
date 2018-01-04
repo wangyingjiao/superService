@@ -129,13 +129,7 @@
                 label-width="90px" 
                  ref="basic" 
                 :rules="basicRles" >
-                <el-form-item label="项目名称：" prop="name">
-                  <el-input
-                  style="width:90%"
-                  v-model="basicForm.name"
-                  placeholder="请输入2-10位的服务站名称"></el-input>
-                </el-form-item>
-
+                
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
                   <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
@@ -143,7 +137,14 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item label="定向城市：" class="seize"> 
+                <el-form-item label="项目名称：" prop="name">
+                  <el-input
+                  style="width:90%"
+                  v-model="basicForm.name"
+                  placeholder="请输入2-10位的服务站名称"></el-input>
+                </el-form-item>
+
+                <!-- <el-form-item label="定向城市：" class="seize"> 
                    <div class="cityClass">
                         <div :class="{'techTime-green':basicForm.cityCodes.indexOf(item.cityCode)!=-1}" class="selfCheckBox tech-selfbox tech-center" v-for="(item,index) in cityArr" :key="index" @click="clickClick(item)">
                           {{item.cityName}}
@@ -151,24 +152,10 @@
                     </div>     
                     <ul>
                     </ul>
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item label="服务图片：" prop="picture">
                   <div class="upload-demo upload_box" style="width:90%">
-                      <!-- <el-upload
-                        action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                        list-type="picture-card"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemovePic"
-                        :before-upload="handPic"
-                        :http-request="picUpload"
-                        :file-list="picList"
-                        >
-                        <i class="el-icon-plus"></i>
-                    </el-upload>
-                    <el-dialog v-model="dialogVisible" size="tiny">
-                        <img width="100%" :src="dialogImageUrl" alt="">
-                    </el-dialog> -->
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
@@ -197,6 +184,30 @@
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
+
+                <el-form-item label="系统标签：">
+                   <div class="custom">
+                        <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
+                    </div>
+                    <div class="labelList" v-show="alreadyArr.length>0 || labelClickCon.length>0">
+                        <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
+                          <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
+                        </span>
+                    </div>
+                    <div class="el-upload__tip">* 最多设置3个系统标签</div>
+                </el-form-item>
+
+                <el-form-item label="自定义标签：">
+                    <div class="custom">
+                        <span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
+                    </div>
+                    <div class="labelList" v-show="CustomLabelList.length>0">
+                        <span v-for="(item,index) in CustomLabelList" :key="index">{{item}}
+                          <i @click="deleteLabel(index)" class="cursor" style="font-weight: bolder;">X</i>
+                        </span>
+                    </div>
+                     <div class="el-upload__tip">* 最多设置3个自定义标签</div>
+                </el-form-item> 
             
                 <el-form-item label="是否上架：" class="seize">
                     <el-switch
@@ -209,15 +220,46 @@
                     </el-switch>
                 </el-form-item>
 
-                <el-form-item label="排序号：" class="seize">
+                <!-- <el-form-item label="排序号：" class="seize">
                     <el-input
                       v-model="basicForm.sortNum"
                       style="width:90%"
                       placeholder="请输入排序号（值越小越靠前）"></el-input>
-                </el-form-item>
+                </el-form-item> -->
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
-              <el-table
+    <!-- 商品信息表格 -->
+                <el-table :data="tableData" border style="width: 100%" v-show="tableData.length>0">
+                  <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
+                  <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
+                  <el-table-column prop="type" align="center" label="计量方式"> 
+                    <template scope="scope">
+                      <span v-show="scope.row.type=='num'">按数量</span>
+                      <span v-show="scope.row.type=='area'">按面积</span>
+                      <span v-show="scope.row.type=='house'">按居室</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="price" align="center" label="价格"> 
+                    <template scope="scope">
+                      <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
+                    </template>  
+                  </el-table-column>
+                  <el-table-column prop="convertHours" align="center" label="折算时长">
+                    <template scope="scope">
+                      <span>{{scope.row.convertHours+'小时/'+scope.row.unit}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="startPerNum" align="center" label="起步人数"> </el-table-column>
+                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> </el-table-column>
+                  <el-table-column prop="minPurchase" align="center" label="起购数量"> </el-table-column>
+                  <el-table-column label="操作" width="150" align="center"> 
+                    <template scope="scope">
+                      <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
+                      <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              <!-- <el-table
                 v-show="basicForm.commoditys.length>0"
                 border 
                 :data="basicForm.commoditys"
@@ -246,7 +288,7 @@
                     <template scope="scope">
                       <div class="content-rowspan">
                         <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.critical}}
+                          {{item.cappingPerNum}}
                         </div>
                       </div>
                     </template>
@@ -255,7 +297,7 @@
                     <template scope="scope">
                       <div class="content-rowspan">
                         <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.quantity}}
+                          {{item.startPerNum}}
                         </div>
                       </div>
                     </template>
@@ -267,13 +309,12 @@
                 <el-table-column align="center" label="操作" width="150">
                  <template scope="scope">
                    <span></span>
-                    <!-- <el-button type="text" size="small"  @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
                     <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
                     <span class="tableSer"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
-                    <!-- <el-button type="danger" size="small"  @click="tableHandleDelete(scope.$index, scope.row)">删除</el-button> -->
                   </template>
                 </el-table-column>
-              </el-table>
+              </el-table> -->
+          <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addComm = !addComm">
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
@@ -318,9 +359,22 @@
                   </el-input>
                 </el-form-item>
              
-                
+                <el-form-item label="起步人数:" class="seize">
+                  <el-input
+                    placeholder="请输入起步人数"
+                    style="width:70%"
+                    v-model="goods_info.startPerNum"></el-input>
+                </el-form-item>
 
-                <el-form-item label="派人数量:" class="send" prop="persons">
+                <el-form-item label="封顶人数:" class="seize">
+                  <el-input
+                    placeholder="请输入封顶人数"
+                    style="width:70%"
+                    v-model="goods_info.cappingPerNum"></el-input>
+                </el-form-item>
+
+
+                <!-- <el-form-item label="派人数量:" class="send" prop="persons">
                    <table class="table-pro" style="width:70%">
                      <tr>
                        <th @click="addTable">+</th>
@@ -333,12 +387,11 @@
                           <input class="table-input" type="text" v-model="item.critical">
                         </td>
                         <td>
-                          <input class="table-input" type="text" v-model="item.quantity">
+                          <input class="table-input" type="text" v-model="item.startPerNum">
                         </td>
                      </tr>
                    </table>
-                   <!-- <div class="el-form-item__error" v-if="personsTime">请输入折算时长</div> -->
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item label="起购数量:" class="seize">
                   <el-input
@@ -350,18 +403,91 @@
                 <el-form-item class="seize bottimPro" style="width:70%">
                   <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
-                  <!-- <span class="button-large" @click="submitForm('goods_info')">添 加</span>     -->
-                  <!-- <button class="button-cancel" @click="resetForm('ser')">取 消</button>  -->
                 </el-form-item>
               </el-form>
-         </div>
-         </div>
+          </div>
+          </div>
+              <div slot="footer" class="dialog-footer" style="text-align:center">
+                <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
+                <input type="button" class="button-cancel" style="margin-left:30px" @click="cancel('basic')" value="取 消">
+              </div>
+            </el-dialog>
+    <!-- 商品信息 完成 -->
+    <!--自定义标签 -->
+      <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
+        <el-form :model="labelObj" :rules="labelRules">
+          <el-form-item label="活动名称" :label-width="formLabelWidth" prop="labelName">
+            <el-input v-model="labelObj.labelName" placeholder="标签长度2~10位"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <input type="button" class="button-large" @click="CustomLabel" value="确 定">
+          <input type="button" class="button-cancel" @click="addLabel = false" value="取 消">
+        </div>
+      </el-dialog>
+    <!-- 自定义标签结束-->
 
-      <div slot="footer" class="dialog-footer" style="text-align:center">
-        <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
-        <input type="button" class="button-cancel" style="margin-left:30px" @click="cancel('basic')" value="取 消">
-      </div>
-    </el-dialog>
+    <!--系统标签-->
+      <el-dialog title="选择标签" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
+        <el-row>
+          <el-col :span="24">
+              <div class="already">
+                  当前选择标签：
+                  <span v-for="item in labelClickCon" :key="item.value">{{item.label}}
+                    <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                  </span>
+                </div>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24" v-show="alreadyArr.length>0">
+            <div class="already">
+                  已添加标签：
+                  <span v-for="item in alreadyArr" :key="item.value">{{item.label}}
+                    <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                  </span>
+            </div>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+              <div style="overflow:hidden">
+                  <ul>
+                      <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
+                        {{item.label}}
+                        <i class="el-icon-arrow-right"></i>
+                      </li>
+                  </ul>
+                  <ul v-show="systemOptions2 !== undefined && systemOptions2.length>0">
+                      <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
+                        {{item.label}}<i class="el-icon-arrow-right"></i>
+                      </li>
+                  </ul>
+                  <ul v-show="systemOptions3 !== undefined && systemOptions3.length>0">
+                      <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
+                        {{item.label}}<i class="el-icon-arrow-right"></i>
+                      </li>
+                  </ul>
+                  <div class="labelSystem" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
+                    <!-- <span v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" :class="{'techTime-green':labelClickArr.indexOf(item.value)!=-1}" class="cursor">
+                      {{item.label}}
+                    </span> -->
+                    <input type="button" :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1" 
+                            v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" 
+                            :class="{'techTime-green':labelClickArr.indexOf(item.value)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
+                            class="cursor" :value="item.label">
+                  </div>
+              </div>
+          </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+          <input type="button" class="button-large" @click="SystemLabel = false" value="确 定">
+          <input type="button" class="button-cancel" @click="SystemLabel = false" value="取 消">
+        </div>
+      </el-dialog>
+    <!-- 系统标签结束 -->
 
     <!-- 图文详情 -->
       <div class="image-text">
@@ -399,6 +525,7 @@
             </div>
         </el-dialog>
       </div>
+    <!-- 图文详情 完成 -->
 
   </div>
 </div>
@@ -430,6 +557,168 @@ import {
 //挂载数据
 const option1 = ["北京", "北京"];
 var arr = [];
+var systemOptions = [
+  {
+    value:'1',
+    label:'推荐商品',
+    children:[
+      {
+        value:'1-1',
+        label:'推荐商品',
+        children:[
+          {
+            value:'1-1-1',
+            label:'戴尔电脑',
+            children:[
+              {
+                value:'1-1-1-1',
+                label:'戴尔电脑a'
+              },
+              {
+                value:'1-1-1-2',
+                label:'戴尔电脑b'
+              },
+              {
+                value:'1-1-1-3',
+                label:'戴尔电脑c'
+              },
+              {
+                value:'1-1-1-4',
+                label:'戴尔电脑c戴尔电脑c'
+              },
+              {
+                value:'1-1-1-5',
+                label:'戴尔电脑c戴尔电脑c戴尔电脑c'
+              },
+              {
+                value:'1-1-1-6',
+                label:'戴尔电脑c'
+              }
+            ]
+          },
+          {
+            value:'1-1-2',
+            label:'苹果手机',
+            children:[
+              {
+                value:'1-1-2-1',
+                label:'iP5'
+              },
+              {
+                value:'1-1-2-2',
+                label:'iP6'
+              },
+              {
+                value:'1-1-2-3',
+                label:'iP7'
+              }
+            ]
+          },
+          {
+            value:'1-1-3',
+            label:'充电器'
+          }
+        ]
+      },
+      {
+        value:'1-2',
+        label:'精致生活',
+        children:[
+          {
+            value:'1-1-1',
+            label:'戴尔电脑1'
+          },
+          {
+            value:'1-1-2',
+            label:'苹果手机2'
+          },
+          {
+            value:'1-1-3',
+            label:'充电器3'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value:'2',
+    label:'秋红分类',
+    children:[
+      {
+        value:'2-1',
+        label:'春天',
+        children:[
+          {
+            value:'2-1-1',
+            label:'风筝',
+            children:[
+              {
+                value:'2-1-1-1',
+                label:'1111'
+              },
+              {
+                value:'2-1-1-2',
+                label:'1112'
+              }
+            ]
+          },
+          {
+            value:'2-1-2',
+            label:'运动鞋',
+          }
+        ]
+      },
+      {
+        value:'2-2',
+        label:'冬天',
+        children:[
+          {
+            value:'2-2-1',
+            label:'火锅'
+          },
+          {
+            value:'2-2-2',
+            label:'羽绒服'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value:'3',
+    label:'肉畜分类',
+    children:[
+      {
+        value:'3-1',
+        label:'羊肉',
+        children:[
+          {
+            value:'3-1-1',
+            label:'羊杂'
+          },
+          {
+            value:'3-1-2',
+            label:'羊肉卷'
+          }
+        ]
+      },
+      {
+        value:'3-2',
+        label:'猪肉',
+        children:[
+          {
+            value:'3-2-1',
+            label:'猪头肉'
+          },
+          {
+            value:'3-2-2',
+            label:'猪鼻孔'
+          }
+        ]
+      }
+    ]
+  }
+]
 export default {
   name: "table_demo",
   directives: {
@@ -439,15 +728,16 @@ export default {
     var UNIT = (rule, value, callback) => {
       var reg = /^\d+$/;
       if (value) {
-        if (value.length >= 1 && value.length <= 5) {
-          if (reg.test(value)) {
-            callback();
-          } else {
-            callback(new Error("商品单位必须为数字值"));
-          }
-        } else {
-          callback(new Error("长度在 1 到 5 个字符"));
-        }
+        callback()
+        // if (value.length >= 1 && value.length <= 5) {
+        //   if (reg.test(value)) {
+        //     callback();
+        //   } else {
+        //     callback(new Error("商品单位必须为数字值"));
+        //   }
+        // } else {
+        //   callback(new Error("长度在 1 到 5 个字符"));
+        // }
       } else {
         callback(new Error("请输入商品单位"));
       }
@@ -502,8 +792,8 @@ export default {
       console.log(value, "value---------111");
       if (value.length > 0) {
         for (var i = 0; i < value.length; i++) {
-          if (reg.test(value[i].critical)) {
-            if (reg.test(value[i].quantity)) {
+          if (reg.test(value[i].cappingPerNum)) {
+            if (reg.test(value[i].startPerNum)) {
               callback();
             } else {
               callback(new Error("人数必须为数字值"));
@@ -526,6 +816,28 @@ export default {
       }
     }
     return {
+      editIndex:{
+        falge:false,
+        id:null
+      },
+      alreadyArr:[],
+      labelClickCon:[],
+      labelClickArr:[],
+      systemClickId:null,
+      systemClick2Id:null,
+      systemClick3Id:null,
+      systemOptions:systemOptions,
+      systemOptions2:[],
+      systemOptions3:[],
+      systemOptions4:[],
+      SystemLabel:false,
+      CustomLabelList:[],
+      labelObj:{
+        labelName:'',
+      },
+      formLabelWidth: '90px',
+      addLabel:false,
+      tableData:[],
       btnState:false,
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
@@ -541,8 +853,8 @@ export default {
       cityArr: [],
       personsTime: false,
       addComm: false,
-      critical: "",
-      quantity: "",
+      cappingPerNum: "",
+      startPerNum: "",
       commoditysObj: {},
       persons: [],
       commoditys: [],
@@ -567,22 +879,40 @@ export default {
       listLoading: true,
       whether: true,
       sortList: [],
+      goods_info:{
+        name:'',
+        unit:'',
+        type:'',
+        price:'',
+        convertHours:'',
+        startPerNum:'',
+        cappingPerNum:'',
+        minPurchase:''
+      },
       goods: {
         name: [
           { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
-        unit: [{ required: true, validator: UNIT, trigger: "blur" }],
-        type: [{ required: true, message: "请选择计量方式", trigger: "change" }],
-        price: [{ required: true, validator: PRICE, trigger: "blur" }],
+        unit: [
+          { required: true, validator: UNIT, trigger: "blur" }
+        ],
+        type: [
+          { required: true, message: "请选择计量方式", trigger: "change" }
+        ],
+        price: [
+          { required: true, validator: PRICE, trigger: "blur" }
+        ],
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        peoNum: [
-            { required: true, message: "请输入折算时长", trigger: "blur" }
-            // {required:true,validator:PEONUM,trigger:'blur'}
-          ],
-        persons: [{ require: true, validator: PERSONS, trigger: "change" }]
+        // persons: [{ require: true, validator: PERSONS, trigger: "change" }]
+      },
+      labelRules:{
+        labelName:[
+          { required: true, message: "请输入标签名称(2-10位)", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+        ]
       },
       basicForm: {
         name: "",
@@ -606,18 +936,17 @@ export default {
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
-
-      goods_info: {
-        name: "",
-        unit: "",
-        type: "",
-        price: "",
-        time: "",
-        peoNum: "",
-        num: "",
-        persons: [],
-        minPurchase: ""
-      },
+      // goods_info: {
+      //   name: "",
+      //   unit: "",
+      //   type: "",
+      //   price: "",
+      //   time: "",
+      //   peoNum: "",
+      //   num: "",
+      //   persons: [],
+      //   minPurchase: ""
+      // },
       listQuery: {
         sort: "+id",
         page: 1
@@ -684,10 +1013,11 @@ export default {
 
     this.orient({}, 0); // 所属分类
     this.getList(1, 10); //搜索 ，分页
-    console.log(this.sign, "sign---------");
+    this.sign   //获取签名
   },
   computed: {
     sign: function() {
+      console.log("-------------------------------")
       return getSign();
     },
     btnShow() {
@@ -695,15 +1025,89 @@ export default {
     },
   },
   methods: {
+    //系统标签已添加标签删除
+    AlreadyLabel(item){
+      if(this.labelClickArr.indexOf(item.value)!=-1){
+        this.SelectedLabel(item)
+      }else{
+        this.remove(this.alreadyArr,item.value,'value')
+      }
+    },
+    //系统标签当前选择标签删除
+    SelectedLabel(item){
+      this.remove(this.labelClickArr, item.value);
+      this.remove(this.labelClickCon, item.value,'value');
+    },
+    //四级标签点击
+    labelClick(item){
+         if(this.labelClickArr.indexOf(item.value)==-1){
+            if((this.alreadyArr.length + this.labelClickArr.length)>2){
+              this.$message({
+                message:'最多设置3个系统标签',
+                type:'warning'
+              });
+              return false
+            }else{
+              this.labelClickArr.push(item.value)
+              this.labelClickCon.push(item)
+            }
+          }else{
+            this.remove(this.labelClickArr, item.value);
+            this.remove(this.labelClickCon, item.value,'value');
+          }
+      // }
+    },
+    //系统列表一级列表事件
+    systemClick(item){
+      this.systemClickId = item.value
+      this.systemOptions2 = item.children
+      this.systemOptions3 = [];
+      this.systemOptions4 = [];
+      console.log(item,"item-------")
+    },
+    //系统列表二级列表事件
+    systemClick2(item){
+      this.systemClick2Id = item.value
+      this.systemOptions3 = item.children
+       this.systemOptions4 = [];
+    },
+    systemClick3(item){
+      this.systemClick3Id = item.value
+      this.systemOptions4 = item.children
+    },
+    //自定义弹框关闭的回调
+    closeingLabel(){
+      this.labelObj.labelName = ''
+    },
+    //自定义标签删除
+    deleteLabel(index){
+      this.CustomLabelList.splice(index,1)
+    },
+    //自定义标签
+    CustomLabel(){
+      if(this.CustomLabelList.length>2){
+         this.$message({
+          message: '最多设置3个自定义标签',
+          type: 'warning'
+        });
+        return false
+      }else{
+        this.CustomLabelList.push(this.labelObj.labelName)
+        this.labelObj.labelName = ''
+      }
+      this.addLabel = false
+    },
+    //服务图片验证
     handPic(file) {
       //服务图片
-      console.log(file, "上传前");
-      console.log(this.picFile);
+      // console.log(file, "上传前");
+      // console.log(this.picFile);
       var date = new Date();
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       var d = date.getDate();
       var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+      console.log(this.picFile,"this.picFile------")
       if (this.picFile.indexOf(src) > -1) {
         this.$message({
           type: "warning",
@@ -719,11 +1123,12 @@ export default {
         return false;
       }
     },
+    //删除图片
     handleRemove(file, fileList) {//删除图文
-      console.log(file, "删除一张图片");
-      console.log(fileList,'文件')
-      console.log(this.imgText,'imgtext')
-      console.log(this.fileList,'filelist')
+      // console.log(file, "删除一张图片");
+      // console.log(fileList,'文件')
+      // console.log(this.imgText,'imgtext')
+      // console.log(this.fileList,'filelist')
       var str = "";
       var index = file.url.lastIndexOf("/");
       str = file.url.substring(index + 1, file.url.length);
@@ -735,8 +1140,8 @@ export default {
         newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
         newarr.push(newstr)
       }
-      console.log(str);
-      console.log(newarr,'截取')
+      // console.log(str);
+      // console.log(newarr,'截取')
       var delIndex = newarr.indexOf(str)
       //console.log(delIndex,'删除图片的下标')
       this.imgText.del(delIndex);
@@ -768,7 +1173,7 @@ export default {
       }
         //console.log(newarr,'截取')
       var delIndex = newarr.indexOf(src)
-      console.log(newarr,src,"newarr---------------------------")
+      // console.log(newarr,src,"newarr---------------------------")
       // console.log(delIndex,'删除图片的下标')
       this.picFile.del(delIndex);
       // console.log(this.picFile);
@@ -818,7 +1223,6 @@ export default {
     upload(file) {
       // 图文上传
       let pro = new Promise((resolve, rej) => {
-        // 从cookies中取签名，判断签名有没有过期
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
@@ -850,7 +1254,12 @@ export default {
         ossData.append("OSSAccessKeyId", data.accessid);
         ossData.append("success_action_status", 201);
         ossData.append("signature", data.signature);
+        // 添加文件
         ossData.append("file", file.file, file.file.name);
+        //this.ossData = ossData;
+        console.log(ossData.get("name"));
+        console.log(ossData.get("key"));
+
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -963,6 +1372,53 @@ export default {
     cjw(val) {
       console.log(val, "------------------");
     },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+              var obj = Object.assign({},this.goods_info)
+              this.tableData.push(obj)
+              this.resetEmpty('ser')
+        }else{
+          return false
+        }
+      })
+      // this.$refs[formName].validate(valid => {
+      //   if (valid) {
+      //     if (this.goods_info.persons.length > 0) {
+      //       this.personsTime = false;
+      //     } else {
+      //       this.personsTime = true;
+      //       return false;
+      //     }
+      //     console.log("保存表格测试");
+
+      //     console.log(this.goods_info.persons, "this.persons----");
+      //     var obj = {};
+      //     var goods = this.goods_info;
+      //     obj.name = goods.name;
+      //     obj.unit = goods.unit;
+      //     obj.type = goods.type;
+      //     obj.price = goods.price;
+      //     obj.convertHours = goods.convertHours;
+      //     obj.minPurchase = goods.minPurchase;
+      //     obj.persons = goods.persons;
+      //     this.basicForm.commoditys.push(obj);
+      //     // arr = []
+      //     goods.persons = [];
+      //     this.goods_info.minPurchase = "";
+      //     this.resetForm("ser");
+      //     console.log(obj, "obj-----");
+      //   } else {
+      //     if (this.persons.length > 0) {
+      //       this.personsTime = false;
+      //     } else {
+      //       this.personsTime = true;
+      //     }
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
+    },
     //所属分类搜索
     // queryClass(val){
     //   console.log(val,'----queryClass----')
@@ -974,15 +1430,21 @@ export default {
     // },
     //表格编辑
     handleEdit(index, val) {
-      console.log(this.goods_info, "this.goods_info.name");
-      console.log(val, "this.commoditys.name");
+      console.log(index,"index------------")
+      console.log(val,"val--------------")
+      this.goods_info = Object.assign({},val)
+      this.tableData.splice(index,1)
+      // this.tableData[index] = this.goods_info
+      // console.log(this.goods_info, "this.goods_info.name");
+      // console.log(val, "this.commoditys.name");
       this.addComm = true;
-      this.goods_info = val;
-      this.basicForm.commoditys.splice(index, 1);
+      // this.goods_info = val;
+      // this.basicForm.commoditys.splice(index, 1);
     },
     //表格删除
     tableHandleDelete(index, item) {
-      this.basicForm.commoditys.splice(index, 1);
+      // this.basicForm.commoditys.splice(index, 1);
+      this.tableData.splice(index,1)
     },
     houseClick(val) {
       // this.$refs['basic'].resetFields()  //基本信息重置
@@ -1015,14 +1477,22 @@ export default {
         });
     },
     //数组去重
-    remove(arr, val) {
+    remove(arr, val,key) {
+      console.log(arr,"arr--------------")
+      console.log(val,"val----------")
       for (var i = 0; i < arr.length; i++) {
-        if (arr[i] == val) {
-          arr.splice(i, 1);
-          break;
+        if(arr[i][key]){
+          if(arr[i].value == val){
+            arr.splice(i, 1);
+            break;
+          }
+        }else{
+          if(arr[i] == val){
+            arr.splice(i, 1);
+            break;
+          }
         }
       }
-      return arr;
     },
     clickClick(item) {
       var arr = this.basicForm.cityCodes;
@@ -1044,7 +1514,7 @@ export default {
       this.goods_info.persons.splice(id, 1);
     },
     addTable() {
-      // arr.push({critical:'',quantity:''})
+      // arr.push({cappingPerNum:'',startPerNum:''})
       if (this.goods_info.persons.length >= 4) {
         this.$notify({
           title: "警告",
@@ -1052,7 +1522,7 @@ export default {
           type: "warning"
         });
       } else {
-        this.goods_info.persons.push({ critical: "", quantity: "" });
+        this.goods_info.persons.push({ cappingPerNum: "", startPerNum: "" });
       }
       this.personsTime = false;
     },
@@ -1140,6 +1610,7 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
+      this. alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
       this.dialogStatus = "create";
@@ -1155,7 +1626,8 @@ export default {
       this.editId = row.id;
       ServerEdit({ id: this.editId })
         .then(data => {
-          this.dialogFormVisible = true;
+          this.dialogFormVisible = true;   
+          this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
           console.log(data, "data-----编辑");
           // this.basicForm = data.data.data
           var arr = data.data.data;
@@ -1289,12 +1761,12 @@ export default {
             persons: [
               //派人
               {
-                critical: ">10",
-                quantity: 1
+                cappingPerNum: ">10",
+                startPerNum: 1
               },
               {
-                critical: ">20",
-                quantity: 2
+                cappingPerNum: ">20",
+                startPerNum: 2
               }
             ]
           }
@@ -1443,44 +1915,6 @@ export default {
         }
       });
     },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          if (this.goods_info.persons.length > 0) {
-            this.personsTime = false;
-          } else {
-            this.personsTime = true;
-            return false;
-          }
-          console.log("保存表格测试");
-
-          console.log(this.goods_info.persons, "this.persons----");
-          var obj = {};
-          var goods = this.goods_info;
-          obj.name = goods.name;
-          obj.unit = goods.unit;
-          obj.type = goods.type;
-          obj.price = goods.price;
-          obj.convertHours = goods.convertHours;
-          obj.minPurchase = goods.minPurchase;
-          obj.persons = goods.persons;
-          this.basicForm.commoditys.push(obj);
-          // arr = []
-          goods.persons = [];
-          this.goods_info.minPurchase = "";
-          this.resetForm("ser");
-          console.log(obj, "obj-----");
-        } else {
-          if (this.persons.length > 0) {
-            this.personsTime = false;
-          } else {
-            this.personsTime = true;
-          }
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
     resetForm(ser) {
       this.resetEmpty(ser)
       this.addComm = false;
@@ -1497,6 +1931,8 @@ export default {
       if(txt == "ser"){
         this.$refs["goods_info"].resetFields()
         this.goods_info.minPurchase = "";
+        this.goods_info.startPerNum = '';
+        this.goods_info.cappingPerNum = ''
       }else{
         this.$refs["goods_info"].resetFields()
         this.$refs["basic"].resetFields()
@@ -1756,7 +2192,7 @@ body {
 .cityClass > div:nth-child(1),
 .cityClass > div:nth-child(5n) {
 }
-.techTime-green {
+.main-container .techTime-green {
   background-size: 15px 15px;
   border: solid 1px green;
   background: url("../../../static/icon/Selected.png") no-repeat;
@@ -1894,7 +2330,131 @@ hr {
 .tabRight .bottimPro .el-form-item__content input:nth-child(2){
   margin-left: 30px;
 }
-/* .filter-container .diatable .el-dialog--small{
-  width: 60% !important;
-} */
+.custom{
+  width: 90%;
+  height: 36px;
+  border: 1px solid #bfcbd9;
+}
+.custom span{
+  line-height: 36px;
+}
+.tech-order-btn {
+  background: #fff;
+  color: #4c70e8;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.labelName .el-dialog--small{
+  width: 30%;
+}
+.labelName .el-dialog__header,.systemLabel .el-dialog__header{
+  padding: 0 0 0 10px;
+  height: 40px;
+  background: #dddcdc;
+  line-height: 40px;
+}
+.labelName .el-form-item__label{
+  width: 80px;
+  text-align: center;
+}
+.labelName .el-form-item__content{
+  margin-left: 90px;
+}
+.labelName .dialog-footer,.systemLabel .dialog-footer{
+  display: flex;
+  justify-content: center;
+}
+.labelName .dialog-footer input:nth-child(2),.systemLabel .dialog-footer input:nth-child(2){
+  margin-left: 20px;
+}
+.labelName .el-dialog__body{
+  padding: 30px 20px 10px 20px;
+}
+.systemLabel .el-dialog__body{
+  padding-top:0; 
+}
+.labelList{
+  width: 90%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #bfcbd9;
+  border-top: 0;
+}
+.labelList span{
+  display: inline-block;
+  border: 1px solid #bfcbd9;
+  padding: 0 10px;
+  border-radius: 20px;
+  line-height: 20px;
+  margin-right: 10px;
+}
+.labelList span i{
+  font-size: 1px;
+  margin-left: 5px;
+}
+.systemLabel ul{
+  width: 23%;
+  float: left;
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgb(190, 187, 187);
+}
+.systemLabel ul:nth-of-type(2){
+  border-left:0;
+}
+.systemLabel ul:nth-of-type(3){
+   border-left: 0;
+}
+.systemLabel ul li{
+  width:100%;
+  padding: 0 5px;
+  height: 29px;
+  border-bottom: 1px dashed  rgb(190, 187, 187);
+  line-height: 29px;
+  list-style: none
+}
+.systemLabel ul li i{
+  float: right;
+  line-height: 29px;
+}
+.labelSystem{
+  float: left;
+  border: 1px solid rgb(190, 187, 187);
+  width: 31%;
+  height: 300px;
+  border-left: 0;
+}
+.labelSystem input{
+  background: #fff;
+  padding: 0 10px 0 5px;
+  float: left;
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid rgb(190, 187, 187);
+  margin: 5px;
+}
+.activeSystem_1,.activeSystem_2,.activeSystem_3{
+  background: rgb(141, 182, 216)
+}
+.already{
+  height: 50px;
+  line-height: 50px;
+}
+.already span{
+  border: 1px solid #bfcbd9;
+  padding: 5px;
+  margin-right: 5px;
+}
+.already span i{
+  font-weight: bolder;
+  margin-left: 5px;
+}
+.cursor{
+    cursor: pointer;
+}
+
 </style>

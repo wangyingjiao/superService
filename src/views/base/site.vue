@@ -438,10 +438,9 @@ export default {
     getList() {
       this.listLoading = true;
       var obj = {
-        name: "",
-        cityCode: ""
+        name: this.search.name,
+        cityCode: this.search.cityCode
       };
-      this.listQuery.page = 1;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "服务站列表");
         this.list = res.data.data.list;
@@ -650,7 +649,9 @@ export default {
                 type: "success",
                 message: "添加成功"
               });
-              this.getList();
+              this.search.name = "";
+              this.search.cityCode = "";
+              this.handleFilter();
               this.dialogFormVisible = false;
             } else {
               this.$message({
