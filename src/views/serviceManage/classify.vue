@@ -6,10 +6,6 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" v-model="search.cityName" class="filter-item" placeholder="请选择城市">
-        <el-option v-for="item in city" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
-        </el-option>
-      </el-select>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
       </el-input>
       <button class="button-large el-icon-search btn_right ceshi" @click="handleFilter"> 搜索</button>
@@ -34,14 +30,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="分类名称" align="center" prop="name">
+      <el-table-column  label="所属分类" align="center">
+        <template scope="scope">
+            <span v-if="scope.row.majorSort == 'clean'">保洁</span>
+            <span v-if="scope.row.majorSort == 'repair'">家修</span>
+        </template>
       </el-table-column>
 
-      <el-table-column  label="城市" align="center">
-        <template scope="scope">
-          <span v-if="scope.row.allCity =='yes'">全部</span>
-          <span v-else v-for="(item,index) in scope.row.citys" :key="index" :value="item.cityCode">{{item.cityName}}&nbsp;</span>
-        </template>
+      <el-table-column  label="分类名称" align="center" prop="name">
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -60,26 +56,13 @@
     </div>
 
     <el-dialog 
-      title="添加" 
+      :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
       class="diatable">
-      <div class="tabBox" >
-        <div class="tabLeft fl" ref="refTab">
-          <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
-          <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
-          <el-radio-group @change="tabChange" v-model="activeName">
-            <el-radio-button label="clean"   style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="clean" >保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="repair" >家修</el-radio-button>
-            <el-radio-button label="repair" style="display:none"></el-radio-button>
-          </el-radio-group>
-        </div>
-        <div class="tabRight fl">
-          <el-form 
-             
+          <el-form        
             class="small-space" 
             ref="temp" 
             :rules="rules" 
@@ -87,163 +70,27 @@
             label-position="left" 
             label-width="100px" 
             style='width: 500px; margin-left:20px;'>
-            <div v-if="activeName == 'clean'">
-
-            <!-- <el-form-item label="分类名称" v-if="activeName == 'repair'"  prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
-            </el-form-item> -->
-
-            <el-form-item label="分类名称" prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-10位的保洁分类名" v-model.trim="temp.name"></el-input>
-            </el-form-item>
           
-            <el-form-item label="定向城市" >   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption" 
-                      @click="cityChange(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item>
-            </div>
+          <el-form-item label="所属类型:" prop="majorSort" >
+            <el-select  style='width: 400px;' @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
+              <el-option v-for="(item,key,index) in majorSorts" :key="index" :label="item" :value="key">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-            <div v-if="activeName == 'repair'">
-            <el-form-item label="分类名称" prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-10位的家修分类名" v-model.trim="temp.name"></el-input>
-            </el-form-item>
-            
+          <el-form-item label="分类名称:" prop="name" >
+            <el-input        
+            style='width: 400px;' 
+            placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
+          </el-form-item>
+           
 
-            <!-- <el-form-item label="定向城市" v-if="activeName == 'repair'">   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption" 
-                      @click="cityChange(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item> -->
-            <el-form-item label="定向城市" >   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption" 
-                      @click="cityChange(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item>
-            </div>
           </el-form>
-           <!-- <el-form 
-          v-if="aaa =='repair'"
-            class="small-space" 
-            ref="temp" 
-            :rules="rules" 
-            :model="temp" 
-            label-position="left" 
-            label-width="100px" 
-            style='width: 500px; margin-left:20px;'>
-
-            <el-form-item label="分类名称"  prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
-            </el-form-item>
-            
-
-            <el-form-item label="定向城市">   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption" 
-                      @click="cityChange(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item>
-            
-          </el-form> -->
-        </div>
-      </div>
       
-      <div slot="footer" class="dialog-footer" style="text-align: center;">    
-        <button class="button-large" :disabled="btnState" @click="create('temp')">保 存</button>    
+      <div slot="footer" class="dialog-footer" style="text-align: center;">   
+        <button class="button-large" v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
-      </div>
-    </el-dialog>
-
-     <!-- 编辑 -->
-    <el-dialog 
-      title="编辑" 
-      :visible.sync="dialogFormUpdate" 
-      :show-close= "false"
-       :close-on-click-modal="false"
-       :close-on-press-escape="false"
-      class="diatable">
-      <div class="tabBox" >
-        <div class="tabLeft fl" ref="refTab">
-           <el-radio-group v-model="activeName">
-            <el-radio-button label="clean"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button style="width:100%;" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%" label="repair" @click="refbtn2">家修</el-radio-button>
-            <el-radio-button label="repair" @click="refbtn2" style="display:none"></el-radio-button>
-          </el-radio-group>
-        </div>
-        <div class="tabRight fl">
-          <el-form class="small-space" ref="temp" :rules="rules" :model="temp" label-position="left" label-width="100px" style='width: 500px; margin-left:20px;'>
-            
-            <el-form-item label="分类名称"  prop="name" >
-              <el-input        
-              style='width: 400px;' 
-              placeholder="请输入2-10位的分类名" v-model="temp.name"></el-input>
-            </el-form-item>
-            
-
-            <el-form-item label="定向城市">   
-              <div class="cityBox">
-                  <div style="display:inline-block;margin-left:-20px;" >
-                    <div 
-                      class="selfCheckBox cityBtn allCity"
-                      ref="allCity"                      
-                      @click="allCity">全部城市</div><div 
-                      class="selfCheckBox cityBtn" 
-                      ref="cityOption2"                     
-                      @click="cityUpdate(item,index)" 
-                      v-for="(item,index) in city"
-                      :key="index">{{item.cityName}}</div>
-								  	</div>
-              </div>
-                <p class="word">*定向城市指该服务分类的适用城市。默认不填，代表适用于本机构设置的所有城市</p>
-            </el-form-item>
-            
-          </el-form>
-        </div>
-      </div>
-      
-      <div slot="footer" class="dialog-footer" style="text-align: center"> 
-        <button class="button-large"  @click="update('temp')">保 存</button>    
-        <button class="button-cancel" @click="resetForm2('temp')">取 消</button>
       </div>
     </el-dialog>
 
@@ -253,13 +100,7 @@
 </template>
 
 <script>
-import {
-  getCity,
-  getClass,
-  addClass,
-  delClass,
-  setClass
-} from "@/api/serviceManage";
+import { getClass, addClass, delClass, setClass } from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -272,9 +113,8 @@ export default {
   data() {
     return {
       btnShow: this.$store.state.user.buttonshow,
-      btnState:false,
+      btnState: false,
       active: true,
-      aaa: "",
       list: [],
       total: null,
       listLoading: true,
@@ -285,34 +125,32 @@ export default {
         type: undefined,
         sort: "+id"
       },
-      pageNumber:1,
+      pageNumber: 1,
       pageSize: 10,
       total: 1,
+      majorSorts: [],
       temp: {
-        name: ""
+        name: "",
+        majorSort: ""
       },
       search: {
-        cityName: "",
         name: ""
       },
       rules: {
+        majorSort: [{ required: true, message: "所属类型不能为空", trigger: "change" }],
         name: [
           { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ]
       },
       dialogFormVisible: false,
-      dialogFormUpdate: false,
       dialogStatus: "",
       textMap: {
-        update: "编辑分类",
-        create: "新增分类"
+        update: "编辑服务分类",
+        create: "新增服务分类"
       },
       tableKey: 0,
       activeName: "all",
-      city: [],
-      cityIndex: 0,
-      checkCity: [],
       rowId: "",
       dis: "1"
     };
@@ -329,137 +167,18 @@ export default {
   },
   created() {
     this.getList();
-    getCity().then(res => {
-      console.log(res.data.data, "城市列表");
-      this.city = res.data.data;
-      this.cityIndex = res.data.data.length;
-      //console.log(this.cityIndex)
-    });
+    // 字典表中获取分类
+    var dict = require("../../../static/dict.json");
+    this.majorSorts = dict.ser_majorsort;
+    console.log(this.majorSorts, "majorSorts");
   },
   methods: {
-    tabChange() {
-      // this.resetCity();
-      // this.$refs["temp"].resetFields();
-      console.log(this.activeName);
+    majorChange(val) {
+      console.log(val);
     },
-    cityChange(item, index) {
-      var obj = {
-        cityId: "",
-        cityName: ""
-      };
-      // console.log(this.$refs.cityOption[index].className);
-      if (this.$refs.cityOption[index].style.borderColor == "") {
-        this.$refs.cityOption[index].className = "selfCheckBox cityBtn mark";
-        this.$refs.cityOption[index].style.borderColor = "green";
-        this.$refs.cityOption[index].style.color = "green";
-      } else {
-        this.$refs.cityOption[index].style.borderColor = "";
-        this.$refs.cityOption[index].className = "selfCheckBox cityBtn";
-        this.$refs.cityOption[index].style.color = "#48576a";
-      }
-    },
-    cityUpdate(item, index) {
-      // console.log(item);
-      // console.log(index);
-      // console.log("城市编辑");
-      if (this.$refs.allCity.style.borderColor == "green") {
-        console.log(item);
-        if (item.haveItem) {
-          this.$message({
-            type: "warning",
-            message: "该城市已关联服务项目，不可移除其选中状态"
-          });
-        } else {
-          if (this.$refs.cityOption2[index].style.borderColor == "green") {
-            this.$refs.allCity.style.borderColor = "";
-            this.$refs.allCity.style.color = "#48576a";
-            this.$refs.cityOption2[index].style.borderColor = "";
-            this.$refs.cityOption2[index].style.color = "#48576a";
-            this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
-          } else {
-            this.$refs.cityOption2[index].style.borderColor = "green";
-            this.$refs.cityOption2[index].style.color = "green";
-            this.$refs.cityOption2[index].className =
-              "selfCheckBox cityBtn mark";
-          }
-          console.log(11111111111);
-        }
-      } else {
-        if (item.haveItem) {
-          this.$message({
-            type: "warning",
-            message: "该城市已关联服务项目，不可移除其选中状态"
-          });
-        } else {
-          if (this.$refs.cityOption2[index].style.borderColor == "green") {
-            this.$refs.allCity.style.borderColor = "";
-            this.$refs.allCity.style.color = "#48576a";
-            this.$refs.cityOption2[index].style.borderColor = "";
-            this.$refs.cityOption2[index].style.color = "#48576a";
-            this.$refs.cityOption2[index].className = "selfCheckBox cityBtn";
-          } else {
-            this.$refs.cityOption2[index].style.borderColor = "green";
-            this.$refs.cityOption2[index].style.color = "green";
-            this.$refs.cityOption2[index].className =
-              "selfCheckBox cityBtn mark";
-          }
-        }
-      }
-    },
-    allCity(item, index) {
-      console.log("全部城市");
-      if (this.$refs.allCity.style.borderColor == "green") {
-        console.log(this.city, "city");
-        for (var i = 0; i < this.city.length; i++) {
-          console.log(this.city[i], "全不选");
-          if (!this.city[i].haveItem) {
-            this.$refs.cityOption2[i].style.borderColor = "";
-            this.$refs.cityOption2[i].style.color = "#48576a";
-            this.$refs.cityOption2[i].className = "selfCheckBox cityBtn";
-          }
-          this.$refs.allCity.style.borderColor = "";
-          this.$refs.allCity.style.color = "#48576a";
-        }
-      } else {
-        var arr = [];
-        this.$refs.allCity.style.borderColor = "green";
-        this.$refs.allCity.style.color = "green";
-        for (var i = 0; i < this.city.length; i++) {
-          console.log(2);
-          this.$refs.cityOption2[i].style.borderColor = "green";
-          this.$refs.cityOption2[i].style.color = "green";
-          this.$refs.cityOption2[i].className = "selfCheckBox cityBtn mark";
-        }
-      }
-    },
-    refbtn1() {
-      console.log(121);
-      // this.$refs.refbtn1.className = "tabBtn tabBtnclick";
-      // this.$refs.refbtn2.className = "tabBtn";
-      // this.activeName = "clean";
-      // this.resetCity()
-      // for (var i = 0; i < this.city.length; i++) {
-      //   this.$refs.cityOption[i].style.borderColor = "";
-      //   this.$refs.cityOption[i].style.color = "#48576a";
-      //   this.$refs.cityOption[i].className = "selfCheckBox cityBtn";
-      // }
-    },
-    refbtn2() {
-      console.log(this.$refs.refbtn2);
-      // this.$refs.refbtn2.className = "tabBtn tabBtnclick";
-      // this.$refs.refbtn1.className = "tabBtn";
-      // this.activeName = "repair";
-      // this.resetCity()
-      // for (var i = 0; i < this.city.length; i++) {
-      //   this.$refs.cityOption[i].style.borderColor = "";
-      //   this.$refs.cityOption[i].style.color = "#48576a";
-      //   this.$refs.cityOption[i].className = "selfCheckBox cityBtn";
-      // }
-    },
-    getList() {
+    getList() { // 获取列表
       this.listLoading = true;
       var obj = {
-        cityId: this.getCityId(this.search.cityName),
         name: this.search.name,
         majorSort: this.activeName
       };
@@ -467,11 +186,11 @@ export default {
         .then(res => {
           console.log(res, "分类列表");
           this.list = res.data.data.list;
-          if(this.list != undefined){
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
           this.listLoading = false;
           this.total = res.data.data.count;
         })
@@ -479,9 +198,8 @@ export default {
           this.listLoading = false;
         });
     },
-    handleFilter() {
+    handleFilter() {// 搜索
       var obj = {
-        cityCode: this.search.cityName,
         name: this.search.name,
         majorSort: this.activeName
       };
@@ -491,7 +209,7 @@ export default {
         this.listLoading = false;
         this.listQuery.page = 1;
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -503,13 +221,12 @@ export default {
       this.pageSize = val;
       // this.getList();
       var obj = {
-        cityCode: this.search.cityName,
         name: this.search.name,
         majorSort: this.activeName
       };
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -521,14 +238,13 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        cityCode: this.search.cityName,
         name: this.search.name,
         majorSort: this.activeName
       };
       this.listLoading = true;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -538,12 +254,12 @@ export default {
       });
     },
     handleCreate() {
-      this.activeName = "clean";
-      this.temp.name = ""
       this.dialogFormVisible = true;
+      this.dialogStatus = "create";
     },
     handleUpdate(row) {
       this.listLoading = true;
+      this.dialogStatus = "update";
       console.log(row);
       var obj = {
         id: row.id
@@ -553,40 +269,11 @@ export default {
         this.listLoading = true;
         if (res.data.code == 1) {
           var data = res.data.data;
-          console.log(data.citys);
-          this.city = data.citys;
+          console.log(data, "编辑信息");
           this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({}, row);
-          this.dialogFormUpdate = true;
-          this.activeName = res.data.data.majorSort;
-
-          if (row.allCity == "yes") {
-            this.$nextTick(() => {
-              this.$refs.allCity.style.borderColor = "green";
-              this.$refs.allCity.style.color = "green";
-              for (var i = 0; i < this.city.length; i++) {
-                this.$refs.cityOption2[i].style.borderColor = "green";
-                this.$refs.cityOption2[i].style.color = "green";
-                this.$refs.cityOption2[i].className =
-                  "selfCheckBox cityBtn mark";
-              }
-            });
-          } else {
-            this.$nextTick(() => {
-              this.$refs.allCity.style.borderColor = "";
-              this.$refs.allCity.style.color = "#48576a";
-              for (var i = 0; i < data.citys.length; i++) {
-                if (data.citys[i].sortChecked) {
-                  this.$refs.cityOption2[i].style.borderColor = "green";
-                  this.$refs.cityOption2[i].style.color = "green";
-                  this.$refs.cityOption2[i].className =
-                    "selfCheckBox cityBtn mark";
-                }
-              }
-              
-            });
-          }
+          this.dialogFormVisible = true;
         } else {
           this.listLoading = false;
           this.$message({
@@ -596,7 +283,7 @@ export default {
         }
       });
     },
-    handleDelete(row) {
+    handleDelete(row) {//删除
       console.log(this.activeName);
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -610,11 +297,11 @@ export default {
           };
           delClass(obj)
             .then(res => {
-              console.log(res);
+              console.log(res, "删除");
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
-                  message: "删除成功!"
+                  message: "删除服务分类成功!"
                 });
                 this.getList();
               } else {
@@ -633,51 +320,30 @@ export default {
           });
         });
     },
-    getCityId(str) {
-      for (var i = 0; i < this.city.length; i++) {
-        if (str == this.city[i].cityName) {
-          return this.city[i].cityCode;
-        }
-      }
-    },
-    create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
+    create(formName) {//新增
+      this.btnState = true;
+      setTimeout(() => {
+        this.btnState = false;
+      }, 1000);
       var obj = {
-        cityCodes: [],
-        majorSort: this.activeName,
+        majorSort: this.temp.majorSort,
         name: this.temp.name
       };
-      for (var i = 0; i < this.city.length; i++) {
-        if (this.$refs.cityOption[i].style.borderColor == "green") {
-          console.log(this.city[i].cityCode);
-          obj.cityCodes.push(this.city[i].cityCode);
-        }
-      }
-
-      // for (var i = 0; i < this.checkCity.length; i++) {
-      //   var city = {
-      //     cityId: this.getCityId(this.checkCity[i]),
-      //     cityName: this.checkCity[i]
-      //   };
-      //   obj.citys.push(city);
-      // }
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           addClass(obj).then(res => {
+            console.log(res, "添加");
             if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.activeName = "all";
-              this.temp.name = "";
-              this.resetCity();
+              this.dialogFormVisible = false
+              this.activeName = "all"
               this.resetSearch()
-              this.getList();
+              this.resetTemp()
+              this.$refs[formName].resetFields();
+              this.handleFilter();
               this.$message({
                 type: "success",
-                message: res.data.data
+                message: "新增成功"
               });
             } else {
               this.$message({
@@ -691,68 +357,40 @@ export default {
         }
       });
     },
-    citiesChange(val) {
-      //console.log(val)
-    },
-    resetForm(formName) {
-      this.resetCity();
-      this.activeName = "all";
+    resetForm(formName) {//清空列表
+      this.resetTemp()
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
-      this.checkCity = [];
     },
-    resetForm2(formName) {
-      this.resetCity2();
-      this.activeName = "all";
-      this.$refs.allCity.style.borderColor = "";
-      this.$refs.allCity.style.color = "#48576a";
-      this.dialogFormUpdate = false;
-      this.$refs[formName].resetFields();
-      this.checkCity = [];
-    },
-    resetSearch(){
+    resetSearch() { //清空搜索信息
       this.search = {
-        cityCode: '',
-        name: '',
-        majorSort:''
+        name: "",
+        majorSort: ""
       };
     },
-    update(formName) {
+    update(formName) {// 编辑
       console.log(1111);
       var obj = {
         id: this.rowId,
-        cityCodes: [],
-        majorSort: this.activeName,
+        majorSort: this.temp.majorSort,
         name: this.temp.name
       };
-      if (this.$refs.allCity.style.borderColor == "green") {
-        this.cityCodes = [];
-      } else {
-        this.cityCodes = [];
-        for (var i = 0; i < this.city.length; i++) {
-          if (this.$refs.cityOption2[i].style.borderColor == "green") {
-            console.log(this.city[i].cityCode);
-            obj.cityCodes.push(this.city[i].cityCode);
-          }
-        }
-      }
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.dialogFormUpdate = false;
-              this.activeName = "all";
-              this.checkCity = [];
-              this.temp.name = ""
-              this.resetCity2();
-              this.resetSearch()
+              this.resetTemp()
+              this.$refs[formName].resetFields();
+              this.dialogFormVisible = false
               this.getList();
               this.$message({
                 type: "success",
-                message: res.data.data
+                message: "编辑成功"
               });
             } else {
+              this.dialogFormVisible = false
               this.$message({
                 type: "error",
                 message: "发生错误"
@@ -766,37 +404,13 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        name:''
-
+        name: "",
+        majorSort: ""
       };
     },
-    resetCity() {
-      for (var i = 0; i < this.city.length; i++) {
-        this.$refs.cityOption[i].style.borderColor = "";
-        this.$refs.cityOption[i].style.color = "#48576a";
-        this.$refs.cityOption[i].className = "selfCheckBox cityBtn";
-      }
-    },
-    resetCity2() {
-      for (var i = 0; i < this.city.length; i++) {
-        this.$refs.cityOption2[i].style.borderColor = "";
-        this.$refs.cityOption2[i].style.color = "#48576a";
-        this.$refs.cityOption2[i].className = "selfCheckBox cityBtn";
-      }
-    },
     handleClick(tab, event) {
+      console.log(tab, event, "tab切换");
       this.getList();
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v =>
-        filterVal.map(j => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
     }
   }
 };
@@ -893,15 +507,5 @@ body {
   background-color: #4c70e8;
   border-color: #4c70e8;
   box-shadow: -1px 0 0 0 #4c70e8;
-}
-.cityBtn {
-  background-color: #ffffff;
-  border-width: 1px;
-  margin-bottom: 10px;
-  color: rgb(72, 87, 106);
-}
-.mark {
-  background: url(../../../static/icon/Selected.png) right bottom no-repeat;
-  background-size: 20px 20px;
 }
 </style>

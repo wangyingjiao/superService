@@ -5,6 +5,17 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
+    
+      <el-select  filterable  style='width: 200px;' clearable @change="searchOffice" class="filter-item" v-model="search.officeId" placeholder="选择机构">
+        <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+       
+      <el-select  filterable  style='width: 200px;' clearable  class="filter-item" v-model="search.stationId" placeholder="选择服务站">
+        <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      
 
      
       <button class="button-large btn_right el-icon-search ceshi5" @click="handleFilter"> 搜索</button>
@@ -326,7 +337,9 @@ export default {
       total: 1,
       search: {
         mobile: "",
-        name: ""
+        name: "",
+        officeId: "",
+        stationId: ""
       },
       mechanismCheck: [],
       servicestationCheck: [], // 服务站
@@ -372,7 +385,7 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
-      roleLv:[],
+      roleLv: [],
       stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
 
       dialogFormVisible: false,
@@ -456,10 +469,10 @@ export default {
       console.log(res);
       this.data2 = res.data.data;
     });
-    var lv = localStorage.getItem('dataScope')
-    console.log(lv,'用户等级')
-    for(var i = 0;i < lv;i++){
-      this.roleLv.push(this.stationLv[i])
+    var lv = localStorage.getItem("dataScope");
+    console.log(lv, "用户等级");
+    for (var i = 0; i < lv; i++) {
+      this.roleLv.push(this.stationLv[i]);
     }
   },
   methods: {
@@ -470,7 +483,7 @@ export default {
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res.data,'员工列表');
+        console.log(res.data, "员工列表");
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -492,7 +505,7 @@ export default {
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res,'搜索');
+          console.log(res, "搜索");
           if (res.data.code === 1) {
             this.list = res.data.data.list;
             if (this.list != undefined) {
@@ -638,6 +651,18 @@ export default {
       // console.log(val);
       // this.temp.stationId = val;
     },
+    searchOffice(val) {
+      // 搜索时机构改变
+      var obj = {
+        orgId: val
+      };
+      getFuwu(obj).then(res => {
+        // 请求服务站列表
+        console.log(res);
+        this.servicestationCheck = res.data.data;
+        // console.log(res.data)
+      });
+    },
     mechChange(val) {
       // 机构发生改变
       this.temp.officeId = val;
@@ -706,10 +731,10 @@ export default {
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.listQuery.page = 1;
-              this.pageNumber = 1
-              this.search.mobile = ""
-              this.search.name = ""
-              var obj={}
+              this.pageNumber = 1;
+              this.search.mobile = "";
+              this.search.name = "";
+              var obj = {};
               getStaff(obj, this.pageNumber, this.pageSize).then(res => {
                 console.log(res);
                 if (res.data.code === 1) {
@@ -788,14 +813,14 @@ export default {
     },
     update(formName) {
       var obj = {
-        id: this.temp1.id,
-        mobile: this.temp1.mobile,
-        name: this.temp1.name,
-        newPassword: this.temp1.password3,
-        officeId: this.temp1.officeId,
-        stationId: this.temp1.stationId,
-        roles: [this.temp1.role],
-        useable: this.temp1.useable
+        id: this.temp.id,
+        mobile: this.temp.mobile,
+        name: this.temp.name,
+        newPassword: this.temp.password3,
+        officeId: this.temp.officeId,
+        stationId: this.temp.stationId,
+        roles: [this.temp.role],
+        useable: this.temp.useable
       };
       console.log(obj);
       //this.dialogFormVisible = false;
@@ -807,7 +832,7 @@ export default {
               this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
-              this.handleFilter()
+              this.handleFilter();
               this.$message({
                 type: "success",
                 message: "修改成功"

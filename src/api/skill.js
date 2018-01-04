@@ -5,26 +5,26 @@ const instance = axios.create({
 
 })
 // 获取技能列表
-export function getListdata(obj,pageNumber,pageSize) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/listData?pageNo=`+pageNumber+'&pageSize='+pageSize, obj)
+export function getListdata(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-//新增保存技能
+// 新增保存技能
 export function saveServer(obj) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/saveData`,obj)
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/saveData`, obj)
 }
-//选择服务
+// 选择服务
 export function orderServer(obj) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/insertData`,obj)
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/insertData`, obj)
 }
-//删除技能
+// 删除技能
 export function techDelet(obj) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/deleteSortInfo`,obj)
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/deleteSortInfo`, obj)
 }
-//编辑技能
+// 编辑技能
 export function editTech(obj) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/formData`,obj)
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/formData`, obj)
 }
-//编辑保存技能
+// 编辑保存技能
 export function upDataTech(obj) {
-  return instance.post(`/apiservice/a/service/skill/serSkillInfo/upData`,obj)
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/upData`, obj)
 }

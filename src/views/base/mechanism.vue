@@ -79,6 +79,7 @@
           <el-input 
           v-model.trim="temp.name"
           style='width: 400px;' 
+          :disabled="dialogStatus == 'update' && orgId != '0' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
@@ -125,9 +126,8 @@
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
+          style='width: 400px;' 
             :disabled = "typeState"
-            style='width: 400px;' 
-            class="filter-item" 
             v-model="temp.scopeType" 
             placeholder="请选择">
             <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
@@ -135,33 +135,39 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="服务城市:" prop="cityCodes" >
-        <!-- <el-form-item label="服务城市"  > -->
-         
-           <el-select  style='width: 400px;'  v-model="temp.cityCodes" @change="changeCity"  multiple  placeholder="请选择">
-            
-            <el-option-group
-              v-for="(group,index) in areaOptions"
-              :key="group.value"
-              :label="group.label">
-              <el-option
-                v-for="item in group.children"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-option-group>
-
-          </el-select>
+        <el-form-item label="工作时间:" required="">
+          <el-col :span="11">
+            <el-form-item prop="workStartTime">
+              <el-select
+              style="width: 100%;"
+                v-model="temp.workStartTime" 
+                placeholder="请选择开始时间">
+                 <el-option v-for="(item,index) in workTime" :key="index" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col class="line" :span="2" style="text-align:center;">-</el-col>
+          <el-col :span="11">
+            <el-form-item prop="workEndTime">
+              <el-select
+              style="width: 100%;"
+                v-model="temp.workEndTime" 
+                placeholder="请选择结束时间">
+                <el-option v-for="(item,index) in workTime" :key="index" :label="item" :value="item">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          
         </el-form-item>
-
-        <!-- <el-form-item label=" 客户信息" >
-          <el-switch
-            v-model="temp.visable"
-            on-color="#4c70e8"
-            off-color="#eef1f6">
-          </el-switch>
-        </el-form-item> -->
+        
+        <el-form-item label=" E店编号:" prop="jointEshopCode">
+          <el-input 
+            style='width: 400px;' 
+            v-model.trim="temp.jointEshopCode"
+            placeholder="请输入E店编码"></el-input>
+        </el-form-item>
 
         <el-form-item label=" 机构网址:" prop="url">
           <el-input 
@@ -313,10 +319,12 @@ export default {
         telephone: "",
         masterName: "",
         masterPhone: "",
+        workStartTime:"",
+        workEndTime:"",
+        jointEshopCode:"",
         remark: "",
         areaCodes: [],
         scopeType: "",
-        cityCodes: [],
         visable: "1"
       },
       province: "",
@@ -326,18 +334,19 @@ export default {
         { id: "masterPhone", value: "负责人手机号" }
       ],
       scopeType: [],
+      workTime:"",
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "编辑机构",
-        create: "新增机构"
+        update: "编辑服务机构",
+        create: "新增服务机构"
       },
       tableKey: 0,
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
       textarea: "",
-      // serviceCity: this.$store.state.user.area,
+      orgId:"",// 判断是不是全平台用户
       updateId: "",
       rules: {
         name: [
@@ -383,14 +392,7 @@ export default {
         scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
-        cityCodes: [
-          {
-            required: true,
-            type: "array",
-            message: "服务范围城市不能为空",
-            trigger: "change"
-          }
-        ],
+    
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
         ],
@@ -401,6 +403,15 @@ export default {
             message: "所在区域不能为空",
             trigger: "change"
           }
+        ],
+        workStartTime: [
+          { required: true, message: "工作开始时间不能为空", trigger: "change" }
+        ],
+        workEndTime: [
+          { required: true, message: "工作结束时间不能为空", trigger: "change" }
+        ],
+        jointEshopCode: [
+          { required: true, message: "E店编码不能为空", trigger: "blur" }
         ],
         url: [
           {
@@ -442,7 +453,9 @@ export default {
     this.getList();
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
-    console.log(this.scopeType);
+    this.workTime = dict.work_start_time;
+    this.orgId = localStorage.getItem('orgId')
+    console.log(this.orgId,'orgId')
     
     
   },
@@ -464,6 +477,8 @@ export default {
       });
     },
     handleFilter() {
+      this.listQuery.page = 1;
+      this.pageNumber = 1
       var value = this.search.value;
       if (this.search.key == "name") {
         var obj = {
@@ -502,7 +517,7 @@ export default {
         this.total = res.data.data.count;
         this.listLoading = false;
       });
-      this.listQuery.page = 1;
+      
       // this.getList();
     },
     handleSizeChange(val) {
@@ -566,12 +581,9 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false
-      //this.areaOptions = this.$store.state.user.area;
-      //this.resetTemp();
-      //this.$refs[formName].resetFields();
     },
     handleUpdate(row) {
-      //this.areaOptions = this.$store.state.user.area;
+
       //console.log(row);
       this.listLoading = true;
       const obj = {
@@ -583,12 +595,10 @@ export default {
 
           if (res.data.code == "1") {
             this.listLoading = false;
-            console.log(res.data.data.haveStation,'是否存在服务站');
             if(res.data.data.haveStation !== 0){
               this.typeState = true
             }
-            this.temp = Object.assign({}, res.data.data);
-            // this.temp.cityCodes = res.data.data.cityCodes;
+            this.temp = Object.assign({workStartTime:"",workEndTime:"",jointEshopCode:""}, res.data.data);
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -597,6 +607,11 @@ export default {
               res.data.data.cityCode,
               res.data.data.areaCode
             ];
+            if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
+             this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+             this.temp.workEndTime = res.data.data.workEndTime.substring(0,5)
+            }
+            console.log(this.temp)
             this.dialogFormVisible = true;
           } else {
             this.listLoading = false;
@@ -630,19 +645,12 @@ export default {
       console.log(val);
       // this.search.key = val
     },
-    changeCity(val) {
-      console.log(val);
-    },
     create(formName) {
       this.btnState = true
       setTimeout(()=>{
         this.btnState = false
       },1000)
-      console.log(this.temp.cityCodes);
-      var arr = [];
-      for (var i = 0; i < this.temp.cityCodes.length; i++) {
-        arr.push(this.temp.cityCodes[i]);
-      }
+
       var obj = {
         name: this.temp.name, //机构名
         telephone: this.temp.telephone, //机构电话
@@ -650,8 +658,9 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        //cityCodes: arr,
-        cityCodes: this.temp.cityCodes,
+        workStartTime:this.temp.workStartTime +':00',//开始时间
+        workEndTime:this.temp.workEndTime +':00',//结束时间
+        jointEshopCode: this.temp.jointEshopCode, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -659,13 +668,8 @@ export default {
         provinceCode: this.temp.areaCodes[0], //省
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
-        //visable: "1"
       };
-      // if (this.temp.visable) {
-      //   obj.visable = "1";
-      // } else {
-      //   obj.visable = "0";
-      // }
+      
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -679,7 +683,9 @@ export default {
                 type: "success",
                 message: "添加成功"
               });
-              this.getList();
+              this.search.key = ""
+              this.search.value = ""
+              this.handleFilter();
               this.dialogFormVisible = false;
             } else {
               this.$message({
@@ -694,11 +700,6 @@ export default {
       });
     },
     update(formName) {
-      var arr = [];
-      for (var i = 0; i < this.temp.cityCodes.length; i++) {
-        arr.push(this.temp.cityCodes[i]);
-      }
-      console.log(this.temp.cityCodes);
       var obj = {
         id: this.updateId,
         name: this.temp.name, //机构名
@@ -707,8 +708,9 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        //cityCodes: arr,
-        cityCodes: this.temp.cityCodes,
+        workStartTime:this.temp.workStartTime +':00',//开始时间
+        workEndTime:this.temp.workEndTime +':00',//结束时间
+        jointEshopCode: this.temp.jointEshopCode, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -754,8 +756,10 @@ export default {
         masterPhone: "",
         remark: "",
         areaCodes: [],
-        scopeType: "",
-        cityCodes: []
+        workStartTime:"",
+        workEndTime:"",
+        jointEshopCode:"",
+        scopeType: ""
       };
     }
   }
