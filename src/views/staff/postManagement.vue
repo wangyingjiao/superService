@@ -653,7 +653,6 @@ export default {
       };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
-
       var str = "";
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
@@ -669,6 +668,7 @@ export default {
         }
       };
       console.log(obj);
+    
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {

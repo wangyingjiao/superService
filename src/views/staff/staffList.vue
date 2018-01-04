@@ -586,8 +586,35 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
+      if (b) {
+        if (a.subMenus == undefined) {
+          var arr = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].id == arr[2]) {
+            }
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr[3]) {
+                  var str = this.data2[i].subMenus[j].subMenus[0];
+                  if (str.permission != undefined) {
+                    var per = str.permission;
+                    var newper = per.substring(per.length - 4, per.length);
+                    console.log(newper, "截取");
+                    if (newper == "view") {
+                      this.$refs.domTree.setChecked(str.id, true);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          console.log(a.permission, "父级被勾选的权限");
+          console.log(a.id, "父级被勾选的id");
+          console.log(a.subMenus[0], "父级的第一个元素");
+        }
+      }
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
-      console.log(this.temp2.check);
     },
     handleUpdate(row) {
       //this.handleCreate();
@@ -783,7 +810,7 @@ export default {
           id: this.temp2.officeId2
         }
       };
-
+      console.log(obj,'新增岗位')
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.dialogFormStation = false;
@@ -804,7 +831,7 @@ export default {
               //this.resetTemp2();
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -818,7 +845,7 @@ export default {
         id: this.temp.id,
         mobile: this.temp.mobile,
         name: this.temp.name,
-        newPassword: this.temp.password3,
+        newPassword: this.temp.password,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
