@@ -161,6 +161,7 @@ export default {
     };
   },
   methods: {
+	//服务时间格式化只有整点与半点
 	TimeChange(value){
 		if(value != undefined){ 
 			var str=value.substring(14,16)						
