@@ -456,13 +456,26 @@ export default {
     this.workTime = dict.work_start_time;
     this.orgId = localStorage.getItem('orgId')
     console.log(this.orgId,'orgId')
-    
-    
   },
   methods: {
     getList() {
+      var value = this.search.value;
+      if (this.search.key == "name") {
+        var obj = {
+          name: value
+        };
+      } else if (this.search.key == "masterName") {
+        var obj = {
+          masterName: value
+        };
+      } else if (this.search.key == "masterPhone") {
+        var obj = {
+          masterPhone: value
+        };
+      }else{
+        var obj = {}
+      }
       this.listLoading = true;
-      var obj = {};
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.list = res.data.data.list;
@@ -733,6 +746,7 @@ export default {
                 type: "success",
                 message: "修改成功"
               });
+             
               this.getList();
             } else {
               this.$message({
