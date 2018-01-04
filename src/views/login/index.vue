@@ -7,14 +7,14 @@
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="登录账号" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <icon-svg icon-class="mima"></icon-svg>
         </span>
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
-          placeholder="password"></el-input>
+          placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
@@ -22,8 +22,8 @@
         </el-button>
       </el-form-item>
       <div class='tips'>
-        <span style="margin-right:20px;">username: admin</span>
-        </span> password: admin</span>
+        <!-- <span style="margin-right:20px;">登录账号: 手机号</span>
+        </span> 密码: 6-20w</span> -->
       </div>
     </el-form>
   </div>
@@ -55,8 +55,8 @@ export default {
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur',  }],
-        password: [{ required: true, trigger: 'blur',  }]
+        username: [{ required: true,message: "登录账号不能为空", trigger: 'blur' }],
+        password: [{ required: true,message: "登录密码不能为空", trigger: 'blur'  }]
       },
       loading: false
     }

@@ -205,9 +205,11 @@ export default {
       };
       console.log(obj, "搜索参数");
       this.listLoading = true;
+      this.listQuery.page = 1;
+      this.pageNumber = 1
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.listLoading = false;
-        this.listQuery.page = 1;
+        
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
