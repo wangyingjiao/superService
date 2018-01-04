@@ -176,7 +176,8 @@ export default {
     majorChange(val) {
       console.log(val);
     },
-    getList() { // 获取列表
+    getList() {
+      // 获取列表
       this.listLoading = true;
       var obj = {
         name: this.search.name,
@@ -198,7 +199,8 @@ export default {
           this.listLoading = false;
         });
     },
-    handleFilter() {// 搜索
+    handleFilter() {
+      // 搜索
       var obj = {
         name: this.search.name,
         majorSort: this.activeName
@@ -206,10 +208,10 @@ export default {
       console.log(obj, "搜索参数");
       this.listLoading = true;
       this.listQuery.page = 1;
-      this.pageNumber = 1
+      this.pageNumber = 1;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.listLoading = false;
-        
+
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -285,7 +287,8 @@ export default {
         }
       });
     },
-    handleDelete(row) {//删除
+    handleDelete(row) {
+      //删除
       console.log(this.activeName);
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -322,7 +325,8 @@ export default {
           });
         });
     },
-    create(formName) {//新增
+    create(formName) {
+      //新增
       this.btnState = true;
       setTimeout(() => {
         this.btnState = false;
@@ -337,10 +341,10 @@ export default {
           addClass(obj).then(res => {
             console.log(res, "添加");
             if (res.data.code === 1) {
-              this.dialogFormVisible = false
-              this.activeName = "all"
-              this.resetSearch()
-              this.resetTemp()
+              this.dialogFormVisible = false;
+              this.activeName = "all";
+              this.resetSearch();
+              this.resetTemp();
               this.$refs[formName].resetFields();
               this.handleFilter();
               this.$message({
@@ -350,7 +354,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: "同一类型下分类名称不允许重复"
               });
             }
           });
@@ -359,18 +363,21 @@ export default {
         }
       });
     },
-    resetForm(formName) {//清空列表
-      this.resetTemp()
+    resetForm(formName) {
+      //清空列表
+      this.resetTemp();
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
     },
-    resetSearch() { //清空搜索信息
+    resetSearch() {
+      //清空搜索信息
       this.search = {
         name: "",
         majorSort: ""
       };
     },
-    update(formName) {// 编辑
+    update(formName) {
+      // 编辑
       console.log(1111);
       var obj = {
         id: this.rowId,
@@ -383,16 +390,16 @@ export default {
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.resetTemp()
+              this.resetTemp();
               this.$refs[formName].resetFields();
-              this.dialogFormVisible = false
+              this.dialogFormVisible = false;
               this.getList();
               this.$message({
                 type: "success",
                 message: "编辑成功"
               });
             } else {
-              this.dialogFormVisible = false
+              this.dialogFormVisible = false;
               this.$message({
                 type: "error",
                 message: "发生错误"

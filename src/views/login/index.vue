@@ -17,7 +17,7 @@
           placeholder="密码(6-20位数字、字母组成)"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
+        <el-button type="primary"  style="width:100%;color:#ffffff;" :loading="loading" @click.native.prevent="handleLogin">
           登录
         </el-button>
       </el-form-item>
