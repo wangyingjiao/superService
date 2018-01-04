@@ -141,6 +141,7 @@
               <el-select
               style="width: 100%;"
                 v-model="temp.workStartTime" 
+                @change="startTimeChange"
                 placeholder="请选择开始时间">
                  <el-option v-for="(item,index) in workTime" :key="index" :label="item" :value="item">
                 </el-option>
@@ -152,9 +153,10 @@
             <el-form-item prop="workEndTime">
               <el-select
               style="width: 100%;"
+              @change="endTimeChange"
                 v-model="temp.workEndTime" 
                 placeholder="请选择结束时间">
-                <el-option v-for="(item,index) in workTime" :key="index" :label="item" :value="item">
+                <el-option v-for="(item,index) in workEndTime" :key="index" :label="item" :value="item">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -334,7 +336,8 @@ export default {
         { id: "masterPhone", value: "负责人手机号" }
       ],
       scopeType: [],
-      workTime:"",
+      workTime:[],
+      workEndTime:[],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -590,6 +593,24 @@ export default {
         this.listLoading = false;
       });
     },
+    startTimeChange(val){
+      this.temp.workEndTime = ""
+      console.log(val,'开始时间')
+      for(var i = 0;i<this.workTime.length;i++){
+        if(val == this.workTime[i]){
+          console.log(i,'下标')
+          console.log(this.workTime,'下标')
+          for(var j =i+1;j < this.workTime.length;j++){
+            this.workEndTime.push(this.workTime[j])
+          }
+          //this.workEndTime = this.workTime.subString(i,this.workTime.length)
+          console.log(this.workEndTime,'workEndTime')
+        }
+      }
+    },
+    endTimeChange(val){
+       console.log(val,'结束时间')
+    },
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -622,7 +643,10 @@ export default {
             ];
             if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
              this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
-             this.temp.workEndTime = res.data.data.workEndTime.substring(0,5)
+             setTimeout(() => {
+               this.temp.workEndTime = res.data.data.workEndTime.substring(0,5)
+             }, 50);
+             
             }
             console.log(this.temp)
             this.dialogFormVisible = true;
