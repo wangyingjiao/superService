@@ -49,12 +49,12 @@ const user = {
           // console.log(response)
           // console.log(response.data.data.user.role.dataScope, '岗位等级')
           if (response.data.code === 1) {
-            console.log(response.data.data.JSESSIONID)
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             localStorage.setItem('orgId', response.data.data.user.organization.id)
+            localStorage.setItem('userId', response.data.data.user.id)
             const data = response.data
-            setSession(response.data.data.JSESSIONID)
+            // setSession(response.data.data.JSESSIONID)
             setToken(data.token)
             resolve()
           } else {

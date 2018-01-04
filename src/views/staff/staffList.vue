@@ -681,7 +681,7 @@ export default {
     },
     searchOffice(val) {
       // 搜索时机构改变
-      this.search.stationId = ""
+      this.search.stationId = "";
       var obj = {
         orgId: val
       };
@@ -810,7 +810,7 @@ export default {
           id: this.temp2.officeId2
         }
       };
-      console.log(obj,'新增岗位')
+      console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.dialogFormStation = false;
@@ -841,6 +841,7 @@ export default {
       });
     },
     update(formName) {
+      var that = this;
       var obj = {
         id: this.temp.id,
         mobile: this.temp.mobile,
@@ -858,14 +859,36 @@ export default {
           addStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.getList();
-              this.$message({
-                type: "success",
-                message: "修改成功"
-              });
+              // 判断是不是自己修改自己
+              console.log(this.temp.id, "点击的id");
+              console.log(localStorage.getItem("userId"), "登录用户的id");
+              if (0) {
+              //if (this.temp.id == localStorage.getItem("userId")) {
+                // console.log("编辑自己");
+                // this.$store
+                //   .dispatch("FedLogOut")
+                //   .then(res => {
+                //     this.$message({
+                //       type: "error",
+                //       message: "密码修改请重新登录"
+                //     });
+                //     Cookies.set("jeesite.session.id",'',{ expires: -1 });
+                //     this.$router.push({ path: "/login" });
+                //   })
+                //   .catch(() => {
+                //     this.loading = false;
+                //   });
+              } else {
+                this.dialogFormVisible = false;
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.getList();
+                this.$message({
+                  type: "success",
+                  message: "修改成功"
+                });
+              }
+              // 判断结束
             } else {
               this.$message({
                 type: "error",
