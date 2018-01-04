@@ -2,7 +2,6 @@ import axios from 'axios'
 import { getSession } from '@/utils/auth'
 const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
-
 })
 
 export function loginByUsername(obj) {

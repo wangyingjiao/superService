@@ -197,6 +197,7 @@
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
+           <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
         </el-form-item>
 
         <el-form-item label="权限:" prop="check">
@@ -478,8 +479,8 @@ export default {
   methods: {
     getList() {
       var obj = {
-        roleName: "",
-        mobile: ""
+        roleName: this.search.name,
+        mobile: this.search.mobile
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -585,8 +586,35 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
+      if (b) {
+        if (a.subMenus == undefined) {
+          var arr = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].id == arr[2]) {
+            }
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr[3]) {
+                  var str = this.data2[i].subMenus[j].subMenus[0];
+                  if (str.permission != undefined) {
+                    var per = str.permission;
+                    var newper = per.substring(per.length - 4, per.length);
+                    console.log(newper, "截取");
+                    if (newper == "view") {
+                      this.$refs.domTree.setChecked(str.id, true);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          console.log(a.permission, "父级被勾选的权限");
+          console.log(a.id, "父级被勾选的id");
+          console.log(a.subMenus[0], "父级的第一个元素");
+        }
+      }
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
-      console.log(this.temp2.check);
     },
     handleUpdate(row) {
       //this.handleCreate();
@@ -625,7 +653,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.handleFilter();
+                this.getList();
               } else {
                 this.$message({
                   type: "warning",
@@ -653,6 +681,7 @@ export default {
     },
     searchOffice(val) {
       // 搜索时机构改变
+      this.search.stationId = ""
       var obj = {
         orgId: val
       };
@@ -781,7 +810,7 @@ export default {
           id: this.temp2.officeId2
         }
       };
-
+      console.log(obj,'新增岗位')
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.dialogFormStation = false;
@@ -802,7 +831,7 @@ export default {
               //this.resetTemp2();
               this.$message({
                 type: "error",
-                message: res.data.data
+                message: res.data.data[0]
               });
             }
           });
@@ -816,7 +845,7 @@ export default {
         id: this.temp.id,
         mobile: this.temp.mobile,
         name: this.temp.name,
-        newPassword: this.temp.password3,
+        newPassword: this.temp.password,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
@@ -832,7 +861,7 @@ export default {
               this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
-              this.handleFilter();
+              this.getList();
               this.$message({
                 type: "success",
                 message: "修改成功"

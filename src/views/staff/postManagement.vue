@@ -3,7 +3,7 @@
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" v-model="search.name" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" >
       </el-input>
-      <el-select clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
+      <el-select filterable clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -97,6 +97,10 @@
               ref="domTree"
               style='width: 400px;'
               @check-change="handTreechange"
+              @node-click="nodeClick"
+              @current-change="currentChange"
+              @node-expand="nodeExpand"
+              @node-collapse="nodeCollapse"
               :default-expand-all = "true"
               :props="defaultProps">
             </el-tree>
@@ -207,7 +211,7 @@ export default {
         { id: "9", value: "九级" },
         { id: "10", value: "十级" }
       ],
-      roleLv:[],
+      roleLv: [],
       dialogFormVisible: false,
       state: state,
       dialogStatus: "",
@@ -270,12 +274,12 @@ export default {
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
     });
-    var lv = localStorage.getItem('dataScope')
-    console.log(lv,'用户等级')
-    for(var i = 0;i < lv;i++){
-      this.roleLv.push(this.stationLv[i])
+    var lv = localStorage.getItem("dataScope");
+    console.log(lv, "用户等级");
+    for (var i = 0; i < lv; i++) {
+      this.roleLv.push(this.stationLv[i]);
     }
-    console.log(this.roleLv,'用户看到的等级')
+    console.log(this.roleLv, "用户看到的等级");
   },
   methods: {
     aaa(val) {
@@ -438,10 +442,63 @@ export default {
       }
     },
     handTreechange(a, b, c) {
+      console.log(this.temp.check, "check-----------------");
+      console.log(a, b, c, "checkchange节点选中状态发生变化");
+      if (b) {
+        if (a.subMenus == undefined) {
+          console.log(a.permission, "子集被勾选的权限");
+          console.log(a.id, "子集被勾选的id");
+          console.log(a.parentId, "子集的父级id");
+          console.log(a.parentIds, "子集的父级ids");
+          var arr = a.parentIds.split(",");
+          console.log(arr);
+          console.log(this.data2, "父元素");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].id == arr[2]) {
+              console.log(i, "下标i");
+            }
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr[3]) {
+                  var str = this.data2[i].subMenus[j].subMenus[0];
+                  if (str.permission != undefined) {
+                    var per = str.permission;
+                    var newper = per.substring(per.length - 4, per.length);
+                    console.log(newper, "截取");
+                    if (newper == "view") {
+                      this.$refs.domTree.setChecked(str.id, true);
+                    }
+                  }
+                  // console.log(j,'下标j')
+                  // console.log(str.name,'列表名字')
+                  // console.log(str.id,'列表id')
+                  // console.log(str.permission,'标识符')
+                }
+              }
+            }
+          }
+        } else {
+          console.log(a.permission, "父级被勾选的权限");
+          console.log(a.id, "父级被勾选的id");
+          console.log(a.subMenus[0], "父级的第一个元素");
+        }
+      }
       //console.log(this.$refs.domTree.getCheckedKeys(false));
       //console.log(this.$refs.domTree.getCheckedNodes());
       this.temp.check = this.$refs.domTree.getCheckedKeys();
       //console.log(this.temp.check);
+    },
+    nodeClick(a, b, c) {
+      console.log(a, b, c, "nodeclick节点被点击时");
+    },
+    currentChange(a, b) {
+      console.log(a, b, "currentchange选中节点变化时");
+    },
+    nodeExpand(a, b, c) {
+      console.log(a, b, c, "nodeexpand节点被展开时");
+    },
+    nodeCollapse(a, b, c) {
+      console.log(a, b, c, "nodecollapse节点关闭");
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -596,7 +653,6 @@ export default {
       };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
-      
       var str = "";
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
@@ -612,6 +668,7 @@ export default {
         }
       };
       console.log(obj);
+    
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {
@@ -625,8 +682,8 @@ export default {
                 message: "添加成功"
               });
               this.dialogFormVisible = false;
-              this.listQuery.page = 1
-              this.pageNumber = 1
+              this.listQuery.page = 1;
+              this.pageNumber = 1;
               this.handleFilter();
             } else {
               //this.$refs.domTree.setCheckedKeys([]);
@@ -662,11 +719,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           addStation(obj).then(res => {
-            
             if (res.data.code === 1) {
               this.resetTemp();
-            this.$refs.domTree.setCheckedKeys([]);
-            this.$refs[formName].resetFields();
+              this.$refs.domTree.setCheckedKeys([]);
+              this.$refs[formName].resetFields();
               this.dialogFormVisible = false;
               this.$message({
                 type: "success",
@@ -674,13 +730,12 @@ export default {
               });
               this.handleFilter();
             } else {
-              if(typeof res.data.data == 'string'){
+              if (typeof res.data.data == "string") {
                 this.$message({
                   type: "error",
                   message: res.data.data
                 });
-
-              }else{
+              } else {
                 this.$message({
                   type: "error",
                   message: res.data.data[0]
@@ -812,7 +867,7 @@ body {
 }
 .scrollBox {
   height: 400px;
-  overflow-y:scroll;
-  overflow-x:hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>
