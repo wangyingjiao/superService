@@ -494,7 +494,7 @@
           <el-row :gutter="60">
               <el-col :span="12">
                   <el-form-item label="所属服务站:" prop="stationId">
-                      <el-select v-model="personal.stationId" clearable placeholder="请选择" style="width:100%">
+                      <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                           </el-option>
                       </el-select>

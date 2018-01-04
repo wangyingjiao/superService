@@ -38,8 +38,17 @@
             <el-form-item label="技能名称" prop="name">
               <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
-            <el-form-item label="选择服务" prop="serItems" required>            
-              <div class="tech-order-jnsk selfBottonSt">
+            <el-form-item label="选择分类" prop="serItems" required>
+              <el-select v-model="value2" multiple filterable placeholder="请选择分类" class="width300">
+                <el-option
+                  v-for="item in options2"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled">
+                </el-option>
+              </el-select>
+              <!-- <div class="tech-order-jnsk selfBottonSt">
                   <div class="tech-order-btnsk"  @click="choseServer">&#10010 请选择</div>
               </div>
               <el-table :data="ruleForm2.serItems"  v-loading="listLoading"  border class="selfTableSt" >
@@ -55,10 +64,10 @@
                 </el-table>
                 <div  v-if="!ruleForm2.serItems || showRUles"  class="showRules">
                   <span v-show="spanFlag">请选择服务</span>
-                </div>
+                </div> -->
             </el-form-item>
             <el-form-item label="选择技师" prop="technicians" class="selfst3">
-             <div class="tech-order-jnsk selfst2">
+             <div class="tech-order-jnsk selfst2 width300">
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>
@@ -76,7 +85,7 @@
           </div>          
         </el-dialog>
         <!-- 选择服务弹出层 -->
-        <el-dialog title="选择服务" :visible.sync="flagserver"   :close-on-click-modal="false">
+        <!-- <el-dialog title="选择服务" :visible.sync="flagserver"   :close-on-click-modal="false">
               <div style="float:left">
                 <el-input placeholder="输入要搜索的项目名称" class="width220"  v-model="xingmu"></el-input>
                 <span v-show="promShow" class="selfInmpotInf">{{promInf}}</span>
@@ -107,7 +116,7 @@
                     <button class="button-large"   @click="submitForm1()">保存</button>
                     <button class="button-cancel"  @click="resetForm1()">取消</button>
                 </div>                    
-        </el-dialog>
+        </el-dialog> -->
 
         <!-- 选择技师弹出层 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
@@ -181,11 +190,29 @@
           }			
       };      
       return {
+        options2: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶',
+          disabled: true
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],//选择分类下拉对象
+        value2: [],//选择分类值        
         submitFlag:false,
         jumpPage:1,
         title:'新增技能',
         btnShow: this.$store.state.user.buttonshow,
-        showRUles:false,
+        //showRUles:false,
         promShow:false,
         promShow1:false, 
 		    checkAll:false,      
@@ -228,28 +255,25 @@
         promInf:'搜索内容不存在!',
         promInf1:'搜索内容不存在!',
         middleA:[],
-        spanFlag:true
+        //spanFlag:true
       }
     },
     computed: {
-      showRUles1: function () {
-        return true
-      }
    },  
     methods: {   
 		// 二级数据变化的时候
-		handleOneCheckedCitiesChange(item) {            		
-      let checkedCount = item.checkedCities.length;//二级选中的数量
-      item.itemChecked = checkedCount !=0
-		},
+		// handleOneCheckedCitiesChange(item) {            		
+    //   let checkedCount = item.checkedCities.length;//二级选中的数量
+    //   item.itemChecked = checkedCount !=0
+		// },
 		//全选操作
-      handleOneCheckAll(event,item) {
-          let arr = [];
-          for (let a = 0; a < item.commoditys.length; a++) {
-              arr.push(item.commoditys[a].id)
-          }
-          item.checkedCities = event.target.checked ? arr : [];
-      },	  
+    // handleOneCheckAll(event,item) {
+    //     let arr = [];
+    //     for (let a = 0; a < item.commoditys.length; a++) {
+    //         arr.push(item.commoditys[a].id)
+    //     }
+    //     item.checkedCities = event.target.checked ? arr : [];
+    // },	  
       //全局搜索按钮
       search(){
         var obj={
@@ -270,20 +294,20 @@
                   this.options=res.data.data.stations 
                   this.listTech=res.data.data.techs
                   this.dialogVisible = true;
-                  this.$nextTick( () => {
-                      if(this.ruleForm2.serItems == undefined){
-                        this.spanFlag=false;
-                      }else{
-                        this.spanFlag=true;
-                      }
-                  })                                                                              
+                  // this.$nextTick( () => {
+                  //     if(this.ruleForm2.serItems == undefined){
+                  //       this.spanFlag=false;
+                  //     }else{
+                  //       this.spanFlag=true;
+                  //     }
+                  // })                                                                              
               }         
               this.listLoading = false;
             }).catch(res=>{
                 
             });         
           this.dialogStatus=status;       
-          this.showRUles=true;          
+          //this.showRUles=true;          
           this.tabOptions=[];
           this.ruleForm2.serItems=[];                  		  		                          
          if(this.dialogStatus =='add'){
@@ -293,32 +317,33 @@
            this.id=''                      
          }else if(this.dialogStatus =='edit'){
            this.title='编辑技能'
-           this.showRUles=false;
+           //this.showRUles=false;
            //编辑操作           
            this.id=row.id;
             var obj = {
                 id:this.id
             }
             editTech(obj).then(res => {
+                console.log(res)
                 this.ruleForm2.name=res.data.data.info.name
-                this.middleA=res.data.data.info.items;
+                //this.middleA=res.data.data.info.items;
                 this.selectionreturn(); 
                 this.ruleForm2.serItems=res.data.data.info.items                             
-                var obj1=this.ruleForm2.serItems;
-                if(obj1.length){                    
-                    for(var i=0;i<obj1.length;i++){                
-                          var comLen=obj1[i].commoditys.length;
-                          var objName=''
-                          for(var j=0; j<comLen;j++){ 
-                                if(obj1[i].commoditys[j].name){
-                                    objName+=','+obj1[i].commoditys[j].name;
-                                }                                                      
-                        }
-                        if(objName){
-                          this.ruleForm2.serItems[i].serItemCommoditys=objName.substring(1); 
-                        }                                                                                          
-                    } 
-                }
+                // var obj1=this.ruleForm2.serItems;
+                // if(obj1.length){                    
+                //     for(var i=0;i<obj1.length;i++){                
+                //           var comLen=obj1[i].commoditys.length;
+                //           var objName=''
+                //           for(var j=0; j<comLen;j++){ 
+                //                 if(obj1[i].commoditys[j].name){
+                //                     objName+=','+obj1[i].commoditys[j].name;
+                //                 }                                                      
+                //         }
+                //         if(objName){
+                //           this.ruleForm2.serItems[i].serItemCommoditys=objName.substring(1); 
+                //         }                                                                                          
+                //     } 
+                // }                
                 if(res.data.data.info.technicians != undefined){
                     this.tabOptions=res.data.data.info.technicians;
                     this.selectionreturn1();
@@ -331,22 +356,22 @@
       },
       //服务数据回显二级选中
       selectionreturn(){
-           if(this.middleA.length != undefined){
-              for(let a=0;a<this.listorderServer.length;a++){
-                for(let b=0;b<this.middleA.length;b++){
-                    if(this.middleA[b].id == this.listorderServer[a].id){
-                      this.listorderServer[a].itemChecked=true;
-                      for(let c=0;c<this.listorderServer[a].commoditys.length;c++){
-                        for(let d=0;d<this.middleA[b].commoditys.length;d++){
-                          if(this.middleA[b].commoditys[d].id ==this.listorderServer[a].commoditys[c].id ){
-                                this.listorderServer[a].checkedCities.push(this.middleA[b].commoditys[d].id)
-                          }
-                        }
-                      }
-                    }
-                }
-              }
-           }         
+          //  if(this.middleA.length != undefined){
+          //     for(let a=0;a<this.listorderServer.length;a++){
+          //       for(let b=0;b<this.middleA.length;b++){
+          //           if(this.middleA[b].id == this.listorderServer[a].id){
+          //             this.listorderServer[a].itemChecked=true;
+          //             for(let c=0;c<this.listorderServer[a].commoditys.length;c++){
+          //               for(let d=0;d<this.middleA[b].commoditys.length;d++){
+          //                 if(this.middleA[b].commoditys[d].id ==this.listorderServer[a].commoditys[c].id ){
+          //                       this.listorderServer[a].checkedCities.push(this.middleA[b].commoditys[d].id)
+          //                 }
+          //               }
+          //             }
+          //           }
+          //       }
+          //     }
+          //  }         
       },
       //技师数据回显二级选中
       selectionreturn1(){
@@ -362,11 +387,11 @@
       },      
       //新增或编辑弹窗保存
       submitForm(formName) {
-        this.spanFlag=true;
+        //this.spanFlag=true;
         this.ruleForm2.technicians=this.tabOptions                  	   
         this.$refs[formName].validate((valid) => {
           if (valid) {
-                if( this.ruleForm2.serItems != undefined &&  this.ruleForm2.serItems.length != 0){                       
+                //if( this.ruleForm2.serItems != undefined &&  this.ruleForm2.serItems.length != 0){                       
                         var obj={
                           id:this.id,
                           name:this.ruleForm2.name,
@@ -420,10 +445,10 @@
                             });
                         }                  
 
-                }else{
-                  this.ruleForm2.serItems=[]
-                  this.showRUles=true;
-                }
+                //}else{
+                  //this.ruleForm2.serItems=[]
+                  //this.showRUles=true;
+               // }
 
             																															
           } else {            
@@ -433,7 +458,7 @@
 			},
 			//新增或编辑弹窗cancel
       resetForm(formName) {
-        this.spanFlag=true;        
+        //this.spanFlag=true;        
         if(this.dialogStatus == 'add'){
              this.ruleForm2.name='';
              this.ruleForm2={};
@@ -447,19 +472,19 @@
         this.dialogVisible = false;					
       },
       //新增或编辑弹窗选择服务回传表格删除
-      staticDelete(row){
-           if(this.ruleForm2.serItems !=undefined && this.ruleForm2.serItems.length !=0){
-                for(let a=0 ;a<this.listorderServer.length;a++){
-                    if(row.id ==this.listorderServer[a].id ){
-                       this.listorderServer[a].itemChecked=false
-                       for(let b=0;b<this.listorderServer[a].commoditys.length;b++){
-                         this.listorderServer[a].checkedCities=[];
-                       }
-                    }
-                }                            
-               this.ruleForm2.serItems.remove(row);
-           }                                 
-      },
+      // staticDelete(row){
+      //      if(this.ruleForm2.serItems !=undefined && this.ruleForm2.serItems.length !=0){
+      //           for(let a=0 ;a<this.listorderServer.length;a++){
+      //               if(row.id ==this.listorderServer[a].id ){
+      //                  this.listorderServer[a].itemChecked=false
+      //                  for(let b=0;b<this.listorderServer[a].commoditys.length;b++){
+      //                    this.listorderServer[a].checkedCities=[];
+      //                  }
+      //               }
+      //           }                            
+      //          this.ruleForm2.serItems.remove(row);
+      //      }                                 
+      // },
       //新增或编辑弹窗选择技师回传TAB删除
       errorClose(obj){
           if(this.tabOptions !=undefined && this.tabOptions.length !=0){
@@ -471,56 +496,56 @@
                 this.tabOptions.remove(obj);
           }           
       },
-      //选择服务弹窗保存
-      submitForm1() {
-      //先遍历数据中选中的再保存
-      if(this.listorderServer != undefined && this.listorderServer.length !=0){
-                this.showRUles=false;
-                var arr=[];
-                for(var i=0 ;i<this.listorderServer.length;i++){             
-                    if(this.listorderServer[i].itemChecked){
-                          if(this.listorderServer[i].commoditys.length ==this.listorderServer[i].checkedCities.length){
-                                arr.push(this.listorderServer[i]);
-                          }else{
-                              var obj1={ };
-                              var obj=[];
-                              for(var a=0 ;a<this.listorderServer[i].commoditys.length;a++){
-                                  for(var b=0 ;b<this.listorderServer[i].checkedCities.length;b++){
-                                    if(this.listorderServer[i].commoditys[a].id==this.listorderServer[i].checkedCities[b]){
-                                        obj.push(this.listorderServer[i].commoditys[a])
-                                        obj1=Object.assign({},this.listorderServer[i])
-                                        obj1.commoditys=obj
-                                        arr.push(obj1);
-                                    }
-                                  }
-                              }               
-                          }
-                    }
-                }
-      }
+      // //选择服务弹窗保存
+      // submitForm1() {
+      // //先遍历数据中选中的再保存
+      // if(this.listorderServer != undefined && this.listorderServer.length !=0){
+      //           //this.showRUles=false;
+      //           var arr=[];
+      //           for(var i=0 ;i<this.listorderServer.length;i++){             
+      //               if(this.listorderServer[i].itemChecked){
+      //                     if(this.listorderServer[i].commoditys.length ==this.listorderServer[i].checkedCities.length){
+      //                           arr.push(this.listorderServer[i]);
+      //                     }else{
+      //                         var obj1={ };
+      //                         var obj=[];
+      //                         for(var a=0 ;a<this.listorderServer[i].commoditys.length;a++){
+      //                             for(var b=0 ;b<this.listorderServer[i].checkedCities.length;b++){
+      //                               if(this.listorderServer[i].commoditys[a].id==this.listorderServer[i].checkedCities[b]){
+      //                                   obj.push(this.listorderServer[i].commoditys[a])
+      //                                   obj1=Object.assign({},this.listorderServer[i])
+      //                                   obj1.commoditys=obj
+      //                                   arr.push(obj1);
+      //                               }
+      //                             }
+      //                         }               
+      //                     }
+      //               }
+      //           }
+      // }
 
-        this.ruleForm2.serItems=arr;
-        var obj1=this.ruleForm2.serItems;
-        if(obj1.length){
-            for(var i=0;i<obj1.length;i++){                
-                  var comLen=obj1[i].commoditys.length;
-                  var objName=''
-                  for(var j=0; j<comLen;j++){ 
-                        if(obj1[i].commoditys[j].name){
-                            objName+=','+obj1[i].commoditys[j].name;
-                        }                                                      
-                }
-                if(objName){
-                  this.ruleForm2.serItems[i].serItemCommoditys=objName.substring(1); 
-                }                                                                                          
-            } 
-        }        
-        this.flagserver = false				
-      },
-      //选择服务弹窗cancel
-      resetForm1() {        
-         this.flagserver = false
-      },
+      //   this.ruleForm2.serItems=arr;
+      //   var obj1=this.ruleForm2.serItems;
+      //   if(obj1.length){
+      //       for(var i=0;i<obj1.length;i++){                
+      //             var comLen=obj1[i].commoditys.length;
+      //             var objName=''
+      //             for(var j=0; j<comLen;j++){ 
+      //                   if(obj1[i].commoditys[j].name){
+      //                       objName+=','+obj1[i].commoditys[j].name;
+      //                   }                                                      
+      //           }
+      //           if(objName){
+      //             this.ruleForm2.serItems[i].serItemCommoditys=objName.substring(1); 
+      //           }                                                                                          
+      //       } 
+      //   }        
+      //   this.flagserver = false				
+      // },
+      // //选择服务弹窗cancel
+      // resetForm1() {        
+      //    this.flagserver = false
+      // },
       //选择技师弹出层保存
       submitForm2() {
 		    //先遍历数据中选中的再保存
@@ -606,40 +631,40 @@
         });
       },
       //选择服务按钮
-      choseServer() {
-            this.flagserver = true;                    	 		                                 
-      },           
+      // choseServer() {
+      //       this.flagserver = true;                    	 		                                 
+      // },           
       //选择技师按钮
       orderTech() {
         this.ordertech = true;
       },
       //选择服务弹出层查询按钮      
-      quiry() {          
-          this.$nextTick( () => {
-            //前端定位
-            var falg=0;
-            var len = this.listorderServer.length;
-              for(var i=0;i<len;i++){
-                if(this.listorderServer[i].name.indexOf(this.xingmu) >0){
-                      falg=1;
-                      this.$refs.tableItem[i].scrollIntoView()
-                      this.$refs.tableItem[i].style.backgroundColor='#eee'                    
-                }else{
-                  this.$refs.tableItem[i].style.backgroundColor='#fff' 
-                }                   
-              }             
-              if(falg ==0){
-                this.promShow=true;
-                var that=this;
-                setTimeout(function(){
-                  that.promShow=false;                  
-                },2000);
+      // quiry() {          
+      //     this.$nextTick( () => {
+      //       //前端定位
+      //       var falg=0;
+      //       var len = this.listorderServer.length;
+      //         for(var i=0;i<len;i++){
+      //           if(this.listorderServer[i].name.indexOf(this.xingmu) >0){
+      //                 falg=1;
+      //                 this.$refs.tableItem[i].scrollIntoView()
+      //                 this.$refs.tableItem[i].style.backgroundColor='#eee'                    
+      //           }else{
+      //             this.$refs.tableItem[i].style.backgroundColor='#fff' 
+      //           }                   
+      //         }             
+      //         if(falg ==0){
+      //           this.promShow=true;
+      //           var that=this;
+      //           setTimeout(function(){
+      //             that.promShow=false;                  
+      //           },2000);
                 
-              }else{
-                this.promShow=false;
-              }
-        })                             
-      },
+      //         }else{
+      //           this.promShow=false;
+      //         }
+      //   })                             
+      // },
       //选择技师弹出层查询按钮
       searchTeh(){        
             this.$nextTick( () => {
