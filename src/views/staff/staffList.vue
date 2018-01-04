@@ -654,6 +654,7 @@ export default {
     },
     searchOffice(val) {
       // 搜索时机构改变
+      this.search.stationId = ""
       var obj = {
         orgId: val
       };
