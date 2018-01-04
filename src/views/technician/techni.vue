@@ -273,24 +273,24 @@
 			<ul class="tech-ul">
         <el-row :gutter="60">
           <el-col :span="12">
-              <el-form-item label="姓名:" prop="name">
+              <el-form-item label="姓名：" prop="name">
                 <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
               </el-form-item>
           </el-col>
           <el-col :span="12">
-              <el-form-item label="身份证号:" prop="idCard">
+              <el-form-item label="身份证号：" prop="idCard">
                 <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
               </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="60">
           <el-col :span="12">
-              <el-form-item label="手机号:" prop="phone">
+              <el-form-item label="手机号：" prop="phone">
                 <el-input placeholder="请输入11为手机号" v-model="personal.phone"></el-input>
               </el-form-item>
           </el-col>
           <el-col :span="12">
-              <el-form-item label="现住地址:" prop="area">
+              <el-form-item label="现住地址：" prop="area">
                 <el-cascader
                 style="width:100%"
                     @change="nowAdd"
@@ -341,7 +341,7 @@
 				</li> -->
         <el-row :gutter="60">
           <el-col :span="12">
-              <el-form-item label="性别:" prop="sex">
+              <el-form-item label="性别：" prop="sex">
                 <el-select v-model="personal.sex" clearable placeholder="请选择" style="width:100%">
                   <el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
                   </el-option>
@@ -375,7 +375,7 @@
 				</li> -->
          <el-row :gutter="60">
           <el-col :span="12">
-              <el-form-item label="民族:">
+              <el-form-item label="民族：" class="seize">
                 <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:100%">
                     <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
@@ -383,7 +383,7 @@
               </el-form-item>
           </el-col>
           <el-col :span="12">
-              <el-form-item label="出生日期:" required>
+              <el-form-item label="出生日期：" required>
                  <el-form-item prop="birtStr">
                   <el-date-picker 
                       type="date" placeholder="选择日期" 
@@ -442,17 +442,20 @@
 					<div>
 					<p></p>
 					<p>
-            <el-upload
-              class="avatar-uploader"
-              action="http://openservice.oss-cn-beijing.aliyuncs.com"
-              :show-file-list="false"
-              :http-request="(val)=>picUpload(val,'head')"
-              >
-              <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
-              <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
-              <div class="upload-head"><span>*上传头像</span></div>
-              <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
-            </el-upload>
+            <!-- <el-form-item prop="headPic" class="uploadHead"> -->
+              <el-upload
+                class="avatar-uploader"
+                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                :show-file-list="false"
+                :http-request="(val)=>picUpload(val,'head')"
+                >
+                <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
+                <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
+                <div class="upload-head"><span>*上传头像</span></div>
+                <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
+                <div v-show="!personal.headPic" style="color:red;margin-top:10px;">请上传头像</div>
+              </el-upload>
+            <!-- </el-form-item> -->
 
              <el-upload
               class="avatar-uploader"
@@ -475,7 +478,7 @@
         <ul class="tech-ul tech-service">
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="选择城市:" prop="serviceCityName">
+                  <el-form-item label="选择城市：" prop="serviceCityName">
                       <el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
                         <el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
                         </el-option>
@@ -483,7 +486,7 @@
                   </el-form-item>
               </el-col>
               <el-col :span="12">
-                  <el-form-item label="岗位性质:" prop="jobNature">
+                  <el-form-item label="岗位性质：" prop="jobNature">
                       <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                           </el-option>
@@ -493,7 +496,7 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="所属服务站:" prop="stationId">
+                  <el-form-item label="所属服务站：" prop="stationId">
                       <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                           </el-option>
@@ -501,7 +504,7 @@
                   </el-form-item>
               </el-col>
               <el-col :span="12">
-                  <el-form-item label="岗位状态:" prop="jobStatus">
+                  <el-form-item label="岗位状态：" prop="jobStatus">
                       <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
                         <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
                         </el-option>
@@ -511,7 +514,7 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="工作年限:" prop="workTime">
+                  <el-form-item label="工作年限：" prop="workTime">
                     <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
                       <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                       </el-option>
@@ -521,7 +524,7 @@
           </el-row>
           <el-row :gutter="60">
             <el-col :span="12">
-                <el-form-item label="选择技能:" prop="skillIds">
+                <el-form-item label="选择技能：" prop="skillIds">
                   <el-select v-model="personal.skillIds" multiple placeholder="请选择技能" style="width:100%" filterable >
                     <el-option
                     v-for="(item,index) in sexTypeo"
@@ -535,7 +538,7 @@
           </el-row>
           <el-row v-if="personal.jobNature!='part_time'">
             <el-col :span="17">
-              <el-form-item label="工作时间:" prop="workTimes">
+              <el-form-item label="工作时间：" prop="workTimes">
                   <div class="tech-order-jn" style="width:100%">
                     <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
                     <div class="tech-order-jn-sons" v-show="isB">
@@ -780,6 +783,14 @@ export default {
         callback(new Error("请选择工作时间"));
       }
     };
+    //头像图片
+    var HEADPIC = (rule,value,callback) => {
+      if(value){
+        callback()
+      }else{
+        callback(new Error('请上传头像'))
+      }
+    }
 
     return {
       btnState:false,
@@ -841,7 +852,7 @@ export default {
         workTime: "", //工作年限
         skillIds: [], //技能List
         area: [],
-        status: "", //状态
+        status: "yes", //状态
         provinceCode: "", //省
         cityCode: "", //市
         areaCode: "", //区
@@ -880,7 +891,10 @@ export default {
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
-        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }]
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
+        headPic:[
+          { required: true, validator:HEADPIC , trigger: "blur"}
+        ]
       },
       server: [
         {
@@ -1246,9 +1260,10 @@ export default {
       console.log(this.$store.state.user.area, "this.$store.state.user.area");
       return this.$store.state.user.area;
     },
-    sign(){
+    sign:function() {
+      console.log("-----------------------签名")
       return getSign();
-    }
+    },
   },
   methods: {
     picUpload(file,flag){
@@ -1261,7 +1276,7 @@ export default {
           resolve(res);
         } else {
           this.$http.get("/apiservice/oss/getSign").then(res => {
-            console.log(res, "签名过期");
+            console.log(res, "签名过期-----------------");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
           });
@@ -1631,6 +1646,15 @@ export default {
       },1000)
       this.$refs[formName].validate(val=>{
         if(val){
+          // if(this.personal.headPic){
+
+          // }else{
+          //    this.$message({
+          //       message:'头像不能为空',
+          //       type:"warning"
+          //     })
+          //     return false
+          // }
           // this.personal.workTimes.workTime = this.disbArr
           this.personal.workTimes = this.teachArr;
           Technician(this.personal).then(data=>{
@@ -1654,7 +1678,16 @@ export default {
             return false
           })
         }else{
-          console.log(val,"false")
+          // if(this.personal.headPic){
+
+          // }else{
+          //    this.$message({
+          //       message:'头像不能为空',
+          //       type:"warning"
+          //     })
+          //     return false
+          // }
+          // console.log(val,"false")
           return false
         }
       })
@@ -1729,6 +1762,7 @@ export default {
     }
   },
   mounted() {
+    this.sign   //获取签名
     this.getList(1,6,{})
     //性别,工作年限,岗位性质，岗位状态
     Whether()
@@ -2433,6 +2467,13 @@ body {
 .tech-qj .avatar-uploader .el-upload{
   border: none;
   border-radius: 0;
+}
+.uploadHead .el-form-item__content{
+  margin-left:0 !important;
+}
+.mousehover:hover{
+  background: rgb(82, 141, 196);
+  cursor: pointer;
 }
 </style>
 
