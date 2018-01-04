@@ -197,6 +197,7 @@
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
+           <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
         </el-form-item>
 
         <el-form-item label="权限:" prop="check">
@@ -478,8 +479,8 @@ export default {
   methods: {
     getList() {
       var obj = {
-        roleName: "",
-        mobile: ""
+        roleName: this.search.name,
+        mobile: this.search.mobile
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -625,7 +626,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.handleFilter();
+                this.getList();
               } else {
                 this.$message({
                   type: "warning",
@@ -832,7 +833,7 @@ export default {
               this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
-              this.handleFilter();
+              this.getList();
               this.$message({
                 type: "success",
                 message: "修改成功"
