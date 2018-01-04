@@ -67,23 +67,26 @@
 					>
 							<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 							</el-table-column>
-							<el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
+							<!-- <el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
 							</el-table-column>
 							<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
-							</el-table-column>
+							</el-table-column> -->
 							<el-table-column  align="center" width="150"  label="服务机构" prop="orgName">
 							</el-table-column>
+							<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
+							</el-table-column>							
 							<el-table-column  align="center"  width="150" label="服务内容"  prop="orderContent">
 							</el-table-column>
-							<el-table-column   align="center" width="150" label="服务费"    prop="payPrice">
+							<el-table-column   align="center" width="150" label="付款价格"    prop="payPrice">
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
 							</el-table-column>
 							<el-table-column  align="center" width="150" label="服务状态">
 						        <template scope="scope">
-						    		<span v-if="scope.row.serviceStatus =='waitservice'">待服务</span>
+						    		<span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
 									<span v-if="scope.row.serviceStatus =='started'">已上门</span>
-						    		<span v-if="scope.row.serviceStatus =='finish'">已完成</span>																													
+						    		<span v-if="scope.row.serviceStatus =='finish'">已完成</span>
+                                    <span v-if="scope.row.serviceStatus =='cancel'">已取消</span>																													
 								</template>									
 							</el-table-column>														
 							<el-table-column  align="center" width="150" label="订单状态">
@@ -100,7 +103,7 @@
 							<el-table-column   align="center" width="150" label="支付状态"  >
 						    <template scope="scope">
 						    		<span v-if="scope.row.payStatus =='payed'">已支付</span>
-										<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
+									<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
 								</template>	
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
@@ -255,11 +258,10 @@ export default {
 			this.activeName='';
 		}else{
 			this.activeName=this.activeName;
-		}
-		//	
+		}	
 		var obj={
 			orderStatus:this.activeName,
-			//服务状态 serviceStatus:this.sevicerStustas,
+			serviceStatus:this.sevicerStustas,//服务状态 
 			payStatus:this.payStus,
 			orgId:this.mechanism,
 			stationId:this.payType,

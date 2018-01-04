@@ -123,11 +123,21 @@
         "finish": "已完成",
         "started": "已上门"
     },
+    "order_type": {
+        "common": "普通订单",
+        "group_split_yes": "组合并拆单",
+        "group_split_no": "组合不拆单"
+    }, 
+    "order_majorSort": {
+        "clean": "保洁",
+        "repair": "家修"
+    },        
     "service_status": {
-        "waitservice": "待服务",
+        "wait_service": "待服务",
         "finish": "已完成",
+        "cancel": "已取消",
         "started": "已上门"
-    },    
+    },   
     "pay_status": {
         "waitpay": "待支付",
         "payed": "已支付"
@@ -146,13 +156,8 @@
         "alipay_qr": "支付宝扫码"
     },
     "order_source": {
-        "app": "app",
-        "score": "积分商城",
-        "tv": "电视",
-        "callcenter": "400呼叫中心",
-        "web": "PC",
-        "wechat": "微信",
-        "store": "门店"
+        "own": "本机构",
+        "gasq": "国安社区"
     },
     "return_status": {
         "cancel": "已取消",

@@ -2,9 +2,7 @@
     <div class="addorder-container">
        <!--订单信息开始-->
         <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息
-               <!--<div class="orderInf-cancel" @click="cancelOrder">取消订单</div> -->
-            </div>
+            <div class="custom-action orderOneBar">订单信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
@@ -15,21 +13,17 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务状态:</span>
                       <span class="lineContent">
-                        <span v-if="otherInfo.serviceStatus =='waitservice'">待服务</span>
-                        <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
-                        <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
+                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
                       </span>
                    </p>                   
                    <p class="contentLine">
                       <span class="lineTitle">订单来源:</span>
                       <span class="lineContent">
-                        <span v-if="otherInfo.orderSource =='app'">app</span>
-                        <span v-if="otherInfo.orderSource =='callcenter'">400呼叫中心</span>
-                        <span v-if="otherInfo.orderSource =='store'">门店</span>
-                        <span v-if="otherInfo.orderSource =='wechat'">微信</span>
-                        <span v-if="otherInfo.orderSource =='score'">积分商城</span>
-                        <span v-if="otherInfo.orderSource =='web'">PC</span>
-                        <span v-if="otherInfo.orderSource =='tv'">电视</span>
+                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
+                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
                       </span>
                    </p>
                    <p class="contentLine">
@@ -38,7 +32,11 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">订单类型:</span>
-                      <span class="lineContent">{{otherInfo.orderType}}</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
+                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
+                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
+                      </span>
                    </p>                                                         
                 </div>
                 <div class="rightArea">
@@ -64,7 +62,10 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">订单分类:</span>
-                      <span class="lineContent">{{otherInfo.orderClass}}</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.majorSort =='clean'">保洁</span>
+                          <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
+                      </span>
                    </p>                                                           
                 </div> 
             </div>                                     		
@@ -82,7 +83,10 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付方式:</span>
-                      <span class="lineContent">货到付款</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.payMethod =='offline'">货到付款</span>
+                        <span v-if="otherInfo.payMethod =='online'">在线</span>                        
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付总额:</span>
@@ -92,11 +96,22 @@
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">支付状态:</span>
-                      <span class="lineContent">待支付</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.payStatus =='payed'">已支付</span>
+                        <span v-if="otherInfo.payStatus =='waitpay'">待支付</span>                        
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付平台:</span>
-                      <span class="lineContent">微信</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.payPlatform =='wx'">微信</span>
+                          <span v-if="otherInfo.payPlatform =='alipay'">支付宝</span>
+                          <span v-if="otherInfo.payPlatform =='balance'">余额</span>
+                          <span v-if="otherInfo.payPlatform =='pos'">银行卡</span>
+                          <span v-if="otherInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
+                          <span v-if="otherInfo.payPlatform =='cash'">现金</span>
+                          <span v-if="otherInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付时间:</span>
@@ -106,62 +121,6 @@
             </div>                                     		
 		    </div>
         <!--支付信息结束-->
-        <!--退款信息开始-->
-        <!-- <div class="thrid-bar marginTop20" v-if="refundInfo != undefined">
-            <div class="custom-action">退款信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">退款编号:</span>
-                      <span class="lineContent">20170829144443318882</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">退款状态:</span>
-                      <span class="lineContent">退款中</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">退款原因:</span>
-                      <span class="lineContent">服务不满意、服务质量差</span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">退款金额:</span>
-                      <span class="lineContent">388.00元</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">申请时间:</span>
-                      <span class="lineContent">2017-08-29 14:44</span>
-                   </p>                   
-                </div> 
-            </div>                                     		
-		    </div> -->
-        <!--退款信息结束-->
-        <!--服务地址信息开始-->
-        <div class="thrid-bar marginTop20">
-            <div class="custom-action">服务地址信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">姓名:</span>
-                      <span class="lineContent">{{addressInfo.name}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">地址:</span>
-                      <span class="lineContentWidth">{{addressInfo.address}}</span>
-                   </p>                                     
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">电话:</span>
-                      <span class="lineContent">{{addressInfo.phone}}</span>
-                   </p>                  
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--服务地址信息结束--> 
         <!--服务信息开始-->
         <div class="thrid-bar marginTop20">
             <div class="custom-action">服务信息</div>
@@ -171,14 +130,22 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务分类:</span>
                       <span class="lineContent">日常保洁</span>
-                   </p>                                    
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">建议服务时长:</span>
+                      <span class="lineContent">{{goodsInfo.serviceHour}}小时</span>
+                   </p>                                                        
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{goodsInfo.serviceTime}}</span>
                       <span class="selfMarLeft70"><button type="button"  @click="changeTime" class="button-cancel height25">更换时间</button></span>
-                   </p>                  
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">完成时间:</span>
+                      <span class="lineContent">{{goodsInfo.finishTime}}</span>
+                   </p>                                     
                 </div> 
             </div>
             <div class="selfTableWrapStyle">
@@ -189,32 +156,19 @@
                   <el-table-column
                     align="center"
                     label="商品名称"
-                    >
-                      <template scope="scope">
-                            <div class="order-selfTd" v-for=" item in scope.row.goods" :key="item.goodsId">{{item.goodsName}}</div>                   
-                      </template> 
+                    prop="goodsName"
+                    > 
                   </el-table-column>
                   <el-table-column
                     align="center"
-                    label="服务数量">
-                      <template scope="scope">
-                            <div class="order-selfTd" v-for=" item in scope.row.goods" :key="item.goodsId">{{item.goodsNum}}</div>                   
-                      </template>                     
+                    label="服务数量"
+                    prop="goodsNum">                    
                   </el-table-column>
                   <el-table-column
                     align="center"
-                    label="金额">
-                      <template scope="scope">
-                            <div class="order-selfTd" v-for=" item in scope.row.goods" :key="item.goodsId">{{item.payPrice}}</div>                   
-                      </template>                    
+                    label="金额"
+                    prop="payPrice">                   
                   </el-table-column>
-                  <el-table-column
-                    align="center"
-                    label="操作">
-                      <template scope="scope">
-                            <div class="servicerFont"  @click="editService(scope.row)">编辑</div>                    
-                      </template>                     
-                  </el-table-column>                                     
                 </el-table>
             </div>                                     		
 		    </div>
@@ -417,7 +371,7 @@
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
-            <button class="button-large" @click="submitForm2()">确 定</button>
+            <button class="button-large" @click="submitForm2()">保存</button>
             <button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
           </div>
         </el-dialog>
@@ -432,6 +386,7 @@
                       v-model="value1"                      
                       placeholder="年-月-日"                     
                       :type="select"
+                      :picker-options="pickerOptions0"
                       class="selfDateStyle"
                       @change='dateChange'
                       >
@@ -439,78 +394,17 @@
               </el-form-item>
               <el-form-item label="选择时间" required>
                     <div class="marginTopDec10">
-                      <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(value,index,key) in 20" :key="index" @click="timeChange(index)">08:30</div>
+                      <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.value}}</div>
                     </div>                    
               </el-form-item>              
 
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large"   @click="submitTime">确 定</button>
+              <button class="button-large"   @click="submitTime">保存</button>
               <button class="button-cancel"  @click="cancelTime">取 消</button>
             </div>
         </el-dialog>
-        <!--修改服务时间弹窗结束-->
-        <!--取消此订单弹窗开始-->
-        <el-dialog
-          title=""
-          :visible.sync="orderCancelFlag"
-          size="tiny">
-          <span>确定要取消此订单吗？</span>
-          <div slot="footer" class="dialog-footer" style="text-align:center;">
-            <button class="button-large"   @click="orderCancelOk">确 定</button>
-            <button class="button-cancel"  @click="orderCancelFlag = false">取 消</button>            
-          </div>
-        </el-dialog>
-        <!--取消此订单弹窗结束-->
-        <!--修改服务弹窗开始-->
-        <el-dialog
-          title="修改服务"
-          :visible.sync="editServiceFlag">
-            <div class="table-d">
-              <table width="100%" class="selfTable">
-                <tr>
-                <td  class="editServiceTabHeader"  align="center" width="8%">选择</td>
-                <td  class="editServiceTabHeader" align="center" width="28%">商品名称</td>
-                <td  class="editServiceTabHeader" align="center" width="28%">单价</td>
-                <td  class="editServiceTabHeader" align="center" width="10%">起购数</td>
-                <td  class="editServiceTabHeader" align="center" width="26%">数量</td>							
-                </tr>
-                <tr v-for="item in selectCommidty" :key="item.id" >
-                <td class="height30" align="center"><el-checkbox  v-model="item.checkAll"></el-checkbox></td>
-                <td class="height30"align="center">
-                  <span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
-                  <span v-if="item.type=='3'">
-                    <el-select  class="editServiceTabSel"  v-model="item.roomId" placeholder="请选择">
-                      <el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
-                      </el-option>
-                    </el-select>
-                  </span>
-                </td>
-                <td class="height30" align="center">
-                  <span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
-                  <span v-if="item.type=='3'">
-                    <span v-if="item.roomId =='1'">{{item.testprice[item.roomId-1].pirce}}</span>
-                    <span v-if="item.roomId =='2'">{{item.testprice[item.roomId-1].pirce}}</span>
-                    <span v-if="item.roomId =='3'">{{item.testprice[item.roomId-1].pirce}}</span>
-                  </span>
-                </td>
-                <td class="height30" align="center">{{item.payNum}}</td>
-                <td class="height30" align="center">
-                  <span v-if="item.type=='1'"><el-input-number class="editServiceTabInputNum"  v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
-                  <span v-if="item.type=='2'"><el-input  class="editServiceTabInputNum"  placeholder="请输入技师姓名" v-model="item.number"></el-input></span>
-                  <span v-if="item.type=='3'">{{item.number}}</span>
-                  
-                </td>							
-                </tr>
-              </table>
-          </div>          
-          <div slot="footer" class="dialog-footer" style="text-align:center;">
-            <button class="button-large"   @click="editServiceOk">确 定</button>
-            <button class="button-cancel"  @click="editServiceFlag = false">取 消</button>            
-          </div>
-        </el-dialog>
-        <!--修改服务弹窗结束-->        
-        
+        <!--修改服务时间弹窗结束-->        
   </div>
 </template>
 
@@ -521,19 +415,19 @@ import {getOrderInf,CancelOrderInf} from "@/api/order";
   } from '@/api/skill'
 export default {
   name: "",
-  data() {
-	var checkPhone = (rule, value, callback) => {
-			if (!value) {
-			  return callback(new Error('电话号码不能为空'));
-			}else{
-				if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
-				  callback(new Error('电话号码不正确！请重新填写'));
-				} else {
-				  callback();
-				}
-			}
-	};  
+  data() { 
     return {
+          pickerOptions0: {
+                disabledDate(time) {
+              if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
+                        return false;
+              }else{
+                return true;
+              }
+                
+                }
+          },      
+          timeObj:[{id:1,value:'8:00'},{id:2,value:'8:30'},{id:3,value:'9:00'}],//时间对象
           addressInfo:[],//服务地址信息
           otherInfo:[],
           payInfo:[],//支付信息
@@ -545,86 +439,12 @@ export default {
           promShow1:false, 
           promInf1:'搜索内容不存在!',
           listTech:[],          
-          selectCommidty:[	
-            {
-              id:'1',
-              checkAll:false,
-              name:'大型灯',
-              type:'1',
-              pirce:'26',
-              payNum:'2',
-              number:2
-            },
-            {
-              id:'4',
-              checkAll:true,
-              roomId:'1',
-              testprice:[
-                {pirce:'26'},
-                {pirce:'52'},
-                {pirce:'78'},
-              ],
-              roomType:[
-              { key: "1", roomName: "一居室"},
-              { key: "2", roomName: "二居室"},
-              { key: "3", roomName: "三居室"}
-              ],
-              type:'3',
-              pirce:'26',
-              payNum:'2',
-              number:1
-            },			
-            {
-              id:'2',
-              checkAll:false,
-              name:'面积（平米)',
-              type:'2',
-              pirce:'26',
-              payNum:'2',
-              number:3
-            },
-            {
-              id:'3',
-              checkAll:false,
-              roomId:'2',
-              testprice:[
-                {pirce:'26'},
-                {pirce:'52'},
-                {pirce:'78'},
-              ],
-              roomType:[
-              { key: "1", roomName: "一居室"},
-              { key: "2", roomName: "二居室"},
-              { key: "3", roomName: "三居室"}
-              ],
-              type:'3',
-              pirce:'26',
-              payNum:'2',
-              number:1
-            }						
-          ],      
+          selectCommidty:[],      
           select:'date',
-          editServiceFlag:false,
-            rules2: {
-              phone: [
-                { validator: checkPhone, trigger: 'blur' }
-              ]
-            },
-          formInline: {
-            user: ''
-          },
+          formInline:{},
           value1:'',
           value2:'',
           dialogTableVisible:false,				
-          //服务站下拉选项
-          stationOptions:[
-            { key: "1", stationName: "服务站1" },
-            { key: "2", stationName: "服务站2" },
-            { key: "3", stationName: "服务站3" },
-            { key: "4", stationName: "服务站4" }
-          ],
-          //服务站
-          stationName:'',
           //弹窗表格数据
           technicianData:[{
                 headUrl: 'headurl',
@@ -632,25 +452,24 @@ export default {
                 sex: '男',
                 serverStation:'呼家楼服务站'
               }, 
-          {
+              {
                 headUrl: 'headurl',
                 name: '王小虎',
                 sex: '男',
-            serverStation:'呼家楼服务站'
+                serverStation:'呼家楼服务站'
+              },
+              {
+                headUrl: 'headurl',
+                name: '王小虎',
+                sex: '男',
+                serverStation:'呼家楼服务站'
               },{
                 headUrl: 'headurl',
                 name: '王小虎',
                 sex: '男',
-            serverStation:'呼家楼服务站'
-              },{
-                headUrl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-            serverStation:'呼家楼服务站'
+                serverStation:'呼家楼服务站'
               }],
-           tableData:[{
-                id:1,
-                goods:[
+           tableData:[
                 {
                   goodsId:"1002",
                   goodsName:"大灯",
@@ -668,9 +487,7 @@ export default {
                    goodsName:"一居室",
                    goodsNum:"1",
                    payPrice:"120"
-                }
-                ],                               
-              }          
+                }                                        
               ], 
            tableData1:[{
                 headurl: 'headurl',
@@ -686,28 +503,25 @@ export default {
               }],
           dialogVisible:false,                
           technicianName:'',//技师姓名
-          pagetotal:10,//技师总页数
-          pageSize:2,//每页条数
           orderCancelFlag:false,
 		
     };
   },
   methods:{
     getOrderAllInf(orderId){
-      //getOrderInf
       var obj={
         id:orderId
       }
       getOrderInf(obj).then(res => {      
           if (res.data.code === 1) {                         
-             console.log(res.data.data.info)
-             var AllInfo=res.data.data.info;
-             this.otherInfo=AllInfo;
-             this.addressInfo=AllInfo.addressInfo; //服务地址信息
-             this.payInfo=AllInfo.payInfo;//支付信息
-             this.refundInfo=AllInfo.refundInfo//退款信息
-             this.goodsInfo=AllInfo.goodsInfo//服务信息
-             console.log(this.goodsInfo);
+            console.log(res.data.data.info)
+            var AllInfo=res.data.data.info;
+            this.otherInfo=AllInfo;
+            this.addressInfo=AllInfo.addressInfo; //服务地址信息
+            this.payInfo=AllInfo.payInfo;//支付信息
+            this.refundInfo=AllInfo.refundInfo//退款信息
+            this.goodsInfo=AllInfo.goodsInfo//服务信息
+            console.log(this.goodsInfo);
 
           }else{
           }          
@@ -717,29 +531,39 @@ export default {
     },
     //更换时间的确定
     submitTime(){
-       this.dialogVisible = false
+      console.log(this.timeObj)
+      for(var a=0;a<this.timeObj.length;a++){
+        if(this.timeObj[a].selected==true){
+          console.log(this.timeObj[a]);
+        }
+      }
+      this.dialogVisible = false
     },
     //更换时间取消
     cancelTime(){
       this.dialogVisible = false
     },
     //日期变化时改变时间对象
-    dateChange(value){
-      console.log(this.value)
+    dateChange(value){      
+      if(value != undefined){
+        console.log(value)
+      }
     },
     //时间选项点击
-    timeChange(index){
-      console.log(index)
-      for(var a=0;a<this.$refs.TimeWrap.length;a++){
+    timeChange(index,obj){
+      for(var a=0;a<this.timeObj.length;a++){
+          this.$set(this.timeObj[a],'selected',false)
           if(a==index){
               this.$refs.TimeWrap[a].style.borderColor = "green";
               this.$refs.TimeWrap[a].style.color = "green";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark'
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
+              this.timeObj[a].selected = !this.timeObj[a].selected             
           }else{
               this.$refs.TimeWrap[a].style.borderColor = "#fff";
               this.$refs.TimeWrap[a].style.color = "#000";
               this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';                           
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+                                        
           }
 
       }
@@ -782,42 +606,23 @@ export default {
             }
           })             
     },
-	//选择技师弹出层保存
-	submitForm2() {
-		//先遍历数据中选中的再保存
-		var arr=[];
-		if(this.listTech.length){
-			for(let a=0;a<this.listTech.length;a++){
-				if(this.listTech[a].techChecked == true){
-					arr.push(this.listTech[a]);
-				}
-			}
-		}
-		this.tabOptions=arr
-		this.dialogTableVisible = false	
-	},        
-    //修改服务弹窗
-    editService(row){
-        this.editServiceFlag=true;
-    },
-    //修改服务弹窗确定按钮
-    editServiceOk(){
-        this.editServiceFlag=false;
-    }, 
-    //弹窗搜索按钮点击
-    technicianSearch(){
-    },
-    //每页条数多少改变
-    handleSizeChange(val) {
-
-    },
-    //分页器改变当前页
-    handleCurrentChange(val) {
-
-    },
+    //选择技师弹出层保存
+    submitForm2() {
+      var arr=[];
+      if(this.listTech.length){
+        for(let a=0;a<this.listTech.length;a++){
+          if(this.listTech[a].techChecked == true){
+            arr.push(this.listTech[a]);
+          }
+        }
+      }
+      this.tabOptions=arr
+      console.log(this.tabOptions);
+      this.dialogTableVisible = false	
+    },         
     //改派或新增技师
     gaiPai(status,obj){
-      console.log(status,obj);
+        console.log(status,obj);
         var obj={};             
         orderServer(obj).then(res => {      
           if (res.data.code === 1) {                         
@@ -831,39 +636,11 @@ export default {
           
         });    
     },
-    //
+    //改变服务时间按钮
     changeTime(){
+      //this.value1='2018-1-1'
       this.dialogVisible=true;
-    },
-    //取消订单按钮
-    cancelOrder(){
-       this.orderCancelFlag=true;
-    },
-    //取消订单弹窗确定
-    orderCancelOk(){
-        var obj={
-           id:this.$route.query.id
-        };             
-        CancelOrderInf(obj).then(res => {      
-          if (res.data.code === 1) {
-						this.$message({
-							type: 'success',
-							message: '取消成功!'
-						});                                                 
-            this.orderCancelFlag=false;
-            this.$router.push({path:'/clean/ordermanage'})                                                         
-          }else{
-            this.$message({
-							type: 'warning',
-							message: res.data.data
-						});
-          }          
-        }).catch(res=>{
-          
-        });     
-       
-    }
-	
+    }	
   },
   mounted() {
     console.log(this.$route.query.id);
