@@ -39,7 +39,7 @@
               <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" style="width:300px;"  class="selfTabs">
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" style="width:300px;" @change="testChange" class="selfTabs">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -190,7 +190,11 @@
     },
     computed: {
    },  
-    methods: {   	  
+    methods: {
+      //解决抖动 
+      testChange(value){
+        this.$refs.sevolce.$refs.tags.style.lineHeight='30px'
+      },  	  
       //全局搜索按钮
       search(){
         var obj={
@@ -200,13 +204,13 @@
         this.jumpPage=1;
         this.getList(obj,this.pageNumber,this.pageSize);
       },
+      //存储选择技师对象
       testTech(obj){
         if(obj.techChecked){
            this.middleA.push(obj)
         }else{
           this.middleA.remove(obj)
         }
-        console.log(this.middleA)
       },
       //全局新增按钮
       add(status,row){     
@@ -450,8 +454,7 @@
         this.ordertech = true;
       },
       //选择技师弹出层查询按钮
-      searchTeh(){
-            console.log(this.middleA) 
+      searchTeh(){ 
             var obj={
                 techName:this.techName,
                 techStationId:this.techStationId
@@ -460,11 +463,9 @@
             orderServer(obj).then(res => {      
               if (res.data.code === 1) {            
                   this.listTech=res.data.data.techs;
-                  console.log(this.listTech);
                   for(let b=0;b<this.listTech.length;b++){
                       for(let a=0;a<this.middleA.length;a++){
                           if(this.listTech[a].techStationId == this.middleA[b].techStationId){
-                               console.log("aaa");
                                this.listTech[a].techChecked=true;
                           }
                       } 
