@@ -39,7 +39,7 @@
               <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" class="width300">
+              <el-select v-model="ruleForm2.staffClass" multiple  placeholder="请选择分类" class="width300">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
