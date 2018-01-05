@@ -667,7 +667,7 @@ export default {
     },
     createStore() {
       //保存门店
-      console.log(this.$refs.domTree.getCheckedKeys(true));
+      console.log(this.$refs.domTree.getCheckedKeys(true),'选中的门店');
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
@@ -701,6 +701,7 @@ export default {
           });
         }
       });
+      this.tempStore.tree = []
     },
     createMaster(formName) {
       var obj = {
@@ -784,6 +785,7 @@ export default {
     },
     resetStore() {
       //取消门店
+      this.tempStore.tree=[]
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
