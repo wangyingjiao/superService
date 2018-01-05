@@ -456,8 +456,8 @@
                       <div>
                       <p></p>
                       <p>
-                          <button class="button-large" @click="savrTable('perFamily')">保存</button>
-                          <button class="button-cancel" @click="familyTable('perFamily')" style="margin-left:20px">取消</button>
+                          <input type="button" class="button-large" @click="savrTable('perFamily')" value="保存">
+                          <input type="button" class="button-cancel" @click="familyTable('perFamily')" style="margin-left:20px" value="取消">
                       </p>
                       </div>
                   </li>
@@ -1096,8 +1096,8 @@ export default {
         this.perServer = Object.assign({}, val);
         this.servery = val.stations;
         this.perServer.workTime = val.workTime+''
-        this.perServer.stationId = val.stationId
         // this.perServer.serviceCityName = val.stationCityCode;
+        // this.perServer.stationId = val.stationId
         // //工作时间默认选中
         var work = val.workTimes || [],
             i,j,weeks_i;

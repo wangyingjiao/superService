@@ -39,7 +39,7 @@
               <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple  placeholder="请选择分类" class="width300">
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" style="width:300px;" @change="testChange" class="selfTabs">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -115,374 +115,377 @@
   </div>
 </template>
 <script>
-import {
-  getListdata,
-  orderServer,
-  saveServer,
-  techDelet,
-  editTech,
-  upDataTech
-} from "@/api/skill";
-//挂载数据
-export default {
-  name: "",
-  data() {
-    var checkName = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("请输入2-15位技能名称"));
-      } else {
-        if (value.length >= 2 && value.length <= 15) {
-          callback();
-        } else {
-          callback(new Error("请输入2-15位技能名称"));
+  import {
+    getListdata,
+    orderServer,
+    saveServer,
+    techDelet,
+    editTech,
+    upDataTech
+  } from '@/api/skill'
+  //挂载数据
+  export default {
+    name: '',
+    data() {
+      var checkName = (rule, value, callback) => {
+          if (!value) {
+              callback(new Error('请输入2-15位技能名称'));
+          }else{
+            if(value.length>=2 && value.length<=15){
+                callback()
+            }else{
+              callback(new Error('请输入2-15位技能名称'));
+            }
+              
+          }			
+      };      
+      return {
+        Options2:[],        
+        submitFlag:false,
+        jumpPage:1,
+        title:'新增技能',
+        btnShow: this.$store.state.user.buttonshow,
+        promShow:false,
+        promShow1:false, 
+		    checkAll:false,      
+        localSearch:'',
+        tabOptions:[],
+        techShow:false,
+        techName:'',
+        techStationId:'',
+        rules: {
+          name: [
+          { required: true, validator:checkName, trigger: 'blur' },
+          ],
+          staffClass: [
+            { required: true,type:'array',message:'请选择分类', trigger: 'change' },
+          ]          
+        },
+        ruleForm2: {
+          name:'',
+          staffClass:[],//选择分类下拉对象
+          technicians:[],    
+        },
+        commodityse: {},
+        options: [],
+        checkbox: false,
+        getListdata: [],
+        ordertech: false,
+        xingmu: '',
+        listTech:[],       
+        checked: false,
+        ortech: false,
+        total: null,
+        pageSize:10,
+        pageNumber:1,
+        listLoading: false,
+        dialogVisible: false,
+        flagserver: false,
+        dialogFormVisible: false,
+        dialogStatus: 'add',
+        id:'',
+        promInf1:'搜索内容不存在!',
+        middleA:[]
+      }
+    }, 
+    methods: {
+      //解决抖动 
+      testChange(value){
+        this.$refs.sevolce.$refs.tags.style.lineHeight='30px'
+      },  	  
+      //全局搜索按钮
+      search(){
+        var obj={
+              name:this.localSearch,
         }
-      }
-    };
-    return {
-      Options2: [],
-      submitFlag: false,
-      jumpPage: 1,
-      title: "新增技能",
-      btnShow: this.$store.state.user.buttonshow,
-      promShow: false,
-      promShow1: false,
-      checkAll: false,
-      localSearch: "",
-      tabOptions: [],
-      techShow: false,
-      techName: "",
-      techStationId: "",
-      rules: {
-        name: [{ required: true, validator: checkName, trigger: "blur" }],
-        staffClass: [
-          { required: true, type: "array", message: "请选择分类", trigger: "change" }
-        ]
+        this.pageNumber=1;
+        this.jumpPage=1;
+        this.getList(obj,this.pageNumber,this.pageSize);
       },
-      ruleForm2: {
-        name: "",
-        staffClass: [], //选择分类下拉对象
-        technicians: []
+      //存储选择技师对象
+      testTech(obj){
+        if(obj.techChecked){
+            this.middleA.push(obj)
+        }else{
+          this.middleA.remove(obj)
+        }
       },
-      commodityse: {},
-      options: [],
-      checkbox: false,
-      getListdata: [],
-      ordertech: false,
-      xingmu: "",
-      listTech: [],
-      checked: false,
-      ortech: false,
-      total: null,
-      pageSize: 10,
-      pageNumber: 1,
-      listLoading: false,
-      dialogVisible: false,
-      flagserver: false,
-      dialogFormVisible: false,
-      dialogStatus: "add",
-      id: "",
-      promInf1: "搜索内容不存在!",
-      middleA: []
-    };
-  },
-  computed: {},
-  methods: {
-    //全局搜索按钮
-    search() {
-      var obj = {
-        name: this.localSearch
-      };
-      this.pageNumber = 1;
-      this.jumpPage = 1;
-      this.getList(obj, this.pageNumber, this.pageSize);
-    },
-    testTech(obj) {
-      if (obj.techChecked) {
-        this.middleA.push(obj);
-      } else {
-        this.middleA.remove(obj);
-      }
-      console.log(this.middleA);
-    },
-    //全局新增按钮
-    add(status, row) {
-      var obj = {};
-      this.middleA = [];
-      this.listLoading = true;
-      //服务技师与分类、服务站获取
-      orderServer(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            this.Options2 = res.data.data.list;
-            this.options = res.data.data.stations;
-            this.listTech = res.data.data.techs;
-            this.dialogVisible = true;
+      //全局新增按钮
+      add(status,row){     
+            var obj={}
+            this.middleA=[];
+            this.listLoading = true;
+            //服务技师与分类、服务站获取             
+            orderServer(obj).then(res => {      
+              if (res.data.code === 1) {            
+                  this.Options2=res.data.data.list;
+                  this.options=res.data.data.stations 
+                  this.listTech=res.data.data.techs
+                  this.dialogVisible = true;                                                                             
+              }         
+              this.listLoading = false;
+            }).catch(res=>{
+                
+            });         
+          this.dialogStatus=status;                 
+          this.tabOptions=[];                 		  		                          
+          if(this.dialogStatus =='add'){
+            this.title='新增技能'
+            //新增操作                                
+            this.id=''                      
+          }else if(this.dialogStatus =='edit'){
+            this.title='编辑技能'
+            //编辑操作           
+            this.id=row.id;
+            var obj = {
+                id:this.id
+            }
+            editTech(obj).then(res => {
+                if (res.data.code === 1) {
+                  this.ruleForm2.name=res.data.data.info.name;
+                  if(res.data.data.info.sortIds != undefined){
+                      var ids=res.data.data.info.sortIds
+                      this.selectionreturn(ids);//分类回显
+                  }                                           
+                  if(res.data.data.info.technicians != undefined){
+                      this.tabOptions=res.data.data.info.technicians;
+                      this.selectionreturn1();
+                  }
+                }         
+            }).catch(res=>{
+                
+            });                      
+          }         
+      },
+      //服务数据回显二级选中
+      selectionreturn(ids) {
+        this.ruleForm2.staffClass = ids;
+      },
+      //技师数据回显二级选中
+      selectionreturn1() {
+        if (this.tabOptions.length != undefined) {
+          for (let a = 0; a < this.listTech.length; a++) {
+            for (let b = 0; b < this.tabOptions.length; b++) {
+              if (this.tabOptions[b].techId == this.listTech[a].techId) {
+                this.listTech[a].techChecked = true;
+                this.testTech(this.listTech[a]);
+              }
+            }
           }
-          this.listLoading = false;
-        })
-        .catch(res => {});
-      this.dialogStatus = status;
-      this.tabOptions = [];
-      if (this.dialogStatus == "add") {
-        this.title = "新增技能";
-        //新增操作
-        this.id = "";
-      } else if (this.dialogStatus == "edit") {
-        this.title = "编辑技能";
-        //编辑操作
-        this.id = row.id;
-        var obj = {
-          id: this.id
-        };
-        editTech(obj)
+        }
+      },
+      //新增或编辑弹窗保存
+      submitForm(formName) {
+        this.ruleForm2.technicians = this.tabOptions;
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            var obj = {
+              id: this.id,
+              name: this.ruleForm2.name,
+              technicians: this.ruleForm2.technicians,
+              sortIds: this.ruleForm2.staffClass
+            };
+            if (this.dialogStatus == "add") {
+              saveServer(obj)
+                .then(res => {
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "新增成功!"
+                    });
+                    this.$refs["ruleForm2"].resetFields();
+                    this.middleA = [];
+                    this.dialogVisible = false;
+                    this.localSearch = "";
+                    var obj1 = {};
+                    this.listLoading = false;
+                    this.pageNumber = 1;
+                    this.jumpPage = 1;
+                    this.getList(obj1, this.pageNumber, this.pageSize);
+                  } else {
+                    this.$message({
+                      type: "warning",
+                      message: res.data.data
+                    });
+                  }
+                })
+                .catch(res => {
+                  this.listLoading = false;
+                });
+            }
+            if (this.dialogStatus == "edit") {
+              upDataTech(obj)
+                .then(res => {
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "编辑成功!"
+                    });
+                    this.$refs["ruleForm2"].resetFields();
+                    this.middleA = [];
+                    this.dialogVisible = false;
+                    var obj1 = {};
+                    this.listLoading = false;
+                    this.getList(obj1, this.pageNumber, this.pageSize);
+                  } else {
+                    this.$message({
+                      type: "warning",
+                      message: res.data.data
+                    });
+                  }
+                })
+                .catch(res => {
+                  this.listLoading = false;
+                });
+            }
+          } else {
+            return false;
+          }
+        });
+      },
+      //新增或编辑弹窗cancel
+      resetForm(formName) {
+        if (this.dialogStatus == "add") {
+          this.ruleForm2.name = "";
+          this.$refs[formName].resetFields();
+        }
+        if (this.dialogStatus == "edit") {
+          this.ruleForm2.name = "";
+          this.$refs[formName].resetFields();
+        }
+        this.dialogVisible = false;
+      },
+      //新增或编辑弹窗选择技师回传TAB删除
+      selfErrorClose(obj) {
+        if (this.tabOptions != undefined && this.tabOptions.length != 0) {
+          for (let a = 0; a < this.listTech.length; a++) {
+            if (obj.techId == this.listTech[a].techId) {
+              this.listTech[a].techChecked = false;
+            }
+          }
+          this.tabOptions.remove(obj);
+        }
+      },
+      //选择技师弹出层保存
+      submitForm2() {
+        //先遍历数据中选中的再保存
+        var arr = [];
+        if (this.listTech != undefined && this.listTech.length != 0) {
+          for (let a = 0; a < this.listTech.length; a++) {
+            if (this.listTech[a].techChecked == true) {
+              arr.push(this.listTech[a]);
+            }
+          }
+        }
+        this.tabOptions = arr;
+        this.ordertech = false;
+      },
+      //选择技师弹出层cancel
+      resetForm2() {
+        this.ordertech = false;
+      },
+      //表格数据获取
+      getList(pramsObj, pageNo, pageSize) {
+        this.listLoading = true;
+        var obj = pramsObj;
+        getListdata(obj, pageNo, pageSize)
           .then(res => {
             if (res.data.code === 1) {
-              this.ruleForm2.name = res.data.data.info.name;
-              if (res.data.data.info.sortIds != undefined) {
-                var ids = res.data.data.info.sortIds;
-                this.selectionreturn(ids); //分类回显
+              this.getListdata = res.data.data.list;
+              if (res.data.data.list != undefined) {
+                for (var a = 0; a < this.getListdata.length; a++) {
+                  this.getListdata[a].index = a + 1;
+                }
               }
-              if (res.data.data.info.technicians != undefined) {
-                this.tabOptions = res.data.data.info.technicians;
-                this.selectionreturn1();
-              }
+              this.total = res.data.data.count;
             }
+            this.listLoading = false;
           })
-          .catch(res => {});
-      }
-    },
-    //服务数据回显二级选中
-    selectionreturn(ids) {
-      this.ruleForm2.staffClass = ids;
-    },
-    //技师数据回显二级选中
-    selectionreturn1() {
-      if (this.tabOptions.length != undefined) {
-        for (let a = 0; a < this.listTech.length; a++) {
-          for (let b = 0; b < this.tabOptions.length; b++) {
-            if (this.tabOptions[b].techId == this.listTech[a].techId) {
-              this.listTech[a].techChecked = true;
-              this.testTech(this.listTech[a]);
-            }
-          }
-        }
-      }
-    },
-    //新增或编辑弹窗保存
-    submitForm(formName) {
-      this.ruleForm2.technicians = this.tabOptions;
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = {
-            id: this.id,
-            name: this.ruleForm2.name,
-            technicians: this.ruleForm2.technicians,
-            sortIds: this.ruleForm2.staffClass
-          };
-          if (this.dialogStatus == "add") {
-            saveServer(obj)
-              .then(res => {
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "新增成功!"
-                  });
-                  this.$refs["ruleForm2"].resetFields();
-                  this.middleA = [];
-                  this.dialogVisible = false;
-                  this.localSearch = "";
-                  var obj1 = {};
-                  this.listLoading = false;
-                  this.pageNumber = 1;
-                  this.jumpPage = 1;
-                  this.getList(obj1, this.pageNumber, this.pageSize);
-                } else {
-                  this.$message({
-                    type: "warning",
-                    message: res.data.data
-                  });
-                }
-              })
-              .catch(res => {
-                this.listLoading = false;
-              });
-          }
-          if (this.dialogStatus == "edit") {
-            upDataTech(obj)
-              .then(res => {
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "编辑成功!"
-                  });
-                  this.$refs["ruleForm2"].resetFields();
-                  this.middleA = [];
-                  this.dialogVisible = false;
-                  var obj1 = {};
-                  this.listLoading = false;
-                  this.getList(obj1, this.pageNumber, this.pageSize);
-                } else {
-                  this.$message({
-                    type: "warning",
-                    message: res.data.data
-                  });
-                }
-              })
-              .catch(res => {
-                this.listLoading = false;
-              });
-          }
-        } else {
-          return false;
-        }
-      });
-    },
-    //新增或编辑弹窗cancel
-    resetForm(formName) {
-      if (this.dialogStatus == "add") {
-        this.ruleForm2.name = "";
-        this.$refs[formName].resetFields();
-      }
-      if (this.dialogStatus == "edit") {
-        this.ruleForm2.name = "";
-        this.$refs[formName].resetFields();
-      }
-      this.dialogVisible = false;
-    },
-    //新增或编辑弹窗选择技师回传TAB删除
-    selfErrorClose(obj) {
-      if (this.tabOptions != undefined && this.tabOptions.length != 0) {
-        for (let a = 0; a < this.listTech.length; a++) {
-          if (obj.techId == this.listTech[a].techId) {
-            this.listTech[a].techChecked = false;
-          }
-        }
-        this.tabOptions.remove(obj);
-      }
-    },
-    //选择技师弹出层保存
-    submitForm2() {
-      //先遍历数据中选中的再保存
-      var arr = [];
-      if (this.listTech != undefined && this.listTech.length != 0) {
-        for (let a = 0; a < this.listTech.length; a++) {
-          if (this.listTech[a].techChecked == true) {
-            arr.push(this.listTech[a]);
-          }
-        }
-      }
-      this.tabOptions = arr;
-      this.ordertech = false;
-    },
-    //选择技师弹出层cancel
-    resetForm2() {
-      this.ordertech = false;
-    },
-    //表格数据获取
-    getList(pramsObj, pageNo, pageSize) {
-      this.listLoading = true;
-      var obj = pramsObj;
-      getListdata(obj, pageNo, pageSize)
-        .then(res => {
-          if (res.data.code === 1) {
-            this.getListdata = res.data.data.list;
-            if (res.data.data.list != undefined) {
-              for (var a = 0; a < this.getListdata.length; a++) {
-                this.getListdata[a].index = a + 1;
-              }
-            }
-            this.total = res.data.data.count;
-          }
-          this.listLoading = false;
-        })
-        .catch(res => {
-          this.listLoading = false;
-        });
-    },
-    handleSizeChange(val) {
-      this.pageSize = val;
-      var obj = {
-        name: this.localSearch
-      };
-      this.getList(obj, this.pageNumber, this.pageSize);
-    },
-    handleCurrentChange(val) {
-      this.pageNumber = val;
-      var obj = {};
-      this.getList(obj, this.pageNumber, this.pageSize);
-    },
-    //总数据删除
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          techDelet(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!"
-                });
-                var obj = {};
-                this.getList(obj, this.pageNumber, this.pageSize);
-              } else {
-                this.$message({
-                  type: "warning",
-                  message: res.data.data
-                });
-              }
-            })
-            .catch(() => console.log("未知错误"));
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除"
+          .catch(res => {
+            this.listLoading = false;
           });
-        });
-    },
-    //选择技师按钮
-    orderTech() {
-      this.ordertech = true;
-    },
-    //选择技师弹出层查询按钮
-    searchTeh() {
-      console.log(this.middleA);
-      var obj = {
-        techName: this.techName,
-        techStationId: this.techStationId
-      };
-      //服务技师获取
-      orderServer(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            this.listTech = res.data.data.techs;
-            console.log(this.listTech);
-            for (let b = 0; b < this.listTech.length; b++) {
-              for (let a = 0; a < this.middleA.length; a++) {
-                if (
-                  this.listTech[a].techStationId ==
-                  this.middleA[b].techStationId
-                ) {
-                  console.log("aaa");
-                  this.listTech[a].techChecked = true;
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+        var obj = {
+          name: this.localSearch
+        };
+        this.getList(obj, this.pageNumber, this.pageSize);
+      },
+      handleCurrentChange(val) {
+        this.pageNumber = val;
+        var obj = {};
+        this.getList(obj, this.pageNumber, this.pageSize);
+      },
+      //总数据删除
+      handleDelete(row) {
+        this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            var obj = {
+              id: row.id
+            };
+            techDelet(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  var obj = {};
+                  this.getList(obj, this.pageNumber, this.pageSize);
+                } else {
+                  this.$message({
+                    type: "warning",
+                    message: res.data.data
+                  });
+                }
+              })
+              .catch(() => console.log("未知错误"));
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除"
+            });
+          });
+        },           
+      //选择技师按钮
+      orderTech() {
+        this.ordertech = true;
+      },
+      //选择技师弹出层查询按钮
+      searchTeh() {
+        var obj = {
+          techName: this.techName,
+          techStationId: this.techStationId
+        };
+        //服务技师获取
+        orderServer(obj).then(res => {
+            if (res.data.code === 1) {
+              this.listTech = res.data.data.techs;
+              for (let b = 0; b < this.listTech.length; b++) {
+                for (let a = 0; a < this.middleA.length; a++) {
+                  if (
+                    this.listTech[a].techStationId ==
+                    this.middleA[b].techStationId
+                  ) {
+                    this.listTech[a].techChecked = true;
+                  }
                 }
               }
             }
-          }
-        })
-        .catch(res => {});
+          }).catch(res=>{
+                  
+          });        
+      } 
+    },
+    mounted() {
+      this.getList()
     }
-  },
-  mounted() {
-    this.getList();
-  }
 };
 </script>
 <style  scoped>
