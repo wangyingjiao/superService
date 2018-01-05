@@ -3,7 +3,7 @@
     <div style="width:100%;float:left;background:#fff;position:relative">
       <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
       <ul class="nav-ul">
-        <li style="cursor: pointer;">
+        <!-- <li style="cursor: pointer;">
           <div>+</div>
           <el-dropdown @command="handleCommand">
             <span class="el-dropdown-link">
@@ -17,19 +17,25 @@
               <el-dropdown-item command="e">新增客户</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+        </li> -->
+        <li class="liBtn liUser">
+          <div><i class="iconfont">&#xe601;</i>&nbsp;&nbsp;{{username}}</div>
         </li>
-        <li>
-          <div>
-            <img src="../../../static/icon/客户管理1.png" alt="">
-          </div>
-          <div>{{username}}</div>
+        <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
+          <div><i class="iconfont">&#xe60f;</i>&nbsp;&nbsp;退出</div>
+          
         </li>
-        <li style="cursor: pointer;"  @click="logout">
-          <div>
-            <img src="../../../static/icon/客户管理1.png" alt="">
-          </div>
-          <div>退出</div>
-        </li>
+        <!-- <li class="liBtn">
+          <el-dropdown @command="handleCommand" menu-align="start" >
+            <span class="el-dropdown-link">
+              <i class="iconfont">&#xe60f;</i>
+              <span>退出</span>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="logout">退出系统</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li> -->
       </ul>
       
     </div>
@@ -58,8 +64,11 @@ export default {
     };
   },
   methods: {
-    handleCommand(command){
-      console.log(command,'点击时触发')
+    handleCommand(command) {
+      console.log(command, "点击时触发");
+      if (command == "logout") {
+        this.logout();
+      }
     },
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");
@@ -83,7 +92,7 @@ export default {
   line-height: 88px;
   overflow: hidden;
   border-radius: 0px !important;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   background: #eef1f6;
   overflow: hidden;
   .hamburger-container {
@@ -102,14 +111,21 @@ export default {
 }
 
 .nav-ul li {
+  cursor: default;
   display: flex;
-  margin: 0 20px;
+  margin: 0 0px;
 }
 
 .nav-ul li div {
+  width: 100%;
   height: 50px;
-  margin: 0 5px;
   line-height: 50px;
+}
+.nav-ul li .el-dropdown-link {
+  display: block;
+  height: 50px;
+  width: 100%;
+  padding: 0 20px;
 }
 
 .nav-posi {
@@ -151,5 +167,41 @@ export default {
 
 .nav-posi > li:hover {
   color: red;
+}
+@font-face {
+  font-family: "iconfont"; /* project id 531557 */
+  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot");
+  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot?#iefix")
+      format("embedded-opentype"),
+    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.woff") format("woff"),
+    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.ttf") format("truetype"),
+    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.svg#iconfont")
+      format("svg");
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 14px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+.liBtn {
+  color: #48576a;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+}
+.liBtn:hover {
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(129, 129, 129, 0.12);
+  border-left: 1px solid #fff;
+  border-right: 1px solid #fff;
+  background-color: #eef1f6;
+}
+.liUser {
+  padding: 0 20px;
+}
+.el-dropdown-menu {
+  border-radius: 2px;
 }
 </style>

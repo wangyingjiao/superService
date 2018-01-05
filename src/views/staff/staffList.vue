@@ -3,9 +3,8 @@
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.mobile">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;margin-left:15px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
-    
       <el-select  filterable  style='width: 200px;' clearable @change="searchOffice" class="filter-item" v-model="search.officeId" placeholder="选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
@@ -26,11 +25,9 @@
     <el-table 
       :key='tableKey' 
       :data="list" 
-      stripe
       v-loading="listLoading" 
       element-loading-text="正在加载" 
       fit
-      highlight-current-row
       style="width: 100%">
 
       <el-table-column align="center" label="编号" width="100">
@@ -93,18 +90,18 @@
         label-width="160px"
         :rules="rules"
         ref="temp"
-        style='width: 500px; margin-left:50px;'>
+        style='width: 560px; margin-left:20px;'>
 
         <el-form-item label="姓名:"  prop="name" >
               <el-input        
-              style='width: 400px;' 
+              style='width: 80%;' 
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
         <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
-            style='width: 400px;'
+            style='width: 80%;'
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
@@ -959,8 +956,9 @@ export default {
 </script>
 <style>
 .btn_right {
-  float: right;
-  width: 100px;
+    margin-top: 3px;
+    float: right;
+    width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -997,13 +995,10 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 15px 20px;
-}
-.btn_right {
-  float: right;
+  margin: 0px 0px 20px 20px;
 }
 .el-table {
   font-size: 12px;

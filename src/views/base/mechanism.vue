@@ -2,11 +2,12 @@
 <div>
   <div class="filter-container bgWhite">
 
-      <el-select clearable style="width: 200px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
+      
+      <el-input @keyup.enter.native="handleFilter" style="width: 350px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
+        <el-select slot="prepend" clearable style="width: 120px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
         <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
       </el-input>
 
       <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
@@ -66,6 +67,7 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
       class="diatable">
+      
       <el-form 
          class="small-space" 
          :model="temp" 
@@ -205,6 +207,7 @@
       <div slot="footer" class="dialog-footer" style="text-align:center">       
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" :disabled="btnState"  v-else @click="create('temp')">保 存</button>    
+        
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -804,10 +807,11 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .btn_right {
+  margin-top: 3px;
   float: right;
-  width: 100px;
+  width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -839,7 +843,7 @@ body {
   padding: 15px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 15px 20px;
+  margin: 0px 0px 20px 20px;
 }
 .btn_right {
   float: right;
@@ -853,4 +857,12 @@ body {
 .pagination-container {
   overflow: hidden;
 }
+/* //  修改*号
+.el-form-item .el-form-item__label:before {
+    content: '　';
+    color: #ff4949;
+    margin-right: -6px;
+    font-size: 1px;
+    vertical-align:middle;
+} */
 </style>
