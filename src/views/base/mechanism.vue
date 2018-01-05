@@ -595,6 +595,7 @@ export default {
     },
     startTimeChange(val){
       this.temp.workEndTime = ""
+      this.workEndTime = []
       console.log(val,'开始时间')
       for(var i = 0;i<this.workTime.length;i++){
         if(val == this.workTime[i]){
