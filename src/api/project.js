@@ -110,4 +110,15 @@ export function serGasqSort(){
     })
 }
 
+//获取用户机构时间
+export function serviceTechnicianInfo(){
+    return new Promise((resolve,reject)=>{
+        instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data=>{
+            resolve(data)
+        }).catch(error=>{
+            reject(error)
+        })
+    })
+}
+
 // --------------------------------服务管理 结束----------------------------

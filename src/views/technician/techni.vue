@@ -26,7 +26,7 @@
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
       </div>
        <!-- <el-table 
           v-loading="listLoadingTech" 
@@ -565,8 +565,8 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:'09:00',
-                              maxTime:'16:00'
+                              minTime:startEnd.start,
+                              maxTime:startEnd.end
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -574,7 +574,7 @@
                               step: '00:30',
                               end: '24:00',
                               minTime: startTime,
-                              maxTime:'16:00'
+                              maxTime:startEnd.end
                             }">
                           </el-time-select>
                         </div>
@@ -634,7 +634,8 @@ import {
   technicianEditId,
   technicianDelete,
   appPassWord,
-  addVacation
+  addVacation,
+  serviceTechnicianInfo
 } from "@/api/tech";
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
@@ -793,6 +794,7 @@ export default {
     }
 
     return {
+      startEnd:{"start":'09:00',"end":'18:00'},
       btnState:false,
       kaishi:'',
       jiehsu:'',
@@ -1266,6 +1268,25 @@ export default {
     },
   },
   methods: {
+    //新增按钮
+    handleCreate(){
+      this.dialogVisible = true
+      //服务时间
+      serviceTechnicianInfo().then(data=>{
+        console.log(data,"data==========")
+        this.startEnd = data.data.data
+        this.startTime = data.data.data.start
+        this.endTime = data.data.data.end
+      }).catch(error=>{
+        console.log(error,"新增按钮")
+      })
+      //所属服务站
+      serviceStation().then(data=>{
+        console.log(data,"服务站++++++++++++++")
+      }).catch(error=>{
+        console.log(error,"服务站错误+++++++")
+      })
+    },
     picUpload(file,flag){
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -1924,6 +1945,9 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: black;
+}
+.tech-ul .tech-tc-prson{
+  margin: 0;
 }
 
 .tech-ul {
