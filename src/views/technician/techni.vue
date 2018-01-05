@@ -37,7 +37,7 @@
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img :src="item.headPic" alt=""></div>
+              <div class="headImag"><img :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div style="margin-top:10px;">
                 <span>{{item.sexname}}</span>
                 <span>{{item.age+"岁"}}</span>
@@ -2435,8 +2435,8 @@ body {
   overflow: hidden;
 }
 .headImag img{
-  width: 100px;
-  height: 100px;
+  /* width: 100px;
+  height: 100px; */
   overflow: hidden;
 }
 .button-large{
@@ -2474,6 +2474,9 @@ body {
 .mousehover:hover{
   background: rgb(82, 141, 196);
   cursor: pointer;
+}
+.tech-service .el-select .el-tag{
+  line-height:23px;
 }
 </style>
 

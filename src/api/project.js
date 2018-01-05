@@ -98,4 +98,16 @@ export function sortList(obj) {
   })
 }
 
+
+//系统标签
+export function serGasqSort(){
+    return new Promise((resolve,reject)=>{
+        instance.post(`apiservice/a/service/item/serGasqSort/getList`).then(data=>{
+            resolve(data)
+        }).catch(error=>{
+            reject(error)
+        })
+    })
+}
+
 // --------------------------------服务管理 结束----------------------------

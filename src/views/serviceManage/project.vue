@@ -12,10 +12,10 @@
         </el-option>
       </el-select>
 
-      <el-select clearable style="width: 200px; margin-left:20px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
+      <!-- <el-select clearable style="width: 200px; margin-left:20px" class="filter-item" v-model="search.cityCode" placeholder="定向城市" @change="cjw">
         <el-option v-for="(item,index) in serverCityArr" :key="index" :label="item.cityName" :value="item.cityCode">
         </el-option>
-      </el-select>
+      </el-select> -->
 
       <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
@@ -73,11 +73,11 @@
       <el-table-column  label="所属分类" align="center" prop="sortName">
       </el-table-column>
 
-      <el-table-column label="城市" align="center" prop="cityName">
+      <!-- <el-table-column label="城市" align="center" prop="cityName">
         <template scope="scope">
           <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName}}&nbsp;</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column  label="状态" align="center" >
         <template scope="scope">
@@ -108,6 +108,7 @@
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
+       @close="emptyingForm"
       id="diatable">
       <div class="tabBox">
           <div class="tabLeft fl" ref="refTab">
@@ -229,7 +230,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
     <!-- 商品信息表格 -->
-                <el-table :data="tableData" border style="width: 100%" v-show="tableData.length>0">
+                <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
                   <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
@@ -250,7 +251,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop="startPerNum" align="center" label="起步人数"> </el-table-column>
-                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> </el-table-column>
+                  <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> </el-table-column>
                   <el-table-column prop="minPurchase" align="center" label="起购数量"> </el-table-column>
                   <el-table-column label="操作" width="150" align="center"> 
                     <template scope="scope">
@@ -288,7 +289,7 @@
                     <template scope="scope">
                       <div class="content-rowspan">
                         <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.cappingPerNum}}
+                          {{item.critical}}
                         </div>
                       </div>
                     </template>
@@ -297,7 +298,7 @@
                     <template scope="scope">
                       <div class="content-rowspan">
                         <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.startPerNum}}
+                          {{item.quantity}}
                         </div>
                       </div>
                     </template>
@@ -370,7 +371,7 @@
                   <el-input
                     placeholder="请输入封顶人数"
                     style="width:70%"
-                    v-model="goods_info.cappingPerNum"></el-input>
+                    v-model="goods_info.cappinPerNum"></el-input>
                 </el-form-item>
 
 
@@ -387,7 +388,7 @@
                           <input class="table-input" type="text" v-model="item.critical">
                         </td>
                         <td>
-                          <input class="table-input" type="text" v-model="item.startPerNum">
+                          <input class="table-input" type="text" v-model="item.quantity">
                         </td>
                      </tr>
                    </table>
@@ -416,8 +417,8 @@
     <!--自定义标签 -->
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules">
-          <el-form-item label="活动名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="标签长度2~10位"></el-input>
+          <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
+            <el-input v-model="labelObj.labelName" placeholder="标签名称长度2~10位"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -456,18 +457,18 @@
               <div style="overflow:hidden">
                   <ul>
                       <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
-                        {{item.label}}
+                        <span class="projectLabel">{{item.label}}</span>
                         <i class="el-icon-arrow-right"></i>
                       </li>
                   </ul>
                   <ul v-show="systemOptions2 !== undefined && systemOptions2.length>0">
                       <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
-                        {{item.label}}<i class="el-icon-arrow-right"></i>
+                        <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
                       </li>
                   </ul>
                   <ul v-show="systemOptions3 !== undefined && systemOptions3.length>0">
                       <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
-                        {{item.label}}<i class="el-icon-arrow-right"></i>
+                        <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
                       </li>
                   </ul>
                   <div class="labelSystem" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
@@ -551,7 +552,8 @@ import {
   ServerDelete,
   ServerEdit,
   serverEditPre,
-  sortList
+  sortList,
+  serGasqSort
 } from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
@@ -792,7 +794,7 @@ export default {
       console.log(value, "value---------111");
       if (value.length > 0) {
         for (var i = 0; i < value.length; i++) {
-          if (reg.test(value[i].cappingPerNum)) {
+          if (reg.test(value[i].cappinPerNum)) {
             if (reg.test(value[i].startPerNum)) {
               callback();
             } else {
@@ -826,7 +828,7 @@ export default {
       systemClickId:null,
       systemClick2Id:null,
       systemClick3Id:null,
-      systemOptions:systemOptions,
+      systemOptions:[],
       systemOptions2:[],
       systemOptions3:[],
       systemOptions4:[],
@@ -853,8 +855,8 @@ export default {
       cityArr: [],
       personsTime: false,
       addComm: false,
-      cappingPerNum: "",
-      startPerNum: "",
+      critical: "",
+      quantity: "",
       commoditysObj: {},
       persons: [],
       commoditys: [],
@@ -862,18 +864,6 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       measure: [
-        {
-          label: "按居室",
-          value: "一居室"
-        },
-        {
-          label: "按面积",
-          value: "平米"
-        },
-        {
-          label: "按数量",
-          value: "个"
-        }
       ],
       listTable: [],
       listLoading: true,
@@ -886,7 +876,7 @@ export default {
         price:'',
         convertHours:'',
         startPerNum:'',
-        cappingPerNum:'',
+        cappinPerNum:'',
         minPurchase:''
       },
       goods: {
@@ -923,7 +913,9 @@ export default {
         majorSort: "all",
         commoditys: [],
         cityCodes: [],
-        description: ""
+        description: "",
+        sysTags:[],
+        customTags:[]
       },
       basicRles: {
         name: [
@@ -993,6 +985,14 @@ export default {
     }
   },
   created() {
+    //系统标签
+    serGasqSort()
+      .then(data=>{
+        this.systemOptions = data.data.data
+        console.log(data,"系统标签-----------")
+      }).catch(error=>{
+        console.log(error,"系统标签错误-------")
+      })
     Taxonomy()
       .then(data => {
         this.sortList = data.data.data.list;
@@ -1011,7 +1011,7 @@ export default {
         console.log(error, "error-----project");
       });
 
-    this.orient({}, 0); // 所属分类
+    // this.orient({}, 0); // 所属分类
     this.getList(1, 10); //搜索 ，分页
     this.sign   //获取签名
   },
@@ -1376,12 +1376,13 @@ export default {
       this.$refs[formName].validate(valid=>{
         if(valid){
               var obj = Object.assign({},this.goods_info)
-              this.tableData.push(obj)
-              this.resetEmpty('ser')
+              this.basicForm.commoditys.push(obj)
+              this.resetForm('ser')
         }else{
           return false
         }
       })
+      console.log(this.basicForm.commoditys,"this.basicForm.commoditys-------")
       // this.$refs[formName].validate(valid => {
       //   if (valid) {
       //     if (this.goods_info.persons.length > 0) {
@@ -1433,7 +1434,7 @@ export default {
       console.log(index,"index------------")
       console.log(val,"val--------------")
       this.goods_info = Object.assign({},val)
-      this.tableData.splice(index,1)
+      this.basicForm.commoditys.splice(index,1)
       // this.tableData[index] = this.goods_info
       // console.log(this.goods_info, "this.goods_info.name");
       // console.log(val, "this.commoditys.name");
@@ -1444,7 +1445,7 @@ export default {
     //表格删除
     tableHandleDelete(index, item) {
       // this.basicForm.commoditys.splice(index, 1);
-      this.tableData.splice(index,1)
+      this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
       // this.$refs['basic'].resetFields()  //基本信息重置
@@ -1460,22 +1461,22 @@ export default {
       console.log(bl, "adawd");
     },
     //定向城市
-    orient(obj, id) {
-      Orienteering(obj)
-        .then(data => {
-          if (id == 1) {
-            this.serverCityArr = data.data.data;
-          } else if (id == 2) {
-            this.cityArr = data.data.data;
-          } else {
-            this.serverCityArr = data.data.data;
-            this.cityArr = data.data.data;
-          }
-        })
-        .catch(error => {
-          console.log(error, "error-----project");
-        });
-    },
+    // orient(obj, id) {
+    //   Orienteering(obj)
+    //     .then(data => {
+    //       if (id == 1) {
+    //         this.serverCityArr = data.data.data;
+    //       } else if (id == 2) {
+    //         this.cityArr = data.data.data;
+    //       } else {
+    //         this.serverCityArr = data.data.data;
+    //         this.cityArr = data.data.data;
+    //       }
+    //     })
+    //     .catch(error => {
+    //       console.log(error, "error-----project");
+    //     });
+    // },
     //数组去重
     remove(arr, val,key) {
       console.log(arr,"arr--------------")
@@ -1507,14 +1508,14 @@ export default {
     open(val, id) {
       console.log(val, "val----");
       console.log(id, "id-----");
-      this.orient({ sortId: val }, id);
+      // this.orient({ sortId: val }, id);
       // console.log(id,'------------')
     },
     tableDelete(id) {
       this.goods_info.persons.splice(id, 1);
     },
     addTable() {
-      // arr.push({cappingPerNum:'',startPerNum:''})
+      // arr.push({critical:'',quantity:''})
       if (this.goods_info.persons.length >= 4) {
         this.$notify({
           title: "警告",
@@ -1522,7 +1523,7 @@ export default {
           type: "warning"
         });
       } else {
-        this.goods_info.persons.push({ cappingPerNum: "", startPerNum: "" });
+        this.goods_info.persons.push({ critical: "", quantity: "" });
       }
       this.personsTime = false;
     },
@@ -1610,9 +1611,11 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
-      this. alreadyArr = []
+      this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
+      this.basicForm.name = ''
+      this.basicForm.description = ''
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
     },
@@ -1627,19 +1630,20 @@ export default {
       ServerEdit({ id: this.editId })
         .then(data => {
           this.dialogFormVisible = true;   
-          this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
-          console.log(data, "data-----编辑");
+          // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
+          // console.log(data, "data-----编辑");
           // this.basicForm = data.data.data
           var arr = data.data.data;
+          console.log(arr,"arr--------------")
           for (var i = 0; i < arr.commoditys.length; i++) {
             if (arr.commoditys[i].id) {
               delete arr.commoditys[i].id;
             }
-            for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
-              if (arr.commoditys[i].persons[j].id) {
-                delete arr.commoditys[i].persons[j].id;
-              }
-            }
+            // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
+            //   if (arr.commoditys[i].persons[j].id) {
+            //     delete arr.commoditys[i].persons[j].id;
+            //   }
+            // }
           }
           if (data.data.data.pictures != undefined) {
             this.picFile = data.data.data.pictures;
@@ -1761,12 +1765,12 @@ export default {
             persons: [
               //派人
               {
-                cappingPerNum: ">10",
-                startPerNum: 1
+                critical: ">10",
+                quantity: 1
               },
               {
-                cappingPerNum: ">20",
-                startPerNum: 2
+                critical: ">20",
+                quantity: 2
               }
             ]
           }
@@ -1824,9 +1828,10 @@ export default {
     },
     //取消
     cancel(fromName) {
+       this.dialogFormVisible = false;
       // console.log(fromName,"-----")
       // this.dialogFormVisible = false;
-      this.resetEmpty()
+      // this.resetEmpty()
       // var str = "basic"
       // this.$refs[str].resetFields(); //基本信息重置
       // this.basicForm.sortNum = ""; //排序号好清空
@@ -1849,16 +1854,23 @@ export default {
       this.$refs[formName].validate(valid => {
         // console.log(this.basicForm, "basicForm------");
         if (valid) {
-          var obj = {};
-          obj.majorSort = that.basicForm.majorSort; //所属分类
-          obj.sortId = that.basicForm.sortId; //所属分类编号
-          obj.commoditys = that.basicForm.commoditys; //商品信息
-          obj.name = that.basicForm.name; //项目名称
-          obj.pictures = this.picFile; //服务图片缩略图
-          obj.description = that.basicForm.description; //服务描述
-          obj.sale = that.basicForm.sale; //是否上架
-          obj.sortNum = that.basicForm.sortNum; //排序号
-          obj.cityCodes = that.basicForm.cityCodes; //定向城市
+          var arr = []
+          this.labelClickCon.map(item=>{
+            arr.push(item.value)
+          })
+          var obj = Object.assign({},that.basicForm)
+              obj.pictures = this.picFile; //服务图片缩略图.
+              obj.sysTags = arr; //添加 系统标签
+              obj.customTags = this.CustomLabelList; //添加 自定义标签
+          // obj.majorSort = that.basicForm.majorSort; //所属分类
+          // obj.sortId = that.basicForm.sortId; //所属分类编号
+          // obj.commoditys = that.basicForm.commoditys; //商品信息
+          // obj.name = that.basicForm.name; //项目名称
+          // obj.pictures = this.picFile; //服务图片缩略图
+          // obj.description = that.basicForm.description; //服务描述
+          // obj.sale = that.basicForm.sale; //是否上架
+          // obj.sortNum = that.basicForm.sortNum; //排序号
+          // obj.cityCodes = that.basicForm.cityCodes; //定向城市
           console.log(obj, "-----------------------------------");
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
@@ -1916,8 +1928,13 @@ export default {
       });
     },
     resetForm(ser) {
-      this.resetEmpty(ser)
+      // this.resetEmpty(ser)
+      this.$refs["goods_info"].resetFields()
+      this.goods_info.minPurchase = "";
+      this.goods_info.startPerNum = '';
+      this.goods_info.cappinPerNum = ''
       this.addComm = false;
+      // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
       // var str = formName || "goods_info";
       // if(this.basicForm.commoditys.length>0 && this.dialogStatus != "update"){
@@ -1927,12 +1944,21 @@ export default {
       // this.goods_info.persons = [];
       // this.goods_info.minPurchase = "";
     },
+    emptyingForm(){
+      this.$refs["goods_info"].resetFields()
+      this.$refs["basic"].resetFields()
+      this.addComm = false
+      // this.goods_info = {}
+      this.basicForm.commoditys = [];
+      this.picFile = [] //清空图片
+      this.picList = [] //清空图片
+    },
     resetEmpty(txt){
       if(txt == "ser"){
         this.$refs["goods_info"].resetFields()
         this.goods_info.minPurchase = "";
         this.goods_info.startPerNum = '';
-        this.goods_info.cappingPerNum = ''
+        this.goods_info.cappinPerNum = ''
       }else{
         this.$refs["goods_info"].resetFields()
         this.$refs["basic"].resetFields()
@@ -2436,6 +2462,10 @@ hr {
   text-align: center;
   border: 1px solid rgb(190, 187, 187);
   margin: 5px;
+  /* width: 95%; */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .activeSystem_1,.activeSystem_2,.activeSystem_3{
   background: rgb(141, 182, 216)
@@ -2455,6 +2485,13 @@ hr {
 }
 .cursor{
     cursor: pointer;
+}
+.projectLabel{
+  width: 90%;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
 }
 
 </style>
