@@ -380,10 +380,10 @@
         <el-dialog
           title="修改服务时间"
           :visible.sync="dialogVisible">
-            <el-form  :model="formInline" label-width="80px">
-              <el-form-item label="选择时间" required>
+            <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
+              <el-form-item label="选择时间" prop='Date'>
                     <el-date-picker
-                      v-model="value1"                      
+                      v-model="formInline.Date"                      
                       placeholder="年-月-日"                     
                       :type="select"
                       :picker-options="pickerOptions0"
@@ -392,16 +392,17 @@
                       >
                     </el-date-picker>
               </el-form-item>
-              <el-form-item label="选择时间" required>
-                    <div class="marginTopDec10">
-                      <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.value}}</div>
+              <el-form-item label="选择时间" prop='Time'>
+                    <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
+                    <div class="marginTopDec10">                                            
+                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.value}}</div>
                     </div>                    
               </el-form-item>              
 
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large"   @click="submitTime">保存</button>
-              <button class="button-cancel"  @click="cancelTime">取 消</button>
+              <button class="button-large"   @click="submitTime('formInline')">保存</button>
+              <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
         <!--修改服务时间弹窗结束-->        
@@ -426,6 +427,14 @@ export default {
               }
                 
                 }
+          },
+          formInline1rules: {
+            Date: [
+            { required: true,type: 'date',message:'请选择服务日期', trigger: 'change' },
+            ],
+            Time: [
+              { required: true,message:'请选择服务时间', trigger: 'change' },
+            ]          
           },      
           timeObj:[{id:1,value:'8:00'},{id:2,value:'8:30'},{id:3,value:'9:00'}],//时间对象
           addressInfo:[],//服务地址信息
@@ -441,34 +450,14 @@ export default {
           listTech:[],          
           selectCommidty:[],      
           select:'date',
-          formInline:{},
+          formInline:{
+            Date:'',
+            Time:''
+          },
           value1:'',
           value2:'',
+          tabOptions:[],
           dialogTableVisible:false,				
-          //弹窗表格数据
-          technicianData:[{
-                headUrl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                serverStation:'呼家楼服务站'
-              }, 
-              {
-                headUrl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                serverStation:'呼家楼服务站'
-              },
-              {
-                headUrl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                serverStation:'呼家楼服务站'
-              },{
-                headUrl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                serverStation:'呼家楼服务站'
-              }],
            tableData:[
                 {
                   goodsId:"1002",
@@ -501,52 +490,63 @@ export default {
                 sex: '男',
                 phone:'13426345678'
               }],
-          dialogVisible:false,                
-          technicianName:'',//技师姓名
-          orderCancelFlag:false,
-		
+          dialogVisible:false,                		
     };
   },
   methods:{
+    //用订单ID获取页面相关信息
     getOrderAllInf(orderId){
       var obj={
         id:orderId
       }
       getOrderInf(obj).then(res => {      
           if (res.data.code === 1) {                         
-            console.log(res.data.data.info)
             var AllInfo=res.data.data.info;
             this.otherInfo=AllInfo;
             this.addressInfo=AllInfo.addressInfo; //服务地址信息
             this.payInfo=AllInfo.payInfo;//支付信息
             this.refundInfo=AllInfo.refundInfo//退款信息
             this.goodsInfo=AllInfo.goodsInfo//服务信息
-            console.log(this.goodsInfo);
-
           }else{
           }          
         }).catch(res=>{
           
         });
     },
-    //更换时间的确定
-    submitTime(){
-      console.log(this.timeObj)
-      for(var a=0;a<this.timeObj.length;a++){
-        if(this.timeObj[a].selected==true){
-          console.log(this.timeObj[a]);
-        }
-      }
-      this.dialogVisible = false
+    //更换时间的保存
+    submitTime(formName){
+      this.$refs[formName].validate((valid) => {
+          if (valid) { 
+            console.log(this.timeObj)
+            for(var a=0;a<this.timeObj.length;a++){
+              if(this.timeObj[a].selected==true){
+                console.log(this.timeObj[a]);
+              }
+            }
+            //保存成功后也要复位样式
+            this.dialogVisible = false            
+          }
+      })
+
     },
     //更换时间取消
-    cancelTime(){
+    cancelTime(formName){
+      this.$refs[formName].resetFields();
+      //样式复位
+      for(var a=0;a<this.timeObj.length;a++){
+          this.$set(this.timeObj[a],'selected',false)
+          this.$refs.TimeWrap[a].style.borderColor = "#fff";
+          this.$refs.TimeWrap[a].style.color = "#000";
+          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+      }      
       this.dialogVisible = false
     },
     //日期变化时改变时间对象
     dateChange(value){      
       if(value != undefined){
         console.log(value)
+        //value用这个值去请求时间点接口
       }
     },
     //时间选项点击
@@ -557,7 +557,8 @@ export default {
               this.$refs.TimeWrap[a].style.borderColor = "green";
               this.$refs.TimeWrap[a].style.color = "green";
               this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
-              this.timeObj[a].selected = !this.timeObj[a].selected             
+              this.timeObj[a].selected = !this.timeObj[a].selected;
+              this.formInline.Time=this.timeObj[a].value       
           }else{
               this.$refs.TimeWrap[a].style.borderColor = "#fff";
               this.$refs.TimeWrap[a].style.color = "#000";
@@ -565,21 +566,20 @@ export default {
               this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
                                         
           }
-
       }
     },
     //技师数据回显二级选中
-    selectionreturn1(){
-      if(this.tabOptions.length != 'undefined'){
-        for(let a=0;a<this.listTech.length;a++){
-          for(let b=0;b<this.tabOptions.length;b++){
-            if(this.tabOptions[b].techId == this.listTech[a].techId){
-            this.listTech[a].techChecked=true;
-            }
-          }
-        }
-      }                                        
-    },       
+    // selectionreturn1(){
+    //   if(this.tabOptions.length != 'undefined'){
+    //     for(let a=0;a<this.listTech.length;a++){
+    //       for(let b=0;b<this.tabOptions.length;b++){
+    //         if(this.tabOptions[b].techId == this.listTech[a].techId){
+    //         this.listTech[a].techChecked=true;
+    //         }
+    //       }
+    //     }
+    //   }                                        
+    // },       
     //选择技师弹出层查询按钮
     searchTeh(){        
           this.$nextTick( () => {
@@ -588,7 +588,7 @@ export default {
             var len = this.listTech.length;
             for(var i=0;i<len;i++){
               if(this.listTech[i].techName == this.techName || this.listTech[i].techStationId== this.techStationId ){
-                falg1=1;
+                  falg1=1;
                   this.$refs.tableItem1[i].scrollIntoView()
                   this.$refs.tableItem1[i].style.background='#eee'                    
               }else{
@@ -617,6 +617,7 @@ export default {
         }
       }
       this.tabOptions=arr
+      //保存技师接口调用
       console.log(this.tabOptions);
       this.dialogTableVisible = false	
     },         
@@ -629,7 +630,7 @@ export default {
             this.options=res.data.data.stations 
             this.listTech=res.data.data.techs 
             this.dialogTableVisible=true;
-            this.selectionreturn1();                                                          
+            //this.selectionreturn1();                                                          
           }else{
           }          
         }).catch(res=>{
@@ -638,12 +639,22 @@ export default {
     },
     //改变服务时间按钮
     changeTime(){
-      //this.value1='2018-1-1'
-      this.dialogVisible=true;
+      this.dialogVisible=true; 
+      this.$nextTick( () => {
+          //样式复位
+          for(var a=0;a<this.timeObj.length;a++){
+            this.$set(this.timeObj[a],'selected',false)
+              this.$refs.TimeWrap[a].style.borderColor = "#fff";
+              this.$refs.TimeWrap[a].style.color = "#000";
+              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+          }        
+      })
+
+            
     }	
   },
   mounted() {
-    console.log(this.$route.query.id);
     this.getOrderAllInf(this.$route.query.id)
   }
 };
