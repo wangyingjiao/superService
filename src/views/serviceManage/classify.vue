@@ -72,7 +72,7 @@
             style='width: 500px; margin-left:20px;'>
           
           <el-form-item label="所属类型:" prop="majorSort" >
-            <el-select  style='width: 400px;' @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
+            <el-select :disabled="selectState" style='width: 400px;' @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
               <el-option v-for="(item,key,index) in majorSorts" :key="index" :label="item" :value="key">
               </el-option>
             </el-select>
@@ -114,6 +114,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState: false,
+      selectState:false,
       active: true,
       list: [],
       total: null,
@@ -264,6 +265,7 @@ export default {
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
+      this.selectState = true
       console.log(row);
       var obj = {
         id: row.id
@@ -365,6 +367,7 @@ export default {
     },
     resetForm(formName) {
       //清空列表
+      this.selectState = false
       this.resetTemp();
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
@@ -378,7 +381,7 @@ export default {
     },
     update(formName) {
       // 编辑
-      console.log(1111);
+      
       var obj = {
         id: this.rowId,
         majorSort: this.temp.majorSort,
@@ -387,12 +390,14 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(obj,'参数');
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.dialogFormVisible = false;
+              this.selectState = false
               this.getList();
               this.$message({
                 type: "success",
@@ -400,6 +405,7 @@ export default {
               });
             } else {
               this.dialogFormVisible = false;
+              this.selectState = false
               this.$message({
                 type: "error",
                 message: "发生错误"
