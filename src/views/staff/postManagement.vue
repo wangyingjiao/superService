@@ -785,8 +785,9 @@ export default {
 </script>
 <style>
 .btn_right {
-  float: right;
-  width: 100px;
+    margin-top: 3px;
+    float: right;
+    width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -827,13 +828,10 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 15px 20px;
-}
-.btn_right {
-  float: right;
+  margin: 0px 0px 20px 20px;
 }
 .el-tree-node
   .el-tree-node__children

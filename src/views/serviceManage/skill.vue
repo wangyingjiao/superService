@@ -629,7 +629,7 @@
   padding-bottom: 70px;
 }
 .btn_pad {
-  margin: 0px 0px 10px 20px;
+  margin: 0px 0px 20px 20px;
 }
 
 .btn_right {
