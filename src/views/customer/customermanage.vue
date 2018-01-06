@@ -2,9 +2,9 @@
     <div class="addorder-container">
 		<!--搜索开始-->
 		<div class="fist-bar">
-		  <el-input  class="selfPosi"   placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
-			<el-input  class="selfPosi"   placeholder="请输入搜索的姓名" v-model="customName"></el-input>
-		  <el-select clearable   class="selfPosi1" v-model="organizationName" placeholder="请选择服务机构">
+		  <el-input  class="search"   placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
+			<el-input  class="search"   placeholder="请输入搜索的姓名" v-model="customName"></el-input>
+		  <el-select clearable   class="search" v-model="organizationName" placeholder="请选择服务机构">
 				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
 				</el-option>
 		  </el-select>      		  

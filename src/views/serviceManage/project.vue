@@ -7,7 +7,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+      <el-select clearable class="search"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
         <el-option v-for="(item,index) in sortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -17,7 +17,7 @@
         </el-option>
       </el-select> -->
 
-      <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
+      <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
       <button class="button-large el-icon-search btn_search" @click="getList"> 搜索</button>
   </div>

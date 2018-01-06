@@ -6,7 +6,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入分类名称" v-model="search.name">
       </el-input>
       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>

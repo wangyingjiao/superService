@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.mobile">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索手机号" v-model="search.mobile">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;margin-left:15px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
-      <el-select  filterable  style='width: 200px;' clearable @change="searchOffice" class="filter-item" v-model="search.officeId" placeholder="选择机构">
+      <el-select  filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
        
-      <el-select  filterable  style='width: 200px;' clearable  class="filter-item" v-model="search.stationId" placeholder="选择服务站">
+      <el-select  filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
         <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>

@@ -3,7 +3,7 @@
   <div class="filter-container bgWhite">
 
       
-      <el-input @keyup.enter.native="handleFilter" style="width: 350px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
+      <el-input @keyup.enter.native="handleFilter" style="width: 350px;" placeholder="请输入搜索的内容" v-model="search.value">
         <el-select slot="prepend" clearable style="width: 120px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
         <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
         </el-option>

@@ -1,14 +1,14 @@
 <template>
     <div class="addorder-container">
 		<div class="fist-bar">
-		  <el-select clearable style="width:200px;" class="filter-item" v-model="technicianName" placeholder="请选择">
+		  <el-select clearable class="search" v-model="technicianName" placeholder="请选择">
 				<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
 				</el-option>
 		  </el-select>
-      <el-input  v-if="technicianName =='1'" style="width: 200px;margin-left:20px;"       placeholder="请输入技师姓名" v-model="technicianName1"></el-input>
-			<el-input  v-else-if="technicianName =='2'" style="width: 200px;margin-left:20px;"  placeholder="请输入技师手机号" v-model="technicianName1"></el-input>
-			<el-input  v-else-if="technicianName =='3'" style="width: 200px;margin-left:20px;"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
-			<el-input  v-else style="width: 200px;margin-left:20px;"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
+      <el-input  v-if="technicianName =='1'" class="search"       placeholder="请输入技师姓名" v-model="technicianName1"></el-input>
+			<el-input  v-else-if="technicianName =='2'" class="search"  placeholder="请输入技师手机号" v-model="technicianName1"></el-input>
+			<el-input  v-else-if="technicianName =='3'" class="search"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
+			<el-input  v-else class="search"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
 		</div>
 		<div class="second-bar" style="height:500px;">

@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" v-model="search.name" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" >
+      <el-input @keyup.enter.native="handleFilter" v-model="search.name" class="search" placeholder="请输入搜索的岗位名称" >
       </el-input>
-      <el-select filterable clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
+      <el-select filterable clearable class="search" v-model="search.officeId"  placeholder="选择机构">
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>

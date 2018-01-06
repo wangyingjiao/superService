@@ -8,19 +8,19 @@
 			  </el-tabs>
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
-			  <el-select clearable class="width200"   v-model="payStus" placeholder="选择支付状态">
+			  <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="width200"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
+			  <el-select clearable class="search"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="width200"  v-model="payType" placeholder="选择服务站">
+			  <el-select clearable class="search"  v-model="payType" placeholder="选择服务站">
 						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable class="width200"  v-model="sevicerStustas" placeholder="请选择服务状态">
+			  <el-select clearable class="search"  v-model="sevicerStustas" placeholder="请选择服务状态">
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
@@ -33,23 +33,26 @@
 					<el-date-picker
 						v-model="startTime"
 						type="datetime"
-						class="width200"
+						class="search"
+						style="width:20%"
 						placeholder="选择开始时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="endTime"
 						type="datetime"
-						class="width200"
+						style="width:20%"
+						class="search"
 						placeholder="选择结束时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="severTime"
+						style="width:20%"
 						type="datetime"
 						@change="TimeChange"
-						class="width200"
+						class="search"
 						placeholder="选择服务时间">
 					</el-date-picker>
-					<el-input   class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
+					<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
 			  </div>
 				<!--搜索条件选择结束-->				
 		</div>

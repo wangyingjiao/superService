@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
 
-      <el-select v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
+      <el-select class="search" v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
             <el-option-group
               v-for="(group,index) in areaOptions"
               :key="group.value"
