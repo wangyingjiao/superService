@@ -7,7 +7,7 @@
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite bgbot70" >
-          <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+          <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">

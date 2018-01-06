@@ -23,7 +23,7 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
 
     <el-table 
     :key='tableKey' 
