@@ -425,3 +425,11 @@ body {
   margin: 0px 0px 20px 20px;
   width:80px;
 }
+//弹出框表单布局
+.dia_form {
+  width: 100%; 
+  padding:0 10%;
+  .form_item{
+    width: 100%;
+  }
+}

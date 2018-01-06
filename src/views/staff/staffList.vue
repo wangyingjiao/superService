@@ -84,13 +84,13 @@
        :close-on-press-escape="false"
       minwidth = "700px">
       <el-form 
-        class="small-space" 
+        class="small-space dia_form" 
         :model="temp" 
         label-position="left" 
         label-width="160px"
         :rules="rules"
         ref="temp"
-        style='width: 100%; padding:0 10%;'>
+        >
 
         <el-form-item label="姓名:"  prop="name" >
               <el-input        

@@ -38,8 +38,7 @@
              :rules="rules" 
              ref="ruleForm2" 
              label-width="160px" 
-             class="demo-ruleForm" 
-             style="padding:0 10%"
+             class="demo-ruleForm dia_form" 
              label-position="left">
             <el-form-item label="技能名称" prop="name">
               <el-input  v-model.trim="ruleForm2.name"  style="width:100%"  placeholder="请输入2-15位技能名称"></el-input>

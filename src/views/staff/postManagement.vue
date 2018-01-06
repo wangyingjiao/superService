@@ -58,13 +58,13 @@
        :close-on-press-escape="false"
        class="diatable">
       <el-form 
-        class="small-space"
+        class="small-space dia_form"
         :model="temp" 
         label-position="left"
         :rules="rules"
         ref="temp" 
         label-width="160px" 
-        style='width: 100%; padding:0 10%;'>
+        >
 
         <el-form-item label=" 所属机构:"  prop="officeId">
           <el-select style='width: 100%;' @change="aaa" v-model="temp.officeId" placeholder="请选择">

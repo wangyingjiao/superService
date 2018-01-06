@@ -69,39 +69,39 @@
       class="diatable">
       
       <el-form 
-         class="small-space" 
+         class="small-space dia_form" 
          :model="temp" 
          label-position="left" 
          label-width="160px"
          :rules="rules"
          ref="temp" 
-         style='width:100%; padding:0 10%;'>
+         >
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
           v-model.trim="temp.name"
-          style='width: 100%;' 
+          class="form_item" 
           :disabled="dialogStatus == 'update' && orgId != '0' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
         <el-form-item label="机构电话:" prop="telephone" >
           <el-input 
-            style='width: 100%;'
+            class="form_item"
             v-model="temp.telephone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
-          style='width: 100%;'
+          class="form_item"
           v-model.trim="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
         <el-form-item label="负责人手机号:" prop="masterPhone" >
           <el-input 
-            style='width: 100%;'
+            class="form_item"
             placeholder="请输入11位手机号" 
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
@@ -115,20 +115,20 @@
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
-                 style='width: 100%;' 
+                 class="form_item"
               ></el-cascader>
 				</el-form-item>
 
         <el-form-item label="详细地址:" prop="address">
           <el-input 
-            style='width: 100%;' 
+            class="form_item"
              v-model.trim="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
-          style='width: 100%;' 
+          class="form_item"
             :disabled = "typeState"
             v-model="temp.scopeType" 
             placeholder="请选择">
@@ -141,7 +141,7 @@
           <el-col :span="11">
             <el-form-item prop="workStartTime" >
               <el-select
-              style="width: 100%;"
+              class="form_item"
                 v-model="temp.workStartTime" 
                 @change="startTimeChange"
                 placeholder="请选择开始时间">
@@ -154,7 +154,7 @@
           <el-col :span="11">
             <el-form-item prop="workEndTime">
               <el-select
-              style="width: 100%;"
+              class="form_item"
               @change="endTimeChange"
                 v-model="temp.workEndTime" 
                 placeholder="请选择结束时间">
@@ -168,35 +168,35 @@
         
         <el-form-item label=" E店编号:" prop="jointEshopCode">
           <el-input 
-           style='width: 100%;'
+           class="form_item"
             v-model.trim="temp.jointEshopCode"
             placeholder="请输入E店编码"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构网址:" prop="url">
           <el-input 
-            style='width: 100%;'
+            class="form_item"
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构传真:" prop="fax">
           <el-input 
-            style='width: 100%;' 
+            class="form_item"
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
         <el-form-item label="  400客服电话:" prop="tel400">
           <el-input 
-            style='width: 100%;' 
+            class="form_item"
             v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
         <el-form-item label=" 备注:">
           <el-input 
-          style='width: 100%;'
+          class="form_item"
             type="textarea" 
             :rows="2" 
             :maxlength="200"
@@ -208,7 +208,6 @@
       <div slot="footer" class="dialog-footer" style="text-align:center">       
         <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" :disabled="btnState"  v-else @click="create('temp')">保 存</button>    
-        
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>

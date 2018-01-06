@@ -30,9 +30,9 @@
       id="tableColor"
         :key='tableKey' 
         :data="list" 
-        v-loading="listLoading" 
+        v-loading="listLoading"
         stripe 
-        fit 
+        fit
         highlight-current-row 
         element-loading-text="正在加载"
         @row-click = "rowClick"
@@ -105,20 +105,19 @@
        :close-on-press-escape="false" 
         class="diatable">
         <el-form 
-           class="small-space" 
+           class="small-space dia_form" 
            :model="temp" 
             ref="temp" 
             :rules="rules"
            label-position="left" 
            label-width="160px" 
-           style='width: 100%; padding:0 10%;'
            >
 
           <el-form-item label="服务站名称:" prop="name">
             <el-input  v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
           </el-form-item>
           <el-form-item label="服务站类型:" prop="type">
-            <el-select   style='width: 100%;' v-model="temp.type">
+            <el-select class="form_item" v-model="temp.type">
               <el-option v-for="(val,key,index) in stationType" :key="index" :label="val" :value="key">
               </el-option>
             </el-select>
@@ -130,20 +129,20 @@
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
-                style='width: 100%;'
+                class="form_item"
               ></el-cascader>
 				</el-form-item>
 
           <el-form-item label="详细地址:" prop="address">
-            <el-input   v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
+            <el-input class="form_item"   v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
           <el-form-item label="服务站电话:" prop="phone">
-            <el-input  v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
+            <el-input class="form_item"  v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
           </el-form-item>
 
           <el-form-item label="状态:" prop="isUseable">
-            <el-select style='width: 100%;' v-model="temp.isUseable">
+            <el-select class="form_item" v-model="temp.isUseable">
               <el-option v-for="item in stationState" :key="item.id" :label="item.value" :value="item.id">
               </el-option>
             </el-select>
@@ -172,7 +171,7 @@
           ref="tempMaster"
           :model="tempMaster">
           <el-form-item label="服务站长:" prop="master">
-            <el-select class="filter-item" v-model="tempMaster.master">
+            <el-select class="form_item" v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -260,7 +259,7 @@
          >
           <el-form-item label="设置门店:">
             <el-tree
-            class="scrollBox"
+            class="scrollBox form_item"
               :data="storeTree"
               v-model="tempStore.tree"
                ref="domTree"

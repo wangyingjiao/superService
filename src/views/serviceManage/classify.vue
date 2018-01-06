@@ -63,16 +63,16 @@
        :close-on-press-escape="false"
       class="diatable">
           <el-form        
-            class="small-space" 
+            class="small-space dia_form" 
             ref="temp" 
             :rules="rules" 
             :model="temp" 
             label-position="left" 
-            label-width="100px" 
-            style='width: 100%; padding:0 10%;'>
+            label-width="100px"
+            >
           
           <el-form-item label="所属类型:" prop="majorSort" >
-            <el-select :disabled="selectState" style='width: 100%;' @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
+            <el-select :disabled="selectState" class="form_item" @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
               <el-option v-for="(item,key,index) in majorSorts" :key="index" :label="item" :value="key">
               </el-option>
             </el-select>
@@ -80,7 +80,7 @@
 
           <el-form-item label="分类名称:" prop="name" >
             <el-input        
-           style='width: 100%;'
+           class="form_item"
             placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
           </el-form-item>
            
