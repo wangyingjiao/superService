@@ -8,7 +8,7 @@
 				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
 				</el-option>
 		  </el-select>      		  
-		  <button class="search-button selfPosi2 btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<!--搜索结束-->
 		<div class="second-bar">

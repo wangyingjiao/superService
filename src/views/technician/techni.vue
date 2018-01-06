@@ -1,7 +1,7 @@
 <template>
   <div class="tech">
     <div class="tech-index">
-      <div>
+      <div style="width:85%">
         <el-select class="search" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
