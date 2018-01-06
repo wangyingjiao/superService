@@ -22,9 +22,9 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px"  v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_pad"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
+      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
       id="tableColor"

@@ -11,7 +11,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi"  @click="handleCreate">新增</button>
+    <button class="button-small btn_pad"  @click="handleCreate">新增</button>
     <el-table
       :key="tableKey"
       :data="list"

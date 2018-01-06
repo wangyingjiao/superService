@@ -14,7 +14,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-     <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('office_insert') > -1" style="width:80px" @click="handleCreate('temp')">新增</button>
+     <button class="button-small btn_pad" v-if="btnShow.indexOf('office_insert') > -1"  @click="handleCreate('temp')">新增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -842,12 +842,7 @@ body {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
 }
-.btn_pad {
-  margin: 0px 0px 20px 20px;
-}
-.btn_right {
-  float: right;
-}
+
 .ceshi3 {
   font-size: 14px;
   color: #1d85fe;

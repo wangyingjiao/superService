@@ -12,7 +12,7 @@
 		</div>
 		<!--搜索结束-->
 		<div class="second-bar">
-		  <button type="button" class="add-button selfPosi3" v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut">新增</button>
+		  <button type="button" class="add-button selfPosi3 btn_pad" style="margin-top:20px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut">新增</button>
 			<!--客户数据表格开始-->
 			<div class="tableWarp">			      
 				    <el-table

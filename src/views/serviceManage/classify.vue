@@ -12,7 +12,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新增</button>
+    <button class="button-small btn_pad" style="width:80px" @click="handleCreate">新增</button>
 
     <el-table 
     :key='tableKey' 

@@ -55,7 +55,7 @@
 		</div>
 		<!--表格显示区域开始-->
     <div class="orderMangeWarp">
-		  <button type="button" class="add-button exprotStyle"  @click="exportOrder">导出订单</button>
+		  <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button>
 			<div class="ordermanageTableWrap">	
 				<el-table 
 					:data="tabDataList"
