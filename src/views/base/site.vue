@@ -111,7 +111,7 @@
             :rules="rules"
            label-position="left" 
            label-width="160px" 
-           style='width: 80%; margin-left:20px;'
+           style='width: 100%; padding:0 10%;'
            >
 
           <el-form-item label="服务站名称:" prop="name">

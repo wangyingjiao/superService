@@ -93,18 +93,25 @@
 		</div>
 		<!--新增客户弹窗开始-->
 		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false" :close-on-click-modal="false">	
-				<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
+				<el-form 
+				  :model="ruleForm" 
+					:rules="rules" 
+					ref="ruleForm" 
+					label-width="160px" 
+					label-position="left" 
+					style='width: 100%; padding:0 10%;'
+					class="demo-ruleForm">
 					<el-form-item label="姓名:" prop="name"  >
-						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  class="width400" ></el-input>
+						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
 					<el-form-item label="性别:"  prop="sex">
-							<el-select  class="filter-item width400" v-model="ruleForm.sex" placeholder="请选择性别" >
+							<el-select  class="filter-item " style='width: 100%;' v-model="ruleForm.sex" placeholder="请选择性别" >
 									<el-option v-for="(value,key,index) in sex" :key="index" :label="value" :value="key">
 									</el-option>
 							</el-select>
 					</el-form-item>
 					<el-form-item label="手机号:"  prop="phone">
-                <el-input  v-model="ruleForm.phone" class="width400" placeholder="请输入11位手机号"></el-input>
+                <el-input  v-model="ruleForm.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" prop="areaCodes">
               <!-- 省市区 -->
@@ -113,16 +120,16 @@
 								@change="testFun"
                 :show-all-levels="true"
                  v-model="ruleForm.areaCodes"
-                 class="width400" 
+                 style='width: 100%;'
               ></el-cascader>							
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="address">
 		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputBlur" value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input style="margin-left:-5px;width:200px;"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
+								<el-input style='width: 50%;margin-left:-5px'  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
-					<el-form-item label="邮箱:" prop="email" style="margin-left:10px;">
-						<el-input  v-model.trim="ruleForm.email" class="width400" style="margin-left:-10px;" placeholder="请输入常用邮箱"></el-input>
+					<el-form-item label="邮箱:" prop="email" >
+						<el-input  v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
@@ -542,7 +549,7 @@ export default {
 	display:block;
 }
 .pickerInput{
-	  width: 200px;
+	  width: 50%;
 		height: 36px;
 		font-size:12px;
 		padding:0 10px;

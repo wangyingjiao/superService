@@ -34,7 +34,7 @@
     border
     highlight-current-row 
     element-loading-text="正在加载" 
-    style="width: 100%" >
+    style="width: 100%;" >
       <el-table-column align="center" label="排序号" width="100">
          <template scope="scope">
           <input type="text" v-model="scope.row.sortNum" class="sortInput" @blur="indexBlur(scope.row)">
@@ -132,7 +132,7 @@
                 :rules="basicRles" >
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
+                  <el-select  filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>

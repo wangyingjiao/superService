@@ -75,33 +75,33 @@
          label-width="160px"
          :rules="rules"
          ref="temp" 
-         style='width: 560px; margin-left:20px;'>
+         style='width:100%; padding:0 10%;'>
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
           v-model.trim="temp.name"
-          style='width: 400px;' 
+          style='width: 100%;' 
           :disabled="dialogStatus == 'update' && orgId != '0' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
         <el-form-item label="机构电话:" prop="telephone" >
           <el-input 
-            style='width: 400px;' 
+            style='width: 100%;'
             v-model="temp.telephone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
-          style='width: 400px;' 
+          style='width: 100%;'
           v-model.trim="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
         <el-form-item label="负责人手机号:" prop="masterPhone" >
           <el-input 
-            style='width: 400px;' 
+            style='width: 100%;'
             placeholder="请输入11位手机号" 
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
@@ -115,20 +115,20 @@
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
-                 style='width: 400px;' 
+                 style='width: 100%;' 
               ></el-cascader>
 				</el-form-item>
 
         <el-form-item label="详细地址:" prop="address">
           <el-input 
-             style='width: 400px;' 
+            style='width: 100%;' 
              v-model.trim="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
-          style='width: 400px;' 
+          style='width: 100%;' 
             :disabled = "typeState"
             v-model="temp.scopeType" 
             placeholder="请选择">
@@ -139,7 +139,7 @@
 
         <el-form-item label="工作时间:" required="">
           <el-col :span="11">
-            <el-form-item prop="workStartTime">
+            <el-form-item prop="workStartTime" >
               <el-select
               style="width: 100%;"
                 v-model="temp.workStartTime" 
@@ -168,34 +168,35 @@
         
         <el-form-item label=" E店编号:" prop="jointEshopCode">
           <el-input 
-            style='width: 400px;' 
+           style='width: 100%;'
             v-model.trim="temp.jointEshopCode"
             placeholder="请输入E店编码"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构网址:" prop="url">
           <el-input 
-            style='width: 400px;' 
+            style='width: 100%;'
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构传真:" prop="fax">
           <el-input 
-            style='width: 400px;' 
+            style='width: 100%;' 
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
         <el-form-item label="  400客服电话:" prop="tel400">
           <el-input 
-            style='width: 400px;' 
+            style='width: 100%;' 
             v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
         <el-form-item label=" 备注:">
           <el-input 
+          style='width: 100%;'
             type="textarea" 
             :rows="2" 
             :maxlength="200"

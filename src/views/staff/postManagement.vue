@@ -64,21 +64,21 @@
         :rules="rules"
         ref="temp" 
         label-width="160px" 
-        style='width: 500px; margin-left:20px;'>
+        style='width: 100%; padding:0 10%;'>
 
         <el-form-item label=" 所属机构:"  prop="officeId">
-          <el-select style='width: 400px;' class="filter-item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select style='width: 100%;' @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
+          <el-select style='width: 100%;' @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -95,7 +95,7 @@
             
               v-model="temp.check"
               ref="domTree"
-              style='width: 400px;'
+              style='width: 100%;'
               @check-change="handTreechange"
               @node-click="nodeClick"
               @current-change="currentChange"
