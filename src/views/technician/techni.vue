@@ -21,7 +21,7 @@
       </div>
 
       <div>
-        <button class="search-button el-icon-search" @click="techniSearchs"> 搜索</button>
+        <button class="search-button el-icon-search btn_search" @click="techniSearchs"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">

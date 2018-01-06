@@ -19,7 +19,7 @@
 
       <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="getList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">

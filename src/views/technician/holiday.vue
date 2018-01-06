@@ -23,7 +23,7 @@
       type="datetime"
       placeholder="年/月/日/时间">
     </el-date-picker>
-       <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜 索</button>
+       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">

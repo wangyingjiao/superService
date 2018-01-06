@@ -2,7 +2,7 @@
   <div class="box">
     <div class="filter-container bgWhite padBot20">
       <el-input   class="filter-item width200" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
-      <button @click="search" class="search-button btn_right el-icon-search"> 搜索</button>
+      <button @click="search" class="search-button btn_search el-icon-search"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
       <div class="">
