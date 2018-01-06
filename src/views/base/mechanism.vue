@@ -648,7 +648,12 @@ export default {
             if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
              this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
              setTimeout(() => {
-               this.temp.workEndTime = res.data.data.workEndTime.substring(0,5)
+               var time = res.data.data.workEndTime.substring(0,5)
+               if(time == '00:00'){
+                 this.temp.workEndTime = '24:00'
+               }else{
+                 this.temp.workEndTime = time
+               }
              }, 50);
              
             }
@@ -710,6 +715,9 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      if(obj.workEndTime =='24:00:00'){
+        obj.workEndTime = '23:59:59'
+      }
       
       console.log(obj);
       this.$refs[formName].validate(valid => {
