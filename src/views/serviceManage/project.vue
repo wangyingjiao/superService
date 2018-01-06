@@ -190,20 +190,24 @@
                    <div class="custom">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
-                    <div class="labelList" v-show="alreadyArr.length>0 || labelClickCon.length>0">
-                        <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
+                    <div class="labelList" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+                        <!-- <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
+                        </span> -->
+                        <span v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index">
+                            {{item}}
+                            <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span>
                     </div>
                     <div class="el-upload__tip">* 最多设置3个系统标签</div>
                 </el-form-item>
 
-                <el-form-item label="自定义标签：">
+                <el-form-item label="自定义标签：" class="labelDav">
                     <div class="custom">
                         <span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
                     </div>
-                    <div class="labelList" v-show="CustomLabelList.length>0">
-                        <span v-for="(item,index) in CustomLabelList" :key="index">{{item}}
+                    <div class="labelList" v-show="basicForm.customTags != undefined && basicForm.customTags.length>0">
+                        <span v-for="(item,index) in basicForm.customTags" :key="index">{{item}}   
                           <i @click="deleteLabel(index)" class="cursor" style="font-weight: bolder;">X</i>
                         </span>
                     </div>
@@ -434,7 +438,10 @@
           <el-col :span="24">
               <div class="already">
                   当前选择标签：
-                  <span v-for="item in labelClickCon" :key="item.value">{{item.label}}
+                  <!-- <span v-for="item in labelClickCon" :key="item.value">{{item.label}}
+                    <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                  </span> -->
+                  <span v-for="(item,index) in labelClickArr" :key="index">{{item}}
                     <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
                   </span>
                 </div>
@@ -445,7 +452,11 @@
           <el-col :span="24" v-show="alreadyArr.length>0">
             <div class="already">
                   已添加标签：
-                  <span v-for="item in alreadyArr" :key="item.value">{{item.label}}
+                  <!-- <span v-for="item in alreadyArr" :key="item.value">{{item.label}}
+                    <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                  </span> -->
+                  <span v-for="(item,index) in alreadyArr" :key="index">
+                    {{item}}
                     <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
                   </span>
             </div>
@@ -475,10 +486,14 @@
                     <!-- <span v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" :class="{'techTime-green':labelClickArr.indexOf(item.value)!=-1}" class="cursor">
                       {{item.label}}
                     </span> -->
-                    <input type="button" :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1" 
+                    <!-- <input type="button" :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1" 
                             v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" 
-                            :class="{'techTime-green':labelClickArr.indexOf(item.value)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
-                            class="cursor" :value="item.label">
+                            :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
+                            class="cursor" :value="item.label"> -->
+                    <input type="button" v-for="item in systemOptions4" class="cursor"
+                            :key="item.value" :value="item.label" @click="labelClick(item)"
+                            :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
+                            :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
                   </div>
               </div>
           </el-col>
@@ -922,9 +937,10 @@ export default {
           { required: true, message: "请输入项目名称", trigger: "blur" },
           { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
-         picture: [
+        picture: [
            { required: true, validator:PICTURE, trigger:"blur"}
           ],
+        sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
       },
@@ -1021,11 +1037,14 @@ export default {
   },
   methods: {
     //保洁家修切换
-    tableProject(obj){
+    tableProject(obj,id){
       Taxonomy(obj)
       .then(data => {
         console.log(data,"clean++++++++++===============")
         this.sortList = data.data.data.list;
+        if(id){
+          this.basicForm.sortId = id
+        }
       })
       .catch(error => {
         console.log(error, "error-----project");
@@ -1033,34 +1052,48 @@ export default {
     },
     //系统标签已添加标签删除
     AlreadyLabel(item){
-      if(this.labelClickArr.indexOf(item.value)!=-1){
+      if(this.labelClickArr.indexOf(item)!=-1){
         this.SelectedLabel(item)
       }else{
-        this.remove(this.alreadyArr,item.value,'value')
+        this.remove(this.alreadyArr,item)
       }
     },
     //系统标签当前选择标签删除
     SelectedLabel(item){
-      this.remove(this.labelClickArr, item.value);
-      this.remove(this.labelClickCon, item.value,'value');
+      this.remove(this.labelClickArr, item);
+      // this.remove(this.labelClickCon, item);
     },
     //四级标签点击
     labelClick(item){
-         if(this.labelClickArr.indexOf(item.value)==-1){
-            if((this.alreadyArr.length + this.labelClickArr.length)>2){
-              this.$message({
-                message:'最多设置3个系统标签',
-                type:'warning'
-              });
-              return false
-            }else{
-              this.labelClickArr.push(item.value)
-              this.labelClickCon.push(item)
-            }
-          }else{
-            this.remove(this.labelClickArr, item.value);
-            this.remove(this.labelClickCon, item.value,'value');
-          }
+         if(this.labelClickArr.indexOf(item.label) == -1){
+           if(this.labelClickArr.length+this.alreadyArr.length>2){
+             this.$message({
+               message:'最多设置3个系统标签',
+               type:'warning'
+             })
+             return false
+           }
+           this.labelClickArr.push(item.label)
+         }else{
+           this.remove(this.labelClickArr, item.label);
+         }
+
+         console.log(this.labelClickArr,"this.labelClickArr------------------")
+        //  if(this.labelClickArr.indexOf(item.label)==-1){
+        //     if((this.alreadyArr.length + this.labelClickArr.length)>2){
+        //       this.$message({
+        //         message:'最多设置3个系统标签',
+        //         type:'warning'
+        //       });
+        //       return false
+        //     }else{
+        //       this.labelClickArr.push(item.label)
+        //       this.labelClickCon.push(item)
+        //     }
+        //   }else{
+        //     this.remove(this.labelClickArr, item.value);
+        //     this.remove(this.labelClickCon, item.value,'value');
+        //   }
       // }
     },
     //系统列表一级列表事件
@@ -1087,18 +1120,18 @@ export default {
     },
     //自定义标签删除
     deleteLabel(index){
-      this.CustomLabelList.splice(index,1)
+      this.basicForm.customTags.splice(index,1)
     },
     //自定义标签
     CustomLabel(){
-      if(this.CustomLabelList.length>2){
+      if(this.basicForm.customTags.length>2){
          this.$message({
           message: '最多设置3个自定义标签',
           type: 'warning'
         });
         return false
       }else{
-        this.CustomLabelList.push(this.labelObj.labelName)
+        this.basicForm.customTags.push(this.labelObj.labelName)
         this.labelObj.labelName = ''
       }
       this.addLabel = false
@@ -1454,6 +1487,7 @@ export default {
       this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
+      this.basicForm.sortId = ''
       this.tableProject({majorSort:val})
       // this.$refs['basic'].resetFields()  //基本信息重置
       // this.basicForm.sortNum = ''  //排序号好清空
@@ -1659,14 +1693,17 @@ export default {
               this.picList.push(obj);
             }
           }
+          this.tableProject({majorSort:arr.majorSort},arr.sortId)
           this.basicForm = arr;
           console.log(this.basicForm, "basicForm------");
+          this.alreadyArr = arr.sysTags || []
         })
         .catch(error => {
           console.log(error);
         });
     },
     handleUplode(row) {
+      this.basicForm.sortId = ''
       this.imgText = []
       // console.log("上传");
       this.editId = row.id;
@@ -1857,13 +1894,10 @@ export default {
         // console.log(this.basicForm, "basicForm------");
         if (valid) {
           var arr = []
-          this.labelClickCon.map(item=>{
-            arr.push(item.value)
-          })
           var obj = Object.assign({},that.basicForm)
               obj.pictures = this.picFile; //服务图片缩略图.
-              obj.sysTags = arr; //添加 系统标签
-              obj.customTags = this.CustomLabelList; //添加 自定义标签
+              obj.sysTags = this.labelClickArr //添加 系统标签
+              // obj.customTags = this.CustomLabelList; //添加 自定义标签
           // obj.majorSort = that.basicForm.majorSort; //所属分类
           // obj.sortId = that.basicForm.sortId; //所属分类编号
           // obj.commoditys = that.basicForm.commoditys; //商品信息
@@ -1878,6 +1912,7 @@ export default {
           if (this.dialogStatus == "update") {
             // that.basicForm.id = this.editId
             console.log(that.basicForm, "that.basicForm----");
+            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             serverEditPre(that.basicForm)
               .then(data => {
                 if (data.data.code) {
@@ -1953,7 +1988,10 @@ export default {
       // this.goods_info = {}
       this.basicForm.commoditys = [];
       this.picFile = [] //清空图片
-      this.picList = [] //清空图片
+      this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
+      this.alreadyArr = []
+      this.labelClickArr = []
+      this.basicForm.customTags = []
     },
     resetEmpty(txt){
       if(txt == "ser"){
@@ -2016,7 +2054,7 @@ body {
   padding: 20px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 20px 20px;
+  margin: 0px 0px 15px 20px;
 }
 .btn_right {
   float: right;
@@ -2494,6 +2532,9 @@ hr {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis
+}
+.labelDav .el-form-item__label{
+  padding-right: 0;
 }
 
 </style>
