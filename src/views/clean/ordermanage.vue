@@ -28,7 +28,7 @@
 				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="customerPhone"></el-input>
 				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>
 				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input> -->							  
-			  <button type="button" class="search-button floatRight"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+			  <button type="button" class="search-button floatRight btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
 					<el-date-picker
 						v-model="startTime"

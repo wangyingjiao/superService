@@ -10,7 +10,7 @@
       </el-select>
       </el-input>
 
-      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">

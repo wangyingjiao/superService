@@ -1,7 +1,7 @@
 <template>
     <div class="addorder-container">
 		<div class="fist-bar">
-		  <el-select clearable style="width:200px;margin-left:30px;" class="filter-item" v-model="technicianName" placeholder="请选择">
+		  <el-select clearable style="width:200px;" class="filter-item" v-model="technicianName" placeholder="请选择">
 				<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
 				</el-option>
 		  </el-select>
@@ -9,7 +9,7 @@
 			<el-input  v-else-if="technicianName =='2'" style="width: 200px;margin-left:20px;"  placeholder="请输入技师手机号" v-model="technicianName1"></el-input>
 			<el-input  v-else-if="technicianName =='3'" style="width: 200px;margin-left:20px;"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
 			<el-input  v-else style="width: 200px;margin-left:20px;"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
-		  <button class="button-large" style="float:right;margin-right:20px;" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
+		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
 		</div>
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 30px;">
@@ -287,8 +287,7 @@ export default {
 	background:#eef1f6;
 }
 .fist-bar{
-  padding-top:20px;
-  padding-bottom:20px;
+  padding:20px;
   background:#fff;
   margin-right:20px;
  
