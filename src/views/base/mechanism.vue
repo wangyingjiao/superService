@@ -840,7 +840,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 20px 20px;

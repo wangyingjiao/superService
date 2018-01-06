@@ -502,7 +502,7 @@
                 <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
-                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          action="https://openservice.oss-cn-beijing.aliyuncs.com"
                           class="imgText"
                           list-type="picture"
                           ref="upload"
@@ -2013,7 +2013,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 20px 20px;
