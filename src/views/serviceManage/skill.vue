@@ -41,10 +41,10 @@
              class="demo-ruleForm dia_form" 
              label-position="left">
             <el-form-item label="技能名称" prop="name">
-              <el-input  v-model.trim="ruleForm2.name"  style="width:100%"  placeholder="请输入2-15位技能名称"></el-input>
+              <el-input  v-model.trim="ruleForm2.name"  class="form_item"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" style="width:100%" @change="testChange" class="selfTabs">
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" @change="testChange" class="selfTabs form_item">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -56,7 +56,7 @@
             </el-form-item>
             
             <el-form-item label="选择技师" prop="technicians" class="selfst3">
-             <div class="tech-order-jnsk selfst2" style="width:100%">
+             <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>

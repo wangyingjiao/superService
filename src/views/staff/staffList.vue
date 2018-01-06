@@ -94,42 +94,41 @@
 
         <el-form-item label="姓名:"  prop="name" >
               <el-input        
-              style='width: 100%;' 
+              class="form_item"
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
         <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
-            style="width:100%"
+            class="form_item"
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
         <el-form-item label="密码:" prop="password">
           <el-input 
             v-model="temp.password" 
-            style="width:100%"
+            class="form_item"
              type="password"
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
         <el-form-item label="确认密码:" v-if="dialogStatus == 'create'"  prop="password2">
           <el-input
-
-            style="width:100%"
+            class="form_item"
             type="password"
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable  style="width:100%" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable  style="width:100%" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -143,7 +142,7 @@
            <div class="btn_addStation" style="width:20%" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select style="width:100%"  v-model="temp.useable" placeholder="请选择">
+          <el-select class="form_item"  v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>

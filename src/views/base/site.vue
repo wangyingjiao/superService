@@ -252,10 +252,11 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
         :visible.sync="dialogStoreVisible">
-        <el-form 
+        <el-form
           :model="tempStore"
           label-position="left"
           label-width="100px" 
+          class="dia_form"
          >
           <el-form-item label="设置门店:">
             <el-tree

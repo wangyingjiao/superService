@@ -132,7 +132,7 @@
                 :rules="basicRles" >
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select  filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
+                  <el-select  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -140,7 +140,7 @@
 
                 <el-form-item label="项目名称：" prop="name">
                   <el-input
-                  style="width:90%"
+                  class="form_item"
                   v-model="basicForm.name"
                   placeholder="请输入2-10位的服务站名称"></el-input>
                 </el-form-item>
@@ -156,7 +156,7 @@
                 </el-form-item> -->
 
                 <el-form-item label="服务图片：" prop="picture">
-                  <div class="upload-demo upload_box" style="width:90%">
+                  <div class="upload-demo upload_box form_item">
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
@@ -180,17 +180,17 @@
                 <el-form-item label="服务描述：" prop="description">
                   <el-input
                   :rows="4"
-                  style="width:90%"
+                  class="form_item"
                   v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
 
                 <el-form-item label="系统标签：">
-                   <div class="custom">
+                   <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
-                    <div class="labelList" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+                    <div class="labelList form_item" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
                         <!-- <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
@@ -2397,7 +2397,7 @@ hr {
   margin-left: 30px;
 }
 .custom{
-  width: 90%;
+  width: 100%;
   height: 36px;
   border: 1px solid #bfcbd9;
 }
