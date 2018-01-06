@@ -26,7 +26,7 @@
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
        <!-- <el-table 
           v-loading="listLoadingTech" 

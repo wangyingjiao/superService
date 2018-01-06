@@ -21,7 +21,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
