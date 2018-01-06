@@ -115,10 +115,10 @@
           <!-- <span class="tabBtn tabBtnclick" @click="refbtn1" ref="refbtn1">保洁</span>
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
-            <el-radio-button label="1"  @click="refbtn1" style="display:none"></el-radio-button>
-            <el-radio-button class="tableCleaning" size='large' label="clean"  @click="refbtn1">保洁</el-radio-button>
-            <el-radio-button style="width:100%;" label="repair" @click="refbtn2">家修</el-radio-button>
-            <el-radio-button label="2" @click="refbtn2" style="display:none"></el-radio-button>
+            <el-radio-button label="1" style="display:none"></el-radio-button>
+            <el-radio-button class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
+            <el-radio-button style="width:100%;" label="repair">家修</el-radio-button>
+            <el-radio-button label="2" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
          <div class="tabRight fl">
@@ -906,13 +906,13 @@ export default {
       },
       basicForm: {
         name: "",
-        picture: "123123132", //服务图片
+        // picture: "123123132", //服务图片
         sortId: "",
         sale: "yes",
-        sortNum: "",
+        // sortNum: "",
         majorSort: "all",
         commoditys: [],
-        cityCodes: [],
+        // cityCodes: [],
         description: "",
         sysTags:[],
         customTags:[]
@@ -985,6 +985,8 @@ export default {
     }
   },
   created() {
+    //所属分类
+    this.tableProject({majorSort:"clean"})
     //系统标签
     serGasqSort()
       .then(data=>{
@@ -993,13 +995,6 @@ export default {
       }).catch(error=>{
         console.log(error,"系统标签错误-------")
       })
-    Taxonomy()
-      .then(data => {
-        this.sortList = data.data.data.list;
-      })
-      .catch(error => {
-        console.log(error, "error-----project");
-      });
     //是否 计量方式 全部 保洁 家修
     Whether()
       .then(({ data }) => {
@@ -1025,6 +1020,17 @@ export default {
     },
   },
   methods: {
+    //保洁家修切换
+    tableProject(obj){
+      Taxonomy(obj)
+      .then(data => {
+        console.log(data,"clean++++++++++===============")
+        this.sortList = data.data.data.list;
+      })
+      .catch(error => {
+        console.log(error, "error-----project");
+      });
+    },
     //系统标签已添加标签删除
     AlreadyLabel(item){
       if(this.labelClickArr.indexOf(item.value)!=-1){
@@ -1448,6 +1454,7 @@ export default {
       this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
+      this.tableProject({majorSort:val})
       // this.$refs['basic'].resetFields()  //基本信息重置
       // this.basicForm.sortNum = ''  //排序号好清空
       // this.basicForm.cityCodes = '' //定向城市
@@ -1560,11 +1567,6 @@ export default {
           this.listLoading = false;
         });
     },
-    refbtn1() {
-      //  this.cancel('basic')
-      alert("dawdaw");
-    },
-    refbtn2() {},
     // 搜索
     handleFilter() {
       var obj = {};

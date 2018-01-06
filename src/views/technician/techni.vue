@@ -261,7 +261,7 @@
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
                   :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
-                  :listquer="listQuery"
+                  :listquer="listQuery" :servery="servery" :startend="startEnd"
                   ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
@@ -478,12 +478,18 @@
         <ul class="tech-ul tech-service">
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="选择城市：" prop="serviceCityName">
+                <el-form-item label="所属服务站：" prop="stationId">
+                      <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <!-- <el-form-item label="选择城市：" prop="serviceCityName">
                       <el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
                         <el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
                         </el-option>
                       </el-select>
-                  </el-form-item>
+                  </el-form-item>-->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位性质：" prop="jobNature">
@@ -496,12 +502,18 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="所属服务站：" prop="stationId">
+                <el-form-item label="工作年限：" prop="workTime">
+                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <!-- <el-form-item label="所属服务站：" prop="stationId">
                       <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                           </el-option>
                       </el-select>
-                  </el-form-item>
+                  </el-form-item> -->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位状态：" prop="jobStatus">
@@ -514,12 +526,12 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="工作年限：" prop="workTime">
+                  <!-- <el-form-item label="工作年限：" prop="workTime">
                     <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
                       <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                       </el-option>
                     </el-select>
-                  </el-form-item>
+                  </el-form-item> -->
               </el-col>
           </el-row>
           <el-row :gutter="60">
@@ -573,7 +585,7 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime: startTime,
+                              minTime: startEnd.start,
                               maxTime:startEnd.end
                             }">
                           </el-time-select>
@@ -864,7 +876,6 @@ export default {
           //工作时间
           { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
         ],
-        serviceCityName: "" //选择城市  不需要
       },
       Choose: [],
       mouserFlag: false,
@@ -883,9 +894,6 @@ export default {
         sex: [{ required: true, message: "请输入性别", trigger: "change" }],
         birtStr: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
-        ],
-        serviceCityName: [
-          { required: true, message: "请选择城市", trigger: "change" }
         ],
         jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
@@ -1281,7 +1289,8 @@ export default {
         console.log(error,"新增按钮")
       })
       //所属服务站
-      serviceStation().then(data=>{
+      serviceStation({}).then(data=>{
+        this.servery = data.data.data;
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
@@ -1462,25 +1471,29 @@ export default {
         .catch(error => {
           console.log(error, "error---技师编辑");
         });
+
+      serviceTechnicianInfo().then(data=>{
+        console.log(data,"data==========")
+        this.startEnd = data.data.data
+        this.startTime = data.data.data.start
+        this.endTime = data.data.data.end
+      }).catch(error=>{
+        console.log(error,"新增按钮")
+      })
+
+      //所属服务站
+      serviceStation({}).then(data=>{
+        this.servery = data.data.data;
+        console.log(data,"服务站++++++++++++++")
+      }).catch(error=>{
+        console.log(error,"服务站错误+++++++")
+      })
     },
     //现住地址
     nowAdd(val) {
       this.personal.provinceCode = val[0]; //省
       this.personal.cityCode = val[1]; //市
       this.personal.areaCode = val[2]; //区
-    },
-    //选择城市
-    chooseChange(value) {
-      console.log(value, "value------");
-      this.personal.stationId = "";
-      serviceStation({ cityCode: value })
-        .then(data => {
-          // console.log(data,"所属服务区---------")
-          this.servery = data.data.data;
-        })
-        .catch(error => {
-          console.log(error, "error---techni.vue-----1071");
-        });
     },
     handlePreview(file) {},
     handleClose(formName) {

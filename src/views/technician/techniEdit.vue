@@ -111,12 +111,18 @@
               <ul class="tech-ul">
                 <el-row :gutter="60">
                       <el-col :span="12">
-                        <el-form-item label="选择城市:" prop="stationCityCode">
+                        <el-form-item label="所属服务站:" prop="stationId">
+                          <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                          </el-select>
+                        </el-form-item>
+                        <!-- <el-form-item label="选择城市:" prop="stationCityCode">
                           <el-select v-model="perServer.stationCityCode" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
                             <el-option v-for="item in choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
                             </el-option>
                           </el-select>
-                        </el-form-item>
+                        </el-form-item> -->
                       </el-col>
                       <el-col :span="12">
                         <el-form-item label="岗位性质:" prop="jobNature">
@@ -129,12 +135,18 @@
                   </el-row>
                   <el-row :gutter="60">
                       <el-col :span="12">
-                        <el-form-item label="所属服务站:" prop="stationId">
+                        <el-form-item label="工作年限:" prop="workTime">
+                          <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                          </el-select>
+                        </el-form-item>
+                        <!-- <el-form-item label="所属服务站:" prop="stationId">
                           <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
                             <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                             </el-option>
                           </el-select>
-                        </el-form-item>
+                        </el-form-item> -->
                       </el-col>
                       <el-col :span="12">
                         <el-form-item label="岗位状态:" prop="jobStatus">
@@ -147,12 +159,12 @@
                     </el-row>
                     <el-row :gutter="60">
                       <el-col :span="12">
-                        <el-form-item label="工作年限:" prop="workTime">
+                        <!-- <el-form-item label="工作年限:" prop="workTime">
                           <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
                               <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                               </el-option>
                           </el-select>
-                        </el-form-item>
+                        </el-form-item> -->
                       </el-col>
                     </el-row>
                     <el-row :gutter="60">
@@ -197,14 +209,17 @@
                                     <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
                                         start: '00:00',
                                         step: '00:30',
-                                        end: '24:00'
+                                        end: '24:00',
+                                        minTime:startend.start,
+                                        maxTime:startend.end
                                         }" class="tech-daytim">
                                     </el-time-select>
                                     <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
                                         start: '00:00',
                                         step: '00:30',
                                         end: '24:00',
-                                        minTime: startTime
+                                        minTime: startend.start,
+                                        maxTime:startend.end
                                         }">
                                     </el-time-select>
                                   </div>
@@ -218,7 +233,7 @@
                           </div>
                     </el-col>
                   </el-row>
-                  <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0">
+                  <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0 && perServer.jobNature!='part_time'">
                     <el-col :span="18">
                       <el-form-item>
                         <ul class="working">
@@ -796,8 +811,6 @@ export default {
         }
       ],
 
-      servery: [],
-
       card: [
         {
           value: "选项1",
@@ -1094,7 +1107,7 @@ export default {
         ** 
         **/
         this.perServer = Object.assign({}, val);
-        this.servery = val.stations;
+        // this.servery = val.stations;
         this.perServer.workTime = val.workTime+''
         // this.perServer.serviceCityName = val.stationCityCode;
         // this.perServer.stationId = val.stationId
@@ -1169,7 +1182,9 @@ export default {
     "sexTypes",
     "marriage",
     "education",
-    "relation"
+    "relation",
+    "servery",
+    "startend"
   ],
   methods: {
     //关闭弹窗
@@ -1598,6 +1613,8 @@ export default {
     }
   },
   mounted() {
+    this.startTime = this.startend.start
+    this.endTime = this.startend.end
     getTech().then(res => {
       this.ethnics = res.data;
       this.ethnic = res.data[32].label;
