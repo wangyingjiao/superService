@@ -408,6 +408,7 @@ body {
   content: '*';
   color: #ffffff;
   margin-right: 4px;
+  font-size: 16px;//   ******************
   vertical-align:middle;
 }
 .filter-container{
@@ -428,7 +429,7 @@ body {
 //弹出框表单布局
 .dia_form {
   width: 100%; 
-  padding:0 10%;
+  padding:0 6%;
   .form_item{
     width: 100%;
   }
