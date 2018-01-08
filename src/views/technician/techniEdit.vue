@@ -233,7 +233,7 @@
                           </div>
                     </el-col>
                   </el-row>
-                  <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0 && perServer.jobNature!='part_time'">
+                  <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0  && perServer.jobNature!='part_time'">
                     <el-col :span="18">
                       <el-form-item>
                         <ul class="working">
@@ -1113,36 +1113,52 @@ export default {
         // this.perServer.stationId = val.stationId
         // //工作时间默认选中
         var work = val.workTimes || [],
-            i,j,weeks_i;
+            i,j,weeks_i,num;
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
             weeks_i = work[i].weeks
             for( j =0 ; j<weeks_i.length ; j++){
-              switch ( weeks_i[j].id*1) {
-                case 1:
-                   weeks_i[j].name = "星期一"
-                  break;
-                case 2:
-                   weeks_i[j].name = "星期二"
-                  break;
-                case 3:
-                  weeks_i[j].name = "星期三"
-                  break;
-                case 4:;
-                 weeks_i[j].name = "星期四"
-                  break;
-                case 5:
-                  weeks_i[j].name = "星期五"
-                  break;
-                case 6:
-                  weeks_i[j].name = "星期六"
-                  break;
-                case 6:
-                  weeks_i[j].name = "星期日"
-                  break;
-                default:
-                  break;
+              num = weeks_i[j].id*1
+              if(num == 1){
+                weeks_i[j].name = "星期一"
+              }else if(num == 2){
+                weeks_i[j].name = "星期二"
+              }else if(num == 3){
+                weeks_i[j].name = "星期三"
+              }else if(num == 4){
+                weeks_i[j].name = "星期四"
+              }else if(num == 5){
+                weeks_i[j].name = "星期五"
+              }else if(num == 6){
+                weeks_i[j].name = "星期六"
+              }else{
+                weeks_i[j].name = "星期日"
               }
+              // switch ( weeks_i[j].id*1) {
+              //   case 1:
+              //      weeks_i[j].name = "星期一"
+              //     break;
+              //   case 2:
+              //      weeks_i[j].name = "星期二"
+              //     break;
+              //   case 3:
+              //     weeks_i[j].name = "星期三"
+              //     break;
+              //   case 4:;
+              //    weeks_i[j].name = "星期四"
+              //     break;
+              //   case 5:
+              //     weeks_i[j].name = "星期五"
+              //     break;
+              //   case 6:
+              //     weeks_i[j].name = "星期六"
+              //     break;
+              //   case 6:
+              //     weeks_i[j].name = "星期日"
+              //     break;
+              //   default:
+              //     break;
+              // }
               this.disbArr.push(weeks_i[j].id*1)
             }
           }
