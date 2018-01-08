@@ -27,7 +27,7 @@
               </el-table>
               <div v-show="!listLoading" class="pagination-container techPag">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
-                  layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total">
+                  layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :page-sizes="[5,10,15,20]" :total="total">
                 </el-pagination>
               </div>
           </div>          
@@ -60,11 +60,14 @@
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>
-            <el-form-item label=""> 
-                  <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                    <div class="techNameStyle">{{item.techName}}</div>
-                    <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
-                  </div>              
+            <el-form-item label="">
+                  <div v-if="tabOptions.length !=0" class="techWrap">
+                      <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
+                        <div class="techNameStyle">{{item.techName}}</div>
+                        <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
+                      </div>                     
+                  </div> 
+             
             </el-form-item>           
           </el-form>
     
@@ -91,14 +94,14 @@
                       <table width="100%" class="selfTable">
                         <tr>
                           <td  class="selfTdStyle" align="center" width="8%">选择</td>
-                          <td  class="selfTdStyle"  align="center" width="28%">头像</td>
-                          <td  class="selfTdStyle"  align="center" width="28%">姓名</td>
+                          <td  class="selfTdStyle"  align="center" width="18%">头像</td>
+                          <td  class="selfTdStyle"  align="center" width="32%">姓名</td>
                           <td  class="selfTdStyle"  align="center" width="10%">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="26%">服务站</td>							
+                          <td  class="selfTdStyle"  align="center" width="32%">服务站</td>							
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                           <td  align="center"><el-checkbox  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
-                          <td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
+                          <td  class="height70" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/></td>
                           <td  align="center">{{item.techName}}</td>
                           <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
@@ -468,9 +471,12 @@
       //选择技师按钮
       orderTech() {
         this.ordertech = true;
-        for (var c = 0; c <this.listTech.length; c++) {
-          this.listTech[c].techChecked = false;
-        }        
+        if(this.dialogStatus == "edit"){
+            for (var c = 0; c <this.listTech.length; c++) {
+              this.listTech[c].techChecked = false;
+            }          
+        }
+        
         if(this.middleB.length !=0){
           for (var b = 0; b < this.middleB.length; b++) {
             for (var a = 0; a <this.listTech.length; a++) {
@@ -553,16 +559,16 @@
 .width120 {
   width: 120px;
 }
-.height110 {
-  height: 110px;
+.height70 {
+  height: 70px;
 }
 .selfFooter {
   text-align: center;
   margin-top: 30px;
 }
 .selfTdStyle {
-  background: #f8f8f9;
-  height: 30px;
+  background: #eef1f6;
+  height:60px;
 }
 .imgStyle {
   display: block;
@@ -628,9 +634,13 @@
   border-collapse: collapse;
   padding: 2px;
 }
+.techWrap{
+  border:1px solid #ccc;border-top:none;margin-top:-23.5px;padding-top: 10px;
+}
 .tabWrap {
   width: 100px;
   margin-right: 20px;
+  margin-left:10px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -647,6 +657,9 @@
   position: absolute;
   margin-left: 80px;
   top: 0px;
+}
+.closePic:hover {
+   color: #333;
 }
 .bgWhite {
   background-color: #ffffff;
