@@ -15,7 +15,6 @@
     <el-table
       :key="tableKey"
       :data="list"
-      stripe
       v-loading="listLoading"
       element-loading-text="正在加载"
       fit

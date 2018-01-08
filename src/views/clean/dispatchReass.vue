@@ -1,6 +1,6 @@
 <template>
     <div class="tableWarp">
-        <el-table :data="reassList" stripe style="width: 100%" border>
+        <el-table :data="reassList"  style="width: 100%" border>
             <el-table-column prop="headPic" label="头像" align="center">
                 <template scope="scope">
                     <div>

@@ -73,6 +73,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           const data = response.data
+          console.log(data,'权限列表')
           commit('SET_MENU', data.data)
           resolve(response)
         }).catch(error => {

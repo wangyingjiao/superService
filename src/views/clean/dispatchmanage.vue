@@ -17,7 +17,7 @@
 	<!-- 搜索结束 -->
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px;">
-					<el-table :data="tableData" border style="width:100%" stripe>
+					<el-table :data="tableData" border style="width:100%">
 					  <el-table-column prop="orderNumber" align="center" label="订单编号"></el-table-column>
 					  <el-table-column align="center" prop="serviceTime" label="服务时间"></el-table-column>
 					  <el-table-column style="padding:0" align="center" label="头像">

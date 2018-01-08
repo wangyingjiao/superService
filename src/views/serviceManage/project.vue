@@ -29,7 +29,6 @@
     :key='tableKey' 
     :data="listTable" 
     v-loading="listLoading" 
-    stripe
     fit 
     border
     highlight-current-row 

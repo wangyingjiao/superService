@@ -18,8 +18,7 @@
 				    <el-table
 					  :data="tableData"
 						v-loading="listLoading"
-						tooltip-effect='light'					  
-						stripe
+						tooltip-effect='light'
 					  style="width:100%;"
 						>
 					  <el-table-column
