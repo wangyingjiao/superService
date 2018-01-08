@@ -179,7 +179,7 @@
         style='width: 100%;padding:0 6%;'>
         
         <el-form-item label=" 所属机构:"  prop="officeId2">
-          <el-select style='width: 100%;' v-model="temp2.officeId2" placeholder="请选择">
+          <el-select style='width: 100%;' filterable v-model="temp2.officeId2" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -614,7 +614,7 @@ export default {
     },
     handleUpdate(row) {
       //this.handleCreate();
-      console.log(this.temp2,'岗位信息')
+      console.log(this.temp2, "岗位信息");
       this.dialogFormVisible = true;
       console.log(row);
       this.dialogStatus = "update";
@@ -810,26 +810,30 @@ export default {
       console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.dialogFormStation = false;
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.$refs.domTree.setCheckedKeys([]);
+              this.dialogFormStation = false;
               this.$message({
                 type: "success",
                 message: "添加成功"
               });
               this.stationCheck.push(res.data.data);
-              // console.log(res.data.data.id)
               this.temp.role = res.data.data.id;
               this.resetTemp2();
             } else {
-              //this.$refs.domTree.setCheckedKeys([]);
-              //this.resetTemp2();
-              this.$message({
-                type: "error",
-                message: res.data.data[0]
-              });
+              if (typeof res.data.data == "string") {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data[0]
+                });
+              }
             }
           });
         } else {
@@ -956,9 +960,9 @@ export default {
 </script>
 <style>
 .btn_right {
-    margin-top: 3px;
-    float: right;
-    width: 75px;
+  margin-top: 3px;
+  float: right;
+  width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -1078,7 +1082,7 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
 }
-.diasize .el-dialog{
+.diasize .el-dialog {
   width: 70%;
 }
 </style>
