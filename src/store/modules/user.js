@@ -46,8 +46,6 @@ const user = {
           password: userInfo.password
         }
         loginByUsername(obj).then(response => {
-          // console.log(response)
-          // console.log(response.data.data.user.role.dataScope, '岗位等级')
           if (response.data.code === 1) {
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
@@ -70,6 +68,12 @@ const user = {
 
     // 获取用户信息
     GetUserInfo({ commit, userInfo }) {
+      // if (JSON.parse(localStorage.getItem('menu'))) {
+      //   console.log(22222222222222222222)
+      // }else{
+      //   console.log(44444444444444444444444)
+      // }
+      commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           const data = response.data
@@ -79,7 +83,7 @@ const user = {
           var arr = JSON.parse(localStorage.getItem('menu'))
           if (arr.length > 0) {
             commit('SET_MENU', arr)
-          }else{
+          } else {
             commit('SET_MENU', data.data)
 
           }
@@ -124,6 +128,7 @@ const user = {
           localStorage.removeItem('name')
           localStorage.removeItem('dataScope')
           localStorage.removeItem('orgId')
+          localStorage.removeItem('menu')
           resolve()
         }).catch(error => {
           reject(error)
