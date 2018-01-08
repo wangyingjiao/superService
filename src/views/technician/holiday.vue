@@ -21,6 +21,7 @@
     至
       <el-date-picker
       v-model="search.endTime"
+      style="width:20%"
       class="search"
       type="datetime"
       placeholder="年/月/日/时间">
