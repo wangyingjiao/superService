@@ -382,9 +382,14 @@
           for(var b = 0; b < this.middleA.length; b++){
             if (obj.techId == this.middleA[b].techId) {
               this.middleA.remove(this.middleA[b])
-            }
-            
+            }            
           }
+          for(var c = 0; c < this.middleB.length; c++){
+            if (obj.techId == this.middleB[c].techId) {
+              this.middleB.remove(this.middleB[c])
+            }            
+          }          
+          //this.middleB
           this.tabOptions.remove(obj);
         }else{
           console.log( this.middleA)
@@ -480,7 +485,10 @@
       //选择技师按钮
       orderTech() {             
         this.ordertech = true;
-        if(this.dialogStatus == "edit"){ 
+        if(this.dialogStatus == "edit"){
+            for (var c = 0; c <this.listTech.length; c++) {
+              this.listTech[c].techChecked = false;
+            } 
             if(this.middleB.length !=0){
               for (var b = 0; b < this.middleB.length; b++) {
                 for (var a = 0; a <this.listTech.length; a++) {
@@ -492,6 +500,17 @@
                   }
                 }
               }
+            }else{
+              for (var d = 0; d < this.middleA.length;d++) {
+                for (var e = 0; e <this.listTech.length;e++) {
+                  if (
+                    this.listTech[e].techId ==
+                    this.middleA[d].techId
+                  ) {
+                    this.listTech[e].techChecked = true;
+                  }
+                }
+              }              
             }                      
         }      
       },
