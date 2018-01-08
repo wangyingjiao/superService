@@ -76,7 +76,13 @@ const user = {
           console.log(data, '权限列表')
           localStorage.setItem('menu', JSON.stringify(data.data))
           console.log(JSON.parse(localStorage.getItem('menu')))
-          commit('SET_MENU', data.data)
+          var arr = JSON.parse(localStorage.getItem('menu'))
+          if (arr.length > 0) {
+            commit('SET_MENU', arr)
+          }else{
+            commit('SET_MENU', data.data)
+
+          }
           resolve(response)
         }).catch(error => {
           reject(error)

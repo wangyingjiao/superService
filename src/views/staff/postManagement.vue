@@ -657,7 +657,7 @@ export default {
       }
       //return;
       var obj = {
-        name: this.temp.name,
+        name: encodeURI(this.temp.name),
         dataScope: this.temp.dataScope,
         menuIds: str,
         useable: "1", //状态
