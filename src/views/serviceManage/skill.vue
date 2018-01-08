@@ -190,7 +190,8 @@
         dialogStatus: 'add',
         id:'',
         promInf1:'搜索内容不存在!',
-        middleA:[]
+        middleA:[],
+        middleB:[]
       }
     }, 
     methods: {
@@ -219,6 +220,9 @@
       add(status,row){     
             var obj={}
             this.middleA=[];
+            this.middleB = [];
+            this.techName='',
+            this.techStationId='';
             this.listLoading = true;
             //服务技师与分类、服务站获取             
             orderServer(obj).then(res => {      
@@ -254,6 +258,7 @@
                   }                                           
                   if(res.data.data.info.technicians != undefined){
                       this.tabOptions=res.data.data.info.technicians;
+                      this.middleB=Object.assign([],res.data.data.info.technicians);
                       this.selectionreturn1();
                   }
                 }         
@@ -300,6 +305,7 @@
                     });
                     this.$refs["ruleForm2"].resetFields();
                     this.middleA = [];
+                    this.middleB = [];
                     this.dialogVisible = false;
                     this.localSearch = "";
                     var obj1 = {};
@@ -328,6 +334,7 @@
                     });
                     this.$refs["ruleForm2"].resetFields();
                     this.middleA = [];
+                    this.middleB = [];
                     this.dialogVisible = false;
                     var obj1 = {};
                     this.listLoading = false;
@@ -461,6 +468,21 @@
       //选择技师按钮
       orderTech() {
         this.ordertech = true;
+        for (var c = 0; c <this.listTech.length; c++) {
+          this.listTech[c].techChecked = false;
+        }        
+        if(this.middleB.length !=0){
+          for (var b = 0; b < this.middleB.length; b++) {
+            for (var a = 0; a <this.listTech.length; a++) {
+              if (
+                this.listTech[a].techId ==
+                this.middleB[b].techId
+              ) {
+                this.listTech[a].techChecked = true;
+              }
+            }
+          }
+        }        
       },
       //选择技师弹出层查询按钮
       searchTeh() {
@@ -472,11 +494,11 @@
         orderServer(obj).then(res => {
             if (res.data.code === 1) {
               this.listTech = res.data.data.techs;
-              for (let b = 0; b < this.listTech.length; b++) {
-                for (let a = 0; a < this.middleA.length; a++) {
+              for (var b = 0; b < this.middleA.length; b++) {
+                for (var a = 0; a <this.listTech.length; a++) {
                   if (
-                    this.listTech[a].techStationId ==
-                    this.middleA[b].techStationId
+                    this.listTech[a].techId ==
+                    this.middleA[b].techId
                   ) {
                     this.listTech[a].techChecked = true;
                   }
