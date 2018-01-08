@@ -425,7 +425,7 @@ export default {
         name: [
           {
             required: true,
-            message: "请输入 2 到 15 位的分类名称",
+            message: "请输入 2 到 15 位的岗位名称",
             trigger: "blur"
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
@@ -614,6 +614,7 @@ export default {
     },
     handleUpdate(row) {
       //this.handleCreate();
+      console.log(this.temp2,'岗位信息')
       this.dialogFormVisible = true;
       console.log(row);
       this.dialogStatus = "update";
@@ -915,7 +916,7 @@ export default {
     },
     resetTemp2() {
       this.temp2 = {
-        officeId: "",
+        officeId2: "",
         name: "",
         dataScope: "",
         check: []
@@ -929,7 +930,7 @@ export default {
     },
     resetForm2(formName) {
       this.temp2 = {
-        officeId: "",
+        officeId2: "",
         name: "",
         dataScope: "",
         check: []
