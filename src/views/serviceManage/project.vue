@@ -7,7 +7,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable style="width: 200px" class="filter-item"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+      <el-select clearable class="search"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
         <el-option v-for="(item,index) in sortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -17,13 +17,13 @@
         </el-option>
       </el-select> -->
 
-      <el-input style="width: 200px; margin-left:20px" class="filter-item" placeholder="请输入搜索的项目名称" v-model="search.name">
+      <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large btn_right el-icon-search ceshi" @click="getList"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="getList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
+    <button class="button-small btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
 
     <el-table 
     :key='tableKey' 
@@ -34,7 +34,7 @@
     border
     highlight-current-row 
     element-loading-text="正在加载" 
-    style="width: 100%" >
+    style="width: 100%;" >
       <el-table-column align="center" label="排序号" width="100">
          <template scope="scope">
           <input type="text" v-model="scope.row.sortNum" class="sortInput" @blur="indexBlur(scope.row)">
@@ -132,7 +132,7 @@
                 :rules="basicRles" >
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select class="filter-item" filterable  v-model="basicForm.sortId" style="width:90%" @change="(val)=>open(val,2)">
+                  <el-select  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -140,7 +140,7 @@
 
                 <el-form-item label="项目名称：" prop="name">
                   <el-input
-                  style="width:90%"
+                  class="form_item"
                   v-model="basicForm.name"
                   placeholder="请输入2-10位的服务站名称"></el-input>
                 </el-form-item>
@@ -156,7 +156,7 @@
                 </el-form-item> -->
 
                 <el-form-item label="服务图片：" prop="picture">
-                  <div class="upload-demo upload_box" style="width:90%">
+                  <div class="upload-demo upload_box form_item">
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
@@ -180,17 +180,17 @@
                 <el-form-item label="服务描述：" prop="description">
                   <el-input
                   :rows="4"
-                  style="width:90%"
+                  class="form_item"
                   v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
 
                 <el-form-item label="系统标签：">
-                   <div class="custom">
+                   <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
-                    <div class="labelList" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+                    <div class="labelList form_item" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
                         <!-- <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
@@ -517,7 +517,7 @@
                 <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
-                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          action="https://openservice.oss-cn-beijing.aliyuncs.com"
                           class="imgText"
                           list-type="picture"
                           ref="upload"
@@ -2051,7 +2051,7 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
   margin: 0px 0px 15px 20px;
@@ -2397,7 +2397,7 @@ hr {
   margin-left: 30px;
 }
 .custom{
-  width: 90%;
+  width: 100%;
   height: 36px;
   border: 1px solid #bfcbd9;
 }

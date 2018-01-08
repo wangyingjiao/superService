@@ -1,13 +1,13 @@
 <template>
   <div class="box">
     <div class="filter-container bgWhite padBot20">
-      <el-input   class="filter-item width200" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
-      <button @click="search" class="search-button btn_right el-icon-search"> 搜索</button>
+      <el-input  class="search" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
+      <button @click="search" class="search-button btn_search el-icon-search"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite bgbot70" >
-          <button class="button-small btn_right btn_pad ceshi ceshi5" style="margin-top: -5px;" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
+          <button class="button-small btn_pad" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
@@ -34,12 +34,17 @@
         </div>
         <!-- 弹出层新增技能 -->
         <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
-          <el-form :model="ruleForm2" :rules="rules" ref="ruleForm2" label-width="130px" class="demo-ruleForm" label-position="left">
+          <el-form :model="ruleForm2" 
+             :rules="rules" 
+             ref="ruleForm2" 
+             label-width="160px" 
+             class="demo-ruleForm dia_form" 
+             label-position="left">
             <el-form-item label="技能名称" prop="name">
-              <el-input  v-model.trim="ruleForm2.name"  class="width300"  placeholder="请输入2-15位技能名称"></el-input>
+              <el-input  v-model.trim="ruleForm2.name"  class="form_item"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" style="width:300px;" @change="testChange" class="selfTabs">
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" @change="testChange" class="selfTabs form_item">
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -51,7 +56,7 @@
             </el-form-item>
             
             <el-form-item label="选择技师" prop="technicians" class="selfst3">
-             <div class="tech-order-jnsk selfst2">
+             <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>

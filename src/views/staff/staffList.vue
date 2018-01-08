@@ -1,27 +1,27 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.mobile">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索手机号" v-model="search.mobile">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;margin-left:15px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
-      <el-select  filterable  style='width: 200px;' clearable @change="searchOffice" class="filter-item" v-model="search.officeId" placeholder="选择机构">
+      <el-select  filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
        
-      <el-select  filterable  style='width: 200px;' clearable  class="filter-item" v-model="search.stationId" placeholder="选择服务站">
+      <el-select  filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
         <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       
 
      
-      <button class="button-large btn_right el-icon-search ceshi5" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
+    <button class="button-small btn_pad" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -84,66 +84,65 @@
        :close-on-press-escape="false"
       minwidth = "700px">
       <el-form 
-        class="small-space" 
+        class="small-space dia_form" 
         :model="temp" 
         label-position="left" 
         label-width="160px"
         :rules="rules"
         ref="temp"
-        style='width: 560px; margin-left:20px;'>
+        >
 
         <el-form-item label="姓名:"  prop="name" >
               <el-input        
-              style='width: 80%;' 
+              class="form_item"
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
         <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
-            style='width: 80%;'
+            class="form_item"
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
         <el-form-item label="密码:" prop="password">
           <el-input 
             v-model="temp.password" 
-            style='width: 400px;'
+            class="form_item"
              type="password"
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
         <el-form-item label="确认密码:" v-if="dialogStatus == 'create'"  prop="password2">
           <el-input
-
-            style='width: 400px;'
+            class="form_item"
             type="password"
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect"  class="filter-item" v-model="temp.role" placeholder="请选择">
+          <el-select  filterable ref="domSelect" style="width:80%" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-           <div class="btn_addStation" @click="addRole">新 增</div>
+           <div class="btn_addStation" style="width:20%" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select style='width: 400px;' class="filter-item" v-model="temp.useable" placeholder="请选择">
+          <el-select class="form_item"  v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -1064,7 +1063,7 @@ body {
 }
 .btn_addStation {
   float: right;
-  height: 34px;
+  height: 36px;
   width: 80px;
   background-color: #fff;
   border: 1px solid #4c70e8;

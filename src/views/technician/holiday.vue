@@ -3,16 +3,17 @@
     <div class="filter-container bgWhite">
    
 
-      <el-select  clearable style="width: 200px" class="filter-item bottom0" v-model="search.type" placeholder="请选择">
+      <el-select  clearable class="search" v-model="search.type" placeholder="请选择">
         <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
 
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item bottom0" placeholder="请输入搜索内容" v-model="search.val">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索内容" v-model="search.val">
       </el-input>
 
       <el-date-picker
       v-model="search.startTime"
+      style="width:20%"
       format
       type="datetime"
       placeholder="年/月/日/时间">
@@ -20,10 +21,11 @@
     至
       <el-date-picker
       v-model="search.endTime"
+      class="search"
       type="datetime"
       placeholder="年/月/日/时间">
     </el-date-picker>
-       <button class="button-large btn_right el-icon-search" @click="handleFilter"> 搜 索</button>
+       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -300,6 +302,6 @@ export default {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 </style>

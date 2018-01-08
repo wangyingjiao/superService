@@ -8,19 +8,19 @@
 			  </el-tabs>
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
-			  <el-select clearable class="width200"   v-model="payStus" placeholder="选择支付状态">
+			  <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="width200"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
+			  <el-select clearable class="search"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="width200"  v-model="payType" placeholder="选择服务站">
+			  <el-select clearable class="search"  v-model="payType" placeholder="选择服务站">
 						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable class="width200"  v-model="sevicerStustas" placeholder="请选择服务状态">
+			  <el-select clearable class="search"  v-model="sevicerStustas" placeholder="请选择服务状态">
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
@@ -28,34 +28,37 @@
 				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="customerPhone"></el-input>
 				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>
 				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input> -->							  
-			  <button type="button" class="search-button floatRight"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+			  <button type="button" class="search-button floatRight btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
 					<el-date-picker
 						v-model="startTime"
 						type="datetime"
-						class="width200"
+						class="search"
+						style="width:20%"
 						placeholder="选择开始时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="endTime"
 						type="datetime"
-						class="width200"
+						style="width:20%"
+						class="search"
 						placeholder="选择结束时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="severTime"
+						style="width:20%"
 						type="datetime"
 						@change="TimeChange"
-						class="width200"
+						class="search"
 						placeholder="选择服务时间">
 					</el-date-picker>
-					<el-input   class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
+					<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
 			  </div>
 				<!--搜索条件选择结束-->				
 		</div>
 		<!--表格显示区域开始-->
     <div class="orderMangeWarp">
-		  <button type="button" class="add-button exprotStyle"  @click="exportOrder">导出订单</button>
+		  <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button>
 			<div class="ordermanageTableWrap">	
 				<el-table 
 					:data="tabDataList"

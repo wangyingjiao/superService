@@ -1,32 +1,32 @@
 <template>
   <div class="tech">
     <div class="tech-index">
-      <div>
-        <el-select class="abc" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+      <div style="width:85%">
+        <el-select class="search" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" style="margin-left:20px;">
+        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
           <!-- <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
           </el-option> -->
 						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
 						</el-option>
         </el-select>
-        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" style="margin-left:20px;">
+        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" class="search">
           <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" style="width:200px;"></el-input>
+        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search"></el-input>
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
       <div>
-        <button class="search-button el-icon-search" @click="techniSearchs"> 搜索</button>
+        <button class="search-button el-icon-search btn_search" @click="techniSearchs"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
+        <button class="button-small  btn_pad" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
        <!-- <el-table 
           v-loading="listLoadingTech" 

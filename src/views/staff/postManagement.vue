@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" v-model="search.name" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" >
+      <el-input @keyup.enter.native="handleFilter" v-model="search.name" class="search" placeholder="请输入搜索的岗位名称" >
       </el-input>
-      <el-select filterable clearable style="width: 200px" v-model="search.officeId" class="filter-item" placeholder="选择机构">
+      <el-select filterable clearable class="search" v-model="search.officeId"  placeholder="选择机构">
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi"  @click="handleCreate">新增</button>
+    <button class="button-small btn_pad"  @click="handleCreate">新增</button>
     <el-table
       :key="tableKey"
       :data="list"
@@ -58,27 +58,27 @@
        :close-on-press-escape="false"
        class="diatable">
       <el-form 
-        class="small-space"
+        class="small-space dia_form"
         :model="temp" 
         label-position="left"
         :rules="rules"
         ref="temp" 
         label-width="160px" 
-        style='width: 500px; margin-left:20px;'>
+        >
 
         <el-form-item label=" 所属机构:"  prop="officeId">
-          <el-select style='width: 400px;' class="filter-item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select class="form_item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name"class="form_item"placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 400px;' class="filter-item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
+          <el-select class="form_item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -87,7 +87,7 @@
 
         <el-form-item label="权限:" prop="check" >
             <el-tree
-            class="scrollBox"
+            class="scrollBox form_item"
               :data="data2"
               :indent= 10
               show-checkbox
@@ -95,7 +95,6 @@
             
               v-model="temp.check"
               ref="domTree"
-              style='width: 400px;'
               @check-change="handTreechange"
               @node-click="nodeClick"
               @current-change="currentChange"
