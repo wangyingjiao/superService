@@ -323,12 +323,12 @@ export default {
 			},			
 			{
 			  id:'4',
-			  checkAll:true,
+			  checkAll:false,
 			  roomId:'1',
 			  testprice:[
-				  {pirce:'26'},
-				  {pirce:'52'},
-				  {pirce:'78'},
+				  {pirce:26},
+				  {pirce:52},
+				  {pirce:78},
 			  ],
 			  roomType:[
 				{ key: "1", roomName: "一居室"},
@@ -354,9 +354,9 @@ export default {
 			  checkAll:false,
 			  roomId:'2',
 			  testprice:[
-				  {pirce:'26'},
-				  {pirce:'52'},
-				  {pirce:'78'},
+				  {pirce:26},
+				  {pirce:52},
+				  {pirce:78},
 			  ],
 			  roomType:[
 				{ key: "1", roomName: "一居室"},
@@ -378,7 +378,7 @@ export default {
 		},
 		form1: {
 		  serverPro:'',
-          sumPrice:'1000',
+          sumPrice:0,
 		},
 		form3:{
 			date:'',
@@ -458,7 +458,8 @@ export default {
 		technicianName:'',//技师姓名
 		//当前客户
 		custom:"",		
-		customKeyFlag:false		
+		customKeyFlag:false,
+		sum1:null,		
     };
   },
   computed: {
@@ -469,23 +470,36 @@ export default {
   methods:{
 	//选中行改变
 	rowChange(item){
-		console.log(item)
-		if(item.checkAll){
-			console.log(item.pirce*item.number)
-		}
+       this.sum(item)
 	},
 	//计数器改变
 	numberChange(item){
-		//console.log(item)
+	  if(item.checkAll){
+        this.sum(item)
+	  }
+       
 	},
 	//居室改变
 	roomChange(item,roomId){
-		//console.log(roomId)
-       // console.log(item)
+		if(item.checkAll){
+			this.sum1=this.sum1+item.testprice[item.roomId].pirce
+			this.sum(item)
+			
+		}
+	},
+	//计算总价
+	sum(item){
+		if(item.pirce != undefined){
+             this.sum1=this.sum1+item.pirce*item.number;	
+		}	    		
+		console.log(this.sum1)
+		this.form1.sumPrice=this.sum1
 	},
 	//按面积数量变化
 	inputChange(item){
-       // console.log(item)
+      if(item.checkAll){
+        this.sum(item)
+	  }
 	},
 	//下一步
 	next(){
@@ -543,10 +557,6 @@ export default {
 						this.$refs['ruleForm'].resetFields();
 						this.$refs.pickerInput.value=''	
 						this.dialogTableVisible1 = false;
-						var obj={};
-						this.pageNumber=1;
-						this.jumpPage=1;
-						this.getData(obj,this.pageNumber,this.pageSize1);
 					}else{
 						this.$message({
 							type: 'warning',
