@@ -66,7 +66,6 @@
 					element-loading-text="正在加载" 
 					highlight-current-row
 					style="width:100%;"
-					stripe
 					>
 							<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 							</el-table-column>

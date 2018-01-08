@@ -27,6 +27,15 @@ export default {
       type: Array
     }
   },
+  // computed:{
+  //     menu:function(){
+  //       return JSON.parse(localStorage.getItem('menu'))
+  //     }
+  // },
+  // created(){
+  //   this.menu = JSON.parse(localStorage.getItem('menu'))
+  //       console.log(this.menu,'11111111111111111111111111111111')
+  // },
   methods:{
     show(){
       console.log(this.$store.state.user.menu)

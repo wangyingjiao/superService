@@ -15,7 +15,6 @@
     <el-table
       :key="tableKey"
       :data="list"
-      stripe
       v-loading="listLoading"
       element-loading-text="正在加载"
       fit
@@ -50,13 +49,13 @@
       </el-pagination>
     </div>
 
-    <el-dialog 
+    <el-dialog
        :title="textMap[dialogStatus]" 
        :visible.sync="dialogFormVisible" 
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
-       class="diatable">
+       class="diatable diasize">
       <el-form 
         class="small-space dia_form"
         :model="temp" 
@@ -866,5 +865,8 @@ body {
   height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+.diasize .el-dialog{
+  width: 60%;
 }
 </style>

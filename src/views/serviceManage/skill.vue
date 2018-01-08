@@ -9,7 +9,7 @@
         <div class="bgWhite bgbot70" >
           <button class="button-small btn_pad" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
           <div style="padding-top:15px;">
-              <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
+              <el-table  :data="getListdata" v-loading="listLoading"  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
                       <el-table-column align="center" label="编号" width="100">
                           <template scope="scope">
