@@ -166,7 +166,7 @@
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
-       class="twoDialog" 
+       class="twoDialog diasize" 
       >
       
       <el-form 
@@ -176,20 +176,20 @@
         :rules="rules2"
         ref="temp2" 
         label-width="80px" 
-        style='width: 500px; margin-left:20px;'>
+        style='width: 100%;padding:0 6%;'>
         
         <el-form-item label=" 所属机构:"  prop="officeId2">
-          <el-select style='width: 400px;' class="filter-item"  v-model="temp2.officeId2" placeholder="请选择">
+          <el-select style='width: 100%;' v-model="temp2.officeId2" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp2.name" style='width: 400px;' placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 400px;' class="filter-item" v-model="temp2.dataScope" placeholder="请选择">
+          <el-select style='width: 100%;'  v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -205,7 +205,7 @@
               node-key="id"
               v-model="temp2.check"
               ref="domTree"
-              style='width: 400px;'
+              style='width: 100%;'
               @check-change="handTreechange"
               :default-expand-all = "true"
               :props="defaultProps">
@@ -1076,5 +1076,8 @@ body {
   height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+.diasize .el-dialog{
+  width: 70%;
 }
 </style>

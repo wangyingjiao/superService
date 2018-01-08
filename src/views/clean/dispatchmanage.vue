@@ -270,6 +270,10 @@ export default {
 };
 </script>
 <style>
+.bgWhite {
+    background-color: #ffffff;
+    padding: 20px 20px 20px 20px;
+}
 .el-table_1_column_8{
 	border-right:none; 
 }
