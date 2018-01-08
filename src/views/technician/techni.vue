@@ -109,7 +109,7 @@
 		</div>
       </el-dialog>
       <!-- 休息弹出层 -->
-      <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages" style="top:10%;">
+      <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages tech-vacation" style="top:10%;">
         <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
         <ul class="tech-section-xiu">
           <li class="mobel">
@@ -265,8 +265,8 @@
                   ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
-    <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-      <div class="techniAdd" style="padding:0 10%">
+    <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
+      <div class="techniAdd">
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
 		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -1354,7 +1354,7 @@ export default {
     },
     //搜索
     techniSearchs(){
-      console.log(this.techniSearch,"techniSearch--------")
+      console.log(this.techniSearch,"techniSearch-----------------------------")
       var obj = {}
       if(this.techniSearch.stationId){
         obj.stationId = this.techniSearch.stationId
@@ -1388,8 +1388,8 @@ export default {
         if(val){
           var obj = {}
             obj.techId = this.passwordId
-            obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime
-            obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime
+            obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
+            obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
             obj.remark = this.ruleForm.desc
             console.log(obj)
             addVacation(obj).then(data=>{
@@ -1399,7 +1399,7 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
-                this.flags = false
+                this.vacationCancel('ruleForm')
               }else{
                 this.$message.error(data.data.data)
                 return false
@@ -1525,11 +1525,26 @@ export default {
       if(val!=null || val!=undefined){
         this.listQuery.page = val;
       }
+     
+       var obj = {}
+      if(this.techniSearch.stationId){
+        obj.stationId = this.techniSearch.stationId
+      }
+      if(this.techniSearch.jobNature){
+        obj.jobNature = this.techniSearch.jobNature
+      }
+      if(this.techniSearch.chooses){
+        obj[this.techniSearch.chooses] = this.chooContent
+      }
+      if(!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)){
+        obj.skillIds = this.roomSel2Arr
+      }
+
       console.log(this.listQuery.page,"this.listQuery.page------")
       if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
         delete this.techniSearch.skillIds
       }
-      this.getList(val,this.listQuery.limit,this.techniSearch);
+      this.getList(val,this.listQuery.limit,obj);
       console.log(val)
     },
     handleSizeChange(val) {
@@ -1602,7 +1617,7 @@ export default {
       }
     },
     techDelete(item) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -1742,6 +1757,7 @@ export default {
           //技师编辑获取ID
     // console.log(this.areaOptions,"areaOptions----")
     //选择城市
+    console.log("------------------------------------list------------")
         this.listLoadingTech = true
         ChooseTheCity(num,size,obj)
           .then(data => {
@@ -1796,6 +1812,7 @@ export default {
     }
   },
   mounted() {
+    console.log('-------------------mouned 加载页面-----------------------------')
     this.sign   //获取签名
     this.getList(1,6,{})
     //性别,工作年限,岗位性质，岗位状态
@@ -2375,11 +2392,11 @@ body {
   color: #ff7676;
 }
 
-.mobel {
+.tech-vacation .mobel {
   margin-bottom: 22px;
   display: flex;
 }
-.mobel > p:nth-child(1) {
+.tech-vacation .mobel > p:nth-child(1) {
   width: 100px;
   text-align: right;
   padding-right: 21px;
