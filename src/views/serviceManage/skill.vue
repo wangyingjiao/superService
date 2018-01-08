@@ -480,10 +480,7 @@
       //选择技师按钮
       orderTech() {             
         this.ordertech = true;
-        if(this.dialogStatus == "edit"){
-            for (var c = 0; c <this.listTech.length; c++) {
-              this.listTech[c].techChecked = false;
-            } 
+        if(this.dialogStatus == "edit"){ 
             if(this.middleB.length !=0){
               for (var b = 0; b < this.middleB.length; b++) {
                 for (var a = 0; a <this.listTech.length; a++) {
