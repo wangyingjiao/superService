@@ -114,7 +114,8 @@
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
                   <button class="button-large"   @click="submitForm2()">保存</button>
-                  <button class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button v-if="dialogStatus == 'edit'" class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button>
               </div>           
         </el-dialog>
 
@@ -277,11 +278,11 @@
       //技师数据回显二级选中
       selectionreturn1() {
         if (this.tabOptions.length != undefined) {
-          for (let a = 0; a < this.listTech.length; a++) {
-            for (let b = 0; b < this.tabOptions.length; b++) {
+          for (var a = 0; a < this.listTech.length; a++) {
+            for (var b = 0; b < this.tabOptions.length; b++) {
               if (this.tabOptions[b].techId == this.listTech[a].techId) {
-                this.listTech[a].techChecked = true;
-                this.testTech(this.listTech[a]);
+                  this.listTech[a].techChecked = true;
+                  this.testTech(this.listTech[a]);
               }
             }
           }
@@ -373,22 +374,30 @@
       //新增或编辑弹窗选择技师回传TAB删除
       selfErrorClose(obj) {
         if (this.tabOptions != undefined && this.tabOptions.length != 0) {
-          for (let a = 0; a < this.listTech.length; a++) {
+          for (var a = 0; a < this.listTech.length; a++) {
             if (obj.techId == this.listTech[a].techId) {
               this.listTech[a].techChecked = false;
             }
           }
+          for(var b = 0; b < this.middleA.length; b++){
+            if (obj.techId == this.middleA[b].techId) {
+              this.middleA.remove(this.middleA[b])
+            }
+            
+          }
           this.tabOptions.remove(obj);
+        }else{
+          console.log( this.middleA)
         }
       },
       //选择技师弹出层保存
       submitForm2() {
         //先遍历数据中选中的再保存
         var arr = [];
-        if (this.listTech != undefined && this.listTech.length != 0) {
-          for (let a = 0; a < this.listTech.length; a++) {
-            if (this.listTech[a].techChecked == true) {
-              arr.push(this.listTech[a]);
+        if (this.middleA != undefined && this.middleA.length != 0) {
+          for (let a = 0; a < this.middleA.length; a++) {
+            if (this.middleA[a].techChecked == true) {
+              arr.push(this.middleA[a]);
             }
           }
         }
@@ -469,26 +478,25 @@
           });
         },           
       //选择技师按钮
-      orderTech() {
+      orderTech() {             
         this.ordertech = true;
         if(this.dialogStatus == "edit"){
             for (var c = 0; c <this.listTech.length; c++) {
               this.listTech[c].techChecked = false;
-            }          
-        }
-        
-        if(this.middleB.length !=0){
-          for (var b = 0; b < this.middleB.length; b++) {
-            for (var a = 0; a <this.listTech.length; a++) {
-              if (
-                this.listTech[a].techId ==
-                this.middleB[b].techId
-              ) {
-                this.listTech[a].techChecked = true;
+            } 
+            if(this.middleB.length !=0){
+              for (var b = 0; b < this.middleB.length; b++) {
+                for (var a = 0; a <this.listTech.length; a++) {
+                  if (
+                    this.listTech[a].techId ==
+                    this.middleB[b].techId
+                  ) {
+                    this.listTech[a].techChecked = true;
+                  }
+                }
               }
-            }
-          }
-        }        
+            }                      
+        }      
       },
       //选择技师弹出层查询按钮
       searchTeh() {
