@@ -1,7 +1,10 @@
 <template>
     <div class="addorder-container">
-		<div class="fist-bar">
-		  <el-select clearable class="search" v-model="technicianName" placeholder="请选择">
+		<!-- 搜索开始 -->
+		<div class="filter-container bgWhite">
+
+      
+     <el-select clearable class="search" v-model="technicianName" placeholder="请选择">
 				<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
 				</el-option>
 		  </el-select>
@@ -10,9 +13,10 @@
 			<el-input  v-else-if="technicianName =='3'" class="search"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
 			<el-input  v-else class="search"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
-		</div>
+  </div>
+	<!-- 搜索结束 -->
 		<div class="second-bar" style="height:500px;">
-			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 30px;">
+			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px;">
 					<el-table :data="tableData" border style="width:100%" stripe>
 					  <el-table-column prop="orderNumber" align="center" label="订单编号"></el-table-column>
 					  <el-table-column align="center" prop="serviceTime" label="服务时间"></el-table-column>
@@ -70,9 +74,9 @@
 							</el-table-column>			  
 						</el-table-column>
 				</el-table>
-					<div  style="margin-top:20px;">
+					<div  style="margin-top:20px;padding-bottom:0px;">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
-						:page-sizes="[10,20,30, 50]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
+						:page-sizes="[5,10,15,20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
 					</div>					
 					
@@ -95,9 +99,6 @@
 		<el-table-column prop="jobNature" align="center" label="岗位性质"></el-table-column>
 	  </el-table>
 	  <div  class="pagination-container">
-		  <!-- <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
-			:page-sizes="[10,20,30, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal">
-		  </el-pagination> -->
 		   <el-pagination
 				layout="prev, pager, next"
 				:total="100">
@@ -293,11 +294,11 @@ export default {
  
 }
 .second-bar{
-  padding-top:20px;
+  padding-top:0px;
   padding-bottom:20px;
   background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
+  margin-left:0px;
+  margin-right:0px;
   
 }
 

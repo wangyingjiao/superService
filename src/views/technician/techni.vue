@@ -621,9 +621,9 @@
               </el-col>
           </el-row>
           <li id="confirmation">
-                <input type="button" class="button-large-fourth" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
+                <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
                 <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                <span class="button-cancel-fourth" @click="handleClose('personal')">取消</span>
+                <input class="button-cancel" value="取消" @click="handleClose('personal')"/>
           </li>
         </ul>
 		 </ul>
@@ -1959,18 +1959,10 @@ body {
 }
 .tech-section-lage > div {
   margin: 0px;
-  padding: 0px;
 }
-
-.tech-section-lage > div:nth-of-type(1) {
-  padding: 20px 20px 0 20px;
-  font-size: 14;
-  font-weight: 700;
-}
-
 .tech-tc-prson {
   margin: 0px 20px;
-  padding: 30px 20px 10px 0;
+  padding: 0px 20px 10px 0;
   border-bottom: #f3f1f1 solid 1px;
   font-size: 14px;
   font-weight: 700;

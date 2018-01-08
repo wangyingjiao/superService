@@ -414,7 +414,7 @@
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
                 <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
-                <input type="button" class="button-cancel" style="margin-left:30px" @click="cancel('basic')" value="取 消">
+                <input type="button" class="button-cancel" @click="cancel('basic')" value="取 消">
               </div>
             </el-dialog>
     <!-- 商品信息 完成 -->
