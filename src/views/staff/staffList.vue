@@ -1,36 +1,33 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索手机号" v-model="search.mobile">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索手机号" v-model="search.mobile">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的岗位名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
-    
-      <el-select  filterable  style='width: 200px;' clearable @change="searchOffice" class="filter-item" v-model="search.officeId" placeholder="选择机构">
+      <el-select  filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
        
-      <el-select  filterable  style='width: 200px;' clearable  class="filter-item" v-model="search.stationId" placeholder="选择服务站">
+      <el-select  filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
         <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       
 
      
-      <button class="button-large btn_right el-icon-search ceshi5" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_pad" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
     <el-table 
       :key='tableKey' 
       :data="list" 
-      stripe
       v-loading="listLoading" 
       element-loading-text="正在加载" 
       fit
-      highlight-current-row
       style="width: 100%">
 
       <el-table-column align="center" label="编号" width="100">
@@ -87,66 +84,65 @@
        :close-on-press-escape="false"
       minwidth = "700px">
       <el-form 
-        class="small-space" 
+        class="small-space dia_form" 
         :model="temp" 
         label-position="left" 
         label-width="160px"
         :rules="rules"
         ref="temp"
-        style='width: 500px; margin-left:50px;'>
+        >
 
         <el-form-item label="姓名:"  prop="name" >
               <el-input        
-              style='width: 400px;' 
+              class="form_item"
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
         <el-form-item label="登录账号:" prop="mobile">
           <el-input 
             v-model="temp.mobile"
-            style='width: 400px;'
+            class="form_item"
             placeholder="请输入11位手机号"></el-input>
         </el-form-item>
 
         <el-form-item label="密码:" prop="password">
           <el-input 
             v-model="temp.password" 
-            style='width: 400px;'
+            class="form_item"
              type="password"
             placeholder="请使用6-20位字母、数字两种组合"></el-input>
         </el-form-item>
 
         <el-form-item label="确认密码:" v-if="dialogStatus == 'create'"  prop="password2">
           <el-input
-
-            style='width: 400px;'
+            class="form_item"
             type="password"
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable  style='width: 400px;' @change="mechChange" class="filter-item" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable  style='width: 400px;' @change="stationChange" class="filter-item" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect"  class="filter-item" v-model="temp.role" placeholder="请选择">
+          <el-select  filterable ref="domSelect" style="width:80%" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-           <div class="btn_addStation" @click="addRole">新 增</div>
+           <div class="btn_addStation" style="width:20%" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select style='width: 400px;' class="filter-item" v-model="temp.useable" placeholder="请选择">
+          <el-select class="form_item"  v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -860,24 +856,27 @@ export default {
             console.log(res);
             if (res.data.code === 1) {
               // 判断是不是自己修改自己
-              console.log(this.temp.id, "点击的id");
-              console.log(localStorage.getItem("userId"), "登录用户的id");
-              if (0) {
-              //if (this.temp.id == localStorage.getItem("userId")) {
-                // console.log("编辑自己");
-                // this.$store
-                //   .dispatch("FedLogOut")
-                //   .then(res => {
-                //     this.$message({
-                //       type: "error",
-                //       message: "密码修改请重新登录"
-                //     });
-                //     Cookies.set("jeesite.session.id",'',{ expires: -1 });
-                //     this.$router.push({ path: "/login" });
-                //   })
-                //   .catch(() => {
-                //     this.loading = false;
-                //   });
+              //if (0) {
+              if (
+                this.temp.id == localStorage.getItem("userId") &&
+                obj.newPassword.length != undefined
+              ) {
+                console.log("编辑自己密码");
+                this.$store
+                  .dispatch("LogOut")
+                  .then(res => {
+                    this.$message({
+                      type: "warning",
+                      message: "密码被修改 3 秒后进入登录页面！"
+                    });
+                    this.dialogFormVisible = false;
+                    setTimeout(() => {
+                      that.$router.push({ path: "/login" });
+                    }, 3000);
+                  })
+                  .catch(() => {
+                    this.listLoading = false;
+                  });
               } else {
                 this.dialogFormVisible = false;
                 this.resetTemp();
@@ -956,8 +955,9 @@ export default {
 </script>
 <style>
 .btn_right {
-  float: right;
-  width: 100px;
+    margin-top: 3px;
+    float: right;
+    width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -994,13 +994,10 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 15px 20px;
-}
-.btn_right {
-  float: right;
+  margin: 0px 0px 20px 20px;
 }
 .el-table {
   font-size: 12px;
@@ -1066,7 +1063,7 @@ body {
 }
 .btn_addStation {
   float: right;
-  height: 34px;
+  height: 36px;
   width: 80px;
   background-color: #fff;
   border: 1px solid #4c70e8;

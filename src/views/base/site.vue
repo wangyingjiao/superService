@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索站点名" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
 
-      <el-select v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
+      <el-select class="search" v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
             <el-option-group
               v-for="(group,index) in areaOptions"
               :key="group.value"
@@ -18,21 +18,21 @@
             </el-option-group>
 
           </el-select>
-      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
-      <button class="button-small btn_right btn_pad  ceshi ceshi5" style="width:80px"  v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_right btn_pad  ceshi ceshi5" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_pad"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
+      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
       id="tableColor"
         :key='tableKey' 
         :data="list" 
-        v-loading="listLoading" 
+        v-loading="listLoading"
         stripe 
-        fit 
+        fit
         highlight-current-row 
         element-loading-text="正在加载"
         @row-click = "rowClick"
@@ -54,6 +54,10 @@
             <span v-if="scope.row.type =='self'">直营</span>
           </template>
           
+        </el-table-column>
+
+        <el-table-column label="站长" align="center" prop="user.id">
+
         </el-table-column>
 
         <el-table-column label="所属城市" align="center" prop="cityName">
@@ -101,7 +105,7 @@
        :close-on-press-escape="false" 
         class="diatable">
         <el-form 
-           class="small-space" 
+           class="small-space dia_form" 
            :model="temp" 
             ref="temp" 
             :rules="rules"
@@ -110,10 +114,10 @@
            >
 
           <el-form-item label="服务站名称:" prop="name">
-            <el-input style='width: 400px;' v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
+            <el-input  v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
           </el-form-item>
           <el-form-item label="服务站类型:" prop="type">
-            <el-select style='width: 400px;' class="filter-item" v-model="temp.type">
+            <el-select class="form_item" v-model="temp.type">
               <el-option v-for="(val,key,index) in stationType" :key="index" :label="val" :value="key">
               </el-option>
             </el-select>
@@ -125,20 +129,20 @@
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
-                 style='width: 400px;' 
+                class="form_item"
               ></el-cascader>
 				</el-form-item>
 
           <el-form-item label="详细地址:" prop="address">
-            <el-input  style='width: 400px;' v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
+            <el-input class="form_item"   v-model.trim="temp.address" placeholder="请输入6-100位的详细地址"></el-input>
           </el-form-item>
 
           <el-form-item label="服务站电话:" prop="phone">
-            <el-input style='width: 400px;' v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
+            <el-input class="form_item"  v-model="temp.phone" placeholder="可选格式：11位手机号、座机（区号-电话号码）"></el-input>
           </el-form-item>
 
           <el-form-item label="状态:" prop="isUseable">
-            <el-select class="filter-item" v-model="temp.isUseable">
+            <el-select class="form_item" v-model="temp.isUseable">
               <el-option v-for="item in stationState" :key="item.id" :label="item.value" :value="item.id">
               </el-option>
             </el-select>
@@ -167,7 +171,7 @@
           ref="tempMaster"
           :model="tempMaster">
           <el-form-item label="服务站长:" prop="master">
-            <el-select class="filter-item" v-model="tempMaster.master">
+            <el-select class="form_item" v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -238,11 +242,7 @@
 					</div>													    
 				</div>
         <br/>
-        <br/>
-        <!--<div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large"  @click="createMap">保 存</button>    
-           <button class="button-cancel" @click="resetMap">取 消</button>
-        </div>-->					
+        <br/>		
 	    </el-dialog>
 
 
@@ -252,14 +252,15 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
         :visible.sync="dialogStoreVisible">
-        <el-form 
+        <el-form
           :model="tempStore"
           label-position="left"
           label-width="100px" 
+          class="dia_form"
          >
           <el-form-item label="设置门店:">
             <el-tree
-            class="scrollBox"
+            class="scrollBox form_item"
               :data="storeTree"
               v-model="tempStore.tree"
                ref="domTree"
@@ -382,7 +383,7 @@ export default {
       master: [],
       rules: {
         name: [
-          { required: true, message: "请输入 2 到 15 位的机构名称", trigger: "blur" },
+          { required: true, message: "请输入 2 到 15 位的服务站名称", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         type: [
@@ -435,7 +436,7 @@ export default {
     //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
-    getList() {
+    getList() {//获取列表
       this.listLoading = true;
       var obj = {
         name: this.search.name,
@@ -453,7 +454,7 @@ export default {
         this.listLoading = false;
       });
     },
-    handleFilter() {
+    handleFilter() { //搜索
       this.listLoading = true;
       this.pageNumber = 1;
       this.listQuery.page = 1;
@@ -472,7 +473,7 @@ export default {
         this.listLoading = false;
       });
     },
-    handleSetMaster() {
+    handleSetMaster() {// 设置站长
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -481,6 +482,7 @@ export default {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
+          console.log(res,'服务站下的员工')
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
           this.dialogMasterVisible = true;
@@ -488,7 +490,7 @@ export default {
         });
       }
     },
-    handleSetRange() {
+    handleSetRange() {//设置范围
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -511,7 +513,7 @@ export default {
         }
       }
     },
-    handleSizeChange(val) {
+    handleSizeChange(val) {//每页展示数量
       this.pageSize = val;
       var obj = {
         name: this.search.name,
@@ -527,7 +529,7 @@ export default {
         this.listLoading = false;
       });
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val) {//页数
       this.pageNumber = val;
       var obj = {
         name: this.search.name,
@@ -544,12 +546,13 @@ export default {
         this.listLoading = false;
       });
     },
-    resetForm(formName) {
+    resetForm(formName) {//清空表单
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
     },
-    rowClick(row, event, column) {
+    rowClick(row, event, column) {//行被点击时
+      console.log(row,'点击行的信息')
       this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
@@ -564,13 +567,13 @@ export default {
         this.rowInfo.servicePoint = row.servicePoint;
       }
     },
-    handleCreate() {
+    handleCreate() {//点击新增
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.temp.isUseable = "yes";
       //this.areaOptions = this.$store.state.user.area;
     },
-    handleUpdate(row) {
+    handleUpdate(row) {//点击编辑
       // this.areaOptions = this.$store.state.user.area;
       this.temp = {
         id: row.id,
@@ -584,7 +587,7 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
-    handleDelete(row) {
+    handleDelete(row) {//点击删除
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -623,7 +626,7 @@ export default {
           });
         });
     },
-    create(formName) {
+    create(formName) {//新增保存时
       this.btnState = true;
       setTimeout(() => {
         this.btnState = false;
@@ -667,7 +670,7 @@ export default {
     },
     createStore() {
       //保存门店
-      console.log(this.$refs.domTree.getCheckedKeys(true));
+      console.log(this.$refs.domTree.getCheckedKeys(true),'选中的门店');
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
@@ -701,8 +704,9 @@ export default {
           });
         }
       });
+      this.tempStore.tree = []
     },
-    createMaster(formName) {
+    createMaster(formName) {//站长保存
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
@@ -730,12 +734,7 @@ export default {
         }
       });
     },
-    createMap() {
-      console.log(this.tableData);
-      console.log(getOverlays());
-    },
-    resetMap() {},
-    update(formName) {
+    update(formName) {//编辑保存
       var obj = {
         id: this.rowInfo.id,
         name: this.temp.name,
@@ -772,7 +771,7 @@ export default {
         }
       });
     },
-    resetTemp() {
+    resetTemp() {//清空v-m绑定的对象
       this.temp = {
         name: "",
         type: "",
@@ -784,6 +783,7 @@ export default {
     },
     resetStore() {
       //取消门店
+      this.tempStore.tree=[]
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
@@ -793,7 +793,7 @@ export default {
       this.tempMaster.master = "";
       this.dialogMasterVisible = false;
     },
-    codeChange(val) {
+    codeChange(val) {//区域截取
       this.temp.areaCodes.splice(0, this.temp.areaCodes.length);
     },
     showdialog() {
@@ -1024,15 +1024,17 @@ body {
 
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 
 .btn_pad {
-  margin: 0px 0px 15px 20px;
+  margin: 0px 0px 20px 20px;
 }
 
 .btn_right {
-  float: right;
+    margin-top: 3px;
+    float: right;
+    width: 75px;
 }
 .mapButton {
   width: 80px;

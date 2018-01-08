@@ -1,32 +1,32 @@
 <template>
   <div class="tech">
     <div class="tech-index">
-      <div>
-        <el-select class="abc" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+      <div style="width:85%">
+        <el-select class="search" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" style="margin-left:20px;">
+        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
           <!-- <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
           </el-option> -->
 						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
 						</el-option>
         </el-select>
-        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" style="margin-left:20px;">
+        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" class="search">
           <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" style="width:200px;"></el-input>
+        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search"></el-input>
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
       <div>
-        <button class="search-button el-icon-search" @click="techniSearchs"> 搜索</button>
+        <button class="search-button el-icon-search btn_search" @click="techniSearchs"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad ceshi ceshi5" v-if="btnShow.indexOf('techni_insert') > -1"  @click="dialogVisible = true">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+        <button class="button-small  btn_pad" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
        <!-- <el-table 
           v-loading="listLoadingTech" 
@@ -37,7 +37,7 @@
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img :src="item.headPic" alt=""></div>
+              <div class="headImag"><img :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div style="margin-top:10px;">
                 <span>{{item.sexname}}</span>
                 <span>{{item.age+"岁"}}</span>
@@ -261,12 +261,12 @@
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
                   :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
-                  :listquer="listQuery"
+                  :listquer="listQuery" :servery="servery" :startend="startEnd"
                   ></techni-edit>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-      <div class="techniAdd">
+      <div class="techniAdd" style="padding:0 10%">
         <!-- 个人资料 -->
         <h3 class="tech-tc-prson">个人资料</h3>
 		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -478,12 +478,18 @@
         <ul class="tech-ul tech-service">
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="选择城市：" prop="serviceCityName">
+                <el-form-item label="所属服务站：" prop="stationId">
+                      <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <!-- <el-form-item label="选择城市：" prop="serviceCityName">
                       <el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
                         <el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
                         </el-option>
                       </el-select>
-                  </el-form-item>
+                  </el-form-item>-->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位性质：" prop="jobNature">
@@ -496,12 +502,18 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="所属服务站：" prop="stationId">
+                <el-form-item label="工作年限：" prop="workTime">
+                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <!-- <el-form-item label="所属服务站：" prop="stationId">
                       <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                           </el-option>
                       </el-select>
-                  </el-form-item>
+                  </el-form-item> -->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位状态：" prop="jobStatus">
@@ -514,12 +526,12 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <el-form-item label="工作年限：" prop="workTime">
+                  <!-- <el-form-item label="工作年限：" prop="workTime">
                     <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
                       <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                       </el-option>
                     </el-select>
-                  </el-form-item>
+                  </el-form-item> -->
               </el-col>
           </el-row>
           <el-row :gutter="60">
@@ -565,16 +577,16 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:'09:00',
-                              maxTime:'16:00'
+                              minTime:startEnd.start,
+                              maxTime:startEnd.end
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime: startTime,
-                              maxTime:'16:00'
+                              minTime: startEnd.start,
+                              maxTime:startEnd.end
                             }">
                           </el-time-select>
                         </div>
@@ -634,7 +646,8 @@ import {
   technicianEditId,
   technicianDelete,
   appPassWord,
-  addVacation
+  addVacation,
+  serviceTechnicianInfo
 } from "@/api/tech";
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
@@ -793,6 +806,7 @@ export default {
     }
 
     return {
+      startEnd:{"start":'09:00',"end":'18:00'},
       btnState:false,
       kaishi:'',
       jiehsu:'',
@@ -862,7 +876,6 @@ export default {
           //工作时间
           { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
         ],
-        serviceCityName: "" //选择城市  不需要
       },
       Choose: [],
       mouserFlag: false,
@@ -881,9 +894,6 @@ export default {
         sex: [{ required: true, message: "请输入性别", trigger: "change" }],
         birtStr: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
-        ],
-        serviceCityName: [
-          { required: true, message: "请选择城市", trigger: "change" }
         ],
         jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
@@ -1266,6 +1276,26 @@ export default {
     },
   },
   methods: {
+    //新增按钮
+    handleCreate(){
+      this.dialogVisible = true
+      //服务时间
+      serviceTechnicianInfo().then(data=>{
+        console.log(data,"data==========")
+        this.startEnd = data.data.data
+        this.startTime = data.data.data.start
+        this.endTime = data.data.data.end
+      }).catch(error=>{
+        console.log(error,"新增按钮")
+      })
+      //所属服务站
+      serviceStation({}).then(data=>{
+        this.servery = data.data.data;
+        console.log(data,"服务站++++++++++++++")
+      }).catch(error=>{
+        console.log(error,"服务站错误+++++++")
+      })
+    },
     picUpload(file,flag){
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -1441,25 +1471,29 @@ export default {
         .catch(error => {
           console.log(error, "error---技师编辑");
         });
+
+      serviceTechnicianInfo().then(data=>{
+        console.log(data,"data==========")
+        this.startEnd = data.data.data
+        this.startTime = data.data.data.start
+        this.endTime = data.data.data.end
+      }).catch(error=>{
+        console.log(error,"新增按钮")
+      })
+
+      //所属服务站
+      serviceStation({}).then(data=>{
+        this.servery = data.data.data;
+        console.log(data,"服务站++++++++++++++")
+      }).catch(error=>{
+        console.log(error,"服务站错误+++++++")
+      })
     },
     //现住地址
     nowAdd(val) {
       this.personal.provinceCode = val[0]; //省
       this.personal.cityCode = val[1]; //市
       this.personal.areaCode = val[2]; //区
-    },
-    //选择城市
-    chooseChange(value) {
-      console.log(value, "value------");
-      this.personal.stationId = "";
-      serviceStation({ cityCode: value })
-        .then(data => {
-          // console.log(data,"所属服务区---------")
-          this.servery = data.data.data;
-        })
-        .catch(error => {
-          console.log(error, "error---techni.vue-----1071");
-        });
     },
     handlePreview(file) {},
     handleClose(formName) {
@@ -1924,6 +1958,9 @@ body {
   font-size: 14px;
   font-weight: 700;
   color: black;
+}
+.tech-ul .tech-tc-prson{
+  margin: 0;
 }
 
 .tech-ul {
@@ -2435,8 +2472,8 @@ body {
   overflow: hidden;
 }
 .headImag img{
-  width: 100px;
-  height: 100px;
+  /* width: 100px;
+  height: 100px; */
   overflow: hidden;
 }
 .button-large{
@@ -2474,6 +2511,9 @@ body {
 .mousehover:hover{
   background: rgb(82, 141, 196);
   cursor: pointer;
+}
+.tech-service .el-select .el-tag{
+  line-height:23px;
 }
 </style>
 

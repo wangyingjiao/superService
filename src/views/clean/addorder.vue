@@ -21,7 +21,7 @@
 								<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
 								</el-option>
 							</el-select>
-							<div  class="selftSerchBut"  @click="addcustomer">新&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp增</div>
+							<div  class="selftSerchBut"  @click="addcustomer">新增</div>
 						</el-form-item>
 						<div v-if="customKeyFlag">
 							<el-form-item label="客户姓名:" prop="customName">

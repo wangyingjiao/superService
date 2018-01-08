@@ -6,13 +6,13 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入分类名称" v-model="search.name">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入分类名称" v-model="search.name">
       </el-input>
-      <button class="button-large el-icon-search btn_right ceshi" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_right btn_pad" style="width:80px" @click="handleCreate">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+    <button class="button-small btn_pad" style="width:80px" @click="handleCreate">新增</button>
 
     <el-table 
     :key='tableKey' 
@@ -63,16 +63,16 @@
        :close-on-press-escape="false"
       class="diatable">
           <el-form        
-            class="small-space" 
+            class="small-space dia_form" 
             ref="temp" 
             :rules="rules" 
             :model="temp" 
             label-position="left" 
-            label-width="100px" 
-            style='width: 500px; margin-left:20px;'>
+            label-width="100px"
+            >
           
           <el-form-item label="所属类型:" prop="majorSort" >
-            <el-select  style='width: 400px;' @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
+            <el-select :disabled="selectState" class="form_item" @change="majorChange" v-model="temp.majorSort" placeholder="请选择分类">
               <el-option v-for="(item,key,index) in majorSorts" :key="index" :label="item" :value="key">
               </el-option>
             </el-select>
@@ -80,7 +80,7 @@
 
           <el-form-item label="分类名称:" prop="name" >
             <el-input        
-            style='width: 400px;' 
+           class="form_item"
             placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
           </el-form-item>
            
@@ -114,6 +114,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState: false,
+      selectState:false,
       active: true,
       list: [],
       total: null,
@@ -264,6 +265,7 @@ export default {
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
+      this.selectState = true
       console.log(row);
       var obj = {
         id: row.id
@@ -365,6 +367,7 @@ export default {
     },
     resetForm(formName) {
       //清空列表
+      this.selectState = false
       this.resetTemp();
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
@@ -378,7 +381,7 @@ export default {
     },
     update(formName) {
       // 编辑
-      console.log(1111);
+      
       var obj = {
         id: this.rowId,
         majorSort: this.temp.majorSort,
@@ -387,12 +390,14 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(obj,'参数');
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.dialogFormVisible = false;
+              this.selectState = false
               this.getList();
               this.$message({
                 type: "success",
@@ -400,6 +405,7 @@ export default {
               });
             } else {
               this.dialogFormVisible = false;
+              this.selectState = false
               this.$message({
                 type: "error",
                 message: "发生错误"
@@ -426,8 +432,9 @@ export default {
 </script>
 <style >
 .btn_right {
-  float: right;
-  width: 100px;
+    margin-top: 3px;
+    float: right;
+    width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -456,13 +463,10 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
 .btn_pad {
-  margin: 0px 0px 15px 20px;
-}
-.btn_right {
-  float: right;
+  margin: 0px 0px 20px 20px;
 }
 .word {
   font-size: 10px;

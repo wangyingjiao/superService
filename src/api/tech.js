@@ -52,7 +52,7 @@ export function ChooseTheCity(pageNumber,pageSize,obj) {
 // 所属服务站
 export function serviceStation(obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`apiservice/a/service/station/serviceStation/getStationByAreaTech`, obj).then(data => {
+    instance.post(`apiservice/a/service/station/serviceStation/getStationByArea`, obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)
@@ -154,4 +154,16 @@ export function getHoliday(obj, pageNumber, pageSize) {
 // 删除休假
 export function delHoliday(obj) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/delete`, obj)
+}
+
+
+//获取用户机构时间
+export function serviceTechnicianInfo(){
+  return new Promise((resolve,reject)=>{
+      instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data=>{
+          resolve(data)
+      }).catch(error=>{
+          reject(error)
+      })
+  })
 }

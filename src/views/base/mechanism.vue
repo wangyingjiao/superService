@@ -2,18 +2,19 @@
 <div>
   <div class="filter-container bgWhite">
 
-      <el-select clearable style="width: 200px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
+      
+      <el-input @keyup.enter.native="handleFilter" style="width: 350px;" placeholder="请输入搜索的内容" v-model="search.value">
+        <el-select slot="prepend" clearable style="width: 120px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
         <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="请输入搜索的内容" v-model="search.value">
       </el-input>
 
-      <button class="button-large el-icon-search btn_right" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-     <button class="button-small btn_right btn_pad ceshi ceshi5" v-if="btnShow.indexOf('office_insert') > -1" style="width:80px" @click="handleCreate('temp')">新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增</button>
+     <button class="button-small btn_pad" v-if="btnShow.indexOf('office_insert') > -1"  @click="handleCreate('temp')">新增</button>
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -66,40 +67,41 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
       class="diatable">
+      
       <el-form 
-         class="small-space" 
+         class="small-space dia_form" 
          :model="temp" 
          label-position="left" 
          label-width="160px"
          :rules="rules"
          ref="temp" 
-         style='width: 560px; margin-left:20px;'>
+         >
 
         <el-form-item label="机构名称:" prop="name">
           <el-input 
           v-model.trim="temp.name"
-          style='width: 400px;' 
+          class="form_item" 
           :disabled="dialogStatus == 'update' && orgId != '0' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
         <el-form-item label="机构电话:" prop="telephone" >
           <el-input 
-            style='width: 400px;' 
+            class="form_item"
             v-model="temp.telephone"
             placeholder="请输入服务机构电话,格式:座机(区号+号码)如:010-66668888"></el-input>
         </el-form-item>
 
         <el-form-item label="负责人姓名:" prop="masterName">
           <el-input 
-          style='width: 400px;' 
+          class="form_item"
           v-model.trim="temp.masterName"
           placeholder="请输入2-15位的负责人姓名"></el-input>
         </el-form-item>
  
         <el-form-item label="负责人手机号:" prop="masterPhone" >
           <el-input 
-            style='width: 400px;' 
+            class="form_item"
             placeholder="请输入11位手机号" 
             v-model="temp.masterPhone"></el-input>
         </el-form-item>
@@ -113,20 +115,20 @@
                 :options="areaOptions"
                 :show-all-levels="true"
                 v-model="temp.areaCodes"
-                 style='width: 400px;' 
+                 class="form_item"
               ></el-cascader>
 				</el-form-item>
 
         <el-form-item label="详细地址:" prop="address">
           <el-input 
-             style='width: 400px;' 
+            class="form_item"
              v-model.trim="temp.address"
              placeholder="请输入6-100位的详细地址"></el-input>
         </el-form-item>
 
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
-          style='width: 400px;' 
+          class="form_item"
             :disabled = "typeState"
             v-model="temp.scopeType" 
             placeholder="请选择">
@@ -137,9 +139,9 @@
 
         <el-form-item label="工作时间:" required="">
           <el-col :span="11">
-            <el-form-item prop="workStartTime">
+            <el-form-item prop="workStartTime" >
               <el-select
-              style="width: 100%;"
+              class="form_item"
                 v-model="temp.workStartTime" 
                 @change="startTimeChange"
                 placeholder="请选择开始时间">
@@ -152,7 +154,7 @@
           <el-col :span="11">
             <el-form-item prop="workEndTime">
               <el-select
-              style="width: 100%;"
+              class="form_item"
               @change="endTimeChange"
                 v-model="temp.workEndTime" 
                 placeholder="请选择结束时间">
@@ -166,34 +168,35 @@
         
         <el-form-item label=" E店编号:" prop="jointEshopCode">
           <el-input 
-            style='width: 400px;' 
+           class="form_item"
             v-model.trim="temp.jointEshopCode"
             placeholder="请输入E店编码"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构网址:" prop="url">
           <el-input 
-            style='width: 400px;' 
+            class="form_item"
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
         <el-form-item label=" 机构传真:" prop="fax">
           <el-input 
-            style='width: 400px;' 
+            class="form_item"
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
         <el-form-item label="  400客服电话:" prop="tel400">
           <el-input 
-            style='width: 400px;' 
+            class="form_item"
             v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
         <el-form-item label=" 备注:">
           <el-input 
+          class="form_item"
             type="textarea" 
             :rows="2" 
             :maxlength="200"
@@ -595,6 +598,7 @@ export default {
     },
     startTimeChange(val){
       this.temp.workEndTime = ""
+      this.workEndTime = []
       console.log(val,'开始时间')
       for(var i = 0;i<this.workTime.length;i++){
         if(val == this.workTime[i]){
@@ -644,7 +648,12 @@ export default {
             if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
              this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
              setTimeout(() => {
-               this.temp.workEndTime = res.data.data.workEndTime.substring(0,5)
+               var time = res.data.data.workEndTime.substring(0,5)
+               if(time == '00:00'){
+                 this.temp.workEndTime = '24:00'
+               }else{
+                 this.temp.workEndTime = time
+               }
              }, 50);
              
             }
@@ -706,6 +715,9 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      if(obj.workEndTime =='24:00:00'){
+        obj.workEndTime = '23:59:59'
+      }
       
       console.log(obj);
       this.$refs[formName].validate(valid => {
@@ -803,10 +815,11 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .btn_right {
+  margin-top: 3px;
   float: right;
-  width: 100px;
+  width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -835,14 +848,9 @@ body {
 }
 .bgWhite {
   background-color: #ffffff;
-  padding: 15px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
 }
-.btn_pad {
-  margin: 0px 0px 15px 20px;
-}
-.btn_right {
-  float: right;
-}
+
 .ceshi3 {
   font-size: 14px;
   color: #1d85fe;
@@ -852,4 +860,12 @@ body {
 .pagination-container {
   overflow: hidden;
 }
+/* //  修改*号
+.el-form-item .el-form-item__label:before {
+    content: '　';
+    color: #ff4949;
+    margin-right: -6px;
+    font-size: 1px;
+    vertical-align:middle;
+} */
 </style>

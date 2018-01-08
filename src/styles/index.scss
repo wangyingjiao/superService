@@ -56,12 +56,13 @@ a:hover {
 
 //main-container全局样式
 .app-main {
-  min-height: 100%
+  min-height: 100%;
+  margin:0 15px;
 }
 
-.app-container {
-  padding: 20px;
-}
+// .app-container {
+//   padding: 20px;
+// }
 
 .svg-icon {
   width: 1em;
@@ -155,6 +156,7 @@ a:hover {
   width: 80px;
   color: #4c70e8;
   background: #fff;
+  margin-left: 20px;
 }
 //搜索按钮样式
 .search-button{
@@ -400,4 +402,41 @@ body {
   width: 100%;
   color: #333333;
   border: 0px solid #bfcbd9;
+}
+/* //  修改*号 */
+.el-form-item .el-form-item__label:before {
+  content: '*';
+  color: #ffffff;
+  margin-right: 4px;
+  font-size: 16px;//   ******************
+  vertical-align:middle;
+}
+.filter-container{
+  border-bottom: 1px solid #eee;
+}
+// 搜索按钮样式(修改)
+.btn_search{
+  margin-top: 3px !important;
+  float: right;
+  width: 75px;
+}
+//新增按钮样式(修改)
+.btn_pad {
+  float: right;
+  margin: 0px 0px 20px 20px;
+  width:80px;
+}
+//弹出框表单布局
+.dia_form {
+  width: 100%; 
+  padding:0 6%;
+  .form_item{
+    width: 100%;
+  }
+}
+// 搜索框样式
+.search{
+  width: 20%;
+  margin-right: 2%;
+  
 }

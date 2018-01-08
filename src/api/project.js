@@ -10,9 +10,9 @@ const instance = axios.create({
 
 // -----------服务项目------------
 // 所属分类
-export function Taxonomy() {
+export function Taxonomy(obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`apiservice/a/service/sort/serSortInfo/listData`).then(data => {
+    instance.post(`apiservice/a/service/sort/serSortInfo/listDataAll`,obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)
@@ -96,6 +96,18 @@ export function sortList(obj) {
       reject(error)
     })
   })
+}
+
+
+//系统标签
+export function serGasqSort(){
+    return new Promise((resolve,reject)=>{
+        instance.post(`apiservice/a/service/item/serGasqSort/getList`).then(data=>{
+            resolve(data)
+        }).catch(error=>{
+            reject(error)
+        })
+    })
 }
 
 // --------------------------------服务管理 结束----------------------------
