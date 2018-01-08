@@ -195,7 +195,7 @@
     </div>
     <!-- 分页 -->
     <div v-show="!listLoading" class="pagination-container fy">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
+      <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
         :page-sizes="[6,12,18,24]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -2400,7 +2400,6 @@ body {
   /* display: none; */
 }
 .el-pagination{
-  padding-bottom: 50px;
   text-align: right;
 }
 .p-show{
@@ -2473,6 +2472,9 @@ body {
 }
 .tech-service .el-select .el-tag{
   line-height:23px;
+}
+.page{
+  padding-bottom: 30px;
 }
 </style>
 
