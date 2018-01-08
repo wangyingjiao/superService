@@ -9,7 +9,7 @@
         <div class="bgWhite bgbot70" >
           <button class="button-small btn_pad" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
           <div style="padding-top:15px;">
-              <el-table  :data="getListdata" v-loading="listLoading" stripe  highlight-current-row element-loading-text="正在加载"
+              <el-table  :data="getListdata" v-loading="listLoading"  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
                       <el-table-column align="center" label="编号" width="100">
                           <template scope="scope">
@@ -27,7 +27,7 @@
               </el-table>
               <div v-show="!listLoading" class="pagination-container techPag">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
-                  layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total">
+                  layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :page-sizes="[5,10,15,20]" :total="total">
                 </el-pagination>
               </div>
           </div>          
@@ -60,11 +60,14 @@
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
             </div>
             </el-form-item>
-            <el-form-item label=""> 
-                  <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                    <div class="techNameStyle">{{item.techName}}</div>
-                    <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
-                  </div>              
+            <el-form-item label="">
+                  <div v-if="tabOptions.length !=0" class="techWrap">
+                      <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
+                        <div class="techNameStyle">{{item.techName}}</div>
+                        <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
+                      </div>                     
+                  </div> 
+             
             </el-form-item>           
           </el-form>
     
@@ -91,14 +94,14 @@
                       <table width="100%" class="selfTable">
                         <tr>
                           <td  class="selfTdStyle" align="center" width="8%">选择</td>
-                          <td  class="selfTdStyle"  align="center" width="28%">头像</td>
-                          <td  class="selfTdStyle"  align="center" width="28%">姓名</td>
+                          <td  class="selfTdStyle"  align="center" width="18%">头像</td>
+                          <td  class="selfTdStyle"  align="center" width="32%">姓名</td>
                           <td  class="selfTdStyle"  align="center" width="10%">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="26%">服务站</td>							
+                          <td  class="selfTdStyle"  align="center" width="32%">服务站</td>							
                         </tr>
                         <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
                           <td  align="center"><el-checkbox  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
-                          <td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
+                          <td  class="height70" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/></td>
                           <td  align="center">{{item.techName}}</td>
                           <td  align="center">
                             <span v-if="item.techSex =='male'">男</span>
@@ -111,7 +114,8 @@
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
                   <button class="button-large"   @click="submitForm2()">保存</button>
-                  <button class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button v-if="dialogStatus == 'edit'" class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button>
               </div>           
         </el-dialog>
 
@@ -190,7 +194,8 @@
         dialogStatus: 'add',
         id:'',
         promInf1:'搜索内容不存在!',
-        middleA:[]
+        middleA:[],
+        middleB:[]
       }
     }, 
     methods: {
@@ -219,6 +224,9 @@
       add(status,row){     
             var obj={}
             this.middleA=[];
+            this.middleB = [];
+            this.techName='',
+            this.techStationId='';
             this.listLoading = true;
             //服务技师与分类、服务站获取             
             orderServer(obj).then(res => {      
@@ -254,6 +262,7 @@
                   }                                           
                   if(res.data.data.info.technicians != undefined){
                       this.tabOptions=res.data.data.info.technicians;
+                      this.middleB=Object.assign([],res.data.data.info.technicians);
                       this.selectionreturn1();
                   }
                 }         
@@ -269,11 +278,11 @@
       //技师数据回显二级选中
       selectionreturn1() {
         if (this.tabOptions.length != undefined) {
-          for (let a = 0; a < this.listTech.length; a++) {
-            for (let b = 0; b < this.tabOptions.length; b++) {
+          for (var a = 0; a < this.listTech.length; a++) {
+            for (var b = 0; b < this.tabOptions.length; b++) {
               if (this.tabOptions[b].techId == this.listTech[a].techId) {
-                this.listTech[a].techChecked = true;
-                this.testTech(this.listTech[a]);
+                  this.listTech[a].techChecked = true;
+                  this.testTech(this.listTech[a]);
               }
             }
           }
@@ -300,6 +309,7 @@
                     });
                     this.$refs["ruleForm2"].resetFields();
                     this.middleA = [];
+                    this.middleB = [];
                     this.dialogVisible = false;
                     this.localSearch = "";
                     var obj1 = {};
@@ -328,6 +338,7 @@
                     });
                     this.$refs["ruleForm2"].resetFields();
                     this.middleA = [];
+                    this.middleB = [];
                     this.dialogVisible = false;
                     var obj1 = {};
                     this.listLoading = false;
@@ -363,22 +374,35 @@
       //新增或编辑弹窗选择技师回传TAB删除
       selfErrorClose(obj) {
         if (this.tabOptions != undefined && this.tabOptions.length != 0) {
-          for (let a = 0; a < this.listTech.length; a++) {
+          for (var a = 0; a < this.listTech.length; a++) {
             if (obj.techId == this.listTech[a].techId) {
               this.listTech[a].techChecked = false;
             }
           }
+          for(var b = 0; b < this.middleA.length; b++){
+            if (obj.techId == this.middleA[b].techId) {
+              this.middleA.remove(this.middleA[b])
+            }            
+          }
+          for(var c = 0; c < this.middleB.length; c++){
+            if (obj.techId == this.middleB[c].techId) {
+              this.middleB.remove(this.middleB[c])
+            }            
+          }          
+          //this.middleB
           this.tabOptions.remove(obj);
+        }else{
+          console.log( this.middleA)
         }
       },
       //选择技师弹出层保存
       submitForm2() {
         //先遍历数据中选中的再保存
         var arr = [];
-        if (this.listTech != undefined && this.listTech.length != 0) {
-          for (let a = 0; a < this.listTech.length; a++) {
-            if (this.listTech[a].techChecked == true) {
-              arr.push(this.listTech[a]);
+        if (this.middleA != undefined && this.middleA.length != 0) {
+          for (let a = 0; a < this.middleA.length; a++) {
+            if (this.middleA[a].techChecked == true) {
+              arr.push(this.middleA[a]);
             }
           }
         }
@@ -459,8 +483,36 @@
           });
         },           
       //选择技师按钮
-      orderTech() {
+      orderTech() {             
         this.ordertech = true;
+        if(this.dialogStatus == "edit"){
+            for (var c = 0; c <this.listTech.length; c++) {
+              this.listTech[c].techChecked = false;
+            } 
+            if(this.middleB.length !=0){
+              for (var b = 0; b < this.middleB.length; b++) {
+                for (var a = 0; a <this.listTech.length; a++) {
+                  if (
+                    this.listTech[a].techId ==
+                    this.middleB[b].techId
+                  ) {
+                    this.listTech[a].techChecked = true;
+                  }
+                }
+              }
+            }else{
+              for (var d = 0; d < this.middleA.length;d++) {
+                for (var e = 0; e <this.listTech.length;e++) {
+                  if (
+                    this.listTech[e].techId ==
+                    this.middleA[d].techId
+                  ) {
+                    this.listTech[e].techChecked = true;
+                  }
+                }
+              }              
+            }                      
+        }      
       },
       //选择技师弹出层查询按钮
       searchTeh() {
@@ -472,11 +524,11 @@
         orderServer(obj).then(res => {
             if (res.data.code === 1) {
               this.listTech = res.data.data.techs;
-              for (let b = 0; b < this.listTech.length; b++) {
-                for (let a = 0; a < this.middleA.length; a++) {
+              for (var b = 0; b < this.middleA.length; b++) {
+                for (var a = 0; a <this.listTech.length; a++) {
                   if (
-                    this.listTech[a].techStationId ==
-                    this.middleA[b].techStationId
+                    this.listTech[a].techId ==
+                    this.middleA[b].techId
                   ) {
                     this.listTech[a].techChecked = true;
                   }
@@ -531,16 +583,16 @@
 .width120 {
   width: 120px;
 }
-.height110 {
-  height: 110px;
+.height70 {
+  height: 70px;
 }
 .selfFooter {
   text-align: center;
   margin-top: 30px;
 }
 .selfTdStyle {
-  background: #f8f8f9;
-  height: 30px;
+  background: #eef1f6;
+  height:60px;
 }
 .imgStyle {
   display: block;
@@ -606,9 +658,13 @@
   border-collapse: collapse;
   padding: 2px;
 }
+.techWrap{
+  border:1px solid #ccc;border-top:none;margin-top:-23.5px;padding-top: 10px;
+}
 .tabWrap {
   width: 100px;
   margin-right: 20px;
+  margin-left:10px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -625,6 +681,9 @@
   position: absolute;
   margin-left: 80px;
   top: 0px;
+}
+.closePic:hover {
+   color: #333;
 }
 .bgWhite {
   background-color: #ffffff;

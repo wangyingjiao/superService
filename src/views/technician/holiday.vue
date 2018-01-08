@@ -21,6 +21,7 @@
     至
       <el-date-picker
       v-model="search.endTime"
+      style="width:20%"
       class="search"
       type="datetime"
       placeholder="年/月/日/时间">
@@ -32,7 +33,6 @@
     <el-table 
       :key='tableKey' 
       :data="list" 
-      stripe
       v-loading="listLoading" 
       element-loading-text="正在加载" 
       fit 
@@ -160,14 +160,18 @@ export default {
           techName: this.search.val
         };
         obj = Object.assign(obj, name);
-      } else {
+      } else if(this.search.type == "techPhone"){
         var phone = {
           techPhone: this.search.val
-        };
+        }
         obj = Object.assign(obj, phone);
+      }else{
+        var newobj = {
+        }
+        obj = Object.assign(obj, newobj);
       }
 
-      console.log(obj)
+      console.log(obj,'搜索参数')
       this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res,"搜索")
@@ -181,27 +185,46 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      var startTime = util.formatDate.format(
-        new Date(this.search.startTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
-      var endTime = util.formatDate.format(
-        new Date(this.search.endTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
-      if (this.search.type == "techName") {
-        var obj = {
-          techName: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+      var obj = {};
+      //console.log(this.search.startTime)
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
         };
-      } else {
-        var obj = {
-          techPhone: this.search.val,
-          startTime: startTime,
-          endTime: endTime
-        };
+        obj = Object.assign(obj, start);
+        console.log(start);
       }
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+        console.log(end);
+      }
+      if (this.search.type == "techName") {
+        var name = {
+          techName: this.search.val
+        };
+        obj = Object.assign(obj, name);
+      } else if(this.search.type == "techPhone"){
+        var phone = {
+          techPhone: this.search.val
+        }
+        obj = Object.assign(obj, phone);
+      }else{
+        var newobj = {
+        }
+        obj = Object.assign(obj, newobj);
+      }
+      this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.list = res.data.data.list;
@@ -212,27 +235,46 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var startTime = util.formatDate.format(
-        new Date(this.search.startTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
-      var endTime = util.formatDate.format(
-        new Date(this.search.endTime),
-        "yyyy-MM-dd hh:mm:ss"
-      );
-      if (this.search.type == "techName") {
-        var obj = {
-          techName: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+      var obj = {};
+      //console.log(this.search.startTime)
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
         };
-      } else {
-        var obj = {
-          techPhone: this.search.val,
-          startTime: startTime,
-          endTime: endTime
-        };
+        obj = Object.assign(obj, start);
+        console.log(start);
       }
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+        console.log(end);
+      }
+      if (this.search.type == "techName") {
+        var name = {
+          techName: this.search.val
+        };
+        obj = Object.assign(obj, name);
+      } else if(this.search.type == "techPhone"){
+        var phone = {
+          techPhone: this.search.val
+        }
+        obj = Object.assign(obj, phone);
+      }else{
+        var newobj = {
+        }
+        obj = Object.assign(obj, newobj);
+      }
+      this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.list = res.data.data.list;

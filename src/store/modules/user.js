@@ -73,6 +73,9 @@ const user = {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           const data = response.data
+          console.log(data, '权限列表')
+          localStorage.setItem('menu', JSON.stringify(data.data))
+          console.log(JSON.parse(localStorage.getItem('menu')))
           commit('SET_MENU', data.data)
           resolve(response)
         }).catch(error => {

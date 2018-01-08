@@ -21,7 +21,6 @@
     :key='tableKey' 
     :data="list" 
     v-loading="listLoading" 
-    stripe
     fit 
     highlight-current-row 
     element-loading-text="正在加载" 

@@ -31,7 +31,6 @@
         :key='tableKey' 
         :data="list" 
         v-loading="listLoading"
-        stripe 
         fit
         highlight-current-row 
         element-loading-text="正在加载"
@@ -436,7 +435,8 @@ export default {
     //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
-    getList() {//获取列表
+    getList() {
+      //获取列表
       this.listLoading = true;
       var obj = {
         name: this.search.name,
@@ -454,7 +454,8 @@ export default {
         this.listLoading = false;
       });
     },
-    handleFilter() { //搜索
+    handleFilter() {
+      //搜索
       this.listLoading = true;
       this.pageNumber = 1;
       this.listQuery.page = 1;
@@ -473,7 +474,8 @@ export default {
         this.listLoading = false;
       });
     },
-    handleSetMaster() {// 设置站长
+    handleSetMaster() {
+      // 设置站长
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -482,7 +484,7 @@ export default {
           stationId: this.rowInfo.id
         };
         getMaster(obj).then(res => {
-          console.log(res,'服务站下的员工')
+          console.log(res, "服务站下的员工");
           this.master = res.data.data.list;
           this.tempMaster.master = this.rowInfo.masterId;
           this.dialogMasterVisible = true;
@@ -490,7 +492,8 @@ export default {
         });
       }
     },
-    handleSetRange() {//设置范围
+    handleSetRange() {
+      //设置范围
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -513,7 +516,8 @@ export default {
         }
       }
     },
-    handleSizeChange(val) {//每页展示数量
+    handleSizeChange(val) {
+      //每页展示数量
       this.pageSize = val;
       var obj = {
         name: this.search.name,
@@ -529,7 +533,8 @@ export default {
         this.listLoading = false;
       });
     },
-    handleCurrentChange(val) {//页数
+    handleCurrentChange(val) {
+      //页数
       this.pageNumber = val;
       var obj = {
         name: this.search.name,
@@ -546,13 +551,16 @@ export default {
         this.listLoading = false;
       });
     },
-    resetForm(formName) {//清空表单
+    resetForm(formName) {
+      //清空表单
+      this.rowInfo.id = "";
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
     },
-    rowClick(row, event, column) {//行被点击时
-      console.log(row,'点击行的信息')
+    rowClick(row, event, column) {
+      //行被点击时
+      console.log(row, "点击行的信息");
       this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
@@ -567,13 +575,16 @@ export default {
         this.rowInfo.servicePoint = row.servicePoint;
       }
     },
-    handleCreate() {//点击新增
+    handleCreate() {
+      //点击新增
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.temp.isUseable = "yes";
+      this.temp.type = "self";
       //this.areaOptions = this.$store.state.user.area;
     },
-    handleUpdate(row) {//点击编辑
+    handleUpdate(row) {
+      //点击编辑
       // this.areaOptions = this.$store.state.user.area;
       this.temp = {
         id: row.id,
@@ -587,7 +598,8 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
     },
-    handleDelete(row) {//点击删除
+    handleDelete(row) {
+      //点击删除
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -600,12 +612,14 @@ export default {
           delSite(obj)
             .then(res => {
               if (res.data.code === 1) {
+                this.rowInfo.id = "";
                 this.$message({
                   type: "success",
                   message: "删除成功!"
                 });
                 this.getList();
               } else {
+                this.rowInfo.id = "";
                 this.$message({
                   type: "warning",
                   message: res.data.data
@@ -620,13 +634,15 @@ export default {
             });
         })
         .catch(() => {
+          this.rowInfo.id = "";
           this.$message({
             type: "info",
             message: "已取消删除"
           });
         });
     },
-    create(formName) {//新增保存时
+    create(formName) {
+      //新增保存时
       this.btnState = true;
       setTimeout(() => {
         this.btnState = false;
@@ -670,7 +686,7 @@ export default {
     },
     createStore() {
       //保存门店
-      console.log(this.$refs.domTree.getCheckedKeys(true),'选中的门店');
+      console.log(this.$refs.domTree.getCheckedKeys(true), "选中的门店");
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
@@ -704,9 +720,10 @@ export default {
           });
         }
       });
-      this.tempStore.tree = []
+      this.tempStore.tree = [];
     },
-    createMaster(formName) {//站长保存
+    createMaster(formName) {
+      //站长保存
       var obj = {
         id: this.rowInfo.id,
         userId: this.tempMaster.master
@@ -734,7 +751,8 @@ export default {
         }
       });
     },
-    update(formName) {//编辑保存
+    update(formName) {
+      //编辑保存
       var obj = {
         id: this.rowInfo.id,
         name: this.temp.name,
@@ -753,6 +771,7 @@ export default {
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
+              this.rowInfo.id = "";
               this.$message({
                 type: "success",
                 message: "修改成功"
@@ -760,6 +779,7 @@ export default {
               this.getList();
               this.dialogFormVisible = false;
             } else {
+              this.rowInfo.id = "";
               this.$message({
                 type: "error",
                 message: res.data.data
@@ -771,7 +791,8 @@ export default {
         }
       });
     },
-    resetTemp() {//清空v-m绑定的对象
+    resetTemp() {
+      //清空v-m绑定的对象
       this.temp = {
         name: "",
         type: "",
@@ -783,7 +804,7 @@ export default {
     },
     resetStore() {
       //取消门店
-      this.tempStore.tree=[]
+      this.tempStore.tree = [];
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
@@ -793,7 +814,8 @@ export default {
       this.tempMaster.master = "";
       this.dialogMasterVisible = false;
     },
-    codeChange(val) {//区域截取
+    codeChange(val) {
+      //区域截取
       this.temp.areaCodes.splice(0, this.temp.areaCodes.length);
     },
     showdialog() {
@@ -1032,9 +1054,9 @@ body {
 }
 
 .btn_right {
-    margin-top: 3px;
-    float: right;
-    width: 75px;
+  margin-top: 3px;
+  float: right;
+  width: 75px;
 }
 .mapButton {
   width: 80px;
