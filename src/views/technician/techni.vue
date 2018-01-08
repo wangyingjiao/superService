@@ -32,7 +32,7 @@
           v-loading="listLoadingTech" 
           style="width: 100%" > -->
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
-    <div v-loading="listLoadingTech">
+    <div v-loading="listLoadingTech" class="listTechni">
       <ul class="tech-section-ul">
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
@@ -88,7 +88,7 @@
     </div>
        <!-- </el-table> -->
       <!-- 密码弹出层 -->
-      <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages" style="top：10%">
+      <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
 		<div class="mobel">
 			<p>手机：</p>
 			<p>15711445668</p>
@@ -96,10 +96,10 @@
 		<div class="passBox">
 			<el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
 				<el-form-item label="设置密码：" prop="pass">
-					<el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+					<el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="至少8个字符,同时包含字母与数字"></el-input>
 				</el-form-item>
 				<el-form-item label="重复密码：" prop="checkPass">
-					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
+					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
@@ -133,7 +133,9 @@
                           :picker-options="{
                             start: '00:00',
                             step: '00:30',
-                            end: '24:00'
+                            end: '24:00',
+                            minTime:startEnd.start,
+                            maxTime:startEnd.end
                           }"
                           placeholder="选择时间">
                       </el-time-select>
@@ -154,7 +156,9 @@
                           :picker-options="{
                             start: '00:00',
                             step: '00:30',
-                            end: '24:00'
+                            end: '24:00',
+                            minTime:startEnd.start,
+                            maxTime:startEnd.end
                           }"
                           placeholder="选择时间">
                     </el-time-select>
@@ -256,7 +260,7 @@
       </el-pagination>
     </div>
     <!-- 编辑技师 -->
-	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit">
+	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
 		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
@@ -286,7 +290,7 @@
         <el-row :gutter="60">
           <el-col :span="12">
               <el-form-item label="手机号：" prop="phone">
-                <el-input placeholder="请输入11为手机号" v-model="personal.phone"></el-input>
+                <el-input placeholder="请输入11位手机号" v-model="personal.phone"></el-input>
               </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -349,7 +353,7 @@
 						</el-form-item>
           </el-col>
           <el-col :span="12">
-              <el-form-item label="">
+              <el-form-item prop="address">
                 <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
               </el-form-item>
           </el-col>
@@ -447,13 +451,14 @@
                 class="avatar-uploader"
                 action="http://openservice.oss-cn-beijing.aliyuncs.com"
                 :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
                 :http-request="(val)=>picUpload(val,'head')"
                 >
                 <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
                 <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
                 <div class="upload-head"><span>*上传头像</span></div>
                 <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
-                <div v-show="!personal.headPic" style="color:red;margin-top:10px;">请上传头像</div>
+                <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div>
               </el-upload>
             <!-- </el-form-item> -->
 
@@ -462,6 +467,7 @@
               action="http://openservice.oss-cn-beijing.aliyuncs.com"
               :show-file-list="false"
               :http-request="(val)=>picUpload(val,'id')"
+              :before-upload="beforeAvatarUpload"
               style="margin-left:20px;" 
               >
               <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
@@ -585,7 +591,7 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime: startEnd.start,
+                              minTime:startTime || startEnd.start,
                               maxTime:startEnd.end
                             }">
                           </el-time-select>
@@ -657,16 +663,26 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else if (value.length < 8) {
-        callback(new Error("至少8个字符"));
-      } else {
-        if (this.ruleForm2.checkPass !== "") {
-          this.$refs.ruleForm2.validateField("checkPass");
+      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('至少8个字符，同时包含字母与数字'))
         }
-        callback();
+      }else{
+        callback(new Error("请输入密码"))
       }
+      // if (value === "") {
+      //   callback(new Error("请输入密码"));
+      // } else if (value.length < 8) {
+      //   callback(new Error("至少8个字符"));
+      // } else {
+      //   if (this.ruleForm2.checkPass !== "") {
+      //     this.$refs.ruleForm2.validateField("checkPass");
+      //   }
+      //   callback();
+      // }
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
@@ -677,86 +693,99 @@ export default {
         callback();
       }
     };
-    //身份证
-    var TECHIDCARD = (rule, value, callback) => {
-      var city = {
-        11: "北京",
-        12: "天津",
-        13: "河北",
-        14: "山西",
-        15: "内蒙古",
-        21: "辽宁",
-        22: "吉林",
-        23: "黑龙江 ",
-        31: "上海",
-        32: "江苏",
-        33: "浙江",
-        34: "安徽",
-        35: "福建",
-        36: "江西",
-        37: "山东",
-        41: "河南",
-        42: "湖北 ",
-        43: "湖南",
-        44: "广东",
-        45: "广西",
-        46: "海南",
-        50: "重庆",
-        51: "四川",
-        52: "贵州",
-        53: "云南",
-        54: "西藏 ",
-        61: "陕西",
-        62: "甘肃",
-        63: "青海",
-        64: "宁夏",
-        65: "新疆",
-        71: "台湾",
-        81: "香港",
-        82: "澳门",
-        91: "国外 "
-      };
-      var tip = "";
-      var pass = true;
-      if (
-        !value ||
-        !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
-          value
-        )
-      ) {
-        tip = "身份证号格式错误";
-        callback(new Error(tip));
-        pass = false;
-      } else if (!city[value.substr(0, 2)]) {
-        tip = "地址编码错误";
-        callback(new Error(tip));
-        pass = false;
-      } else {
-        if (value.length == 18) {
-          value = value.split("");
-          var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-          var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
-          var sum = 0;
-          var ai = 0;
-          var wi = 0;
-          for (var i = 0; i < 17; i++) {
-            ai = value[i];
-            wi = factor[i];
-            sum += ai * wi;
-          }
-          var last = parity[sum % 11];
-          if (parity[sum % 11] != value[17]) {
-            tip = "校验位错误";
-            callback(new Error(tip));
-            pass = false;
-          }
+    //身份证号
+    var TECHIDCARD = (rule,value,callback)=>{
+      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('身份证号格式错误'))
         }
-      }
-
-      if (pass) {
-        callback();
+      }else{
+        callback(new Error('请输入身份证号'))
       }
     };
+    //身份证
+      // var TECHIDCARD = (rule, value, callback) => {
+      //   var city = {
+      //     11: "北京",
+      //     12: "天津",
+      //     13: "河北",
+      //     14: "山西",
+      //     15: "内蒙古",
+      //     21: "辽宁",
+      //     22: "吉林",
+      //     23: "黑龙江 ",
+      //     31: "上海",
+      //     32: "江苏",
+      //     33: "浙江",
+      //     34: "安徽",
+      //     35: "福建",
+      //     36: "江西",
+      //     37: "山东",
+      //     41: "河南",
+      //     42: "湖北 ",
+      //     43: "湖南",
+      //     44: "广东",
+      //     45: "广西",
+      //     46: "海南",
+      //     50: "重庆",
+      //     51: "四川",
+      //     52: "贵州",
+      //     53: "云南",
+      //     54: "西藏 ",
+      //     61: "陕西",
+      //     62: "甘肃",
+      //     63: "青海",
+      //     64: "宁夏",
+      //     65: "新疆",
+      //     71: "台湾",
+      //     81: "香港",
+      //     82: "澳门",
+      //     91: "国外 "
+      //   };
+      //   var tip = "";
+      //   var pass = true;
+      //   if (
+      //     !value ||
+      //     !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+      //       value
+      //     )
+      //   ) {
+      //     tip = "身份证号格式错误";
+      //     callback(new Error(tip));
+      //     pass = false;
+      //   } else if (!city[value.substr(0, 2)]) {
+      //     tip = "地址编码错误";
+      //     callback(new Error(tip));
+      //     pass = false;
+      //   } else {
+      //     if (value.length == 18) {
+      //       value = value.split("");
+      //       var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+      //       var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+      //       var sum = 0;
+      //       var ai = 0;
+      //       var wi = 0;
+      //       for (var i = 0; i < 17; i++) {
+      //         ai = value[i];
+      //         wi = factor[i];
+      //         sum += ai * wi;
+      //       }
+      //       var last = parity[sum % 11];
+      //       if (parity[sum % 11] != value[17]) {
+      //         tip = "校验位错误";
+      //         callback(new Error(tip));
+      //         pass = false;
+      //       }
+      //     }
+      //   }
+
+      //   if (pass) {
+      //     callback();
+      //   }
+      // };
     //手机号
     var TECHPHONE = (rule, value, callback) => {
       if (value) {
@@ -771,8 +800,12 @@ export default {
     };
     //现住地址
     var ADDRESS = (rule, value, callback) => {
-      console.log(rule, value, "value----现住地址");
-      callback();
+       console.log(value, "value----现住地址");
+      if(this.personal.area!=undefined && this.personal.area.length>0){
+        callback()
+      }else{
+        callback(new Error('请选择现住地址'))
+      }
       // if(value.length>0){
       //   callback()
       // }else{
@@ -789,7 +822,18 @@ export default {
     };
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
-      console.log(this.teachArr,"---------------------___________________________-----------------------")
+      console.log(this.teachArr,"this.teachArr-----------------")
+      // if(this.teachArr.length > 0 && this.teachArr != undefined){
+      //   callback();
+      // }else{
+      //   callback(new Error("请选择工作时间"));
+      // }
+      // if(this.teachArr === undefined || this.teachArr.length==0){
+      //   callback(new Error("请选择工作时间"));
+      // }else{
+      //   callback()
+      // }
+      // console.log(this.teachArr,"---------------------___________________________-----------------------")
       if ((this.startTime && this.endTime) ||  this.teachArr.length > 0) {
         callback();
       } else {
@@ -904,7 +948,11 @@ export default {
         workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
         headPic:[
           { required: true, validator:HEADPIC , trigger: "blur"}
-        ]
+        ],
+        address:[
+            {required:true,message:"请输入详细地址",trigger:'blur'},
+            { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+          ]
       },
       server: [
         {
@@ -1276,6 +1324,19 @@ export default {
     },
   },
   methods: {
+    beforeAvatarUpload(file){
+      const isPIC = file.type === 'image/jpeg' || 'image/jpg' || 'image/png';
+      if(isPIC === true){
+
+      }else{
+        this.$message.error('请上传正确的图片格式');
+        return false
+      }
+    },
+    //编辑弹框关闭
+    closeDialog(){
+
+    },
     //新增按钮
     handleCreate(){
       this.dialogVisible = true
@@ -1353,7 +1414,9 @@ export default {
       })
     },
     //搜索
-    techniSearchs(){
+    techniSearchs(page,size){
+      var _page = 1 || page;
+      var _size = 6 || size
       console.log(this.techniSearch,"techniSearch-----------------------------")
       var obj = {}
       if(this.techniSearch.stationId){
@@ -1369,7 +1432,7 @@ export default {
         obj.skillIds = this.roomSel2Arr
       }
       console.log(obj,"------------------")
-      this.getList(1,6,obj)
+      this.getList(_page,_size,obj)
     },
     startDateChange(val){
       this.storeEnd.storeDate = val
@@ -1418,6 +1481,14 @@ export default {
     },
     //休假
     vacation(item){
+       serviceTechnicianInfo().then(data=>{
+        console.log(data,"data==========")
+        this.startEnd = data.data.data
+        this.ruleForm.startTime = data.data.data.start
+        this.ruleForm.endTime = data.data.data.end
+      }).catch(error=>{
+        console.log(error,"新增按钮")
+      })
       this.flags = true
       this.passwordId = item.id
       this.vacationName = item.name
@@ -1616,6 +1687,7 @@ export default {
         });
       }
     },
+    //删除技师
     techDelete(item) {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -1629,7 +1701,9 @@ export default {
               type: "success",
               message: "删除成功!"
             });
-             this.getList(this.listQuery.page,this.listQuery.limit,{})
+            //  this.getList(this.listQuery.page,this.listQuery.limit,)
+            this.techniSearchs(this.listQuery.page,this.listQuery.limit)
+            // this.handleCurrentChange(this.listQuer.page)
           }).catch(error=>{
             console.log(error,"error,----删除失败")
           })
@@ -1664,7 +1738,10 @@ export default {
     },
     // 添加时间
     addtime() {
+      console.log(this.startEnd,"startEnd-------------------")
       this.isB = true;
+      this.startTime = this.startEnd.start
+      this.endTime = this.startEnd.end
     },
     addtimeno() {
       this.isB = false;
@@ -1705,6 +1782,7 @@ export default {
           //     return false
           // }
           // this.personal.workTimes.workTime = this.disbArr
+          
           this.personal.workTimes = this.teachArr;
           Technician(this.personal).then(data=>{
             if(data.data.code){
@@ -1713,8 +1791,14 @@ export default {
                 type:"success"
               })
               this.dialogVisible = false;
-               this.getList(1,6,{})
-               this.this.techniList = [];
+              this.listQuery.sync = 1;
+              this.getList(1,6,{});
+              this.techniSearch.stationId = '';
+              this.techniSearch.jobNature = '';
+              this.techniSearch.chooses = '';
+              this.chooContent = '';
+              this.roomSel2Arr = [];
+              // this.techniList = [];
             }else{
               this.$message({
                 message:data.data.data,
@@ -1912,7 +1996,7 @@ body {
   /* margin-top: 45px; */
 }
 
-.tech-section-ul {
+.listTechni .tech-section-ul {
   margin: 20px 0;
   display: flex;
   flex-wrap: wrap;
@@ -1942,9 +2026,12 @@ body {
   height: 200px;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   padding: 0 70px ;
   align-items: center;
+}
+.tech-section-ul-posi{
+  justify-content: space-around; 
 }
 
 .fy {
@@ -2392,9 +2479,20 @@ body {
   color: #ff7676;
 }
 
+
 .tech-vacation .mobel {
   margin-bottom: 22px;
   display: flex;
+}
+.tect-pass .mobel{
+  height: 36px;
+}
+.tect-pass .mobel>p:nth-child(1){
+  width: 100px;
+  text-align: right;
+  padding-right: 12px;
+  box-sizing: border-box;
+  float: left;
 }
 .tech-vacation .mobel > p:nth-child(1) {
   width: 100px;
@@ -2532,6 +2630,13 @@ body {
 .tech-service .el-select .el-tag{
   line-height:23px;
 }
+/* .mobel p:nth-child(1){
+  float: left;
+  width: 100px;
+  box-sizing: border-box;
+  padding-right: 12px;
+  text-align: right;
+} */
 </style>
 
 <!--

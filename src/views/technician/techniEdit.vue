@@ -19,7 +19,7 @@
               <el-row :gutter="60">
                 <el-col :span="12">
                   <el-form-item label="手机号:" prop="phone">
-                    <el-input placeholder="请输入11为手机号" v-model="personalEDit.phone"></el-input>
+                    <el-input placeholder="请输入11位手机号" v-model="personalEDit.phone"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -43,7 +43,7 @@
                       </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                      <el-form-item>
+                      <el-form-item prop="address">
                         <el-input placeholder="请输入6-20位详细地址"  v-model="personalEDit.address"></el-input>
                       </el-form-item>
                     </el-col>
@@ -65,6 +65,19 @@
                         </el-form-item>
                       </el-col>
                   </el-row>
+                  <el-row :gutter="60">
+                    <el-col :span="12">
+                        <el-form-item label="状态：" class="seize">
+                            <el-switch
+                              v-model="personalEDit.status"
+                              on-text="上线"
+                              off-text="暂停"
+                              on-value="yes"
+                              off-value="no">
+                            </el-switch>
+                        </el-form-item>
+                    </el-col>
+                  </el-row>
                   <li>
                       <div>
                       <p></p>
@@ -74,6 +87,7 @@
                             action="http://openservice.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'head')"
+                            :before-upload="beforeAvatarUpload"
                             >
                             <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
                               <div class="upload-head"><span>*上传头像</span></div>
@@ -84,6 +98,7 @@
                             action="http://openservice.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'id')"
+                            :before-upload="beforeAvatarUpload"
                             style="margin-left:20px;" 
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
@@ -97,7 +112,7 @@
                     <div>
                       <p></p>
                       <p>
-                          <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存并创建</span>
+                          <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
                       </p>
                     </div>
                   </li>
@@ -218,7 +233,7 @@
                                         start: '00:00',
                                         step: '00:30',
                                         end: '24:00',
-                                        minTime: startend.start,
+                                        minTime:startTime || startend.start,
                                         maxTime:startend.end
                                         }">
                                     </el-time-select>
@@ -266,12 +281,12 @@
 
         <!-- 补充个人资料 -->
           <h3 class="tech-tc-prson">补充个人资料</h3>
-          <el-form :model="supplement" :rules="rulesServer" ref="supplement" label-width="100px" class="demo-ruleForm">
+          <el-form :model="supplement" :rules="ruleSupp" ref="supplement" label-width="100px" class="demo-ruleForm">
             <ul class="tech-ul">
               <el-row :gutter="60">
                   <el-col :span="12">
-                    <el-form-item label="邮箱:">
-                      <el-input placeholder="请输入2~15位姓名" v-model="supplement.email"></el-input>
+                    <el-form-item label="邮箱:" prop="email"> 
+                      <el-input placeholder="请输入正确的邮箱地址" v-model="supplement.email"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -328,7 +343,8 @@
                       type="date"
                       placeholder="选择日期"
                       @change="eneryDate"
-                      :picker-options="pickerOptions0">
+                     >
+                      <!-- :picker-options="pickerOptions0" -->
                     </el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -349,7 +365,7 @@
               </li>
               <el-row :gutter="60">
                 <el-col :span="18">
-                  <el-form-item label="经验描述:">
+                  <el-form-item label="经验描述:" prop="description">
                                 <el-input type="textarea" v-model="supplement.description" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" style="width:100%"></el-input>
                               </el-form-item>
                 </el-col>
@@ -358,7 +374,7 @@
                 <div>
                   <p></p>
                   <p>
-                        <span class="button-large-fourth" @click="supplSub('perServer')">保存信息</span>
+                        <span class="button-large-fourth" @click="supplSub('supplement')">保存信息</span>
                   </p>
                 </div>
               </li>
@@ -393,7 +409,6 @@
 
               <el-table-column align="center" label="单位" prop="memberCompany">
               </el-table-column>
-
               <el-table-column align="center" label="职务" prop="memberJob">
               </el-table-column>
 
@@ -491,6 +506,7 @@
                             class="avatar-uploader"
                             action="http://openservice.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
+                            :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'cert')"
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
@@ -501,6 +517,7 @@
                             class="avatar-uploader"
                             action="http://openservice.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
+                            :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'life')"
                             style="margin-left:20px;" 
                             >
@@ -511,11 +528,15 @@
                       </p>
                   </div>
               </li>
-              <li>
-          <div style="width:100%">
+              <li style=" padding-bottom:0">
+          <div style="width:100%;">
             <p>备注:</p>
             <p style="width:100%;margin-left:10px">
-              <el-input type="textarea" v-model="otherInfo.remark" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下" style="width:60%"></el-input>
+              <el-form :model="otherInfo" style="width:60%"  ref="otherInfo" :rules="otherInfoRuls">
+                <el-form-item prop="remark"> 
+                  <el-input type="textarea" v-model="otherInfo.remark" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下"></el-input>
+                </el-form-item>
+              </el-form>
             </p>
                   </div> 
               </li>
@@ -523,7 +544,7 @@
                   <div>
                       <p></p>
                       <p>
-                          <span class="button-large-fourth" @click="sumitFormSub('perServer')">保存信息</span>
+                          <span class="button-large-fourth" @click="sumitFormSub('otherInfo')">保存信息</span>
                       </p>
                   </div>
               </li>
@@ -556,84 +577,97 @@ import Cookies from "js-cookie";
 export default {
   data() {
     //身份证
-    var TECHIDCARD = (rule, value, callback) => {
-      var city = {
-        11: "北京",
-        12: "天津",
-        13: "河北",
-        14: "山西",
-        15: "内蒙古",
-        21: "辽宁",
-        22: "吉林",
-        23: "黑龙江 ",
-        31: "上海",
-        32: "江苏",
-        33: "浙江",
-        34: "安徽",
-        35: "福建",
-        36: "江西",
-        37: "山东",
-        41: "河南",
-        42: "湖北 ",
-        43: "湖南",
-        44: "广东",
-        45: "广西",
-        46: "海南",
-        50: "重庆",
-        51: "四川",
-        52: "贵州",
-        53: "云南",
-        54: "西藏 ",
-        61: "陕西",
-        62: "甘肃",
-        63: "青海",
-        64: "宁夏",
-        65: "新疆",
-        71: "台湾",
-        81: "香港",
-        82: "澳门",
-        91: "国外 "
-      };
-      var tip = "";
-      var pass = true;
-      if (
-        !value ||
-        !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
-          value
-        )
-      ) {
-        tip = "身份证号格式错误";
-        callback(new Error(tip));
-        pass = false;
-      } else if (!city[value.substr(0, 2)]) {
-        tip = "身份证号格式错误";
-        callback(new Error(tip));
-        pass = false;
-      } else {
-        if (value.length == 18) {
-          value = value.split("");
-          var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-          var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
-          var sum = 0;
-          var ai = 0;
-          var wi = 0;
-          for (var i = 0; i < 17; i++) {
-            ai = value[i];
-            wi = factor[i];
-            sum += ai * wi;
-          }
-          var last = parity[sum % 11];
-          if (parity[sum % 11] != value[17]) {
-            tip = "身份证号格式错误";
-            callback(new Error(tip));
-            pass = false;
-          }
+    var TECHIDCARD = (rule,value,callback) =>{
+      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('身份证号格式错误'))
         }
-      }
-      if (pass) {
-        callback();
+      }else{
+        callback(new Error('请输入身份证号'))
       }
     };
+    //身份证
+      // var TECHIDCARD = (rule, value, callback) => {
+      //   var city = {
+      //     11: "北京",
+      //     12: "天津",
+      //     13: "河北",
+      //     14: "山西",
+      //     15: "内蒙古",
+      //     21: "辽宁",
+      //     22: "吉林",
+      //     23: "黑龙江 ",
+      //     31: "上海",
+      //     32: "江苏",
+      //     33: "浙江",
+      //     34: "安徽",
+      //     35: "福建",
+      //     36: "江西",
+      //     37: "山东",
+      //     41: "河南",
+      //     42: "湖北 ",
+      //     43: "湖南",
+      //     44: "广东",
+      //     45: "广西",
+      //     46: "海南",
+      //     50: "重庆",
+      //     51: "四川",
+      //     52: "贵州",
+      //     53: "云南",
+      //     54: "西藏 ",
+      //     61: "陕西",
+      //     62: "甘肃",
+      //     63: "青海",
+      //     64: "宁夏",
+      //     65: "新疆",
+      //     71: "台湾",
+      //     81: "香港",
+      //     82: "澳门",
+      //     91: "国外 "
+      //   };
+      //   var tip = "";
+      //   var pass = true;
+      //   if (
+      //     !value ||
+      //     !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+      //       value
+      //     )
+      //   ) {
+      //     tip = "身份证号格式错误";
+      //     callback(new Error(tip));
+      //     pass = false;
+      //   } else if (!city[value.substr(0, 2)]) {
+      //     tip = "身份证号格式错误";
+      //     callback(new Error(tip));
+      //     pass = false;
+      //   } else {
+      //     if (value.length == 18) {
+      //       value = value.split("");
+      //       var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+      //       var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+      //       var sum = 0;
+      //       var ai = 0;
+      //       var wi = 0;
+      //       for (var i = 0; i < 17; i++) {
+      //         ai = value[i];
+      //         wi = factor[i];
+      //         sum += ai * wi;
+      //       }
+      //       var last = parity[sum % 11];
+      //       if (parity[sum % 11] != value[17]) {
+      //         tip = "身份证号格式错误";
+      //         callback(new Error(tip));
+      //         pass = false;
+      //       }
+      //     }
+      //   }
+      //   if (pass) {
+      //     callback();
+      //   }
+    // };
     //手机
     var TECHPHONE = (rule, value, callback) => {
       if (value) {
@@ -676,6 +710,32 @@ export default {
         callback(new Error("请选择技能"));
       }
     };
+    //邮箱
+    var EMAIL = (rule,value,callback)=>{
+      var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('请输入正确的邮箱地址'))
+        }
+      }else{
+        callback()
+      }
+    }
+    //家庭成员手机号
+    var MEMBERPHONE = (rule,value,callback)=>{
+      if(value){
+        if (!/^1[34578]\d{9}$/.test(value)) {
+            callback(new Error('请输入正确的手机号'))
+        }else{
+          callback()
+        }
+      }else{
+        callback()
+      }
+    }
+    //家庭成员单位
 
     return {
       roomSelNum:[],
@@ -687,6 +747,11 @@ export default {
         jobPic:'',
         lifePic:'',
         remark:''
+      },
+      otherInfoRuls:{
+        remark:[
+          { min: 2, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+        ]
       },
       perFamily: {
         relation: "",
@@ -700,7 +765,17 @@ export default {
         memberName: [
           { required: true, message: "请输入名字", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        memberPhone:[
+          {validator:MEMBERPHONE,trigger:'blur'}
+        ],
+        memberCompany:[
+          { min: 2, max: 50, message: "请输入工作单位名称", trigger: "blur"}
+        ],
+        memberJob:[
+          {min: 2, max: 50, message: "请输入职务", trigger: "blur"}
         ]
+
       },
       //补充个人资料
       supplement: {
@@ -714,6 +789,16 @@ export default {
         jobLevel: "",
         description: ""
       },
+      //补充个人治疗邮箱
+      ruleSupp:{
+        email:[
+          {validator:EMAIL,trigger:"blur"}
+        ],
+        description:[
+          { message: "请输入名字", trigger: "blur" },
+          { min: 2, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+        ]
+      },
       // 个人资料
       techTable: false,
       personalEDit: {
@@ -726,7 +811,8 @@ export default {
         area: [],
         address: "",
         idCardPic: "",
-        headPic: ""
+        headPic: "",
+        status:''
       },
       rulesPerEdit: {
         name: [
@@ -740,7 +826,11 @@ export default {
         birthDate: [
           { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
-        area: [{ required: true, validator: ADDRESS, trigger: "change" }]
+        area: [{ required: true, validator: ADDRESS, trigger: "change" }],
+        address:[
+          {required:true,message:"请输入详细地址",trigger:'blur'},
+          { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+        ]
       },
       //服务信息
       perServer: {
@@ -1203,14 +1293,34 @@ export default {
     "startend"
   ],
   methods: {
+    //图片格式限制
+    beforeAvatarUpload(file){
+      const isPIC = file.type === 'image/jpeg' || 'image/jpg' || 'image/png';
+      if(isPIC === true){
+
+      }else{
+        this.$message.error('请上传正确的图片格式');
+        return false
+      }
+    },
     //关闭弹窗
     closeThe(){
-      	this.$emit("dialogvisibleedit")
+        this.flagso = false
+        this.familyTable('perFamily')
+        this.$emit("dialogvisibleedit")
+        this.$emit("getlist",this.listquer.page)
+        this.familyFlag = false
     },
     //其他信息保存
     sumitFormSub(formName){
-      this.otherInfo.id = this.techniEditId;
-      this.technicianEdit(this.otherInfo)
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+          this.otherInfo.id = this.techniEditId;
+          this.technicianEdit(this.otherInfo)
+        }else{
+          return false
+        }
+      })
     },
     //上传图片
     picUpload(file,flag){
@@ -1280,21 +1390,27 @@ export default {
       this.supplement.inJobTime = val;
     },
     //补充个人资料
-    supplSub() {
-      var obj = {},
-        _supplement = this.supplement;
-      obj.id = this.techniEditId;
-      obj.email = _supplement.email;
-      obj.education = _supplement.education;
-      obj.weight = _supplement.weight;
-      obj.height = _supplement.height;
-      obj.marryStatus = _supplement.marryStatus;
-      obj.nativeProvinceCode = _supplement.nativeProvinceCode;
-      obj.inJobTime = _supplement.inJobTime;
-      obj.jobLevel = _supplement.jobLevel;
-      obj.description = _supplement.description;
-      console.log(obj, "objobjobj-------");
-      this.technicianEdit(obj)
+    supplSub(formName) {
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+           var obj = {},
+              _supplement = this.supplement;
+            obj.id = this.techniEditId;
+            obj.email = _supplement.email;
+            obj.education = _supplement.education;
+            obj.weight = _supplement.weight;
+            obj.height = _supplement.height;
+            obj.marryStatus = _supplement.marryStatus;
+            obj.nativeProvinceCode = _supplement.nativeProvinceCode;
+            obj.inJobTime = _supplement.inJobTime;
+            obj.jobLevel = _supplement.jobLevel;
+            obj.description = _supplement.description;
+            console.log(obj, "objobjobj-------");
+            this.technicianEdit(obj)
+        }else{
+          return false
+        }
+      })
     },
     //提交信息
     technicianEdit(obj){
@@ -1305,8 +1421,8 @@ export default {
               message: "保存成功",
               type: "success"
 			});
-			this.$emit("dialogvisibleedit")
-            this.$emit("getlist",this.listquer.page)
+			// this.$emit("dialogvisibleedit")
+            // this.$emit("getlist",this.listquer.page)
           } else {
             this.$message.error("保存失败");
             return false;
@@ -1384,6 +1500,7 @@ export default {
           obj.birthDate = _personalEDit.birthDate;
           obj.idCardPic = _personalEDit.idCardPic;
           obj.headPic = _personalEDit.headPic;
+          obj.status = _personalEDit.status;
           console.log(obj, "obj-----");
           this.technicianEdit(obj)
         } else {
@@ -1394,17 +1511,23 @@ export default {
     },
     //服务保存
     submitForm(formName) {
-      var obj = {},
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+            var obj = {},
           _perServer = this.perServer;
-      obj.id = this.techniEditId
-      obj.stationId = _perServer.stationId
-      obj.jobNature = _perServer.jobNature
-      obj.jobStatus = _perServer.jobStatus
-      obj.workTime = _perServer.workTime
-      obj.workTimes = _perServer.workTimes
-      obj.skillIds = _perServer.skillIds
-      console.log(obj,"this.perServer--------")
-      this.technicianEdit(obj)
+          obj.id = this.techniEditId
+          obj.stationId = _perServer.stationId
+          obj.jobNature = _perServer.jobNature
+          obj.jobStatus = _perServer.jobStatus
+          obj.workTime = _perServer.workTime
+          obj.workTimes = _perServer.workTimes
+          obj.skillIds = _perServer.skillIds
+          console.log(obj,"this.perServer--------")
+          this.technicianEdit(obj)
+        }else{
+          return false
+        }
+      })
       // this.$refs[formName].validate(valid => {
       //   if (valid) {
       //     // alert('true')
@@ -1432,6 +1555,7 @@ export default {
               message: "删除成功",
               type: "success"
             });
+            this.familyFlag = false
           } else {
             this.$message.error("删除失败");
             return false;
@@ -1542,6 +1666,8 @@ export default {
     // 添加时间
     addtime() {
       this.isB = true;
+      this.startTime = this.startend.start
+      this.endTime = this.startend.end
     },
     addtimes() {
       this.isB = false;
@@ -1560,6 +1686,11 @@ export default {
       var arr = [];
       var obj = Object.assign({}, this.perFamily);
       arr.push(obj);
+      if(!this.familyFlag){
+        if(arr[0].id){
+          delete arr[0].id
+        }
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           familyAdd({ id: this.techniEditId, familyMembers: arr })
@@ -1570,8 +1701,12 @@ export default {
                   type: "success"
                 });
                 if (this.familyFlag) {
+                  console.log(obj,"obj----------------")
+                  alert("编辑")
                   this.$set(this.familyList, this.scopeId, obj);
                 } else {
+                  console.log(obj,"obj----------------")
+                  alert("添加")
                   this.familyList.push(obj);
                 }
                 this.familyFlag = false;
@@ -1587,7 +1722,6 @@ export default {
               console.log(error, "error-----techniEdit");
             });
         } else {
-          this.$message.error("不能为空");
           return false;
         }
       });
@@ -1707,12 +1841,12 @@ body {
   margin-top: 45px;
 }
 
-.tech-section-ul {
+/* .tech-section-ul {
   margin: 20px 0;
-  display: flex;
-  justify-content: space-between;
-}
-
+  display: flex; */
+  /* justify-content: space-between; */
+/* } */
+/* 
 .tech-table {
   margin: 20px;
   padding-bottom: 20px;
@@ -1735,7 +1869,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
 .fy {
   margin: 0 20px;
@@ -2095,7 +2229,7 @@ body {
 }
 
 .tech-section-xiu {
-  padding: 10px 30px;
+  /* padding: 10px 30px; */
 }
 
 .tech-section-xiu > li {
@@ -2203,6 +2337,9 @@ body {
 .level {
   flex: 1;
 }
+.level p:nth-child(1){
+  padding-left: 10px;
+}
 .hours {
   align-items: flex-start;
 }
@@ -2225,7 +2362,7 @@ body {
 }
 .workHours{
 	display: flex;
-	margin-bottom: 20px;
+	/* margin-bottom: 20px; */
 }
 .ferFamilyClass>li{
 	padding-bottom: 0;
