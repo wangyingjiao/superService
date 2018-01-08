@@ -1683,15 +1683,21 @@ body {
   background: #fff;
   border: 1px solid #4c70e8;
   color: #4c70e8;
-  margin-left: 40px;
   cursor: pointer;
   /* border: none; */
   outline: none;
   height: 36px;
   font-size: 12px;
   text-align: center;
-  width: 80px;
+  width: 8%;
+  min-width: 60px;
 }
+@media screen and (min-width: 1200px) {
+    .tech-btn {
+        width: 80px;
+    }
+}
+
 
 .tech-btn-right {
   margin-left: 300px;

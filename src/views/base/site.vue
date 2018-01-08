@@ -571,6 +571,7 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.temp.isUseable = "yes";
+      this.temp.type = "self"
       //this.areaOptions = this.$store.state.user.area;
     },
     handleUpdate(row) {//点击编辑
@@ -600,12 +601,14 @@ export default {
           delSite(obj)
             .then(res => {
               if (res.data.code === 1) {
+                this.rowInfo.id = ""
                 this.$message({
                   type: "success",
                   message: "删除成功!"
                 });
                 this.getList();
               } else {
+                this.rowInfo.id = ""
                 this.$message({
                   type: "warning",
                   message: res.data.data
@@ -620,6 +623,7 @@ export default {
             });
         })
         .catch(() => {
+          this.rowInfo.id = ""
           this.$message({
             type: "info",
             message: "已取消删除"
@@ -753,6 +757,7 @@ export default {
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
+              this.rowInfo.id = ""
               this.$message({
                 type: "success",
                 message: "修改成功"
@@ -760,6 +765,7 @@ export default {
               this.getList();
               this.dialogFormVisible = false;
             } else {
+              this.rowInfo.id = ""
               this.$message({
                 type: "error",
                 message: res.data.data
