@@ -1,6 +1,6 @@
 <template>
   <div class='tabs-view-container'>
-    <hr>
+   
     <div class="leftmove" @click="leftmove">&#139</div>
     <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path">
       <!-- <span>|</span> -->
@@ -107,6 +107,7 @@ export default {
   width: 100%;
   vertical-align: top;
   margin-left: 10px;
+  border-top: 1px solid #eee;
   .leftmove {
     display: inline-block;
     float: left;
@@ -138,10 +139,10 @@ export default {
     height: 30px;
     float: left;
     margin-left: 10px;
-    border-right: 1px solid #979494;
+    border-right: 1px solid #eee;
     
     span{
-      height: 30px;
+      height: 31px;
     }
   }
   
