@@ -168,62 +168,6 @@
               </el-form-item>
           </el-form>
         </div>
-          <!-- <li>
-				<el-form-item label="开始时间" required>
-					<el-col :span="11">
-						<el-form-item prop="date1">
-							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 200px;"></el-date-picker>
-						</el-form-item>
-					</el-col>
-					<el-col class="line" :span="2">-</el-col>
-					<el-col :span="11">
-						<el-form-item prop="date2">
-							<el-time-select
-								v-model="ruleForm.date2"
-								:picker-options="{
-									start: '00:00',
-									step: '00:30',
-									end: '24:00'
-								}"
-								placeholder="选择时间">
-							</el-time-select>
-						</el-form-item>
-					</el-col>
-				</el-form-item>
-			
-          </li> -->
-          <!-- <li> -->
-			  <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
-				<!-- <el-form-item label="结束时间" required>
-					<el-col :span="11">
-						<el-form-item prop="date1">
-							<el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date3" style="width: 100%;"></el-date-picker>
-						</el-form-item>
-					</el-col>
-					<el-col class="line" :span="2">-</el-col>
-					<el-col :span="11">
-						<el-form-item prop="date2">
-							<el-time-select
-								v-model="ruleForm.date4"
-								:picker-options="{
-									start: '00:00',
-									step: '00:30',
-									end: '24:00'
-								}"
-								placeholder="选择时间">
-							</el-time-select>
-						</el-form-item>
-					</el-col>
-				</el-form-item> -->
-			<!-- </el-form> -->
-          <!-- </li>
-          <li> -->
-            <!-- <div>备注</div>
-            <div>
-              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="textarea3" style="width:493px;">
-              </el-input>
-            </div> -->
-          <!-- </li> -->
           <div>
             <div style="display:flex;justify-content: center;width:100%">
               <button class="button-large" style="margin-right:10px;" @click="vacationPreser('ruleForm')">保存</button>
@@ -1888,15 +1832,21 @@ body {
   background: #fff;
   border: 1px solid #4c70e8;
   color: #4c70e8;
-  margin-left: 20px;
   cursor: pointer;
   /* border: none; */
   outline: none;
   height: 36px;
   font-size: 12px;
   text-align: center;
-  width: 80px;
+  width: 8%;
+  min-width: 60px;
 }
+@media screen and (min-width: 1200px) {
+    .tech-btn {
+        width: 80px;
+    }
+}
+
 
 .tech-btn-right {
   margin-left: 300px;

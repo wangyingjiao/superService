@@ -326,9 +326,7 @@ export default {
 	height: 50px;
 	margin-top: 5px;
 }
-.addorder-container .el-dialog__body{
-	padding-bottom: 0;
-}
+
 .addorder-container .pagination-container{
 	padding: 20px 0;
 }
