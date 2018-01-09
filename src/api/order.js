@@ -22,7 +22,15 @@ export function getOrderTable(obj, pageNumber, pageSize) {
 export function getOrderInf(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/formData`, obj)
 }
-// 取消订单
-export function CancelOrderInf(obj) {
-  return instance.post(`/apiservice/a/service/order/orderInfo/cancelData`, obj)
+// 更改服务时间
+export function ChangeTimeData(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/timeData`, obj)
+}
+//增加技师
+export function addTechData(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/addTech`, obj)
+}
+//改派技师
+export function dispatchTechData(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/dispatchTech`, obj)
 }

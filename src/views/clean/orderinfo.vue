@@ -79,43 +79,43 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">交易单号:</span>
-                      <span class="lineContent"></span>
+                      <span class="lineContent">{{payInfo.payNumber}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付方式:</span>
                       <span class="lineContent">
-                        <span v-if="otherInfo.payMethod =='offline'">货到付款</span>
-                        <span v-if="otherInfo.payMethod =='online'">在线</span>                        
+                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
+                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
                       </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付总额:</span>
-                      <span class="lineContent">388.00元</span>
+                      <span class="lineContent">{{payInfo.payAccount}}元</span>
                    </p>                                      
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">支付状态:</span>
                       <span class="lineContent">
-                        <span v-if="otherInfo.payStatus =='payed'">已支付</span>
-                        <span v-if="otherInfo.payStatus =='waitpay'">待支付</span>                        
+                        <span v-if="payInfo.payStatus =='payed'">已支付</span>
+                        <span v-if="payInfo.payStatus =='waitpay'">待支付</span>                        
                       </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付平台:</span>
                       <span class="lineContent">
-                          <span v-if="otherInfo.payPlatform =='wx'">微信</span>
-                          <span v-if="otherInfo.payPlatform =='alipay'">支付宝</span>
-                          <span v-if="otherInfo.payPlatform =='balance'">余额</span>
-                          <span v-if="otherInfo.payPlatform =='pos'">银行卡</span>
-                          <span v-if="otherInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
-                          <span v-if="otherInfo.payPlatform =='cash'">现金</span>
-                          <span v-if="otherInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
+                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
+                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
+                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
+                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
+                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
+                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
+                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
                       </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">支付时间:</span>
-                      <span class="lineContent">2017-08-29 14:44</span>
+                      <span class="lineContent">{{payInfo.payTime}}</span>
                    </p>                                       
                 </div> 
             </div>                                     		
@@ -128,23 +128,23 @@
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">服务分类:</span>
-                      <span class="lineContent">日常保洁</span>
+                      <span class="lineTitle">服务项目:</span>
+                      <span class="lineContent">{{goodsInfo.itemName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">建议服务时长:</span>
-                      <span class="lineContent">{{goodsInfo.serviceHour}}小时</span>
+                      <span class="lineContent">{{otherInfo.serviceHour}}小时</span>
                    </p>                                                        
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
-                      <span class="lineContent">{{goodsInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70"><button type="button"  @click="changeTime" class="button-cancel height25">更换时间</button></span>
+                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
+                      <span class="selfMarLeft70" @click="changeTime"><input type="button"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">完成时间:</span>
-                      <span class="lineContent">{{goodsInfo.finishTime}}</span>
+                      <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>                                     
                 </div> 
             </div>
@@ -187,24 +187,29 @@
                   border
                   style="width: 100%">
                   <el-table-column
-                    prop="headurl"
                     align="center"
                     label="头像"
                     >
+                    <template scope="scope">
+                    <img class="picHeader" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+scope.row.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/>
+                    </template>
                   </el-table-column>
                   <el-table-column
-                    prop="name"
+                    prop="techName"
                     align="center"
                     label="姓名"
                     >
                   </el-table-column>
                   <el-table-column
-                    prop="sex"
                     align="center"
                     label="性别">
+                      <template scope="scope">
+                          <span v-if="scope.row.techSex =='male'">男</span>
+                        <span v-if="scope.row.techSex =='female'">女</span>
+                      </template>	                    
                   </el-table-column>
                   <el-table-column
-                    prop="phone"
+                    prop="techPhone"
                     align="center"
                     label="手机号">
                   </el-table-column>                  
@@ -227,13 +232,15 @@
                 <div class="leftArea" style="width:100%;">
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">哈哈哈哈哈</span>
+                      <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
                    </p> 
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="a in 3" :key="a"></div>
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
                         </div>
                       </span>
                    </p>                                                                         
@@ -250,13 +257,15 @@
                 <div class="leftArea" style="width:100%;">
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">客户要求什么....客户要求什么客户什么么客户要求什么客户要求什么客户要求什么客户要求客户要求什么客户要求什</span>
+                      <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="a in 3" :key="a"></div>
+                            <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
                         </div>
                       </span>
                    </p>                                                        
@@ -272,17 +281,19 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">姓名:</span>
-                      <span class="lineContent">李阿姨</span>
+                      <span class="lineContent">{{otherInfo.businessName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">客户要求什么....市朝阳区关东街呼家楼宾馆北京市朝阳区关东街呼家楼宾馆北京市朝市朝阳区关东街呼家楼宾馆北京市朝阳区关东街呼家楼宾馆北京市朝市朝阳区关东街呼家楼宾馆北京市朝阳区关东街呼家楼宾馆北京市朝市朝阳区关东街呼家楼宾馆北京市朝阳区关东街呼家楼宾馆北京市朝市朝阳区关东街呼家楼宾馆北</span>
+                      <span class="lineContent1 selfbeizhu1">{{otherInfo.businessRemark}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="a in 3" :key="a"></div>
+                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
                         </div>
                       </span>
                    </p>                                                        
@@ -290,7 +301,7 @@
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">电话:</span>
-                      <span class="lineContent">13821208877</span>
+                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
                    </p>                    
                 </div> 
             </div>                                     		
@@ -304,21 +315,23 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">名称:</span>
-                      <span class="lineContent">测试门店</span>
+                      <span class="lineContent">{{otherInfo.shopName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">地址:</span>
-                      <span class="lineContent">北京市朝阳区关东街呼家楼宾馆</span>
+                      <span class="lineContent">{{otherInfo.shopAddr}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">市朝阳区关东街呼家楼宾馆北京市</span>
+                      <span class="lineContent1 selfbeizhu1">{{otherInfo.shopRemark}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="a in 9" :key="a"></div>
+                            <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
                         </div>
                       </span>
                    </p>                                                        
@@ -326,7 +339,7 @@
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">电话:</span>
-                      <span class="lineContent">13821208877</span>
+                      <span class="lineContent">{{otherInfo.shopPhone}}</span>
                    </p>                  
                 </div> 
             </div>                                     		
@@ -394,7 +407,7 @@
               </el-form-item>
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
-                    <div class="marginTopDec10">                                            
+                    <div class="marginTopDec46">                                            
                       <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.value}}</div>
                     </div>                    
               </el-form-item>              
@@ -410,7 +423,7 @@
 </template>
 
 <script>
-import {getOrderInf,CancelOrderInf} from "@/api/order";
+import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData} from "@/api/order";
   import {
     orderServer
   } from '@/api/skill'
@@ -458,38 +471,8 @@ export default {
           value2:'',
           tabOptions:[],
           dialogTableVisible:false,				
-           tableData:[
-                {
-                  goodsId:"1002",
-                  goodsName:"大灯",
-                  goodsNum:"3",
-                  payPrice:"300"
-                },
-                {
-                  goodsId:"1003",
-                  goodsName:"平米保洁",
-                  goodsNum:"100",
-                  payPrice:"200"
-                },
-                {
-                   goodsId:"1004",
-                   goodsName:"一居室",
-                   goodsNum:"1",
-                   payPrice:"120"
-                }                                        
-              ], 
-           tableData1:[{
-                headurl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                phone:'13426345678'
-              }, 
-             {
-                headurl: 'headurl',
-                name: '王小虎',
-                sex: '男',
-                phone:'13426345678'
-              }],
+           tableData:[], 
+           tableData1:[],
           dialogVisible:false,                		
     };
   },
@@ -501,12 +484,12 @@ export default {
       }
       getOrderInf(obj).then(res => {      
           if (res.data.code === 1) {                         
-            var AllInfo=res.data.data.info;
-            this.otherInfo=AllInfo;
-            this.addressInfo=AllInfo.addressInfo; //服务地址信息
-            this.payInfo=AllInfo.payInfo;//支付信息
-            this.refundInfo=AllInfo.refundInfo//退款信息
+            var AllInfo=res.data.data;
+            this.otherInfo=AllInfo;//所有其他信息变量
             this.goodsInfo=AllInfo.goodsInfo//服务信息
+            this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
+            this.payInfo=AllInfo.payInfo//支付信息
+            this.tableData1=AllInfo.techList//技师信息表格
           }else{
           }          
         }).catch(res=>{
@@ -545,8 +528,18 @@ export default {
     //日期变化时改变时间对象
     dateChange(value){      
       if(value != undefined){
-        console.log(value)
-        //value用这个值去请求时间点接口
+        var obj={
+          id:this.$route.query.id,
+          serviceTime:value+' 00:00:00'
+        } 
+        ChangeTimeData(obj).then(res => {      
+          if (res.data.code === 1) {                         
+              console.log(res)
+          }else{
+          }          
+        }).catch(res=>{
+          
+        });        
       }
     },
     //时间选项点击
@@ -623,19 +616,40 @@ export default {
     },         
     //改派或新增技师
     gaiPai(status,obj){
-        console.log(status,obj);
-        var obj={};             
-        orderServer(obj).then(res => {      
-          if (res.data.code === 1) {                         
-            this.options=res.data.data.stations 
-            this.listTech=res.data.data.techs 
-            this.dialogTableVisible=true;
-            //this.selectionreturn1();                                                          
-          }else{
-          }          
-        }).catch(res=>{
-          
-        });    
+        console.log(status);
+        this.dialogTableVisible=true;
+        if(status == 'add'){
+              var obj={
+                id:this.$route.query.id
+              };            
+              addTechData(obj).then(res => {      
+                if (res.data.code === 1) {                         
+                  this.options=res.data.data.stations 
+                  this.listTech=res.data.data.techs 
+                  this.dialogTableVisible=true;
+                  //this.selectionreturn1();                                                          
+                }else{
+                }          
+              }).catch(res=>{
+                
+              });
+        }else{
+              var obj1={
+                id:this.$route.query.id
+              };            
+              dispatchTechData(obj1).then(res => {      
+                if (res.data.code === 1) {                         
+                  this.options=res.data.data.stations 
+                  this.listTech=res.data.data.techs 
+                  this.dialogTableVisible=true;
+                  //this.selectionreturn1();                                                          
+                }else{
+                }          
+              }).catch(res=>{
+                
+              });          
+        }
+    
     },
     //改变服务时间按钮
     changeTime(){
@@ -664,8 +678,9 @@ export default {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
+.picHeader{margin-top:10px;}
 .selfDateStyle{width:200px;margin-left:20px;}
-.marginTopDec10{margin-top:-10px;}
+.marginTopDec46{margin-top:-46px;}
 .selfSeverTimeSt{
     width: 80px;
     height: 34px;
@@ -705,7 +720,7 @@ export default {
 .picWrap{width:100%;height:120px;line-height:120px;}
 .marginLeft82{margin-left:82px;margin-top:-30px;}
 .marginBOT20{margin-bottom:20px;}
-.picStyle{float:left;width:120px;height:120px;border:1px solid #ccc;margin-right:20px;margin-top:20px;}
+.picStyle{float:left;width:120px;height:120px;margin-right:20px;margin-top:20px;}
 .addorder-container{
   width:100%;
   font-size:12px;
@@ -722,7 +737,10 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
    width:95%;height:34px;line-height:34px;
 }
 .selfMarLeft70{
-   display:inline-block;margin-left:-70px;
+    display: inline-block;
+    margin-top: -4px;
+    position: absolute;
+    cursor: pointer;
 }
 .selfTableWrapStyle{
   width:690px;float:left;padding-left:30px;padding-bottom:20px;

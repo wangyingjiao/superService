@@ -13,20 +13,22 @@ Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 Vue.prototype.imgSrc = 'https://openservice.guoanshequ.com/'
+Vue.prototype.picWidth120 = '?x-oss-process=image/resize,m_fill,h_120,w_120'
+Vue.prototype.picWidth60 = '?x-oss-process=image/resize,m_fill,h_60,w_60'
 // 按下标删除数组的对应元素
-Array.prototype.del = function(dx) {
+Array.prototype.del = function (dx) {
   if (isNaN(dx) || dx > this.length) { return false }
   this.splice(dx, 1)
 }
 // 指定元素从Array对象中删除
-Array.prototype.remove = function(val) {
+Array.prototype.remove = function (val) {
   var index = this.indexOf(val)
   if (index > -1) {
     this.splice(index, 1)
   }
 }
 // 确定指定对象是否是 Array 对象中的元素
-Array.prototype.contains = function(obj) {
+Array.prototype.contains = function (obj) {
   var i = this.length
   while (i--) {
     if (this[i] === obj) {
@@ -36,7 +38,7 @@ Array.prototype.contains = function(obj) {
   return false
 }
 // 数组去重
-Array.prototype.unique = function() {
+Array.prototype.unique = function () {
   var res = [this[0]]
   for (var i = 1; i < this.length; i++) {
     var repeat = false
