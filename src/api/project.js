@@ -1,11 +1,5 @@
 
-import axios from 'axios'
-import { resolve } from 'url'
-
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-})
-
+import instance from '@/utils/fetch'
 // --------------------------------服务管理----------------------------
 
 // -----------服务项目------------

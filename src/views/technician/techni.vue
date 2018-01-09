@@ -1895,10 +1895,6 @@ export default {
   padding: 0;
 }
 
-body {
-  background: #eef1f6;
-}
-
 .tech-index {
   background: #fff;
   padding: 20px;

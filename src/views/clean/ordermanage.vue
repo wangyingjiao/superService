@@ -3,7 +3,7 @@
 		<div class="fist-bar">
 			  <!--选项卡开始-->
 			  <el-tabs v-model="activeName" @tab-click="handleClick">
-					<el-tab-pane label="全部" name="whole"></el-tab-pane>
+					<!-- <el-tab-pane label="全部" name="whole"></el-tab-pane> -->
 					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
 			  </el-tabs>
 				<!--选项卡结束-->
@@ -160,6 +160,7 @@ export default {
 		jumpPage:1,
 		pageNumber:1,
 		listLoading:false,
+		active1:''
     };
   },
   methods: {
@@ -211,11 +212,12 @@ export default {
 	},
 	//tabs操作需要请求表格数据
 	handleClick(tab, event) {
+		this.activeName=tab.name;
 		if(tab.name == 'whole'){
-			this.activeName='';
+			this.active1='';
 		}else{
-			this.activeName=tab.name;
-		}				
+			this.active1=tab.name
+		}					
 		this.payStus='';
 		this.mechanism='';
 		this.payType='';
@@ -225,7 +227,7 @@ export default {
 		this.endTime='';
 		this.severTime='';
 		var obj={
-			orderStatus:this.activeName
+			orderStatus:this.active1
 		};
 		this.pageNumber=1;
 		this.jumpPage=1;
@@ -258,12 +260,12 @@ export default {
 			endTime=null
 		}
 		if(this.activeName == 'whole'){
-			this.activeName='';
+			this.active1='';
 		}else{
-			this.activeName=this.activeName;
-		}	
+			this.active1=this.activeName
+		}			
 		var obj={
-			orderStatus:this.activeName,
+			orderStatus:this.active1,
 			serviceStatus:this.sevicerStustas,//服务状态 
 			payStatus:this.payStus,
 			orgId:this.mechanism,

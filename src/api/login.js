@@ -1,8 +1,4 @@
-import axios from 'axios'
-import { getSession } from '@/utils/auth'
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-})
+import instance from '@/utils/fetch'
 
 export function loginByUsername(obj) {
   return instance.post(`/apiservice/a/login`, obj)

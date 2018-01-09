@@ -1,9 +1,5 @@
-import axios from 'axios'
+import instance from '@/utils/fetch'
 
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
 // 获取客户表格信息
 export function getCusTable(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/order/orderCustomInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)

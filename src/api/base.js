@@ -1,9 +1,5 @@
-import axios from 'axios'
+import instance from '@/utils/fetch'
 
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
 // 获取机构
 export function getMech() {
   return instance.get(`/apiservice/a/sys/office/listData`)

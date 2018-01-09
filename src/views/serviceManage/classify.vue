@@ -113,7 +113,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState: false,
-      selectState:false,
+      selectState: false,
       active: true,
       list: [],
       total: null,
@@ -264,7 +264,7 @@ export default {
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
-      this.selectState = true
+      this.selectState = true;
       console.log(row);
       var obj = {
         id: row.id
@@ -353,10 +353,17 @@ export default {
                 message: "新增成功"
               });
             } else {
-              this.$message({
-                type: "error",
-                message: "同一类型下分类名称不允许重复"
-              });
+              if (typeof res.data.data == "string") {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data[0]
+                });
+              }
             }
           });
         } else {
@@ -366,7 +373,7 @@ export default {
     },
     resetForm(formName) {
       //清空列表
-      this.selectState = false
+      this.selectState = false;
       this.resetTemp();
       this.dialogFormVisible = false;
       this.$refs[formName].resetFields();
@@ -380,7 +387,7 @@ export default {
     },
     update(formName) {
       // 编辑
-      
+
       var obj = {
         id: this.rowId,
         majorSort: this.temp.majorSort,
@@ -389,14 +396,14 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(obj,'参数');
+          console.log(obj, "参数");
           addClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.dialogFormVisible = false;
-              this.selectState = false
+              this.selectState = false;
               this.getList();
               this.$message({
                 type: "success",
@@ -404,7 +411,7 @@ export default {
               });
             } else {
               this.dialogFormVisible = false;
-              this.selectState = false
+              this.selectState = false;
               this.$message({
                 type: "error",
                 message: "发生错误"
@@ -431,9 +438,9 @@ export default {
 </script>
 <style >
 .btn_right {
-    margin-top: 3px;
-    float: right;
-    width: 75px;
+  margin-top: 3px;
+  float: right;
+  width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -456,9 +463,6 @@ export default {
 .checkBox3 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
-}
-body {
-  background-color: #f5f5f5;
 }
 .bgWhite {
   background-color: #ffffff;

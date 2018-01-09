@@ -499,7 +499,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .tableWarp{
-	width:100%;background:#fff;padding:20px 20px 60px 20px;
+	width:100%;background:#fff;padding:20px 20px 70px 20px;
 }
 .selfStyle{
  margin-top:20px;float:right;
@@ -528,18 +528,13 @@ export default {
 	float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;
 }
 .fist-bar{
-  padding-top:20px;
-  padding-bottom:20px;
-  background:#fff;
-  margin-right:20px;
+  padding:20px;
+	background:#fff;
+	border-bottom: 1px solid #eee;
  
 }
 .second-bar{
-  padding-top:20px;
-  padding-bottom:20px;
   background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
   
 }
 .mapWrap{

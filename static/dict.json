@@ -119,6 +119,7 @@
         "online": "在职"
     },
     "order_status": {
+        "whole": "全部",
         "cancel": "已取消",
         "dispatched": "已派单",
         "stop": "已暂停",

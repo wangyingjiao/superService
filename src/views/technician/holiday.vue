@@ -36,6 +36,7 @@
       v-loading="listLoading" 
       element-loading-text="正在加载" 
       fit 
+      tooltip-effect='light'
       highlight-current-row 
       style="width: 100%">
 
@@ -57,7 +58,7 @@
       <el-table-column align="center" label="结束时间" prop="endTime">      
       </el-table-column>
       
-      <el-table-column align="center" label="备注" prop="remark">      
+      <el-table-column align="center" :show-overflow-tooltip="true" width="200px" label="备注" prop="remark">      
       </el-table-column>
 
       <el-table-column align="center" label="操作">

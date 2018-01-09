@@ -21,6 +21,7 @@
     v-loading="listLoading"
     fit
     highlight-current-row 
+    tooltip-effect='light'
     element-loading-text="正在加载" 
     style="width: 100%" >
       <el-table-column align="center" label="机构编号" width="100">
@@ -35,7 +36,7 @@
       <el-table-column  label="机构电话" align="center" min-width="200px" prop="telephone">
       </el-table-column>
 
-      <el-table-column  label="机构地址" align="center" min-width="200px" prop="address">
+      <el-table-column  label="机构地址" :show-overflow-tooltip="true" align="center" width="200px" prop="address">
       </el-table-column>
 
       <el-table-column  label="负责人姓名" align="center" width ="150" prop="masterName">
@@ -841,9 +842,6 @@ export default {
 .checkBox3 {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
-}
-body {
-  background-color: #f5f5f5;
 }
 .bgWhite {
   background-color: #ffffff;

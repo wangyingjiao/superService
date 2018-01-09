@@ -821,9 +821,6 @@ export default {
   margin-left: 0px;
   margin-right: 15px;
 }
-body {
-  background-color: #eef1f6;
-}
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;

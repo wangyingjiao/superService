@@ -1,9 +1,5 @@
-import axios from 'axios'
+import instance from '@/utils/fetch'
 
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
 // 提交
 export function addTech(obj) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianInfo/savePersonalData`, obj)
