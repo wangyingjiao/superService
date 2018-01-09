@@ -2392,8 +2392,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   margin-top: 5px;
 }
 .el-icon-plus{
