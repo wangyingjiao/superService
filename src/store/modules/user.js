@@ -130,7 +130,7 @@ const user = {
           localStorage.removeItem('name')
           localStorage.removeItem('dataScope')
           localStorage.removeItem('orgId')
-          localStorage.removeItem('menu')
+          localStorage.removeItem('userId')
           resolve()
         }).catch(error => {
           reject(error)

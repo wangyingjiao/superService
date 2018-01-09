@@ -1,14 +1,12 @@
 <template>
 <div>
+  <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-   
-
-      <el-select  clearable class="search" v-model="search.type" placeholder="请选择">
-        <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索内容" v-model="search.val">
+        <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
+          <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
       </el-input>
 
       <el-date-picker
@@ -28,6 +26,7 @@
     </el-date-picker>
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
+    <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <el-table 
@@ -124,8 +123,8 @@ export default {
   },
   methods: {
     getList() {
-      getHoliday({},this.pageNumber,this.pageSize).then(res => {
-        console.log(res,"休假列表");
+      getHoliday({}, this.pageNumber, this.pageSize).then(res => {
+        console.log(res, "休假列表");
         this.list = res.data.data.list;
         this.total = res.data.data.count;
         this.listLoading = false;
@@ -161,21 +160,20 @@ export default {
           techName: this.search.val
         };
         obj = Object.assign(obj, name);
-      } else if(this.search.type == "techPhone"){
+      } else if (this.search.type == "techPhone") {
         var phone = {
           techPhone: this.search.val
-        }
+        };
         obj = Object.assign(obj, phone);
-      }else{
-        var newobj = {
-        }
+      } else {
+        var newobj = {};
         obj = Object.assign(obj, newobj);
       }
 
-      console.log(obj,'搜索参数')
+      console.log(obj, "搜索参数");
       this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res,"搜索")
+        console.log(res, "搜索");
         if (res.data.code == 1) {
           this.listQuery.page = 1;
           this.list = res.data.data.list;
@@ -215,14 +213,13 @@ export default {
           techName: this.search.val
         };
         obj = Object.assign(obj, name);
-      } else if(this.search.type == "techPhone"){
+      } else if (this.search.type == "techPhone") {
         var phone = {
           techPhone: this.search.val
-        }
+        };
         obj = Object.assign(obj, phone);
-      }else{
-        var newobj = {
-        }
+      } else {
+        var newobj = {};
         obj = Object.assign(obj, newobj);
       }
       this.listLoading = true;
@@ -265,14 +262,13 @@ export default {
           techName: this.search.val
         };
         obj = Object.assign(obj, name);
-      } else if(this.search.type == "techPhone"){
+      } else if (this.search.type == "techPhone") {
         var phone = {
           techPhone: this.search.val
-        }
+        };
         obj = Object.assign(obj, phone);
-      }else{
-        var newobj = {
-        }
+      } else {
+        var newobj = {};
         obj = Object.assign(obj, newobj);
       }
       this.listLoading = true;
