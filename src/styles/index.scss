@@ -456,7 +456,7 @@ body {
   margin-right: 2%;
   
 }
-
+// 头部选项卡
 .tabs-view-container .el-tag .el-tag__close:hover{
   background-color: red;
   color: #fff;
@@ -464,4 +464,19 @@ body {
 .tabs-view-container .el-tag:hover{
   background-color: #eef1f6;
   
+}
+.el-tag .el-icon-close {
+  border-radius: 50%;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  font-size: 12px;
+  -ms-transform: scale(.75,.75);
+  transform: scale(.75,.75);
+  height: 22px;
+  width: 22px;
+  line-height: 22px;
+  vertical-align: middle;
+  top: -1px;
+  right: -2px;
 }
