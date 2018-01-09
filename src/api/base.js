@@ -1,9 +1,4 @@
-import axios from 'axios'
-
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
+import instance from '@/utils/fetch'
 instance.interceptors.request.use(config => {
   for (var i in config.data) {
     console.log(encodeURI(config.data[i]), '拦截器----------------')

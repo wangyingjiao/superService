@@ -480,3 +480,15 @@ body {
   top: -1px;
   right: -2px;
 }
+.el-tabs__nav-scroll{
+  padding-bottom: 20px;
+}
+.el-tabs__active-bar{
+  height: 2px;
+  width: 50px !important;
+}
+.el-tabs__item{
+  width: 50px;
+  padding: 0;
+  text-align: center;
+}
