@@ -106,7 +106,7 @@
 						    <template scope="scope">
 						    		<span v-if="scope.row.payStatus =='payed'">已支付</span>
 									<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
-								</template>	
+							</template>	
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 							</el-table-column>	  
@@ -118,7 +118,7 @@
 				</el-table>
 				<div v-show="!listLoading" class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
-					:page-sizes="[10,20,30, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+					:page-sizes="[5,10,15,20]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 					</el-pagination>
 				</div>
 			</div>
@@ -200,7 +200,8 @@ export default {
 		var obj=pramsObj; 
 	    getOrderTable(obj,pageNo,pageSize).then(res => {
 			if(res.data.code === 1){
-				this.tabDataList = res.data.data.page.list;										
+				this.tabDataList = res.data.data.page.list;
+				console.log(this.tabDataList)										
 				this.mechanismOptions=res.data.data.orgList;
 				this.total=res.data.data.page.count;
 				this.listLoading = false;
