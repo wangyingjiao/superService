@@ -1,6 +1,4 @@
 import instance from '@/utils/fetch'
-import { getSession } from '@/utils/auth'
-
 
 export function loginByUsername(obj) {
   return instance.post(`/apiservice/a/login`, obj)
