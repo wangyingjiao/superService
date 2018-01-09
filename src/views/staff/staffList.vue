@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索手机号" v-model="search.mobile">
+      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索登录账号" v-model="search.mobile">
       </el-input>
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索的岗位名称" v-model="search.name">
       </el-input>
@@ -539,6 +539,7 @@ export default {
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
         if (this.list != undefined) {
+          
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
@@ -554,13 +555,16 @@ export default {
         mobile: this.search.mobile
       };
       this.listLoading = true;
+
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+        if (res.data.data.list != undefined) {
+          
+          for (var i = 0; i < res.data.data.list.length; i++) {
+            res.data.data.list[i].index = i + 1;
           }
+          console.log(res.data.data.list,'list-------------')
         }
+          this.list = res.data.data.list;
         this.listLoading = false;
       });
     },
