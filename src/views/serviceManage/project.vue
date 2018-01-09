@@ -185,7 +185,7 @@
                   placeholder="服务内容；服务流程；服务保障"></el-input>
                 </el-form-item>
 
-                <el-form-item label="系统标签：">
+                <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
@@ -419,13 +419,13 @@
     <!-- 商品信息 完成 -->
     <!--自定义标签 -->
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
-        <el-form :model="labelObj" :rules="labelRules">
+        <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
             <el-input v-model="labelObj.labelName" placeholder="标签名称长度2~10位"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-large" @click="CustomLabel" value="确 定">
+          <input type="button" class="button-large" @click="CustomLabel('labelObj')" value="确 定">
           <input type="button" class="button-cancel" @click="addLabel = false" value="取 消">
         </div>
       </el-dialog>
@@ -758,13 +758,14 @@ export default {
         callback(new Error("请输入商品单位"));
       }
     };
+    //价格
     var PRICE = (rule, value, callback) => {
-      var reg = /^\d+$/;
+      var reg = /^\d+(\.\d{1,2})?$/;
       if (value) {
         if (reg.test(value)) {
           callback();
         } else {
-          callback(new Error("价格必须为数字值"));
+          callback(new Error("不能为特殊字符，小数保留后两位"));
         }
       } else {
         callback(new Error("请输入价格"));
@@ -825,10 +826,38 @@ export default {
     //服务图片
     var PICTURE = (rule,value,callback)=>{
       // callback()
+      console.log(this.picFile,"this.picFile-----------------[][][]")
       if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
         callback(new Error("请添加服务图片"))
+      }
+    }
+    //系统标签
+    var SYSTAGS = (rule,value,callback)=>{
+      var arr = this.labelClickArr.concat(this.alreadyArr)
+      if(arr!=undefined && arr.length>0){
+        callback()
+      }else{
+        callback(new Error('请选择系统标签'))
+      }
+    }
+    //自定义标签 
+    var LABELNAME = (rule,value,callback)=>{
+      console.log(value,"-------------------value")
+      var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
+      if(value){
+        if(value.length>2 && value.length<10){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('不能输入特殊字符'))
+          }
+        }else{
+          callback(new Error('长度2-10位'))
+        }
+      }else{
+        callback(new Error('请选择自定义标签'))
       }
     }
     return {
@@ -914,8 +943,11 @@ export default {
       },
       labelRules:{
         labelName:[
-          { required: true, message: "请输入标签名称(2-10位)", trigger: "blur" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          {
+            required:true,validator:LABELNAME,trigger:'blur'
+          }
+          // { required: true, message: "请输入标签名称(2-10位)", trigger: "blur" },
+          // { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ]
       },
       basicForm: {
@@ -941,7 +973,8 @@ export default {
           ],
         sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-        description: [{ required: true, message: "请输入服务描述", trigger: "blur" }]
+        description: [{ required: true, message: "请输入服务描述", trigger: "blur" }],
+        sysTags:[{required:true,validator:SYSTAGS,trigger:'blur'}]
       },
       // goods_info: {
       //   name: "",
@@ -960,7 +993,6 @@ export default {
       },
       search: {
         sortId: "",
-        cityCode: "",
         name: ""
       },
       pageSize: 10,
@@ -1122,18 +1154,24 @@ export default {
       this.basicForm.customTags.splice(index,1)
     },
     //自定义标签
-    CustomLabel(){
-      if(this.basicForm.customTags.length>2){
-         this.$message({
-          message: '最多设置3个自定义标签',
-          type: 'warning'
-        });
-        return false
-      }else{
-        this.basicForm.customTags.push(this.labelObj.labelName)
-        this.labelObj.labelName = ''
-      }
-      this.addLabel = false
+    CustomLabel(formName){
+      this.$refs[formName].validate(valid => {
+        if(valid){
+          if(this.basicForm.customTags.length>2){
+            this.$message({
+              message: '最多设置3个自定义标签',
+              type: 'warning'
+            });
+            return false
+          }else{
+            this.basicForm.customTags.push(this.labelObj.labelName)
+            this.labelObj.labelName = ''
+          }
+          this.addLabel = false
+        }else{
+          return false
+        }
+      })
     },
     //服务图片验证
     handPic(file) {
@@ -1576,9 +1614,6 @@ export default {
       if (this.search.sortId) {
         obj.sortId = this.search.sortId;
       }
-      if (this.search.cityCode) {
-        obj.cityCode = this.search.cityCode;
-      }
       if (this.search.name) {
         obj.name = this.search.name;
       }
@@ -1628,8 +1663,17 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = Object.assign({},this.search)
-      obj.majorSort = this.tabs
+      var obj = {};
+      if (this.basicForm.majorSort) {
+        obj.majorSort = this.tabs;
+      }
+      if (this.search.sortId) {
+        obj.sortId = this.search.sortId;
+      }
+      if (this.search.name) {
+        obj.name = this.search.name;
+      }
+
       this.listLoading = true;
       console.log(obj,"_______")
       getProject(obj, this.pageNumber, this.pageSize).then(res => {
@@ -2438,7 +2482,7 @@ hr {
   padding-top:0; 
 }
 .labelList{
-  width: 90%;
+  width:100%;
   box-sizing: border-box;
   padding: 10px;
   border: 1px solid #bfcbd9;

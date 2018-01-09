@@ -62,12 +62,12 @@
         "43": "乌孜别克族"
     },
     "education": {
+        "primary": "小学",
+        "middle": "初中",
         "special": "中专",
         "high": "高中",
-        "middle": "初中",
-        "university": "本科及以上",
         "junior": "大专",
-        "primary": "小学"
+        "university": "本科及以上"
     },
     "assess_grade": {
         "1": "一级",

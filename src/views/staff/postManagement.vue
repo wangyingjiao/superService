@@ -66,7 +66,7 @@
         >
 
         <el-form-item label=" 所属机构:"  prop="officeId">
-          <el-select class="form_item" @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -657,7 +657,7 @@ export default {
       }
       //return;
       var obj = {
-        name: this.temp.name,
+        name: encodeURI(this.temp.name),
         dataScope: this.temp.dataScope,
         menuIds: str,
         useable: "1", //状态
