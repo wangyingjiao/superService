@@ -77,31 +77,34 @@
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">交易单号:</span>
                       <span class="lineContent">{{payInfo.payNumber}}</span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
+                       <span class="lineTitle">支付状态:</span>
+                       <span>待支付</span> 
+                   </p>                                      
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付方式:</span>
                       <span class="lineContent">
                         <span v-if="payInfo.payMethod =='offline'">货到付款</span>
                         <span v-if="payInfo.payMethod =='online'">在线</span>                        
                       </span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付总额:</span>
                       <span class="lineContent">{{payInfo.payAccount}}元</span>
                    </p>                                      
                 </div>
                 <div class="rightArea">
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付状态:</span>
-                      <span class="lineContent">
-                        <span v-if="payInfo.payStatus =='payed'">已支付</span>
-                        <span v-if="payInfo.payStatus =='waitpay'">待支付</span>                        
+                      <span class="lineContent" >
+                        <span>已支付</span>                                                                        
                       </span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付平台:</span>
                       <span class="lineContent">
                           <span v-if="payInfo.payPlatform =='wx'">微信</span>
@@ -113,7 +116,7 @@
                           <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
                       </span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付时间:</span>
                       <span class="lineContent">{{payInfo.payTime}}</span>
                    </p>                                       
@@ -140,9 +143,9 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70" @click="changeTime"><input type="button"   class="button-cancel height25"  value="更换时间"></span>
+                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
                       <span class="lineTitle">完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>                                     
@@ -347,45 +350,37 @@
         <!--门店信息结束-->                                                
         <!--技师选择弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
-          <div class="selectTechHL">
-          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
-          </div>
-          <div  class="selectTechHR">
-          <el-select clearable placeholder="请选择服务站" v-model="techStationId">
-            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-          <span v-show="promShow1" class="selfPromINF">{{promInf1}}</span>
-          </div>
-          <div class="FloatRight"><button class="button-large" @click="searchTeh">查询</button></div> 	
+          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
+          <button class="button-large FloatRight" @click="searchTeh">查询</button>                                    	
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table width="100%" class="selfTable">
               <tr>
                 <td  class="selfTableHEADTD" align="center" width="8%">选择</td>
-                <td  class="selfTableHEADTD" align="center" width="20%">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="18%">头像</td>
                 <td  class="selfTableHEADTD" align="center" width="18%">姓名</td>
-                <td  class="selfTableHEADTD" align="center" width="10%">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="34%">服务站</td>
-                <td  class="selfTableHEADTD" align="center" width="10%">岗位性质</td>							
+                <td  class="selfTableHEADTD" align="center" width="13%">性别</td>
+                <td  class="selfTableHEADTD" align="center" width="15%">岗位性质</td>							
               </tr>
               <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
-                <td class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-                <td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
+                <td class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+                <td  class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
                 <td class="fontSize12" align="center">{{item.techName}}</td>
                 <td  class="fontSize12" align="center">
-                <span class="fontSize12" v-if="item.techSex =='male'">男</span>
-                <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+                  <span class="fontSize12" v-if="item.techSex =='male'">男</span>
+                  <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
                 </td>
-                <td  align="center" class="fontSize12">{{item.techStationName}}</td>
-                <td class="fontSize12"  align="center">全职</td>							
+                <td class="fontSize12"  align="center">
+                      <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+                      <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+                </td>							
               </tr>
               </table>
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
             <button class="button-large" @click="submitForm2()">保存</button>
-            <button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
+            <button class="button-cancel" @click="cancelForm2()">取 消</button>
           </div>
         </el-dialog>
         <!--技师选择弹窗结束-->        
@@ -408,7 +403,7 @@
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                     <div class="marginTopDec46">                                            
-                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.value}}</div>
+                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
                     </div>                    
               </el-form-item>              
 
@@ -423,7 +418,7 @@
 </template>
 
 <script>
-import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData} from "@/api/order";
+import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData,addTechSave,dispatchTechSave,saveTime} from "@/api/order";
   import {
     orderServer
   } from '@/api/skill'
@@ -449,7 +444,7 @@ export default {
               { required: true,message:'请选择服务时间', trigger: 'change' },
             ]          
           },      
-          timeObj:[{id:1,value:'8:00'},{id:2,value:'8:30'},{id:3,value:'9:00'}],//时间对象
+          timeObj:[],//时间对象
           addressInfo:[],//服务地址信息
           otherInfo:[],
           payInfo:[],//支付信息
@@ -471,9 +466,14 @@ export default {
           value2:'',
           tabOptions:[],
           dialogTableVisible:false,				
-           tableData:[], 
-           tableData1:[],
-          dialogVisible:false,                		
+          tableData:[], 
+          tableData1:[],
+          dialogVisible:false, 
+          middleA:[],
+          changTime:'',
+          status:'add',
+          aa:'',
+          bb:''               		
     };
   },
   methods:{
@@ -483,13 +483,13 @@ export default {
         id:orderId
       }
       getOrderInf(obj).then(res => {      
-          if (res.data.code === 1) {                         
+          if (res.data.code === 1) {                                   
             var AllInfo=res.data.data;
             this.otherInfo=AllInfo;//所有其他信息变量
             this.goodsInfo=AllInfo.goodsInfo//服务信息
             this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
-            this.payInfo=AllInfo.payInfo//支付信息
             this.tableData1=AllInfo.techList//技师信息表格
+            this.payInfo=AllInfo.payInfo//支付信息
           }else{
           }          
         }).catch(res=>{
@@ -497,16 +497,43 @@ export default {
         });
     },
     //更换时间的保存
-    submitTime(formName){
+    submitTime(formName){      
       this.$refs[formName].validate((valid) => {
           if (valid) { 
-            console.log(this.timeObj)
+            var time='';
             for(var a=0;a<this.timeObj.length;a++){
               if(this.timeObj[a].selected==true){
-                console.log(this.timeObj[a]);
+                time=this.timeObj[a].serviceTimeStr;
+                this.bb=this.timeObj[a].serviceTimeStr;
               }
             }
-            //保存成功后也要复位样式
+            var that=this;
+            this.$confirm('此操作将更改技师, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+                //更换时间的保存
+                var obj={
+                  id:this.$route.query.id,
+                  serviceTime:this.changTime+' '+time+':00'
+                }
+                saveTime(obj).then(res => {      
+                  if (res.data.code === 1) {                         
+                      this.$message({
+                        type: "success",
+                        message: "更换时间成功!"
+                      });
+                      this.tableData1=res.data.data;
+                      this.otherInfo.serviceTime=that.changTime+' '+that.bb
+                  }else{
+                  }          
+                }).catch(res=>{
+                  
+                });
+            }).catch(() => { 
+
+            });                         
             this.dialogVisible = false            
           }
       })
@@ -525,21 +552,40 @@ export default {
       }      
       this.dialogVisible = false
     },
+    //选择技师弹出层取消
+    cancelForm2(){
+      this.dialogTableVisible = false
+    },
     //日期变化时改变时间对象
-    dateChange(value){      
+    dateChange(value){     
       if(value != undefined){
+        this.changTime=value 
         var obj={
           id:this.$route.query.id,
           serviceTime:value+' 00:00:00'
         } 
         ChangeTimeData(obj).then(res => {      
           if (res.data.code === 1) {                         
-              console.log(res)
+              this.timeObj=res.data.data;
+              if(this.timeObj != undefined){
+                //样式复位
+                for(var a=0;a<this.timeObj.length;a++){
+                    this.$set(this.timeObj[a],'selected',false)
+                    this.$refs.TimeWrap[a].style.borderColor = "#fff";
+                    this.$refs.TimeWrap[a].style.color = "#000";
+                    this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+                    this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+                } 
+              }
+             
           }else{
+            this.timeObj=[];
           }          
         }).catch(res=>{
           
         });        
+      }else{
+        this.timeObj=[];
       }
     },
     //时间选项点击
@@ -551,7 +597,7 @@ export default {
               this.$refs.TimeWrap[a].style.color = "green";
               this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
               this.timeObj[a].selected = !this.timeObj[a].selected;
-              this.formInline.Time=this.timeObj[a].value       
+              this.formInline.Time=this.timeObj[a].serviceTimeStr       
           }else{
               this.$refs.TimeWrap[a].style.borderColor = "#fff";
               this.$refs.TimeWrap[a].style.color = "#000";
@@ -560,74 +606,138 @@ export default {
                                         
           }
       }
-    },
-    //技师数据回显二级选中
-    // selectionreturn1(){
-    //   if(this.tabOptions.length != 'undefined'){
-    //     for(let a=0;a<this.listTech.length;a++){
-    //       for(let b=0;b<this.tabOptions.length;b++){
-    //         if(this.tabOptions[b].techId == this.listTech[a].techId){
-    //         this.listTech[a].techChecked=true;
-    //         }
-    //       }
-    //     }
-    //   }                                        
-    // },       
+    },      
     //选择技师弹出层查询按钮
-    searchTeh(){        
-          this.$nextTick( () => {
-            //前端定位
-            var falg1=0;              
-            var len = this.listTech.length;
-            for(var i=0;i<len;i++){
-              if(this.listTech[i].techName == this.techName || this.listTech[i].techStationId== this.techStationId ){
-                  falg1=1;
-                  this.$refs.tableItem1[i].scrollIntoView()
-                  this.$refs.tableItem1[i].style.background='#eee'                    
-              }else{
-                this.$refs.tableItem1[i].style.background='#fff' 
-              }                   
-            } 							
-            if(falg1 ==0){
-              var that=this
-              this.promShow1=true;
-              setTimeout(function(){
-              that.promShow1=false;                  
-              },2000);
-            }else{ 
-              this.promShow1=false;
-            }
-          })             
+    searchTeh(){  
+        var obj = {
+          id:this.$route.query.id,
+          techName: this.techName
+        };
+        //服务技师获取
+        if(this.status == 'add'){
+            addTechData(obj).then(res => {
+                if (res.data.code === 1) {
+                  this.listTech = res.data.data;
+                  for (var b = 0; b < this.middleA.length; b++) {
+                    for (var a = 0; a <this.listTech.length; a++) {
+                      this.$set(this.listTech[a],'techChecked',false)
+                      if (
+                        this.listTech[a].techId ==
+                        this.middleA[b].techId
+                      ) {
+                        this.listTech[a].techChecked = true;
+                      }
+                    }
+                  }
+                }
+              }).catch(res=>{
+                      
+              });
+        }else{
+            dispatchTechData(obj).then(res => {
+                if (res.data.code === 1) {
+                  this.listTech = res.data.data;
+                  for (var c = 0; c < this.middleA.length; c++) {
+                    for (var d = 0; d <this.listTech.length; d++) {
+                      this.$set(this.listTech[d],'techChecked',false)
+                      if (
+                        this.listTech[d].techId ==
+                        this.middleA[c].techId
+                      ) {
+                        this.listTech[d].techChecked = true;
+                      }
+                    }
+                  }
+                }
+              }).catch(res=>{
+                      
+              });          
+        }                         
     },
+    //存储选择技师对象
+    ChangeTech(obj){
+      if(obj.techChecked){
+          this.middleA.push(obj)
+      }else{
+          this.middleA.remove(obj)
+      }
+    },    
     //选择技师弹出层保存
     submitForm2() {
-      var arr=[];
-      if(this.listTech.length){
-        for(let a=0;a<this.listTech.length;a++){
-          if(this.listTech[a].techChecked == true){
-            arr.push(this.listTech[a]);
+      //先遍历数据中选中的再保存
+      var arr = [];
+      if (this.middleA != undefined && this.middleA.length != 0) {
+        for (let a = 0; a < this.middleA.length; a++) {
+          if (this.middleA[a].techChecked == true) {
+            arr.push(this.middleA[a].techId);
           }
         }
       }
-      this.tabOptions=arr
+      if(this.status == 'add' && arr.length !=0 ){
       //保存技师接口调用
-      console.log(this.tabOptions);
-      this.dialogTableVisible = false	
+        var obj={
+          id:this.$route.query.id,
+          techIdList:arr
+        }
+        addTechSave(obj).then(res => {      
+          if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+              this.tableData1=res.data.data;
+              this.middleA=[];                         
+              this.dialogTableVisible = false
+          }else{            
+          }          
+        }).catch(res=>{
+          
+        });
+      }
+      if(this.status == 'edit' && arr.length !=0 ){
+        var obj1={
+          id:this.$route.query.id,
+          dispatchTechId:this.aa,
+          techIdList:arr
+        }
+        dispatchTechSave(obj1).then(res => {      
+          if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "改派成功!"
+              });
+              this.tableData1=res.data.data;
+              this.middleA=[];                         
+              this.dialogTableVisible = false
+          }else{
+          }          
+        }).catch(res=>{
+          
+        });        
+      }
+      if(arr.length ==0){
+        this.$message({
+          type: "warning",
+          message:'请选择技师'
+        });
+      }             	
     },         
     //改派或新增技师
     gaiPai(status,obj){
-        console.log(status);
-        this.dialogTableVisible=true;
+        this.aa=obj.techId;
+        this.status=status;
+        this.techName='';         
         if(status == 'add'){
               var obj={
                 id:this.$route.query.id
               };            
               addTechData(obj).then(res => {      
                 if (res.data.code === 1) {                         
-                  this.options=res.data.data.stations 
-                  this.listTech=res.data.data.techs 
-                  this.dialogTableVisible=true;
-                  //this.selectionreturn1();                                                          
+                  this.listTech=res.data.data
+                  for(var a=0;a<this.listTech.length;a++){
+                    this.$set(this.listTech[a],'techChecked',false)
+                  }
+                  this.dialogTableVisible=true;                                                          
                 }else{
                 }          
               }).catch(res=>{
@@ -639,10 +749,8 @@ export default {
               };            
               dispatchTechData(obj1).then(res => {      
                 if (res.data.code === 1) {                         
-                  this.options=res.data.data.stations 
-                  this.listTech=res.data.data.techs 
-                  this.dialogTableVisible=true;
-                  //this.selectionreturn1();                                                          
+                  this.listTech=res.data.data 
+                  this.dialogTableVisible=true;                                                         
                 }else{
                 }          
               }).catch(res=>{
@@ -657,7 +765,7 @@ export default {
       this.$nextTick( () => {
           //样式复位
           for(var a=0;a<this.timeObj.length;a++){
-            this.$set(this.timeObj[a],'selected',false)
+              this.$set(this.timeObj[a],'selected',false)
               this.$refs.TimeWrap[a].style.borderColor = "#fff";
               this.$refs.TimeWrap[a].style.color = "#000";
               this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
@@ -697,15 +805,13 @@ export default {
 .selfMarTL{margin-top:0px;margin-left:82px;}
 .selfbeizhu{min-width:900px;margin-left:22px;float:left;}
 .selfbeizhu1{min-width:900px;margin-left: 102px;margin-top: -15px;float:left;}
-.selectTechHL{float:left;width:120px}
-.selectTechHR{float:left;margin-left:10px;}
 .width120{width:120px;}
 .selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
 .FloatRight{float:right;}
 .FloatLeft{float:left;}
-.selfTableWrapONE{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
-.selfTableHEADTD{background: #F8F8F9;height:30px;}
-.height110{height:110px;}
+.selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+.selfTableHEADTD{background:#eef1f6;height:60px;}
+.height70{height:70px;}
 .imgStyle{display:block;}
 .fontSize12{font-size:12px;}
 .techTabWrap{width:690px;float:left;padding-left:30px;padding-bottom:20px;}
