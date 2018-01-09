@@ -2,36 +2,35 @@ import axios from 'axios'
 
 const instance = axios.create({
   headers: { 'content-type': 'application/json;charset=UTF-8' }
-
 })
 // 拦截器防止中文乱码
 instance.interceptors.request.use(config => {
   for (var i in config.data) {
     console.log(encodeURI(config.data[i]), '拦截器----------------')
-    //config.data[i] = encodeURI(config.data[i])
+    config.data[i] = encodeURI(config.data[i])
   }
-  //console.log(config.data,'拦截器输出的值')
+  // console.log(config.data,'拦截器输出的值')
   return config
 }, error => {
   console.log(error)
 })
-//添加员工
+// 添加员工
 export function addStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/saveData`, obj)
 }
-//获取岗位列表（分页）
+// 获取岗位列表（分页）
 export function getStationPage(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/sys/role/listPageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-//获取岗位列表（不分页）
+// 获取岗位列表（不分页）
 export function getStation(obj) {
   return instance.post(`/apiservice/a/sys/role/listData`, obj)
 }
-//获取员工列表（分页）
+// 获取员工列表（分页）
 export function getStaff(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/sys/user/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
-//添加岗位
+// 添加岗位
 export function addStation(obj) {
   return instance.post(`/apiservice/a/sys/role/saveData`, obj)
 }
