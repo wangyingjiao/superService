@@ -73,20 +73,20 @@ const user = {
       // }else{
       //   console.log(44444444444444444444444)
       // }
-      commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
+      //commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           const data = response.data
           console.log(data, '权限列表')
-          localStorage.setItem('menu', JSON.stringify(data.data))
-          console.log(JSON.parse(localStorage.getItem('menu')))
-          var arr = JSON.parse(localStorage.getItem('menu'))
-          if (arr.length > 0) {
-            commit('SET_MENU', arr)
-          } else {
+          //localStorage.setItem('menu', JSON.stringify(data.data))
+          //console.log(JSON.parse(localStorage.getItem('menu')))
+          //var arr = JSON.parse(localStorage.getItem('menu'))
+          // if (0) {
+          //   commit('SET_MENU', arr)
+          // } else {
             commit('SET_MENU', data.data)
 
-          }
+         // }
           resolve(response)
         }).catch(error => {
           reject(error)
