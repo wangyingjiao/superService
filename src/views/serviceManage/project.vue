@@ -8,7 +8,7 @@
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <el-select clearable class="search"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
-        <el-option v-for="(item,index) in sortList" :key="index" :label="item.name" :value="item.id">
+        <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
 
@@ -35,9 +35,12 @@
     element-loading-text="正在加载" 
     style="width: 100%;" >
       <el-table-column align="center" label="排序号" width="100">
-         <template scope="scope">
-          <input type="text" v-model="scope.row.sortNum" class="sortInput" @blur="indexBlur(scope.row)">
+        <template scope="scope">
+          {{scope.row.num+(pageNumber-1)*pageSize}}
         </template>
+         <!-- <template scope="scope">
+          <input type="text" v-model="scope.row.sortNum" class="sortInput" @blur="indexBlur(scope.row)">
+        </template> -->
       </el-table-column>
 
       <el-table-column align="center" label="图片">
@@ -141,7 +144,7 @@
                   <el-input
                   class="form_item"
                   v-model="basicForm.name"
-                  placeholder="请输入2-10位的服务站名称"></el-input>
+                  placeholder="请输入2-10位的项目名称"></el-input>
                 </el-form-item>
 
                 <!-- <el-form-item label="定向城市：" class="seize"> 
@@ -160,8 +163,8 @@
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
                           :on-preview="handlePreview"
-                          :on-remove="handleRemovePic"
                           :before-upload="handPic"
+                          :on-remove="handleRemovePic"
                           :file-list="picList"
                           :http-request="picUpload"            
                           >
@@ -253,7 +256,11 @@
                       <span>{{scope.row.convertHours+'小时/'+scope.row.unit}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="startPerNum" align="center" label="起步人数"> </el-table-column>
+                  <el-table-column align="center" label="起步人数">
+                    <template scope="scope">
+                      <span>{{scope.row.startPerNum || 1}}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> </el-table-column>
                   <el-table-column prop="minPurchase" align="center" label="起购数量"> </el-table-column>
                   <el-table-column label="操作" width="150" align="center"> 
@@ -347,7 +354,7 @@
                 </el-form-item>
 
                 <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="可用" style="width:70%">
+                  <el-select class="filter-item" v-model="goods_info.type" placeholder="请选择" style="width:70%">
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
@@ -363,14 +370,14 @@
                   </el-input>
                 </el-form-item>
              
-                <el-form-item label="起步人数:" class="seize">
+                <el-form-item label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
-                    placeholder="请输入起步人数"
+                    placeholder="请输入起步人数(默认为1)"
                     style="width:70%"
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
-                <el-form-item label="封顶人数:" class="seize">
+                <el-form-item label="封顶人数:" class="seize" prop="cappinPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
                     style="width:70%"
@@ -397,7 +404,7 @@
                    </table>
                 </el-form-item> -->
 
-                <el-form-item label="起购数量:" class="seize">
+                <el-form-item label="起购数量:" class="seize" prop="minPurchase">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
                     style="width:70%"
@@ -405,7 +412,7 @@
                 </el-form-item>
 
                 <el-form-item class="seize bottimPro" style="width:70%">
-                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="保 存">
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
@@ -513,7 +520,7 @@
                 <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
             </div>
             <div class="image-text-body">
-                <div v-if="imgText.length<=0" class="details">暂无图文详情</div>
+                <div v-if="imgText.length<=0" class="details">点击右上角加号按钮,添加图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
                           action="https://openservice.oss-cn-beijing.aliyuncs.com"
@@ -741,31 +748,36 @@ export default {
     waves
   },
   data() {
-    var UNIT = (rule, value, callback) => {
-      var reg = /^\d+$/;
-      if (value) {
-        callback()
-        // if (value.length >= 1 && value.length <= 5) {
-        //   if (reg.test(value)) {
-        //     callback();
-        //   } else {
-        //     callback(new Error("商品单位必须为数字值"));
-        //   }
-        // } else {
-        //   callback(new Error("长度在 1 到 5 个字符"));
-        // }
-      } else {
-        callback(new Error("请输入商品单位"));
-      }
-    };
+    // var UNIT = (rule, value, callback) => {
+    //   var reg = /^\d+$/;
+    //   if (value) {
+    //     callback()
+    //     // if (value.length >= 1 && value.length <= 5) {
+    //     //   if (reg.test(value)) {
+    //     //     callback();
+    //     //   } else {
+    //     //     callback(new Error("商品单位必须为数字值"));
+    //     //   }
+    //     // } else {
+    //     //   callback(new Error("长度在 1 到 5 个字符"));
+    //     // }
+    //   } else {
+    //     callback(new Error("请输入商品单位"));
+    //   }
+    // };
     //价格
     var PRICE = (rule, value, callback) => {
+      var val = value+''
       var reg = /^\d+(\.\d{1,2})?$/;
-      if (value) {
-        if (reg.test(value)) {
-          callback();
-        } else {
-          callback(new Error("不能为特殊字符，小数保留后两位"));
+      if (val) {
+        if(val.length>=1 && val.length<=8){
+          if(reg.test(val)){
+            callback()
+          }else{
+            callback(new Error("不能为特殊字符，小数保留后两位"));
+          }
+        }else{
+          callback(new Error('长度在1到8个字符'))
         }
       } else {
         callback(new Error("请输入价格"));
@@ -777,7 +789,7 @@ export default {
       if (value) {
           if(this.goods_info.type == 'num'){
             // console.log(value)
-            if(value>0.01 && value<1.5){
+            if(value>=0.01 && value<=1.5){
               callback();
             }else{
               callback(new Error('请正确输入(0.01~1.5小时)'))
@@ -785,7 +797,7 @@ export default {
           }
 
          if(this.goods_info.type == 'area'){
-            if(value>0.01 && value<0.5){
+            if(value>=0.01 && value<=0.5){
               callback()
             }else{
               callback(new Error('请正确输入(0.01~0.5小时)'))
@@ -847,7 +859,7 @@ export default {
       console.log(value,"-------------------value")
       var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
       if(value){
-        if(value.length>2 && value.length<10){
+        if(value.length>=2 && value.length<=10){
           if(reg.test(value)){
             callback()
           }else{
@@ -860,16 +872,72 @@ export default {
         callback(new Error('请选择自定义标签'))
       }
     }
+    //封定人数
+    var CAPPINPERNUM = (rule,value,callback)=>{
+      var reg = /^\d+$/;
+        if(value){
+          if(reg.test(value)){
+            if(value*1>=this.goods_info.startPerNum*1){
+               callback()
+            }else{
+              callback(new Error('起步人数不能大于封顶人数'))
+            }
+          }else{
+            callback(new Error('请输入数字'))
+          }
+        }else{
+          callback()
+        }
+    }
+    //起步人数
+    var STARTPERNUM = (rule,value,callback)=>{
+      var reg = /^\d+$/;
+      if(value){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入数字'))
+          }
+      }else{
+         callback()
+      }
+      // console.log(value,"value-------------------")
+      // if(this.goods_info.cappinPerNum){
+      //    if(this.goods_info.cappinPerNum*1>=value*1){
+      //       callback()
+      //     }else{
+      //       callback(new Error('起步人数不能大于封顶人数'))
+      //     }
+      // }else{
+      //   callback()
+      // }
+     
+    }
+    //起够数量
+    var MINPURCHASE = (rule,value,callback) =>{
+      var reg = /^\d+$/;
+      if(value){
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('请输入数字'))
+        }
+      }else{
+        callback()
+      }
+    }
     return {
       editIndex:{
         falge:false,
         id:null
       },
+      pageNumber:1,
       alreadyArr:[],
       labelClickCon:[],
       labelClickArr:[],
       systemClickId:null,
       systemClick2Id:null,
+      imgFlag:true,
       systemClick3Id:null,
       systemOptions:[],
       systemOptions2:[],
@@ -905,17 +973,21 @@ export default {
       commoditys: [],
       imageUrl: "",
       dialogImageUrl: "",
+      handleEditFlag:false,
+      handleEditIndex:null,
       dialogVisible: false,
+      Imagestext:true,
       measure: [
       ],
       listTable: [],
       listLoading: true,
       whether: true,
       sortList: [],
+      searchSortList:[],
       goods_info:{
         name:'',
         unit:'',
-        type:'',
+        type:'',  
         price:'',
         convertHours:'',
         startPerNum:'',
@@ -928,17 +1000,26 @@ export default {
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
         unit: [
-          { required: true, validator: UNIT, trigger: "blur" }
+          { required: true, message:"请输入商品单位", trigger: "blur" },
+          { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" }
         ],
         type: [
           { required: true, message: "请选择计量方式", trigger: "change" }
         ],
         price: [
-          { required: true, validator: PRICE, trigger: "blur" }
+          { required: true, validator: PRICE, trigger: "blur" },
+          // { min: 1, max: 8, message: "长度在 1 到 8 个字符", trigger: "blur" }
         ],
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
+        startPerNum:[
+          {validator:STARTPERNUM,trigger:'blur'}
+        ],
+        cappinPerNum:[
+          {validator:CAPPINPERNUM,trigger:'blur'}
+        ],
+        minPurchase:[{validator:MINPURCHASE,trigger:'blur'}]
         // persons: [{ require: true, validator: PERSONS, trigger: "change" }]
       },
       labelRules:{
@@ -1013,8 +1094,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑服务项目",
+        create: "新增服务项目"
       },
       tableKey: 0,
       city: ["1", "2", "3"],
@@ -1033,7 +1114,8 @@ export default {
   },
   created() {
     //所属分类
-    this.tableProject({majorSort:"clean"})
+    // this.tableProject({majorSort:"all"})
+    this.handleClick({name:'all'})
     //系统标签
     serGasqSort()
       .then(data=>{
@@ -1072,7 +1154,7 @@ export default {
       Taxonomy(obj)
       .then(data => {
         console.log(data,"clean++++++++++===============")
-        this.sortList = data.data.data.list;
+        this.sortList = data.data.data;
         if(id){
           this.basicForm.sortId = id
         }
@@ -1175,29 +1257,36 @@ export default {
     },
     //服务图片验证
     handPic(file) {
+      if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
+        this.imgFlag = true
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+        console.log(this.picFile,"this.picFile------")
+        if (this.picFile.indexOf(src) > -1) {
+          this.$message({
+            type: "warning",
+            message: "此图片已经上传"
+          });
+          return false;
+        }
+        if (this.picFile.length >= 4) {
+          this.$message({
+            type: "warning",
+            message: "最多上传4张图片"
+          });
+          return false;
+        }
+      }else{
+        this.imgFlag = false
+        this.$message.error('请上传正确的图片格式');
+        return false
+      }
       //服务图片
       // console.log(file, "上传前");
       // console.log(this.picFile);
-      var date = new Date();
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      var d = date.getDate();
-      var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-      console.log(this.picFile,"this.picFile------")
-      if (this.picFile.indexOf(src) > -1) {
-        this.$message({
-          type: "warning",
-          message: "此图片已经上传"
-        });
-        return false;
-      }
-      if (this.picFile.length >= 4) {
-        this.$message({
-          type: "warning",
-          message: "最多上传4张图片"
-        });
-        return false;
-      }
     },
     //删除图片
     handleRemove(file, fileList) {//删除图文
@@ -1205,23 +1294,27 @@ export default {
       // console.log(fileList,'文件')
       // console.log(this.imgText,'imgtext')
       // console.log(this.fileList,'filelist')
-      var str = "";
-      var index = file.url.lastIndexOf("/");
-      str = file.url.substring(index + 1, file.url.length);
-      
-      let newarr = []
-      for(var i = 0;i<this.imgText.length;i++){
-        var index = this.imgText[i].lastIndexOf("/");
-        var newstr = ''
-        newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
-        newarr.push(newstr)
+      if(this.Imagestext){
+          var str = "";
+          var index = file.url.lastIndexOf("/");
+          str = file.url.substring(index + 1, file.url.length);
+          
+          let newarr = []
+          for(var i = 0;i<this.imgText.length;i++){
+            var index = this.imgText[i].lastIndexOf("/");
+            var newstr = ''
+            newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
+            newarr.push(newstr)
+          }
+          // console.log(str);
+          // console.log(newarr,'截取')
+          var delIndex = newarr.indexOf(str)
+          //console.log(delIndex,'删除图片的下标')
+          this.imgText.del(delIndex);
+          //console.log(this.imgText);
+      }else{
+          return false
       }
-      // console.log(str);
-      // console.log(newarr,'截取')
-      var delIndex = newarr.indexOf(str)
-      //console.log(delIndex,'删除图片的下标')
-      this.imgText.del(delIndex);
-      //console.log(this.imgText);
     },
     handleRemovePic(file,fileList) {
       //删除服务图片
@@ -1229,47 +1322,57 @@ export default {
       // console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
       // console.log(this.picList,'filelist')
-
-      var str = "";
-      var index = file.url.lastIndexOf("/");
-      str = file.url.substring(index + 1, file.url.length);
-      var src = ''
-      if (file.name != undefined) {
-         src = file.name;
-      } else {
-         src = str;
+        if(this.imgFlag){
+        var str = "";
+        var index = file.url.lastIndexOf("/");
+        str = file.url.substring(index + 1, file.url.length);
+        var src = ''
+        if (file.name != undefined) {
+          src = file.name;
+        } else {
+          src = str;
+        }
+        console.log(src,'src');
+        let newarr = []
+        for(var i = 0;i<this.picFile.length;i++){
+          var index = this.picFile[i].lastIndexOf("/");
+          var newstr = ''
+          newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
+          newarr.push(newstr)
+        }
+          //console.log(newarr,'截取')
+        var delIndex = newarr.indexOf(src)
+        // console.log(newarr,src,"newarr---------------------------")
+        // console.log(delIndex,'删除图片的下标')
+        this.picFile.del(delIndex);
+      }else{
+        return false
       }
-      console.log(src,'src');
-      let newarr = []
-      for(var i = 0;i<this.picFile.length;i++){
-        var index = this.picFile[i].lastIndexOf("/");
-        var newstr = ''
-        newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
-        newarr.push(newstr)
-      }
-        //console.log(newarr,'截取')
-      var delIndex = newarr.indexOf(src)
-      // console.log(newarr,src,"newarr---------------------------")
-      // console.log(delIndex,'删除图片的下标')
-      this.picFile.del(delIndex);
       // console.log(this.picFile);
     },
     handleBefore(file) {
-      // 去重
-      console.log(this.imgText, "imgtext");
-      console.log(file);
-      var date = new Date();
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      var d = date.getDate();
-      var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-      if (this.imgText.indexOf(src) > -1) {
-        this.$message({
-          type: "warning",
-          message: "此图片已经上传"
-        });
-        return false;
+      if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+        this.Imagestext = true
+        console.log(this.imgText, "imgtext");
+        console.log(file);
+        var date = new Date();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+        if (this.imgText.indexOf(src) > -1) {
+          this.$message({
+            type: "warning",
+            message: "此图片已经上传"
+          });
+          return false;
+        }
+      }else{
+        this.Imagestext = false
+        this.$message.error('请上传正确的图片格式');
+        return false
       }
+      // 去重
     },
     subImgText(a) {
       console.log(this.imgText);
@@ -1324,7 +1427,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" +s+file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/" +s+'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1381,7 +1484,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1435,15 +1538,11 @@ export default {
       console.log(this.imageUrl, "this.imageurl------");
     },
     beforeAvatarUpload(file) {
-      // const isJPG = file.type === 'image/jpeg';
-      // const isLt2M = file.size / 1024 / 1024 < 2;
-      // if (!isJPG) {
-      //   this.$message.error('上传头像图片只能是 JPG 格式!');
-      // }
-      // if (!isLt2M) {
-      //   this.$message.error('上传头像图片大小不能超过 2MB!');
-      // }
-      // return isJPG && isLt2M;
+      const isJPG = file.type === 'image/jpg' || 'image/png' || 'image/gif';
+      if (isJPG == true) {
+      }else{
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
     },
     cjw(val) {
       console.log(val, "------------------");
@@ -1451,9 +1550,21 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid=>{
         if(valid){
-              var obj = Object.assign({},this.goods_info)
+           var obj = Object.assign({},this.goods_info)
+              obj.startPerNum = this.goods_info.startPerNum || 1
+              obj.minPurchase = this.goods_info.minPurchase ||1
+          if(this.handleEditFlag){
+            this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
+            this.resetForm('ser')
+            this.handleEditFlag = false
+          }else{
+            // var obj = Object.assign({},this.goods_info)
+            //   obj.startPerNum = this.goods_info.startPerNum || 1
+            //   obj.minPurchase = this.goods_info.minPurchase ||1
+              console.log(obj,"obj---------------")
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
+          }
         }else{
           return false
         }
@@ -1507,10 +1618,12 @@ export default {
     // },
     //表格编辑
     handleEdit(index, val) {
+      this.handleEditFlag = true
+      this.handleEditIndex = index
       console.log(index,"index------------")
       console.log(val,"val--------------")
       this.goods_info = Object.assign({},val)
-      this.basicForm.commoditys.splice(index,1)
+      // this.basicForm.commoditys.splice(index,1)
       // this.tableData[index] = this.goods_info
       // console.log(this.goods_info, "this.goods_info.name");
       // console.log(val, "this.commoditys.name");
@@ -1521,6 +1634,7 @@ export default {
     //表格删除
     tableHandleDelete(index, item) {
       // this.basicForm.commoditys.splice(index, 1);
+      this.handleEditFlag = false
       this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
@@ -1605,35 +1719,41 @@ export default {
       }
       this.personsTime = false;
     },
-    getList(page, size) {
+    getList(page, size,getObj) {
       this.listLoading = true;
       var obj = {};
-      if (this.basicForm.majorSort) {
-        obj.majorSort = this.tabs;
-      }
-      if (this.search.sortId) {
-        obj.sortId = this.search.sortId;
-      }
-      if (this.search.name) {
-        obj.name = this.search.name;
-      }
-
-      getProject(obj, page, size)
-        .then(res => {
-          console.log(res.data, "res.data-------");
-          this.total = res.data.data.count;
-          this.listTable = res.data.data.list;
-          console.log(this.listTable,"listTable")
-          this.listLoading = false;
-          var num = 0;
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].num = ++num;
+      if(getObj){
+        obj = getObj
+      }else{
+         var obj = {};
+          if (this.basicForm.majorSort) {
+            obj.majorSort = this.tabs;
           }
-          //this.total = res.data.data.count;
-        })
-        .catch(res => {
-          this.listLoading = false;
-        });
+          if (this.search.sortId) {
+            obj.sortId = this.search.sortId;
+          }
+          if (this.search.name) {
+            obj.name = this.search.name;
+          }
+      }
+        getProject(obj, page, size)
+          .then(res => {
+            console.log(res.data, "res.data-------");
+            this.total = res.data.data.count;
+            this.listTable = res.data.data.list;
+            if(this.listTable!=undefined && this.listTable.length>0){
+              // var num = page == 1? page : page-1+'1';
+              for(var i = 0 ;i<this.listTable.length ; i++){
+                this.listTable[i].num = i+1
+              }
+            }
+            console.log(this.listTable,"listTable")
+            this.listLoading = false;
+            //this.total = res.data.data.count;
+          })
+          .catch(res => {
+            this.listLoading = false;
+          });
     },
     // 搜索
     handleFilter() {
@@ -1651,15 +1771,12 @@ export default {
       // this.getList();
       var obj = Object.assign({},this.search)
       obj.majorSort = this.basicForm.majorSort
-      getProject(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        var num = 0;
-        for (var i = 0; i < this.list.length; i++) {
-          this.list[i].num = ++num;
-        }
-        this.total = res.data.data.count;
-        this.listLoading = false;
-      });
+      this.getList(this.pageNumber, this.pageSize,obj)
+      // getProject(obj, this.pageNumber, this.pageSize).then(res => {
+      //   this.listTable = res.data.data.list;
+      //   this.total = res.data.data.count;
+      //   this.listLoading = false;
+      // });
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
@@ -1676,20 +1793,20 @@ export default {
 
       this.listLoading = true;
       console.log(obj,"_______")
-      getProject(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        var num = 0;
-        for (var i = 0; i < this.list.length; i++) {
-          this.list[i].num = ++num;
-        }
-        this.listLoading = false;
-        this.total = res.data.data.count;
-      });
+      this.getList(this.pageNumber, this.pageSize,obj)
+      // getProject(obj, this.pageNumber, this.pageSize).then(res => {
+      //   console.log(res.data.data.list,"res.data.data.list----------------------------res.data.data.list-------------------------")
+      //   this.listTable = res.data.data.list;
+      //   // var num = 0;
+      //   this.listLoading = false;
+      //   this.total = res.data.data.count;
+      // });
     },
     handleCreate(formName) {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
+       this.tableProject({majorSort:"clean"})
       this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
@@ -1738,6 +1855,7 @@ export default {
           }
           this.tableProject({majorSort:arr.majorSort},arr.sortId)
           this.basicForm = arr;
+          this.basicForm.customTags = arr.customTags || []
           console.log(this.basicForm, "basicForm------");
           this.alreadyArr = arr.sysTags || []
         })
@@ -1889,8 +2007,17 @@ export default {
       });
     },
     handleClick(tab, event) {
-      console.log(tab, event, "-------tab");
+      console.log(tab.name, event, "-------tab");
       var size = this.pageSize;
+       Taxonomy({majorSort:tab.name})
+        .then(data => {
+          console.log(data,"clean++++++++++===============")
+          this.searchSortList = data.data.data;
+        })
+        .catch(error => {
+        console.log(error, "error-----project");
+      });
+      // this.tableProject({majorSort:tab.name})
       this.getList(1, size);
       this.listQuery.page = 1;
     },
@@ -1979,6 +2106,9 @@ export default {
               });
           } else {
             console.log(obj);
+            if("id" in obj){
+              delete obj.id
+            }
             ServerAdd(obj)
               .then(data => {
                 console.log(data, "添加成功");
@@ -1988,6 +2118,10 @@ export default {
                     type: "success"
                   });
                   this.cancel("basic");
+                  this.basicForm.majorSort = 'all';
+                  this.search.sortId = '';
+                  this.search.name ='';
+                  this.tabs = 'all';
                   this.getList(1, 10);
                   this.picFile = [];
                 } else {
@@ -2013,7 +2147,7 @@ export default {
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappinPerNum = ''
-      this.addComm = false;
+      // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
       // var str = formName || "goods_info";
@@ -2035,6 +2169,9 @@ export default {
       this.alreadyArr = []
       this.labelClickArr = []
       this.basicForm.customTags = []
+      this.systemOptions2 = [];
+      this.systemOptions3 = [];
+      this.systemOptions4 = [];
     },
     resetEmpty(txt){
       if(txt == "ser"){
@@ -2313,11 +2450,16 @@ hr {
 .image-text .el-dialog__header {
   padding: 0;
 }
-
+.image-text .el-dialog__header{
+  height: 0;
+}
+.labelName .el-dialog__footer{
+  margin-top: 0;
+}
 .image-text-header {
   overflow: hidden;
   width: 100%;
-  height: 44px;
+  /* height: 44px; */
   background: rgb(228, 225, 225);
   font-size: 16px;
   font-weight: bolder;
@@ -2524,6 +2666,7 @@ hr {
 .systemLabel ul li i{
   float: right;
   line-height: 29px;
+  width: 10%;
 }
 .labelSystem{
   float: left;

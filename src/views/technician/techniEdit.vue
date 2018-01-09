@@ -91,7 +91,7 @@
                             >
                             <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
                               <div class="upload-head"><span>*上传头像</span></div>
-                            <img v-if="personalEDit.headPic" :src="personalEDit.headPic" class="avatar">
+                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="avatar">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
@@ -103,7 +103,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
                             <div class="upload-id"><span>上传身份证</span></div>
-                            <img v-if="personalEDit.idCardPic" :src="personalEDit.idCardPic" class="avatar">
+                            <img v-if="personalEDit.idCardPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPic" class="avatar">
                           </el-upload>
                       </p>
                       </div>
@@ -141,7 +141,7 @@
                       </el-col>
                       <el-col :span="12">
                         <el-form-item label="岗位性质:" prop="jobNature">
-                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%">
+                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
                             <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                           </el-select>
@@ -162,7 +162,7 @@
                             </el-option>
                           </el-select>
                         </el-form-item> -->
-                      </el-col>
+                      </el-col>  
                       <el-col :span="12">
                         <el-form-item label="岗位状态:" prop="jobStatus">
                             <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
@@ -198,7 +198,8 @@
                     </el-row>
                     <el-row :gutter="60" v-if="perServer.jobNature!='part_time'">
                       <el-col :span="18" class="workHours">
-                        <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p>
+                        <!-- <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p> -->
+                        <el-form-item label="工作时间：" class="workHours-input" prop="workTimes">
                           <div class="tech-order-jn">
                               <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
                               <div class="tech-order-jn-sons" v-show="isB">
@@ -219,7 +220,7 @@
                                             :value="item.name">
                                     </div>
                                   </div>
-                                  <div style="margin-top:10px;">
+                                  <div class="startTime">
                                     <div class="selfCheckBoxsday">时段</div>
                                     <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
                                         start: '00:00',
@@ -246,6 +247,7 @@
                               </div>
                               </div>
                           </div>
+                        </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0  && perServer.jobNature!='part_time'">
@@ -271,7 +273,7 @@
                       <div>
                       <p></p>
                       <p>
-                          <span class="button-large-fourth" @click="submitForm('perServer')">保存信息</span>
+                          <span class="button-large-fourth perServer" @click="submitForm('perServer')">保存信息</span>
                       </p>
                       </div>
                   </li>
@@ -366,7 +368,7 @@
               <el-row :gutter="60">
                 <el-col :span="18">
                   <el-form-item label="经验描述:" prop="description">
-                                <el-input type="textarea" v-model="supplement.description" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" style="width:100%"></el-input>
+                                <el-input type="textarea" v-model="supplement.description" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单介绍一下" style="width:100%"></el-input>
                               </el-form-item>
                 </el-col>
               </el-row>
@@ -511,7 +513,7 @@
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                 <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="otherInfo.jobPic" class="avatar">
+                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic" class="avatar">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
@@ -523,7 +525,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                 <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="otherInfo.lifePic" class="avatar">
+                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic" class="avatar">
                           </el-upload>
                       </p>
                   </div>
@@ -670,11 +672,12 @@ export default {
     // };
     //手机
     var TECHPHONE = (rule, value, callback) => {
+      var reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
       if (value) {
-        if (!/^1[34578]\d{9}$/.test(value)) {
-          callback(new Error("手机号码有误，请重填"));
-        } else {
+        if (reg.test(value)) {
           callback();
+        } else {
+          callback(new Error("手机号码有误，请重填"));
         }
       } else {
         callback(new Error("请输入手机号"));
@@ -735,7 +738,14 @@ export default {
         callback()
       }
     }
-    //家庭成员单位
+    //工作时间
+    var WORKTIMES = (rule,value,callback) =>{
+      if(this.perServer.workTimes != undefined && this.perServer.workTimes.length>0){
+        callback()
+      }else{
+        callback(new Error('请添加工作时间'))
+      }
+    }
 
     return {
       roomSelNum:[],
@@ -839,7 +849,8 @@ export default {
         stationId: "",
         jobStatus: "",
         workTime: "",
-        skillIds: ""
+        skillIds: "",
+        workTimes:[]
       },
       rulesServer: {
         stationCityCode: [
@@ -849,7 +860,8 @@ export default {
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
         jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
-        skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }]
+        skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
+        workTimes:[{required:true,validator:WORKTIMES, trigger: "change"}]
       },
       server: [
         {
@@ -1293,12 +1305,20 @@ export default {
     "startend"
   ],
   methods: {
+    //全职兼职切换
+    jobStatusTable(){
+      if(this.perServer.jobNature == 'part_time'){
+        this.perServer.workTimes = []
+        this.roomSelNum = []
+        this.disbArr = []
+      }
+    },
     //图片格式限制
     beforeAvatarUpload(file){
-      const isPIC = file.type === 'image/jpeg' || 'image/jpg' || 'image/png';
-      if(isPIC === true){
-
-      }else{
+       if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+        console.log(file.type,"file.type-----------")
+        }else{
+         console.log(file.type,"file.type-----------+++++++++")
         this.$message.error('请上传正确的图片格式');
         return false
       }
@@ -1370,13 +1390,13 @@ export default {
 			})
 			.then(res=>{
 				if(flag == "head"){
-					this.personalEDit.headPic = success.host+"/"+ossData.get("key")
+					this.personalEDit.headPic = ossData.get("key")
 				}else if(flag == "life"){
-					this.otherInfo.lifePic = success.host+"/"+ossData.get("key")
+					this.otherInfo.lifePic = ossData.get("key")
 				}else if(flag == 'cert'){
-					this.otherInfo.jobPic = success.host+"/"+ossData.get("key")
+					this.otherInfo.jobPic = ossData.get("key")
 				}else{
-					this.personalEDit.idCardPic = success.host+"/"+ossData.get("key")
+					this.personalEDit.idCardPic = ossData.get("key")
 				}
 			})
         
@@ -1840,6 +1860,9 @@ body {
 .tech-section {
   margin: 20px;
 }
+.perServer{
+  margin-top: 10px;
+}
 
 .tech-section-right {
   display: flex;
@@ -2090,6 +2113,12 @@ body {
   cursor: pointer;
   margin-left: 10px;
 }
+.startTime{
+  margin-top:10px;
+}
+.startTime .el-input__inner{
+    border: 1px solid #bfcbd9 !important;
+}
 
 .tech-order-jn {
   width: 100%;
@@ -2097,7 +2126,7 @@ body {
   border: 1px solid #bfcbd9;
   position: relative;
   line-height: 36px;
-  margin-left:17px
+  /* margin-left:17px */
 }
 
 .tech-order-jn-son,
@@ -2369,6 +2398,9 @@ body {
 .workHours{
 	display: flex;
 	/* margin-bottom: 20px; */
+}
+.workHours .workHours-input{
+  width: 100%;
 }
 .ferFamilyClass>li{
 	padding-bottom: 0;
