@@ -1702,11 +1702,11 @@ export default {
                 });
                 if (this.familyFlag) {
                   console.log(obj,"obj----------------")
-                  alert("编辑")
+                  // alert("编辑")
                   this.$set(this.familyList, this.scopeId, obj);
                 } else {
                   console.log(obj,"obj----------------")
-                  alert("添加")
+                  // alert("添加")
                   this.familyList.push(obj);
                 }
                 this.familyFlag = false;

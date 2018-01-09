@@ -777,7 +777,7 @@ export default {
       // }else{
       //   callback()
       // }
-      // console.log(this.teachArr,"---------------------___________________________-----------------------")
+      console.log(this.teachArr,"---------------------___________________________-----------------------")
       if ((this.startTime && this.endTime) ||  this.teachArr.length > 0) {
         callback();
       } else {
