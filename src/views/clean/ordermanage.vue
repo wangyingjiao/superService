@@ -200,8 +200,7 @@ export default {
 		var obj=pramsObj; 
 	    getOrderTable(obj,pageNo,pageSize).then(res => {
 			if(res.data.code === 1){
-				this.tabDataList = res.data.data.page.list;
-				console.log(this.tabDataList)										
+				this.tabDataList = res.data.data.page.list;										
 				this.mechanismOptions=res.data.data.orgList;
 				this.total=res.data.data.page.count;
 				this.listLoading = false;
@@ -287,17 +286,17 @@ export default {
 	},	
 	//每页条数多少改变
 	handleSizeChange(val){
-				this.size=val;
-				var obj={
-				}
-				this.getTableData(obj,this.pageNumber,this.size);		
+		this.size=val;
+		var obj={
+		}
+		this.getTableData(obj,this.pageNumber,this.size);		
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
-			this.pageNumber=val;
-			var obj={
-			}
-			this.getTableData(obj,this.pageNumber,this.size);		
+		this.pageNumber=val;
+		var obj={
+		}
+		this.getTableData(obj,this.pageNumber,this.size);		
 	},
 
 	
