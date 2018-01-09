@@ -45,7 +45,7 @@
 
       <el-table-column align="center" label="图片">
         <template scope="scope" >
-          <span v-if="scope.row.pictures != undefined"><img :src="'https://openservice.guoanshequ.com/'+scope.row.pictures[0]" class="imgList"/></span>
+          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -2226,9 +2226,6 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
-body {
-  background-color: #eef1f6;
-}
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
@@ -2537,8 +2534,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   margin-top: 5px;
 }
 .el-icon-plus{

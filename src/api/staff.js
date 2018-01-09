@@ -1,23 +1,22 @@
-import axios from 'axios'
+import instance from '@/utils/fetch'
 
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
-
+// 添加员工
 export function addStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/saveData`, obj)
 }
-
+// 获取岗位列表（分页）
 export function getStationPage(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/sys/role/listPageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 获取岗位列表（不分页）
 export function getStation(obj) {
   return instance.post(`/apiservice/a/sys/role/listData`, obj)
 }
+// 获取员工列表（分页）
 export function getStaff(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/sys/user/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 添加岗位
 export function addStation(obj) {
   return instance.post(`/apiservice/a/sys/role/saveData`, obj)
 }

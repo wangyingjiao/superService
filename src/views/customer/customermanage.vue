@@ -4,10 +4,10 @@
 		<div class="fist-bar">
 		  <el-input  class="search"   placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
 			<el-input  class="search"   placeholder="请输入搜索的姓名" v-model="customName"></el-input>
-		  <el-select clearable   class="search" v-model="organizationName" placeholder="请选择服务机构">
+		  <!-- <el-select clearable   class="search" v-model="organizationName" placeholder="请选择服务机构">
 				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
 				</el-option>
-		  </el-select>      		  
+		  </el-select>      		   -->
 		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<!--搜索结束-->
@@ -49,11 +49,11 @@
 										<span v-if="scope.row.sex =='female'">女</span>
 								</template>						
 					  </el-table-column>
-					  <el-table-column
+					  <!-- <el-table-column
 						align="center"
 						prop="orgName"
 						label="服务机构">
-					  </el-table-column>
+					  </el-table-column> -->
 					  <el-table-column
 						align="center"
 						label="来源">
@@ -75,7 +75,7 @@
 						label="操作"
 						width='230'>
 										<template scope="scope">
-												<el-button type="button" v-if="btnShow.indexOf('customer_update') != -1" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" v-if="false" @click="lookInf(scope.row)">下单</el-button>
 												<el-button type="button"  v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
@@ -159,7 +159,7 @@ export default {
 				if (!value) {
 					return callback(new Error('请输入11位手机号码'));
 				}else{
-					if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(value))) {
+					if (!(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value))) {
 						callback(new Error('请输入11位手机号码'));
 					} else {
 						callback();
@@ -250,7 +250,7 @@ export default {
     tableData: [],	
 		//全局搜索下拉选项
 		organizationOptions:[],
-		organizationName:'',//服务机构				
+		// organizationName:'',//服务机构				
 		dialogTableVisible:false,//新增弹窗开关
 		customName:'',//客户姓名
 		customPhone:'',//客户电话
@@ -309,7 +309,7 @@ export default {
 											this.$refs['ruleForm'].resetFields();
 										  this.customName='';
 							        this.customPhone='';
-							        this.organizationName='';
+							        // this.organizationName='';
 											this.$refs.pickerInput.value=''	
 											this.dialogTableVisible = false
 											var obj={};
@@ -347,7 +347,7 @@ export default {
 					var obj={
 							name:this.customName,
 							phone:this.customPhone,
-							orgId:this.organizationName,
+							// orgId:this.organizationName,
 					}
 					this.pageNumber=1;
 					this.jumpPage=1;
@@ -359,7 +359,7 @@ export default {
 							var obj={
 									name:this.customName,
 									phone:this.customPhone,
-									orgId:this.organizationName,
+									// orgId:this.organizationName,
 							}
 							this.getData(obj,this.pageNumber,this.pageSize1);
 					},
@@ -369,7 +369,7 @@ export default {
 							var obj={
 									name:this.customName,
 									phone:this.customPhone,
-									orgId:this.organizationName,
+									// orgId:this.organizationName,
 							}
 							this.getData(obj,this.pageNumber,this.pageSize1);
 					},	
@@ -499,7 +499,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .tableWarp{
-	width:100%;background:#fff;padding:20px 20px 60px 20px;
+	width:100%;background:#fff;padding:20px 20px 70px 20px;
 }
 .selfStyle{
  margin-top:20px;float:right;
@@ -528,18 +528,13 @@ export default {
 	float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;
 }
 .fist-bar{
-  padding-top:20px;
-  padding-bottom:20px;
-  background:#fff;
-  margin-right:20px;
+  padding:20px;
+	background:#fff;
+	border-bottom: 1px solid #eee;
  
 }
 .second-bar{
-  padding-top:20px;
-  padding-bottom:20px;
   background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
   
 }
 .mapWrap{

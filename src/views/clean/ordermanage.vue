@@ -3,7 +3,7 @@
 		<div class="fist-bar">
 			  <!--选项卡开始-->
 			  <el-tabs v-model="activeName" @tab-click="handleClick">
-					<el-tab-pane label="全部" name="whole"></el-tab-pane>
+					<!-- <el-tab-pane label="全部" name="whole"></el-tab-pane> -->
 					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
 			  </el-tabs>
 				<!--选项卡结束-->
@@ -106,7 +106,7 @@
 						    <template scope="scope">
 						    		<span v-if="scope.row.payStatus =='payed'">已支付</span>
 									<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
-								</template>	
+							</template>	
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 							</el-table-column>	  
@@ -118,7 +118,7 @@
 				</el-table>
 				<div v-show="!listLoading" class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
-					:page-sizes="[10,20,30, 50]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
+					:page-sizes="[5,10,15,20]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 					</el-pagination>
 				</div>
 			</div>
@@ -160,6 +160,7 @@ export default {
 		jumpPage:1,
 		pageNumber:1,
 		listLoading:false,
+		active1:''
     };
   },
   methods: {
@@ -211,11 +212,12 @@ export default {
 	},
 	//tabs操作需要请求表格数据
 	handleClick(tab, event) {
+		this.activeName=tab.name;
 		if(tab.name == 'whole'){
-			this.activeName='';
+			this.active1='';
 		}else{
-			this.activeName=tab.name;
-		}				
+			this.active1=tab.name
+		}					
 		this.payStus='';
 		this.mechanism='';
 		this.payType='';
@@ -225,7 +227,7 @@ export default {
 		this.endTime='';
 		this.severTime='';
 		var obj={
-			orderStatus:this.activeName
+			orderStatus:this.active1
 		};
 		this.pageNumber=1;
 		this.jumpPage=1;
@@ -258,12 +260,12 @@ export default {
 			endTime=null
 		}
 		if(this.activeName == 'whole'){
-			this.activeName='';
+			this.active1='';
 		}else{
-			this.activeName=this.activeName;
-		}	
+			this.active1=this.activeName
+		}			
 		var obj={
-			orderStatus:this.activeName,
+			orderStatus:this.active1,
 			serviceStatus:this.sevicerStustas,//服务状态 
 			payStatus:this.payStus,
 			orgId:this.mechanism,
@@ -286,17 +288,17 @@ export default {
 	},	
 	//每页条数多少改变
 	handleSizeChange(val){
-				this.size=val;
-				var obj={
-				}
-				this.getTableData(obj,this.pageNumber,this.size);		
+		this.size=val;
+		var obj={
+		}
+		this.getTableData(obj,this.pageNumber,this.size);		
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
-			this.pageNumber=val;
-			var obj={
-			}
-			this.getTableData(obj,this.pageNumber,this.size);		
+		this.pageNumber=val;
+		var obj={
+		}
+		this.getTableData(obj,this.pageNumber,this.size);		
 	},
 
 	

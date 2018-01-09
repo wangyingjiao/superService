@@ -1,9 +1,4 @@
-import axios from 'axios'
-
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-
-})
+import instance from '@/utils/fetch'
 // 获取技能列表
 export function getListdata(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/skill/serSkillInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)

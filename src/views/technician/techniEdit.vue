@@ -1812,10 +1812,6 @@ export default {
   padding: 0;
 }
 
-body {
-  background: #eef1f6;
-}
-
 .tech-section-lage .el-form-item__content{
 	line-height: 20px;
 }

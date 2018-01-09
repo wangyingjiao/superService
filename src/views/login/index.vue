@@ -63,6 +63,7 @@ export default {
   },
   methods: {
     handleLogin() {
+      
       this.$refs.loginForm.validate(valid => {
         //console.log(valid)
         if (valid) {
@@ -70,7 +71,7 @@ export default {
           this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
             this.loading = false
             this.$router.push({ path: '/' })
-            
+           
           }).catch(() => {
             this.loading = false
           })

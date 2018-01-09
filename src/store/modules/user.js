@@ -45,7 +45,9 @@ const user = {
           username: userInfo.username,
           password: userInfo.password
         }
+        
         loginByUsername(obj).then(response => {
+          console.log('触发次数')
           if (response.data.code === 1) {
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)

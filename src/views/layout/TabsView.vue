@@ -100,10 +100,15 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .tabs-view-container {
+  .router-link-active {
+    .el-tag {
+      background-color: #eef1f6;
+    }
+  }
   margin-top: 0px !important;
   display: inline-block;
   height: 32px;
-  line-height: 28px;
+  line-height: 32px;
   width: 100%;
   vertical-align: top;
   margin-left: 10px;
@@ -133,18 +138,17 @@ export default {
     color: gray;
   }
   .tabs-view {
-    &:hover{
-     background-color: red;
+    &:hover {
+      background-color: red;
     }
     height: 30px;
     float: left;
     margin-left: 10px;
     border-right: 1px solid #eee;
-    
-    span{
+
+    span {
       height: 31px;
     }
   }
-  
 }
 </style>
