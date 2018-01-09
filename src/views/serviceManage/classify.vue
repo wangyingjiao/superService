@@ -457,9 +457,6 @@ export default {
   padding: 10px 0;
   border-top: solid 1px #dcdcdc;
 }
-body {
-  background-color: #f5f5f5;
-}
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;

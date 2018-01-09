@@ -12,6 +12,7 @@ import '@/permission' // 权限
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
+Vue.prototype.imgSrc = 'https://openservice.guoanshequ.com/'
 // 按下标删除数组的对应元素
 Array.prototype.del = function(dx) {
   if (isNaN(dx) || dx > this.length) { return false }

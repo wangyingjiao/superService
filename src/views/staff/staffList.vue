@@ -994,9 +994,6 @@ export default {
   width: 100%;
   padding: 10%;
 }
-body {
-  background-color: #eef1f6;
-}
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
