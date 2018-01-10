@@ -1912,7 +1912,7 @@ export default {
 }
 
 .tech-section-lage > div:nth-of-type(1) {
-  padding: 20px 20px 0 20px;
+  padding: 0px 20px 0 20px;
   font-size: 14;
   font-weight: 700;
 }
@@ -1988,6 +1988,8 @@ export default {
   background: #fff;
   border: 1px solid #4c70e8;
 }
+
+
 
 .tech-edit .tech-fourth-rigth {
   cursor: pointer;
@@ -2393,6 +2395,7 @@ export default {
 }
 .workHours{
 	display: flex;
+  height: 36px;
 	/* margin-bottom: 20px; */
 }
 .workHours .workHours-input{
