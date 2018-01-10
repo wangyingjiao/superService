@@ -34,7 +34,7 @@
     highlight-current-row 
     element-loading-text="正在加载" 
     style="width: 100%;" >
-      <el-table-column align="center" label="排序号" width="100">
+      <el-table-column align="center" label="编号" width="100">
         <template scope="scope">
           {{scope.row.num+(pageNumber-1)*pageSize}}
         </template>
@@ -412,7 +412,8 @@
                 </el-form-item>
 
                 <el-form-item class="seize bottimPro" style="width:70%">
-                  <input type="button" class="button-large" @click="submitForm('goods_info')" value="保 存">
+                  <input v-if="handleEditFlag" type="button" class="button-large" @click="submitForm('goods_info')" value="保 存">
+                  <input v-else type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
@@ -777,7 +778,7 @@ export default {
             callback(new Error("不能为特殊字符，小数保留后两位"));
           }
         }else{
-          callback(new Error('长度在1到8个字符'))
+          callback(new Error('不能大于99999999元'))
         }
       } else {
         callback(new Error("请输入价格"));
@@ -1769,9 +1770,10 @@ export default {
       this.listQuery.page = 1
       this.pageSize = val;
       // this.getList();
-      var obj = Object.assign({},this.search)
-      obj.majorSort = this.basicForm.majorSort
-      this.getList(this.pageNumber, this.pageSize,obj)
+      // var obj = Object.assign({},this.search)
+      // obj.majorSort = this.basicForm.majorSort
+      // console.log(this.basicForm.majorSort,'this.basicForm.majorSort-----------')
+      this.getList(this.pageNumber, this.pageSize)
       // getProject(obj, this.pageNumber, this.pageSize).then(res => {
       //   this.listTable = res.data.data.list;
       //   this.total = res.data.data.count;
@@ -2008,6 +2010,8 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab.name, event, "-------tab");
+      this.search.sortId = ''
+      this.search.name = ''
       var size = this.pageSize;
        Taxonomy({majorSort:tab.name})
         .then(data => {
@@ -2136,7 +2140,7 @@ export default {
               });
           }
         } else {
-          this.$message.error("不能为空");
+          // this.$message.error("不能为空");
           return false;
         }
       });
@@ -2537,6 +2541,9 @@ hr {
   width: 60px;
   height: 60px;
   margin-top: 5px;
+}
+.upload-demo .el-upload-list__item-preview{
+  display: none !important;
 }
 .el-icon-plus{
   text-align: center;

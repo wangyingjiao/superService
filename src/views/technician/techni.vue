@@ -339,9 +339,16 @@
                       style="width:100%"
                       format="yyyy-MM-dd"
                       @change="dateChange"
+                      :picker-options="pickerOptions0"
                       >
-                      <!-- :picker-options="pickerOptions0" -->
                   </el-date-picker>
+                  <!-- <el-date-picker
+                  :picker-options="pickerOptions0"
+                    v-model="value1"
+                    type="date"
+                    placeholder="选择日期"
+                  >
+                  </el-date-picker> -->
                  </el-form-item>
 						</el-form-item>
           </el-col>
@@ -607,27 +614,16 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      // var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
       if(value){
-        callback()
-        // if(reg.test(value)){
-        //   callback()
-        // }else{
-        //   callback(new Error('至少8个字符，同时包含字母与数字'))
-        // }
+        if(reg.test(value)){
+          callback()
+        }else{
+          callback(new Error('至少8个字符，同时包含字母与数字'))
+        }
       }else{
         callback(new Error("请输入密码"))
       }
-      // if (value === "") {
-      //   callback(new Error("请输入密码"));
-      // } else if (value.length < 8) {
-      //   callback(new Error("至少8个字符"));
-      // } else {
-      //   if (this.ruleForm2.checkPass !== "") {
-      //     this.$refs.ruleForm2.validateField("checkPass");
-      //   }
-      //   callback();
-      // }
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
@@ -891,7 +887,7 @@ export default {
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
-        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
         headPic:[
           { required: true, validator:HEADPIC , trigger: "blur"}
         ],
@@ -1043,11 +1039,6 @@ export default {
           label: "亲戚"
         }
       ],
-      pickerOptions0: {
-        disabledDate(time) {
-          return time.getTime() > Date.now() - 8.64e7;
-        }
-      },
       sexType: [
         {
           sexName: "技能一",
@@ -1256,6 +1247,21 @@ export default {
     techniEdit
   },
   computed: {
+    pickerOptions0(){
+          var data = new Date();
+          var year = data.getFullYear();
+          var month = data.getMonth() + 1;
+          var day = data.getDate();
+          var str = year+','+month+','+day
+          console.log(str)
+          var time1 = Date.parse(new Date('1950,1,1'))
+          var time2 = Date.parse(new Date(str))
+          return {
+            disabledDate(time){
+              return time.getTime() <time1-(8.64e7) || time.getTime() > time2
+            }
+          }
+      },
     //权限
     btnShow() {
       return this.$store.state.user.buttonshow;
@@ -1337,10 +1343,11 @@ export default {
         var y = date.getFullYear();
         var m = date.getMonth()+1;
         var d = date.getDate();
+         var s = date.getTime()
         ossData.append("name",file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/"  + s + '.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1403,35 +1410,54 @@ export default {
     },
     //休假保存
     vacationPreser(formName){
-      this.$refs[formName].validate(val=>{
-        if(val){
-          var obj = {}
-            obj.techId = this.passwordId
-            obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
-            obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
-            obj.remark = this.ruleForm.desc
-            console.log(obj)
-            addVacation(obj).then(data=>{
-              console.log(data,"data---休假")
-              if(data.data.code){
-                this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
-                this.vacationCancel('ruleForm')
-              }else{
-                this.$message.error(data.data.data)
+      // ruleForm.startDate ruleForm.startTime  ruleForm.endDate  ruleForm.endTime
+      var t1 = this.ruleForm.startTime
+      var t2 = this.ruleForm.endTime
+      console.log(t1,"t1-----")
+      console.log(t2,"t2-----")
+      var c1 = Date.parse('2008-08-08 '+t1);
+      var c2 = Date.parse('2008-08-08 '+t2);
+      console.log(c1,"ca-----")
+      if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
+        if(c1<=c2){
+          this.$refs[formName].validate(val=>{
+          if(val){
+            var obj = {}
+              obj.techId = this.passwordId
+              obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
+              obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
+              obj.remark = this.ruleForm.desc
+              console.log(obj)
+              addVacation(obj).then(data=>{
+                console.log(data,"data---休假")
+                if(data.data.code){
+                  this.$message({
+                    message: "保存成功",
+                    type: "success"
+                  });
+                  this.vacationCancel('ruleForm')
+                }else{
+                  this.$message.error(data.data.data)
+                  return false
+                }
+              }).catch(error=>{
+                console.log(error,"error-----")
                 return false
-              }
-            }).catch(error=>{
-              console.log(error,"error-----")
-              return false
-            })
+              })
+          }else{
+            this.$message.error("保存失败")
+            return false
+          }
+      })
         }else{
           this.$message.error("保存失败")
           return false
         }
-      })
+      }else{
+        this.$message.error("保存失败")
+        return false
+      }
+      // console.log(this.ruleForm.endDate,"startTime-------------")
       //  console.log(this.ruleForm,"this.ruleForm")
       //  console.log(this.storeEnd,"storeEnd----")
     },

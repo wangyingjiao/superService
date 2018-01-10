@@ -196,7 +196,7 @@
                         </el-form-item>
                       </el-col>
                     </el-row>
-                    <el-row :gutter="60" v-if="perServer.jobNature!='part_time'">
+                    <el-row class="workHours-time" :gutter="60" v-if="perServer.jobNature!='part_time'">
                       <el-col :span="18" class="workHours">
                         <!-- <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p> -->
                         <el-form-item label="工作时间：" class="workHours-input" prop="workTimes">
@@ -250,7 +250,7 @@
                         </el-form-item>
                     </el-col>
                   </el-row>
-                  <el-row :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0  && perServer.jobNature!='part_time'">
+                  <el-row class="weekDate" :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0  && perServer.jobNature!='part_time'">
                     <el-col :span="18">
                       <el-form-item>
                         <ul class="working">
@@ -269,7 +269,7 @@
                       </el-form-item>
                     </el-col>
                   </el-row> 
-                  <li>
+                  <li class="serverPres">
                       <div>
                       <p></p>
                       <p>
@@ -555,7 +555,7 @@
 
         <!--关闭按钮-->
           <div class="techniFooter">
-            <span class="button-large-fourth" @click="closeThe('perServer')">关闭弹窗</span>
+            <span class="button-large-fourth" @click="closeThe('perServer')">关闭</span>
           </div>
       </div>
 </template>
@@ -569,8 +569,11 @@ import {
   serviceStation,
   getMatrimony,
   technicianEdit,
+  technicianServer,
+  technicianPlus,
+  technicianOther,
   familyAdd,
-  familyDelete,
+  familyDelete
 } from "@/api/tech";
 
 import { getSign } from "@/api/sign";
@@ -685,7 +688,7 @@ export default {
     };
 
     //现住地址
-    var ADDRESS = (rule, value, callback) => {
+    var AREA = (rule, value, callback) => {
       console.log(rule, value, "value----现住地址");
       callback();
       // if(value.length>0){
@@ -744,6 +747,18 @@ export default {
         callback()
       }else{
         callback(new Error('请添加工作时间'))
+      }
+    }
+    //详细地址
+    var ADDRESS = (rule,value,callback) =>{
+      if(value){
+        if(value.length>=6 && value.length<=20){
+          callback()
+        }else{
+          callback(new Error('请输入6到20位的详细地址'))
+        }
+      }else{
+        callback(new Error('请输入详细地址'))
       }
     }
 
@@ -822,7 +837,8 @@ export default {
         address: "",
         idCardPic: "",
         headPic: "",
-        status:''
+        status:'',
+        nation:''
       },
       rulesPerEdit: {
         name: [
@@ -836,10 +852,11 @@ export default {
         birthDate: [
           { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
-        area: [{ required: true, validator: ADDRESS, trigger: "change" }],
+        area: [{ required: true, validator: AREA, trigger: "change" }],
         address:[
-          {required:true,message:"请输入详细地址",trigger:'blur'},
-          { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+          // {required:true,message:"请输入详细地址",trigger:'blur'},
+          // { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+          {required:true,validator:ADDRESS,trigger:'blur'}
         ]
       },
       //服务信息
@@ -1191,7 +1208,23 @@ export default {
         */
         this.personalEDit = Object.assign({}, val);
         this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
+        if("nation" in val){
+          this.personalEDit.nation = ''
+        }
         this.personalEDit.techBirthDate = val.birthDate;
+
+
+        // this.personalEDit.name = val.name
+        // this.personalEDit.idCard = val.idCard
+        // this.personalEDit.phone = val.phone
+        // this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
+        // this.personalEDit.sex = val.sex
+        // this.personalEDit.address = val.address
+        // this.personalEDit.nation = val.nation || ''
+        // this.personalEDit.techBirthDate = val.birthDate;
+        // this.personalEDit.status = val.status
+        // this.personalEDit.headPic = val.headPic
+        // this.personalEDit.idCardPic = val.idCardPic || ''
 
         /*
         **其他信息
@@ -1208,10 +1241,21 @@ export default {
         ** 服务信息
         ** 
         **/
-        this.perServer = Object.assign({}, val);
+        
+        // this.perServer = Object.assign({}, val);
         // this.servery = val.stations;
+        // this.perServer.workTime = val.workTime+''
+        // this.perServer.skillIds = val.skillIds || [];
+
+
+        this.perServer.stationId = val.stationId
+        this.perServer.jobNature = val.jobNature
+        this.perServer.jobStatus = val.jobStatus
+        this.perServer.skillIds = val.skillIds || []
         this.perServer.workTime = val.workTime+''
+        this.perServer.workTimes = val.workTimes
         // this.perServer.serviceCityName = val.stationCityCode;
+        console.log(this.perServer,"this.perServer----------------------____________++++++++++++===")
         // this.perServer.stationId = val.stationId
         // //工作时间默认选中
         var work = val.workTimes || [],
@@ -1330,13 +1374,31 @@ export default {
         this.$emit("dialogvisibleedit")
         this.$emit("getlist",this.listquer.page)
         this.familyFlag = false
+        this.$refs['personalEDit'].resetFields()
+        this.$refs['perServer'].resetFields()
+        this.isB = false
     },
     //其他信息保存
     sumitFormSub(formName){
       this.$refs[formName].validate(valid=>{
         if(valid){
           this.otherInfo.id = this.techniEditId;
-          this.technicianEdit(this.otherInfo)
+          // this.technicianEdit(this.otherInfo)
+          technicianOther(this.otherInfo).then(data=>{
+           if(data.data.code){
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+              }else{
+                this.$message.error('保存失败')
+                return false
+              }
+          }).catch(error=>{
+            this.$message.error('保存失败')
+            return false
+            console.log(error)
+          })
         }else{
           return false
         }
@@ -1367,10 +1429,11 @@ export default {
         var y = date.getFullYear();
         var m = date.getMonth()+1;
         var d = date.getDate();
+        var s = date.getTime()
         ossData.append("name",file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.name
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + '.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1417,16 +1480,31 @@ export default {
               _supplement = this.supplement;
             obj.id = this.techniEditId;
             obj.email = _supplement.email;
-            obj.education = _supplement.education;
-            obj.weight = _supplement.weight;
-            obj.height = _supplement.height;
-            obj.marryStatus = _supplement.marryStatus;
+            obj.education = _supplement.education || null;
+            obj.weight = _supplement.weight || null;
+            obj.height = _supplement.height || null;
+            obj.marryStatus = _supplement.marryStatus || null;
             obj.nativeProvinceCode = _supplement.nativeProvinceCode;
-            obj.inJobTime = _supplement.inJobTime;
+            obj.inJobTime = _supplement.inJobTime || null;
             obj.jobLevel = _supplement.jobLevel;
             obj.description = _supplement.description;
             console.log(obj, "objobjobj-------");
-            this.technicianEdit(obj)
+            technicianPlus(obj).then(data=>{
+              if(data.data.code){
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+              }else{
+                this.$message.error('保存失败')
+                return false
+              }
+            }).catch(error=>{
+              this.$message.error('保存失败')
+              return false
+              console.log(error)
+            })
+            // this.technicianEdit(obj)
         }else{
           return false
         }
@@ -1543,7 +1621,22 @@ export default {
           obj.workTimes = _perServer.workTimes
           obj.skillIds = _perServer.skillIds
           console.log(obj,"this.perServer--------")
-          this.technicianEdit(obj)
+          technicianServer(obj).then(data=>{
+            if(data.data.code){
+              this.$message({
+                message: "保存成功",
+                type: "success"
+              })
+            }else{
+              this.$message.error('保存失败')
+              return false
+            }
+          }).catch(error=>{
+            this.$message.error('保存失败')
+            return false
+            console.log(error,"error-----------")
+          })
+          // this.technicianEdit(obj)
         }else{
           return false
         }
@@ -2003,6 +2096,12 @@ export default {
   background: #fff;
   border: 1px solid red;
   /* margin-left: 40px; */
+}
+.weekDate+.serverPres .perServer{
+  margin-top: 0px;
+}
+.workHours-time+.serverPres{
+  margin-top: 20px;
 }
 
 .el-textarea__inner {
