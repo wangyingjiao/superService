@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" v-model="search.name" class="search" placeholder="请输入搜索的岗位名称" >
       </el-input>
@@ -9,9 +10,12 @@
       </el-select>
       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
+    <!-- 搜索结束 -->
+    
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad"  @click="handleCreate">新增</button>
+    <!-- 列表开始 -->
     <el-table
       :key="tableKey"
       :data="list"
@@ -42,13 +46,14 @@
       </el-table-column>
 
     </el-table>
-
+    <!-- 列表结束 -->
+    <!-- 分页器 -->
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
+   <!-- 弹窗开始 -->
     <el-dialog
        :title="textMap[dialogStatus]" 
        :visible.sync="dialogFormVisible" 
@@ -90,8 +95,7 @@
               :data="data2"
               :indent= 10
               show-checkbox
-              node-key="id"
-            
+              node-key="id"    
               v-model="temp.check"
               ref="domTree"
               @check-change="handTreechange"
@@ -118,7 +122,7 @@
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
-
+<!-- 弹框结束-->
   </div>
   </div>
 </div>
@@ -133,7 +137,7 @@ import {
   getMenudata,
   getSList,
   chkName
-} from "@/api/staff";
+} from "@/api/staff";//接口调用
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var data = [];
@@ -145,6 +149,7 @@ export default {
     waves
   },
   data() {
+    //表单验证
     var validateName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("岗位名不能为空"));
@@ -260,18 +265,20 @@ export default {
     }
   },
   created() {
+    //获取列表
     this.getList();
+    //获取权限列表
     getMenudata().then(res => {
-      console.log("权限列表");
-      console.log(res);
       this.data2 = res.data.data;
     });
+    //获取机构
     getSList({}).then(res => {
       console.log("所属机构,机构搜索");
       console.log(res);
       this.officeIds = res.data.data.list;
       console.log(this.officeIds);
     });
+    //获取用户等级
     var lv = localStorage.getItem("dataScope");
     console.log(lv, "用户等级");
     for (var i = 0; i < lv; i++) {
@@ -280,10 +287,10 @@ export default {
     console.log(this.roleLv, "用户看到的等级");
   },
   methods: {
-    aaa(val) {
+    aaa(val) {//测试函数
       console.log(val);
     },
-    getList() {
+    getList() {//获取列表
       this.listLoading = true;
       var obj = {};
       getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -298,7 +305,7 @@ export default {
         this.listLoading = false;
       });
     },
-    handleFilter() {
+    handleFilter() {//搜索
       this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
@@ -518,6 +525,7 @@ export default {
     offChange(val) {
       console.log(val);
     },
+    //点击新增时
     handleCreate() {
       //this.resetTemp();
       this.dialogStatus = "create";
@@ -527,6 +535,7 @@ export default {
         this.temp.officeId = this.officeIds[0].id;
       }
     },
+    //点击编辑时
     handleUpdate(row) {
       this.listLoading = true;
       getPower(row.id).then(res => {
@@ -573,6 +582,7 @@ export default {
         }
       });
     },
+    //删除数据
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -592,7 +602,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.handleFilter();
+                this.getList();
               } else {
                 this.$message({
                   type: "warning",
@@ -640,6 +650,7 @@ export default {
         }
       }
     },
+    //新增
     create(formName) {
       this.btnState = true;
       setTimeout(() => {
@@ -657,7 +668,7 @@ export default {
       }
       //return;
       var obj = {
-        name: encodeURI(this.temp.name),
+        name: this.temp.name,
         dataScope: this.temp.dataScope,
         menuIds: str,
         useable: "1", //状态
@@ -697,6 +708,7 @@ export default {
         }
       });
     },
+    //编辑
     update(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
@@ -726,7 +738,7 @@ export default {
                 type: "success",
                 message: "修改成功"
               });
-              this.handleFilter();
+              this.getList();
             } else {
               if (typeof res.data.data == "string") {
                 this.$message({
@@ -746,12 +758,14 @@ export default {
         }
       });
     },
+    //清空表单
     resetForm(formName) {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
     },
+    //清空data
     resetTemp() {
       this.temp = {
         officeId: "",
@@ -759,12 +773,6 @@ export default {
         dataScope: "",
         check: []
       };
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
     },
 
     formatJson(filterVal, jsonData) {

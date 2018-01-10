@@ -414,7 +414,7 @@ export default {
               this.selectState = false;
               this.$message({
                 type: "error",
-                message: "发生错误"
+                message: res.data.data
               });
             }
           });
