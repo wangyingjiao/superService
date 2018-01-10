@@ -58,10 +58,11 @@
 		</div>
 		<!--表格显示区域开始-->
     <div class="orderMangeWarp">
-		  <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button>
+		  <!-- <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button> -->
 			<div class="ordermanageTableWrap">	
 				<el-table 
 					:data="tabDataList"
+					fixed
 					v-loading="listLoading" 
 					element-loading-text="正在加载" 
 					highlight-current-row
@@ -110,7 +111,7 @@
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 							</el-table-column>	  
-							<el-table-column align="center" label="操作" width="150" >
+							<el-table-column align="center" label="操作" width="150" fixed="right">
 							<template scope="scope">
 									<el-button type="button" @click="lookInf(scope.row.id)">查看</el-button>
 							</template>
