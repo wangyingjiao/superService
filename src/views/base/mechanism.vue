@@ -220,8 +220,8 @@
 import {
   getMech,
   addMech,
+  setMech,
   upMech,
-  getSerstation,
   getMechPage,
   getCity
 } from "@/api/base";
@@ -627,7 +627,7 @@ export default {
       const obj = {
         id: row.id
       };
-      upMech(obj)
+      setMech(obj)
         .then(res => {
           console.log(res,'编辑');
 
