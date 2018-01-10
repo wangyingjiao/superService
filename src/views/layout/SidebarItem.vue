@@ -83,6 +83,9 @@ export default {
   background-repeat: no-repeat;
   background-position: left center;
 }
+.sidebar{
+  width: 190px;
+}
 .sidebar .el-submenu {
   color: #A5B6C8;
   background-color:  #2f323e;

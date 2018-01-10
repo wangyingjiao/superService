@@ -40,7 +40,7 @@ export default {
             .sidebar-wrapper {
                 transform: translate(-140px, 0);
                 .sidebar-container {
-                    transform: translate(132px, 0);
+                    transform: translate(135px, 0);
                 }
                 &:hover {
                     transform: translate(0, 0);
@@ -69,7 +69,7 @@ export default {
             top: 0;
             bottom: 0;
             left: 0;
-            right: -10px;
+            right: -17px;
             overflow-y: scroll;
         }
         .main-container {
