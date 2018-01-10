@@ -37,7 +37,7 @@
         <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
+              <div class="headImag"><img :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div style="margin-top:10px;">
                 <span>{{item.sexname}}</span>
                 <span>{{item.age+"岁"}}</span>
@@ -401,7 +401,7 @@
                 <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
                 <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
                 <div class="upload-head"><span>*上传头像</span></div>
-                <img v-if="personal.headPic" :src="personal.headPic" class="avatar">
+                <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
                 <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div>
               </el-upload>
             <!-- </el-form-item> -->
@@ -417,7 +417,7 @@
               <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
               <!-- <input type="button" class="tech-fourth-rigth" value="*上传身份证"> -->
               <div class="upload-id"><span>上传身份证</span></div>
-              <img v-if="personal.idCardPic" :src="personal.idCardPic" class="avatar">
+              <img v-if="personal.idCardPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
             </el-upload>
 					</p>
 					</div>
@@ -443,7 +443,7 @@
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位性质：" prop="jobNature">
-                      <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%">
+                      <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
                           <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                           </el-option>
                       </el-select>
@@ -503,7 +503,7 @@
               <el-form-item label="工作时间：" prop="workTimes">
                   <div class="tech-order-jn" style="width:100%">
                     <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                    <div class="tech-order-jn-sons" v-show="isB">
+                    <div class="tech-order-jn-sons wirkTimes" v-show="isB">
                       <div style="margin:0 10px;">
                         <p>新增日期</p>
                         <div>
@@ -573,7 +573,7 @@
           <li id="confirmation">
                 <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
                 <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                <input class="button-cancel" value="取消" @click="handleClose('personal')"/>
+                <input class="button-cancel" value="取消" @click="handleClose('personal')"/> 
           </li>
         </ul>
 		 </ul>
@@ -607,13 +607,14 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      // var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
       if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error('至少8个字符，同时包含字母与数字'))
-        }
+        callback()
+        // if(reg.test(value)){
+        //   callback()
+        // }else{
+        //   callback(new Error('至少8个字符，同时包含字母与数字'))
+        // }
       }else{
         callback(new Error("请输入密码"))
       }
@@ -732,11 +733,12 @@ export default {
       // };
     //手机号
     var TECHPHONE = (rule, value, callback) => {
+      var reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
       if (value) {
-        if (!/^1[34578]\d{9}$/.test(value)) {
-          callback(new Error("手机号码有误，请重填"));
-        } else {
+        if (reg.test(value)) {
           callback();
+        } else {
+          callback(new Error("手机号码有误，请重填"));
         }
       } else {
         callback(new Error("请输入手机号"));
@@ -767,17 +769,17 @@ export default {
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
       console.log(this.teachArr,"this.teachArr-----------------")
-      // if(this.teachArr.length > 0 && this.teachArr != undefined){
-      //   callback();
-      // }else{
-      //   callback(new Error("请选择工作时间"));
-      // }
+      if(this.teachArr.length > 0 && this.teachArr != undefined){
+        callback();
+      }else{
+        callback(new Error("请选择工作时间"));
+      }
       // if(this.teachArr === undefined || this.teachArr.length==0){
       //   callback(new Error("请选择工作时间"));
       // }else{
       //   callback()
       // }
-      console.log(this.teachArr,"---------------------___________________________-----------------------")
+      // console.log(this.teachArr,"---------------------___________________________-----------------------")
       if ((this.startTime && this.endTime) ||  this.teachArr.length > 0) {
         callback();
       } else {
@@ -1268,11 +1270,21 @@ export default {
     },
   },
   methods: {
+    //全职兼职切换 
+    jobNatureTable(){
+      if(this.personal.jobNature == 'part_time'){
+          this.teachArr = []
+          this.roomSelNum = []
+          this.disbArr = []
+      }
+    },
     beforeAvatarUpload(file){
-      const isPIC = file.type === 'image/jpeg' || 'image/jpg' || 'image/png';
-      if(isPIC === true){
-
+      // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
+      // console.log(isPIC,"isPIC--------------------")
+      if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+        console.log(file.type,"file.type-----------")
       }else{
+         console.log(file.type,"file.type-----------+++++++++")
         this.$message.error('请上传正确的图片格式');
         return false
       }
@@ -1348,9 +1360,9 @@ export default {
           })
           .then(res=>{
               if(flag == "head"){
-                this.personal.headPic = success.host+"/"+ossData.get("key")
+                this.personal.headPic = ossData.get("key")
               }else{
-                this.personal.idCardPic = success.host+"/"+ossData.get("key")
+                this.personal.idCardPic = ossData.get("key")
               }
           })
         
@@ -1518,6 +1530,9 @@ export default {
       this.personal.idCardPic = ''
       this.personal.headPic = ''
       this.teachArr = [];
+      this.teachArr = []
+      this.roomSelNum = []
+      this.disbArr = []
       this.dialogVisible = false
     },
     // 工作时间删除
@@ -2224,6 +2239,9 @@ export default {
   top: 35px;
   left: -1px;
 }
+.wirkTimes .el-input__inner{
+  border: 1px solid #bfcbd9 !important;
+}
 
 .tech-order-jn-sont {
   width: 545px;
@@ -2567,13 +2585,6 @@ export default {
 .tech-service .el-select .el-tag{
   line-height:23px;
 }
-/* .mobel p:nth-child(1){
-  float: left;
-  width: 100px;
-  box-sizing: border-box;
-  padding-right: 12px;
-  text-align: right;
-} */
 .page{
   padding-bottom: 30px;
 }

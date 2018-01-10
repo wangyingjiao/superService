@@ -393,8 +393,12 @@ body {
 .pagination-container {
   overflow: hidden;
 }
+// 选中行的样式
 #tableColor tbody tr.current-row>td{
   background-color: rgba(10, 104, 226, 0.26);
+}
+.el-table tbody tr.current-row>td{
+  background-color:#fff;
 }
 #diatable>.el-dialog--small {
   width: 60% !important;
@@ -491,4 +495,7 @@ body {
   width: 50px;
   padding: 0;
   text-align: center;
+}
+.el-tabs__header{
+  margin: 0 0 20px;
 }
