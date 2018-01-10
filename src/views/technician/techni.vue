@@ -607,13 +607,14 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      // var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
       if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error('至少8个字符，同时包含字母与数字'))
-        }
+        callback()
+        // if(reg.test(value)){
+        //   callback()
+        // }else{
+        //   callback(new Error('至少8个字符，同时包含字母与数字'))
+        // }
       }else{
         callback(new Error("请输入密码"))
       }

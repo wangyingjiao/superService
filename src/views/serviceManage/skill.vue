@@ -195,7 +195,7 @@
         id:'',
         promInf1:'搜索内容不存在!',
         middleA:[],
-        middleB:[]
+        middleB:[],
       }
     }, 
     methods: {
@@ -233,7 +233,7 @@
               if (res.data.code === 1) {            
                   this.Options2=res.data.data.list;
                   this.options=res.data.data.stations 
-                  this.listTech=res.data.data.techs
+                  this.listTech=res.data.data.techs                  
                   this.dialogVisible = true;                                                                             
               }         
               this.listLoading = false;
@@ -255,10 +255,10 @@
             }
             editTech(obj).then(res => {
                 if (res.data.code === 1) {
+                  this.Options2=res.data.data.list
                   this.ruleForm2.name=res.data.data.info.name;
                   if(res.data.data.info.sortIds != undefined){
-                      var ids=res.data.data.info.sortIds
-                      this.selectionreturn(ids);//分类回显
+                      this.ruleForm2.staffClass = res.data.data.info.sortIds;
                   }                                           
                   if(res.data.data.info.technicians != undefined){
                       this.tabOptions=res.data.data.info.technicians;
@@ -270,10 +270,6 @@
                 
             });                      
           }         
-      },
-      //服务数据回显二级选中
-      selectionreturn(ids) {
-        this.ruleForm2.staffClass = ids;
       },
       //技师数据回显二级选中
       selectionreturn1() {
