@@ -92,7 +92,7 @@
               <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
                       <table width="100%" class="selfTable">
-                        <tr>
+                        <tr ref="tableHeader">
                           <td  class="selfTdStyle" align="center" width="8%">选择</td>
                           <td  class="selfTdStyle"  align="center" width="18%">头像</td>
                           <td  class="selfTdStyle"  align="center" width="32%">姓名</td>
@@ -110,6 +110,7 @@
                           <td  align="center">{{item.techStationName}}</td>							
                         </tr>
                       </table>
+                      <div v-if="listTech.length == 0" class="selfTabProm">暂无数据</div>
                     </div>            
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
@@ -215,10 +216,11 @@
       //存储选择技师对象
       testTech(obj){
         if(obj.techChecked){
-            this.middleA.push(obj)
-        }else{
+            this.middleA.push(obj)           
+        }else{           
           this.middleA.remove(obj)
         }
+
       },
       //全局新增按钮
       add(status,row){     
@@ -255,6 +257,7 @@
             }
             editTech(obj).then(res => {
                 if (res.data.code === 1) {
+                  this.listTech=res.data.data.techs  
                   this.Options2=res.data.data.list
                   this.ruleForm2.name=res.data.data.info.name;
                   if(res.data.data.info.sortIds != undefined){
@@ -278,7 +281,6 @@
             for (var b = 0; b < this.tabOptions.length; b++) {
               if (this.tabOptions[b].techId == this.listTech[a].techId) {
                   this.listTech[a].techChecked = true;
-                  this.testTech(this.listTech[a]);
               }
             }
           }
@@ -385,10 +387,8 @@
               this.middleB.remove(this.middleB[c])
             }            
           }          
-          //this.middleB
           this.tabOptions.remove(obj);
         }else{
-          console.log( this.middleA)
         }
       },
       //选择技师弹出层保存
@@ -481,6 +481,9 @@
       //选择技师按钮
       orderTech() {             
         this.ordertech = true;
+        this.$nextTick( () => {
+           this.$refs.tableHeader.scrollIntoView()
+        })        
         if(this.dialogStatus == "edit"){
             for (var c = 0; c <this.listTech.length; c++) {
               this.listTech[c].techChecked = false;
@@ -542,6 +545,7 @@
 };
 </script>
 <style  scoped>
+.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
 .techNameStyle {
   width: 80px;
   height: 25px;

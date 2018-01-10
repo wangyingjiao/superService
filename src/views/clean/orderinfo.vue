@@ -357,7 +357,7 @@
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table width="100%" class="selfTable">
-              <tr>
+              <tr ref="tableHeader">
                 <td  class="selfTableHEADTD" align="center" width="8%">选择</td>
                 <td  class="selfTableHEADTD" align="center" width="18%">头像</td>
                 <td  class="selfTableHEADTD" align="center" width="18%">姓名</td>
@@ -378,6 +378,7 @@
                 </td>							
               </tr>
               </table>
+              <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -556,6 +557,8 @@ export default {
     },
     //选择技师弹出层取消
     cancelForm2(){
+      this.middleA=[];
+      this.listTech=[];     
       this.dialogTableVisible = false
     },
     //日期变化时改变时间对象
@@ -619,17 +622,21 @@ export default {
         if(this.status == 'add'){
             addTechData(obj).then(res => {
                 if (res.data.code === 1) {
-                  this.listTech = res.data.data;
-                  for (var b = 0; b < this.middleA.length; b++) {
-                    for (var a = 0; a <this.listTech.length; a++) {
-                      this.$set(this.listTech[a],'techChecked',false)
-                      if (
-                        this.listTech[a].techId ==
-                        this.middleA[b].techId
-                      ) {
-                        this.listTech[a].techChecked = true;
-                      }
-                    }
+                  if(res.data.data != undefined){
+                      this.listTech = res.data.data;
+                      for (var b = 0; b < this.middleA.length; b++) {
+                        for (var a = 0; a <this.listTech.length; a++) {
+                          this.$set(this.listTech[a],'techChecked',false)
+                          if (
+                            this.listTech[a].techId ==
+                            this.middleA[b].techId
+                          ) {
+                            this.listTech[a].techChecked = true;
+                          }
+                        }
+                      }                      
+                  }else{
+                    this.listTech=[];
                   }
                 }
               }).catch(res=>{
@@ -638,17 +645,21 @@ export default {
         }else{
             dispatchTechData(obj).then(res => {
                 if (res.data.code === 1) {
-                  this.listTech = res.data.data;
-                  for (var c = 0; c < this.middleA.length; c++) {
-                    for (var d = 0; d <this.listTech.length; d++) {
-                      this.$set(this.listTech[d],'techChecked',false)
-                      if (
-                        this.listTech[d].techId ==
-                        this.middleA[c].techId
-                      ) {
-                        this.listTech[d].techChecked = true;
+                  if(res.data.data != undefined){
+                    this.listTech = res.data.data;
+                    for (var c = 0; c < this.middleA.length; c++) {
+                      for (var d = 0; d <this.listTech.length; d++) {
+                        this.$set(this.listTech[d],'techChecked',false)
+                        if (
+                          this.listTech[d].techId ==
+                          this.middleA[c].techId
+                        ) {
+                          this.listTech[d].techChecked = true;
+                        }
                       }
                     }
+                  }else{
+                    this.listTech=[]
                   }
                 }
               }).catch(res=>{
@@ -659,9 +670,11 @@ export default {
     //存储选择技师对象
     ChangeTech(obj){
       if(obj.techChecked){
-          this.middleA.push(obj)
+          obj.techChecked = true;
+          this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)
+          obj.techChecked = false;
+          this.middleA.remove(obj)          
       }
     },    
     //选择技师弹出层保存
@@ -734,12 +747,18 @@ export default {
                 id:this.$route.query.id
               };            
               addTechData(obj).then(res => {      
-                if (res.data.code === 1) {                         
-                  this.listTech=res.data.data
-                  for(var a=0;a<this.listTech.length;a++){
-                    this.$set(this.listTech[a],'techChecked',false)
-                  }
-                  this.dialogTableVisible=true;                                                          
+                if (res.data.code === 1) { 
+                  this.dialogTableVisible=true;
+                  
+                  this.$nextTick( () => {
+                    this.$refs.tableHeader.scrollIntoView()
+                  })                   
+                  if(res.data.data.length != undefined){
+                      this.listTech=res.data.data;                 
+                      for(var a=0;a<this.listTech.length;a++){
+                        this.$set(this.listTech[a],'techChecked',false)
+                      }                    
+                  }                                                                            
                 }else{
                 }          
               }).catch(res=>{
@@ -750,9 +769,14 @@ export default {
                 id:this.$route.query.id
               };            
               dispatchTechData(obj1).then(res => {      
-                if (res.data.code === 1) {                         
-                  this.listTech=res.data.data 
-                  this.dialogTableVisible=true;                                                         
+                if (res.data.code === 1) {
+                  this.dialogTableVisible=true;
+                  this.$nextTick( () => {
+                    this.$refs.tableHeader.scrollIntoView()
+                  })                                            
+                  if(res.data.data.length != undefined){ 
+                    this.listTech=res.data.data; 
+                  }
                 }else{
                 }          
               }).catch(res=>{
@@ -788,6 +812,7 @@ export default {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
+.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
 .picHeader{margin-top:10px;}
 .selfDateStyle{width:200px;margin-left:20px;}
 .marginTopDec46{margin-top:-46px;}
