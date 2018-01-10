@@ -27,7 +27,7 @@ export function delSite(obj) {
 }
 // 获取站长列表
 export function getMaster(obj) {
-  return instance.post(`/apiservice/a/sys/user/listData?pageSize=-1`, obj)
+  return instance.post(`/apiservice/a/service/station/serviceStation/getManager`, obj)
 }
 // 设置站长
 export function setMaster(obj) {
