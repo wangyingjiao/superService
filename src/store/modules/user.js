@@ -80,7 +80,7 @@ const user = {
         getUserInfo().then(response => {
           const data = response.data
           console.log(data, '权限列表')
-          //localStorage.setItem('menu', JSON.stringify(data.data))
+          localStorage.setItem('menu', JSON.stringify(data.data))
           //console.log(JSON.parse(localStorage.getItem('menu')))
           //var arr = JSON.parse(localStorage.getItem('menu'))
           // if (0) {
@@ -130,6 +130,7 @@ const user = {
           localStorage.removeItem('name')
           localStorage.removeItem('dataScope')
           localStorage.removeItem('orgId')
+          localStorage.removeItem('userId')
           localStorage.removeItem('menu')
           resolve()
         }).catch(error => {
