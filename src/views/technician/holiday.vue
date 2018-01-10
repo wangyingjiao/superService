@@ -39,7 +39,10 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" type="index" width="100">
+      <el-table-column align="center" label="编号"  width="100">
+         <template scope="scope">
+            {{scope.row.index + (pageNumber-1) * pageSize}}
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="姓名" prop="techName">      
@@ -123,9 +126,52 @@ export default {
   },
   methods: {
     getList() {
-      getHoliday({}, this.pageNumber, this.pageSize).then(res => {
+      var obj = {};
+      //console.log(this.search.startTime)
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
+        console.log(start);
+      }
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+        console.log(end);
+      }
+      if (this.search.type == "techName") {
+        var name = {
+          techName: this.search.val
+        };
+        obj = Object.assign(obj, name);
+      } else if (this.search.type == "techPhone") {
+        var phone = {
+          techPhone: this.search.val
+        };
+        obj = Object.assign(obj, phone);
+      } else {
+        var newobj = {};
+        obj = Object.assign(obj, newobj);
+      }
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "休假列表");
         this.list = res.data.data.list;
+        if (this.list != undefined) {
+          for (var i = 0; i < this.list.length; i++) {
+            this.list[i].index = i + 1;
+          }
+        }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
@@ -177,6 +223,11 @@ export default {
         if (res.data.code == 1) {
           this.listQuery.page = 1;
           this.list = res.data.data.list;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
+          }
           this.total = res.data.data.count;
           this.listLoading = false;
         }
@@ -226,6 +277,11 @@ export default {
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.list = res.data.data.list;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
+          }
           this.total = res.data.data.count;
           this.listLoading = false;
         }
@@ -275,6 +331,11 @@ export default {
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.list = res.data.data.list;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
+          }
           this.total = res.data.data.count;
           this.listLoading = false;
         }
