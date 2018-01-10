@@ -77,12 +77,45 @@ export function technicianEditId(obj) {
   })
 }
 
-// 技师编辑保存
+// 技师个人编辑保存
 export function technicianEdit(obj) {
   return new Promise((resolve, reject) => {
     instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upData`, obj).then(data => {
       resolve(data)
     }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+//技师服务编辑保存
+export function technicianServer(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataService`, obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//技师补充个人编辑保存
+export function technicianPlus(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataPlus`, obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//技师其他编辑保存
+export function technicianOther(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataOther`, obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
       reject(error)
     })
   })
