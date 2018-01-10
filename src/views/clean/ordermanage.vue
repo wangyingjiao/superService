@@ -323,16 +323,16 @@ export default {
 .fist-bar{
   padding:20px 20px;
   background:#fff;
+  border-bottom:1px solid #eee;
 }
 .second-input{
 	margin-top:10px;
 }
 .orderMangeWarp{
-	margin:20px 20px;
 	background:#fff;
 	padding:20px 20px;
 }
 .exprotStyle{float:right;margin-bottom:10px;}
-.ordermanageTableWrap{width:100%;background:#fff;padding:20px 20px 40px 20px;}
+.ordermanageTableWrap{width:100%;background:#fff;padding:20px 0px 46px 0px;}
 .ordermanagePagination{margin-top:20px;float:right;}
 </style>
