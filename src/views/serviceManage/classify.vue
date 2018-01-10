@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { getClass, addClass, delClass, setClass } from "@/api/serviceManage";
+import { getClass, addClass, delClass, setClass, upClass } from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -397,7 +397,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log(obj, "参数");
-          addClass(obj).then(res => {
+          upClass(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
