@@ -58,10 +58,11 @@
 		</div>
 		<!--表格显示区域开始-->
     <div class="orderMangeWarp">
-		  <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button>
+		  <!-- <button type="button" class="add-button exprotStyle" style="margin-bottom:20px;"  @click="exportOrder">导出订单</button> -->
 			<div class="ordermanageTableWrap">	
 				<el-table 
 					:data="tabDataList"
+					fixed
 					v-loading="listLoading" 
 					element-loading-text="正在加载" 
 					highlight-current-row
@@ -110,7 +111,7 @@
 							</el-table-column>
 							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 							</el-table-column>	  
-							<el-table-column align="center" label="操作" width="150" >
+							<el-table-column align="center" label="操作" width="150" fixed="right">
 							<template scope="scope">
 									<el-button type="button" @click="lookInf(scope.row.id)">查看</el-button>
 							</template>
@@ -322,16 +323,16 @@ export default {
 .fist-bar{
   padding:20px 20px;
   background:#fff;
+  border-bottom:1px solid #eee;
 }
 .second-input{
 	margin-top:10px;
 }
 .orderMangeWarp{
-	margin:20px 20px;
 	background:#fff;
 	padding:20px 20px;
 }
 .exprotStyle{float:right;margin-bottom:10px;}
-.ordermanageTableWrap{width:100%;background:#fff;padding:20px 20px 40px 20px;}
+.ordermanageTableWrap{width:100%;background:#fff;padding:20px 0px 46px 0px;}
 .ordermanagePagination{margin-top:20px;float:right;}
 </style>

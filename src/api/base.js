@@ -5,10 +5,6 @@ export function getMech() {
   return instance.get(`/apiservice/a/sys/office/listData`)
 }
 
-export function getSerstation() {
-  return instance.get(`/apiservice/a/sys/dict/listData?type=service_area_type`)
-}
-
 // 获取服务城市
 export function getCity() {
   return instance.get(`/apiservice/a/sys/area/listData1`)
@@ -20,6 +16,10 @@ export function getSite(obj, pageNumber, pageSize) {
 // 新增服务站
 export function addSite(obj) {
   return instance.post(`/apiservice/a/service/station/serviceStation/saveData`, obj)
+}
+// 编辑保存服务站
+export function upSite(obj) {
+  return instance.post(`/apiservice/a/service/station/serviceStation/upData`, obj)
 }
 // 删除服务站
 export function delSite(obj) {
@@ -33,14 +33,11 @@ export function getMaster(obj) {
 export function setMaster(obj) {
   return instance.post(`/apiservice/a/service/station/serviceStation/setManager`, obj)
 }
-// 字典量 获取服务站类型
-export function getType() {
-  return instance.post(`/apiservice/a/sys/dict/listData?type=service_station_type`)
-}
+
 // 当前机构的服务城市
-export function getOffcity(obj) {
-  return instance.post(`/apiservice/a/sys/office/officeServerCity`, obj)
-}
+// export function getOffcity(obj) {
+//   return instance.post(`/apiservice/a/sys/office/officeServerCity`, obj)
+// }
 //  修改后
 // 获取机构带分页
 export function getMechPage(obj, pageNumber, pageSize) {
@@ -50,9 +47,13 @@ export function getMechPage(obj, pageNumber, pageSize) {
 export function addMech(obj) {
   return instance.post(`/apiservice/a/sys/organization/saveData`, obj)
 }
-// 编辑机构
-export function upMech(obj) {
+// 编辑时机构信息
+export function setMech(obj) {
   return instance.post(`/apiservice/a/sys/organization/formData`, obj)
+}
+// 编辑保存机构
+export function upMech(obj) {
+  return instance.post(`/apiservice/a/sys/organization/upData`, obj)
 }
 // 获取门店列表
 export function getStore(obj) {

@@ -536,36 +536,37 @@ export default {
       console.log("size-change");
       this.pageSize = val;
       // var obj = {};
+      this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+        if (res.data.data.list != undefined) {
+          for (var i = 0; i < res.data.data.list.length; i++) {
+            res.data.data.list[i].index = i + 1;
           }
         }
+        this.list = res.data.data.list;
         this.listLoading = false;
       });
     },
     handleCurrentChange(val) {
-      console.log("current-change");
+      console.log(val, "current-change");
       this.pageNumber = val;
       var obj = {
         roleName: this.search.name,
         mobile: this.search.mobile
       };
       this.listLoading = true;
-
+      this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.data.list != undefined) {
-          
           for (var i = 0; i < res.data.data.list.length; i++) {
             res.data.data.list[i].index = i + 1;
           }
-          console.log(res.data.data.list,'list-------------')
+          console.log(res.data.data.list, "list-------------");
         }
+        setTimeout(() => {
           this.list = res.data.data.list;
-        this.listLoading = false;
+          this.listLoading = false;
+        }, 300);
       });
     },
     timeFilter(time) {
@@ -817,15 +818,22 @@ export default {
           addStation(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
-              this.$refs.domTree.setCheckedKeys([]);
-              this.dialogFormStation = false;
               this.$message({
                 type: "success",
                 message: "添加成功"
               });
-              this.stationCheck.push(res.data.data);
-              this.temp.role = res.data.data.id;
+              if (res.data.data.organization.id == this.temp.officeId) {
+                console.log("相等");
+                this.stationCheck.push(res.data.data);
+                this.temp.role = res.data.data.id;
+              } else {
+                console.log("不相等");
+              }
+
               this.resetTemp2();
+              this.$refs[formName].resetFields();
+              this.$refs.domTree.setCheckedKeys([]);
+              this.dialogFormStation = false;
             } else {
               if (typeof res.data.data == "string") {
                 this.$message({
@@ -880,6 +888,7 @@ export default {
                     });
                     this.dialogFormVisible = false;
                     setTimeout(() => {
+                      this.$store.state.app.visitedViews=[]//清空顶部导航tab对象
                       that.$router.push({ path: "/login" });
                     }, 3000);
                   })

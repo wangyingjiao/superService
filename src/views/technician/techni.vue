@@ -49,8 +49,8 @@
             </div>
             <div class="tech-xiu-div-two">
               <h4>{{item.name}}</h4>
-              <div>              
-                  <img src="../../../static/icon/服务机构.png" alt="" style="width:15px;height:15px;">              
+              <div>
+                  <img src="../../../static/icon/服务机构@3x.png" alt="" style="width:15px;height:15px;">              
                   <div style="margin-left:5px;">{{item.orgName}}</div>
               </div>
               <div>

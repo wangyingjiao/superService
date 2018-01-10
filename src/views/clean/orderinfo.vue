@@ -7,40 +7,6 @@
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">订单编号:</span>
-                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">服务状态:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
-                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
-                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
-                      </span>
-                   </p>                   
-                   <p class="contentLine">
-                      <span class="lineTitle">订单来源:</span>
-                      <span class="lineContent">
-                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
-                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">服务机构:</span>
-                      <span class="lineContent">{{otherInfo.orgName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">订单类型:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
-                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
-                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
-                      </span>
-                   </p>                                                         
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
                       <span class="lineTitle">订单状态:</span>
                       <span class="lineContent">
                           <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
@@ -53,12 +19,38 @@
                       </span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">下单时间:</span>
-                      <span class="lineContent">{{otherInfo.orderTime}}</span>
+                      <span class="lineTitle">订单类型:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
+                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
+                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
+                      </span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">服务站:</span>
-                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                      <span class="lineTitle">服务机构:</span>
+                      <span class="lineContent">{{otherInfo.orgName}}</span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle">订单编号:</span>
+                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
+                   </p>                  
+                   <p class="contentLine">
+                      <span class="lineTitle">订单来源:</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
+                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
+                      </span>
+                   </p>                                                         
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务状态:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
+                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">订单分类:</span>
@@ -66,7 +58,15 @@
                           <span v-if="otherInfo.majorSort =='clean'">保洁</span>
                           <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
                       </span>
-                   </p>                                                           
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">服务站:</span>
+                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                   </p>                                                          
+                   <p class="contentLine">
+                      <span class="lineTitle">下单时间:</span>
+                      <span class="lineContent">{{otherInfo.orderTime}}</span>
+                   </p>                                                          
                 </div> 
             </div>                                     		
 		    </div>
@@ -84,14 +84,14 @@
                    <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
                        <span class="lineTitle">支付状态:</span>
                        <span>待支付</span> 
-                   </p>                                      
+                   </p>                   
                    <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付方式:</span>
                       <span class="lineContent">
                         <span v-if="payInfo.payMethod =='offline'">货到付款</span>
                         <span v-if="payInfo.payMethod =='online'">在线</span>                        
                       </span>
-                   </p>
+                   </p>                                                         
                    <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
                       <span class="lineTitle">支付总额:</span>
                       <span class="lineContent">{{payInfo.payAccount}}元</span>
@@ -152,27 +152,27 @@
                 </div> 
             </div>
             <div class="selfTableWrapStyle">
-                <el-table
-                  :data="tableData"
-                  border
-                  class="self-table-style">
-                  <el-table-column
-                    align="center"
-                    label="商品名称"
-                    prop="goodsName"
-                    > 
-                  </el-table-column>
-                  <el-table-column
-                    align="center"
-                    label="服务数量"
-                    prop="goodsNum">                    
-                  </el-table-column>
-                  <el-table-column
-                    align="center"
-                    label="金额"
-                    prop="payPrice">                   
-                  </el-table-column>
-                </el-table>
+                    <el-table
+                      :data="tableData"
+                      border
+                      class="self-table-style">
+                      <el-table-column
+                        align="center"
+                        label="商品名称"
+                        prop="goodsName"
+                        > 
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="服务数量"
+                        prop="goodsNum">                    
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="金额"
+                        prop="payPrice">                   
+                      </el-table-column>
+                    </el-table>
             </div>                                     		
 		    </div>
         <!--服务信息结束-->
@@ -185,45 +185,47 @@
                   <span class="plusComb">&#10010</span>
                   <span class="plusComtent">增加技师</span>
                 </div>
-                <el-table
-                  :data="tableData1"
-                  border
-                  style="width: 100%">
-                  <el-table-column
-                    align="center"
-                    label="头像"
-                    >
-                    <template scope="scope">
-                    <img class="picHeader" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+scope.row.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="techName"
-                    align="center"
-                    label="姓名"
-                    >
-                  </el-table-column>
-                  <el-table-column
-                    align="center"
-                    label="性别">
-                      <template scope="scope">
-                          <span v-if="scope.row.techSex =='male'">男</span>
-                        <span v-if="scope.row.techSex =='female'">女</span>
-                      </template>	                    
-                  </el-table-column>
-                  <el-table-column
-                    prop="techPhone"
-                    align="center"
-                    label="手机号">
-                  </el-table-column>                  
-                  <el-table-column
-                    align="center"
-                    label="操作">
-                      <template scope="scope">
-                            <div style="cursor:pointer;color:#4c70e8" @click="gaiPai('edit',scope.row)">改派</div>                    
-                      </template>                    
-                  </el-table-column>                  
-                </el-table>
+                <div class="selfTableWrapStyle1">                
+                    <el-table
+                      :data="tableData1"
+                      border                  
+                      style="width: 100%;display:inline-block;">
+                      <el-table-column
+                        align="center"
+                        label="头像"
+                        >
+                        <template scope="scope">
+                        <img class="picHeader" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+scope.row.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="techName"
+                        align="center"
+                        label="姓名"
+                        >
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="性别">
+                          <template scope="scope">
+                              <span v-if="scope.row.techSex =='male'">男</span>
+                            <span v-if="scope.row.techSex =='female'">女</span>
+                          </template>	                    
+                      </el-table-column>
+                      <el-table-column
+                        prop="techPhone"
+                        align="center"
+                        label="手机号">
+                      </el-table-column>                  
+                      <el-table-column
+                        align="center"
+                        label="操作">
+                          <template scope="scope">
+                                <div style="cursor:pointer;color:#4c70e8" @click="gaiPai('edit',scope.row)">改派</div>                    
+                          </template>                    
+                      </el-table-column>                  
+                    </el-table>
+                </div>
             </div>                     		
 		    </div>
         <!--技师信息结束-->
@@ -355,7 +357,7 @@
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table width="100%" class="selfTable">
-              <tr>
+              <tr ref="tableHeader">
                 <td  class="selfTableHEADTD" align="center" width="8%">选择</td>
                 <td  class="selfTableHEADTD" align="center" width="18%">头像</td>
                 <td  class="selfTableHEADTD" align="center" width="18%">姓名</td>
@@ -376,6 +378,7 @@
                 </td>							
               </tr>
               </table>
+              <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -554,6 +557,8 @@ export default {
     },
     //选择技师弹出层取消
     cancelForm2(){
+      this.middleA=[];
+      this.listTech=[];     
       this.dialogTableVisible = false
     },
     //日期变化时改变时间对象
@@ -617,17 +622,21 @@ export default {
         if(this.status == 'add'){
             addTechData(obj).then(res => {
                 if (res.data.code === 1) {
-                  this.listTech = res.data.data;
-                  for (var b = 0; b < this.middleA.length; b++) {
-                    for (var a = 0; a <this.listTech.length; a++) {
-                      this.$set(this.listTech[a],'techChecked',false)
-                      if (
-                        this.listTech[a].techId ==
-                        this.middleA[b].techId
-                      ) {
-                        this.listTech[a].techChecked = true;
-                      }
-                    }
+                  if(res.data.data != undefined){
+                      this.listTech = res.data.data;
+                      for (var b = 0; b < this.middleA.length; b++) {
+                        for (var a = 0; a <this.listTech.length; a++) {
+                          this.$set(this.listTech[a],'techChecked',false)
+                          if (
+                            this.listTech[a].techId ==
+                            this.middleA[b].techId
+                          ) {
+                            this.listTech[a].techChecked = true;
+                          }
+                        }
+                      }                      
+                  }else{
+                    this.listTech=[];
                   }
                 }
               }).catch(res=>{
@@ -636,17 +645,21 @@ export default {
         }else{
             dispatchTechData(obj).then(res => {
                 if (res.data.code === 1) {
-                  this.listTech = res.data.data;
-                  for (var c = 0; c < this.middleA.length; c++) {
-                    for (var d = 0; d <this.listTech.length; d++) {
-                      this.$set(this.listTech[d],'techChecked',false)
-                      if (
-                        this.listTech[d].techId ==
-                        this.middleA[c].techId
-                      ) {
-                        this.listTech[d].techChecked = true;
+                  if(res.data.data != undefined){
+                    this.listTech = res.data.data;
+                    for (var c = 0; c < this.middleA.length; c++) {
+                      for (var d = 0; d <this.listTech.length; d++) {
+                        this.$set(this.listTech[d],'techChecked',false)
+                        if (
+                          this.listTech[d].techId ==
+                          this.middleA[c].techId
+                        ) {
+                          this.listTech[d].techChecked = true;
+                        }
                       }
                     }
+                  }else{
+                    this.listTech=[]
                   }
                 }
               }).catch(res=>{
@@ -657,9 +670,11 @@ export default {
     //存储选择技师对象
     ChangeTech(obj){
       if(obj.techChecked){
-          this.middleA.push(obj)
+          obj.techChecked = true;
+          this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)
+          obj.techChecked = false;
+          this.middleA.remove(obj)          
       }
     },    
     //选择技师弹出层保存
@@ -732,12 +747,18 @@ export default {
                 id:this.$route.query.id
               };            
               addTechData(obj).then(res => {      
-                if (res.data.code === 1) {                         
-                  this.listTech=res.data.data
-                  for(var a=0;a<this.listTech.length;a++){
-                    this.$set(this.listTech[a],'techChecked',false)
-                  }
-                  this.dialogTableVisible=true;                                                          
+                if (res.data.code === 1) { 
+                  this.dialogTableVisible=true;
+                  
+                  this.$nextTick( () => {
+                    this.$refs.tableHeader.scrollIntoView()
+                  })                   
+                  if(res.data.data.length != undefined){
+                      this.listTech=res.data.data;                 
+                      for(var a=0;a<this.listTech.length;a++){
+                        this.$set(this.listTech[a],'techChecked',false)
+                      }                    
+                  }                                                                            
                 }else{
                 }          
               }).catch(res=>{
@@ -748,9 +769,14 @@ export default {
                 id:this.$route.query.id
               };            
               dispatchTechData(obj1).then(res => {      
-                if (res.data.code === 1) {                         
-                  this.listTech=res.data.data 
-                  this.dialogTableVisible=true;                                                         
+                if (res.data.code === 1) {
+                  this.dialogTableVisible=true;
+                  this.$nextTick( () => {
+                    this.$refs.tableHeader.scrollIntoView()
+                  })                                            
+                  if(res.data.data.length != undefined){ 
+                    this.listTech=res.data.data; 
+                  }
                 }else{
                 }          
               }).catch(res=>{
@@ -786,6 +812,7 @@ export default {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
+.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
 .picHeader{margin-top:10px;}
 .selfDateStyle{width:200px;margin-left:20px;}
 .marginTopDec46{margin-top:-46px;}
@@ -832,6 +859,7 @@ export default {
   font-size:12px;
 	float:left;
 	background:#eef1f6;
+  margin-top:8px;
 }
 .order-selfTd{
 text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
@@ -845,23 +873,27 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
 .selfMarLeft70{
     display: inline-block;
     margin-top: -4px;
+    margin-left:-50px;
     position: absolute;
     cursor: pointer;
 }
 .selfTableWrapStyle{
-  width:690px;float:left;padding-left:30px;padding-bottom:20px;
+  width:720px;padding-left:30px;padding-bottom:20px;padding-top:40px;
+}
+.selfTableWrapStyle1{
+  width:690px;padding-bottom:20px;margin-top:20px;
 }
 .servicerFont{cursor:pointer;color:#4c70e8}
-.self-table-style{width:100%;margin-top:-10px;}
+.self-table-style{width:100%;display:inline-block;margin-top:20px;}
 .selfWrap1{
-  width:100%;float:left;
+  width:100%;
 }
 .marginTop20{
   margin-top:20px;
 }
 .addTechWrap{width:110px;height:32px;line-height:32px;margin-top: 10px;background:#ccc;cursor:pointer;}
-.plusComb{display:inline-block;float:left;width:32px;height:32px;line-height:32px;color:#fff;background:rgb(110, 144, 212);text-align:center;font-size:20px;}
-.plusComtent{display:inline-block;float:left;width:78px;height:32px;line-height:32px;color:#fff;background:rgb(47, 154, 208);text-align:center;font-size:14px;}
+.plusComb{display:inline-block;float:left;width:32px;height:32px;line-height:32px;color:#fff;background:#3a5fcd;text-align:center;font-size:20px;}
+.plusComtent{display:inline-block;float:left;width:78px;height:32px;line-height:32px;color:#fff;background:#4c70e8;text-align:center;font-size:14px;}
 .width390{
   width:390px;
 }

@@ -1206,25 +1206,31 @@ export default {
         **个人资料
         **
         */
-        this.personalEDit = Object.assign({}, val);
-        this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
-        if("nation" in val){
-          this.personalEDit.nation = ''
-        }
-        this.personalEDit.techBirthDate = val.birthDate;
-
-
-        // this.personalEDit.name = val.name
-        // this.personalEDit.idCard = val.idCard
-        // this.personalEDit.phone = val.phone
+        // this.personalEDit = Object.assign({}, val);
         // this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
-        // this.personalEDit.sex = val.sex
-        // this.personalEDit.address = val.address
-        // this.personalEDit.nation = val.nation || ''
+        // this.personalEDit.birthDate = val.birthDate
+        // if("nation" in val){
+          
+        // }else{
+        //   this.personalEDit.nation = ''
+        // }
+        // console.log(this.personalEDit,"this.personalEDit---")
         // this.personalEDit.techBirthDate = val.birthDate;
-        // this.personalEDit.status = val.status
-        // this.personalEDit.headPic = val.headPic
-        // this.personalEDit.idCardPic = val.idCardPic || ''
+        // console.log( this.personalEDit," this.personalEDit-----")
+
+
+        this.personalEDit.name = val.name
+        this.personalEDit.idCard = val.idCard
+        this.personalEDit.phone = val.phone
+        this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
+        this.personalEDit.sex = val.sex
+        this.personalEDit.address = val.address
+        this.personalEDit.nation = val.nation || ''
+        this.personalEDit.techBirthDate = val.birthDate;
+        this.personalEDit.status = val.status
+        this.personalEDit.headPic = val.headPic
+        this.personalEDit.idCardPic = val.idCardPic || ''
+        this.personalEDit.birthDate = val.birthDate
 
         /*
         **其他信息
