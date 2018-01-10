@@ -54,7 +54,7 @@ export default {
             }
         }
         .sidebar-wrapper {
-            width: 180px;
+            width: 190px;
             position: fixed;
             top: 0;
             bottom: 0;
@@ -69,13 +69,13 @@ export default {
             top: 0;
             bottom: 0;
             left: 0;
-            right: -17px;
+            right: -10px;
             overflow-y: scroll;
         }
         .main-container {
             min-height: 100%;
             transition: all .28s ease-out;
-            margin-left: 180px;
+            margin-left: 190px;
         }
     }
 </style>
