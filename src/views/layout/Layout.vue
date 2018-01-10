@@ -40,7 +40,7 @@ export default {
             .sidebar-wrapper {
                 transform: translate(-140px, 0);
                 .sidebar-container {
-                    transform: translate(132px, 0);
+                    transform: translate(135px, 0);
                 }
                 &:hover {
                     transform: translate(0, 0);
@@ -54,7 +54,7 @@ export default {
             }
         }
         .sidebar-wrapper {
-            width: 180px;
+            width: 190px;
             position: fixed;
             top: 0;
             bottom: 0;
@@ -75,7 +75,7 @@ export default {
         .main-container {
             min-height: 100%;
             transition: all .28s ease-out;
-            margin-left: 180px;
+            margin-left: 190px;
         }
     }
 </style>
