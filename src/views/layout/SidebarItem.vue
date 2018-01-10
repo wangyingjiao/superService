@@ -13,7 +13,7 @@
                   <router-link  class="menu-indent" :to="{path:child.href}">
                     <span style="display:inline-block;width:160px;">•&nbsp;&nbsp;&nbsp;&nbsp;{{child.name}}</span>
                   </router-link>  
-              </el-menu-item>               
+              </el-menu-item>         
         </el-submenu>
     </template>     	  
   </div>
