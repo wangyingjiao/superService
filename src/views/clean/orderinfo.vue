@@ -353,36 +353,45 @@
         <!--技师选择弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
-          <button class="button-large FloatRight" @click="searchTeh">查询</button>                                    	
+          <button class="button-large FloatRight" @click="searchTeh">查询</button>
+          <transition name="slide">
+            <div class="selfpromMessageTab" v-if="middleA.length !=0">
+              <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+                <div class="techNameStyle">{{item.techName}}</div>
+              </div>                         
+            </div>
+          </transition>                                               	
           <div class="selfTableWrapONE">
             <div class="table-d">
-              <table width="100%" class="selfTable">
-              <tr ref="tableHeader">
-                <td  class="selfTableHEADTD" align="center" width="8%">选择</td>
-                <td  class="selfTableHEADTD" align="center" width="18%">头像</td>
-                <td  class="selfTableHEADTD" align="center" width="18%">姓名</td>
-                <td  class="selfTableHEADTD" align="center" width="13%">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="15%">岗位性质</td>							
+              <table  class="selfTable">
+              <tr class="tableHeader">
+                <td  class="selfTableHEADTD" align="center" width="58px">选择</td>
+                <td  class="selfTableHEADTD" align="center" width="170px">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="188px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="60px">性别</td>
+                <td  class="selfTableHEADTD" align="center" width="84px">岗位性质</td>							
               </tr>
-              <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
-                <td class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-                <td  class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                <td class="fontSize12" align="center">{{item.techName}}</td>
-                <td  class="fontSize12" align="center">
-                  <span class="fontSize12" v-if="item.techSex =='male'">男</span>
-                  <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
-                </td>
-                <td class="fontSize12"  align="center">
-                      <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
-                      <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
-                </td>							
-              </tr>
+              <div style="padding-top:60px;">
+                  <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+                    <td width="58px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+                    <td  width="170px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                    <td width="188px" class="fontSize12" align="center">{{item.techName}}</td>
+                    <td  width="60px" class="fontSize12" align="center">
+                      <span class="fontSize12" v-if="item.techSex =='male'">男</span>
+                      <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+                    </td>
+                    <td width="84px" class="fontSize12"  align="center">
+                          <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+                          <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+                    </td>							
+                  </tr>
+              </div>
               </table>
               <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
-            <button class="button-large" @click="submitForm2()">保存</button>
+            <button class="button-large" :disabled="techSaveFlag" @click="submitForm2()">保存</button>
             <button class="button-cancel" @click="cancelForm2()">取 消</button>
           </div>
         </el-dialog>
@@ -413,7 +422,7 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large"   @click="submitTime('formInline')">保存</button>
+              <button class="button-large" :disabled="timeSaveFlag"  @click="submitTime('formInline')">保存</button>
               <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
@@ -431,6 +440,8 @@ export default {
   data() { 
     return {
           btnShow: JSON.parse(localStorage.getItem('btn')),
+          timeSaveFlag:false,
+          techSaveFlag:false,
           pickerOptions0: {
                 disabledDate(time) {
               if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
@@ -506,7 +517,8 @@ export default {
     //更换时间的保存
     submitTime(formName){      
       this.$refs[formName].validate((valid) => {
-          if (valid) { 
+          if (valid) {
+            this.timeSaveFlag=true; 
             var time='';
             for(var a=0;a<this.timeObj.length;a++){
               if(this.timeObj[a].selected==true){
@@ -525,7 +537,8 @@ export default {
                   id:this.orderId,
                   serviceTime:this.changTime+' '+time+':00'
                 }
-                saveTime(obj).then(res => {      
+                saveTime(obj).then(res => {
+                  this.timeSaveFlag=false;      
                   if (res.data.code === 1) {                         
                       this.$message({
                         type: "success",
@@ -540,7 +553,7 @@ export default {
                     });                     
                   }          
                 }).catch(res=>{
-                  
+                  this.timeSaveFlag=false; 
                 });
             }).catch(() => { 
 
@@ -650,11 +663,7 @@ export default {
                         }
                       }                      
                   }else{
-                    this.listTech=[];
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });                     
+                    this.listTech=[];                     
                   }
                 }
               }).catch(res=>{
@@ -677,11 +686,7 @@ export default {
                       }
                     }
                   }else{
-                    this.listTech=[]
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });                     
+                    this.listTech=[]                     
                   }
                 }
               }).catch(res=>{
@@ -701,6 +706,7 @@ export default {
     },    
     //选择技师弹出层保存
     submitForm2() {
+      this.techSaveFlag=true;
       //先遍历数据中选中的再保存
       var arr = [];
       if (this.middleA != undefined && this.middleA.length != 0) {
@@ -716,7 +722,8 @@ export default {
           id:this.orderId,
           techIdList:arr
         }
-        addTechSave(obj).then(res => {      
+        addTechSave(obj).then(res => {
+          this.techSaveFlag=false;      
           if (res.data.code === 1) {
               this.$message({
                 type: "success",
@@ -732,7 +739,7 @@ export default {
               });                         
           }          
         }).catch(res=>{
-          
+          this.techSaveFlag=false;
         });
       }
       if(this.status == 'edit' && arr.length !=0 ){
@@ -741,7 +748,8 @@ export default {
           dispatchTechId:this.aa,
           techIdList:arr
         }
-        dispatchTechSave(obj1).then(res => {      
+        dispatchTechSave(obj1).then(res => {
+          this.techSaveFlag=false;      
           if (res.data.code === 1) {
               this.$message({
                 type: "success",
@@ -757,7 +765,7 @@ export default {
               });             
           }          
         }).catch(res=>{
-          
+          this.techSaveFlag=false;
         });        
       }
       if(arr.length ==0){
@@ -778,11 +786,7 @@ export default {
               };            
               addTechData(obj).then(res => {      
                 if (res.data.code === 1) { 
-                  this.dialogTableVisible=true;                  
-                  this.$nextTick( () => {
-                    this.$refs.tableHeader.scrollIntoView()
-                  }) 
-                                   
+                  this.dialogTableVisible=true;                                   
                   if(res.data.data.length != undefined){
                       this.listTech=res.data.data;                 
                       for(var a=0;a<this.listTech.length;a++){
@@ -804,10 +808,7 @@ export default {
               };            
               dispatchTechData(obj1).then(res => {      
                 if (res.data.code === 1) {
-                  this.dialogTableVisible=true;
-                  this.$nextTick( () => {
-                    this.$refs.tableHeader.scrollIntoView()
-                  })                                            
+                  this.dialogTableVisible=true;                                          
                   if(res.data.data.length != undefined){ 
                     this.listTech=res.data.data; 
                   }
@@ -851,6 +852,22 @@ export default {
 };
 </script>
 <style   scoped>
+.slide-enter-active {
+    transition: all .8s ease;
+}
+.slide-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-enter,.slide-leave-active {
+    transform: translateY(-10px);
+    opacity: 0;
+}
+.tableHeader{position:absolute;z-index:99999;margin:0px;}
+.selfTdStyle1 {
+  vertical-align:middle;
+  height: 70px;
+  line-height:70px;
+}
 .promMessage{width:90%;height:56px;line-height:56px;margin-left:22px;color: #8391a5;}
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
@@ -874,14 +891,39 @@ export default {
     cursor: pointer;
 }
 .selfMarTL{margin-top:0px;}
-.selfbeizhu{min-width:900px;margin-left:22px;float:left;}
-.selfbeizhu1{min-width:900px;margin-left: 102px;margin-top: -15px;float:left;}
+.selfbeizhu{min-width:800px;margin-left:22px;float:left;}
+.selfbeizhu1{min-width:800px;margin-left: 102px;margin-top: -15px;float:left;}
 .width120{width:120px;}
 .selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
 .FloatRight{float:right;}
 .FloatLeft{float:left;}
 .selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
-.selfTableHEADTD{background:#eef1f6;height:60px;}
+.selfpromMessageTab{
+   position:relative;width:100%;height:80px;margin-top:20px;overflow-y: scroll;
+}
+.techNameStyle {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tabWrap1 {
+  width: 80px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top:5px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+}
+
 .height70{height:70px;}
 .imgStyle{display:block;}
 .fontSize12{font-size:12px;}
@@ -894,7 +936,7 @@ export default {
 .editServiceTabInputNum{width:120px;margin-top:3px;margin-bottom:3px;} 
 .height30{height:30px;}
 .width1000{min-width:900px;}
-.picWrap{width:100%;height:120px;line-height:120px;}
+.picWrap{width:100%;height:120px;line-height:120px;margin-left:82px;}
 .marginLeft82{margin-left:82px;margin-top:-30px;}
 .marginBOT20{margin-bottom:20px;}
 .picStyle{float:left;width:120px;height:120px;margin-right:20px;margin-top:20px;}
@@ -903,7 +945,6 @@ export default {
   font-size:12px;
 	float:left;
 	background:#eef1f6;
-  margin-top:8px;
 }
 .order-selfTd{
 text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
@@ -954,11 +995,9 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
 }
 .thrid-bar{
   padding-top:20px;
-  width:98%;
+  width:100%;
   float:left;
   background:#fff;
-  margin-left:20px;
-  margin-right:20px;
 }
 .leftArea{width:320px;float:left;}
 .rightArea{width:320px;float:left;margin-left:50px;}
@@ -972,4 +1011,5 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
     margin-left: 100px;
     margin-top: -14px;
 }
+.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
 </style>
