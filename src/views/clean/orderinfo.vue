@@ -143,7 +143,7 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button"   class="button-cancel height25"  value="更换时间"></span>
+                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
                    <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
                       <span class="lineTitle">完成时间:</span>
@@ -181,7 +181,7 @@
             <div class="custom-action">技师信息</div>
             <div class="hr-style"></div>
             <div class="techTabWrap">
-                <div class="addTechWrap" @click="gaiPai('add','')">
+                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
                   <span class="plusComb">&#10010</span>
                   <span class="plusComtent">增加技师</span>
                 </div>
@@ -221,7 +221,7 @@
                         align="center"
                         label="操作">
                           <template scope="scope">
-                                <div style="cursor:pointer;color:#4c70e8" @click="gaiPai('edit',scope.row)">改派</div>                    
+                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
                           </template>                    
                       </el-table-column>                  
                     </el-table>
@@ -430,6 +430,7 @@ export default {
   name: "",
   data() { 
     return {
+          btnShow: this.$store.state.user.buttonshow,
           pickerOptions0: {
                 disabledDate(time) {
               if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){

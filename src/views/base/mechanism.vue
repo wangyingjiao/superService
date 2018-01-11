@@ -649,7 +649,7 @@ export default {
              this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
              setTimeout(() => {
                var time = res.data.data.workEndTime.substring(0,5)
-               if(time == '00:00'){
+               if(time == '23:59'){
                  this.temp.workEndTime = '24:00'
                }else{
                  this.temp.workEndTime = time
@@ -715,8 +715,16 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      //防止数据库24:00:00乱码
       if(obj.workEndTime =='24:00:00'){
         obj.workEndTime = '23:59:59'
+      }
+      //防止数据库08:00:00乱码
+      if(obj.workStartTime == '08:00:00'){
+        obj.workStartTime = '08:00:01'
+      }
+      if(obj.workEndTime == '08:00:00'){
+        obj.workEndTime = '08:00:01'
       }
       
       console.log(obj);
@@ -768,8 +776,17 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      console.log(obj);
-
+      //防止数据库24:00:00乱码
+      if(obj.workEndTime =='24:00:00'){
+        obj.workEndTime = '23:59:59'
+      }
+      //防止数据库08:00:00乱码
+      if(obj.workStartTime == '08:00:00'){
+        obj.workStartTime = '08:00:01'
+      }
+      if(obj.workEndTime == '08:00:00'){
+        obj.workEndTime = '08:00:01'
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           upMech(obj).then(res => {

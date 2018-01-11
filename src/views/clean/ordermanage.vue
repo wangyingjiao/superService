@@ -113,7 +113,7 @@
 							</el-table-column>	  
 							<el-table-column align="center" label="操作" width="150" fixed="right">
 							<template scope="scope">
-									<el-button type="button" @click="lookInf(scope.row.id)">查看</el-button>
+									<el-button type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
 							</template>
 							</el-table-column>
 				</el-table>
@@ -136,6 +136,7 @@ export default {
 	name: "",
   data() { 		
     return {
+		btnShow: this.$store.state.user.buttonshow,
 		severTime:'',
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
