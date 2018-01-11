@@ -4,6 +4,10 @@ import instance from '@/utils/fetch'
 export function addStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/saveData`, obj)
 }
+// 编辑员工
+export function upStaff(obj) {
+  return instance.post(`/apiservice/a/sys/user/upData`, obj)
+}
 // 获取岗位列表（分页）
 export function getStationPage(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/sys/role/listPageData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
@@ -20,6 +24,11 @@ export function getStaff(obj, pageNumber, pageSize) {
 export function addStation(obj) {
   return instance.post(`/apiservice/a/sys/role/saveData`, obj)
 }
+// 编辑岗位
+export function upStation(obj) {
+  return instance.post(`/apiservice/a/sys/role/upData`, obj)
+}
+// 删除岗位
 export function delStation(obj) {
   return instance.post(`/apiservice/a/sys/role/deleteRole`, obj)
 }
@@ -31,7 +40,7 @@ export function getPower(str) {
 }
 // 获取机构列表
 export function getSList(obj) {
-  return instance.post(`/apiservice/a/sys/organization/listData?pageSize=-1`, obj)
+  return instance.post(`/apiservice/a/sys/organization/listDataAll`, obj)
 }
 // 根据id获取服务站
 export function getFuwu(obj) {

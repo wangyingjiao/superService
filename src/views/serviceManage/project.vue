@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="filter-container bgWhite">
+  <div class="filter-container bgWhite tabTop">
     <el-tabs v-model="tabs" @tab-click="handleClick">
       <!-- <el-tab-pane v-for="(item,key,index) in whole" :key="index" :label="item" :name="index"></el-tab-pane> -->
       <el-tab-pane label="全部" name="all"></el-tab-pane>
@@ -90,7 +90,7 @@
 
       <el-table-column align="center" label="操作" min-width="200px">
         <template scope="scope">
-            <el-button class="el-icon-upload ceshi3" @click="handleUplode(scope.row)"></el-button>
+            <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
           </template>
@@ -1146,7 +1146,7 @@ export default {
       return getSign();
     },
     btnShow() {
-      return this.$store.state.user.buttonshow;
+      return JSON.parse(localStorage.getItem('btn'));
     },
   },
   methods: {

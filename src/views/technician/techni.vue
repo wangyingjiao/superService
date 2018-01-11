@@ -69,10 +69,10 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover"  @click="appPassword(item)">
+            <div class="mousehover"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
               <img src="../../../static/icon/密码.png" alt="" style="width:30px">
             </div>
-            <div class="mousehover"  @click="vacation(item)">
+            <div v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
               <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
              <!-- dialogVisibleEdit = true -->
@@ -505,7 +505,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="personal.jobNature!='part_time'">
+          <el-row v-if="personal.jobNature!='part_time'" class="abc">
             <el-col :span="17">
               <el-form-item label="工作时间：" prop="workTimes">
                   <div class="tech-order-jn" style="width:100%">
@@ -534,8 +534,8 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:startEnd.start,
-                              maxTime:startEnd.end
+                              minTime:'09:00',
+                              maxTime:'12:00'
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -770,17 +770,6 @@ export default {
       }else{
         callback(new Error("请选择工作时间"));
       }
-      // if(this.teachArr === undefined || this.teachArr.length==0){
-      //   callback(new Error("请选择工作时间"));
-      // }else{
-      //   callback()
-      // }
-      // console.log(this.teachArr,"---------------------___________________________-----------------------")
-      if ((this.startTime && this.endTime) ||  this.teachArr.length > 0) {
-        callback();
-      } else {
-        callback(new Error("请选择工作时间"));
-      }
     };
     //头像图片
     var HEADPIC = (rule,value,callback) => {
@@ -789,6 +778,46 @@ export default {
       }else{
         callback(new Error('请上传头像'))
       }
+    }
+
+    //休假结束日期
+    var ENDDATE = (rule,value,callback) =>{
+      var t1 = Date.parse(this.ruleForm.startDate)
+      var t2 = Date.parse(value)
+      var c1 = Date.parse('2008-08-08 '+this.ruleForm.startTime);
+      var c2 = Date.parse('2008-08-08 '+this.ruleForm.endTime);
+      if(value){
+        if(t2>=t1){
+          if(t2==t1){
+            if(c2>c1){
+              callback()
+            }else{
+               callback(new Error('结束时间不能小于开始时间'))
+            }
+          }else{
+            callback()
+          }
+        }else{
+          callback(new Error('结束时间不能小于开始时间'))
+        }
+      }else{
+        callback(new Error('请选择结束日期1'))
+      }
+      // if(t2>=t1){
+      //   callback()
+      // }else{
+      //   callback(new Error('不太通'))
+      // }
+      //  var t1 = this.ruleForm.startTime
+      // var t2 = this.ruleForm.endTime
+      // console.log(t1,"t1-----")
+      // console.log(t2,"t2-----")
+      // var c1 = Date.parse('2008-08-08 '+t1);
+      // var c2 = Date.parse('2008-08-08 '+t2);
+      // console.log(c1,"ca-----")
+      // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
+        // if(c1<=c2){
+     
     }
 
     return {
@@ -817,10 +846,11 @@ export default {
           { required: true, message: '请选择时间', trigger: 'change' }
         ],
         endDate:[
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          // { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          {required:true,validator:ENDDATE,trigger:'change'}
         ],
         startDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          {type: 'date', required: true, message: '请选择日期', trigger: 'change' }
         ],
         endTime:[
           {required: true, message: '请选择时间', trigger: 'change' }
@@ -887,7 +917,7 @@ export default {
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
-        workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
         headPic:[
           { required: true, validator:HEADPIC , trigger: "blur"}
         ],
@@ -1253,18 +1283,17 @@ export default {
           var month = data.getMonth() + 1;
           var day = data.getDate();
           var str = year+','+month+','+day
-          console.log(str)
           var time1 = Date.parse(new Date('1950,1,1'))
           var time2 = Date.parse(new Date(str))
           return {
             disabledDate(time){
-              return time.getTime() <time1-(8.64e7) || time.getTime() > time2
+              return time.getTime() <time1 || time.getTime() > time2
             }
           }
       },
     //权限
     btnShow() {
-      return this.$store.state.user.buttonshow;
+      return JSON.parse(localStorage.getItem('btn'));
     },
     areaOptions() {
       console.log(this.$store.state.user.area, "this.$store.state.user.area");
@@ -1301,6 +1330,11 @@ export default {
     },
     //新增按钮
     handleCreate(){
+      var stationLocal = localStorage.getItem('station')
+      var stationObj = JSON.parse(stationLocal)
+      if(stationObj.id==1){
+        this.personal.stationId = stationObj.id
+      }
       this.dialogVisible = true
       //服务时间
       serviceTechnicianInfo().then(data=>{
@@ -1313,7 +1347,8 @@ export default {
       })
       //所属服务站
       serviceStation({}).then(data=>{
-        this.servery = data.data.data;
+        var obj = data.data.data
+        this.servery = stationObj.id==1? obj : obj.slice(1);
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
@@ -1418,45 +1453,45 @@ export default {
       var c1 = Date.parse('2008-08-08 '+t1);
       var c2 = Date.parse('2008-08-08 '+t2);
       console.log(c1,"ca-----")
-      if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
-        if(c1<=c2){
+      // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
+        // if(c1<=c2){
           this.$refs[formName].validate(val=>{
-          if(val){
-            var obj = {}
-              obj.techId = this.passwordId
-              obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
-              obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
-              obj.remark = this.ruleForm.desc
-              console.log(obj)
-              addVacation(obj).then(data=>{
-                console.log(data,"data---休假")
-                if(data.data.code){
-                  this.$message({
-                    message: "保存成功",
-                    type: "success"
-                  });
-                  this.vacationCancel('ruleForm')
-                }else{
-                  this.$message.error(data.data.data)
-                  return false
-                }
-              }).catch(error=>{
-                console.log(error,"error-----")
+              if(val){
+                var obj = {}
+                  obj.techId = this.passwordId
+                  obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
+                  obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
+                  obj.remark = this.ruleForm.desc
+                  console.log(obj)
+                  addVacation(obj).then(data=>{
+                    console.log(data,"data---休假")
+                    if(data.data.code){
+                      this.$message({
+                        message: "保存成功",
+                        type: "success"
+                      });
+                      this.vacationCancel('ruleForm')
+                    }else{
+                      this.$message.error(data.data.data)
+                      return false
+                    }
+                  }).catch(error=>{
+                    console.log(error,"error-----")
+                    return false
+                  })
+              }else{
+                this.$message.error("保存失败")
                 return false
-              })
-          }else{
-            this.$message.error("保存失败")
-            return false
-          }
-      })
-        }else{
-          this.$message.error("保存失败")
-          return false
-        }
-      }else{
-        this.$message.error("保存失败")
-        return false
-      }
+              }
+          })
+        // }else{
+        //   this.$message.error("保存失败")
+        //   return false
+        // }
+      // }else{
+      //   this.$message.error("保存失败")
+      //   return false
+      // }
       // console.log(this.ruleForm.endDate,"startTime-------------")
       //  console.log(this.ruleForm,"this.ruleForm")
       //  console.log(this.storeEnd,"storeEnd----")
@@ -1649,11 +1684,32 @@ export default {
       item.show = !item.show;
       //  console.log(item)
     },
+    //排序
+    by(name){
+      return function(o, p){
+        var a, b;
+        if (typeof o === "object" && typeof p === "object" && o && p) {
+          a = o[name];
+          b = p[name];
+          if (a === b) {
+            return 0;
+          }
+          if (typeof a === typeof b) {
+            return a < b ? -1 : 1;
+          }
+          return typeof a < typeof b ? -1 : 1;
+        }
+        else {
+          throw ("error");
+        }
+      }
+    },
     techClick() {
       if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
         var obj = {};
         obj.startTime = this.startTime
         obj.endTime = this.endTime
+        this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
         obj.weeks = [].concat(this.roomSel1Arr);
         this.disbArr = this.disbArr.concat(this.roomSelNum);
         this.teachArr.push(obj);
@@ -1785,10 +1841,18 @@ export default {
               this.roomSel2Arr = [];
               // this.techniList = [];
             }else{
-              this.$message({
-                message:data.data.data,
-                type:"warning"
-              })
+              var str = data.data.data
+              if(typeof str=='string'){
+                this.$message({
+                  message:str,
+                  type:"warning"
+                })
+              }else{
+                this.$message({
+                  message:str[0],
+                  type:"warning"
+                })
+              }
               return false
             }
           }).catch(error=>{
@@ -1836,7 +1900,7 @@ export default {
             this.sexTypeo = data.data.data.skillInfos;
             this.infoname = data.data.data.page.list || [];
             this.server = data.data.data.stations
-            this.total = data.data.data.page.count
+            this.total = data.data.data.page.count   
             var i = 0,
               len = this.infoname.length,
               date = new Date(),

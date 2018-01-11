@@ -286,6 +286,7 @@ import {
   getSite,
   addSite,
   delSite,
+  upSite,
   getMaster,
   setMaster,
   getStore,
@@ -317,7 +318,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
@@ -653,10 +654,6 @@ export default {
     },
     create(formName) {
       //新增保存时
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       var obj = {
         name: this.temp.name,
         type: this.temp.type,
@@ -670,7 +667,9 @@ export default {
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addSite(obj).then(res => {
+            this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -689,6 +688,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -702,7 +703,9 @@ export default {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
+      this.btnState = true
       setStore(obj).then(res => {
+        this.btnState = false
         if (res.data.code == 1) {
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
@@ -731,6 +734,8 @@ export default {
             message: res.data.data
           });
         }
+      }).catch(()=>{
+        this.btnState = false
       });
       this.tempStore.tree = [];
     },
@@ -742,7 +747,9 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           setMaster(obj).then(res => {
+            this.btnState = false
             if (res.data.code == "1") {
               this.$message({
                 type: "success",
@@ -760,6 +767,8 @@ export default {
               });
               this.dialogMasterVisible = false;
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -782,7 +791,9 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addSite(obj).then(res => {
+          this.btnState = true
+          upSite(obj).then(res => {
+            this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -800,6 +811,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false
           });
         } else {
           return false;

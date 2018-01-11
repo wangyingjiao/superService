@@ -29,26 +29,7 @@ export default {
       type: Array
     }
   },
-  data() {
-    return {
-      menudata: []
-    };
-  },
-  // computed:{
-  //     menu:function(){
-  //       return JSON.parse(localStorage.getItem('menu'))
-  //     }
-  // },
   created() {
-    //this.menu = JSON.parse(localStorage.getItem('menu'))
-    if (this.menu.length != 0) {
-      console.log("!=0");
-      this.menudata = JSON.parse(localStorage.getItem("menu"));
-    } else {
-      this.menudata = this.$store.state.user.menu;
-    }
-    console.log(this.menudata, "11111111111111111111111111111111");
-    console.log(this.menu, "2222222222222211111");
   },
   methods: {
     show() {

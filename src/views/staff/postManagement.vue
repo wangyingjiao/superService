@@ -132,6 +132,7 @@
 import {
   getStationPage,
   addStation,
+  upStation,
   delStation,
   getPower,
   getMenudata,
@@ -652,10 +653,6 @@ export default {
     },
     //新增
     create(formName) {
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       this.search = {
         name: "",
         officeId: ""
@@ -680,7 +677,9 @@ export default {
     
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStation(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
@@ -702,6 +701,8 @@ export default {
                 message: res.data.data[0]
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -728,7 +729,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addStation(obj).then(res => {
+          this.btnState = true
+          upStation(obj).then(res => {
+            this.btnState = false;
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs.domTree.setCheckedKeys([]);
@@ -752,6 +755,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -847,12 +852,12 @@ export default {
 .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
-.el-tree-node:nth-child(1)
+/* .el-tree-node:nth-child(1)
   .el-tree-node__children
   .el-tree-node__children
   .el-tree-node {
   float: none;
-}
+} */
 .ceshi {
   height: 25px;
   width: 80px;

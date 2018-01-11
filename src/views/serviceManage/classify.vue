@@ -99,7 +99,13 @@
 </template>
 
 <script>
-import { getClass, addClass, delClass, setClass, upClass } from "@/api/serviceManage";
+import {
+  getClass,
+  addClass,
+  delClass,
+  setClass,
+  upClass
+} from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -111,7 +117,7 @@ export default {
   },
   data() {
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       selectState: false,
       active: true,
@@ -328,10 +334,6 @@ export default {
     },
     create(formName) {
       //新增
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       var obj = {
         majorSort: this.temp.majorSort,
         name: this.temp.name
@@ -339,7 +341,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addClass(obj).then(res => {
+            this.btnState = false;
             console.log(res, "添加");
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
@@ -365,6 +369,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -373,10 +379,12 @@ export default {
     },
     resetForm(formName) {
       //清空列表
-      this.selectState = false;
-      this.resetTemp();
-      this.dialogFormVisible = false;
-      this.$refs[formName].resetFields();
+      this.$nextTick(() => {
+        this.selectState = false;
+        this.resetTemp();
+        this.$refs[formName].resetFields();
+        this.dialogFormVisible = false;
+      });
     },
     resetSearch() {
       //清空搜索信息
@@ -396,8 +404,10 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true;
           console.log(obj, "参数");
           upClass(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
@@ -410,13 +420,15 @@ export default {
                 message: "编辑成功"
               });
             } else {
-              this.dialogFormVisible = false;
-              this.selectState = false;
+              //this.dialogFormVisible = false;
+              //this.selectState = false;
               this.$message({
                 type: "error",
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -424,10 +436,12 @@ export default {
       });
     },
     resetTemp() {
-      this.temp = {
-        name: "",
-        majorSort: ""
-      };
+      this.temp.name = "";
+      this.temp.majorSort = "";
+      // this.temp = {
+      //   name: "",
+      //   majorSort: ""
+      // };
     },
     handleClick(tab, event) {
       console.log(tab, event, "tab切换");

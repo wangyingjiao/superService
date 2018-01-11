@@ -237,6 +237,7 @@ import {
   staffList,
   addStaff,
   getStaff,
+  upStaff,
   addMech,
   getSList,
   getStation,
@@ -316,7 +317,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       list: null,
       total: null,
@@ -737,11 +738,6 @@ export default {
       }
     },
     create(formName) {
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
-      console.log(this.temp);
       //var arr = [this]
       var obj = {
         mobile: this.temp.mobile,
@@ -755,7 +751,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStaff(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
@@ -791,6 +789,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -815,7 +815,9 @@ export default {
       console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStation(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.$message({
@@ -847,6 +849,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -869,7 +873,7 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addStaff(obj).then(res => {
+          upStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               // 判断是不是自己修改自己

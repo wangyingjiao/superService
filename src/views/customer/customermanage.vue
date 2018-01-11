@@ -207,7 +207,7 @@ export default {
 				showDis:true,
 				submitFlag:false,
 			  jumpPage:1,
-			  btnShow: this.$store.state.user.buttonshow,
+			  btnShow: JSON.parse(localStorage.getItem('btn')),
 				testvalue:'',
 				areaOptions:this.$store.state.user.area,
 			  listLoading:false,

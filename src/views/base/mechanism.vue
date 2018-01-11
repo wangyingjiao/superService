@@ -294,7 +294,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState:false,
       typeState:false,
       list: [],
@@ -649,7 +649,7 @@ export default {
              this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
              setTimeout(() => {
                var time = res.data.data.workEndTime.substring(0,5)
-               if(time == '00:00'){
+               if(time == '23:59'){
                  this.temp.workEndTime = '24:00'
                }else{
                  this.temp.workEndTime = time
@@ -692,10 +692,6 @@ export default {
       // this.search.key = val
     },
     create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
 
       var obj = {
         name: this.temp.name, //机构名
@@ -715,16 +711,25 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      //防止数据库24:00:00乱码
       if(obj.workEndTime =='24:00:00'){
         obj.workEndTime = '23:59:59'
+      }
+      //防止数据库08:00:00乱码
+      if(obj.workStartTime == '08:00:00'){
+        obj.workStartTime = '08:00:01'
+      }
+      if(obj.workEndTime == '08:00:00'){
+        obj.workEndTime = '08:00:01'
       }
       
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
+          this.btnState = true
           addMech(obj).then(res => {
             console.log(res);
+          this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -742,6 +747,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -768,14 +775,25 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      console.log(obj);
-
+      //防止数据库24:00:00乱码
+      if(obj.workEndTime =='24:00:00'){
+        obj.workEndTime = '23:59:59'
+      }
+      //防止数据库08:00:00乱码
+      if(obj.workStartTime == '08:00:00'){
+        obj.workStartTime = '08:00:01'
+      }
+      if(obj.workEndTime == '08:00:00'){
+        obj.workEndTime = '08:00:01'
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addMech(obj).then(res => {
+          this.btnState = true
+          upMech(obj).then(res => {
+            this.btnState = false
             console.log(res);
-            this.dialogFormVisible = false;
             if (res.data.code === 1) {
+              this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.$message({
@@ -790,6 +808,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         }
       });
