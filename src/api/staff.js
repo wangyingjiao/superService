@@ -14,7 +14,7 @@ export function getStationPage(obj, pageNumber, pageSize) {
 }
 // 获取岗位列表（不分页）
 export function getStation(obj) {
-  return instance.post(`/apiservice/a/sys/role/listData`, obj)
+  return instance.post(`/apiservice/a/sys/role/listDataWithoutPermission`, obj)
 }
 // 获取员工列表（分页）
 export function getStaff(obj, pageNumber, pageSize) {

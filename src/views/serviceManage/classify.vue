@@ -87,7 +87,7 @@
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large" v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
         <button class="button-large" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
