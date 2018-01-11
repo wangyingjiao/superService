@@ -1689,6 +1689,7 @@ export default {
     //家庭表格编辑
     handleModifyStatus(row, scope, status) {
       this.scopeId = scope.$index;
+      alert(this.scopeId)
       this.flagso = true;
       this.perFamily = Object.assign({}, row);
       console.log(this.perFamily, "row-------");
@@ -1804,12 +1805,13 @@ export default {
     savrTable(formName) {
       var arr = [];
       var obj = Object.assign({}, this.perFamily);
-      arr.push(obj);
+      // arr.push(obj);
       if(!this.familyFlag){
-        if(arr[0].id){
-          delete arr[0].id
+        if(obj.id){
+          delete obj.id
         }
       }
+      arr.push(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           familyAdd({ id: this.techniEditId, familyMembers: arr })
@@ -1821,11 +1823,11 @@ export default {
                 });
                 if (this.familyFlag) {
                   console.log(obj,"obj----------------")
-                  // alert("编辑")
+                  alert("编辑")
                   this.$set(this.familyList, this.scopeId, obj);
                 } else {
                   console.log(obj,"obj----------------")
-                  // alert("添加")
+                  alert("添加")
                   this.familyList.push(obj);
                 }
                 this.familyFlag = false;

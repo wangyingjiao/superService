@@ -1253,7 +1253,6 @@ export default {
           var month = data.getMonth() + 1;
           var day = data.getDate();
           var str = year+','+month+','+day
-          console.log(str)
           var time1 = Date.parse(new Date('1950,1,1'))
           var time2 = Date.parse(new Date(str))
           return {
@@ -1313,7 +1312,8 @@ export default {
       })
       //所属服务站
       serviceStation({}).then(data=>{
-        this.servery = data.data.data;
+        this.servery = data.data.data.slice(1);
+        
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
