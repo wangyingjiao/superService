@@ -132,6 +132,7 @@
 import {
   getStationPage,
   addStation,
+  upStation,
   delStation,
   getPower,
   getMenudata,
@@ -728,7 +729,7 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addStation(obj).then(res => {
+          upStation(obj).then(res => {
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs.domTree.setCheckedKeys([]);

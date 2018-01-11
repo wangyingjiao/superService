@@ -99,7 +99,13 @@
 </template>
 
 <script>
-import { getClass, addClass, delClass, setClass, upClass } from "@/api/serviceManage";
+import {
+  getClass,
+  addClass,
+  delClass,
+  setClass,
+  upClass
+} from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -373,10 +379,12 @@ export default {
     },
     resetForm(formName) {
       //清空列表
-      this.selectState = false;
-      this.resetTemp();
-      this.dialogFormVisible = false;
-      this.$refs[formName].resetFields();
+      this.$nextTick(() => {
+        this.selectState = false;
+        this.resetTemp();
+        this.$refs[formName].resetFields();
+        this.dialogFormVisible = false;
+      });
     },
     resetSearch() {
       //清空搜索信息
@@ -410,8 +418,8 @@ export default {
                 message: "编辑成功"
               });
             } else {
-              this.dialogFormVisible = false;
-              this.selectState = false;
+              //this.dialogFormVisible = false;
+              //this.selectState = false;
               this.$message({
                 type: "error",
                 message: res.data.data
@@ -424,10 +432,12 @@ export default {
       });
     },
     resetTemp() {
-      this.temp = {
-        name: "",
-        majorSort: ""
-      };
+      this.temp.name = "";
+      this.temp.majorSort = "";
+      // this.temp = {
+      //   name: "",
+      //   majorSort: ""
+      // };
     },
     handleClick(tab, event) {
       console.log(tab, event, "tab切换");
