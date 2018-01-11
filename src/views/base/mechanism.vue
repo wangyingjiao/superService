@@ -772,7 +772,7 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addMech(obj).then(res => {
+          upMech(obj).then(res => {
             console.log(res);
             this.dialogFormVisible = false;
             if (res.data.code === 1) {

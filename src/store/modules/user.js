@@ -45,9 +45,8 @@ const user = {
           username: userInfo.username,
           password: userInfo.password
         }
-        
+
         loginByUsername(obj).then(response => {
-          console.log('触发次数')
           if (response.data.code === 1) {
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
@@ -70,30 +69,21 @@ const user = {
 
     // 获取用户信息
     GetUserInfo({ commit, userInfo }) {
-      // if (JSON.parse(localStorage.getItem('menu'))) {
-      //   console.log(22222222222222222222)
-      // }else{
-      //   console.log(44444444444444444444444)
-      // }
-      //commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
-      return new Promise((resolve, reject) => {
-        getUserInfo().then(response => {
-          const data = response.data
-          console.log(data, '权限列表')
-          localStorage.setItem('menu', JSON.stringify(data.data))
-          //console.log(JSON.parse(localStorage.getItem('menu')))
-          //var arr = JSON.parse(localStorage.getItem('menu'))
-          // if (0) {
-          //   commit('SET_MENU', arr)
-          // } else {
+      if (JSON.parse(localStorage.getItem('menu'))) {
+        commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
+      } else {
+        return new Promise((resolve, reject) => {
+          getUserInfo().then(response => {
+            const data = response.data
+            console.log(data, '权限列表')
+            localStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
-
-         // }
-          resolve(response)
-        }).catch(error => {
-          reject(error)
+            resolve(response)
+          }).catch(error => {
+            reject(error)
+          })
         })
-      })
+      }
     },
     // 获取省市区
     Getarea({ commit }) {

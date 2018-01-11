@@ -286,6 +286,7 @@ import {
   getSite,
   addSite,
   delSite,
+  upSite,
   getMaster,
   setMaster,
   getStore,
@@ -782,7 +783,7 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addSite(obj).then(res => {
+          upSite(obj).then(res => {
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();

@@ -237,6 +237,7 @@ import {
   staffList,
   addStaff,
   getStaff,
+  upStaff,
   addMech,
   getSList,
   getStation,
@@ -869,7 +870,7 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          addStaff(obj).then(res => {
+          upStaff(obj).then(res => {
             console.log(res);
             if (res.data.code === 1) {
               // 判断是不是自己修改自己
