@@ -533,6 +533,10 @@ export default {
                       this.tableData1=res.data.data;
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb
                   }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                     
                   }          
                 }).catch(res=>{
                   
@@ -590,6 +594,10 @@ export default {
              
           }else{
             this.timeObj=[];
+            this.$message({
+              type: "error",
+              message: res.data.data
+            });             
           }          
         }).catch(res=>{
           
@@ -642,6 +650,10 @@ export default {
                       }                      
                   }else{
                     this.listTech=[];
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                     
                   }
                 }
               }).catch(res=>{
@@ -665,6 +677,10 @@ export default {
                     }
                   }else{
                     this.listTech=[]
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                     
                   }
                 }
               }).catch(res=>{
@@ -708,7 +724,11 @@ export default {
               this.tableData1=res.data.data;
               this.middleA=[];                         
               this.dialogTableVisible = false
-          }else{            
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });                         
           }          
         }).catch(res=>{
           
@@ -730,6 +750,10 @@ export default {
               this.middleA=[];                         
               this.dialogTableVisible = false
           }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });             
           }          
         }).catch(res=>{
           
@@ -765,6 +789,10 @@ export default {
                       }                    
                   }                                                                            
                 }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                  
                 }          
               }).catch(res=>{
                 
@@ -783,6 +811,10 @@ export default {
                     this.listTech=res.data.data; 
                   }
                 }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                   
                 }          
               }).catch(res=>{
                 
