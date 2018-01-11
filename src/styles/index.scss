@@ -513,3 +513,14 @@ body {
 .orderTab .el-tabs__active-bar{
   width: 42px !important;
 }
+.orderTab .el-tabs__item{
+  &:nth-child(2){
+        &:before {
+          content: '*';
+          color: #ffffff;
+          margin-right: 0px;
+          font-size: 16px;
+          vertical-align:middle;
+        }
+  }
+}

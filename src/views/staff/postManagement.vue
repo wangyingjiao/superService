@@ -293,18 +293,50 @@ export default {
     },
     getList() {//获取列表
       this.listLoading = true;
-      var obj = {};
-      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      var obj = {
+        name: this.search.name,
+        organization: { id: this.search.officeId }
+      };
+      console.log(obj);
+      if (obj.name != "" || obj.organization.id != "") {
+        this.listLoading = true;
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
           }
-        }
-        this.total = res.data.data.count;
-        this.listLoading = false;
-      });
+        });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleFilter() {//搜索
       this.listQuery.page = 1;
@@ -612,10 +644,7 @@ export default {
               }
             })
             .catch(() => {
-              this.$message({
-                type: "warning",
-                message: "服务器已断开，请稍后再试"
-              });
+              this.listLoading = false
             });
         })
         .catch(() => {
@@ -635,12 +664,7 @@ export default {
     getFather(data) {
       console.log(121233213);
       for (var i in data) {
-        //  if(this.data2.indexOf(data[i].id) > -1){
-        //    console.log(i)
-        //    data.push(data[i].parentId)
-        //  }else {
-        //    this.getFather(data[i].submenus)
-        //  }
+        
         if (data[i].subMenus != undefined) {
           console.log(i);
           this.getFather(data[i].subMenus);
