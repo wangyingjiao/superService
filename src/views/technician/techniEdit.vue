@@ -60,7 +60,7 @@
                       <el-col :span="12">
                         <el-form-item label="出生日期:" prop="birthDate">
                           <el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
-                          format="yyyy-MM-dd">
+                          format="yyyy-MM-dd" :picker-options="pickerOptions0">
                           </el-date-picker>
                         </el-form-item>
                       </el-col>
@@ -720,8 +720,12 @@ export default {
     var EMAIL = (rule,value,callback)=>{
       var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
       if(value){
-        if(reg.test(value)){
-          callback()
+        if(value.length>=6 && value.length<=30){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入正确的邮箱地址'))
+          }
         }else{
           callback(new Error('请输入正确的邮箱地址'))
         }
@@ -795,10 +799,10 @@ export default {
           {validator:MEMBERPHONE,trigger:'blur'}
         ],
         memberCompany:[
-          { min: 2, max: 50, message: "请输入工作单位名称", trigger: "blur"}
+          { min: 0, max: 50, message: "请输入0-50位的单位名称", trigger: "blur"}
         ],
         memberJob:[
-          {min: 2, max: 50, message: "请输入职务", trigger: "blur"}
+          {min: 2, max: 50, message: "请输入0-50位的职务名称", trigger: "blur"}
         ]
 
       },
@@ -973,11 +977,6 @@ export default {
           label: "亲戚"
         }
       ],
-      pickerOptions0: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        }
-      },
       sexType: [
         {
           sexName: "技能一",
@@ -1397,7 +1396,7 @@ export default {
                   type: "success"
                 });
               }else{
-                this.$message.error('保存失败')
+                this.$message.error(data.data.data)
                 return false
               }
           }).catch(error=>{
@@ -1502,7 +1501,7 @@ export default {
                   type: "success"
                 });
               }else{
-                this.$message.error('保存失败')
+                this.$message.error(data.data.data)
                 return false
               }
             }).catch(error=>{
@@ -1528,7 +1527,7 @@ export default {
 			// this.$emit("dialogvisibleedit")
             // this.$emit("getlist",this.listquer.page)
           } else {
-            this.$message.error("保存失败");
+             this.$message.error(data.data.data);
             return false;
           }
           // console.log(data,"-----------datathis.supplement----")
@@ -1608,7 +1607,7 @@ export default {
           console.log(obj, "obj-----");
           this.technicianEdit(obj)
         } else {
-          this.$message.error("保存失败");
+          // this.$message.error("保存失败");
           return false;
         }
       });
@@ -1634,7 +1633,7 @@ export default {
                 type: "success"
               })
             }else{
-              this.$message.error('保存失败')
+              this.$message.error(data.data.data)
               return false
             }
           }).catch(error=>{
@@ -1676,7 +1675,7 @@ export default {
             });
             this.familyFlag = false
           } else {
-            this.$message.error("删除失败");
+            this.$message.error(data.data.data);
             return false;
           }
         })
@@ -1689,6 +1688,7 @@ export default {
     //家庭表格编辑
     handleModifyStatus(row, scope, status) {
       this.scopeId = scope.$index;
+      // alert(this.scopeId)
       this.flagso = true;
       this.perFamily = Object.assign({}, row);
       console.log(this.perFamily, "row-------");
@@ -1732,13 +1732,33 @@ export default {
       // item.show = !item.show;
       //  console.log(item)
     },
+    //排序
+    by(name){
+      return function(o, p){
+        var a, b;
+        if (typeof o === "object" && typeof p === "object" && o && p) {
+          a = o[name];
+          b = p[name];
+          if (a === b) {
+            return 0;
+          }
+          if (typeof a === typeof b) {
+            return a < b ? -1 : 1;
+          }
+          return typeof a < typeof b ? -1 : 1;
+        }
+        else {
+          throw ("error");
+        }
+      }
+    },
     techClick() {
-
       if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
           var obj = {};
           var arr = []
           obj.startTime = this.startTime
           obj.endTime = this.endTime
+          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
           obj.weeks = [].concat(this.roomSel1Arr);
           for(var i = 0; i<obj.weeks.length; i++){
             this.disbArr.push(obj.weeks[i].id)
@@ -1804,12 +1824,13 @@ export default {
     savrTable(formName) {
       var arr = [];
       var obj = Object.assign({}, this.perFamily);
-      arr.push(obj);
+      // arr.push(obj);
       if(!this.familyFlag){
-        if(arr[0].id){
-          delete arr[0].id
+        if(obj.id){
+          delete obj.id
         }
       }
+      arr.push(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           familyAdd({ id: this.techniEditId, familyMembers: arr })
@@ -1819,19 +1840,21 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
-                if (this.familyFlag) {
-                  console.log(obj,"obj----------------")
-                  // alert("编辑")
-                  this.$set(this.familyList, this.scopeId, obj);
-                } else {
-                  console.log(obj,"obj----------------")
-                  // alert("添加")
-                  this.familyList.push(obj);
-                }
+                this.familyList = data.data.data
+                console.log(data,"-------------------------------------------____________________________________++++++++++++++++++")
+                // if (this.familyFlag) {
+                //   console.log(obj,"obj----------------")
+                //   alert("编辑")
+                //   this.$set(this.familyList, this.scopeId, obj);
+                // } else {
+                //   console.log(obj,"obj----------------")
+                //   alert("添加")
+                //   this.familyList.push(obj);
+                // }
                 this.familyFlag = false;
                 this.$refs[formName].resetFields();
               } else {
-                this.$message.error("保存失败");
+                this.$message.error(data.data.data);
                 return false;
               }
             })
@@ -1900,7 +1923,21 @@ export default {
   computed:{
     sign(){
       return getSign();
-    }
+    },
+    pickerOptions0(){
+          var data = new Date();
+          var year = data.getFullYear();
+          var month = data.getMonth() + 1;
+          var day = data.getDate();
+          var str = year+','+month+','+day
+          var time1 = Date.parse(new Date('1950,1,1'))
+          var time2 = Date.parse(new Date(str))
+          return {
+            disabledDate(time){
+              return time.getTime() <time1 || time.getTime() > time2
+            }
+          }
+      },
   }
 };
 </script>

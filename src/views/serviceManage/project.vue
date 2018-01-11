@@ -90,7 +90,7 @@
 
       <el-table-column align="center" label="操作" min-width="200px">
         <template scope="scope">
-            <el-button class="el-icon-upload ceshi3" @click="handleUplode(scope.row)"></el-button>
+            <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
           </template>
