@@ -53,6 +53,7 @@ const user = {
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             localStorage.setItem('orgId', response.data.data.user.organization.id)
             localStorage.setItem('userId', response.data.data.user.id)
+            localStorage.setItem('station',JSON.stringify(response.data.data.user.station))
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
             setToken(data.token)

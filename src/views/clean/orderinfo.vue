@@ -195,7 +195,7 @@
                         label="头像"
                         >
                         <template scope="scope">
-                        <img class="picHeader" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+scope.row.headPic+'?x-oss-process=image/resize,m_fill,h_60,w_60'"/>
+                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
                         </template>
                       </el-table-column>
                       <el-table-column
@@ -405,7 +405,8 @@
               </el-form-item>
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
-                    <div class="marginTopDec46">                                            
+                    <div class="marginTopDec46">
+                      <div v-if="timeObj.length == 0" class="promMessage">当前没有可服务的技师，请更换时间!</div>                                            
                       <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
                     </div>                    
               </el-form-item>              
@@ -476,12 +477,14 @@ export default {
           changTime:'',
           status:'add',
           aa:'',
-          bb:''               		
+          bb:'',
+          orderId:''               		
     };
   },
   methods:{
     //用订单ID获取页面相关信息
     getOrderAllInf(orderId){
+      this.orderId=orderId;
       var obj={
         id:orderId
       }
@@ -518,7 +521,7 @@ export default {
             }).then(() => {
                 //更换时间的保存
                 var obj={
-                  id:this.$route.query.id,
+                  id:this.orderId,
                   serviceTime:this.changTime+' '+time+':00'
                 }
                 saveTime(obj).then(res => {      
@@ -566,12 +569,14 @@ export default {
       if(value != undefined){
         this.changTime=value 
         var obj={
-          id:this.$route.query.id,
+          id:this.orderId,
           serviceTime:value+' 00:00:00'
         } 
         ChangeTimeData(obj).then(res => {      
-          if (res.data.code === 1) {                         
-              this.timeObj=res.data.data;
+          if (res.data.code === 1) {
+              if(res.data.data != undefined){
+                  this.timeObj=res.data.data;
+              }                                       
               if(this.timeObj != undefined){
                 //样式复位
                 for(var a=0;a<this.timeObj.length;a++){
@@ -615,7 +620,7 @@ export default {
     //选择技师弹出层查询按钮
     searchTeh(){  
         var obj = {
-          id:this.$route.query.id,
+          id:this.orderId,
           techName: this.techName
         };
         //服务技师获取
@@ -691,7 +696,7 @@ export default {
       if(this.status == 'add' && arr.length !=0 ){
       //保存技师接口调用
         var obj={
-          id:this.$route.query.id,
+          id:this.orderId,
           techIdList:arr
         }
         addTechSave(obj).then(res => {      
@@ -711,7 +716,7 @@ export default {
       }
       if(this.status == 'edit' && arr.length !=0 ){
         var obj1={
-          id:this.$route.query.id,
+          id:this.orderId,
           dispatchTechId:this.aa,
           techIdList:arr
         }
@@ -744,15 +749,15 @@ export default {
         this.techName='';         
         if(status == 'add'){
               var obj={
-                id:this.$route.query.id
+                id:this.orderId
               };            
               addTechData(obj).then(res => {      
                 if (res.data.code === 1) { 
-                  this.dialogTableVisible=true;
-                  
+                  this.dialogTableVisible=true;                  
                   this.$nextTick( () => {
                     this.$refs.tableHeader.scrollIntoView()
-                  })                   
+                  }) 
+                                   
                   if(res.data.data.length != undefined){
                       this.listTech=res.data.data;                 
                       for(var a=0;a<this.listTech.length;a++){
@@ -766,7 +771,7 @@ export default {
               });
         }else{
               var obj1={
-                id:this.$route.query.id
+                id:this.orderId
               };            
               dispatchTechData(obj1).then(res => {      
                 if (res.data.code === 1) {
@@ -803,11 +808,17 @@ export default {
     }	
   },
   mounted() {
-    this.getOrderAllInf(this.$route.query.id)
+    var orderId=window.localStorage.getItem("orderId")
+    if(this.$route.query.id == undefined){
+      this.getOrderAllInf(orderId)
+    }else{
+      this.getOrderAllInf(this.$route.query.id)
+    }    
   }
 };
 </script>
 <style   scoped>
+.promMessage{width:90%;height:56px;line-height:56px;margin-left:22px;color: #8391a5;}
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
@@ -829,7 +840,7 @@ export default {
     font-size: 14px;
     cursor: pointer;
 }
-.selfMarTL{margin-top:0px;margin-left:82px;}
+.selfMarTL{margin-top:0px;}
 .selfbeizhu{min-width:900px;margin-left:22px;float:left;}
 .selfbeizhu1{min-width:900px;margin-left: 102px;margin-top: -15px;float:left;}
 .width120{width:120px;}

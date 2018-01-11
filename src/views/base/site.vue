@@ -476,19 +476,29 @@ export default {
     },
     handleSetMaster() {
       // 设置站长
+      console.log(this.tempMaster.master)
+      console.log(this.rowInfo.masterId)
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
         this.listLoading = true;
         var obj = {
-          stationId: this.rowInfo.id
+          id: this.rowInfo.id
         };
         getMaster(obj).then(res => {
           console.log(res, "服务站下的员工");
-          this.master = res.data.data.list;
-          this.tempMaster.master = this.rowInfo.masterId;
+          this.master = res.data.data;
+          if(this.rowInfo.masterId){
+            console.log(1111111111111111111)
+            this.tempMaster.master = this.rowInfo.masterId;
+
+          }else{
+            this.tempMaster.master = ""
+          }
           this.dialogMasterVisible = true;
           this.listLoading = false;
+        }).catch(err=>{
+          this.listLoading = false
         });
       }
     },
@@ -668,6 +678,7 @@ export default {
                 type: "success",
                 message: "添加成功"
               });
+              this.rowInfo.id = ""
               this.search.name = "";
               this.search.cityCode = "";
               this.handleFilter();
@@ -695,6 +706,7 @@ export default {
         if (res.data.code == 1) {
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
+          this.rowInfo.id = ""
           this.$message({
             type: "success",
             message: "保存成功!"
@@ -736,6 +748,9 @@ export default {
                 type: "success",
                 message: "设置成功"
               });
+              this.rowInfo.id = ""
+              this.tempMaster.master = ""
+              this.$refs[formName].resetFields();
               this.getList();
               this.dialogMasterVisible = false;
             } else {
@@ -985,6 +1000,7 @@ export default {
               type: "success",
               message: "设置成功"
             });
+            this.rowInfo.id = ""
             this.getList();
             this.rowInfo.servicePoint = "";
             this.tableData = [];

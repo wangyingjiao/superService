@@ -285,6 +285,7 @@ export default {
 	},
 	//查看跳转到订单详情页
 	lookInf(id){
+		window.localStorage.setItem("orderId",id)
 		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
 	},	
 	//每页条数多少改变

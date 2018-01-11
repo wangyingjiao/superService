@@ -262,11 +262,13 @@ export default {
     };
   },
   methods:{
+		  //清空地址POI选择框值
 		  inputBlur(){
 				if(this.kkkk == ''){
 					this.$refs.pickerInput.value='';
 				}				
 			},
+			//地址POI选择初始城市值
 		  testFun(value){
 					this.$nextTick(() => {
 							this.test(value[1]);
@@ -332,7 +334,7 @@ export default {
 							}
 						});								
 				},
-				//弹窗cancel
+				//新增客户弹窗取消
 				resetForm(formName) {
 					this.$refs[formName].resetFields();
 					this.ruleForm.provinceCode='';
@@ -373,7 +375,7 @@ export default {
 							}
 							this.getData(obj,this.pageNumber,this.pageSize1);
 					},	
-				//新增
+				//新增按钮点击
 					selectBut(){
 							this.dialogTableVisible=true;
 							this.showDis=true;					
@@ -455,8 +457,7 @@ export default {
 										input:inputname,
 									}							                        
 									var poiPicker = new PoiPicker(obj);						
-									//初始化poiPicker
-								  
+									//初始化poiPicker								  
 									poiPickerReady(poiPicker);
 									poiPicker.clearSearchResults()
 									poiPicker.onCityReady(function() {																							  
@@ -482,6 +483,7 @@ export default {
 							}	
 										
 					},
+					//地图初始化
 					initMap1(){
 						var id=this.$refs.gdMap;	
 						var map = new AMap.Map(id, {

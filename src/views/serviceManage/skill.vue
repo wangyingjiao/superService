@@ -1,9 +1,12 @@
 <template>
   <div class="box">
+    <!-- 技能搜索开始 -->
     <div class="filter-container bgWhite padBot20">
       <el-input  class="search" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
       <button @click="search" class="search-button btn_search el-icon-search"> 搜索</button>
     </div>
+    <!-- 技能搜索结束-->
+    <!-- 技能列表展示开始 -->
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite bgbot70" >
@@ -32,7 +35,8 @@
               </div>
           </div>          
         </div>
-        <!-- 弹出层新增技能 -->
+        <!-- 技能列表展示结束 -->
+        <!-- 弹出层新增技能开始 -->
         <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
           <el-form :model="ruleForm2" 
              :rules="rules" 
@@ -53,8 +57,7 @@
                   :disabled="item.flag">
                 </el-option>
               </el-select>
-            </el-form-item>
-            
+            </el-form-item>            
             <el-form-item label="选择技师" prop="technicians" class="selfst3">
              <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
                   <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
@@ -69,14 +72,14 @@
                   </div> 
              
             </el-form-item>           
-          </el-form>
-    
+          </el-form>    
           <div slot="footer" class="dialog-footer" style="text-align:center;">
               <button class="button-large"  :disabled="submitFlag"  @click="submitForm('ruleForm2')">保存</button>
               <button class="button-cancel"  @click="resetForm('ruleForm2')">取消</button>
           </div>          
         </el-dialog>
-        <!-- 选择技师弹出层 -->
+        <!-- 弹出层新增技能结束 -->
+        <!-- 选择技师弹出层开始 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
               <div class="selfFLOLeft width120">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
@@ -119,7 +122,7 @@
                   <button v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button>
               </div>           
         </el-dialog>
-
+        <!-- 选择技师弹出层结束 -->
       </div>
     </div>
   </div>
