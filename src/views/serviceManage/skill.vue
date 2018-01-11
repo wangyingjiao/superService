@@ -157,7 +157,7 @@
         submitFlag:false,
         jumpPage:1,
         title:'新增技能',
-        btnShow: this.$store.state.user.buttonshow,
+        btnShow: JSON.parse(localStorage.getItem('btn')),
         promShow:false,
         promShow1:false, 
 		    checkAll:false,      

@@ -40,7 +40,7 @@ export function getPower(str) {
 }
 // 获取机构列表
 export function getSList(obj) {
-  return instance.post(`/apiservice/a/sys/organization/listData?pageSize=-1`, obj)
+  return instance.post(`/apiservice/a/sys/organization/listDataAll`, obj)
 }
 // 根据id获取服务站
 export function getFuwu(obj) {

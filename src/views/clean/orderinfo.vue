@@ -430,7 +430,7 @@ export default {
   name: "",
   data() { 
     return {
-          btnShow: this.$store.state.user.buttonshow,
+          btnShow: JSON.parse(localStorage.getItem('btn')),
           pickerOptions0: {
                 disabledDate(time) {
               if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){

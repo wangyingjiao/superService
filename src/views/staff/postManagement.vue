@@ -848,12 +848,12 @@ export default {
 .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
-.el-tree-node:nth-child(1)
+/* .el-tree-node:nth-child(1)
   .el-tree-node__children
   .el-tree-node__children
   .el-tree-node {
   float: none;
-}
+} */
 .ceshi {
   height: 25px;
   width: 80px;

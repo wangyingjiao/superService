@@ -84,7 +84,7 @@ export default {
   },
   data() {
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       list: [],
       total: null,
       listLoading: true,

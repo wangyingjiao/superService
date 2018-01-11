@@ -318,7 +318,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       severSelectdialogVisible: false, //地图
       inputvalue: [],

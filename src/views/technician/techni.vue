@@ -1264,7 +1264,7 @@ export default {
       },
     //权限
     btnShow() {
-      return this.$store.state.user.buttonshow;
+      return JSON.parse(localStorage.getItem('btn'));
     },
     areaOptions() {
       console.log(this.$store.state.user.area, "this.$store.state.user.area");

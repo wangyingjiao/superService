@@ -104,6 +104,7 @@ const user = {
         getButton().then(res => {
           console.log(res.data.data)
           commit('SET_BUTTONSHOW', res.data.data)
+          localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -122,6 +123,7 @@ const user = {
           localStorage.removeItem('orgId')
           localStorage.removeItem('userId')
           localStorage.removeItem('menu')
+          localStorage.removeItem('btn')
           resolve()
         }).catch(error => {
           reject(error)
