@@ -294,7 +294,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState:false,
       typeState:false,
       list: [],
@@ -692,10 +692,6 @@ export default {
       // this.search.key = val
     },
     create(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
 
       var obj = {
         name: this.temp.name, //机构名
@@ -730,9 +726,10 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          
+          this.btnState = true
           addMech(obj).then(res => {
             console.log(res);
+          this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -750,6 +747,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -789,10 +788,12 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           upMech(obj).then(res => {
+            this.btnState = false
             console.log(res);
-            this.dialogFormVisible = false;
             if (res.data.code === 1) {
+              this.dialogFormVisible = false;
               this.resetTemp();
               this.$refs[formName].resetFields();
               this.$message({
@@ -807,6 +808,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         }
       });

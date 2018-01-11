@@ -334,10 +334,6 @@ export default {
     },
     create(formName) {
       //新增
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       var obj = {
         majorSort: this.temp.majorSort,
         name: this.temp.name
@@ -345,7 +341,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addClass(obj).then(res => {
+            this.btnState = false;
             console.log(res, "添加");
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
@@ -371,6 +369,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -404,8 +404,10 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true;
           console.log(obj, "参数");
           upClass(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
@@ -425,6 +427,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
