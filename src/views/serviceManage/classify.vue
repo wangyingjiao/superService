@@ -418,8 +418,8 @@ export default {
                 message: "编辑成功"
               });
             } else {
-              this.dialogFormVisible = false;
-              this.selectState = false;
+              //this.dialogFormVisible = false;
+              //this.selectState = false;
               this.$message({
                 type: "error",
                 message: res.data.data
