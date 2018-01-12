@@ -88,25 +88,23 @@
 			</div>
 		</div>
 		<!--技师选择弹窗开始-->
-		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth">
+		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="width120"></el-input> 
 			<button class="button-large FloatRight" @click="searchTeh">查询</button>
-			<transition name="slide">
-				<div class="selfpromMessageTab" v-if="middleA.length !=0">
-					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-						<div class="techNameStyle">{{item.techName}}</div>
-					</div>                         
-				</div>
-			</transition>                                               	
+			<div class="selfpromMessageTab" v-if="middleA.length !=0">
+				<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+					<div class="techNameStyle">{{item.techName}}</div>
+				</div>                         
+			</div>                                               	
 			<div class="selfTableWrapONE">
 				<div class="table-d">
 					<table  class="selfTable">
 					<tr class="tableHeader">
-						<td  class="selfTableHEADTD" align="center" width="58px">选择</td>
-						<td  class="selfTableHEADTD" align="center" width="170px">头像</td>
-						<td  class="selfTableHEADTD" align="center" width="172px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="56px">选择</td>
+						<td  class="selfTableHEADTD" align="center" width="166px">头像</td>
+						<td  class="selfTableHEADTD" align="center" width="179px">姓名</td>
 						<td  class="selfTableHEADTD" align="center" width="60px">性别</td>
-						<td  class="selfTableHEADTD" align="center" width="82px">岗位性质</td>							
+						<td  class="selfTableHEADTD" align="center" width="80.5px">岗位性质</td>							
 					</tr>
 					<div style="padding-top:60px;">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -359,7 +357,7 @@ export default {
 <style scoped>
 .width120{width:120px;}
 .FloatRight{float:right;}
-.selfpromMessageTab{position:relative;width:100%;height:80px;margin-top:20px;overflow-y: scroll;}
+.selfpromMessageTab{position:relative;width:100%;margin-top:20px;margin-left:10px;}
 .techNameStyle {
   width: 80px;
   height: 25px;

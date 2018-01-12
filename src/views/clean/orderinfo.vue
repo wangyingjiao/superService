@@ -351,7 +351,7 @@
 		    </div>
         <!--门店信息结束-->                                                
         <!--技师选择弹窗开始-->
-        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth">
+        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
           <button class="button-large FloatRight" @click="searchTeh">查询</button>
           <transition name="slide">
@@ -365,11 +365,11 @@
             <div class="table-d">
               <table  class="selfTable">
               <tr class="tableHeader">
-                <td  class="selfTableHEADTD" align="center" width="58px">选择</td>
-                <td  class="selfTableHEADTD" align="center" width="170px">头像</td>
-                <td  class="selfTableHEADTD" align="center" width="172px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="56px">选择</td>
+                <td  class="selfTableHEADTD" align="center" width="166px">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="179px">姓名</td>
                 <td  class="selfTableHEADTD" align="center" width="60px">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="82px">岗位性质</td>							
+                <td  class="selfTableHEADTD" align="center" width="80.5px">岗位性质</td>							
               </tr>
               <div style="padding-top:60px;">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -399,7 +399,9 @@
         <!--修改服务时间弹窗开始-->
         <el-dialog
           title="选择服务时间"
-          :visible.sync="dialogVisible">
+          :visible.sync="dialogVisible"
+          :close-on-click-modal="false"
+          >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
               <el-form-item label="选择日期" prop='Date'>
                     <el-date-picker
@@ -897,7 +899,7 @@ export default {
 .FloatLeft{float:left;}
 .selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
 .selfpromMessageTab{
-   position:relative;width:100%;height:80px;margin-top:20px;overflow-y: scroll;
+   position:relative;width:100%;margin-top:20px;margin-left:10px;
 }
 .techNameStyle {
   width: 80px;
