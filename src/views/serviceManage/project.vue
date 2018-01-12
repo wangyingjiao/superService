@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="filter-container bgWhite tabTop">
+  <div class="filter-container tabStyle">
     <el-tabs v-model="tabs" @tab-click="handleClick">
       <!-- <el-tab-pane v-for="(item,key,index) in whole" :key="index" :label="item" :name="index"></el-tab-pane> -->
       <el-tab-pane label="全部" name="all"></el-tab-pane>

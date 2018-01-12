@@ -139,7 +139,7 @@ import {
   getSList,
   chkName,
   chkNameUp
-} from "@/api/staff";//接口调用
+} from "@/api/staff"; //接口调用
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var data = [];
@@ -166,10 +166,10 @@ export default {
             }
           });
         } else {
-          var obj ={
-             roleId:this.roleId,
-             name:value
-          }
+          var obj = {
+            roleId: this.roleId,
+            name: value
+          };
           chkNameUp(obj).then(res => {
             if (res.data.code == 0) {
               callback(new Error("岗位名重复！"));
@@ -183,7 +183,7 @@ export default {
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState: false,
-      changeState:false,
+      changeState: false,
       list: [],
       officeIds: [],
       total: null,
@@ -300,10 +300,12 @@ export default {
     console.log(this.roleLv, "用户看到的等级");
   },
   methods: {
-    aaa(val) {//测试函数
+    aaa(val) {
+      //测试函数
       console.log(val);
     },
-    getList() {//获取列表
+    getList() {
+      //获取列表
       this.listLoading = true;
       var obj = {
         name: this.search.name,
@@ -350,7 +352,8 @@ export default {
         });
       }
     },
-    handleFilter() {//搜索
+    handleFilter() {
+      //搜索
       this.listQuery.page = 1;
       var obj = {
         name: this.search.name,
@@ -492,15 +495,11 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-
-      console.log(this.dialogStatus,'状态12')
-      console.log(this.changeState,'状态13')
+      console.log(this.dialogStatus, "状态12");
+      console.log(this.changeState, "状态13");
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        if(a.permission.substring(a.permission.length - 4, a.permission.length) == 'view'){
-          console.log('点击正确')
-        }
         if (a.subMenus == undefined) {
           // console.log(a.permission, "子集被勾选的权限");
           // console.log(a.id, "子集被勾选的id");
@@ -511,7 +510,6 @@ export default {
           // console.log(this.data2, "父元素");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].id == arr[2]) {
-              
             }
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
@@ -520,7 +518,7 @@ export default {
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
-          
+
                     if (newper == "view") {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
@@ -533,6 +531,31 @@ export default {
           console.log(a.permission, "父级被勾选的权限");
           //console.log(a.id, "父级被勾选的id");
           //console.log(a.subMenus[0], "父级的第一个元素");
+        }
+      } else {
+        if (
+          a.permission.substring(
+            a.permission.length - 4,
+            a.permission.length
+          ) == "view"
+        ) {
+          console.log("点击正确");
+          var arr1 = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr1[3]) {
+                  console.log(this.data2[i].subMenus[j], "1111111111");
+                  for (var k = 1; k < this.data2[i].subMenus[j].subMenus.length; k++) {
+                    console.log(this.data2[i].subMenus[j].subMenus[k].name);
+                    if(this.temp.check.indexOf(this.data2[i].subMenus[j].subMenus[k].id) > -1){
+                      this.$refs.domTree.setChecked(a.id, true);
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
       //console.log(this.$refs.domTree.getCheckedKeys(false));
@@ -617,7 +640,7 @@ export default {
             }
           }
           // console.log(a.menuIdList);
-          console.log(this.temp.check,'选中1231231111111111111111');
+          console.log(this.temp.check, "选中1231231111111111111111");
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
@@ -627,7 +650,7 @@ export default {
             message: "请求失败"
           });
         }
-        this.changeState = true
+        this.changeState = true;
       });
     },
     //删除数据
@@ -659,7 +682,7 @@ export default {
               }
             })
             .catch(() => {
-              this.listLoading = false
+              this.listLoading = false;
             });
         })
         .catch(() => {
@@ -679,7 +702,6 @@ export default {
     getFather(data) {
       console.log(121233213);
       for (var i in data) {
-        
         if (data[i].subMenus != undefined) {
           console.log(i);
           this.getFather(data[i].subMenus);
@@ -713,36 +735,38 @@ export default {
         }
       };
       console.log(obj);
-    
+
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addStation(obj).then(res => {
-            this.btnState = false;
-            console.log(res);
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.$refs.domTree.setCheckedKeys([]);
-              this.$message({
-                type: "success",
-                message: "添加成功"
-              });
-              this.dialogFormVisible = false;
-              this.listQuery.page = 1;
-              this.pageNumber = 1;
-              this.handleFilter();
-            } else {
-              //this.$refs.domTree.setCheckedKeys([]);
-              // this.resetTemp();
-              this.$message({
-                type: "error",
-                message: res.data.data[0]
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+          this.btnState = true;
+          addStation(obj)
+            .then(res => {
+              this.btnState = false;
+              console.log(res);
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.$refs.domTree.setCheckedKeys([]);
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
+                this.dialogFormVisible = false;
+                this.listQuery.page = 1;
+                this.pageNumber = 1;
+                this.handleFilter();
+              } else {
+                //this.$refs.domTree.setCheckedKeys([]);
+                // this.resetTemp();
+                this.$message({
+                  type: "error",
+                  message: res.data.data[0]
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -768,35 +792,37 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          upStation(obj).then(res => {
-            this.btnState = false;
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs.domTree.setCheckedKeys([]);
-              this.$refs[formName].resetFields();
-              this.dialogFormVisible = false;
-              this.$message({
-                type: "success",
-                message: "修改成功"
-              });
-              this.getList();
-            } else {
-              if (typeof res.data.data == "string") {
+          this.btnState = true;
+          upStation(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs.domTree.setCheckedKeys([]);
+                this.$refs[formName].resetFields();
+                this.dialogFormVisible = false;
                 this.$message({
-                  type: "error",
-                  message: res.data.data
+                  type: "success",
+                  message: "修改成功"
                 });
+                this.getList();
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
+                if (typeof res.data.data == "string") {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data
+                  });
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data[0]
+                  });
+                }
               }
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -835,9 +861,9 @@ export default {
 </script>
 <style>
 .btn_right {
-    margin-top: 3px;
-    float: right;
-    width: 75px;
+  margin-top: 3px;
+  float: right;
+  width: 75px;
 }
 .btn_left {
   width: 100px;
@@ -915,7 +941,7 @@ export default {
   overflow-y: scroll;
   overflow-x: hidden;
 }
-.diasize .el-dialog{
+.diasize .el-dialog {
   width: 60%;
 }
 </style>

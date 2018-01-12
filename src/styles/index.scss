@@ -497,21 +497,44 @@ body {
 }
 .el-tabs__header{
   margin: 0 0 20px;
+  border-bottom: 1px solid #eee;
 }
 .el-tabs__item{
+  padding-left: 1px;
  height: 26px;
  line-height: 24px;
- padding-right: 100px;
+ padding-right: 80px;
 }
 .el-tabs__active-bar{
-  width: 28px !important;
+  width: 32px !important;
+}
+.tabStyle{
+  background-color: #fff;
+}
+.tabStyle .el-tabs .el-tabs__header .el-tabs__nav-wrap{
+  padding: 15px 20px 0 20px;
+}
+.tabStyle .el-input{
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.tabStyle button{
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
 // 订单管理头部
 .orderTab .el-tabs__item{
   text-align: center;
 }
+
 .orderTab .el-tabs__active-bar{
   width: 42px !important;
+}
+.orderTab .el-tabs__header .el-tabs__nav-wrap{
+  padding: 15px 20px 0 20px;
+}
+.searchs{
+  padding: 0px 20px 20px 20px;
 }
 //
 .selfDialogWidth .el-dialog {width:600px}

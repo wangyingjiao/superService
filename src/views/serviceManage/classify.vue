@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="filter-container bgWhite">
+  <div class="filter-container tabStyle">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="全部" name="all"></el-tab-pane>
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
