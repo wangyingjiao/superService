@@ -706,7 +706,6 @@ export default {
       this.btnState = true;
       setStore(obj).then(res => {
         if (res.data.code == 1) {
-          return
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
           this.rowInfo.id = ""
