@@ -23,8 +23,8 @@
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
       <button class="button-small btn_pad"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
-      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_pad" style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
+      <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
 
       <el-table 
       id="tableColor"
@@ -149,7 +149,7 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-          <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+          <button class="button-large" :disabled='btnState' v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
           <button class="button-large"  :disabled="btnState" v-else @click="create('temp')">保 存</button>    
           <button class="button-cancel" @click="resetForm('temp')">取 消</button>
         </div>
@@ -177,7 +177,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large"  @click="createMaster('tempMaster')">保 存</button>    
+           <button class="button-large" :disabled='btnState' @click="createMaster('tempMaster')">保 存</button>    
            <button class="button-cancel" @click="resetMaster('tempMaster')">取 消</button>
         </div>
       </el-dialog>
@@ -196,7 +196,7 @@
           <div class="buttonWrap">
             <input type="button" class="mapButton" value="绘制多边形" ref="polygon"/>
             <!--<input type="button" class="mapButton" value="绘制圆" ref="circle"/>-->
-            <button type="button" class="mapButton" @click="saveOverlays">保存</button>
+            <button type="button" class="mapButton" :disabled='btnState' @click="saveOverlays">保存</button>
             <button class="mapButton"  @click="closeMap">取消</button>			
           </div> 		
           <div class="pickerBox">
@@ -272,7 +272,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large"  @click="createStore('temp')">保 存</button>    
+           <button class="button-large" :disabled='btnState'  @click="createStore('temp')">保 存</button>    
            <button class="button-cancel" @click="resetStore('temp')">取 消</button>
         </div>
       </el-dialog>
@@ -318,7 +318,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
@@ -654,10 +654,6 @@ export default {
     },
     create(formName) {
       //新增保存时
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       var obj = {
         name: this.temp.name,
         type: this.temp.type,
@@ -671,7 +667,9 @@ export default {
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addSite(obj).then(res => {
+            this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -690,6 +688,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -703,8 +703,10 @@ export default {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
+      this.btnState = true;
       setStore(obj).then(res => {
         if (res.data.code == 1) {
+          return
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
           this.rowInfo.id = ""
@@ -732,6 +734,8 @@ export default {
             message: res.data.data
           });
         }
+      }).catch((err)=>{
+        this.btnState = false
       });
       this.tempStore.tree = [];
     },
@@ -743,7 +747,9 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           setMaster(obj).then(res => {
+            this.btnState = false
             if (res.data.code == "1") {
               this.$message({
                 type: "success",
@@ -761,6 +767,8 @@ export default {
               });
               this.dialogMasterVisible = false;
             }
+          }).catch(()=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -783,7 +791,9 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           upSite(obj).then(res => {
+            this.btnState = false
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -801,6 +811,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false
           });
         } else {
           return false;
@@ -995,7 +1007,9 @@ export default {
           id: this.rowInfo.id,
           servicePoint: this.tableData[0].path.join(" ")
         };
+        this.btnState = true
         setScope(obj).then(res => {
+          this.btnState = false
           if (res.data.code == "1") {
             this.$message({
               type: "success",
@@ -1017,6 +1031,8 @@ export default {
             this.inputvalue = [];
             this.$refs.pickerInput.value = "";
           }
+        }).catch(err=>{
+          this.btnState = false
         });
       }
     },

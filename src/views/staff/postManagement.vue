@@ -117,7 +117,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" :disabled="btnState" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -293,18 +293,50 @@ export default {
     },
     getList() {//获取列表
       this.listLoading = true;
-      var obj = {};
-      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      var obj = {
+        name: this.search.name,
+        organization: { id: this.search.officeId }
+      };
+      console.log(obj);
+      if (obj.name != "" || obj.organization.id != "") {
+        this.listLoading = true;
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
           }
-        }
-        this.total = res.data.data.count;
-        this.listLoading = false;
-      });
+        });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleFilter() {//搜索
       this.listQuery.page = 1;
@@ -612,10 +644,7 @@ export default {
               }
             })
             .catch(() => {
-              this.$message({
-                type: "warning",
-                message: "服务器已断开，请稍后再试"
-              });
+              this.listLoading = false
             });
         })
         .catch(() => {
@@ -635,12 +664,7 @@ export default {
     getFather(data) {
       console.log(121233213);
       for (var i in data) {
-        //  if(this.data2.indexOf(data[i].id) > -1){
-        //    console.log(i)
-        //    data.push(data[i].parentId)
-        //  }else {
-        //    this.getFather(data[i].submenus)
-        //  }
+        
         if (data[i].subMenus != undefined) {
           console.log(i);
           this.getFather(data[i].subMenus);
@@ -653,10 +677,6 @@ export default {
     },
     //新增
     create(formName) {
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
       this.search = {
         name: "",
         officeId: ""
@@ -681,7 +701,9 @@ export default {
     
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStation(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.resetTemp();
@@ -703,6 +725,8 @@ export default {
                 message: res.data.data[0]
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -729,7 +753,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           upStation(obj).then(res => {
+            this.btnState = false;
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs.domTree.setCheckedKeys([]);
@@ -753,6 +779,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -848,12 +876,12 @@ export default {
 .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
-.el-tree-node:nth-child(1)
+/* .el-tree-node:nth-child(1)
   .el-tree-node__children
   .el-tree-node__children
   .el-tree-node {
   float: none;
-}
+} */
 .ceshi {
   height: 25px;
   width: 80px;

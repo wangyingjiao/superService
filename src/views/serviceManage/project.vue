@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="filter-container bgWhite">
+  <div class="filter-container bgWhite tabTop">
     <el-tabs v-model="tabs" @tab-click="handleClick">
       <!-- <el-tab-pane v-for="(item,key,index) in whole" :key="index" :label="item" :name="index"></el-tab-pane> -->
       <el-tab-pane label="全部" name="all"></el-tab-pane>
@@ -1150,7 +1150,7 @@ export default {
       return getSign();
     },
     btnShow() {
-      return this.$store.state.user.buttonshow;
+      return JSON.parse(localStorage.getItem('btn'));
     },
   },
   methods: {

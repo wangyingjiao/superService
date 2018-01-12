@@ -151,7 +151,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" v-else :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -221,7 +221,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="create2('temp2')">保 存</button>    
+        <button class="button-large" :disabled="btnState" @click="create2('temp2')">保 存</button>    
         <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
       </div>
     </el-dialog>
@@ -317,7 +317,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       list: null,
       total: null,
@@ -738,11 +738,6 @@ export default {
       }
     },
     create(formName) {
-      this.btnState = true;
-      setTimeout(() => {
-        this.btnState = false;
-      }, 1000);
-      console.log(this.temp);
       //var arr = [this]
       var obj = {
         mobile: this.temp.mobile,
@@ -756,7 +751,9 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStaff(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
@@ -792,6 +789,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;
@@ -816,7 +815,9 @@ export default {
       console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           addStation(obj).then(res => {
+            this.btnState = false;
             console.log(res);
             if (res.data.code === 1) {
               this.$message({
@@ -848,6 +849,8 @@ export default {
                 });
               }
             }
+          }).catch(err=>{
+            this.btnState = false;
           });
         } else {
           return false;

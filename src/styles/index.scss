@@ -485,11 +485,10 @@ body {
   right: -2px;
 }
 .el-tabs__nav-scroll{
-  padding-bottom: 20px;
+   padding-bottom: 20px;
 }
 .el-tabs__active-bar{
   height: 2px;
-  width: 50px !important;
 }
 .el-tabs__item{
   width: 50px;
@@ -498,4 +497,30 @@ body {
 }
 .el-tabs__header{
   margin: 0 0 20px;
+}
+.el-tabs__item{
+ height: 26px;
+ line-height: 24px;
+ padding-right: 100px;
+}
+.el-tabs__active-bar{
+  width: 28px !important;
+}
+// 订单管理头部
+.orderTab .el-tabs__item{
+  text-align: center;
+}
+.orderTab .el-tabs__active-bar{
+  width: 42px !important;
+}
+.orderTab .el-tabs__item{
+  &:nth-child(2){
+        &:before {
+          content: '*';
+          color: #ffffff;
+          margin-right: 0px;
+          font-size: 16px;
+          vertical-align:middle;
+        }
+  }
 }

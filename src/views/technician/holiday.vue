@@ -9,20 +9,23 @@
         </el-select>
       </el-input>
 
-      <el-date-picker
+      
+    <el-date-picker
       v-model="search.startTime"
       style="width:20%"
-      format
-      type="datetime"
-      placeholder="年/月/日/时间">
+      type="date"
+      placeholder="选择日期">
     </el-date-picker>
     至
+
       <el-date-picker
       v-model="search.endTime"
       style="width:20%"
       class="search"
-      type="datetime"
-      placeholder="年/月/日/时间">
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+      
     </el-date-picker>
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -94,7 +97,7 @@ export default {
   },
   data() {
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       list: [],
       total: null,
       listLoading: true,
@@ -142,7 +145,7 @@ export default {
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
           new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
+          "yyyy-MM-dd 23:59:59"
         );
         var end = {
           endTime: endTime
@@ -164,6 +167,8 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
+      console.log(obj)
+      
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "休假列表");
         this.list = res.data.data.list;
@@ -193,7 +198,7 @@ export default {
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
           new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
+          "yyyy-MM-dd 23:59:59"
         );
         var end = {
           endTime: endTime
