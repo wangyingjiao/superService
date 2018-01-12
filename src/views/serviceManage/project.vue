@@ -274,61 +274,6 @@
                     </template>
                   </el-table-column>
                 </el-table>
-              <!-- <el-table
-                v-show="basicForm.commoditys.length>0"
-                border 
-                :data="basicForm.commoditys"
-                class="goods_info">
-                <el-table-column align="center" label="商品名称" prop="name">
-
-                </el-table-column>
-                <el-table-column align="center" label="商品单位" prop="unit">
-                  
-                </el-table-column>
-                <el-table-column align="center" label="计量方式" prop="type">
-                  <template scope="scope">
-                    <span v-show="scope.row.type=='num'">按数量</span>
-                    <span v-show="scope.row.type=='area'">按面积</span>
-                    <span v-show="scope.row.type=='house'">按居室</span>
-                  </template>
-                </el-table-column>
-                <el-table-column align="center" label="价格" prop="price">
-                  
-                </el-table-column>
-                <el-table-column align="center" label="折算时长" prop="convertHours">
-                  
-                </el-table-column>
-                <el-table-column align="center" label="派人数量" prop="persons">
-                  <el-table-column align="center" label="临界值">
-                    <template scope="scope">
-                      <div class="content-rowspan">
-                        <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.critical}}
-                        </div>
-                      </div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column align="center" label="人数">
-                    <template scope="scope">
-                      <div class="content-rowspan">
-                        <div v-for="(item,index) in scope.row.persons" :key="index">
-                          {{item.quantity}}
-                        </div>
-                      </div>
-                    </template>
-                  </el-table-column>
-                </el-table-column>
-                <el-table-column align="center" label="起购数量" prop="minPurchase">
-                   
-                </el-table-column>
-                <el-table-column align="center" label="操作" width="150">
-                 <template scope="scope">
-                   <span></span>
-                    <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
-                    <span class="tableSer"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
-                  </template>
-                </el-table-column>
-              </el-table> -->
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addComm = !addComm">
                 <span class="fl btn_Span1">+</span>
@@ -1461,7 +1406,6 @@ export default {
       });
     },
     picUpload(file) {
-      var flag = true
       // 图片上传
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -1475,7 +1419,6 @@ export default {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             rej(res.data);
-            flag = false
             this.$message.error('上传图片失败')
             return false
           });
@@ -1505,20 +1448,18 @@ export default {
         console.log(ossData.get("name"));
         console.log(ossData.get("key"));
         console.log(that.$http,"that.$http")
-        that.$http
-          .post(data.host, ossData, {
-            headers: {
-              "Content-Type": "multipart/form-data; boundary={boundary}"
-            }
-          })
-          .then(res => {
-            console.log(this.picList);
-            if(flag){
+          that.$http
+            .post(data.host, ossData, {
+              headers: {
+                "Content-Type": "multipart/form-data; boundary={boundary}"
+              }
+            })
+            .then(res => {
+              console.log(this.picList);
               this.picFile.push(ossData.get("key"));
-            }
-            // console.log(this.picFile,"this.picFile------------------")
-            console.log(this.picFile, "picfile");
-          })
+              // console.log(this.picFile,"this.picFile------------------")
+              console.log(this.picFile, "picfile");
+            })
           // .catch(error => {
           //   console.log(error, "错误");
           // });

@@ -397,7 +397,7 @@
 					<div>
 					<p></p>
 					<p>
-            <!-- <el-form-item prop="headPic" class="uploadHead"> -->
+            <el-form-item prop="headPic" class="uploadHead">
               <el-upload
                 class="avatar-uploader"
                 action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -409,9 +409,9 @@
                 <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
                 <div class="upload-head"><span>*上传头像</span></div>
                 <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
-                <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div>
+                <!-- <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div> -->
               </el-upload>
-            <!-- </el-form-item> -->
+            </el-form-item>
 
              <el-upload
               class="avatar-uploader"
@@ -764,7 +764,7 @@ export default {
     };
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
-      console.log(this.teachArr,"this.teachArr-----------------")
+      console.log(this.teachArr,"this.teachArr-----------------________________")
       if(this.teachArr.length > 0 && this.teachArr != undefined){
         callback();
       }else{
@@ -773,7 +773,10 @@ export default {
     };
     //头像图片
     var HEADPIC = (rule,value,callback) => {
-      if(value){
+      // personal.headPic
+      console.log(value,"_____________________________value_____________________________")
+      console.log(this.personal.headPic,"_____________________________this.personal.headPic____________________________")
+      if(this.personal.headPic.length>0 && this.personal.headPic!=undefined){
         callback()
       }else{
         callback(new Error('请上传头像'))
@@ -917,7 +920,7 @@ export default {
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
-        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
         headPic:[
           { required: true, validator:HEADPIC , trigger: "blur"}
         ],
@@ -1360,11 +1363,6 @@ export default {
     },
     //新增按钮
     handleCreate(){
-      var stationLocal = localStorage.getItem('station')
-      var stationObj = JSON.parse(stationLocal)
-      if(stationObj.id==1){
-        this.personal.stationId = stationObj.id
-      }
       this.dialogVisible = true
       //服务时间
       serviceTechnicianInfo().then(data=>{
@@ -1378,8 +1376,11 @@ export default {
       })
       //所属服务站
       serviceStation({}).then(data=>{
+        var stationLocal = localStorage.getItem('station')
+        var stationObj = JSON.parse(stationLocal)
         var obj = data.data.data
-        this.servery = stationObj.id==1? obj : obj.slice(1);
+        this.servery = stationObj.id!=0 ? obj : obj.slice(1);
+        this.personal.stationId = stationObj.id != 0 ? stationObj.id : ''
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
