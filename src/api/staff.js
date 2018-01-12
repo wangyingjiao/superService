@@ -69,4 +69,3 @@ export function chkNameUp(obj) {
   return instance.get(`/apiservice/a/sys/role/chkNameUpdate?name=` + obj.name + '&roleId=' + obj.roleId)
 }
 
-
