@@ -170,7 +170,7 @@
           ref="tempMaster"
           :model="tempMaster">
           <el-form-item label="服务站长:" prop="master">
-            <el-select class="form_item" v-model="tempMaster.master">
+            <el-select class="form_item" filterable v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>

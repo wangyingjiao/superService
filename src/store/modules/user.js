@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
-import { getToken, setToken, removeToken, setSession } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import { Message } from 'element-ui'
 const user = {
   state: {

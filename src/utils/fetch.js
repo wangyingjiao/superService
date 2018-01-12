@@ -25,9 +25,9 @@ instance.interceptors.response.use(data => {
   return data
 }, error => {
   console.log(error, '响应错误')
-  Message.error({
-    message: '加载失败'
-  })
+  // Message.error({
+  //   message: '加载失败'
+  // })
   return Promise.reject(error)
 })
 export default instance
