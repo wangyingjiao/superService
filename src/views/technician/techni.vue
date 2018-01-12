@@ -109,7 +109,7 @@
 		</div>
       </el-dialog>
       <!-- 休息弹出层 -->
-      <el-dialog title="休假" :visible.sync="flags" custom-class="tech-section-lages tech-vacation" style="top:10%;">
+      <el-dialog title="休假" :visible.sync="flags" :close-on-click-modal="false" custom-class="tech-section-lages tech-vacation" style="top:10%;">
         <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
         <ul class="tech-section-xiu">
           <li class="mobel">
@@ -857,6 +857,9 @@ export default {
         ],
         endTime:[
           {required: true, message: '请选择时间', trigger: 'change' }
+        ],
+        desc:[
+          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
         ]
       },
       ruleForm2: {
@@ -1349,7 +1352,7 @@ export default {
     beforeAvatarUpload(file){
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")
-      if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+      if(file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
         console.log(file.type,"file.type-----------")
       }else{
          console.log(file.type,"file.type-----------+++++++++")
@@ -2034,6 +2037,7 @@ export default {
 }
 
 .tech-index {
+  border-bottom: 1px solid #E8E8E8;
   background: #fff;
   padding: 20px;
   margin-top: 20px;
@@ -2071,7 +2075,10 @@ export default {
 }
 
 .tech-section {
-  margin: 20px;
+  /* margin: 20px; */
+  background: #fff;
+  box-sizing: border-box;
+  padding: 20px;
 }
 
 .tech-section-right {
@@ -2096,7 +2103,8 @@ export default {
   height: 200px;
   background: #fff;
   position: relative;
-  margin: 0 2% 10px 0;
+  margin: 0 2% 2% 0;
+  border: 1px solid #E8E8E8
 }
 .tech-section-ul li:nth-child(3n) {
   margin-right: 0;
@@ -2119,7 +2127,7 @@ export default {
 }
 
 .fy {
-  margin: 0 20px;
+  /* margin: 0 20px; */
 }
 
 .tech-section-lage {
@@ -2709,7 +2717,9 @@ export default {
   line-height:23px;
 }
 .page{
+  padding-right: 20px;
   padding-bottom: 30px;
+  background: #fff;
 }
 </style>
 

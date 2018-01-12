@@ -1263,14 +1263,11 @@ export default {
         console.log(this.perServer,"this.perServer----------------------____________++++++++++++===")
         // this.perServer.stationId = val.stationId
         // //工作时间默认选中
-        var work = val.workTimes || [],
+        var work = this.perServer.workTimes || [],
             i,j,weeks_i,num;
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
             weeks_i = work[i].weeks
-            // weeks_i.sort(function(a,b){
-            //   return a.id>b.id
-            // })
             for( j =0 ; j<weeks_i.length ; j++){
               num = weeks_i[j].id*1
               if(num == 1){
@@ -1292,17 +1289,17 @@ export default {
             } 
           }
         }
-        console.log(this.disbArr,"this.disbArr-------")
+        console.log(this.perServer.workTimes,"this.perServer.workTimes-------")
 
 
         /*
         ** 补充个人信息
         ** 无法直接给supplement复制val,会无法重新复制
         **/
-        this.supplement.weight = val.weight || "";
+        this.supplement.weight = val.weight+'' || "";
         this.supplement.email = val.email || "";
         this.supplement.education = val.education || "";
-        this.supplement.height = val.height || "";
+        this.supplement.height = val.height+'' || "";
         this.supplement.marryStatus = val.marryStatus || "";
         this.supplement.nativeProvinceCode = val.nativeProvinceCode || "";
         this.value1 = val.inJobTime || "";
@@ -1342,7 +1339,7 @@ export default {
     },
     //图片格式限制
     beforeAvatarUpload(file){
-       if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+       if(file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
         console.log(file.type,"file.type-----------")
         }else{
          console.log(file.type,"file.type-----------+++++++++")

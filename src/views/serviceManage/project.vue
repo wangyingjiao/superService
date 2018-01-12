@@ -261,7 +261,11 @@
                       <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> </el-table-column>
+                  <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> 
+                    <template scope="scope">
+                      <span>{{scope.row.minPurchase!=0?scope.row.minPurchase:''}}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="minPurchase" align="center" label="起购数量"> 
                     <template scope="scope">
                       <span>{{scope.row.minPurchase!=0? scope.row.minPurchase : 1}}</span>
@@ -456,7 +460,7 @@
         </el-row>
         <div slot="footer" class="dialog-footer">
           <input type="button" class="button-large" @click="SystemLabel = false" value="确 定">
-          <input type="button" class="button-cancel" @click="SystemLabel = false" value="取 消">
+          <input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
         </div>
       </el-dialog>
     <!-- 系统标签结束 -->
@@ -467,7 +471,7 @@
             <div class="image-text-header">
                 <p>添加图文详情</p>
                 <!-- <span class="el-icon-plus" @click="addImage"> -->
-                <p></span><span class="el-icon-close" @click="ImageText = false"></span></p>
+                <!-- <p></span><span class="el-icon-close" @click="ImageText = false"></span></p> -->
             </div>
             <div class="image-text-body">
                 <div v-if="imgText.length<=0" class="details">点击右上角加号按钮,添加图文详情</div>
@@ -806,20 +810,23 @@ export default {
     }
     //自定义标签 
     var LABELNAME = (rule,value,callback)=>{
-      console.log(value,"-------------------value")
       var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
       if(value){
         if(value.length>=2 && value.length<=10){
-          if(reg.test(value)){
-            callback()
+          if(this.basicForm.customTags.indexOf(value) != -1){
+            callback(new Error('已有该自定义标签名称'))
           }else{
-            callback(new Error('不能输入特殊字符'))
+             if(reg.test(value)){
+              callback()
+            }else{
+              callback(new Error('不能输入特殊字符'))
+            }
           }
         }else{
-          callback(new Error('长度2-10位'))
+          callback(new Error('自定义标签长度2~10位'))
         }
       }else{
-        callback(new Error('请选择自定义标签'))
+        callback(new Error('请输入自定义标签'))
       }
     }
     //封定人数
@@ -874,6 +881,22 @@ export default {
         }
       }else{
         callback()
+      }
+    }
+    //商品名称
+    var NAME = (rule,value,callback) =>{
+      if(value){
+        if(value.length>=1 && value.length<=36){
+          if(JSON.stringify(this.basicForm.commoditys).indexOf(JSON.stringify(value))!=-1){
+            callback(new Error('商品名称重复'))
+          }else{
+            callback()
+          }
+        }else{
+          callback(new Error("长度在 1 到 36 个字符"))
+        }
+      }else{
+        callback(new Error('请输入商品名称(1-36位)'))
       }
     }
     return {
@@ -946,12 +969,13 @@ export default {
       },
       goods: {
         name: [
-          { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          // { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
+          // { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          {required:true,validator:NAME,trigger:'blur'}
         ],
         unit: [
           { required: true, message:"请输入商品单位", trigger: "blur" },
-          { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" }
+          { min: 1, max: 6, message: "长度在 1 到 6 个字符", trigger: "blur" }
         ],
         type: [
           { required: true, message: "请选择计量方式", trigger: "change" }
@@ -1004,7 +1028,10 @@ export default {
           ],
         sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-        description: [{ required: true, message: "请输入服务描述", trigger: "blur" }],
+        description: [
+            { required: true, message: "请输入服务描述", trigger: "blur" },
+            { min: 0, max: 255, message: "服务描述长度介于0和255之间", trigger: "blur" }
+          ],
         sysTags:[{required:true,validator:SYSTAGS,trigger:'blur'}]
       },
       // goods_info: {
@@ -1244,6 +1271,7 @@ export default {
       // console.log(fileList,'文件')
       // console.log(this.imgText,'imgtext')
       // console.log(this.fileList,'filelist')
+      // alert("123123")
       if(this.Imagestext){
           var str = "";
           var index = file.url.lastIndexOf("/");
@@ -1259,20 +1287,26 @@ export default {
           // console.log(str);
           // console.log(newarr,'截取')
           var delIndex = newarr.indexOf(str)
+          if(delIndex==-1){
+
+          }else{
+               this.imgText.del(delIndex);
+          }
           //console.log(delIndex,'删除图片的下标')
-          this.imgText.del(delIndex);
+         
           //console.log(this.imgText);
       }else{
           return false
       }
     },
     handleRemovePic(file,fileList) {
+      // alert("dwadawd")
       //删除服务图片
       // console.log(fileList,'文件');
       // console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
       // console.log(this.picList,'filelist')
-        if(this.imgFlag){
+      if(this.imgFlag){
         var str = "";
         var index = file.url.lastIndexOf("/");
         str = file.url.substring(index + 1, file.url.length);
@@ -1292,19 +1326,25 @@ export default {
         }
           //console.log(newarr,'截取')
         var delIndex = newarr.indexOf(src)
+        if(delIndex == -1){
+
+        }else{
+          this.picFile.del(delIndex);
+        }
+        console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
         // console.log(delIndex,'删除图片的下标')
-        this.picFile.del(delIndex);
       }else{
         return false
       }
       // console.log(this.picFile);
     },
     handleBefore(file) {
+      // console.log(file,"file,++++++++++")
       if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
         this.Imagestext = true
-        console.log(this.imgText, "imgtext");
-        console.log(file);
+        // console.log(this.imgText, "imgtext");
+        // console.log(file);
         var date = new Date();
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
@@ -1317,6 +1357,18 @@ export default {
           });
           return false;
         }
+        console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
+        if(this.imgText.length>=4){
+          this.$message({
+            type:'warning',
+            message:'最多上传4张图片'
+          })
+          // this.Imagestext = false
+          // alert("true")
+          return false
+        }else{
+          this.Imagestext = true
+        }
       }else{
         this.Imagestext = false
         this.$message.error('请上传正确的图片格式');
@@ -1325,12 +1377,12 @@ export default {
       // 去重
     },
     subImgText(a) {
-      console.log(this.imgText);
+      // console.log(this.imgText);
       var obj = {
         id: this.editId,
         pictureDetails: this.imgText
       };
-      console.log(obj,"obj-------")
+      // console.log(obj,"obj-------")
       sortList(obj).then(res => {
         console.log(res);
         if (res.data.code == 1) {
@@ -1344,12 +1396,13 @@ export default {
       console.log(obj);
     }, // 保存图文
     resImgText(a) {
-      console.log(a);
+      // console.log(a);
       console.log(this.$refs.upload);
       this.fileList = [];
       this.ImageText = false;
     }, // 关闭图文
     upload(file) {
+      // console.log(file,"file-----------")
       // 图文上传
       let pro = new Promise((resolve, rej) => {
         var res = JSON.parse(Cookies.get("sign"));
@@ -1386,9 +1439,8 @@ export default {
         // 添加文件
         ossData.append("file", file.file, file.file.name);
         //this.ossData = ossData;
-        console.log(ossData.get("name"));
-        console.log(ossData.get("key"));
-
+        // console.log(ossData.get("name"));
+        // console.log(ossData.get("key"));
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -1396,9 +1448,10 @@ export default {
             }
           })
           .then(res => {
-            console.log(this.fileList);
+            // console.log(this.fileList);
             this.imgText.push(ossData.get("key"));
-            console.log(this.imgText, "imgtext");
+            console.log(this.imgText,"this.imgText-------------")
+            // console.log(this.imgText, "imgtext");
           })
           .catch(error => {
             console.log(error, "错误");
@@ -1419,8 +1472,6 @@ export default {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             rej(res.data);
-            this.$message.error('上传图片失败')
-            return false
           });
         }
       });
@@ -1445,9 +1496,9 @@ export default {
         // 添加文件
         ossData.append("file", file.file, file.file.name);
         //this.ossData = ossData;
-        console.log(ossData.get("name"));
-        console.log(ossData.get("key"));
-        console.log(that.$http,"that.$http")
+        // console.log(ossData.get("name"));
+        // console.log(ossData.get("key"));
+        // console.log(that.$http,"that.$http")
           that.$http
             .post(data.host, ossData, {
               headers: {
@@ -1460,17 +1511,18 @@ export default {
               // console.log(this.picFile,"this.picFile------------------")
               console.log(this.picFile, "picfile");
             })
-          // .catch(error => {
-          //   console.log(error, "错误");
-          // });
+            .catch(error => {
+              this.picFile.push(ossData.get("key"));
+              console.log(error, "错误");
+            });
       });
     },
     //编号失焦事件
     indexBlur(item) {
-      console.log(item, "----------itemmmmmmmmm");
+      // console.log(item, "----------itemmmmmmmmm");
       sortList({ id: item.id, sortNum: item.sortNum })
         .then(data => {
-          console.log(data, "更新排序----------");
+          // console.log(data, "更新排序----------");
           this.getList(1, 10);
         })
         .catch(error => {
@@ -1488,13 +1540,6 @@ export default {
         "this.ImageTextArr[0]['imageUrl']---"
       );
       console.log(this.imageUrl, "this.imageurl------");
-    },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpg' || 'image/png' || 'image/gif';
-      if (isJPG == true) {
-      }else{
-        this.$message.error('上传头像图片只能是 JPG 格式!');
-      }
     },
     cjw(val) {
       console.log(val, "------------------");
@@ -1576,6 +1621,7 @@ export default {
       console.log(val,"val--------------")
       this.goods_info = Object.assign({},val)
       this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
+      this.goods_info.cappinPerNum = this.goods_info.startPerNum?this.goods_info.startPerNum : ''
       this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
       // this.basicForm.commoditys.splice(index,1)
       // this.tableData[index] = this.goods_info
@@ -1606,23 +1652,6 @@ export default {
     isNo(bl) {
       console.log(bl, "adawd");
     },
-    //定向城市
-    // orient(obj, id) {
-    //   Orienteering(obj)
-    //     .then(data => {
-    //       if (id == 1) {
-    //         this.serverCityArr = data.data.data;
-    //       } else if (id == 2) {
-    //         this.cityArr = data.data.data;
-    //       } else {
-    //         this.serverCityArr = data.data.data;
-    //         this.cityArr = data.data.data;
-    //       }
-    //     })
-    //     .catch(error => {
-    //       console.log(error, "error-----project");
-    //     });
-    // },
     //数组去重
     remove(arr, val,key) {
       console.log(arr,"arr--------------")
@@ -2011,15 +2040,12 @@ export default {
     },
     //保存
     subForm(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
       var that = this;
       console.log(this.picFile, "选中的图片列表");
       this.$refs[formName].validate(valid => {
         // console.log(this.basicForm, "basicForm------");
         if (valid) {
+          this.btnState = true
           var arr = []
           var obj = Object.assign({},that.basicForm)
               obj.pictures = this.picFile; //服务图片缩略图.
@@ -2042,6 +2068,7 @@ export default {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             serverEditPre(that.basicForm)
               .then(data => {
+                 this.btnState = false
                 if (data.data.code) {
                   this.$message({
                     message: data.data.data,
@@ -2056,9 +2083,11 @@ export default {
                     message: data.data.data,
                     type: "warning"
                   });
+                   this.btnState = false
                 }
               })
               .catch(error => {
+                 this.btnState = false
                 console.log(error, "error---project---857");
               });
           } else {
@@ -2068,6 +2097,7 @@ export default {
             }
             ServerAdd(obj)
               .then(data => {
+                this.btnState = false
                 console.log(data, "添加成功");
                 if (data.data.code) {
                   this.$message({
@@ -2080,15 +2110,18 @@ export default {
                   this.search.name ='';
                   this.tabs = 'all';
                   this.getList(1, 10);
+                  this.listQuery.page = 1
                   this.picFile = [];
                 } else {
                   this.$message({
                     message: data.data.data,
                     type: "warning"
                   });
+                  this.btnState = false
                 }
               })
               .catch(error => {
+                this.btnState = false
                 console.log(error, "error--project--770");
               });
           }
@@ -2513,7 +2546,7 @@ hr {
   position: absolute;
   top: 0;
   line-height: 44px;
-  right: 60px;
+  right: 30px;
 }
 .tableSer{
   padding: 5px 10px;
@@ -2604,7 +2637,7 @@ hr {
   float: left;
   height: 300px;
   overflow-y: auto;
-  border: 1px solid rgb(190, 187, 187);
+  border: 1px solid  #E8E8E8;
 }
 .systemLabel ul:nth-of-type(2){
   border-left:0;
@@ -2616,7 +2649,7 @@ hr {
   width:100%;
   padding: 0 5px;
   height: 29px;
-  border-bottom: 1px dashed  rgb(190, 187, 187);
+  border-bottom: 1px dashed  #E8E8E8;
   line-height: 29px;
   list-style: none
 }
@@ -2624,6 +2657,7 @@ hr {
   float: right;
   line-height: 29px;
   width: 10%;
+  color: #BEBEBE
 }
 .labelSystem{
   float: left;
@@ -2648,14 +2682,14 @@ hr {
   text-overflow: ellipsis;
 }
 .activeSystem_1,.activeSystem_2,.activeSystem_3{
-  background: rgb(141, 182, 216)
+  background: #e0f1fb;
 }
 .already{
   height: 50px;
   line-height: 50px;
 }
 .already span{
-  border: 1px solid #bfcbd9;
+  border: 1px solid #E8E8E8;
   padding: 5px;
   margin-right: 5px;
 }
