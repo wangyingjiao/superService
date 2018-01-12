@@ -1285,31 +1285,6 @@ export default {
               }else{
                 weeks_i[j].name = "星期日"
               }
-              // switch ( weeks_i[j].id*1) {
-              //   case 1:
-              //      weeks_i[j].name = "星期一"
-              //     break;
-              //   case 2:
-              //      weeks_i[j].name = "星期二"
-              //     break;
-              //   case 3:
-              //     weeks_i[j].name = "星期三"
-              //     break;
-              //   case 4:;
-              //    weeks_i[j].name = "星期四"
-              //     break;
-              //   case 5:
-              //     weeks_i[j].name = "星期五"
-              //     break;
-              //   case 6:
-              //     weeks_i[j].name = "星期六"
-              //     break;
-              //   case 6:
-              //     weeks_i[j].name = "星期日"
-              //     break;
-              //   default:
-              //     break;
-              // }
               this.disbArr.push(weeks_i[j].id*1)
             }
           }

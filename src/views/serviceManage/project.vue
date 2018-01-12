@@ -258,11 +258,15 @@
                   </el-table-column>
                   <el-table-column align="center" label="起步人数">
                     <template scope="scope">
-                      <span>{{scope.row.startPerNum || 1}}</span>
+                      <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> </el-table-column>
-                  <el-table-column prop="minPurchase" align="center" label="起购数量"> </el-table-column>
+                  <el-table-column prop="minPurchase" align="center" label="起购数量"> 
+                    <template scope="scope">
+                      <span>{{scope.row.minPurchase!=0? scope.row.minPurchase : 1}}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作" width="150" align="center"> 
                     <template scope="scope">
                       <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
@@ -1457,6 +1461,7 @@ export default {
       });
     },
     picUpload(file) {
+      var flag = true
       // 图片上传
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -1470,6 +1475,9 @@ export default {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             rej(res.data);
+            flag = false
+            this.$message.error('上传图片失败')
+            return false
           });
         }
       });
@@ -1505,7 +1513,9 @@ export default {
           })
           .then(res => {
             console.log(this.picList);
-            this.picFile.push(ossData.get("key"));
+            if(flag){
+              this.picFile.push(ossData.get("key"));
+            }
             // console.log(this.picFile,"this.picFile------------------")
             console.log(this.picFile, "picfile");
           })
@@ -1552,8 +1562,8 @@ export default {
       this.$refs[formName].validate(valid=>{
         if(valid){
            var obj = Object.assign({},this.goods_info)
-              obj.startPerNum = this.goods_info.startPerNum || 1
-              obj.minPurchase = this.goods_info.minPurchase ||1
+              obj.startPerNum = this.goods_info.startPerNum
+              obj.minPurchase = this.goods_info.minPurchase
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
@@ -1624,6 +1634,8 @@ export default {
       console.log(index,"index------------")
       console.log(val,"val--------------")
       this.goods_info = Object.assign({},val)
+      this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
+      this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
       // this.basicForm.commoditys.splice(index,1)
       // this.tableData[index] = this.goods_info
       // console.log(this.goods_info, "this.goods_info.name");
