@@ -16,19 +16,19 @@ export function ChangeTimeData(obj) {
 export function saveTime(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/saveTime`, obj)
 }
-//增加技师
+// 增加技师
 export function addTechData(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/addTech`, obj)
 }
-//增加技师保存
+// 增加技师保存
 export function addTechSave(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/addTechSave`, obj)
 }
-//改派技师
+// 改派技师
 export function dispatchTechData(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/dispatchTech`, obj)
 }
-//改派技师保存
+// 改派技师保存
 export function dispatchTechSave(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/dispatchTechSave`, obj)
 }
