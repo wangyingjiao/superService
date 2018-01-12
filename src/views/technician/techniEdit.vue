@@ -724,10 +724,10 @@ export default {
           if(reg.test(value)){
             callback()
           }else{
-            callback(new Error('请输入正确的邮箱地址'))
+            callback(new Error('请输入0-30位的邮箱'))
           }
         }else{
-          callback(new Error('请输入正确的邮箱地址'))
+          callback(new Error('请输入0-30位的邮箱'))
         }
       }else{
         callback()
@@ -1268,6 +1268,9 @@ export default {
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
             weeks_i = work[i].weeks
+            // weeks_i.sort(function(a,b){
+            //   return a.id>b.id
+            // })
             for( j =0 ; j<weeks_i.length ; j++){
               num = weeks_i[j].id*1
               if(num == 1){
@@ -1286,7 +1289,7 @@ export default {
                 weeks_i[j].name = "星期日"
               }
               this.disbArr.push(weeks_i[j].id*1)
-            }
+            } 
           }
         }
         console.log(this.disbArr,"this.disbArr-------")
@@ -1708,23 +1711,11 @@ export default {
       //  console.log(item)
     },
     //排序
-    by(name){
-      return function(o, p){
-        var a, b;
-        if (typeof o === "object" && typeof p === "object" && o && p) {
-          a = o[name];
-          b = p[name];
-          if (a === b) {
-            return 0;
-          }
-          if (typeof a === typeof b) {
-            return a < b ? -1 : 1;
-          }
-          return typeof a < typeof b ? -1 : 1;
-        }
-        else {
-          throw ("error");
-        }
+    by(property){
+      return function(obj1,obj2){
+          var value1 = obj1[property];
+          var value2 = obj2[property];
+          return value1 - value2;     // 升序
       }
     },
     techClick() {
