@@ -35,7 +35,7 @@ export function getArea() {
 // }
 
 // 选择城市
-export function ChooseTheCity(pageNumber,pageSize,obj) {
+export function ChooseTheCity(pageNumber, pageSize, obj) {
   return new Promise((resolve, reject) => {
     instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj).then(data => {
       resolve(data)
@@ -88,89 +88,89 @@ export function technicianEdit(obj) {
   })
 }
 
-//技师服务编辑保存
-export function technicianServer(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataService`, obj).then(data=>{
+// 技师服务编辑保存
+export function technicianServer(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataService`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//技师补充个人编辑保存
-export function technicianPlus(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataPlus`, obj).then(data=>{
+// 技师补充个人编辑保存
+export function technicianPlus(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataPlus`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//技师其他编辑保存
-export function technicianOther(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataOther`, obj).then(data=>{
+// 技师其他编辑保存
+export function technicianOther(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/upDataOther`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
 }
 
-//添加家庭成员
-export function familyAdd(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/saveFamilyMembers`,obj).then(data=>{
+// 添加家庭成员
+export function familyAdd(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/saveFamilyMembers`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
-      console.log(error,"error------")
+    }).catch(error => {
+      console.log(error, 'error------')
     })
   })
 }
 
-//删除家庭成员
-export function familyDelete(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/deleteFamilyMembers`,obj).then(data=>{
+// 删除家庭成员
+export function familyDelete(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/deleteFamilyMembers`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
-      console.log(error,"error------")
+    }).catch(error => {
+      console.log(error, 'error------')
     })
   })
 }
 
-//删除技师
-export function technicianDelete(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/deleteData`,obj).then(data=>{
+// 删除技师
+export function technicianDelete(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/deleteData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
-      console.log(error,"error-----")
+    }).catch(error => {
+      console.log(error, 'error-----')
     })
   })
 }
 
-//设置app密码
-export function appPassWord(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/saveAppPassWordData`,obj).then(data=>{
+// 设置app密码
+export function appPassWord(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/saveAppPassWordData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
-      console.log(error,"error------")
+    }).catch(error => {
+      console.log(error, 'error------')
     })
   })
 }
 
-//新增休假
-export function addVacation(obj){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianHoliday/saveData`,obj).then(data=>{
+// 新增休假
+export function addVacation(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianHoliday/saveData`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       console.log(error)
     })
   })
@@ -185,14 +185,13 @@ export function delHoliday(obj) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/delete`, obj)
 }
 
-
-//获取用户机构时间
-export function serviceTechnicianInfo(){
-  return new Promise((resolve,reject)=>{
-      instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data=>{
-          resolve(data)
-      }).catch(error=>{
-          reject(error)
-      })
+// 获取用户机构时间
+export function serviceTechnicianInfo() {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
   })
 }
