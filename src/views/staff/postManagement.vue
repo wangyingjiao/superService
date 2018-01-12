@@ -117,7 +117,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" :disabled="btnState" v-else @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -137,7 +137,8 @@ import {
   getPower,
   getMenudata,
   getSList,
-  chkName
+  chkName,
+  chkNameUp
 } from "@/api/staff";//接口调用
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -165,13 +166,24 @@ export default {
             }
           });
         } else {
-          callback();
+          var obj ={
+             roleId:this.roleId,
+             name:value
+          }
+          chkNameUp(obj).then(res => {
+            if (res.data.code == 0) {
+              callback(new Error("岗位名重复！"));
+            } else {
+              callback();
+            }
+          });
         }
       }
     };
     return {
       btnShow: this.$store.state.user.buttonshow,
       btnState: false,
+      changeState:false,
       list: [],
       officeIds: [],
       total: null,
@@ -293,18 +305,50 @@ export default {
     },
     getList() {//获取列表
       this.listLoading = true;
-      var obj = {};
-      getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
-        this.list = res.data.data.list;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      var obj = {
+        name: this.search.name,
+        organization: { id: this.search.officeId }
+      };
+      console.log(obj);
+      if (obj.name != "" || obj.organization.id != "") {
+        this.listLoading = true;
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+            this.$message({
+              type: "warning",
+              message: "岗位名不存在"
+            });
           }
-        }
-        this.total = res.data.data.count;
-        this.listLoading = false;
-      });
+        });
+      } else {
+        var obj = {};
+        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.list = res.data.data.list;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+
+            this.total = res.data.data.count;
+            this.listLoading = false;
+          }
+        });
+      }
     },
     handleFilter() {//搜索
       this.listQuery.page = 1;
@@ -448,20 +492,26 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-      console.log(this.temp.check, "check-----------------");
-      console.log(a, b, c, "checkchange节点选中状态发生变化");
+
+      console.log(this.dialogStatus,'状态12')
+      console.log(this.changeState,'状态13')
+      // console.log(this.temp.check, "check-----------------");
+      // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
+        if(a.permission.substring(a.permission.length - 4, a.permission.length) == 'view'){
+          console.log('点击正确')
+        }
         if (a.subMenus == undefined) {
-          console.log(a.permission, "子集被勾选的权限");
-          console.log(a.id, "子集被勾选的id");
-          console.log(a.parentId, "子集的父级id");
-          console.log(a.parentIds, "子集的父级ids");
+          // console.log(a.permission, "子集被勾选的权限");
+          // console.log(a.id, "子集被勾选的id");
+          // console.log(a.parentId, "子集的父级id");
+          // console.log(a.parentIds, "子集的父级ids");
           var arr = a.parentIds.split(",");
-          console.log(arr);
-          console.log(this.data2, "父元素");
+          // console.log(arr);
+          // console.log(this.data2, "父元素");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].id == arr[2]) {
-              console.log(i, "下标i");
+              
             }
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
@@ -470,23 +520,19 @@ export default {
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
-                    console.log(newper, "截取");
+          
                     if (newper == "view") {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   }
-                  // console.log(j,'下标j')
-                  // console.log(str.name,'列表名字')
-                  // console.log(str.id,'列表id')
-                  // console.log(str.permission,'标识符')
                 }
               }
             }
           }
         } else {
           console.log(a.permission, "父级被勾选的权限");
-          console.log(a.id, "父级被勾选的id");
-          console.log(a.subMenus[0], "父级的第一个元素");
+          //console.log(a.id, "父级被勾选的id");
+          //console.log(a.subMenus[0], "父级的第一个元素");
         }
       }
       //console.log(this.$refs.domTree.getCheckedKeys(false));
@@ -524,7 +570,7 @@ export default {
       // // this.temp.dataScope = value;
     },
     offChange(val) {
-      console.log(val);
+      //console.log(val);
     },
     //点击新增时
     handleCreate() {
@@ -551,11 +597,11 @@ export default {
           this.temp.name = a.name;
           this.temp.dataScope = a.dataScope;
           this.temp.check = a.menuIdList;
-          console.log(a.menuIdList);
+          //console.log(a.menuIdList);
           for (let i = 0; i < this.data2.length; i++) {
             //特殊首页处理
             if (this.data2[i].permission == "index") {
-              console.log(this.data2[i].permission);
+              //console.log(this.data2[i].permission);
               //this.temp.check.remove(this.data2[i].id);
               //this.temp.check.push(this.data2[0].id);
             } else {
@@ -565,13 +611,13 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               var child = this.data2[i];
               for (let j = 0; j < child.subMenus.length; j++) {
-                console.log(child.subMenus[j].id);
+                //console.log(child.subMenus[j].id);
                 this.temp.check.remove(child.subMenus[j].id);
               }
             }
           }
-          console.log(a.menuIdList);
-          console.log(this.temp.check);
+          // console.log(a.menuIdList);
+          console.log(this.temp.check,'选中1231231111111111111111');
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
@@ -581,6 +627,7 @@ export default {
             message: "请求失败"
           });
         }
+        this.changeState = true
       });
     },
     //删除数据
@@ -612,10 +659,7 @@ export default {
               }
             })
             .catch(() => {
-              this.$message({
-                type: "warning",
-                message: "服务器已断开，请稍后再试"
-              });
+              this.listLoading = false
             });
         })
         .catch(() => {
@@ -635,12 +679,7 @@ export default {
     getFather(data) {
       console.log(121233213);
       for (var i in data) {
-        //  if(this.data2.indexOf(data[i].id) > -1){
-        //    console.log(i)
-        //    data.push(data[i].parentId)
-        //  }else {
-        //    this.getFather(data[i].submenus)
-        //  }
+        
         if (data[i].subMenus != undefined) {
           console.log(i);
           this.getFather(data[i].subMenus);

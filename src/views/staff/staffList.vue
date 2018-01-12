@@ -11,7 +11,7 @@
       </el-select>
        
       <el-select  filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
-        <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       
@@ -151,7 +151,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" v-else :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -221,7 +221,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" @click="create2('temp2')">保 存</button>    
+        <button class="button-large" :disabled="btnState" @click="create2('temp2')">保 存</button>    
         <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
       </div>
     </el-dialog>
@@ -339,8 +339,9 @@ export default {
         officeId: "",
         stationId: ""
       },
-      mechanismCheck: [],
+      mechanismCheck: [],//服务机构
       servicestationCheck: [], // 服务站
+      servicestationSearch: [], // 搜索服务站
       temp: {
         mobile: "",
         name: "",
@@ -685,13 +686,14 @@ export default {
     searchOffice(val) {
       // 搜索时机构改变
       this.search.stationId = "";
+      this.servicestationSearch = []
       var obj = {
         orgId: val
       };
       getFuwu(obj).then(res => {
         // 请求服务站列表
         console.log(res);
-        this.servicestationCheck = res.data.data;
+        this.servicestationSearch = res.data.data;
         // console.log(res.data)
       });
     },
@@ -700,6 +702,8 @@ export default {
       this.temp.officeId = val;
       this.temp.stationId = "";
       this.temp.role = "";
+      this.servicestationCheck = []
+      this.stationCheck = []
       console.log(val, "选中机构的id");
       var obj = {
         orgId: val
@@ -873,8 +877,10 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.btnState = true
           upStaff(obj).then(res => {
             console.log(res);
+            this.btnState = false
             if (res.data.code === 1) {
               // 判断是不是自己修改自己
               //if (0) {
@@ -916,6 +922,8 @@ export default {
                 message: res.data.data
               });
             }
+          }).catch(err=>{
+            this.btnState = false
           });
         } else {
           return false;

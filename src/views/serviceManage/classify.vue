@@ -87,7 +87,7 @@
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large" v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
         <button class="button-large" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -379,12 +379,10 @@ export default {
     },
     resetForm(formName) {
       //清空列表
-      this.$nextTick(() => {
         this.selectState = false;
         this.resetTemp();
         this.$refs[formName].resetFields();
         this.dialogFormVisible = false;
-      });
     },
     resetSearch() {
       //清空搜索信息
@@ -436,12 +434,12 @@ export default {
       });
     },
     resetTemp() {
-      this.temp.name = "";
-      this.temp.majorSort = "";
-      // this.temp = {
-      //   name: "",
-      //   majorSort: ""
-      // };
+      // this.temp.name = "";
+      // this.temp.majorSort = "";
+      this.temp = {
+        name: "",
+        majorSort: ""
+      };
     },
     handleClick(tab, event) {
       console.log(tab, event, "tab切换");

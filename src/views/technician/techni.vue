@@ -91,7 +91,7 @@
       <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
 		<div class="mobel">
 			<p>手机：</p>
-			<p>15711445668</p>
+			<p>{{passwordModule}}</p>
 		</div>
 		<div class="passBox">
 			<el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
@@ -397,7 +397,7 @@
 					<div>
 					<p></p>
 					<p>
-            <!-- <el-form-item prop="headPic" class="uploadHead"> -->
+            <el-form-item prop="headPic" class="uploadHead">
               <el-upload
                 class="avatar-uploader"
                 action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -409,9 +409,9 @@
                 <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
                 <div class="upload-head"><span>*上传头像</span></div>
                 <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
-                <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div>
+                <!-- <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div> -->
               </el-upload>
-            <!-- </el-form-item> -->
+            </el-form-item>
 
              <el-upload
               class="avatar-uploader"
@@ -534,8 +534,8 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:'09:00',
-                              maxTime:'12:00'
+                              minTime:startEnd.start,
+                              maxTime:startEnd.end
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -764,7 +764,7 @@ export default {
     };
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
-      console.log(this.teachArr,"this.teachArr-----------------")
+      console.log(this.teachArr,"this.teachArr-----------------________________")
       if(this.teachArr.length > 0 && this.teachArr != undefined){
         callback();
       }else{
@@ -773,7 +773,10 @@ export default {
     };
     //头像图片
     var HEADPIC = (rule,value,callback) => {
-      if(value){
+      // personal.headPic
+      console.log(value,"_____________________________value_____________________________")
+      console.log(this.personal.headPic,"_____________________________this.personal.headPic____________________________")
+      if(this.personal.headPic.length>0 && this.personal.headPic!=undefined){
         callback()
       }else{
         callback(new Error('请上传头像'))
@@ -801,7 +804,7 @@ export default {
           callback(new Error('结束时间不能小于开始时间'))
         }
       }else{
-        callback(new Error('请选择结束日期1'))
+        callback(new Error('请选择结束日期'))
       }
       // if(t2>=t1){
       //   callback()
@@ -917,7 +920,7 @@ export default {
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
-        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }],
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
         headPic:[
           { required: true, validator:HEADPIC , trigger: "blur"}
         ],
@@ -1001,6 +1004,7 @@ export default {
       sex: {},
       ethnics: [],
       areas: [],
+      passwordModule:'',
       strong: {},
       statu: {},
       education: {},
@@ -1303,6 +1307,35 @@ export default {
       console.log("-----------------------签名")
       return getSign();
     },
+    //开始时间
+    startEndTime(){
+      // startEnd.start startEnd.end
+      var t1 = Date.parse('2008-08-08 '+'09:00')
+      var tt = t1-1800000;
+      var str = new Date(tt)
+      var start = str.toLocaleString().replace(/:\d{1,2}$/,' ');
+      if(start.length==17){
+        var startTime = start.substring(start.length-6,start.length);
+      }else{
+        var startTime = start.substring(start.length-5,start.length);
+      }
+      return startTime
+    },
+    //结束时间
+    suspendEndTime(){
+      // startEnd.start startEnd.end
+      var t1 = Date.parse('2008-08-08 '+'12:00')
+      var tt = t1+1800000;
+      var str = new Date(tt)
+      var start = str.toLocaleString().replace(/:\d{1,2}$/,' ');
+      if(start.length==17){
+        var startTime = start.substring(start.length-6,start.length);
+      }else{
+        var startTime = start.substring(start.length-5,start.length);
+      }
+      console.log(startTime,"startTime---------------")
+      return startTime
+    },
   },
   methods: {
     //全职兼职切换 
@@ -1330,11 +1363,6 @@ export default {
     },
     //新增按钮
     handleCreate(){
-      var stationLocal = localStorage.getItem('station')
-      var stationObj = JSON.parse(stationLocal)
-      if(stationObj.id==1){
-        this.personal.stationId = stationObj.id
-      }
       this.dialogVisible = true
       //服务时间
       serviceTechnicianInfo().then(data=>{
@@ -1342,13 +1370,17 @@ export default {
         this.startEnd = data.data.data
         this.startTime = data.data.data.start
         this.endTime = data.data.data.end
+        console.log(this.suspendEndTime,"this.startEndTime,--------------------------------------")
       }).catch(error=>{
         console.log(error,"新增按钮")
       })
       //所属服务站
       serviceStation({}).then(data=>{
+        var stationLocal = localStorage.getItem('station')
+        var stationObj = JSON.parse(stationLocal)
         var obj = data.data.data
-        this.servery = stationObj.id==1? obj : obj.slice(1);
+        this.servery = stationObj.id!=0 ? obj : obj.slice(1);
+        this.personal.stationId = stationObj.id != 0 ? stationObj.id : ''
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
@@ -1480,7 +1512,6 @@ export default {
                     return false
                   })
               }else{
-                this.$message.error("保存失败")
                 return false
               }
           })
@@ -1543,6 +1574,8 @@ export default {
     },
     //修改app密码
     appPassword(item){
+      // console.log(item,"---------------")
+      this.passwordModule = item.phone
       this.password = true
       this.passwordId = item.id
       // console.log(item,"item-----")
@@ -1807,12 +1840,9 @@ export default {
     },
     //个人资料保存
     submitFormPer(formName) {
-      this.btnState = true
-      setTimeout(()=>{
-        this.btnState = false
-      },1000)
       this.$refs[formName].validate(val=>{
         if(val){
+          this.btnState = true
           // if(this.personal.headPic){
 
           // }else{
@@ -1831,6 +1861,7 @@ export default {
                 message:"保存成功",
                 type:"success"
               })
+              this.btnState = false
               this.dialogVisible = false;
               this.listQuery.sync = 1;
               this.getList(1,6,{});
@@ -1853,9 +1884,11 @@ export default {
                   type:"warning"
                 })
               }
+              this.btnState = false
               return false
             }
           }).catch(error=>{
+            this.btnState = false
             console.log(error,"error---techni----添加保存")
             return false
           })

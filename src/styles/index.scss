@@ -515,3 +515,14 @@ body {
 }
 //
 .selfDialogWidth .el-dialog {width:600px}
+.orderTab .el-tabs__item{
+  &:nth-child(2){
+        &:before {
+          content: '*';
+          color: #ffffff;
+          margin-right: 0px;
+          font-size: 16px;
+          vertical-align:middle;
+        }
+  }
+}

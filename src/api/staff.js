@@ -14,7 +14,7 @@ export function getStationPage(obj, pageNumber, pageSize) {
 }
 // 获取岗位列表（不分页）
 export function getStation(obj) {
-  return instance.post(`/apiservice/a/sys/role/listData`, obj)
+  return instance.post(`/apiservice/a/sys/role/listDataWithoutPermission`, obj)
 }
 // 获取员工列表（分页）
 export function getStaff(obj, pageNumber, pageSize) {
@@ -57,8 +57,16 @@ export function getMenudata() {
 export function delStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/deleteUser`, obj)
 }
-export function chkName(name) { // 岗位重名检测
+// 岗位新增时重名检测
+export function chkName(name) {
   return instance.get(`/apiservice/a/sys/role/chkName?name=` + name)
+}
+// 岗位编辑时重名检测
+// export function chkNameUp(obj) {
+//   return instance.post(`/apiservice/a/sys/role/chkNameUpdate`, obj)
+// }
+export function chkNameUp(obj) {
+  return instance.get(`/apiservice/a/sys/role/chkNameUpdate?name=` + obj.name + '&roleId=' + obj.roleId)
 }
 
 

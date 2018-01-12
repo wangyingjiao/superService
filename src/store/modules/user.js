@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
-import { getToken, setToken, removeToken, setSession } from '@/utils/auth'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import { Message } from 'element-ui'
 const user = {
   state: {
@@ -52,7 +52,7 @@ const user = {
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             localStorage.setItem('orgId', response.data.data.user.organization.id)
             localStorage.setItem('userId', response.data.data.user.id)
-            localStorage.setItem('station',JSON.stringify(response.data.data.user.station))
+            localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
             setToken(data.token)

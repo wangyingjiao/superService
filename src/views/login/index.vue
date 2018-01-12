@@ -35,18 +35,27 @@ import { isvalidUsername } from "@/utils/validate";
 export default {
   name: "login",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error("请输入正确的用户名"));
+    var validatePhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("登录账号不能为空"));
       } else {
-        callback();
+        if (!/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) {
+          callback(new Error("登录账号格式不正确！"));
+        } else {
+          callback();
+        }
       }
     };
-    const validatePass = (rule, value, callback) => {
-      if (value == "") {
-        callback(new Error("密码不能为空"));
-      } else {
+    var validatePassword = (rule, value, callback) => {
+      console.log(value, "value");
+      if (value == undefined) {
         callback();
+      } else {
+        if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
+          callback(new Error("密码必须由6-20位数字、字母两种组成"));
+        } else {
+          callback();
+        }
       }
     };
     return {
@@ -56,7 +65,7 @@ export default {
       },
       loginRules: {
         username: [{ required: true, message: "登录账号不能为空", trigger: "blur" }],
-        password: [{ required: true, message: "登录密码不能为空", trigger: "blur" }]
+        password: [{ required: true, message: "密码不能为空", trigger: "blur" }]
       },
       loading: false
     };
