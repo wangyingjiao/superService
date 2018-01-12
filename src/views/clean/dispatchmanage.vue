@@ -64,14 +64,14 @@
 							<el-table-column align="center" label="操作" :colspan="2" ref="column">
 									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
-											<el-button type="button" @click="gaiPai(scope.row.id,item)">改派</el-button>
+											<el-button type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
 										</div>						
 									</template>
 							</el-table-column>		
 							<el-table-column align="center">
 								<template scope="scope">
 									<div>
-										<el-button type="button" @click="godispatchReass(scope.row.id)">
+										<el-button type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
 											改派记录
 										</el-button>
 									</div>
@@ -142,6 +142,7 @@ export default {
   name: "",
   data() {
     return {
+			btnShow: JSON.parse(localStorage.getItem('btn')),
 			techSaveFlag:false,
 			listTech:[],
 			techName:'',
