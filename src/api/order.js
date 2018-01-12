@@ -32,3 +32,19 @@ export function dispatchTechData(obj) {
 export function dispatchTechSave(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/dispatchTechSave`, obj)
 }
+// 改派管理表格数据获取及分页
+export function Reassignment(obj, pageNumber, pageSize) {
+  return instance.post(`apiservice/a/service/order/orderDispatch/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj )
+}
+// 根据id获取改派记录
+export function reassId(obj) {
+  return instance.post(`apiservice/a/service/order/orderDispatch/formData`, obj)
+}
+//改派菜单下的改派按钮
+export function dispatchTechData1(obj) {
+  return instance.post(`apiservice/a/service/order/orderDispatch/dispatchTech`, obj)
+}
+//改派菜单下的改派保存
+export function dispatchTechSave1(obj) {
+  return instance.post(`/apiservice/a/service/order/orderDispatch/dispatchTechSave`, obj)
+}

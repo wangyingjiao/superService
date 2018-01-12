@@ -351,7 +351,7 @@
 		    </div>
         <!--门店信息结束-->                                                
         <!--技师选择弹窗开始-->
-        <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
+        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
           <button class="button-large FloatRight" @click="searchTeh">查询</button>
           <transition name="slide">
@@ -367,9 +367,9 @@
               <tr class="tableHeader">
                 <td  class="selfTableHEADTD" align="center" width="58px">选择</td>
                 <td  class="selfTableHEADTD" align="center" width="170px">头像</td>
-                <td  class="selfTableHEADTD" align="center" width="188px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="172px">姓名</td>
                 <td  class="selfTableHEADTD" align="center" width="60px">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="84px">岗位性质</td>							
+                <td  class="selfTableHEADTD" align="center" width="82px">岗位性质</td>							
               </tr>
               <div style="padding-top:60px;">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -398,10 +398,10 @@
         <!--技师选择弹窗结束-->        
         <!--修改服务时间弹窗开始-->
         <el-dialog
-          title="修改服务时间"
+          title="选择服务时间"
           :visible.sync="dialogVisible">
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
-              <el-form-item label="选择时间" prop='Date'>
+              <el-form-item label="选择日期" prop='Date'>
                     <el-date-picker
                       v-model="formInline.Date"                      
                       placeholder="年-月-日"                     
@@ -769,10 +769,8 @@ export default {
         });        
       }
       if(arr.length ==0){
-        this.$message({
-          type: "warning",
-          message:'请选择技师'
-        });
+         this.techSaveFlag=false;
+         this.dialogTableVisible = false;
       }             	
     },         
     //改派或新增技师
@@ -787,7 +785,7 @@ export default {
               addTechData(obj).then(res => {      
                 if (res.data.code === 1) { 
                   this.dialogTableVisible=true;                                   
-                  if(res.data.data.length != undefined){
+                  if(res.data.data != undefined){
                       this.listTech=res.data.data;                 
                       for(var a=0;a<this.listTech.length;a++){
                         this.$set(this.listTech[a],'techChecked',false)
@@ -809,7 +807,7 @@ export default {
               dispatchTechData(obj1).then(res => {      
                 if (res.data.code === 1) {
                   this.dialogTableVisible=true;                                          
-                  if(res.data.data.length != undefined){ 
+                  if(res.data.data != undefined){ 
                     this.listTech=res.data.data; 
                   }
                 }else{
@@ -862,7 +860,7 @@ export default {
     transform: translateY(-10px);
     opacity: 0;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;}
+.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;
@@ -923,7 +921,6 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-
 .height70{height:70px;}
 .imgStyle{display:block;}
 .fontSize12{font-size:12px;}

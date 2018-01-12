@@ -81,7 +81,7 @@
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
-        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
+        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false" class="selfDialogWidth">
               <div class="selfFLOLeft width120">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
               </div>
@@ -110,7 +110,7 @@
                           <td  class="selfTdStyle"  align="center" width="120px">头像</td>
                           <td  class="selfTdStyle"  align="center" width="138px">姓名</td>
                           <td  class="selfTdStyle"  align="center" width="60px">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="184px">服务站</td>							
+                          <td  class="selfTdStyle"  align="center" width="170px">服务站</td>							
                         </tr>
                         <div style="padding-top:60px;">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -736,7 +736,7 @@ position:relative;width:100%;height:80px;margin-top:60px;overflow-y: scroll;
   height: 60px;
   border:none !important;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;}
+.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;

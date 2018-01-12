@@ -2,53 +2,61 @@
     <div class="addorder-container">
 		<!-- 搜索开始 -->
 		<div class="filter-container bgWhite">
-
-      
-     <el-select clearable class="search" v-model="technicianName" placeholder="请选择">
-				<el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
-				</el-option>
-		  </el-select>
-      <el-input  v-if="technicianName =='1'" class="search"       placeholder="请输入技师姓名" v-model="technicianName1"></el-input>
-			<el-input  v-else-if="technicianName =='2'" class="search"  placeholder="请输入技师手机号" v-model="technicianName1"></el-input>
-			<el-input  v-else-if="technicianName =='3'" class="search"  placeholder="请输入订单编号" v-model="technicianName1"></el-input>
-			<el-input  v-else class="search"  placeholder="请输入搜索内容" v-model="technicianName1"></el-input>		  
+			<el-input  style="width:30%" placeholder="请输入搜索内容" v-model="techName">
+        <el-select  clearable slot="prepend" style="width:120px" v-model="technicianName" placeholder="请选择">
+          <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
+          </el-option>
+        </el-select>
+      </el-input>      
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
 	<!-- 搜索结束 -->
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px;">
 					<el-table :data="tableData" border style="width:100%">
-					  <el-table-column prop="orderNumber" align="center" label="订单编号"></el-table-column>
+					  <el-table-column  align="center" label="订单编号">
+							<template scope="scope" >
+								<div @click="lookInf(scope.row.id)">
+										{{scope.row.orderNumber}}
+								</div>
+							</template>
+						</el-table-column>
 					  <el-table-column align="center" prop="serviceTime" label="服务时间"></el-table-column>
 					  <el-table-column style="padding:0" align="center" label="头像">
 								<template scope="scope">
 										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-											<img class="head-images" src="http://openservice.oss-cn-beijing.aliyuncs.com/openservice/2017/12/29/%E5%A4%B4%E5%83%8F.jpg" alt="">
+											<img class="head-images" :src="imgSrc+item.headPic+picWidth60" alt="">
 										</div>						
 								</template>
 					  </el-table-column>
 
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">
-										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.name}}</div>						
+										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.techName}}</div>						
 								</template>
 					  </el-table-column>
 
 					  <el-table-column align="center" label="性别">
 								<template scope="scope">
-										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.sex}}</div>						
+										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
+											<span class="fontSize12" v-if="item.techSex =='male'">男</span>
+                      <span class="fontSize12" v-if="item.techSex =='female'">女</span>
+										</div>						
 								</template>
 					  </el-table-column>
 
 					  <el-table-column align="center" label="电话">
 								<template scope="scope">
-										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.phone}}</div>						
+										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.techPhone}}</div>						
 								</template>
 					  </el-table-column>
 
 					  <el-table-column align="center" label="岗位性质">
 								<template scope="scope">
-										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.jobNature}}</div>						
+										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
+												<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+												<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+										</div>						
 								</template>
 					  </el-table-column>
 
@@ -56,220 +64,347 @@
 							<el-table-column align="center" label="操作" :colspan="2" ref="column">
 									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
-											<el-button type="button" @click="selectBut(item.name)">改派</el-button>
-											<!-- <el-button type="button" >改派记录</el-button> -->
+											<el-button type="button" @click="gaiPai(scope.row.id,item)">改派</el-button>
 										</div>						
 									</template>
 							</el-table-column>		
 							<el-table-column align="center">
 								<template scope="scope">
 									<div>
-										<router-link :to="'/clean/dispatchReass/'+scope.row.id">
-											<el-button type="button">
-												改派记录
-											</el-button>
-										</router-link>
+										<el-button type="button" @click="godispatchReass(scope.row.id)">
+											改派记录
+										</el-button>
 									</div>
 								</template>	
 							</el-table-column>			  
 						</el-table-column>
-				</el-table>
-					<div  style="margin-top:20px;padding-bottom:0px;">
-					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" 
-						:page-sizes="[5,10,15,20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
-					  </el-pagination>
-					</div>					
+				</el-table>				
+				<div v-show="!listLoading" style="margin-top:20px;padding-bottom:0px;">
+					<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync='jumpPage'
+					:page-sizes="[5,10,15,20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
+					</el-pagination>
+				</div>					
 					
 			</div>
 		</div>
-	<!--技师选择弹窗-->
-	<el-dialog class="techDialog" title="选择技师" :visible.sync="dialogTableVisible">
-	  <el-input  style="width: 200px;"  placeholder="请输入技师姓名" v-model="technicianName"></el-input>
-	  <el-select clearable style="width:200px;margin-right:20px;" class="filter-item" v-model="stationName" placeholder="请选择">
-		<el-option v-for="item in stationOptions" :key="item.key" :label="item.stationName" :value="item.key">
-		</el-option>
-	  </el-select>	  
-	  <button class="button-large" @click="technicianSearch">搜索</button>	
-	  <el-table :data="technicianData" border>
-		<el-table-column   width="50"   align="center" type="selection"></el-table-column>
-		<el-table-column prop="headUrl" align="center" label="头像"></el-table-column>
-		<el-table-column prop="name" align="center" label="姓名"></el-table-column>
-		<el-table-column prop="sex" align="center" label="性别"></el-table-column>
-		<el-table-column prop="serverStation" align="center" label="服务站"></el-table-column>
-		<el-table-column prop="jobNature" align="center" label="岗位性质"></el-table-column>
-	  </el-table>
-	  <div  class="pagination-container">
-		   <el-pagination
-				layout="prev, pager, next"
-				:total="100">
-			</el-pagination>
-	  </div>	  
-	  <div slot="footer" class="dialog-footer">
-		<button class="button-large" @click="dialogTableVisible = false">确 定</button>
-		<button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
-	  </div>
-	</el-dialog>
+		<!--技师选择弹窗开始-->
+		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth">
+			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="width120"></el-input> 
+			<button class="button-large FloatRight" @click="searchTeh">查询</button>
+			<transition name="slide">
+				<div class="selfpromMessageTab" v-if="middleA.length !=0">
+					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+						<div class="techNameStyle">{{item.techName}}</div>
+					</div>                         
+				</div>
+			</transition>                                               	
+			<div class="selfTableWrapONE">
+				<div class="table-d">
+					<table  class="selfTable">
+					<tr class="tableHeader">
+						<td  class="selfTableHEADTD" align="center" width="58px">选择</td>
+						<td  class="selfTableHEADTD" align="center" width="170px">头像</td>
+						<td  class="selfTableHEADTD" align="center" width="172px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="60px">性别</td>
+						<td  class="selfTableHEADTD" align="center" width="82px">岗位性质</td>							
+					</tr>
+					<div style="padding-top:60px;">
+							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+								<td width="58px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+								<td  width="170px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td width="188px" class="fontSize12" align="center">{{item.techName}}</td>
+								<td  width="60px" class="fontSize12" align="center">
+									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
+									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+								</td>
+								<td width="84px" class="fontSize12"  align="center">
+											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+								</td>							
+							</tr>
+					</div>
+					</table>
+					<div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
+				</div>            
+			</div> 	  	  
+			<div slot="footer" class="dialog-footer" style="text-align:center">
+				<button class="button-large" :disabled="techSaveFlag" @click="submitForm2()">保存</button>
+				<button class="button-cancel" @click="cancelForm2()">取 消</button>
+			</div>
+		</el-dialog>
+		<!--技师选择弹窗结束-->		
   </div>
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech,Reassignment} from "@/api/staff";
-//import { parseTime } from "@/utils";
+import {dispatchTechData1,dispatchTechSave1,Reassignment} from "@/api/order";
 export default {
   name: "",
   data() {
     return {
-			tableData:[
-				{
-					orderNumber:"23232323223232323232323",
-					serviceTime:"2017/10/27 16:54",
-					techList:[
-						{
-							headPic:"../../icons/svg/Selected.png",
-							name:"张三",
-							sex:"男",
-							phone:"15711445668",
-							jobNature:"全职",
-						},
-						{
-							headPic:"",
-							name:"张三1",
-							sex:"男",
-							phone:"15711445668",
-							jobNature:"全职",
-						},
-						{
-							headPic:"",
-							name:"张三2",
-							sex:"男",
-							phone:"15711445668",
-							jobNature:"全职",
-						}
-					]
-				},
-				{
-					orderNumber:"abcdefghijklmnsssssww",
-					serviceTime:"2017/12/27 16:54",
-					techList:[
-						{
-							headPic:"",
-							name:"利索",
-							sex:"女",
-							phone:"15711445668",
-							jobNature:"兼职",
-						},
-						{
-							headPic:"",
-							name:"利索",
-							sex:"女",
-							phone:"15711445668",
-							jobNature:"兼职",
-						},
-						{
-							headPic:"",
-							name:"利索",
-							sex:"女",
-							phone:"15711445668",
-							jobNature:"兼职",
-						}
-					]
-				}
-			],
+			techSaveFlag:false,
+			listTech:[],
+			techName:'',
+			middleA:[],
+			tableData:[],
 		//全局搜索下拉选项
 		technicianOptions:[
 		  { key: "1", technicianName: "技师姓名" },
 		  { key: "2", technicianName: "技师手机号" },
 		  { key: "3", technicianName: "订单编号" }
-		],		
-		//服务站下拉选项
-		stationOptions:[
-		  { key: "1", stationName: "服务站1" },
-		  { key: "2", stationName: "服务站2" },
-		  { key: "3", stationName: "服务站3" },
-		  { key: "4", stationName: "服务站4" }
-		],
-		//服务站
-		stationName:'',
-		//技师选择弹窗表格数据
-		technicianData:[{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站',
-		  jobNature:'全职'
-        }, 
-		{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站',
-		   jobNature:'全职'
-        },{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站',
-		   jobNature:'全职'
-        },{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站',
-		   jobNature:'全职'
-        }],
-		//当前客户姓名		
+		],				
 		dialogTableVisible:false,//选择技师弹窗开关
 		technicianName:'',//技师姓名
 		technicianName1:'',//技师姓名
-		pagetotal:10,//技师总页数
-		pageSize:2,//每页条数
-		pagetotal1:100,//表格总页数
-		pageSize1:10,//表格每页条数		
+		pagetotal1:null,//表格总页数
+		pageSize1:10,//表格每页条数
+		pageNumber:1,	
+		jumpPage:null,
+		aa:'',
+		orderId:'',
+		listLoading:false,
+		techName1:'',
+		techName2:'',
+		techPhone1:'', 
+		orderNumber1:'',			
     };
   },
   methods:{
+		//跳转改派记录页		
+		godispatchReass(id){
+			window.localStorage.setItem("orderId1",id)
+			this.$router.push({path:'/clean/dispatchReass/',query:{id:id}})			
+		},
+    //选择技师弹出层查询按钮
+    searchTeh(){  
+        var obj = {
+          id:this.orderId,
+          techName: this.techName
+        };
+				dispatchTechData1(obj).then(res => {
+						if (res.data.code === 1) {
+							if(res.data.data != undefined){
+								this.listTech = res.data.data;
+								for (var c = 0; c < this.middleA.length; c++) {
+									for (var d = 0; d <this.listTech.length; d++) {
+										this.$set(this.listTech[d],'techChecked',false)
+										if (
+											this.listTech[d].techId ==
+											this.middleA[c].techId
+										) {
+											this.listTech[d].techChecked = true;
+										}
+									}
+								}
+							}else{
+								this.listTech=[]                     
+							}
+						}
+					}).catch(res=>{
+									
+					});                          
+    },
+    //存储选择技师对象
+    ChangeTech(obj){
+      if(obj.techChecked){
+          this.middleA.push(obj)          
+      }else{
+          this.middleA.remove(obj)          
+      }
+    },    
+    //选择技师弹出层保存
+    submitForm2() {
+      this.techSaveFlag=true;
+      //先遍历数据中选中的再保存
+      var arr = [];
+      if (this.middleA != undefined && this.middleA.length != 0) {
+        for (let a = 0; a < this.middleA.length; a++) {
+          if (this.middleA[a].techChecked == true) {
+            arr.push(this.middleA[a].techId);
+          }
+        }
+      }
+      if(arr.length !=0 ){
+        var obj1={
+          id:this.orderId,
+          dispatchTechId:this.aa,
+          techIdList:arr
+        }
+        dispatchTechSave1(obj1).then(res => {
+          this.techSaveFlag=false;      
+          if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "改派成功!"
+              });
+							var obj={
+
+							}
+							this.reassList(obj,this.pageNumber,this.pageSize1);	
+              this.middleA=[];                         
+              this.dialogTableVisible = false
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });             
+          }          
+        }).catch(res=>{
+          this.techSaveFlag=false;
+        });        
+      }
+      if(arr.length ==0){
+				this.techSaveFlag=false;
+				this.dialogTableVisible = false;
+      }             	
+		},
+    //选择技师弹出层取消
+    cancelForm2(){
+      this.middleA=[];
+      this.listTech=[];     
+			this.dialogTableVisible = false			
+    },		         
+    //改派技师
+    gaiPai(id,obj){
+				this.techName2='';
+				this.aa=obj.techId;
+				this.orderId=id;         
+				var obj1={
+					id:id
+				};            
+				dispatchTechData1(obj1).then(res => {      
+					if (res.data.code === 1) {
+						this.dialogTableVisible=true;                                        
+						if(res.data.data != undefined){ 
+							this.listTech=res.data.data;
+						}else{
+              this.listTech=[];
+						}
+					}else{						  
+							this.$message({
+								type: "error",
+								message: res.data.data
+							});                   
+					}          
+				}).catch(res=>{
+					
+				});
+    
+    },		
+	//查看跳转到订单详情页
+	lookInf(id){
+		console.log(id)
+		window.localStorage.setItem("orderId",id)
+		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
+	},		
 	//列表渲染
-	reassList(page,size,obj){
-		Reassignment(page,size,obj).then(data=>{
-			console.log(data)
-		}).catch(error=>{
-			console.log(error)
+	reassList(pramsObj,pageNo,pageSize){
+		this.listLoading = true;
+		var obj=pramsObj; 
+		Reassignment(obj,pageNo,pageSize).then(res=>{
+       if (res.data.code === 1) {
+					 this.tableData = res.data.data.list;										
+					 this.pagetotal1=res.data.data.count;					
+					this.listLoading = false;
+			 }else{
+				 	this.listLoading = false;
+			 }
+		}).catch(res=>{
+
 		})
 	},
 	//全局搜索按钮
 	localSearch(){
+		if(this.technicianName =='1'){
+        this.techName1=this.techName;
+		}else if(this.technicianName =='2'){
+				this.techPhone1=this.techName;
+		}else if(this.technicianName =='3'){
+				this.orderNumber1=this.techName;
+		}else{
+				this.techName1='';
+				this.techPhone1='';
+				this.orderNumber1='';
+		}
+		var obj={
+			techName:this.techName1,
+			techPhone:this.techPhone1, 
+			orderNumber:this.orderNumber1,
+		};
+		this.pageNumber=1;
+		this.jumpPage=1;		
+		this.reassList(obj,this.pageNumber,this.pageSize1);		
 	},
-	//弹窗技师搜索按钮
-	technicianSearch(){
-	},
-	//弹窗页数改变
-    handleSizeChange(val) {
-
-    },
-	//弹窗当前页改变
-    handleCurrentChange(val) {
-
-    },
 	//表格页数改变
-    handleSizeChange1(val) {
+	handleSizeChange1(val) {
+		this.pageSize1=val;
+		var obj={
+		}
+		this.reassList(obj,this.pageNumber,this.pageSize1);	
 
-    },
+	},
 	//表格当前页改变
-    handleCurrentChange1(val) {
-
-    },	
-    //表格操作按钮
-	selectBut(obj){
-		  console.log(obj)
-	    this.dialogTableVisible=true;		
+	handleCurrentChange1(val) {
+		this.pageNumber=val;
+		var obj={
+		}
+		this.reassList(obj,this.pageNumber,this.pageSize1);
 	}	
   },
   mounted() {
-
+    this.reassList();
   }
 };
 </script>
-<style>
+<style scoped>
+.width120{width:120px;}
+.FloatRight{float:right;}
+.selfpromMessageTab{position:relative;width:100%;height:80px;margin-top:20px;overflow-y: scroll;}
+.techNameStyle {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tabWrap1 {
+  width: 80px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top:5px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+}
+.selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
+.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
+.height70{height:70px;}
+.imgStyle{display:block;}
+.slide-enter-active {
+    transition: all .8s ease;
+}
+.slide-leave-active {
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-enter,.slide-leave-active {
+    transform: translateY(-10px);
+    opacity: 0;
+}
+.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
+.selfTdStyle1 {
+  vertical-align:middle;
+  height: 70px;
+  line-height:70px;
+}
+.fontSize12{font-size:12px;}
+.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
 .bgWhite {
     background-color: #ffffff;
     padding: 20px 20px 20px 20px;
@@ -281,6 +416,8 @@ export default {
 	text-align:center;
 	height:60px;
 	line-height:60px;
+	width:150%;
+	margin-left:-17px;
 	border-bottom:1px solid #dfe6ec
 }
 .selfTd:last-child{
@@ -341,4 +478,5 @@ export default {
 .addorder-container .dialog-footer .button-cancel{
 	margin-left: 20px;
 }
+.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
 </style>
