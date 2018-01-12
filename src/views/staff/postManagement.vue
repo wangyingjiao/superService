@@ -137,7 +137,8 @@ import {
   getPower,
   getMenudata,
   getSList,
-  chkName
+  chkName,
+  chkNameUp
 } from "@/api/staff";//接口调用
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -165,7 +166,17 @@ export default {
             }
           });
         } else {
-          callback();
+          var obj ={
+             roleId:this.roleId,
+             name:value
+          }
+          chkNameUp(obj).then(res => {
+            if (res.data.code == 0) {
+              callback(new Error("岗位名重复！"));
+            } else {
+              callback();
+            }
+          });
         }
       }
     };

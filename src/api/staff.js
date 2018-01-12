@@ -57,8 +57,16 @@ export function getMenudata() {
 export function delStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/deleteUser`, obj)
 }
-export function chkName(name) { // 岗位重名检测
+// 岗位新增时重名检测
+export function chkName(name) {
   return instance.get(`/apiservice/a/sys/role/chkName?name=` + name)
+}
+// 岗位编辑时重名检测
+// export function chkNameUp(obj) {
+//   return instance.post(`/apiservice/a/sys/role/chkNameUpdate`, obj)
+// }
+export function chkNameUp(obj) {
+  return instance.get(`/apiservice/a/sys/role/chkNameUpdate?name=` + obj.name + '&roleId=' + obj.roleId)
 }
 
 // 改派管理分页
