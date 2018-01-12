@@ -170,7 +170,7 @@
           ref="tempMaster"
           :model="tempMaster">
           <el-form-item label="服务站长:" prop="master">
-            <el-select class="form_item" v-model="tempMaster.master">
+            <el-select class="form_item" filterable v-model="tempMaster.master">
               <el-option v-for="item in master" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
@@ -705,8 +705,8 @@ export default {
       };
       this.btnState = true;
       setStore(obj).then(res => {
+        this.btnState = false;
         if (res.data.code == 1) {
-          return
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
           this.rowInfo.id = ""

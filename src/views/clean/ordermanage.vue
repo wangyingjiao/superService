@@ -8,6 +8,7 @@
 			  </el-tabs>
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
+				<div class="searchs">
 			  <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
@@ -53,6 +54,7 @@
 						placeholder="选择服务时间">
 					</el-date-picker>
 					<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
+		    	</div>
 			  </div>
 				<!--搜索条件选择结束-->				
 		</div>
@@ -323,7 +325,6 @@ export default {
 .width200{width:200px;}
 .floatRight{float:right}
 .fist-bar{
-  padding:20px 20px;
   background:#fff;
   border-bottom:1px solid #eee;
 }

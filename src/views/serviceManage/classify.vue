@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="filter-container bgWhite">
+  <div class="filter-container tabStyle">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="全部" name="all"></el-tab-pane>
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
@@ -379,12 +379,10 @@ export default {
     },
     resetForm(formName) {
       //清空列表
-      this.$nextTick(() => {
         this.selectState = false;
         this.resetTemp();
         this.$refs[formName].resetFields();
         this.dialogFormVisible = false;
-      });
     },
     resetSearch() {
       //清空搜索信息
@@ -436,12 +434,12 @@ export default {
       });
     },
     resetTemp() {
-      this.temp.name = "";
-      this.temp.majorSort = "";
-      // this.temp = {
-      //   name: "",
-      //   majorSort: ""
-      // };
+      // this.temp.name = "";
+      // this.temp.majorSort = "";
+      this.temp = {
+        name: "",
+        majorSort: ""
+      };
     },
     handleClick(tab, event) {
       console.log(tab, event, "tab切换");

@@ -256,7 +256,7 @@ export default {
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
           new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
+          "yyyy-MM-dd 23:59:59"
         );
         var end = {
           endTime: endTime
@@ -310,7 +310,7 @@ export default {
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
           new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
+          "yyyy-MM-dd 23:59:59"
         );
         var end = {
           endTime: endTime

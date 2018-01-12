@@ -72,7 +72,7 @@
 		    </div>
         <!--订单信息结束-->
         <!--支付信息开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">支付信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -125,7 +125,7 @@
 		    </div>
         <!--支付信息结束-->
         <!--服务信息开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">服务信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -177,7 +177,7 @@
 		    </div>
         <!--服务信息结束-->
         <!--技师信息开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">技师信息</div>
             <div class="hr-style"></div>
             <div class="techTabWrap">
@@ -230,7 +230,7 @@
 		    </div>
         <!--技师信息结束-->
         <!--客户备注开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">客户备注</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -255,7 +255,7 @@
 		    </div>
         <!--客户备注结束-->
         <!--订单备注开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">订单备注</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -279,7 +279,7 @@
 		    </div>
         <!--订单备注结束-->               
         <!--业务人员信息开始-->
-        <div class="thrid-bar marginTop20">
+        <div class="thrid-bar marginTop15">
             <div class="custom-action">业务人员信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -313,7 +313,7 @@
 		    </div>
         <!--业务人员信息结束-->
         <!--门店信息开始-->
-        <div class="thrid-bar marginTop20 marginBOT20">
+        <div class="thrid-bar marginTop15 marginBOT20">
             <div class="custom-action">门店信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -351,7 +351,7 @@
 		    </div>
         <!--门店信息结束-->                                                
         <!--技师选择弹窗开始-->
-        <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
+        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
           <button class="button-large FloatRight" @click="searchTeh">查询</button>
           <transition name="slide">
@@ -365,11 +365,11 @@
             <div class="table-d">
               <table  class="selfTable">
               <tr class="tableHeader">
-                <td  class="selfTableHEADTD" align="center" width="58px">选择</td>
-                <td  class="selfTableHEADTD" align="center" width="170px">头像</td>
-                <td  class="selfTableHEADTD" align="center" width="188px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="56px">选择</td>
+                <td  class="selfTableHEADTD" align="center" width="166px">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="179px">姓名</td>
                 <td  class="selfTableHEADTD" align="center" width="60px">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="84px">岗位性质</td>							
+                <td  class="selfTableHEADTD" align="center" width="80.5px">岗位性质</td>							
               </tr>
               <div style="padding-top:60px;">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -398,10 +398,12 @@
         <!--技师选择弹窗结束-->        
         <!--修改服务时间弹窗开始-->
         <el-dialog
-          title="修改服务时间"
-          :visible.sync="dialogVisible">
+          title="选择服务时间"
+          :visible.sync="dialogVisible"
+          :close-on-click-modal="false"
+          >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
-              <el-form-item label="选择时间" prop='Date'>
+              <el-form-item label="选择日期" prop='Date'>
                     <el-date-picker
                       v-model="formInline.Date"                      
                       placeholder="年-月-日"                     
@@ -769,10 +771,8 @@ export default {
         });        
       }
       if(arr.length ==0){
-        this.$message({
-          type: "warning",
-          message:'请选择技师'
-        });
+         this.techSaveFlag=false;
+         this.dialogTableVisible = false;
       }             	
     },         
     //改派或新增技师
@@ -787,7 +787,7 @@ export default {
               addTechData(obj).then(res => {      
                 if (res.data.code === 1) { 
                   this.dialogTableVisible=true;                                   
-                  if(res.data.data.length != undefined){
+                  if(res.data.data != undefined){
                       this.listTech=res.data.data;                 
                       for(var a=0;a<this.listTech.length;a++){
                         this.$set(this.listTech[a],'techChecked',false)
@@ -809,7 +809,7 @@ export default {
               dispatchTechData(obj1).then(res => {      
                 if (res.data.code === 1) {
                   this.dialogTableVisible=true;                                          
-                  if(res.data.data.length != undefined){ 
+                  if(res.data.data != undefined){ 
                     this.listTech=res.data.data; 
                   }
                 }else{
@@ -862,7 +862,7 @@ export default {
     transform: translateY(-10px);
     opacity: 0;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;}
+.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;
@@ -899,7 +899,7 @@ export default {
 .FloatLeft{float:left;}
 .selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
 .selfpromMessageTab{
-   position:relative;width:100%;height:80px;margin-top:20px;overflow-y: scroll;
+   position:relative;width:100%;margin-top:20px;margin-left:10px;
 }
 .techNameStyle {
   width: 80px;
@@ -923,7 +923,6 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-
 .height70{height:70px;}
 .imgStyle{display:block;}
 .fontSize12{font-size:12px;}
@@ -945,6 +944,7 @@ export default {
   font-size:12px;
 	float:left;
 	background:#eef1f6;
+  padding: 20px 5px;
 }
 .order-selfTd{
 text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
@@ -973,8 +973,8 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
 .selfWrap1{
   width:100%;
 }
-.marginTop20{
-  margin-top:20px;
+.marginTop15{
+  margin-top:15px;
 }
 .addTechWrap{width:110px;height:32px;line-height:32px;margin-top: 10px;background:#ccc;cursor:pointer;}
 .plusComb{display:inline-block;float:left;width:32px;height:32px;line-height:32px;color:#fff;background:#3a5fcd;text-align:center;font-size:20px;}

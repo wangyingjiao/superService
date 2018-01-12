@@ -81,7 +81,7 @@
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
-        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false">
+        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false" class="selfDialogWidth">
               <div class="selfFLOLeft width120">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
               </div>
@@ -92,27 +92,25 @@
                 </el-select>
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
-              <transition name="slide">
-                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
-                    <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
-                    </div>                    
-                    <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
-                    </div>                                              
-                </div>
-              </transition>                           
+              <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
+                  <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
+                    <div class="techNameStyle">{{item.techName}}</div>
+                  </div>                    
+                  <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
+                    <div class="techNameStyle">{{item.techName}}</div>
+                  </div>                                              
+              </div>                           
               <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
-                      <table  class="selfTable">
+                      <table  class="selfTable" style="">
                         <tr class="tableHeader">
                           <td  class="selfTdStyle" align="center" width="58px">选择</td>
-                          <td  class="selfTdStyle"  align="center" width="120px">头像</td>
-                          <td  class="selfTdStyle"  align="center" width="138px">姓名</td>
-                          <td  class="selfTdStyle"  align="center" width="60px">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="184px">服务站</td>							
+                          <td  class="selfTdStyle"  align="center" width="118px">头像</td>
+                          <td  class="selfTdStyle"  align="center" width="133px">姓名</td>
+                          <td  class="selfTdStyle"  align="center" width="58px">性别</td>
+                          <td  class="selfTdStyle"  align="center" width="173.7px">服务站</td>							
                         </tr>
-                        <div style="padding-top:60px;">
+                        <div style="margin-top:60px;">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="60px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="120px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
@@ -220,7 +218,7 @@ export default {
     //全局搜索按钮
     search() {
       var obj = {
-        name: this.localSearch
+        name:this.localSearch
       };
       this.pageNumber = 1;
       this.jumpPage = 1;
@@ -536,7 +534,9 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {};
+      var obj = {
+        name: this.localSearch
+      };
       this.getList(obj, this.pageNumber, this.pageSize);
     },
     //总数据删除
@@ -705,18 +705,8 @@ export default {
 .selfFLORight {
   float: right;
 }
-.slide-enter-active {
-    transition: all .8s ease;
-}
-.slide-leave-active {
-    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-enter,.slide-leave-active {
-    transform: translateY(-10px);
-    opacity: 0;
-}
 .selfpromMessageTab{
-position:relative;width:100%;height:80px;margin-top:60px;overflow-y: scroll;
+    position:relative;width:100%;margin-top:60px;margin-left:10px;
 }
 .selfFLOLeft {
   float: left;
@@ -736,7 +726,7 @@ position:relative;width:100%;height:80px;margin-top:60px;overflow-y: scroll;
   height: 60px;
   border:none !important;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;}
+.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;

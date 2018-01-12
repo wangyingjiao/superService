@@ -4,17 +4,25 @@
             <el-table-column prop="headPic" label="头像" align="center">
                 <template scope="scope">
                     <div>
-                        <img class="head-image" :src="scope.row.headPic" alt="">
+                        <img class="head-image" :src="imgSrc+scope.row.headPic+picWidth60" alt="">
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="姓名" align="center">
+            <el-table-column prop="techName" label="姓名" align="center">
             </el-table-column>
-            <el-table-column prop="sex" label="性别" align="center">
+            <el-table-column label="性别" align="center">
+                <template scope="scope">
+                    <span class="fontSize12" v-if="scope.row.techSex =='male'">男</span>
+                    <span class="fontSize12" v-if="scope.row.techSex =='female'">女</span>						
+                </template>                
             </el-table-column>
-            <el-table-column prop="phone" label="电话" align="center">
+            <el-table-column prop="techPhone" label="电话" align="center">
             </el-table-column>
-            <el-table-column prop="jobNature" label="岗位性质" align="center">
+            <el-table-column label="岗位性质" align="center">
+                <template scope="scope">
+                    <span class="fontSize12" v-if="scope.row.jobNature =='part_time'">兼职</span>
+                    <span class="fontSize12" v-if="scope.row.jobNature =='full_time'">全职</span>					
+                </template>                
             </el-table-column>
             <el-table-column prop="createDate" label="派单时间" align="center">
             </el-table-column>
@@ -23,51 +31,35 @@
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech,Reassignment,reassId} from "@/api/staff";
+import {reassId} from "@/api/order";
 export default {
   name: "",
   data() {
     return {
-        reassList:[
-            {
-                headPic:'http://openservice.oss-cn-beijing.aliyuncs.com/openservice/2017/12/29/%E5%A4%B4%E5%83%8F.jpg',
-                name:'123',
-                sex:'男',
-                phone:'15711445668',
-                jobNature:'全职',
-                createDate:'2017-05-10'
-            },
-            {
-                headPic:'http://openservice.oss-cn-beijing.aliyuncs.com/openservice/2017/12/29/%E5%A4%B4%E5%83%8F.jpg',
-                name:'123',
-                sex:'男',
-                phone:'15711445668',
-                jobNature:'全职',
-                createDate:'2017-05-10'
-            },
-            {
-                headPic:'http://openservice.oss-cn-beijing.aliyuncs.com/openservice/2017/12/29/%E5%A4%B4%E5%83%8F.jpg',
-                name:'123',
-                sex:'男',
-                phone:'15711445668',
-                jobNature:'全职',
-                createDate:'2017-05-10'
-            }
-        ]
+        reassList:[]
     }
   },
   methods:{
       reassClick(id){
-          reassId({"orderId":id}).then(data=>{
-              console.log(data,"-----")
-          }).catch(error=>{
-              console.log(error)
+          var obj={
+              orderId:id
+          }
+          reassId(obj).then(res=>{
+            if(res.data.code === 1){
+                this.reassList=res.data.data
+            }              
+          }).catch(res=>{
+
           })
       }
   },
   mounted(){
-    //  console.log(this.$route.params.id,"this.$route.params")
-    //  this.reassClick(this.$route.params.id)
+    var orderId=window.localStorage.getItem("orderId1")
+    if(this.$route.query.id == undefined){
+      this.reassClick(orderId)
+    }else{
+      this.reassClick(this.$route.query.id)
+    }      
   }
 };
 </script>
