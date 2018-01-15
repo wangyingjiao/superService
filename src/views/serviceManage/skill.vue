@@ -555,7 +555,9 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                var obj = {};
+                var obj = {
+                  name: this.localSearch
+                };
                 this.getList(obj, this.pageNumber, this.pageSize);
               } else {
                 this.$message({
