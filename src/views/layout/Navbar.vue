@@ -19,11 +19,11 @@
           </el-dropdown>
         </li> -->
         <li class="liBtn liUser">
-          <div><i class="iconfont" style="color:#4C70E8">&#xe669;</i>  &nbsp;&nbsp;{{username}}</div>
+          <div><i class="iconfont color" >&#xe669;</i>  &nbsp;&nbsp;{{username}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
           
-          <div class="logoutbtn"><i class="iconfont">&#xe639;</i>&nbsp;&nbsp;退出</div>
+          <div><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
         </li>
         <!-- <li class="liBtn">
@@ -124,6 +124,16 @@ export default {
   padding: 0 5px;
   border-radius: 3px;
   float: left;
+  .color{
+    color: #4C70E8
+  }
+  &:hover{
+    color: #fff;
+    background-color: #4C70E8;
+    .color{
+    color: #ffffff;
+  }
+  }
 }
 .nav-ul li img {
   margin-top: 7px;
@@ -131,10 +141,6 @@ export default {
   height: 14px;
   float: left;
 
-}
-.logoutbtn{
-  background-color: #4C70E8;
-  color: #fff;
 }
 
 .nav-ul li .el-dropdown-link {
