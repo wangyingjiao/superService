@@ -71,7 +71,7 @@
         >
 
         <el-form-item label=" 所属机构:"  prop="officeId">
-          <el-select class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select :disabled="selsctState" class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -183,7 +183,7 @@ export default {
     return {
       btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
-      changeState: false,
+      selsctState: false,
       list: [],
       officeIds: [],
       total: null,
@@ -496,7 +496,7 @@ export default {
     },
     handTreechange(a, b, c) {
       console.log(this.dialogStatus, "状态12");
-      console.log(this.changeState, "状态13");
+      
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
@@ -621,6 +621,9 @@ export default {
           this.temp.dataScope = a.dataScope;
           this.temp.check = a.menuIdList;
           //console.log(a.menuIdList);
+          if(res.data.data.flag){
+            this.selsctState = true
+          }
           for (let i = 0; i < this.data2.length; i++) {
             //特殊首页处理
             if (this.data2[i].permission == "index") {
@@ -650,7 +653,7 @@ export default {
             message: "请求失败"
           });
         }
-        this.changeState = true;
+        
       });
     },
     //删除数据
@@ -797,6 +800,7 @@ export default {
             .then(res => {
               this.btnState = false;
               if (res.data.code === 1) {
+                this.selsctState = false
                 this.resetTemp();
                 this.$refs.domTree.setCheckedKeys([]);
                 this.$refs[formName].resetFields();
@@ -830,6 +834,7 @@ export default {
     },
     //清空表单
     resetForm(formName) {
+      this.selsctState = false
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs.domTree.setCheckedKeys([]);
