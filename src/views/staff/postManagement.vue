@@ -78,7 +78,7 @@
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp.name"class="form_item"placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" class="form_item" placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
@@ -153,12 +153,19 @@ export default {
   data() {
     //表单验证
     var validateName = (rule, value, callback) => {
+      console.log(this.temp.officeId)
+      var that = this
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
         console.log(this.dialogStatus);
         if (this.dialogStatus == "create") {
-          chkName(value).then(res => {
+          console.log(this.temp.officeId)
+          var obj = {
+            name: value,
+            id:this.temp.officeId
+          };
+          chkName(obj).then(res => {
             if (res.data.code == 0) {
               callback(new Error("岗位名重复！"));
             } else {
@@ -168,7 +175,8 @@ export default {
         } else {
           var obj = {
             roleId: this.roleId,
-            name: value
+            name: value,
+            id:this.temp.officeId
           };
           chkNameUp(obj).then(res => {
             if (res.data.code == 0) {

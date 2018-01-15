@@ -21,10 +21,10 @@ const instance = axios.create({
 
 // 拦截响应
 instance.interceptors.response.use(data => {
-  console.log(data, '响应')
+  // console.log(data, '响应')
   return data
 }, error => {
-  console.log(error, '响应错误')
+  // console.log(error, '响应错误')
   // Message.error({
   //   message: '加载失败'
   // })

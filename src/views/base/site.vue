@@ -55,7 +55,7 @@
           
         </el-table-column>
 
-        <el-table-column label="站长" align="center" prop="user.id">
+        <el-table-column label="站长" align="center" prop="user.name">
 
         </el-table-column>
 
