@@ -49,7 +49,7 @@
             </el-form-item>
             <!-- @change="testChange" -->
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce" class="kill form_item">  
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类"  class="kill form_item">  
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"

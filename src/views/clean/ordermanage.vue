@@ -13,11 +13,11 @@
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="search"  v-model="mechanism" placeholder="选择机构" @change="orgChange">
+			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="search"  v-model="payType" placeholder="选择服务站">
+			  <el-select clearable class="search"  v-model="payType" filterable placeholder="选择服务站">
 						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
