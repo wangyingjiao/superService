@@ -118,7 +118,7 @@ $light_gray: #eee;
 
   background-image: url("../../../static/icon/bg.png");
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1F3264 inset !important;
     -webkit-text-fill-color: #fff !important;
   }
   input {
@@ -163,7 +163,7 @@ $light_gray: #eee;
     font-size: 17px;
     line-height: 40px;
     color: #ffffff;
-    margin: -30px auto 40px auto;
+    margin: -30px 0 40px 0;
     text-align: center;
     font-family: PingFangSC-Regular;
   }
@@ -179,18 +179,18 @@ $light_gray: #eee;
     background-image: linear-gradient(-163deg, #00A8E1 0%, #CDE19E 100%);
   }
   .login-form {
-    position: absolute;
-    left: 50%;
-    right: 0;
+    position: fixed;
+    right: 20%;
+    bottom: 30%;
     width: 400px;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
     background-color: #1F3264;
     border-radius: 3px;
   }
+  
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    
     border-radius: 5px;
     color: #454545;
   }
@@ -208,4 +208,5 @@ $light_gray: #eee;
     bottom: 28px;
   }
 }
+
 </style>
