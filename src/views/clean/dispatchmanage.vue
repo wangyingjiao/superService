@@ -16,7 +16,7 @@
 					<el-table :data="tableData" border style="width:100%">
 					  <el-table-column  align="center" label="订单编号">
 							<template scope="scope" >
-								<div @click="lookInf(scope.row.id)">
+								<div @click="lookInf(scope.row.id)" style="cursor:pointer;">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
@@ -240,7 +240,8 @@ export default {
 
 							}
 							this.reassList(obj,this.pageNumber,this.pageSize1);	
-              this.middleA=[];                         
+							this.middleA=[]; 
+							this.listTech=[];                          
               this.dialogTableVisible = false
           }else{
               this.$message({
@@ -302,7 +303,7 @@ export default {
 		Reassignment(obj,pageNo,pageSize).then(res=>{
        if (res.data.code === 1) {
 					 this.tableData = res.data.data.list;										
-					 this.pagetotal1=res.data.data.count;					
+					 this.pagetotal1=res.data.data.count;				
 					this.listLoading = false;
 			 }else{
 				 	this.listLoading = false;

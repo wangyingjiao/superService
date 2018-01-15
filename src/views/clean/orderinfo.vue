@@ -648,7 +648,8 @@ export default {
         //服务技师获取
         if(this.status == 'add'){
             addTechData(obj).then(res => {
-                if (res.data.code === 1) {
+                this.listTech=[];
+                if (res.data.code === 1) {                  
                   if(res.data.data != undefined){
                       this.listTech = res.data.data;
                       for (var b = 0; b < this.middleA.length; b++) {
@@ -730,7 +731,8 @@ export default {
                 message: "新增成功!"
               });
               this.tableData1=res.data.data;
-              this.middleA=[];                         
+              this.middleA=[];
+              this.listTech=[];                         
               this.dialogTableVisible = false
           }else{
               this.$message({
@@ -756,7 +758,8 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1=res.data.data;
-              this.middleA=[];                         
+              this.middleA=[];
+              this.listTech=[];                         
               this.dialogTableVisible = false
           }else{
               this.$message({
