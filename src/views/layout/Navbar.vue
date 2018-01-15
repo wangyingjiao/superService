@@ -99,7 +99,7 @@ export default {
     line-height: 50px;
     height: 50px;
     float: left;
-    padding: 0 10px;
+    padding: 0 15px;
   }
 }
 
