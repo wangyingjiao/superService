@@ -184,7 +184,6 @@ $light_gray: #eee;
     bottom: 30%;
     width: 400px;
     padding: 35px 35px 15px 35px;
-    
     background-color: #1F3264;
     border-radius: 3px;
   }
