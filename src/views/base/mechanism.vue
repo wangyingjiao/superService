@@ -24,7 +24,7 @@
     tooltip-effect='light'
     element-loading-text="正在加载" 
     style="width: 100%" >
-      <el-table-column align="center" label="机构编号" width="100">
+      <el-table-column align="center" label="编号" width="100">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
@@ -166,7 +166,7 @@
           
         </el-form-item>
         
-        <el-form-item label=" E店编号:" prop="jointEshopCode">
+        <el-form-item label=" E店编码:" prop="jointEshopCode">
           <el-input 
            class="form_item"
             v-model.trim="temp.jointEshopCode"
@@ -417,7 +417,8 @@ export default {
           { required: true, message: "工作结束时间不能为空", trigger: "change" }
         ],
         jointEshopCode: [
-          { required: true, message: "E店编码不能为空", trigger: "blur" }
+          { required: true, message: "E店编码不能为空", trigger: "blur" },
+          { max: 50,message: "长度不超过50个字符",trigger: "blur"}
         ],
         url: [
           {
