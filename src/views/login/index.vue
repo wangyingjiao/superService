@@ -12,7 +12,7 @@
       <el-form-item prop="password">
         <span class="svg-container">
           <icon-svg icon-class="mima"></icon-svg>
-        </span>
+        </span> 
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
           placeholder="密码(6-20位数字、字母组成)"></el-input>
       </el-form-item>
