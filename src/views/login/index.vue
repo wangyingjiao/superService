@@ -108,7 +108,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 @import "src/styles/mixin.scss";
-$bg: #1F3264;
+$bg: #1f3264;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
@@ -118,7 +118,7 @@ $light_gray: #eee;
 
   background-image: url("../../../static/icon/bg.png");
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #1F3264 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1f3264 inset !important;
     -webkit-text-fill-color: #fff !important;
   }
   input {
@@ -142,7 +142,7 @@ $light_gray: #eee;
   }
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: #265DC3;
+    color: #265dc3;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -168,33 +168,31 @@ $light_gray: #eee;
     font-family: PingFangSC-Regular;
     margin-bottom: 20px;
   }
-  .loginitem{
-    div{
+  .loginitem {
+    div {
       line-height: 32px;
     }
   }
-  .loginbtn{
+  .loginbtn {
     color: #ffffff;
     width: 100%;
-    border:0px solid #CDE19E;
-    background-image: linear-gradient(-163deg, #00A8E1 0%, #CDE19E 100%);
+    border: 0px solid #cde19e;
+    background-image: linear-gradient(-163deg, #00a8e1 0%, #cde19e 100%);
   }
   .login-form {
-    position: fixed;
-    right: 20%;
-    bottom: 25%;
+    position: absolute;
+    bottom: 50%;
+    left: 65%;
+    margin-bottom: -177px;
     width: 400px;
     padding: 35px 35px 15px 35px;
-    background-color: #1F3264;
+    background-color: #1f3264;
     border-radius: 3px;
   }
-  
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     color: #454545;
   }
-
 }
-
 </style>
