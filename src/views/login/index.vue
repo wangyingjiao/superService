@@ -2,9 +2,9 @@
   <div class="login-container">
     <div class="formBox">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
-      class="card-box login-form">
-      <h3 class="title">国安社区自营服务平台</h3>
-      <h3 class="etitle">SERVICE MANAGEMENT SYSTEM</h3>
+      class="login-form">
+      <p class="title">国安社区自营服务平台</p>
+      <p class="etitle">SERVICE MANAGEMENT SYSTEM</p>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
@@ -151,6 +151,7 @@ $light_gray: #eee;
     }
   }
   .title {
+    height: 40px;
     font-weight: normal;
     font-size: 28px;
     line-height: 40px;
@@ -163,9 +164,9 @@ $light_gray: #eee;
     font-size: 17px;
     line-height: 40px;
     color: #ffffff;
-    margin: -30px 0 40px 0;
     text-align: center;
     font-family: PingFangSC-Regular;
+    margin-bottom: 20px;
   }
   .loginitem{
     div{
@@ -181,7 +182,7 @@ $light_gray: #eee;
   .login-form {
     position: fixed;
     right: 20%;
-    bottom: 30%;
+    bottom: 25%;
     width: 400px;
     padding: 35px 35px 15px 35px;
     background-color: #1F3264;
@@ -190,23 +191,10 @@ $light_gray: #eee;
   
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    
     border-radius: 5px;
     color: #454545;
   }
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-  }
-  .thirdparty-button {
-    position: absolute;
-    right: 35px;
-    bottom: 28px;
-  }
+
 }
 
 </style>
