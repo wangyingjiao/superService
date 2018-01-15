@@ -124,6 +124,7 @@ const user = {
           localStorage.removeItem('orgId')
           localStorage.removeItem('userId')
           localStorage.removeItem('menu')
+          localStorage.removeItem('station')
           localStorage.removeItem('btn')
           resolve()
         }).catch(error => {

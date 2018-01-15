@@ -19,10 +19,11 @@
           </el-dropdown>
         </li> -->
         <li class="liBtn liUser">
-          <div><i class="iconfont">&#xe601;</i>&nbsp;&nbsp;{{username}}</div>
+          <img src="../../../static/icon/loginuser.png"><div>  &nbsp;&nbsp;{{username}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
-          <div><i class="iconfont">&#xe60f;</i>&nbsp;&nbsp;退出</div>
+          
+          <div class="logoutbtn"><i class="iconfont">&#xe60f;</i>&nbsp;&nbsp;退出</div>
           
         </li>
         <!-- <li class="liBtn">
@@ -99,7 +100,7 @@ export default {
     line-height: 50px;
     height: 50px;
     float: left;
-    padding: 0 10px;
+    padding: 0 15px;
   }
 }
 
@@ -118,9 +119,24 @@ export default {
 
 .nav-ul li div {
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 5px;
+  border-radius: 3px;
+  float: left;
 }
+.nav-ul li img {
+  margin-top: 7px;
+  display: block;
+  height: 14px;
+  float: left;
+
+}
+.logoutbtn{
+  background-color: #4C70E8;
+  color: #fff;
+}
+
 .nav-ul li .el-dropdown-link {
   display: block;
   height: 50px;
@@ -191,13 +207,13 @@ export default {
   border-left: 1px solid #fff;
   border-right: 1px solid #fff;
 }
-.liBtn:hover {
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(129, 129, 129, 0.12);
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
-  background-color: #eef1f6;
-}
+// .liBtn:hover {
+//   border-radius: 2px;
+//   box-shadow: 0 1px 2px rgba(129, 129, 129, 0.12);
+//   border-left: 1px solid #fff;
+//   border-right: 1px solid #fff;
+//   background-color: #eef1f6;
+// }
 .liUser {
   padding: 0 20px;
 }
