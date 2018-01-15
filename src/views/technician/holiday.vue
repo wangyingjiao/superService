@@ -224,10 +224,12 @@ export default {
 
       console.log(obj, "搜索参数");
       this.listLoading = true;
+      this.listQuery.page = 1;
+      this.pageNumber = 1
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "搜索");
         if (res.data.code == 1) {
-          this.listQuery.page = 1;
+          
           this.list = res.data.data.list;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
