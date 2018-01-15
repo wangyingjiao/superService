@@ -536,8 +536,13 @@ body {
 .searchs{
   padding: 0px 20px 20px 20px;
 }
-//
+//自定义弹窗大小
 .selfDialogWidth .el-dialog {width:600px}
+//解决技能页面的多选框抖动
+.kill .el-select__tags .el-tag{
+  line-height:23px;
+  height:25px;
+}
 .orderTab .el-tabs__item{
   &:nth-child(2){
         &:before {

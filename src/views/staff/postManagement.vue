@@ -14,7 +14,7 @@
     
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad"  @click="handleCreate">新增</button>
+    <button class="button-small btn_pad"  v-if="btnShow.indexOf('role_insert') != -1" @click="handleCreate">新增</button>
     <!-- 列表开始 -->
     <el-table
       :key="tableKey"
@@ -39,8 +39,8 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-edit ceshi3"  @click="handleUpdate(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
+          <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('role_delete') != -1" @click="handleDelete(scope.row)"></el-button>
 
         </template>
       </el-table-column>
@@ -181,7 +181,7 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem('btn')),
       btnState: false,
       changeState: false,
       list: [],
