@@ -900,7 +900,7 @@ export default {
                     setTimeout(() => {
                       this.$store.state.app.visitedViews=[]//清空顶部导航tab对象
                       that.$router.push({ path: "/login" });
-                    }, 3000);
+                    }, 2000);
                   })
                   .catch(() => {
                     this.listLoading = false;
