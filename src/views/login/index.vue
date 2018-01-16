@@ -116,7 +116,7 @@ $light_gray: #eee;
   @include relative;
   height: 100vh;
   background-color: #1f3264;
-  background-image: url("../../../static/icon/bg.png");
+  background: url("../../../static/icon/bg.png") no-repeat;
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #1f3264 inset !important;
     -webkit-text-fill-color: #fff !important;

@@ -1082,12 +1082,12 @@ export default {
 .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
-.el-tree-node:nth-child(1)
+/* .el-tree-node:nth-child(1)
   .el-tree-node__children
   .el-tree-node__children
   .el-tree-node {
   float: none;
-}
+} */
 .btn_addStation {
   float: right;
   height: 36px;
