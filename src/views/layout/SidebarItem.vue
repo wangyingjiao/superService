@@ -1,7 +1,12 @@
 <template>
   <div class="sidebar">
     <div class="slde-bcak-log">
-       <!-- <img src="../../../static/icon/logo.png" alt=""> -->
+      <img class="imgleft" src="../../../static/icon/logo.png" alt="">
+      <div class="imgright">
+          <p class="titc">国安社区自营服务平台</p>
+       <p class="tite">SERVICE MANAGEMENT SYSTEM</p>
+      </div>
+       
     </div>
      <template>
         <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
@@ -29,8 +34,7 @@ export default {
       type: Array
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     show() {
       console.log(this.$store.state.user.menu);
@@ -56,39 +60,64 @@ export default {
   margin-right: 10px;
 }
 .slde-bcak-log {
-  width: 160px;
-  height: 50px;
-  margin-left: 20px;
-  background-image: url(../../../static/icon/logo.png);
-  // background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: left center;
+  width: 100%;
+  height: 40px;
+  padding-top: 10px;
 }
-.sidebar{
+.slde-bcak-log .imgleft {
+  width: 29px;
+  height: 25px;
+  display: block;
+  float: left;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.slde-bcak-log .imgright {
+  width: 145px;
+  float: left;
+  .titc {
+    padding-left: 5px;
+    font-family: PingFangSC-Regular;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #ffffff;
+    letter-spacing: 0;
+  }
+  .tite {
+    font-family: PingFangSC-Regular;
+    line-height: 0px;
+    font-size: 0px;
+    color: #ffffff;
+    letter-spacing: 0;
+  }
+}
+.sidebar {
   width: 190px;
 }
 .sidebar .el-submenu {
-  color: #A5B6C8;
-  background-color:  #2f323e;
-  }
-.sidebar .el-submenu .el-submenu__title{
-  color: #A5B6C8;
+  color: #a5b6c8;
+  background-color: #2f323e;
 }
-.el-menu--dark .el-menu-item, .el-menu--dark .el-submenu__title{
-  color: #A5B6C8;
-  background-color:  #2f323e;
+.sidebar .el-submenu .el-submenu__title {
+  color: #a5b6c8;
 }
-.sidebar-container{
-  background-color:#2f323e !important;
+.el-menu--dark .el-menu-item,
+.el-menu--dark .el-submenu__title {
+  color: #a5b6c8;
+  background-color: #2f323e;
 }
-.el-menu--dark .el-menu-item:hover, .el-menu--dark .el-submenu__title:hover{
+.sidebar-container {
+  background-color: #2f323e !important;
+}
+.el-menu--dark .el-menu-item:hover,
+.el-menu--dark .el-submenu__title:hover {
   background-color: #2f323e;
   color: #ffffff;
 }
-.el-menu--dark .el-submenu .el-menu .el-menu-item:hover{
+.el-menu--dark .el-submenu .el-menu .el-menu-item:hover {
   background-color: #2f323e;
 }
-.is-opened .el-submenu__title{
+.is-opened .el-submenu__title {
   color: #ffffff !important;
 }
 // .sidebar-wrapper .el-menu{
@@ -104,7 +133,7 @@ export default {
 //     overflow: hidden;
 //     overflow-y: scroll;
 // }
-.menu-indent span{
+.menu-indent span {
   padding-left: 32px;
 }
 </style>

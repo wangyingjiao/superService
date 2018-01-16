@@ -45,7 +45,7 @@
 
       <el-table-column align="center" label="图片">
         <template scope="scope" >
-          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]" class="imgList"/></span>
+          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -261,9 +261,9 @@
                       <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cappinPerNum" align="center" label="封顶人数"> 
+                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> 
                     <template scope="scope">
-                      <span>{{scope.row.minPurchase!=0?scope.row.minPurchase:''}}</span>
+                      <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="minPurchase" align="center" label="起购数量"> 
@@ -294,7 +294,7 @@
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入商品名称（2-10位）"
+                    placeholder="请输入商品名称（1-36位）"
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
@@ -302,7 +302,7 @@
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
                     style="width:70%"
-                    placeholder="请输入单位名称（1-5位）"
+                    placeholder="请输入单位名称（1-6位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
@@ -330,11 +330,11 @@
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
-                <el-form-item label="封顶人数:" class="seize" prop="cappinPerNum">
+                <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
                     style="width:70%"
-                    v-model="goods_info.cappinPerNum"></el-input>
+                    v-model="goods_info.cappingPerNum"></el-input>
                 </el-form-item>
 
 
@@ -382,7 +382,7 @@
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="标签名称长度2~10位"></el-input>
+            <el-input v-model="labelObj.labelName" placeholder="中午、英文、数字(2~10位)"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -469,12 +469,13 @@
       <div class="image-text">
           <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
             <div class="image-text-header">
-                <p>添加图文详情</p>
+                <p>添加详情</p>
                 <!-- <span class="el-icon-plus" @click="addImage"> -->
                 <!-- <p></span><span class="el-icon-close" @click="ImageText = false"></span></p> -->
             </div>
             <div class="image-text-body">
-                <div v-if="imgText.length<=0" class="details">点击右上角加号按钮,添加图文详情</div>
+                <p style="color:rgb(179, 179, 179); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
+                <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
                           action="https://openservice.oss-cn-beijing.aliyuncs.com"
@@ -775,7 +776,7 @@ export default {
       console.log(value, "value---------111");
       if (value.length > 0) {
         for (var i = 0; i < value.length; i++) {
-          if (reg.test(value[i].cappinPerNum)) {
+          if (reg.test(value[i].cappingPerNum)) {
             if (reg.test(value[i].startPerNum)) {
               callback();
             } else {
@@ -885,12 +886,35 @@ export default {
     }
     //商品名称
     var NAME = (rule,value,callback) =>{
+      console.log(rule,"rule--------------")
+      console.log(this.editName,"this.editName--------")
+      var arr = this.basicForm.commoditys
       if(value){
         if(value.length>=1 && value.length<=36){
-          if(JSON.stringify(this.basicForm.commoditys).indexOf(JSON.stringify(value))!=-1){
-            callback(new Error('商品名称重复'))
+          if(this.handleEditFlag){
+            if(value == this.editName.name){
+              callback()
+            }else{
+              callback(new Error('商品名称重复'))
+            }
           }else{
-            callback()
+            if(arr!=undefined && arr.length>0){
+              for(var i=0; i<arr.length; i++){
+                if(arr[i].name == value){
+                  callback(new Error('商品名称重复'))
+                  break;
+                }else{
+                  callback()
+                }
+              }
+            }else{
+              callback()
+            }
+            // if(JSON.stringify(this.basicForm.commoditys).indexOf(JSON.stringify(value))!=-1){
+            //   callback(new Error('商品名称重复'))
+            // }else{
+            //   callback()
+            // }
           }
         }else{
           callback(new Error("长度在 1 到 36 个字符"))
@@ -931,6 +955,7 @@ export default {
       tabs: "all",
       editId: "",
       total: null,
+      editName:'',
       houseStr: "",
       whole: {},
       serverCityArr: [],
@@ -964,7 +989,7 @@ export default {
         price:'',
         convertHours:'',
         startPerNum:'',
-        cappinPerNum:'',
+        cappingPerNum:'',
         minPurchase:''
       },
       goods: {
@@ -990,7 +1015,7 @@ export default {
         startPerNum:[
           {validator:STARTPERNUM,trigger:'blur'}
         ],
-        cappinPerNum:[
+        cappingPerNum:[
           {validator:CAPPINPERNUM,trigger:'blur'}
         ],
         minPurchase:[{validator:MINPURCHASE,trigger:'blur'}]
@@ -1383,16 +1408,24 @@ export default {
         pictureDetails: this.imgText
       };
       // console.log(obj,"obj-------")
-      sortList(obj).then(res => {
-        console.log(res);
-        if (res.data.code == 1) {
-          this.ImageText = false;
+      if(this.imgText.length>0){
+        sortList(obj).then(res => {
+          console.log(res);
+          if (res.data.code == 1) {
+            this.ImageText = false;
+            this.$message({
+              type: "success",
+              message: "图片上传成功"
+            });
+          }
+        });
+      }else{
           this.$message({
-            type: "success",
-            message: "图片上传成功"
-          });
-        }
-      });
+            type:'warning',
+            message:'请上传图片'
+          })
+          return false
+      }
       console.log(obj);
     }, // 保存图文
     resImgText(a) {
@@ -1471,7 +1504,7 @@ export default {
           this.$http.get("/apiservice/oss/getSign").then(res => {
             console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
-            rej(res.data);
+            resolve(res.data);
           });
         }
       });
@@ -1512,6 +1545,7 @@ export default {
               console.log(this.picFile, "picfile");
             })
             .catch(error => {
+              console.log('错误-------------上传图片失败--')
               this.picFile.push(ossData.get("key"));
               console.log(error, "错误");
             });
@@ -1550,6 +1584,7 @@ export default {
            var obj = Object.assign({},this.goods_info)
               obj.startPerNum = this.goods_info.startPerNum
               obj.minPurchase = this.goods_info.minPurchase
+              obj.cappingPerNum = this.goods_info.cappingPerNum
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
@@ -1619,9 +1654,10 @@ export default {
       this.handleEditIndex = index
       console.log(index,"index------------")
       console.log(val,"val--------------")
+      this.editName = Object.assign({},val)
       this.goods_info = Object.assign({},val)
       this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
-      this.goods_info.cappinPerNum = this.goods_info.startPerNum?this.goods_info.startPerNum : ''
+      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
       this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
       // this.basicForm.commoditys.splice(index,1)
       // this.tableData[index] = this.goods_info
@@ -1703,6 +1739,8 @@ export default {
       this.personsTime = false;
     },
     getList(page, size,getObj) {
+      var _page = page || this.pageNumber
+      var _size = size || this.pageSize
       this.listLoading = true;
       var obj = {};
       if(getObj){
@@ -1719,7 +1757,8 @@ export default {
             obj.name = this.search.name;
           }
       }
-        getProject(obj, page, size)
+      this.listQuery.page = 1
+        getProject(obj, _page, _size)
           .then(res => {
             console.log(res.data, "res.data-------");
             this.total = res.data.data.count;
@@ -2136,7 +2175,7 @@ export default {
       this.$refs["goods_info"].resetFields()
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
-      this.goods_info.cappinPerNum = ''
+      this.goods_info.cappingPerNum = ''
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2168,7 +2207,7 @@ export default {
         this.$refs["goods_info"].resetFields()
         this.goods_info.minPurchase = "";
         this.goods_info.startPerNum = '';
-        this.goods_info.cappinPerNum = ''
+        this.goods_info.cappingPerNum = ''
       }else{
         this.$refs["goods_info"].resetFields()
         this.$refs["basic"].resetFields()
@@ -2270,7 +2309,7 @@ export default {
 .btn_Span1 {
   width: 30px;
   height: 30px;
-  background-color: #6d8dfc;
+  background-color: #3A5FCD;
   text-align: center;
 }
 .btn_Span2 {
@@ -2287,6 +2326,12 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.branch{
+  border-bottom: 1px solid #dfe6ec
+}
+.el-table__row .cell .branch:last-child{
+  border-bottom: none;
+}
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
@@ -2294,9 +2339,10 @@ export default {
   padding: 0;
 }
 .tabBox {
+  overflow: hidden;
   width: 100%;
   border: 1px #f5f5f5 solid;
-  background-color: #f5f5f5;
+  background-color: #f9f9f9;
 }
 .tabLeft {
   width: 15%;
@@ -2431,7 +2477,7 @@ export default {
 }
 
 hr {
-  border: .5px solid #cccccc
+  border: .5px solid #f1f1f1
 }
 .image-text .el-dialog__body,
 .image-text .el-dialog__header {
@@ -2440,7 +2486,7 @@ hr {
 .image-text .el-dialog__header{
   height: 0;
 }
-.labelName .el-dialog__footer{
+.bgWhite .el-dialog__footer{
   margin-top: 0;
 }
 .image-text-header {
@@ -2524,8 +2570,8 @@ hr {
   width: 100%;
 }
 .imgList{
-  width: 60px;
-  height: 60px;
+  /* width: 60px;
+  height: 60px; */
   margin-top: 5px;
 }
 .upload-demo .el-upload-list__item-preview{
@@ -2557,7 +2603,11 @@ hr {
   color: red
 }
 .details{
+  font-size: 25px;
+  font-weight: 900;
   text-align: center;
+  line-height: 80px;
+  padding-top: 30px;
 }
 .tabRight .bottimPro .el-form-item__content{
   /* margin-left: 0; */

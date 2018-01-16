@@ -19,11 +19,11 @@
           </el-dropdown>
         </li> -->
         <li class="liBtn liUser">
-          <img src="../../../static/icon/loginuser.png"><div>  &nbsp;&nbsp;{{username}}</div>
+          <div><i class="iconfont color" >&#xe669;</i>  &nbsp;&nbsp;{{username}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
           
-          <div class="logoutbtn"><i class="iconfont">&#xe60f;</i>&nbsp;&nbsp;退出</div>
+          <div><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
         </li>
         <!-- <li class="liBtn">
@@ -124,6 +124,16 @@ export default {
   padding: 0 5px;
   border-radius: 3px;
   float: left;
+  .color{
+    color: #4C70E8
+  }
+  &:hover{
+    color: #fff;
+    background-color: #4C70E8;
+    .color{
+    color: #ffffff;
+  }
+  }
 }
 .nav-ul li img {
   margin-top: 7px;
@@ -131,10 +141,6 @@ export default {
   height: 14px;
   float: left;
 
-}
-.logoutbtn{
-  background-color: #4C70E8;
-  color: #fff;
 }
 
 .nav-ul li .el-dropdown-link {
@@ -185,14 +191,12 @@ export default {
   color: red;
 }
 @font-face {
-  font-family: "iconfont"; /* project id 531557 */
-  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot");
-  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot?#iefix")
-      format("embedded-opentype"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.woff") format("woff"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.ttf") format("truetype"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.svg#iconfont")
-      format("svg");
+  font-family: 'iconfont';  /* project id 531557 */
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot');
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.svg#iconfont') format('svg');
 }
 .iconfont {
   font-family: "iconfont" !important;
