@@ -72,7 +72,7 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover" v-on:mouseenter="dataDetails1" v-on:mouseleave="hiddenDetail1"  @click="appPasswordl1(item)" v-if="btnShow.indexOf('techni_app') > -1">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPasswordl1(item)" v-if="btnShow.indexOf('techni_app') > -1">
             <transition  leave-active-class="animated  fadeOutLeft">
              <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
              </transition>
@@ -82,7 +82,7 @@
               
              
             </div>
-            <div v-on:mouseenter="dataDetails2($parent.$index)" v-on:mouseleave="hiddenDetail2($index)" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
+            <div v-on:mouseenter.prevent="dataDetails2" v-on:mouseleave.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
               <transition leave-active-class="animated  fadeOutLeft">
                 <img v-if="hoverState2" src="../../../static/icon/休假.png" alt="" >
               </transition>
@@ -91,7 +91,7 @@
               </transition>
              
             </div>
-            <div class="mousehover" v-on:mouseenter="dataDetails3($index)" v-on:mouseleave="hiddenDetail3($index)"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails3" v-on:mouseleave.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
               <transition leave-active-class="animated  fadeOutLeft">
               <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" >
               </transition>
@@ -100,7 +100,7 @@
               </transition>
 
             </div>
-            <div class="mousehover" v-on:mouseenter="dataDetails4($index)" v-on:mouseleave="hiddenDetail4($index)"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails4" v-on:mouseleave.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
               <transition leave-active-class="animated  fadeOutLeft">
               <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="">
               </transition>
@@ -2256,7 +2256,7 @@ export default {
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   /* justify-content: space-around; */
-  
+
   align-items: center;
 }
 .tech-section-ul-posi {
@@ -2842,17 +2842,16 @@ export default {
   line-height: 25px;
   margin: 0 0 0 35px;
 }
-.mousehover{
+.mousehover {
   width: 24%;
   height: 50px;
   overflow: hidden;
 }
-.mousehover img{
+.mousehover img {
   display: block;
   width: 100%;
   max-width: 50px;
-  margin:0 auto;
-
+  margin: 0 auto;
 }
 .upload-head,
 .upload-id {
