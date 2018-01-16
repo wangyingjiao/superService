@@ -11,7 +11,6 @@
      <template>
         <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
               <template slot="title">
-                
                 <img v-if="item.icon != ''" :src="'../../../static/icon/'+item.icon+'.png'" alt="" class="side-img">
               
                 {{item.name}}          
