@@ -566,3 +566,14 @@ body {
         }
   }
 }
+//高亮当前打开的菜单
+// .menulight .router-link-exact-active{
+//   span{
+//     color: red;
+//   }
+// }
+.sidebar .router-link-active{
+  span{
+    color: #fff;
+  }
+}
