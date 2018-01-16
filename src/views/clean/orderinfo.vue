@@ -938,7 +938,7 @@ export default {
   font-size:12px;
 	float:left;
 	background:#eef1f6;
-  padding: 20px 5px;
+  /* padding: 20px 5px; */
 }
 .order-selfTd{
 text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
