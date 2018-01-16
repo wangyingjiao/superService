@@ -636,6 +636,7 @@ export default {
                 
                 this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
               }, 30);
+              
              setTimeout(() => {
                var time = res.data.data.workEndTime.substring(0,5)
                if(time == '23:59'){
