@@ -506,7 +506,7 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-      console.log(a, "yyyyyyyyyyyy");
+      console.log(a, b,c,'yyyyyyyy');
 
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
@@ -556,7 +556,7 @@ export default {
             }
           }
         } else {
-          console.log(a.permission, "父级被勾选的权限");
+         
           //console.log(a.id, "父级被勾选的id");
           //console.log(a.subMenus[0], "父级的第一个元素");
         }
@@ -586,13 +586,13 @@ export default {
             a.permission.length
           ) == "view"
         ) {
-          console.log("点击正确");
+         
           var arr1 = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr1[3]) {
-                  console.log(this.data2[i].subMenus[j], "1111111111");
+                  
                   for (
                     var k = 1;
                     k < this.data2[i].subMenus[j].subMenus.length;

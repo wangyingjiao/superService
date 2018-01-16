@@ -39,16 +39,16 @@
       <el-table-column align="center" label="姓名" prop="name" >
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="登录账号" prop="mobile">
+      <el-table-column align="center" label="登录账号" prop="mobile">
       </el-table-column>
 
-      <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
+      <el-table-column  label="岗位名称" align="center" prop="role.name">
       </el-table-column>
 
-      <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
+      <el-table-column  align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" >
+      <el-table-column   align="center" label="服务站" >
         <template scope="scope">
               <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
               <span v-else>{{scope.row.station.name}}</span>

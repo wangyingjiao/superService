@@ -632,7 +632,10 @@ export default {
               res.data.data.areaCode
             ];
             if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
-             this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+              setTimeout(() => {
+                
+                this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+              }, 30);
              setTimeout(() => {
                var time = res.data.data.workEndTime.substring(0,5)
                if(time == '23:59'){
@@ -640,7 +643,7 @@ export default {
                }else{
                  this.temp.workEndTime = time
                }
-             }, 50);
+             }, 30);
              
             }
             console.log(this.temp)
@@ -664,7 +667,7 @@ export default {
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
-      this.resetTemp();
+      //this.resetTemp();
       this.$refs[formName].resetFields();
     },
     itemActive(arr){
