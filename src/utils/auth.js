@@ -10,7 +10,7 @@ export function setToken(token) {
   return Cookies.set(TokenKey, token)
 }
 export function getSession() {
-  return Cookies.get('JSESSIONID')
+  return Cookies.get('jeesite.session.id')
 }
 export function setSession(id) {
   return Cookies.set('JSESSIONID', id)
