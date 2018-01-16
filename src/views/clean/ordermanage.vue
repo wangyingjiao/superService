@@ -119,7 +119,7 @@
 							</template>
 							</el-table-column>
 				</el-table>
-				<div v-show="!listLoading" class="ordermanagePagination">
+				<div v-if="!listLoading" class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
 					:page-sizes="[5,10,15,20]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
 					</el-pagination>

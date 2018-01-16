@@ -1,13 +1,9 @@
 <template>
   <div class="sidebar">
     <div class="slde-bcak-log">
-      <img class="imgleft" src="../../../static/icon/logo.png" alt="">
-      <div class="imgright">
-          <p class="titc">国安社区自营服务平台</p>
-       <p class="tite">SERVICE MANAGEMENT SYSTEM</p>
-      </div>
-       
-       
+      <router-link to='/dashboard'>
+       <img class="imgleft" src="../../../static/icon/logo@3x.png" alt="">
+      </router-link>
     </div>
      <template>
         <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
@@ -61,16 +57,12 @@ export default {
 }
 .slde-bcak-log {
   width: 100%;
-  height: 40px;
-  padding-top: 10px;
+  height: 50px;
+
 }
 .slde-bcak-log .imgleft {
-  width: 29px;
-  height: 25px;
-  display: block;
-  float: left;
-  margin-left: 5px;
-  margin-top: 5px;
+  width: 190px;
+  height: 50px;
 }
 .slde-bcak-log .imgright {
   width: 145px;

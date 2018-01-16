@@ -48,7 +48,7 @@
     </el-table>
     <!-- 列表结束 -->
     <!-- 分页器 -->
-    <div v-show="!listLoading" class="pagination-container">
+    <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -507,6 +507,14 @@ export default {
     },
     handTreechange(a, b, c) {
       console.log(a, b,c,'yyyyyyyy');
+      //父级点击时取消勾选
+      // if(a.permission = 'order'){
+      //   if(b){
+      //     console.log('选中时')
+      //   }else{
+      //     console.log('mei选中时')
+      //   }
+      // }
 
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
@@ -561,6 +569,7 @@ export default {
           //console.log(a.subMenus[0], "父级的第一个元素");
         }
       } else {
+        console.log('false')
         //订单的查看详情不可取消
         if(a.permission == 'order_info'){
            for (var i = 0; i < this.data2.length; i++) {
@@ -599,6 +608,9 @@ export default {
                     k++
                   ) {
                     console.log(this.data2[i].subMenus[j].subMenus[k].name);
+                    setTimeout(() => {
+                      
+                    }, 50);
                     if (
                       this.temp.check.indexOf(
                         this.data2[i].subMenus[j].subMenus[k].id
