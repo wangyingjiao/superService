@@ -4,36 +4,155 @@
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personalEDit"  ref="personalEDit"  label-width="100px" :rules="rulesPerEdit">
               <ul class="tech-ul">
+                <!-- 新的  -->
                 <el-row :gutter="60">
-            <el-col :span="12">
-              <el-form-item label="姓名:" prop="name">
-                <el-input placeholder="请输入2~15位姓名" v-model="personalEDit.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="身份证号:" prop="idCard">
-                <el-input placeholder="请输入正确的身份证号" v-model="personalEDit.idCard"></el-input>
-              </el-form-item>
-            </el-col>
-              </el-row>
-              <el-row :gutter="60">
-                <el-col :span="12">
-                  <el-form-item label="手机号:" prop="phone">
-                    <el-input placeholder="请输入11位手机号" v-model="personalEDit.phone"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="现住地址:" prop="area">
+                    <el-col :span="12">
+                        <el-form-item label="姓名:" prop="name">
+                            <el-input placeholder="请输入2~15位姓名" v-model="personalEDit.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="手机号:" prop="phone">
+                            <el-input placeholder="请输入11位手机号" v-model="personalEDit.phone"></el-input>
+                        </el-form-item>
+                        <el-form-item label="性别:" prop="sex">
+                          <el-select v-model="personalEDit.sex" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in sex" :key="key" :label="item" :value="key">
+                              </el-option>
+                          </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-form-item label="头像：" prop="headPic">
+                        <el-upload
+                            class="avatar-header"
+                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            :show-file-list="false"
+                            :http-request="(val)=>picUpload(val,'head')"
+                            :before-upload="beforeAvatarUpload"
+                            >
+                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="header-img">
+                          </el-upload>
+                          <p style="width:100%; color:#ccc; font-size:12px;">*为了浏览效果,建议上传大于240*240的正方形图片</p>
+                      </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="60">
+                  <el-col :span="12">
+                      <el-form-item label="现住地址:" prop="area">
                                     <el-cascader
                                         :options="areaOptions"
                                         :show-all-levels="true"
                                         v-model="personalEDit.area"
                                         style="width:100%"
                                     ></el-cascader>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-form-item label="出生日期:" prop="birthDate">
+                          <el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
+                          format="yyyy-MM-dd" :picker-options="pickerOptions0">
+                          </el-date-picker>
+                      </el-form-item>
+                  </el-col>
+                </el-row>
                 <el-row :gutter="60">
+                    <el-col :span="12">
+                        <el-form-item prop="address">
+                          <el-input placeholder="请输入6-20位详细地址"  v-model="personalEDit.address"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                         <el-form-item label="民族:">
+                            <el-select v-model="personalEDit.nation" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+                              </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="60">
+                  <el-col :span="12">
+                     <el-form-item label="身份证号:" prop="idCard">
+                        <el-input placeholder="请输入正确的身份证号" v-model="personalEDit.idCard"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-form-item label="状态：" class="seize">
+                            <el-switch
+                              v-model="personalEDit.status"
+                              on-text="上线"
+                              off-text="暂停"
+                              on-value="yes"
+                              off-value="no">
+                            </el-switch>
+                        </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="60">
+                  <el-col :span="12">
+                    <el-form-item label="身份证正面：">
+                        <el-upload
+                                class="avatar-uploader"
+                                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                                :show-file-list="false"
+                                :http-request="(val)=>picUpload(val,'id')"
+                                :before-upload="beforeAvatarUpload"
+                                >
+                                <div class="upload-head"><span>点击上传</span></div>
+                                <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor" class="avatar">
+                          </el-upload>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="身份证反面：">
+                        <el-upload
+                                class="avatar-uploader"
+                                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                                :show-file-list="false"
+                                :http-request="(val)=>picUpload(val,'after')"
+                                :before-upload="beforeAvatarUpload"
+                                >
+                                <div class="upload-head"><span>点击上传</span></div>
+                                <img v-if="personalEDit.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicAfter" class="avatar">
+                          </el-upload>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                      <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span>
+                  </el-col>
+                </el-row>
+                <!-- 新的完成 -->
+                <!-- <el-row :gutter="60">
+                    <el-col :span="12">
+                      <el-form-item label="姓名:" prop="name">
+                        <el-input placeholder="请输入2~15位姓名" v-model="personalEDit.name"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-form-item label="身份证号:" prop="idCard">
+                        <el-input placeholder="请输入正确的身份证号" v-model="personalEDit.idCard"></el-input>
+                      </el-form-item>
+                    </el-col>
+                </el-row> -->
+                <!-- <el-row :gutter="60">
+                  <el-col :span="12">
+                    <el-form-item label="手机号:" prop="phone">
+                      <el-input placeholder="请输入11位手机号" v-model="personalEDit.phone"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="现住地址:" prop="area">
+                                      <el-cascader
+                                          :options="areaOptions"
+                                          :show-all-levels="true"
+                                          v-model="personalEDit.area"
+                                          style="width:100%"
+                                      ></el-cascader>
+                    </el-form-item>
+                  </el-col>
+                </el-row> -->
+                <!-- <el-row :gutter="60">
                     <el-col :span="12">
                       <el-form-item label="性别:" prop="sex">
                         <el-select v-model="personalEDit.sex" clearable placeholder="请选择" style="width:100%">
@@ -89,7 +208,6 @@
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-                            <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
                               <div class="upload-head"><span>*上传头像</span></div>
                             <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="avatar">
                           </el-upload>
@@ -101,9 +219,8 @@
                             :before-upload="beforeAvatarUpload"
                             style="margin-left:20px;" 
                             >
-                            <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
                             <div class="upload-id"><span>上传身份证</span></div>
-                            <img v-if="personalEDit.idCardPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPic" class="avatar">
+                            <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor" class="avatar">
                           </el-upload>
                       </p>
                       </div>
@@ -115,7 +232,7 @@
                           <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
                       </p>
                     </div>
-                  </li>
+                  </li> -->
               </ul>
             </el-form>
         <!--个人信息 完成-->
@@ -500,6 +617,18 @@
         <!--其他信息 -->
           <h3 class="tech-tc-prson">其他信息</h3>
           <ul class="tech-ul ofterinfo">
+             <li style=" padding-bottom:0">
+                  <div style="width:100%;">
+                    <p>备注:</p>
+                    <p style="width:100%;margin-left:10px">
+                      <el-form :model="otherInfo" style="width:60%"  ref="otherInfo" :rules="otherInfoRuls">
+                        <el-form-item prop="remark"> 
+                          <el-input type="textarea" v-model="otherInfo.remark" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下"></el-input>
+                        </el-form-item>
+                      </el-form>
+                    </p>
+                  </div> 
+              </li>
               <li>
                   <div>
                       <p></p>
@@ -512,8 +641,8 @@
                             :http-request="(val)=>picUpload(val,'cert')"
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
-                <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic" class="avatar">
+                            <div class="upload-head"><span>上传证件照</span></div>
+                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
@@ -524,23 +653,11 @@
                             style="margin-left:20px;" 
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
-                <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic" class="avatar">
+                            <div class="upload-id"><span>上传生活照</span></div>
+                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic" class="remarkImg">
                           </el-upload>
                       </p>
                   </div>
-              </li>
-              <li style=" padding-bottom:0">
-          <div style="width:100%;">
-            <p>备注:</p>
-            <p style="width:100%;margin-left:10px">
-              <el-form :model="otherInfo" style="width:60%"  ref="otherInfo" :rules="otherInfoRuls">
-                <el-form-item prop="remark"> 
-                  <el-input type="textarea" v-model="otherInfo.remark" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请简单描述一下"></el-input>
-                </el-form-item>
-              </el-form>
-            </p>
-                  </div> 
               </li>
               <li>
                   <div>
@@ -790,7 +907,7 @@ export default {
         memberJob: ""
       },
       rulesFamily: {
-        relation: [{ required: true, message: "请输入关系", trigger: "change" }],
+        relation: [{ required: true, message: "请选择关系", trigger: "change" }],
         memberName: [
           { required: true, message: "请输入名字", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
@@ -839,7 +956,8 @@ export default {
         birthDate: "",
         area: [],
         address: "",
-        idCardPic: "",
+        idCardPicBefor: "",
+        idCardPicAfter:'',
         headPic: "",
         status:'',
         nation:''
@@ -861,6 +979,9 @@ export default {
           // {required:true,message:"请输入详细地址",trigger:'blur'},
           // { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
           {required:true,validator:ADDRESS,trigger:'blur'}
+        ],
+        headPic:[
+          {required:true,message:'请选择头像',trigger:'blur'}
         ]
       },
       //服务信息
@@ -1228,7 +1349,8 @@ export default {
         this.personalEDit.techBirthDate = val.birthDate;
         this.personalEDit.status = val.status
         this.personalEDit.headPic = val.headPic
-        this.personalEDit.idCardPic = val.idCardPic || ''
+        this.personalEDit.idCardPicBefor = val.idCardPicBefor || ''
+        this.personalEDit.idCardPicAfter = val.idCardPicAfter || ''
         this.personalEDit.birthDate = val.birthDate
 
         /*
@@ -1263,7 +1385,7 @@ export default {
         console.log(this.perServer,"this.perServer----------------------____________++++++++++++===")
         // this.perServer.stationId = val.stationId
         // //工作时间默认选中
-        var work = this.perServer.workTimes || [],
+        var work = val.workTimes || [],
             i,j,weeks_i,num;
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
@@ -1289,6 +1411,7 @@ export default {
             } 
           }
         }
+        // this.perServer.workTimes = work
         console.log(this.perServer.workTimes,"this.perServer.workTimes-------")
 
 
@@ -1296,10 +1419,10 @@ export default {
         ** 补充个人信息
         ** 无法直接给supplement复制val,会无法重新复制
         **/
-        this.supplement.weight = val.weight+'' || "";
+        this.supplement.weight = val.weight? val.weight+'' : "";
         this.supplement.email = val.email || "";
         this.supplement.education = val.education || "";
-        this.supplement.height = val.height+'' || "";
+        this.supplement.height = val.height? val.height+'' : "";
         this.supplement.marryStatus = val.marryStatus || "";
         this.supplement.nativeProvinceCode = val.nativeProvinceCode || "";
         this.value1 = val.inJobTime || "";
@@ -1438,8 +1561,10 @@ export default {
 					this.otherInfo.lifePic = ossData.get("key")
 				}else if(flag == 'cert'){
 					this.otherInfo.jobPic = ossData.get("key")
-				}else{
-					this.personalEDit.idCardPic = ossData.get("key")
+				}else if(flag == 'after'){
+          this.personalEDit.idCardPicAfter = ossData.get("key")
+        }else{
+					this.personalEDit.idCardPicBefor = ossData.get("key")
 				}
 			})
         
@@ -1576,7 +1701,8 @@ export default {
           obj.sex = _personalEDit.sex;
           obj.nation = _personalEDit.nation;
           obj.birthDate = _personalEDit.birthDate;
-          obj.idCardPic = _personalEDit.idCardPic;
+          obj.idCardPicBefor = _personalEDit.idCardPicBefor;
+          obj.idCardPicAfter = _personalEDit.idCardPicAfter;
           obj.headPic = _personalEDit.headPic;
           obj.status = _personalEDit.status;
           console.log(obj, "obj-----");
@@ -1716,25 +1842,35 @@ export default {
       }
     },
     techClick() {
+      var c1 = Date.parse('2008-08-08 '+this.startTime);
+      var c2 = Date.parse('2008-08-08 '+this.endTime);
       if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
-          var obj = {};
-          var arr = []
-          obj.startTime = this.startTime
-          obj.endTime = this.endTime
-          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
-          obj.weeks = [].concat(this.roomSel1Arr);
-          for(var i = 0; i<obj.weeks.length; i++){
-            this.disbArr.push(obj.weeks[i].id)
-          }
-          arr.push(obj)
-          if(this.perServer.workTimes!=undefined&&this.perServer.workTimes.length>0){
-            this.perServer.workTimes = this.perServer.workTimes.concat(arr)
-          }else{
-            this.perServer.workTimes = [].concat(arr)
-          }
-          this.isB = false;
-          this.startTime = ''
-          this.endTime = ''
+        if(c2>c1){
+            var obj = {};
+            var arr = []
+            obj.startTime = this.startTime
+            obj.endTime = this.endTime
+            this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
+            obj.weeks = [].concat(this.roomSel1Arr);
+            for(var i = 0; i<obj.weeks.length; i++){
+              this.disbArr.push(obj.weeks[i].id)
+            }
+            arr.push(obj)
+            if(this.perServer.workTimes!=undefined&&this.perServer.workTimes.length>0){
+              this.perServer.workTimes = this.perServer.workTimes.concat(arr)
+            }else{
+              this.perServer.workTimes = [].concat(arr)
+            }
+            this.isB = false;
+            this.startTime = ''
+            this.endTime = ''
+        }else{
+           this.$message({
+              type: "warning",
+              message: "结束时间不能小于开始时间"
+            });
+            return false
+        }
       }else{
           this.$message.error("请选择日期、时段")
           return false
@@ -1775,6 +1911,8 @@ export default {
       this.isB = false;
     },
     addtimeno() {
+      this.roomSel1Arr = []
+      this.roomSelNum = []
       this.isB = false;
     },
     mouser(item) {
@@ -1953,7 +2091,7 @@ export default {
 }
 
 .tech-section {
-  margin: 20px;
+  /* margin: 20px; */
 }
 .perServer{
   margin-top: 10px;
@@ -1962,7 +2100,7 @@ export default {
 .tech-section-right {
   display: flex;
   justify-content: flex-end;
-  margin-top: 45px;
+  /* margin-top: 45px; */
 }
 
 /* .tech-section-ul {
@@ -1996,7 +2134,7 @@ export default {
 } */
 
 .fy {
-  margin: 0 20px;
+  /* margin: 0 20px; */
 }
 
 .tech-section-lage {
@@ -2061,6 +2199,11 @@ export default {
   width: 100px;
 }
 
+.remarkImg{
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+}
 /* .el-button{
     border-radius:0px;
   } */
@@ -2137,6 +2280,13 @@ export default {
   -webkit-animation: show 1s;
   /* Safari 和 Chrome */
   -o-animation: show 1s;
+}
+.avatar-header .el-upload--text{
+  width: 100px;
+}
+.avatar-header .header-img{
+  width: 100px;
+  height: 100px;
 }
 
 @keyframes show {
@@ -2491,8 +2641,8 @@ export default {
   color: #4c70e8;
 }
 .tech-edit .avatar{
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   margin-top: 10px;
 }
 .el-form-item{
