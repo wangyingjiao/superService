@@ -7,6 +7,7 @@
        <p class="tite">SERVICE MANAGEMENT SYSTEM</p>
       </div>
        
+       
     </div>
      <template>
         <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
