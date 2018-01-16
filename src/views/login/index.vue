@@ -115,7 +115,7 @@ $light_gray: #eee;
 .login-container {
   @include relative;
   height: 100vh;
-
+  background-color: #1f3264;
   background-image: url("../../../static/icon/bg.png");
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #1f3264 inset !important;
