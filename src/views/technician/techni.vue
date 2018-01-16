@@ -7,16 +7,16 @@
           </el-option>
         </el-select>
         <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
-          <!-- <el-option v-for="item in station" :key="item.value" :label="item.label" :value="item.value">
-          </el-option> -->
 						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
 						</el-option>
         </el-select>
-        <el-select v-model="techniSearch.chooses" clearable placeholder="请选择" class="search">
-          <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
-          </el-option>
-        </el-select>
-        <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search"></el-input>
+
+         <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search searchHeader">
+            <el-select v-model="techniSearch.chooses" clearable placeholder="请选择"  slot="prepend">
+              <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+        </el-input>
         <button class="tech-btn" @click="order">选择技能</button>
       </div>
 
@@ -48,7 +48,10 @@
               </div>
             </div>
             <div class="tech-xiu-div-two">
-              <h4>{{item.name}}</h4>
+              <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top-start">
+                  <h4 class="header-h4">{{item.name}}</h4>
+              </el-tooltip> -->
+              <h4 class="header-h4">{{item.name}}</h4>
               <div>
                   <img src="../../../static/icon/服务机构@3x.png" alt="" style="width:15px;height:15px;">              
                   <div style="margin-left:5px;">{{item.orgName}}</div>
@@ -75,7 +78,6 @@
             <div v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
               <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
             </div>
-             <!-- dialogVisibleEdit = true -->
             <div class="mousehover"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
               <img src="../../../static/icon/修改.png" alt="" style="width:30px">
             </div>
@@ -181,20 +183,19 @@
         <!-- </el-form> -->
       </el-dialog>
       <!-- 选择技能 -->
-      <div class="tech-psoition" v-if="position">
-
-        <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
-          <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
-            {{item.name}}
-            <div :class="{'triangle-bottomright':item.show===true}"></div>
-            <div class="tally">&#10004;</div>
+        <div class="tech-psoition" v-if="position">
+          <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
+            <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
+              {{item.name}}
+              <div :class="{'triangle-bottomright':item.show===true}"></div>
+              <div class="tally">&#10004;</div>
+            </div>
+          </div>
+          <div class="tech-pos-btn">
+            <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
+            <button @click="hiddenDiv" class="button-cancel">关闭</button>
           </div>
         </div>
-        <div class="tech-pos-btn">
-          <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
-          <button @click="hiddenDiv" class="button-cancel">取消</button>
-        </div>
-      </div>
 
     </div>
     <!-- 分页 -->
@@ -219,7 +220,131 @@
         <h3 class="tech-tc-prson">个人资料</h3>
 		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
 			<ul class="tech-ul">
-        <el-row :gutter="60">
+        <!-- 新的 -->
+            <el-row :gutter="60">
+              <el-col :span="12">
+                  <el-form-item label="姓名：" prop="name">
+                      <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
+                  </el-form-item>
+                  <el-form-item label="手机号：" prop="phone">
+                      <el-input placeholder="请输入11位手机号" v-model="personal.phone"></el-input>
+                  </el-form-item>
+                  <el-form-item label="性别：" prop="sex">
+                      <el-select v-model="personal.sex" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
+                          </el-option>
+                      </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                  <el-form-item label="头像：" prop="headPic">
+                      <el-upload
+                          class="avatar-headPic"
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          :show-file-list="false"
+                          :before-upload="beforeAvatarUpload"
+                          :http-request="(val)=>picUpload(val,'head')"
+                          >
+                          <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'">
+                          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                      </el-upload>
+                      <p style="width:100%; color:#ccc; font-size:12px;">*为了浏览效果,建议上传大于240*240的正方形图片</p>
+                  </el-form-item>
+              </el-col>  
+            </el-row>
+            <el-row :gutter="60">
+                <el-col :span="12">
+                    <el-form-item label="现住地址：" prop="area">
+                        <el-cascader
+                        style="width:100%"
+                            @change="nowAdd"
+                            :options="areaOptions"
+                            :show-all-levels="true"
+                            v-model="personal.area"
+                        ></el-cascader>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="出生日期：" required>
+                        <el-form-item prop="birtStr">
+                            <el-date-picker 
+                                type="date" placeholder="选择日期" 
+                                v-model="personal.birtStr" 
+                                style="width:100%"
+                                format="yyyy-MM-dd"
+                                @change="dateChange"
+                                :picker-options="pickerOptions0"
+                                >
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="60">
+                <el-col :span="12">
+                    <el-form-item prop="address">
+                      <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="民族：" class="seize">
+                      <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+                          </el-option>
+                      </el-select>
+                  </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="60">
+                <el-col :span="12">
+                    <el-form-item label="身份证号：" prop="idCard">
+                        <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="服务状态：" class="seize">
+                        <el-switch
+                          v-model="personal.status"
+                          on-text="上线"
+                          off-text="暂停"
+                          on-value="yes"
+                          off-value="no">
+                        </el-switch>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="60">
+                <el-col :span="12">
+                    <el-form-item label="身份证正面：">
+                        <el-upload
+                            class="avatar-uploader"
+                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            :show-file-list="false"
+                            :http-request="(val)=>picUpload(val,'id')"
+                            :before-upload="beforeAvatarUpload"
+                            >
+                            <div class="upload-head"><span>点击上传</span></div>
+                            <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor" class="avatar">
+                        </el-upload>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item  label="身份证反面：">
+                        <el-upload
+                            class="avatar-uploader"
+                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            :show-file-list="false"
+                            :http-request="(val)=>picUpload(val,'at')"
+                            :before-upload="beforeAvatarUpload"
+                            >
+                            <div class="upload-head"><span>点击上传</span></div>
+                            <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter" class="avatar">
+                        </el-upload>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        <!-- 新的结束  -->
+        <!-- <el-row :gutter="60">
           <el-col :span="12">
               <el-form-item label="姓名：" prop="name">
                 <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
@@ -249,44 +374,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-				<!-- <li>
-					<div>
-					<p>
-						<el-form-item label="姓名:" prop="name">
-							<el-input placeholder="请输入2~15位姓名" style="width:300px" v-model="personal.name"></el-input>
-						</el-form-item>
-					</p>
-					</div>
-					<div>
-					<p>
-						<el-form-item label="身份证号:" prop="idCard">
-							<el-input placeholder="请输入正确的身份证号" style="width:300px" v-model="personal.idCard"></el-input>
-						</el-form-item>
-					</p>
-					</div>
-				</li> -->
-				<!-- <li>
-					<div>
-					<p>
-						<el-form-item label="手机号:" prop="phone">
-							<el-input placeholder="请输入11为手机号" style="width:300px" v-model="personal.phone"></el-input>
-						</el-form-item>
-					</p>
-					</div>
-					<div>
-					<p>
-            <el-form-item label="现住地址:" prop="area">
-              <el-cascader
-                  @change="nowAdd"
-                  :options="areaOptions"
-                  :show-all-levels="true"
-                  v-model="personal.area"
-                  style='width: 300px;' 
-              ></el-cascader>
-            </el-form-item>
-					</p>
-					</div>
-				</li> -->
         <el-row :gutter="60">
           <el-col :span="12">
               <el-form-item label="性别：" prop="sex">
@@ -302,25 +389,6 @@
               </el-form-item>
           </el-col>
         </el-row>
-				<!-- <li>
-					<div>
-					<p>
-						<el-form-item label="性别:" prop="sex">
-							<el-select v-model="personal.sex" clearable placeholder="请选择" style="width:300px">
-								<el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
-								</el-option>
-							</el-select>
-						</el-form-item>
-					</p>
-					</div>
-					<div>
-					<p>
-              <el-form-item label="">
-                <el-input placeholder="请输入6-20位详细地址" style="width:300px" v-model="personal.address"></el-input>
-              </el-form-item>
-					</p>
-					</div>
-				</li> -->
          <el-row :gutter="60">
           <el-col :span="12">
               <el-form-item label="民族：" class="seize">
@@ -342,42 +410,10 @@
                       :picker-options="pickerOptions0"
                       >
                   </el-date-picker>
-                  <!-- <el-date-picker
-                  :picker-options="pickerOptions0"
-                    v-model="value1"
-                    type="date"
-                    placeholder="选择日期"
-                  >
-                  </el-date-picker> -->
                  </el-form-item>
 						</el-form-item>
           </el-col>
         </el-row>
-				<!-- <li>
-					<div>
-					<p>
-             <el-form-item label="民族:">
-              <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:300px">
-                <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-             </el-form-item>
-					</p>
-					</div>
-					<div>
-					<p>
-						<el-form-item label="出生日期:" prop="birtStr">
-              <el-date-picker 
-                  type="date" placeholder="选择日期" 
-                  v-model="personal.birtStr" 
-                  style="width: 300px;" format="yyyy-MM-dd"
-                  @change="dateChange"
-                  :picker-options="pickerOptions0">
-               </el-date-picker>
-						</el-form-item>
-					</p>
-					</div>
-				</li> -->
         <li>
           <div>
             <p>
@@ -405,11 +441,8 @@
                 :before-upload="beforeAvatarUpload"
                 :http-request="(val)=>picUpload(val,'head')"
                 >
-                <!-- <el-button class="tech-fourth"><span></span>*上传头像</el-button> -->
-                <!-- <input type="button" class="tech-fourth" value="*上传头像"> -->
                 <div class="upload-head"><span>*上传头像</span></div>
                 <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
-                <!-- <div v-show="!personal.headPic" style="color:#ff4949;margin-top:10px;">请上传头像</div> -->
               </el-upload>
             </el-form-item>
 
@@ -421,14 +454,12 @@
               :before-upload="beforeAvatarUpload"
               style="margin-left:20px;" 
               >
-              <!-- <el-button class="tech-fourth-rigth"><span></span>上传身份证</el-button> -->
-              <!-- <input type="button" class="tech-fourth-rigth" value="*上传身份证"> -->
               <div class="upload-id"><span>上传身份证</span></div>
               <img v-if="personal.idCardPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
             </el-upload>
 					</p>
 					</div>
-				</li>
+				</li> -->
 
         <!-- 服务信息 -->
         <h3 class="tech-tc-prson">服务信息</h3>
@@ -441,12 +472,6 @@
                           </el-option>
                       </el-select>
                   </el-form-item>
-                  <!-- <el-form-item label="选择城市：" prop="serviceCityName">
-                      <el-select v-model="personal.serviceCityName" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
-                        <el-option v-for="item in Choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
-                        </el-option>
-                      </el-select>
-                  </el-form-item>-->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位性质：" prop="jobNature">
@@ -465,12 +490,6 @@
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <!-- <el-form-item label="所属服务站：" prop="stationId">
-                      <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                          </el-option>
-                      </el-select>
-                  </el-form-item> -->
               </el-col>
               <el-col :span="12">
                   <el-form-item label="岗位状态：" prop="jobStatus">
@@ -483,12 +502,6 @@
           </el-row>
           <el-row :gutter="60">
               <el-col :span="12">
-                  <!-- <el-form-item label="工作年限：" prop="workTime">
-                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
-                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                      </el-option>
-                    </el-select>
-                  </el-form-item> -->
               </el-col>
           </el-row>
           <el-row :gutter="60">
@@ -551,7 +564,6 @@
                       <div style="margin:0px 10px 10px;">
                         <span class="button-large btn-styl" @click="techClick">确认</span>
                         <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
-                        <!-- <button class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</button> -->
                       </div>
                     </div>
                   </div>
@@ -826,6 +838,7 @@ export default {
     return {
       startEnd:{"start":'09:00',"end":'18:00'},
       btnState:false,
+      jobFlag:false,
       kaishi:'',
       jiehsu:'',
       backId:'',//身份证头像
@@ -892,7 +905,8 @@ export default {
         provinceCode: "", //省
         cityCode: "", //市
         areaCode: "", //区
-        idCardPic: "", //身份证照片
+        idCardPicBefor: "", //身份证照片
+        idCardPicAfter:"", //身份证反面
         headPic: "", //头像
         workTimes: [
           //工作时间
@@ -1413,7 +1427,7 @@ export default {
         var y = date.getFullYear();
         var m = date.getMonth()+1;
         var d = date.getDate();
-         var s = date.getTime()
+        var s = date.getTime()
         ossData.append("name",file.file.name);
         ossData.append(
           "key",
@@ -1438,8 +1452,10 @@ export default {
           .then(res=>{
               if(flag == "head"){
                 this.personal.headPic = ossData.get("key")
+              }else if(flag == "at"){
+                this.personal.idCardPicAfter = ossData.get("key")
               }else{
-                this.personal.idCardPic = ossData.get("key")
+                this.personal.idCardPicBefor = ossData.get("key")
               }
           })
         
@@ -1450,6 +1466,7 @@ export default {
     techniSearchs(page,size){
       var _page = 1 || page;
       var _size = 6 || size
+      this.listQuery.sync = 1;
       console.log(this.techniSearch,"techniSearch-----------------------------")
       var obj = {}
       if(this.techniSearch.stationId){
@@ -1624,12 +1641,14 @@ export default {
       this.$refs[formName].resetFields();
       this.personal.address = ''
       this.personal.nation = ''
-      this.personal.idCardPic = ''
+      this.personal.idCardPicBefor = ''
+      this.personal.idCardPicAfter = ''
       this.personal.headPic = ''
       this.teachArr = [];
       this.teachArr = []
       this.roomSelNum = []
       this.disbArr = []
+      this.addtimeno()
       this.dialogVisible = false
     },
     // 工作时间删除
@@ -1741,17 +1760,27 @@ export default {
       }
     },
     techClick() {
+      var c1 = Date.parse('2008-08-08 '+this.startTime);
+      var c2 = Date.parse('2008-08-08 '+this.endTime);
       if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
-        var obj = {};
-        obj.startTime = this.startTime
-        obj.endTime = this.endTime
-        this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
-        obj.weeks = [].concat(this.roomSel1Arr);
-        this.disbArr = this.disbArr.concat(this.roomSelNum);
-        this.teachArr.push(obj);
-        this.isB = false;
-        this.startTime = ''
-        this.endTime = ''
+        if(c2>c1){
+            var obj = {};
+                obj.startTime = this.startTime
+                obj.endTime = this.endTime
+                this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
+                obj.weeks = [].concat(this.roomSel1Arr);
+                this.disbArr = this.disbArr.concat(this.roomSelNum);
+                this.teachArr.push(obj);
+                this.isB = false;
+                this.startTime = ''
+                this.endTime = ''
+        }else{
+            this.$message({
+              type: "warning",
+              message: "结束时间不能小于开始时间"
+            });
+            return false
+        }
       }else{
         this.$message.error("请选择日期、时段")
         return false
@@ -1821,6 +1850,8 @@ export default {
       this.endTime = this.startEnd.end
     },
     addtimeno() {
+      this.roomSelNum = []
+      this.roomSel1Arr =[]
       this.isB = false;
     },
     mouser(item, index) {
@@ -1955,7 +1986,7 @@ export default {
                 _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
               // 岗位状态
               _infoname[i].jobStateName =
-                _infoname[i].jobStatus == "online" ? "在职" : "离职";
+                _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
               //工作年限
               if (_infoname[i].workTime == "0") {
                 _infoname[i].workTimeName = "1年以下";
@@ -2030,6 +2061,11 @@ export default {
 };
 </script>
 <style>
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(20px);
+  opacity: 0;
+}
 * {
   list-style: none;
   margin: 0;
@@ -2104,7 +2140,8 @@ export default {
   background: #fff;
   position: relative;
   margin: 0 2% 2% 0;
-  border: 1px solid #E8E8E8
+  border: 1px solid #E8E8E8;
+  box-shadow:2px 4px 6px #E8E8E8
 }
 .tech-section-ul li:nth-child(3n) {
   margin-right: 0;
@@ -2179,7 +2216,9 @@ export default {
 .tech-ul li div > p {
   display: flex;
 }
-
+.avatar-headPic .el-upload--text{
+  width: 100px;
+}
 .tech-span {
   color: red;
   width: 10px;
@@ -2235,17 +2274,18 @@ export default {
   height: 100px;
 } */
 .el-upload--text{
-  width: 100px;
+  width: 100%;
 }
 .tech-psoition {
   width: 100%;
-  height: 320px;
+  /* height: 320px; */
   background: #fff;
   position: absolute;
   top: 77px;
   left: 0;
   z-index: 1;
-  transition-duration: 5s;
+  /* animation: show 1s; */
+  /* transition-duration: 5s; */
 
   /* animation: show 1s; */
   /* -moz-animation: show 1s; */
@@ -2255,17 +2295,20 @@ export default {
   /* -o-animation: show 1s; */
 }
 
-/* @keyframes show {
-  0% {
-    height: 100px;
+ /* @keyframes show {
+  25%{
+    height: 25%;
   }
   50% {
-    height: 200px;
+    height: 50%;
+  }
+  75% {
+    height: 75;
   }
   100% {
-    height: 320px;
+    height: 100%;
   }
-} */
+}  */
 
 @keyframes hidden {
   0% {
@@ -2295,7 +2338,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin: 20px 0;
+}
+.searchHeader .el-input-group__prepend .el-input__inner{
+  width: 100px;
+  text-align: center;
+}
+.searchHeader .el-input__inner{
+  width: 250px;
 }
 
 .tech-green {
@@ -2362,14 +2412,16 @@ export default {
 .tech-order-jn-sons {
   /* height: 100px; */
   border: 1px solid #bfcbd9;
-  border-top: none;
+  /* border-top: none; */
   /* display: flex; */
-  position: absolute;
+  /* position: absolute; */
   background: #fff;
-  z-index: 2;
+  float: left;
+  /* z-index: 2;
   top: 35px;
-  left: -1px;
+  left: -1px; */
 }
+.wirkTimes{width: 100%;border-top: none; min-width: 450px;}
 .wirkTimes .el-input__inner{
   border: 1px solid #bfcbd9 !important;
 }
@@ -2379,7 +2431,6 @@ export default {
   height: 40px;
   /* margin-top: 15px; */
   border: 1px solid #bfcbd9;
-  /* border-top: none; */
   /* display: flex; */
   /* position: absolute; */
   background: #fff;
@@ -2442,6 +2493,13 @@ export default {
   position: absolute;
   margin-top: 17px;
   margin-left: 32px;
+}
+
+.header-h4{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* word-wrap:break-word */
 }
 
 .triangle-bottomrightos {
@@ -2650,8 +2708,8 @@ export default {
   color: rgb(102, 102, 102)
 }
 .tech-qj .avatar{
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   margin-top: 10px;
 }
 .passBox .el-form-item__content{
@@ -2721,6 +2779,15 @@ export default {
   padding-bottom: 30px;
   background: #fff;
 }
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 122px;
+    height: 122px;
+    line-height: 122px;
+    text-align: center;
+    border: 1px dashed #d9d9d9;
+  }
 </style>
 
 <!--
