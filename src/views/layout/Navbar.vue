@@ -19,7 +19,7 @@
           </el-dropdown>
         </li> -->
         <li class="liBtn liUser">
-          <div><i class="iconfont color" >&#xe669;</i>  &nbsp;&nbsp;{{username}}</div>
+          <div><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{username}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
           
