@@ -1,8 +1,10 @@
 <template>
   <div class="login-container">
+    <div class="formBox">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
-      class="card-box login-form">
-      <h3 class="title">系统登录</h3>
+      class="login-form">
+      <p class="title">国安社区自营服务平台</p>
+      <p class="etitle">SERVICE MANAGEMENT SYSTEM</p>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
@@ -12,12 +14,12 @@
       <el-form-item prop="password">
         <span class="svg-container">
           <icon-svg icon-class="mima"></icon-svg>
-        </span>
+        </span> 
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
-          placeholder="密码(6-20位数字、字母组成)"></el-input>
+          placeholder="密码(6-20位数字、字母组合)"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary"  style="width:100%;color:#ffffff;" :loading="loading" @click.native.prevent="handleLogin">
+      <el-form-item class="loginitem">
+        <el-button type="primary"  class="loginbtn"  :loading="loading" @click.native.prevent="handleLogin">
           登录
         </el-button>
       </el-form-item>
@@ -26,6 +28,7 @@
         </span> 密码: 6-20w</span> -->
       </div>
     </el-form>
+    </div>
   </div>
 </template>
 
@@ -60,8 +63,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "13500000001",
-        password: "111111"
+        username: "",
+        password: ""
       },
       loginRules: {
         username: [{ required: true, message: "登录账号不能为空", trigger: "blur" }],
@@ -71,8 +74,9 @@ export default {
     };
   },
   methods: {
-    handleLogin() {//登录
-    //登录时先清空，防止非正常直接渲染
+    handleLogin() {
+      //登录
+      //登录时先清空，防止非正常直接渲染
       localStorage.removeItem("name");
       localStorage.removeItem("dataScope");
       localStorage.removeItem("orgId");
@@ -104,16 +108,17 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 @import "src/styles/mixin.scss";
-$bg: #2d3a4b;
+$bg: #1f3264;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 
 .login-container {
   @include relative;
   height: 100vh;
-  background-color: $bg;
+
+  background-image: url("../../../static/icon/bg.png");
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1f3264 inset !important;
     -webkit-text-fill-color: #fff !important;
   }
   input {
@@ -122,12 +127,12 @@ $light_gray: #eee;
     -webkit-appearance: none;
     border-radius: 0px;
     padding: 12px 5px 12px 15px;
-    color: $light_gray;
-    height: 47px;
+    color: #ffffff;
+    height: 50px;
   }
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 50px;
     width: 85%;
   }
   .tips {
@@ -137,7 +142,7 @@ $light_gray: #eee;
   }
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: #265dc3;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -146,39 +151,48 @@ $light_gray: #eee;
     }
   }
   .title {
-    font-size: 26px;
-    font-weight: 400;
-    color: $light_gray;
-    margin: 0px auto 40px auto;
+    height: 40px;
+    font-weight: normal;
+    font-size: 28px;
+    line-height: 40px;
+    color: #ffffff;
     text-align: center;
-    font-weight: bold;
+    font-family: PingFangSC-Regular;
+  }
+  .etitle {
+    font-weight: normal;
+    font-size: 17px;
+    line-height: 40px;
+    color: #ffffff;
+    text-align: center;
+    font-family: PingFangSC-Regular;
+    margin-bottom: 20px;
+  }
+  .loginitem {
+    div {
+      line-height: 32px;
+    }
+  }
+  .loginbtn {
+    color: #ffffff;
+    width: 100%;
+    border: 0px solid #cde19e;
+    background-image: linear-gradient(-163deg, #00a8e1 0%, #cde19e 100%);
   }
   .login-form {
     position: absolute;
-    left: 0;
-    right: 0;
+    bottom: 50%;
+    left: 65%;
+    margin-bottom: -177px;
     width: 400px;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    background-color: #1f3264;
+    border-radius: 3px;
   }
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
-  }
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-  }
-  .thirdparty-button {
-    position: absolute;
-    right: 35px;
-    bottom: 28px;
   }
 }
 </style>

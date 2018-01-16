@@ -19,10 +19,11 @@
           </el-dropdown>
         </li> -->
         <li class="liBtn liUser">
-          <div><i class="iconfont">&#xe601;</i>&nbsp;&nbsp;{{username}}</div>
+          <div><i class="iconfont color" >&#xe669;</i>  &nbsp;&nbsp;{{username}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
-          <div><i class="iconfont">&#xe60f;</i>&nbsp;&nbsp;退出</div>
+          
+          <div><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
         </li>
         <!-- <li class="liBtn">
@@ -99,7 +100,7 @@ export default {
     line-height: 50px;
     height: 50px;
     float: left;
-    padding: 0 10px;
+    padding: 0 15px;
   }
 }
 
@@ -118,9 +119,30 @@ export default {
 
 .nav-ul li div {
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 5px;
+  border-radius: 3px;
+  float: left;
+  .color{
+    color: #4C70E8
+  }
+  &:hover{
+    color: #fff;
+    background-color: #4C70E8;
+    .color{
+    color: #ffffff;
+  }
+  }
 }
+.nav-ul li img {
+  margin-top: 7px;
+  display: block;
+  height: 14px;
+  float: left;
+
+}
+
 .nav-ul li .el-dropdown-link {
   display: block;
   height: 50px;
@@ -169,14 +191,12 @@ export default {
   color: red;
 }
 @font-face {
-  font-family: "iconfont"; /* project id 531557 */
-  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot");
-  src: url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.eot?#iefix")
-      format("embedded-opentype"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.woff") format("woff"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.ttf") format("truetype"),
-    url("//at.alicdn.com/t/font_531557_e35rupzk1xhnz5mi.svg#iconfont")
-      format("svg");
+  font-family: 'iconfont';  /* project id 531557 */
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot');
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.svg#iconfont') format('svg');
 }
 .iconfont {
   font-family: "iconfont" !important;
@@ -191,13 +211,13 @@ export default {
   border-left: 1px solid #fff;
   border-right: 1px solid #fff;
 }
-.liBtn:hover {
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(129, 129, 129, 0.12);
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
-  background-color: #eef1f6;
-}
+// .liBtn:hover {
+//   border-radius: 2px;
+//   box-shadow: 0 1px 2px rgba(129, 129, 129, 0.12);
+//   border-left: 1px solid #fff;
+//   border-right: 1px solid #fff;
+//   background-color: #eef1f6;
+// }
 .liUser {
   padding: 0 20px;
 }

@@ -14,7 +14,7 @@
     
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad"  @click="handleCreate">新增</button>
+    <button class="button-small btn_pad"  v-if="btnShow.indexOf('role_insert') != -1" @click="handleCreate">新增</button>
     <!-- 列表开始 -->
     <el-table
       :key="tableKey"
@@ -39,8 +39,8 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-edit ceshi3"  @click="handleUpdate(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
+          <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('role_delete') != -1" @click="handleDelete(scope.row)"></el-button>
 
         </template>
       </el-table-column>
@@ -71,14 +71,14 @@
         >
 
         <el-form-item label=" 所属机构:"  prop="officeId">
-          <el-select class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select :disabled="selsctState" class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp.name"class="form_item"placeholder="请输入2-15位的岗位名称"></el-input>
+          <el-input v-model.trim="temp.name" class="form_item" placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
@@ -153,12 +153,19 @@ export default {
   data() {
     //表单验证
     var validateName = (rule, value, callback) => {
+      console.log(this.temp.officeId);
+      var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
         console.log(this.dialogStatus);
         if (this.dialogStatus == "create") {
-          chkName(value).then(res => {
+          console.log(this.temp.officeId);
+          var obj = {
+            name: value,
+            id: this.temp.officeId
+          };
+          chkName(obj).then(res => {
             if (res.data.code == 0) {
               callback(new Error("岗位名重复！"));
             } else {
@@ -168,7 +175,8 @@ export default {
         } else {
           var obj = {
             roleId: this.roleId,
-            name: value
+            name: value,
+            id: this.temp.officeId
           };
           chkNameUp(obj).then(res => {
             if (res.data.code == 0) {
@@ -181,9 +189,9 @@ export default {
       }
     };
     return {
-      btnShow: this.$store.state.user.buttonshow,
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
-      changeState: false,
+      selsctState: false,
       list: [],
       officeIds: [],
       total: null,
@@ -355,12 +363,14 @@ export default {
     handleFilter() {
       //搜索
       this.listQuery.page = 1;
+    
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
-      console.log(obj);
+    
       if (obj.name != "" || obj.organization.id != "") {
+       
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
@@ -384,6 +394,7 @@ export default {
         });
       } else {
         var obj = {};
+ 
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
@@ -495,19 +506,36 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-      console.log(this.dialogStatus, "状态12");
-      console.log(this.changeState, "状态13");
+      console.log(a, "yyyyyyyyyyyy");
+
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        if (a.subMenus == undefined) {
-          // console.log(a.permission, "子集被勾选的权限");
-          // console.log(a.id, "子集被勾选的id");
-          // console.log(a.parentId, "子集的父级id");
-          // console.log(a.parentIds, "子集的父级ids");
+        // 处理订单里的查看详情
+        if (
+          ["order_time", "order_dispatch", "order_addTech"].indexOf(
+            a.permission
+          ) > -1
+        ) {
+  
           var arr = a.parentIds.split(",");
-          // console.log(arr);
-          // console.log(this.data2, "父元素");
+           for (var i = 0; i < this.data2.length; i++) {
+             if (this.data2[i].subMenus != undefined) {
+               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(this.data2[i].subMenus[j],'成功')
+                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
+                }
+               }
+             }else{
+               console.log(this.data2[i].subMenus)
+             }
+           }
+        }
+        
+        if (a.subMenus == undefined) {
+          var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].id == arr[2]) {
             }
@@ -533,6 +561,25 @@ export default {
           //console.log(a.subMenus[0], "父级的第一个元素");
         }
       } else {
+        //订单的查看详情不可取消
+        if(a.permission == 'order_info'){
+           for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  var orderarr = this.data2[i].subMenus[j]
+                  for(var k = 2;k<orderarr.subMenus.length;k++){
+                    //console.log('不可取消')
+                       if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
+                         //console.log(this.data2[i].subMenus[j].subMenus[1].name)
+                         this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
+                       }
+                  }
+                }
+              }
+            }
+          }
+        }
         if (
           a.permission.substring(
             a.permission.length - 4,
@@ -546,9 +593,17 @@ export default {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr1[3]) {
                   console.log(this.data2[i].subMenus[j], "1111111111");
-                  for (var k = 1; k < this.data2[i].subMenus[j].subMenus.length; k++) {
+                  for (
+                    var k = 1;
+                    k < this.data2[i].subMenus[j].subMenus.length;
+                    k++
+                  ) {
                     console.log(this.data2[i].subMenus[j].subMenus[k].name);
-                    if(this.temp.check.indexOf(this.data2[i].subMenus[j].subMenus[k].id) > -1){
+                    if (
+                      this.temp.check.indexOf(
+                        this.data2[i].subMenus[j].subMenus[k].id
+                      ) > -1
+                    ) {
                       this.$refs.domTree.setChecked(a.id, true);
                     }
                   }
@@ -621,6 +676,9 @@ export default {
           this.temp.dataScope = a.dataScope;
           this.temp.check = a.menuIdList;
           //console.log(a.menuIdList);
+          if (res.data.data.flag) {
+            this.selsctState = true;
+          }
           for (let i = 0; i < this.data2.length; i++) {
             //特殊首页处理
             if (this.data2[i].permission == "index") {
@@ -640,7 +698,7 @@ export default {
             }
           }
           // console.log(a.menuIdList);
-          console.log(this.temp.check, "选中1231231111111111111111");
+          //console.log(this.temp.check, "选中1231231111111111111111");
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
@@ -650,7 +708,6 @@ export default {
             message: "请求失败"
           });
         }
-        this.changeState = true;
       });
     },
     //删除数据
@@ -797,6 +854,7 @@ export default {
             .then(res => {
               this.btnState = false;
               if (res.data.code === 1) {
+                this.selsctState = false;
                 this.resetTemp();
                 this.$refs.domTree.setCheckedKeys([]);
                 this.$refs[formName].resetFields();
@@ -830,10 +888,11 @@ export default {
     },
     //清空表单
     resetForm(formName) {
+      this.selsctState = false;
       this.dialogFormVisible = false;
-      this.resetTemp();
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
+      this.resetTemp();
     },
     //清空data
     resetTemp() {

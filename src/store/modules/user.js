@@ -103,7 +103,7 @@ const user = {
     Getbutton({ commit }) {
       return new Promise((resolve, reject) => {
         getButton().then(res => {
-          console.log(res.data.data)
+          console.log(res.data.data, '测试kkkkk')
           commit('SET_BUTTONSHOW', res.data.data)
           localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)
@@ -118,12 +118,14 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_MENU', [])
           removeToken()
           localStorage.removeItem('name')
           localStorage.removeItem('dataScope')
           localStorage.removeItem('orgId')
           localStorage.removeItem('userId')
           localStorage.removeItem('menu')
+          localStorage.removeItem('station')
           localStorage.removeItem('btn')
           resolve()
         }).catch(error => {

@@ -74,9 +74,10 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
+    <!-- 分页器 -->
+    <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -97,7 +98,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       list: [],
       total: null,
       listLoading: true,
@@ -167,8 +168,8 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      console.log(obj)
-      
+      console.log(obj);
+
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "休假列表");
         this.list = res.data.data.list;
@@ -223,10 +224,12 @@ export default {
 
       console.log(obj, "搜索参数");
       this.listLoading = true;
+      this.listQuery.page = 1;
+      this.pageNumber = 1
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "搜索");
         if (res.data.code == 1) {
-          this.listQuery.page = 1;
+          
           this.list = res.data.data.list;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
@@ -239,6 +242,7 @@ export default {
       });
     },
     handleSizeChange(val) {
+      this.listLoading = true;
       this.pageSize = val;
       var obj = {};
       //console.log(this.search.startTime)
@@ -278,7 +282,7 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      this.listLoading = true;
+
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.list = res.data.data.list;
@@ -295,7 +299,7 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {};
-      //console.log(this.search.startTime)
+      console.log(this.search.startTime);
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),

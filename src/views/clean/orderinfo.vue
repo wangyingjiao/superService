@@ -354,13 +354,11 @@
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input> 
           <button class="button-large FloatRight" @click="searchTeh">查询</button>
-          <transition name="slide">
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
                 <div class="techNameStyle">{{item.techName}}</div>
               </div>                         
-            </div>
-          </transition>                                               	
+            </div>                                              	
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table  class="selfTable">
@@ -375,7 +373,7 @@
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="58px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
                     <td  width="170px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                    <td width="188px" class="fontSize12" align="center">{{item.techName}}</td>
+                    <td width="188px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
                     <td  width="60px" class="fontSize12" align="center">
                       <span class="fontSize12" v-if="item.techSex =='male'">男</span>
                       <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -650,7 +648,8 @@ export default {
         //服务技师获取
         if(this.status == 'add'){
             addTechData(obj).then(res => {
-                if (res.data.code === 1) {
+                this.listTech=[];
+                if (res.data.code === 1) {                  
                   if(res.data.data != undefined){
                       this.listTech = res.data.data;
                       for (var b = 0; b < this.middleA.length; b++) {
@@ -732,7 +731,8 @@ export default {
                 message: "新增成功!"
               });
               this.tableData1=res.data.data;
-              this.middleA=[];                         
+              this.middleA=[];
+              this.listTech=[];                         
               this.dialogTableVisible = false
           }else{
               this.$message({
@@ -758,7 +758,8 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1=res.data.data;
-              this.middleA=[];                         
+              this.middleA=[];
+              this.listTech=[];                         
               this.dialogTableVisible = false
           }else{
               this.$message({
@@ -852,15 +853,8 @@ export default {
 };
 </script>
 <style   scoped>
-.slide-enter-active {
-    transition: all .8s ease;
-}
-.slide-leave-active {
-    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-enter,.slide-leave-active {
-    transform: translateY(-10px);
-    opacity: 0;
+.selftechNameStyle{
+    width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
 }
 .tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {

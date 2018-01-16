@@ -16,7 +16,7 @@
 					<el-table :data="tableData" border style="width:100%">
 					  <el-table-column  align="center" label="订单编号">
 							<template scope="scope" >
-								<div @click="lookInf(scope.row.id)">
+								<div @click="lookInf(scope.row.id)" style="cursor:pointer;">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
@@ -79,7 +79,7 @@
 							</el-table-column>			  
 						</el-table-column>
 				</el-table>				
-				<div v-show="!listLoading" style="margin-top:20px;padding-bottom:0px;">
+				<div v-if="!listLoading" style="margin-top:20px;padding-bottom:0px;">
 					<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync='jumpPage'
 					:page-sizes="[5,10,15,20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					</el-pagination>
@@ -110,7 +110,7 @@
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="58px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
 								<td  width="170px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="188px" class="fontSize12" align="center">{{item.techName}}</td>
+								<td width="188px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
 								<td  width="60px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -158,7 +158,7 @@ export default {
 		pagetotal1:null,//表格总页数
 		pageSize1:10,//表格每页条数
 		pageNumber:1,	
-		jumpPage:null,
+		jumpPage:1,
 		aa:'',
 		orderId:'',
 		listLoading:false,
@@ -240,7 +240,8 @@ export default {
 
 							}
 							this.reassList(obj,this.pageNumber,this.pageSize1);	
-              this.middleA=[];                         
+							this.middleA=[]; 
+							this.listTech=[];                          
               this.dialogTableVisible = false
           }else{
               this.$message({
@@ -292,7 +293,6 @@ export default {
     },		
 	//查看跳转到订单详情页
 	lookInf(id){
-		console.log(id)
 		window.localStorage.setItem("orderId",id)
 		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
 	},		
@@ -303,7 +303,7 @@ export default {
 		Reassignment(obj,pageNo,pageSize).then(res=>{
        if (res.data.code === 1) {
 					 this.tableData = res.data.data.list;										
-					 this.pagetotal1=res.data.data.count;					
+					 this.pagetotal1=res.data.data.count;				
 					this.listLoading = false;
 			 }else{
 				 	this.listLoading = false;
@@ -401,6 +401,9 @@ export default {
   vertical-align:middle;
   height: 70px;
   line-height:70px;
+}
+.selftechNameStyle{
+    width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
 }
 .fontSize12{font-size:12px;}
 .selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}

@@ -49,7 +49,7 @@
             </el-form-item>
             <!-- @change="testChange" -->
             <el-form-item label="选择分类" prop="staffClass">
-              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类" ref="sevolce"  @change="testChange" class="selfTabs form_item">  
+              <el-select v-model="ruleForm2.staffClass" multiple filterable placeholder="请选择分类"  class="kill form_item">  
                 <el-option
                   v-for="item in Options2"
                   :key="item.id"
@@ -114,12 +114,12 @@
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="60px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="120px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                            <td  width="140px" align="center">{{item.techName}}</td>
+                            <td  width="133px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
                             <td  width="60px" align="center">
                               <span v-if="item.techSex =='male'">男</span>
                               <span v-if="item.techSex =='female'">女</span>									
                             </td>
-                            <td  width="184px" align="center">{{item.techStationName}}</td>							
+                            <td  width="174px" align="center"><div class="selftechStationNameStyle">{{item.techStationName}}</div></td>							
                           </tr>
                         </div>
                       </table>
@@ -211,10 +211,6 @@ export default {
     };
   },
   methods: {
-    //解决抖动
-    testChange(value) {
-      this.$refs.sevolce.$refs.tags.style.lineHeight = "30px";
-    },
     //全局搜索按钮
     search() {
       var obj = {
@@ -391,7 +387,9 @@ export default {
                   this.middleA = [];
                   this.middleB = [];
                   this.dialogVisible = false;
-                  var obj1 = {};
+                  var obj1 = {
+                    name: this.localSearch
+                  };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
@@ -557,7 +555,9 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                var obj = {};
+                var obj = {
+                  name: this.localSearch
+                };
                 this.getList(obj, this.pageNumber, this.pageSize);
               } else {
                 this.$message({
@@ -668,6 +668,9 @@ export default {
 };
 </script>
 <style  scoped>
+.kill .el-select__tags .el-select .el-tag{
+  line-height:23px !important;
+}
 .selfTabProm {
   width: 100%;
   text-align: center;
@@ -731,6 +734,12 @@ export default {
   vertical-align:middle;
   height: 70px;
   line-height:70px;
+}
+.selftechNameStyle{
+    width:130px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+}
+.selftechStationNameStyle{
+    width:174px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
 }
 .imgStyle {
   border:none;

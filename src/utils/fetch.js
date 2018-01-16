@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
 
 // 创建axios实例
 const instance = axios.create({
@@ -20,14 +19,14 @@ const instance = axios.create({
 // })
 
 // 拦截响应
-instance.interceptors.response.use(data => {
-  console.log(data, '响应')
-  return data
-}, error => {
-  console.log(error, '响应错误')
-  // Message.error({
-  //   message: '加载失败'
-  // })
-  return Promise.reject(error)
-})
+// instance.interceptors.response.use(data => {
+//   // console.log(data, '响应')
+//   return data
+// }, error => {
+//   // console.log(error, '响应错误')
+//   // Message.error({
+//   //   message: '加载失败'
+//   // })
+//   return Promise.reject(error)
+// })
 export default instance

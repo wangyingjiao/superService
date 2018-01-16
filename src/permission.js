@@ -13,12 +13,6 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
     } else {
       if (store.getters.menu.length === 0) {
-        if (localStorage.getItem('menu')) {
-          const menu = JSON.parse(localStorage.getItem('menu'))
-          console.log('存在', menu)
-        } else {
-          console.log('不存在')
-        }
         store.dispatch('GetUserInfo').then(res => { // 拉取用户信息
           next()
         }).catch(() => {

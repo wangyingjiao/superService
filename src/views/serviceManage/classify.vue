@@ -12,7 +12,7 @@
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad" style="width:80px" @click="handleCreate">新增</button>
+    <button class="button-small btn_pad" style="width:80px" @click="handleCreate"  v-if="btnShow.indexOf('class_insert') != -1">新增</button>
 
     <el-table 
     :key='tableKey' 
@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center">
+      <el-table-column  label="所属类型" align="center">
         <template scope="scope">
             <span v-if="scope.row.majorSort == 'clean'">保洁</span>
             <span v-if="scope.row.majorSort == 'repair'">家修</span>
@@ -41,8 +41,8 @@
 
       <el-table-column align="center" label="操作">
          <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('class_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('class_delete') != -1"  @click="handleDelete(scope.row)"></el-button>
           </template>
       </el-table-column>
 

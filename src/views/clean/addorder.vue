@@ -284,6 +284,7 @@ export default {
 	};		  
     return {
 		form2:{},
+		btnShow: JSON.parse(localStorage.getItem('btn')),
 		//服务站下拉选项
 		options:[],
 		techName:'',

@@ -55,7 +55,7 @@
           
         </el-table-column>
 
-        <el-table-column label="站长" align="center" prop="user.id">
+        <el-table-column label="站长" align="center" prop="user.name">
 
         </el-table-column>
 
@@ -490,9 +490,7 @@ export default {
           console.log(res, "服务站下的员工");
           this.master = res.data.data;
           if(this.rowInfo.masterId){
-            console.log(1111111111111111111)
             this.tempMaster.master = this.rowInfo.masterId;
-
           }else{
             this.tempMaster.master = ""
           }
@@ -632,7 +630,7 @@ export default {
               } else {
                 this.rowInfo.id = "";
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
@@ -705,7 +703,9 @@ export default {
       };
       this.btnState = true;
       setStore(obj).then(res => {
-        this.btnState = false;
+        setTimeout(() => {
+          this.btnState = false;
+        }, 1000);
         if (res.data.code == 1) {
           this.dialogStoreVisible = false;
           this.$refs.domTree.setCheckedKeys([]);
@@ -730,7 +730,7 @@ export default {
           });
         } else {
           this.$message({
-            type: "warning",
+            type: "error",
             message: res.data.data
           });
         }

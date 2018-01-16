@@ -24,7 +24,7 @@
     tooltip-effect='light'
     element-loading-text="正在加载" 
     style="width: 100%" >
-      <el-table-column align="center" label="机构编号" width="100">
+      <el-table-column align="center" label="编号" width="100">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
@@ -166,7 +166,7 @@
           
         </el-form-item>
         
-        <el-form-item label=" E店编号:" prop="jointEshopCode">
+        <el-form-item label=" E店编码:" prop="jointEshopCode">
           <el-input 
            class="form_item"
             v-model.trim="temp.jointEshopCode"
@@ -383,17 +383,8 @@ export default {
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         address: [
-          {
-            required: true,
-            message: "请输入 6 到 100 位的详细地址",
-            trigger: "blur"
-          },
-          {
-            min: 6,
-            max: 100,
-            message: "长度在 6 到 100 个字符",
-            trigger: "blur"
-          }
+          {required: true,message: "请输入 6 到 100 位的详细地址",trigger: "blur"},
+          {min: 6, max: 100,message: "长度在 6 到 100 个字符",trigger: "blur"}
         ],
         scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
@@ -417,25 +408,20 @@ export default {
           { required: true, message: "工作结束时间不能为空", trigger: "change" }
         ],
         jointEshopCode: [
-          { required: true, message: "E店编码不能为空", trigger: "blur" }
+          { required: true, message: "E店编码不能为空", trigger: "blur" },
+          { max: 50,message: "长度不超过50个字符",trigger: "blur"}
         ],
         url: [
-          {
-            validator: validateurl,
-            trigger: "blur"
-          }
+          {validator: validateurl,trigger: "blur"},
+          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
         ],
         fax: [
-          {
-            validator: validatefax,
-            trigger: "blur"
-          }
+          {validator: validatefax, trigger: "blur" },
+          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
         ],
         tel400: [
-          {
-            validator: validatetel400,
-            trigger: "blur"
-          }
+          { validator: validatetel400,trigger: "blur"},
+          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
         ]
       }
     };
