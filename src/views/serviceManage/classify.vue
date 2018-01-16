@@ -1,6 +1,8 @@
 <template>
 <div>
+  <!-- 搜索 -->
   <div class="filter-container tabStyle">
+    <!-- 选项卡 -->
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="全部" name="all"></el-tab-pane>
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
@@ -13,7 +15,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad" style="width:80px" @click="handleCreate"  v-if="btnShow.indexOf('class_insert') != -1">新增</button>
-
+    <!-- 表格 -->
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -47,13 +49,13 @@
       </el-table-column>
 
     </el-table>
-
+<!-- 分页器 -->
    <div v-show="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
+<!-- 弹窗 -->
     <el-dialog 
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
@@ -99,13 +101,7 @@
 </template>
 
 <script>
-import {
-  getClass,
-  addClass,
-  delClass,
-  setClass,
-  upClass
-} from "@/api/serviceManage";
+import {getClass,addClass,delClass,setClass,upClass} from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据

@@ -525,6 +525,12 @@ body {
   margin-right: 20px;
   margin-bottom: 20px;
 }
+//选项卡
+.el-tabs__nav .el-tabs__item{
+  &:hover{
+    color: #20a0ff;
+  }
+}
 // 订单管理头部
 .orderTab .el-tabs__item{
   text-align: center;
