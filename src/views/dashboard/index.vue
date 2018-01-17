@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-container">
-    <div id="demo">
+    <!-- <div id="demo">
   <button v-on:click="show = !show">
     Toggle
   </button>
   <transition enter-active-class="animated bounceInLeft" leave-active-class="animated flipInX">
     <p v-if="show">hello</p>
   </transition>
-</div>
+</div> -->
     <div class='hollebg'>
       
       <img src="../../../static/icon/hello(2).png" alt="">

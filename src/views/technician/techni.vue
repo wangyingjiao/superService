@@ -72,7 +72,7 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPasswordl1(item)" v-if="btnShow.indexOf('techni_app') > -1">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
             <transition  leave-active-class="animated  fadeOutLeft">
              <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
              </transition>
