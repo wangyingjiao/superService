@@ -1612,7 +1612,7 @@ export default {
             obj.name = this.search.name;
           }
       }
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
         getProject(obj, _page, _size)
           .then(res => {
             console.log(res.data, "res.data-------");

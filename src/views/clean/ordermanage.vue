@@ -138,7 +138,7 @@ export default {
 	name: "",
   data() { 		
     return {
-		btnShow: this.$store.state.user.buttonshow,
+		btnShow:JSON.parse(localStorage.getItem('btn')),
 		severTime:'',
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
@@ -193,6 +193,7 @@ export default {
 			}
 			getFuwu(obj).then(res => {
 				if(res.data.code === 1){
+					    res.data.data.remove(res.data.data[0])
 						this.payTypeOptions=res.data.data;
 				}else{
 				}
@@ -205,7 +206,12 @@ export default {
 		var obj=pramsObj; 
 	    getOrderTable(obj,pageNo,pageSize).then(res => {
 			if(res.data.code === 1){
-				this.tabDataList = res.data.data.page.list;										
+				this.tabDataList = res.data.data.page.list;
+				for(var a=0;a<res.data.data.orgList.length;a++){
+					if(res.data.data.orgList[a].id == 0){
+						res.data.data.orgList.remove(res.data.data.orgList[a])
+					}					
+				}										
 				this.mechanismOptions=res.data.data.orgList;
 				this.total=res.data.data.page.count;
 				this.listLoading = false;
@@ -296,14 +302,90 @@ export default {
 		this.pageNumber=1;
 		this.jumpPage=1;
 		this.size=val;
+		//服务时间格式化		
+		if(this.severTime !=''){
+          
+		}else{
+			  this.severTime=null
+		}	
+		//开始时间格式化	
+		if(this.startTime !=''){
+    		var startTime = util.formatDate.format(
+					new Date(this.startTime),
+					"yyyy-MM-dd hh:mm:ss"
+				);
+		}else{
+			  startTime=null
+		}
+		//结束时间格式化 
+        if(this.endTime != ''){
+			var endTime = util.formatDate.format(
+				new Date(this.endTime),
+				"yyyy-MM-dd hh:mm:ss"
+			);
+		}else{
+			endTime=null
+		}
+		if(this.activeName == 'whole'){
+			this.active1='';
+		}else{
+			this.active1=this.activeName
+		}		
 		var obj={
+			orderStatus:this.active1,
+			serviceStatus:this.sevicerStustas,//服务状态 
+			payStatus:this.payStus,
+			orgId:this.mechanism,
+			stationId:this.payType,
+			orderNumber:this.orderNumber,
+			orderTimeStart:startTime,
+			orderTimeEnd:endTime,
+			serviceTime:this.severTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
 	//分页器改变当前页
 	handleCurrentChange(val){
 		this.pageNumber=val;
+		//服务时间格式化		
+		if(this.severTime !=''){
+          
+		}else{
+			  this.severTime=null
+		}	
+		//开始时间格式化	
+		if(this.startTime !=''){
+    		var startTime = util.formatDate.format(
+					new Date(this.startTime),
+					"yyyy-MM-dd hh:mm:ss"
+				);
+		}else{
+			  startTime=null
+		}
+		//结束时间格式化 
+        if(this.endTime != ''){
+			var endTime = util.formatDate.format(
+				new Date(this.endTime),
+				"yyyy-MM-dd hh:mm:ss"
+			);
+		}else{
+			endTime=null
+		}
+		if(this.activeName == 'whole'){
+			this.active1='';
+		}else{
+			this.active1=this.activeName
+		}		
 		var obj={
+			orderStatus:this.active1,
+			serviceStatus:this.sevicerStustas,//服务状态 
+			payStatus:this.payStus,
+			orgId:this.mechanism,
+			stationId:this.payType,
+			orderNumber:this.orderNumber,
+			orderTimeStart:startTime,
+			orderTimeEnd:endTime,
+			serviceTime:this.severTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},

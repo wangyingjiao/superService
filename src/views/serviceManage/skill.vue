@@ -130,8 +130,8 @@
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
                   <button class="button-large"   @click="submitForm2()">保存</button>
-                  <button  class="button-cancel"  @click="resetForm2()">取消</button>
-                  <!-- <button v-if="dialogStatus == 'edit'" v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button> -->
+                  <button  v-if="dialogStatus == 'edit'" class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button  v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button>
               </div>           
         </el-dialog>
         <!-- 选择技师弹出层结束 -->
@@ -490,8 +490,8 @@ export default {
       this.techName = "";
       this.techStationId = "";
       if (this.dialogStatus == "add") {
-        this.tabOptions=[];
-        this.middleA=[];
+          // this.tabOptions=[];
+        // this.middleA=[];
       }      
       if (this.dialogStatus == "edit") {
         this.middleB = this.middleC;
@@ -767,7 +767,7 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 300px;
+  height: 276px;
   position:relative;
 }
 .table-d{

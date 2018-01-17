@@ -10,7 +10,11 @@
       <img src="http://img2.imgtn.bdimg.com/it/u=3561648708,880870854&fm=27&gp=0.jpg">
     </div>
   </div>
-</div>
+</div>			
+<el-tooltip placement="top"  :disabled="value.length<11" :content="value">
+      <button style="width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{value}}</button>
+</el-tooltip>
+
     </div>
 </template>
 
@@ -20,7 +24,8 @@ import { getSign } from "@/api/sign";
 
 export default {
   data() { 
-    return { 
+    return {
+      value:'ddeeeeeeeeeeeee月月儿科可',
       picList:[],
       testArr:[],
       dialogVisible:false,
