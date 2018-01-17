@@ -441,7 +441,7 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event, "tab切换");
-      this.getList();
+      this.handleFilter();
     }
   }
 };

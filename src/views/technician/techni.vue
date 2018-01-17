@@ -803,7 +803,7 @@ export default {
         stationId: "",
         jobNature: "",
         skillIds: [],
-        chooses: ""
+        chooses: "name"
       },
       ruleForm: {
         startTime: "",
