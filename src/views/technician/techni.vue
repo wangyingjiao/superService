@@ -34,7 +34,7 @@
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech" class="listTechni">
       <ul class="tech-section-ul">
-        <li v-for="(item,$index) of techniList" @mousemove="mouser(item,$index)" @mouseout="mousout(item,$index)" :key="$index">
+        <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
               <div class="headImag"><img :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
@@ -72,41 +72,66 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
-            <transition  >
-             <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
-             </transition>
-            <transition>
-             <img v-if="!hoverState1" src="../../../static/icon/密码hov.png" alt="" >
-             </transition>
+            <div class="mousehover" v-on:mouseover.prevent="dataDetails1" v-on:mouseout.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
+            <!-- <transition leave-active-class="animated flipOutX" >
+             <img ref="img1" src="../../../static/icon/密码.png" alt="" style='position:absolute;' >
+             </transition> -->
+             <!-- <img src="../../../static/icon/密码.png" alt="" > -->
+            <!-- <transition enter-active-class="animated flipInX">
+             <img v-if="!hoverState1" src="../../../static/icon/密码hov.png" alt="" style='position:absolute;'>
+             </transition> -->
+             <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+                <div class="flipper">
+                  <div class="front">
+                    <img src="../../../static/icon/密码.png" alt="">
+                  </div>
+                  <div class="back">
+                    <img src="../../../static/icon/密码hov.png">
+                  </div>
+                </div>
+              </div>
               
              
             </div>
-            <div v-on:mouseenter.prevent="dataDetails2" v-on:mouseleave.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
-              <transition >
-                <img v-if="hoverState2" src="../../../static/icon/休假.png" alt="" >
+            <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
+              <!-- <transition leave-active-class="animated flipOutX">
+                <img ref="img2" v-if="hoverState2" src="../../../static/icon/休假.png" alt="" style='position:absolute;' >
               </transition>
-              <transition >
-                <img v-if="!hoverState2" src="../../../static/icon/休假hov.png" alt="" >
-              </transition>
+              <transition enter-active-class="animated flipInX">
+                <img v-if="!hoverState2" src="../../../static/icon/休假hov.png" alt="" style='position:absolute;'>
+              </transition> -->
+              <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+                <div class="flipper">
+                  <div class="front">
+                    <img src="../../../static/icon/休假.png" alt="">
+                  </div>
+                  <div class="back">
+                    <img src="../../../static/icon/休假hov.png">
+                  </div>
+                </div>
+              </div>
              
             </div>
-            <div class="mousehover" v-on:mouseenter.prevent="dataDetails3" v-on:mouseleave.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
+            <div class="mousehover" v-on:mouseover.prevent="dataDetails3" v-on:mouseout.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
               <transition >
-              <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" >
+              <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" style='position:absolute;'>
               </transition>
               <transition >
-              <img v-if="!hoverState3" src="../../../static/icon/修改hov.png" alt="" >
+              <img v-if="!hoverState3" src="../../../static/icon/修改hov.png" alt="" style='position:absolute;'>
               </transition>
 
             </div>
-            <div class="mousehover" v-on:mouseenter.prevent="dataDetails4" v-on:mouseleave.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
+            <div class="mousehover" v-on:mouseover.prevent="dataDetails4" v-on:mouseout.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
               <transition >
-              <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="">
+              <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="" style='position:absolute;'>
               </transition>
               <transition >
-              <img v-if="!hoverState4" src="../../../static/icon/删除hov.png" alt="">
+              <img v-if="!hoverState4" src="../../../static/icon/删除hov.png" alt="" style='position:absolute;'>
               </transition>
+              <!-- <img src="../../../static/icon/修改.png"
+    v-on:mouseover="src='../../../static/icon/修改.png'"
+    v-on:mouseout="src='../../../static/icon/修改hov.png'"
+> -->
 
             </div>
           </div>
@@ -374,123 +399,8 @@
                 </el-col>
             </el-row>
         <!-- 新的结束  -->
-        <!-- <el-row :gutter="60">
-          <el-col :span="12">
-              <el-form-item label="姓名：" prop="name">
-                <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item label="身份证号：" prop="idCard">
-                <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
-              </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="60">
-          <el-col :span="12">
-              <el-form-item label="手机号：" prop="phone">
-                <el-input placeholder="请输入11位手机号" v-model="personal.phone"></el-input>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item label="现住地址：" prop="area">
-                <el-cascader
-                style="width:100%"
-                    @change="nowAdd"
-                    :options="areaOptions"
-                    :show-all-levels="true"
-                    v-model="personal.area"
-                ></el-cascader>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="60">
-          <el-col :span="12">
-              <el-form-item label="性别：" prop="sex">
-                <el-select v-model="personal.sex" clearable placeholder="请选择" style="width:100%">
-                  <el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
-                  </el-option>
-                </el-select>
-						</el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item prop="address">
-                <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
-              </el-form-item>
-          </el-col>
-        </el-row>
-         <el-row :gutter="60">
-          <el-col :span="12">
-              <el-form-item label="民族：" class="seize">
-                <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:100%">
-                    <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item label="出生日期：" required>
-                 <el-form-item prop="birtStr">
-                  <el-date-picker 
-                      type="date" placeholder="选择日期" 
-                      v-model="personal.birtStr" 
-                      style="width:100%"
-                      format="yyyy-MM-dd"
-                      @change="dateChange"
-                      :picker-options="pickerOptions0"
-                      >
-                  </el-date-picker>
-                 </el-form-item>
-						</el-form-item>
-          </el-col>
-        </el-row>
-        <li>
-          <div>
-            <p>
-              <el-form-item label="状态：" class="seize">
-                    <el-switch
-                      v-model="personal.status"
-                      on-text="上线"
-                      off-text="暂停"
-                      on-value="yes"
-                      off-value="no">
-                    </el-switch>
-                </el-form-item>
-            </p>
-          </div>
-        </li>
-				<li>
-					<div>
-					<p></p>
-					<p>
-            <el-form-item prop="headPic" class="uploadHead">
-              <el-upload
-                class="avatar-uploader"
-                action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="(val)=>picUpload(val,'head')"
-                >
-                <div class="upload-head"><span>*上传头像</span></div>
-                <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
-              </el-upload>
-            </el-form-item>
-
-             <el-upload
-              class="avatar-uploader"
-              action="http://openservice.oss-cn-beijing.aliyuncs.com"
-              :show-file-list="false"
-              :http-request="(val)=>picUpload(val,'id')"
-              :before-upload="beforeAvatarUpload"
-              style="margin-left:20px;" 
-              >
-              <div class="upload-id"><span>上传身份证</span></div>
-              <img v-if="personal.idCardPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="avatar">
-            </el-upload>
-					</p>
-					</div>
-				</li> -->
-
+       
+         
         <!-- 服务信息 -->
         <h3 class="tech-tc-prson">服务信息</h3>
         <ul class="tech-ul tech-service">
@@ -1005,29 +915,6 @@ export default {
       ],
       infoname: [],
       chooContent: "",
-      // infoname: [{
-      //   value: '选项1',
-      //   name: '李阿姨',
-      //   addres: '国安社区',
-      //   year: '3年',
-      //   phone: '17188996644',
-      //   ismouse: false,
-      // }, {
-      //   value: '选项1',
-      //   name: '王阿姨',
-      //   addres: '国安社区',
-      //   year: '3年',
-      //   phone: '17188996644',
-      //   ismouse: false,
-      // }, {
-      //   value: '选项1',
-      //   name: '赵阿姨',
-      //   addres: '国安社区',
-      //   year: '3年',
-      //   phone: '17188996644',
-      //   ismouse: false,
-      // }],
-
       servery: [],
       marriage: {},
       station: {},
@@ -1396,7 +1283,8 @@ export default {
   methods: {
     //鼠标滑过
     dataDetails1(a) {
-      console.log(a, "滑过时");
+      console.log("滑过时");
+      console.log('')
       this.hoverState1 = false;
     },
     hiddenDetail1(val) {
@@ -2910,6 +2798,50 @@ export default {
     text-align: center;
     border: 1px dashed #d9d9d9;
   }
+/* //动画 */
+.flip-container {
+  perspective: 1000;
+}
+  /* flip the pane when hovered */
+  .flip-container:hover .flipper, .flip-container.hover1 .flipper {
+    transform: rotateY(180deg);
+  }
+
+.flip-container, .front, .back {
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+}
+.front img,.back img{
+  width: 100%;
+}
+/* flip speed goes here */
+.flipper {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+}
+
+/* back, initially hidden pane */
+.back {
+  transform: rotateY(180deg);
+}
+/* 动画结束 */
 </style>
 
 <!--

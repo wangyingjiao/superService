@@ -224,6 +224,8 @@ export default {
       });
     },
     handleSizeChange(val) {
+      this.listQuery.page = 1;
+      this.pageNumber =1
       this.pageSize = val;
       // this.getList();
       var obj = {

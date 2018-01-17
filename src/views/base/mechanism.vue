@@ -526,6 +526,8 @@ export default {
       // this.getList();
     },
     handleSizeChange(val) {
+      this.listQuery.page = 1;
+      this.pageNumber =1
       this.pageSize = val;
       var value = this.search.value;
       if (this.search.key == "name") {

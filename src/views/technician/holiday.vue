@@ -243,6 +243,8 @@ export default {
     },
     handleSizeChange(val) {
       this.listLoading = true;
+      this.listQuery.page = 1;
+      this.pageNumber =1
       this.pageSize = val;
       var obj = {};
       //console.log(this.search.startTime)

@@ -527,6 +527,8 @@ export default {
     },
     handleSizeChange(val) {
       //每页展示数量
+      this.listQuery.page = 1;
+      this.pageNumber =1
       this.pageSize = val;
       var obj = {
         name: this.search.name,
