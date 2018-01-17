@@ -200,7 +200,7 @@
            <el-tree
               class="scrollBox"
               :data="data2"
-              :indent= 10
+              :indent= 30
               show-checkbox
               node-key="id"
               v-model="temp2.check"
@@ -567,10 +567,8 @@ export default {
           }
           console.log(res.data.data.list, "list-------------");
         }
-        setTimeout(() => {
           this.list = res.data.data.list;
           this.listLoading = false;
-        }, 300);
       });
     },
     timeFilter(time) {
