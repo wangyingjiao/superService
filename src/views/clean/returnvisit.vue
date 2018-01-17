@@ -1,22 +1,18 @@
 <template>
     <div class="addorder-container"> 
-        <el-upload
+         <el-upload
             action="http://openservice.oss-cn-beijing.aliyuncs.com"
             list-type="picture-card"
-            :on-change="handPic"
+            :before-upload="handPic"
             :on-remove="handleRemovePic"
-            :auto-upload="false"
-            ref="upload"
             :file-list="picList"
-            :http-request="(val)=>picUpload(val)"            
-            >
-            
+            :http-request="picUpload"            
+            >                         
             <i class="el-icon-plus"></i>
-        </el-upload>
+          </el-upload>
         <el-dialog v-model="dialogVisible" size="tiny">
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
-        <button @click="open">全</button>
     </div>
 </template>
 
@@ -31,40 +27,42 @@ export default {
     return { 
       picList:[],
       dialogVisible:false,
-      dialogImageUrl:''     		
+      dialogImageUrl:'',
+      picFile:[]		
     };
   },
   methods:{
-    open(){
-      this.$refs.upload.submit();
-    },
-     handPic(file,fileList) {
-      // if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
+    handPic(file) {
+      if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
         this.imgFlag = true
         var date = new Date();
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        // console.log(this.picFile,"this.picFile------")
-        console.log(fileList,"fileList---------")
-        if(fileList.length>3){
+        console.log(this.picFile,"this.picFile------")
+        if (this.picFile.length >= 2) {
           this.$message({
             type: "warning",
             message: "最多上传4张图片"
           });
-          fileList.splice(fileList.indexOf(file),1)
+          return false;
         }
-        console.log(fileList,"fileList+++++")
+      }else{
+        this.imgFlag = false
+        this.$message.error('请上传正确的图片格式');
+        return false
+      }
+      //服务图片
+      // console.log(file, "上传前");
+      // console.log(this.picFile);
     },
-
-  handleRemovePic(file,fileList) {
-      // alert("dwadawd")
+    handleRemovePic(file,fileList) {
+      alert("dwadawd")
       //删除服务图片
       // console.log(fileList,'文件');
       // console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
-      alert("dawdawd")
       // console.log(this.picList,'filelist')
       if(this.imgFlag){
         var str = "";
@@ -84,12 +82,13 @@ export default {
           newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
           newarr.push(newstr)
         }
-          //console.log(newarr,'截取')
+        console.log(newarr,'截取')
         var delIndex = newarr.indexOf(src)
+        console.log(delIndex,"delIndex-----")
         if(delIndex == -1){
 
         }else{
-          this.picFile.del(delIndex);
+          this.picFile.del(delIndex);         
         }
         console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
@@ -100,7 +99,6 @@ export default {
       // console.log(this.picFile);
     },
     picUpload(file) {
-      console.log(file,"file----------")
       // 图片上传
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -150,12 +148,11 @@ export default {
             .then(res => {
               console.log(this.picList);
               this.picFile.push(ossData.get("key"));
-              // console.log(this.picFile,"this.picFile------------------")
               console.log(this.picFile, "picfile");
             })
             .catch(error => {
               console.log('错误-------------上传图片失败--')
-              // this.picFile.push(ossData.get("key"));
+              this.picFile.push(ossData.get("key"));
               console.log(error, "错误");
             });
       });

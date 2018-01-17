@@ -343,16 +343,16 @@
                                         start: '00:00',
                                         step: '00:30',
                                         end: '24:00',
-                                        minTime:startend.start,
-                                        maxTime:startend.end
+                                        minTime:startend.startNew,
+                                        maxTime:startend.endNew
                                         }" class="tech-daytim">
                                     </el-time-select>
                                     <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
                                         start: '00:00',
                                         step: '00:30',
                                         end: '24:00',
-                                        minTime:startTime || startend.start,
-                                        maxTime:startend.end
+                                        minTime:startTime || startend.startNew,
+                                        maxTime:startend.endNew
                                         }">
                                     </el-time-select>
                                   </div>
@@ -375,7 +375,7 @@
                           <div>
                             <div class="woking-div">
                             <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
-                            <div class="time">{{item.startTime+"~"+item.endTime}}</div>
+                            <div class="time">{{item.startTimeStr+"~"+item.endTimeStr}}</div>
                             </div>
                           </div>
                           <div>
@@ -1724,6 +1724,14 @@ export default {
           obj.jobNature = _perServer.jobNature
           obj.jobStatus = _perServer.jobStatus
           obj.workTime = _perServer.workTime
+          for(var i =0; i<_perServer.workTimes.length; i++){
+            if(_perServer.workTimes[i].endTimeStr){
+              _perServer.workTimes[i].endTime = _perServer.workTimes[i].endTimeStr
+              _perServer.workTimes[i].startTime = _perServer.workTimes[i].startTimeStr
+              delete _perServer.workTimes[i].endTimeStr
+              delete  _perServer.workTimes[i].startTimeStr
+            }
+          }
           obj.workTimes = _perServer.workTimes
           obj.skillIds = _perServer.skillIds
           console.log(obj,"this.perServer--------")
@@ -1848,8 +1856,8 @@ export default {
         if(c2>c1){
             var obj = {};
             var arr = []
-            obj.startTime = this.startTime
-            obj.endTime = this.endTime
+            obj.startTimeStr = this.startTime
+            obj.endTimeStr = this.endTime
             this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
             obj.weeks = [].concat(this.roomSel1Arr);
             for(var i = 0; i<obj.weeks.length; i++){

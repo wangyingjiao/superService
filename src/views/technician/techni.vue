@@ -72,7 +72,7 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPasswordl1(item)" v-if="btnShow.indexOf('techni_app') > -1">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
             <transition  leave-active-class="animated  fadeOutLeft">
              <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
              </transition>
@@ -130,10 +130,8 @@
 					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<!-- <el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
-					<el-button @click="passwordCancel('ruleForm2')">取消</el-button> -->
-            <button class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')">保存</button>
-            <button class="button-cancel" @click="passwordCancel('ruleForm2')">取消</button>
+            <input type="button" class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')" value="保存">
+            <input type="button" class="button-cancel" @click="passwordCancel('ruleForm2')" value="取消">
 				</el-form-item>
 			</el-form>
 		</div>
@@ -164,8 +162,8 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:'11:59',
-                            maxTime:startEnd.end
+                            minTime:startEnd.startNew,
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                       </el-time-select>
@@ -187,8 +185,8 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:startEnd.start,
-                            maxTime:startEnd.end
+                            minTime:ruleForm.startDate || startEnd.startNew,
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                     </el-time-select>
@@ -577,16 +575,16 @@
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:startEnd.start,
-                              maxTime:startEnd.end
+                              minTime:startEnd.startNew,
+                              maxTime:startEnd.endNew
                             }" class="tech-daytim">
                           </el-time-select>
                           <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
                               start: '00:00',
                               step: '00:30',
                               end: '24:00',
-                              minTime:startTime || startEnd.start,
-                              maxTime:startEnd.end
+                              minTime:startTime || startEnd.startNew,
+                              maxTime:startEnd.endNew
                             }">
                           </el-time-select>
                         </div>
@@ -1911,7 +1909,9 @@ export default {
                 message: "删除成功!"
               });
               //  this.getList(this.listQuery.page,this.listQuery.limit,)
-              this.techniSearchs(this.listQuery.page, this.listQuery.limit);
+              // this.techniSearchs(this.listQuery.page, this.listQuery.limit);
+              this.handleCurrentChange(this.listQuery.page)
+              this.dialogVisibleEditClick()
               // this.handleCurrentChange(this.listQuer.page)
             })
             .catch(error => {
@@ -2901,7 +2901,7 @@ export default {
   padding-bottom: 30px;
   background: #fff;
 }
-.avatar-uploader-icon {
+.avatar-headPic .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     width: 100px;

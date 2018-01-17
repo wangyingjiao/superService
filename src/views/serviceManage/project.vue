@@ -283,6 +283,7 @@
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
+              <el-collapse-transition>
               <el-form 
                 v-show="addComm"
                 :model="goods_info"
@@ -370,6 +371,7 @@
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
+              </el-collapse-transition>
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -382,7 +384,7 @@
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="中午、英文、数字(2~10)"></el-input>
+            <el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(2~10)"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -1150,10 +1152,15 @@ export default {
       // console.log(this.imgText,'imgtext')
       // console.log(this.fileList,'filelist')
       // alert("123123")
+      console.log(file,"file+++++++")
       if(this.Imagestext){
           var str = "";
           var index = file.url.lastIndexOf("/");
-          str = file.url.substring(index + 1, file.url.length);
+          if(file.raw){
+            str = file.raw.uid+'.jpg'
+          }else{
+             str = file.url.substring(index + 1, file.url.length);
+          }
           
           let newarr = []
           for(var i = 0;i<this.imgText.length;i++){
@@ -1162,9 +1169,10 @@ export default {
             newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
             newarr.push(newstr)
           }
-          // console.log(str);
-          // console.log(newarr,'截取')
+          console.log(str,"src----");
+          console.log(newarr,'截取')
           var delIndex = newarr.indexOf(str)
+           console.log(delIndex,'delIndex')
           if(delIndex==-1){
 
           }else{
@@ -1181,13 +1189,24 @@ export default {
       // alert("dwadawd")
       //删除服务图片
       // console.log(fileList,'文件');
-      // console.log(file, "删除一张图片");
+      console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
       // console.log(this.picList,'filelist')
       if(this.imgFlag){
         var str = "";
-        var index = file.url.lastIndexOf("/");
-        str = file.url.substring(index + 1, file.url.length);
+        var index = ''
+        if(file.raw){
+          if(file.raw.url){
+             index = file.raw.url.lastIndexOf("/");
+             str = file.raw.url.substring(index + 1, file.raw.url.length);
+          }else{
+            return false
+          }
+        }else{
+          index = file.url.lastIndexOf("/");
+          str = file.url.substring(index + 1, file.url.length);
+        }
+        console.log(str,"str------")
         var src = ''
         if (file.name != undefined) {
           src = file.name;
@@ -1202,8 +1221,14 @@ export default {
           newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
           newarr.push(newstr)
         }
-          //console.log(newarr,'截取')
-        var delIndex = newarr.indexOf(src)
+        var delIndex = null
+        if(this.dialogStatus == "update"){
+          console.log(newarr,"newarrnewarrnewarr")
+          console.log(src,"srcsrc-------------")
+          delIndex = newarr.indexOf(str)
+        }else{
+          delIndex = newarr.indexOf(file.uid+'.jpg')
+        }
         if(delIndex == -1){
 
         }else{
@@ -1316,7 +1341,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" +s+'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1373,7 +1398,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1394,6 +1419,7 @@ export default {
             .then(res => {
               console.log(this.picList);
               this.picFile.push(ossData.get("key"));
+              file.file.url = 'https://openservice.guoanshequ.com/'+ data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
               // console.log(this.picFile,"this.picFile------------------")
               console.log(this.picFile, "picfile");
             })
@@ -1610,7 +1636,7 @@ export default {
             obj.name = this.search.name;
           }
       }
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
         getProject(obj, _page, _size)
           .then(res => {
             console.log(res.data, "res.data-------");
@@ -1647,7 +1673,7 @@ export default {
       // var obj = Object.assign({},this.search)
       // obj.majorSort = this.basicForm.majorSort
       // console.log(this.basicForm.majorSort,'this.basicForm.majorSort-----------')
-      this.getList(this.pageNumber, this.pageSize)
+      this.getList(1, this.pageSize)
       // getProject(obj, this.pageNumber, this.pageSize).then(res => {
       //   this.listTable = res.data.data.list;
       //   this.total = res.data.data.count;
@@ -2390,14 +2416,14 @@ hr {
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
 }
-.avatar-uploader-icon {
+/* .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
   height: 178px;
   line-height: 178px;
   text-align: center;
-}
+} */
 .avatar {
   width: 178px;
   height: 178px;
