@@ -113,25 +113,29 @@
              
             </div>
             <div class="mousehover" v-on:mouseover.prevent="dataDetails3" v-on:mouseout.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
-              <transition >
-              <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" style='position:absolute;'>
-              </transition>
-              <transition >
-              <img v-if="!hoverState3" src="../../../static/icon/修改hov.png" alt="" style='position:absolute;'>
-              </transition>
+             <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+                <div class="flipper">
+                  <div class="front">
+                    <img src="../../../static/icon/修改.png" alt="">
+                  </div>
+                  <div class="back">
+                    <img src="../../../static/icon/修改hov.png">
+                  </div>
+                </div>
+              </div>
 
             </div>
             <div class="mousehover" v-on:mouseover.prevent="dataDetails4" v-on:mouseout.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
-              <transition >
-              <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="" style='position:absolute;'>
-              </transition>
-              <transition >
-              <img v-if="!hoverState4" src="../../../static/icon/删除hov.png" alt="" style='position:absolute;'>
-              </transition>
-              <!-- <img src="../../../static/icon/修改.png"
-    v-on:mouseover="src='../../../static/icon/修改.png'"
-    v-on:mouseout="src='../../../static/icon/修改hov.png'"
-> -->
+              <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+                <div class="flipper">
+                  <div class="front">
+                    <img src="../../../static/icon/删除.png" alt="">
+                  </div>
+                  <div class="back">
+                    <img src="../../../static/icon/删除hov.png">
+                  </div>
+                </div>
+              </div>
 
             </div>
           </div>
@@ -2809,6 +2813,7 @@ export default {
 
 .flip-container, .front, .back {
   overflow: hidden;
+  margin:  0 auto;
   width: 50px;
   height: 50px;
 }
