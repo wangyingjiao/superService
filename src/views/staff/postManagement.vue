@@ -413,6 +413,8 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
+      this.listQuery.page = 1;
+      this.pageNumber =1
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }

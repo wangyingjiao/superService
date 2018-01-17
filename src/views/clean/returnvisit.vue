@@ -1,29 +1,22 @@
 <template>
     <div class="addorder-container"> 
-        <el-upload
-            action="http://openservice.oss-cn-beijing.aliyuncs.com"
-            list-type="picture-card"
-            :on-change="handPic"
-            :on-remove="handleRemovePic"
-            :auto-upload="false"
-            ref="upload"
-            :http-request="(val)=>picUpload(val)"            
-            >            
-            <i class="el-icon-plus"></i>
-        </el-upload>
-        <el-dialog v-model="dialogVisible" size="tiny">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
-        <button @click="open">上传</button>
-        <div class="flipy">上传</div>
+        <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+  <div class="flipper">
+    <div class="front">
+      <img src="http://img0.imgtn.bdimg.com/it/u=1060021971,3692248015&fm=27&gp=0.jpg" alt="">
+    </div>
+    <div class="back">
+      背面内容
+      <img src="http://img2.imgtn.bdimg.com/it/u=3561648708,880870854&fm=27&gp=0.jpg">
+    </div>
+  </div>
+</div>
     </div>
 </template>
 
 <script>
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
-
-
 
 export default {
   data() { 
@@ -34,11 +27,11 @@ export default {
       dialogImageUrl:''     		
     };
   },
-  methods:{
-    open(){
+  methods: {
+    open() {
       this.$refs.upload.submit();
     },
-     handPic(file,fileList) {
+    handPic(file, fileList) {
       // if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
         var date = new Date();
         var y = date.getFullYear();
@@ -117,35 +110,52 @@ export default {
   computed: {
     sign: function() {
       return getSign();
-    },
+    }
   },
-  mounted() {
-
-  }
+  mounted() {}
 };
 </script>
 <style   scoped>
-/*水平翻转*/
-.flipx {
-    -moz-transform:scaleX(-1);
-    -webkit-transform:scaleX(-1);
-    -o-transform:scaleX(-1);
-    transform:scaleX(-1);
-    /*IE*/
-    filter:FlipH;
+.flip-container {
+  perspective: 1000;
 }
-/*垂直翻转*/
-.flipy {
-    -moz-transform:scaleY(-1);
-    -webkit-transform:scaleY(-1);
-    -o-transform:scaleY(-1);
-    transform:scaleY(-1);
-    /*IE*/
-    filter:FlipV;
-}
-/*水平翻转*/
-.flipx { transform: rotateY(180deg); }
+  /* flip the pane when hovered */
+  .flip-container:hover .flipper, .flip-container.hover1 .flipper {
+    transform: rotateY(180deg);
+  }
 
-/*垂直翻转*/
-.flipy { transform: rotateX(180deg); }
+.flip-container, .front, .back {
+  overflow: hidden;
+  width: 50px;
+  height: 50px;
+}
+.front img,.back img{
+  width: 100%;
+}
+/* flip speed goes here */
+.flipper {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+}
+
+/* back, initially hidden pane */
+.back {
+  transform: rotateY(180deg);
+}
 </style>
