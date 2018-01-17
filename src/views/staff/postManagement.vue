@@ -521,38 +521,39 @@ export default {
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
+        console.log('tttttttttttttttt')
         // 处理订单里的查看详情
-        if (
-          ["order_time", "order_dispatch", "order_addTech"].indexOf(
-            a.permission
-          ) > -1
-        ) {
+        // if (
+        //   ["order_time", "order_dispatch", "order_addTech"].indexOf(
+        //     a.permission
+        //   ) > -1
+        // ) {
   
-          var arr = a.parentIds.split(",");
-           for (var i = 0; i < this.data2.length; i++) {
-             if (this.data2[i].subMenus != undefined) {
-               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+        //   var arr = a.parentIds.split(",");
+        //    for (var i = 0; i < this.data2.length; i++) {
+        //      if (this.data2[i].subMenus != undefined) {
+        //        for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 
-                if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(this.data2[i].subMenus[j],'成功')
-                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
-                }
-               }
-             }else{
-               console.log(this.data2[i].subMenus)
-             }
-           }
-        }
-        
+        //         if (this.data2[i].subMenus[j].permission == "order") {
+        //           console.log(this.data2[i].subMenus[j],'成功')
+        //           this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
+        //         }
+        //        }
+        //      }else{
+        //        console.log(this.data2[i].subMenus)
+        //      }
+        //    }
+        // }
+        //订单详情处理完毕
+        //自动勾选列表权限
         if (a.subMenus == undefined) {
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].id == arr[2]) {
-            }
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr[3]) {
-                  var str = this.data2[i].subMenus[j].subMenus[0];
+                  var str = this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-1];
+                  console.log(str.name,'vvvvvvvvvvvv')
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -560,6 +561,8 @@ export default {
                     if (newper == "view") {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
+                  }else{
+                    console.log(111111111111111111)
                   }
                 }
               }
@@ -570,20 +573,27 @@ export default {
           //console.log(a.id, "父级被勾选的id");
           //console.log(a.subMenus[0], "父级的第一个元素");
         }
+        //自动勾选列表权限结束
       } else {
-        console.log('false')
+        console.log('取消勾选')
+       
         //订单的查看详情不可取消
+           console.log(this.temp.check,'dddddddddddddd')
         if(a.permission == 'order_info'){
            for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
+              console.log(a.permission,'1')
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(a.permission,'2',this.temp.check)
                   var orderarr = this.data2[i].subMenus[j]
                   for(var k = 2;k<orderarr.subMenus.length;k++){
                     //console.log('不可取消')
                        if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
-                         //console.log(this.data2[i].subMenus[j].subMenus[1].name)
+                         console.log(a.permission,'3')
+                         console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
                          this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
+                         this.temp.check = this.$refs.domTree.getCheckedKeys();
                        }
                   }
                 }
@@ -591,14 +601,42 @@ export default {
             }
           }
         }
+        //订单处理结束
+        //员工的列表不可取消
+           
+        // if(a.permission == 'user_view'){
+        //    for (var i = 0; i < this.data2.length; i++) {
+        //     if (this.data2[i].subMenus != undefined) {
+        //       console.log(a.permission,'1')
+        //       for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+        //         if (this.data2[i].subMenus[j].permission == "user") {
+        //           console.log(this.temp.check,'gggggggggd')
+        //           console.log(a.permission,'2',this.temp.check)
+        //           var orderarr = this.data2[i].subMenus[j]
+        //           for(var k = 0;k<orderarr.subMenus.length-1;k++){
+        //             //console.log('不可取消')
+        //                if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
+        //                  console.log(a.permission,'3')
+        //                  console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
+        //                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[3].id, true);
+                        
+        //                }
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
+        //员工处理结束
+        //处理列表权限不可取消
         if (
-          a.permission.substring(
+            a.permission.substring(
             a.permission.length - 4,
             a.permission.length
           ) == "view"
         ) {
-         
-          var arr1 = a.parentIds.split(",");
+          
+           var arr1 = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
@@ -606,19 +644,15 @@ export default {
                   
                   for (
                     var k = 1;
-                    k < this.data2[i].subMenus[j].subMenus.length;
+                    k < this.data2[i].subMenus[j].subMenus.length-1;
                     k++
                   ) {
-                    console.log(this.data2[i].subMenus[j].subMenus[k].name);
-                    setTimeout(() => {
-                      
-                    }, 50);
                     if (
                       this.temp.check.indexOf(
                         this.data2[i].subMenus[j].subMenus[k].id
                       ) > -1
                     ) {
-                      this.$refs.domTree.setChecked(a.id, true);
+                      this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-1].id, true);
                     }
                   }
                 }
@@ -626,6 +660,8 @@ export default {
             }
           }
         }
+        
+        //列表处理完毕
       }
       //console.log(this.$refs.domTree.getCheckedKeys(false));
       //console.log(this.$refs.domTree.getCheckedNodes());
@@ -636,7 +672,7 @@ export default {
       console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
-      console.log(a, b, "currentchange选中节点变化时");
+      console.log(a, b,"currentchange选中节点变化时");
     },
     nodeExpand(a, b, c) {
       console.log(a, b, c, "nodeexpand节点被展开时");
