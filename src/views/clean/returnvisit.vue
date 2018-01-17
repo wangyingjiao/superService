@@ -7,16 +7,15 @@
             :on-remove="handleRemovePic"
             :auto-upload="false"
             ref="upload"
-            :file-list="picList"
             :http-request="(val)=>picUpload(val)"            
-            >
-            
+            >            
             <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog v-model="dialogVisible" size="tiny">
           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
-        <button @click="open">全</button>
+        <button @click="open">上传</button>
+        <div class="flipy">上传</div>
     </div>
 </template>
 
@@ -30,6 +29,7 @@ export default {
   data() { 
     return { 
       picList:[],
+      testArr:[],
       dialogVisible:false,
       dialogImageUrl:''     		
     };
@@ -40,130 +40,82 @@ export default {
     },
      handPic(file,fileList) {
       // if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
-        this.imgFlag = true
         var date = new Date();
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        // console.log(this.picFile,"this.picFile------")
-        console.log(fileList,"fileList---------")
-        if(fileList.length>3){
+        if(fileList.length>4){
           this.$message({
             type: "warning",
             message: "最多上传4张图片"
           });
           fileList.splice(fileList.indexOf(file),1)
         }
-        console.log(fileList,"fileList+++++")
     },
-
-  handleRemovePic(file,fileList) {
-      // alert("dwadawd")
-      //删除服务图片
-      // console.log(fileList,'文件');
-      // console.log(file, "删除一张图片");
-      // console.log(this.picFile,'imgtext')
-      alert("dawdawd")
-      // console.log(this.picList,'filelist')
-      if(this.imgFlag){
-        var str = "";
-        var index = file.url.lastIndexOf("/");
-        str = file.url.substring(index + 1, file.url.length);
-        var src = ''
-        if (file.name != undefined) {
-          src = file.name;
-        } else {
-          src = str;
-        }
-        console.log(src,'src');
-        let newarr = []
-        for(var i = 0;i<this.picFile.length;i++){
-          var index = this.picFile[i].lastIndexOf("/");
-          var newstr = ''
-          newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
-          newarr.push(newstr)
-        }
-          //console.log(newarr,'截取')
-        var delIndex = newarr.indexOf(src)
-        if(delIndex == -1){
-
-        }else{
-          this.picFile.del(delIndex);
-        }
-        console.log(delIndex,"delIndex------")
-        // console.log(newarr,src,"newarr---------------------------")
-        // console.log(delIndex,'删除图片的下标')
-      }else{
-        return false
-      }
-      // console.log(this.picFile);
-    },
-    picUpload(file) {
-      console.log(file,"file----------")
-      // 图片上传
-      let pro = new Promise((resolve, rej) => {
-        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
-        var res = JSON.parse(Cookies.get("sign"));
-        var timestamp = Date.parse(new Date()) / 1000;
-        if (res.expire - 3 > timestamp) {
-          console.log("签名没过期");
-          resolve(res);
-        } else {
-          this.$http.get("/apiservice/oss/getSign").then(res => {
-            console.log(res, "签名过期");
-            Cookies.set("sign", JSON.stringify(res.data));
-            resolve(res.data);
-          });
-        }
-      });
-      var that = this;
-      pro.then(success => {
-        var data = success;
-        var ossData = new FormData();
-        var date = new Date();
-        var s = date.getTime()
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        ossData.append("name", file.file.name);
-        ossData.append(
-          "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
-        );
-        ossData.append("policy", data.policy);
-        ossData.append("OSSAccessKeyId", data.accessid);
-        ossData.append("success_action_status", 201);
-        ossData.append("signature", data.signature);
-        // 添加文件
-        ossData.append("file", file.file, file.file.name);
-        //this.ossData = ossData;
-        // console.log(ossData.get("name"));
-        // console.log(ossData.get("key"));
-        // console.log(that.$http,"that.$http")
-          that.$http
-            .post(data.host, ossData, {
-              headers: {
-                "Content-Type": "multipart/form-data; boundary={boundary}"
-              }
-            })
-            .then(res => {
-              console.log(this.picList);
-              this.picFile.push(ossData.get("key"));
-              // console.log(this.picFile,"this.picFile------------------")
-              console.log(this.picFile, "picfile");
-            })
-            .catch(error => {
-              console.log('错误-------------上传图片失败--')
-              // this.picFile.push(ossData.get("key"));
-              console.log(error, "错误");
+      handleRemovePic(file,fileList) {
+        fileList.splice(fileList.indexOf(file),0)
+      },
+      picUpload(file) {
+        console.log(file.file.uid)
+        // 图片上传    
+        let pro = new Promise((resolve, rej) => {
+          console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+          var res = JSON.parse(Cookies.get("sign"));
+          var timestamp = Date.parse(new Date()) / 1000;
+          //console.log(timestamp)
+          if (res.expire - 3 > timestamp) {
+            console.log("签名没过期");
+            resolve(res);
+          } else {
+            this.$http.get("/apiservice/oss/getSign").then(res => {
+              console.log(res, "签名过期");
+              Cookies.set("sign", JSON.stringify(res.data));
+              resolve(res.data);
             });
-      });
-    },
+          }
+        });
+        var that = this;
+        pro.then(success => {
+          var data = success;
+          var ossData = new FormData();
+          var date = new Date();
+          var s = date.getTime()
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          ossData.append("name", file.file.name);
+          ossData.append(
+            "key",
+            data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
+          );
+          ossData.append("policy", data.policy);
+          ossData.append("OSSAccessKeyId", data.accessid);
+          ossData.append("success_action_status", 201);
+          ossData.append("signature", data.signature);
+          // 添加文件
+          ossData.append("file", file.file, file.file.name);
+            that.$http
+              .post(data.host, ossData, {
+                headers: {
+                  "Content-Type": "multipart/form-data; boundary={boundary}"
+                }
+              })
+              .then(res => {
+                this.testArr.push(ossData.get("key"));
+                console.log(this.testArr,"this.testArr------")  
+                console.log('aaaaa')
+              })
+              .catch(error => {
+                console.log('错误-------------上传图片失败--')
+                // this.picFile.push(ossData.get("key"));
+                console.log(error, "错误");
+              });
+        });
+      },
   },
   computed: {
     sign: function() {
-      console.log("-------------------------------")
       return getSign();
     },
   },
@@ -173,5 +125,27 @@ export default {
 };
 </script>
 <style   scoped>
+/*水平翻转*/
+.flipx {
+    -moz-transform:scaleX(-1);
+    -webkit-transform:scaleX(-1);
+    -o-transform:scaleX(-1);
+    transform:scaleX(-1);
+    /*IE*/
+    filter:FlipH;
+}
+/*垂直翻转*/
+.flipy {
+    -moz-transform:scaleY(-1);
+    -webkit-transform:scaleY(-1);
+    -o-transform:scaleY(-1);
+    transform:scaleY(-1);
+    /*IE*/
+    filter:FlipV;
+}
+/*水平翻转*/
+.flipx { transform: rotateY(180deg); }
 
+/*垂直翻转*/
+.flipy { transform: rotateX(180deg); }
 </style>

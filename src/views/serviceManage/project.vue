@@ -283,8 +283,9 @@
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
+            <el-collapse-transition>
               <el-form 
-                v-show="addComm"
+                v-if="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
@@ -370,6 +371,7 @@
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
+            </el-collapse-transition>
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">

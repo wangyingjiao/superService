@@ -105,13 +105,13 @@
               <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
                       <table  class="selfTable">
-                        <tr class="tableHeader">
-                          <td  class="selfTdStyle" align="center" width="73px">选择</td>
-                          <td  class="selfTdStyle"  align="center" width="128px">头像</td>
-                          <td  class="selfTdStyle"  align="center" width="150px">姓名</td>
-                          <td  class="selfTdStyle"  align="center" width="73px">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
-                        </tr>
+                          <tr class="tableHeader">
+                            <td  class="selfTdStyle" align="center" width="73px">选择</td>
+                            <td  class="selfTdStyle"  align="center" width="128px">头像</td>
+                            <td  class="selfTdStyle"  align="center" width="150px">姓名</td>
+                            <td  class="selfTdStyle"  align="center" width="73px">性别</td>
+                            <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
+                          </tr>                
                         <div style="margin-top:60px;">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="72px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
@@ -529,6 +529,8 @@ export default {
         });
     },
     handleSizeChange(val) {
+      this.pageNumber=1;
+      this.jumpPage=1;
       this.pageSize = val;
       var obj = {
         name: this.localSearch
@@ -733,9 +735,10 @@ export default {
 .selfTdStyle {
   background: #eef1f6;
   height: 60px;
+  line-height:60px;
   border:none !important;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
+.tableHeader{position:absolute;z-index:99999;top:0px;margin:0px;margin-top:-1px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;
@@ -765,6 +768,7 @@ export default {
   width: 660px;
   margin-bottom: 20px;
   height: 300px;
+  position:relative;
   /* overflow-y: scroll; */
 }
 .table-d{
