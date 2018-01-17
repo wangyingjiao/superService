@@ -29,12 +29,14 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .dashboard-container {
-  width: 100%;
+  margin: 0 -15px;
+ 
   height: 100%;
   .hollebg {
     width: 100%;
     height: 100%;
     img {
+     
       width: 100%;
       height: 100%;
     }
