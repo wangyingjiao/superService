@@ -93,7 +93,7 @@
             <el-tree
             class="scrollBox form_item"
               :data="data2"
-              :indent= 10
+              :indent= 30
               show-checkbox
               node-key="id"    
               v-model="temp.check"
