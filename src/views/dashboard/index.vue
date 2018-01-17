@@ -1,31 +1,49 @@
 <template>
   <div class="dashboard-container">
-    <div class='dashboard-text'>name:{{name}}</div>
-    <div class='dashboard-text'>role:<span v-for='role in roles' :key='role'>{{role}}</span></div>
+    <div id="demo">
+  <button v-on:click="show = !show">
+    Toggle
+  </button>
+  <transition enter-active-class="animated bounceInLeft" leave-active-class="animated flipInX">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+    <div class='hollebg'>
+      
+      <img src="../../../static/icon/hello(2).png" alt="">
+      </div>  
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'dashboard',
-  computed: {
-    ...mapGetters([
-      'name',
-      'roles'
-    ])
+  name: "dashboard",
+  data(){
+    return{
+      show: true
+    }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
+.dashboard-container {
+  width: 100%;
+  height: 100%;
+  .hollebg {
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
 </style>

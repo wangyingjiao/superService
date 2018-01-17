@@ -12,11 +12,11 @@
   </div>
 	<!-- 搜索结束 -->
 		<div class="second-bar" style="height:500px;">
-			<div class="tableWarp" style="width:100%;background:#fff;padding:20px 20px;">
-					<el-table :data="tableData" border style="width:100%">
+			<div class="tableWarpaa" style="width:100%;background:#fff;padding:20px 20px;">
+					<el-table :data="tableData" border style="width:100%" >
 					  <el-table-column  align="center" label="订单编号">
 							<template scope="scope" >
-								<div @click="lookInf(scope.row.id)" style="cursor:pointer;">
+								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
@@ -60,8 +60,8 @@
 								</template>
 					  </el-table-column>
 
-						<el-table-column label="操作" align="center">
-							<el-table-column align="center" label="操作" :colspan="2" ref="column">
+						<el-table-column label="操作" align="center" class="aa">
+							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn">
 									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
 											<el-button type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
@@ -89,33 +89,35 @@
 		</div>
 		<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="width120"></el-input> 
-			<button class="button-large FloatRight" @click="searchTeh">查询</button>
-			<div class="selfpromMessageTab" v-if="middleA.length !=0">
-				<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-					<div class="techNameStyle">{{item.techName}}</div>
-				</div>                         
-			</div>                                               	
+			<el-input placeholder="输入要搜索的姓名" v-model="techName2" style="width:180px;margin-left:15px;"></el-input> 
+			<button class="button-large FloatRight" @click="searchTeh" style="margin-right:15px;">查询</button>
+			<el-collapse-transition>
+				<div class="selfpromMessageTab" v-if="middleA.length !=0">
+					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+						<div class="techNameStyle">{{item.techName}}</div>
+					</div>                         
+				</div>
+			</el-collapse-transition>                                               	
 			<div class="selfTableWrapONE">
 				<div class="table-d">
 					<table  class="selfTable">
 					<tr class="tableHeader">
-						<td  class="selfTableHEADTD" align="center" width="56px">选择</td>
-						<td  class="selfTableHEADTD" align="center" width="166px">头像</td>
-						<td  class="selfTableHEADTD" align="center" width="179px">姓名</td>
-						<td  class="selfTableHEADTD" align="center" width="60px">性别</td>
-						<td  class="selfTableHEADTD" align="center" width="80.5px">岗位性质</td>							
+						<td  class="selfTableHEADTD" align="center" width="73px">选择</td>
+						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
+						<td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
+						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
 					</tr>
 					<div style="padding-top:60px;">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-								<td width="58px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-								<td  width="170px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="188px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
-								<td  width="60px" class="fontSize12" align="center">
+								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
 								</td>
-								<td width="84px" class="fontSize12"  align="center">
+								<td width="140px" class="fontSize12"  align="center">
 											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
 											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
 								</td>							
@@ -303,7 +305,7 @@ export default {
 		Reassignment(obj,pageNo,pageSize).then(res=>{
        if (res.data.code === 1) {
 					 this.tableData = res.data.data.list;										
-					 this.pagetotal1=res.data.data.count;				
+					 this.pagetotal1=res.data.data.count;			
 					this.listLoading = false;
 			 }else{
 				 	this.listLoading = false;
@@ -351,11 +353,20 @@ export default {
 	}	
   },
   mounted() {
+		// var obj={
+
+		// }
     this.reassList();
   }
 };
 </script>
 <style scoped>
+.dispatchNumberStyle{
+   cursor:pointer;
+}
+.dispatchNumberStyle:hover{
+	color:#1d85fe;
+}
 .width120{width:120px;}
 .FloatRight{float:right;}
 .selfpromMessageTab{position:relative;width:100%;margin-top:20px;margin-left:10px;}
@@ -381,7 +392,19 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-.selfTableWrapONE{margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
+.selfTableWrapONE{
+	margin-top: 20px;
+  overflow: hidden;
+  width: 660px;
+  margin-bottom: 20px;
+  height: 300px;
+}
+.table-d{
+  width: 677px;
+  overflow-y: scroll;
+  height: 300px;
+  margin-left: 15px;
+}
 .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
 .selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
 .height70{height:70px;}
@@ -448,10 +471,8 @@ export default {
 .el-table .cell{
 	padding: 0;
 }
-.tableWarp .el-table__header tr:nth-of-type(2){
-	display: none;
-}
-.tableWarp .el-pagination{
+
+.tableWarpaa .el-pagination{
 	text-align: right;
 }
 .techDialog .el-pagination{
@@ -461,7 +482,7 @@ export default {
 .techDialog .dialog-footer{
 	padding-bottom: 50px;
 }
-.tableWarp tr>td:nth-child(1){
+.tableWarpaa tr>td:nth-child(1){
 	padding: 0 20px;
 }
 .head-images{

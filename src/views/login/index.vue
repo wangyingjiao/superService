@@ -115,8 +115,8 @@ $light_gray: #eee;
 .login-container {
   @include relative;
   height: 100vh;
-
-  background-image: url("../../../static/icon/bg.png");
+  background-color: #1f3264;
+  background: url("../../../static/icon/bg.png") no-repeat;
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #1f3264 inset !important;
     -webkit-text-fill-color: #fff !important;
@@ -177,7 +177,7 @@ $light_gray: #eee;
     color: #ffffff;
     width: 100%;
     border: 0px solid #cde19e;
-    background-image: linear-gradient(-163deg, #00a8e1 0%, #cde19e 100%);
+    background-image: linear-gradient(-163deg, #cde19e 0%, #00a8e1 100%);
   }
   .login-form {
     position: absolute;

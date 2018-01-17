@@ -8,6 +8,7 @@ import store from './store'
 import axios from 'axios'
 import '@/icons' // icon
 import '@/permission' // 权限
+import 'animate.css'
 // axios.defaults.withCredentials = true
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false

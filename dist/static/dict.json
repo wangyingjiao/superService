@@ -115,8 +115,8 @@
         "relative": "亲戚"
     },
     "job_status": {
-        "leave": "离职",
-        "online": "在职"
+        "leave": "离岗",
+        "online": "在岗"
     },
     "order_status": {
         "whole": "全部",
