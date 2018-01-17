@@ -119,14 +119,13 @@
         "online": "在岗"
     },
     "order_status": {
-        "whole": "全部",
-        "cancel": "已取消",
         "dispatched": "已派单",
-        "stop": "已暂停",
-        "success": "已成功",
-        "waitdispatch": "待派单",
+        "started": "已上门",
         "finish": "已完成",
-        "started": "已上门"
+        "waitdispatch": "待派单",
+        "success": "已成功",
+        "cancel": "已取消",
+        "whole": "全部"        
     },
     "order_type": {
         "common": "普通订单",

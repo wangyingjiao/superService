@@ -537,6 +537,8 @@ export default {
       };
       console.log("size-change");
       this.pageSize = val;
+      this.listQuery.page = 1;
+      this.pageNumber =1
       // var obj = {};
       this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {

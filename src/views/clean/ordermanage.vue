@@ -293,6 +293,8 @@ export default {
 	},	
 	//每页条数多少改变
 	handleSizeChange(val){
+		this.pageNumber=1;
+		this.jumpPage=1;
 		this.size=val;
 		var obj={
 		}

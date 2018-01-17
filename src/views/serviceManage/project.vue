@@ -285,7 +285,7 @@
               </div>
               <el-collapse-transition>
               <el-form 
-                v-show="addComm"
+                v-if="addComm"
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"

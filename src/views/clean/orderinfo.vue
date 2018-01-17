@@ -899,6 +899,7 @@ export default {
   width: 660px;
   margin-bottom: 20px;
   height: 300px;
+  position:relative;
   }
 .table-d{
   width: 677px;

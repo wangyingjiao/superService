@@ -357,6 +357,8 @@ export default {
 				},
 				//表格页数改变
 					handleSizeChange1(val) {
+							this.pageNumber=1;
+							this.jumpPage=1;
 							this.pageSize1=val;
 							var obj={
 									name:this.customName,
