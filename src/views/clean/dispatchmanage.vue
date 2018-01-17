@@ -338,6 +338,8 @@ export default {
 	},
 	//表格页数改变
 	handleSizeChange1(val) {
+		this.pageNumber=1;
+		this.jumpPage=1;
 		this.pageSize1=val;
 		var obj={
 		}
@@ -398,6 +400,7 @@ export default {
   width: 660px;
   margin-bottom: 20px;
   height: 300px;
+	position:relative;
 }
 .table-d{
   width: 677px;
