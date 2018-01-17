@@ -898,7 +898,7 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 300px;
+  height: 267px;
   position:relative;
   }
 .table-d{
