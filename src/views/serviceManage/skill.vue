@@ -28,7 +28,7 @@
                         </template>
                       </el-table-column>
               </el-table>
-              <div v-show="!listLoading" class="pagination-container techPag">
+              <div v-if="!listLoading" class="pagination-container techPag">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
                   layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :page-sizes="[5,10,15,20]" :total="total">
                 </el-pagination>

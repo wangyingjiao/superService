@@ -72,22 +72,48 @@
           </div>
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
-            <div class="mousehover"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
-              <img src="../../../static/icon/密码.png" alt="" style="width:30px">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPasswordl1(item)" v-if="btnShow.indexOf('techni_app') > -1">
+            <transition  leave-active-class="animated  fadeOutLeft">
+             <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
+             </transition>
+            <transition>
+             <img v-if="!hoverState1" src="../../../static/icon/密码hov.png" alt="" >
+             </transition>
+              
+             
             </div>
-            <div v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
-              <img src="../../../static/icon/xiuxi.jpg" alt="" style="width:30px">
+            <div v-on:mouseenter.prevent="dataDetails2" v-on:mouseleave.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
+              <transition leave-active-class="animated  fadeOutLeft">
+                <img v-if="hoverState2" src="../../../static/icon/休假.png" alt="" >
+              </transition>
+              <transition >
+                <img v-if="!hoverState2" src="../../../static/icon/休假hov.png" alt="" >
+              </transition>
+             
             </div>
-            <div class="mousehover"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
-              <img src="../../../static/icon/修改.png" alt="" style="width:30px">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails3" v-on:mouseleave.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
+              <transition leave-active-class="animated  fadeOutLeft">
+              <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" >
+              </transition>
+              <transition >
+              <img v-if="!hoverState3" src="../../../static/icon/修改hov.png" alt="" >
+              </transition>
+
             </div>
-            <div class="mousehover"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
-              <img src="../../../static/icon/删除.jpg" alt="" style="width:30px">
+            <div class="mousehover" v-on:mouseenter.prevent="dataDetails4" v-on:mouseleave.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
+              <transition leave-active-class="animated  fadeOutLeft">
+              <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="">
+              </transition>
+              <transition >
+              <img v-if="!hoverState4" src="../../../static/icon/删除hov.png" alt="">
+              </transition>
+
             </div>
           </div>
         </li>
       </ul>
     </div>
+
        <!-- </el-table> -->
       <!-- 密码弹出层 -->
       <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
@@ -627,14 +653,14 @@ export default {
   data() {
     var validatePass = (rule, value, callback) => {
       var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
-      if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error('至少8个字符，同时包含字母与数字'))
+      if (value) {
+        if (reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("至少8个字符，同时包含字母与数字"));
         }
-      }else{
-        callback(new Error("请输入密码"))
+      } else {
+        callback(new Error("请输入密码"));
       }
     };
     var validatePass2 = (rule, value, callback) => {
@@ -647,98 +673,98 @@ export default {
       }
     };
     //身份证号
-    var TECHIDCARD = (rule,value,callback)=>{
-      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
-      if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error('身份证号格式错误'))
+    var TECHIDCARD = (rule, value, callback) => {
+      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (value) {
+        if (reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("身份证号格式错误"));
         }
-      }else{
-        callback(new Error('请输入身份证号'))
+      } else {
+        callback(new Error("请输入身份证号"));
       }
     };
     //身份证
-      // var TECHIDCARD = (rule, value, callback) => {
-      //   var city = {
-      //     11: "北京",
-      //     12: "天津",
-      //     13: "河北",
-      //     14: "山西",
-      //     15: "内蒙古",
-      //     21: "辽宁",
-      //     22: "吉林",
-      //     23: "黑龙江 ",
-      //     31: "上海",
-      //     32: "江苏",
-      //     33: "浙江",
-      //     34: "安徽",
-      //     35: "福建",
-      //     36: "江西",
-      //     37: "山东",
-      //     41: "河南",
-      //     42: "湖北 ",
-      //     43: "湖南",
-      //     44: "广东",
-      //     45: "广西",
-      //     46: "海南",
-      //     50: "重庆",
-      //     51: "四川",
-      //     52: "贵州",
-      //     53: "云南",
-      //     54: "西藏 ",
-      //     61: "陕西",
-      //     62: "甘肃",
-      //     63: "青海",
-      //     64: "宁夏",
-      //     65: "新疆",
-      //     71: "台湾",
-      //     81: "香港",
-      //     82: "澳门",
-      //     91: "国外 "
-      //   };
-      //   var tip = "";
-      //   var pass = true;
-      //   if (
-      //     !value ||
-      //     !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
-      //       value
-      //     )
-      //   ) {
-      //     tip = "身份证号格式错误";
-      //     callback(new Error(tip));
-      //     pass = false;
-      //   } else if (!city[value.substr(0, 2)]) {
-      //     tip = "地址编码错误";
-      //     callback(new Error(tip));
-      //     pass = false;
-      //   } else {
-      //     if (value.length == 18) {
-      //       value = value.split("");
-      //       var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
-      //       var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
-      //       var sum = 0;
-      //       var ai = 0;
-      //       var wi = 0;
-      //       for (var i = 0; i < 17; i++) {
-      //         ai = value[i];
-      //         wi = factor[i];
-      //         sum += ai * wi;
-      //       }
-      //       var last = parity[sum % 11];
-      //       if (parity[sum % 11] != value[17]) {
-      //         tip = "校验位错误";
-      //         callback(new Error(tip));
-      //         pass = false;
-      //       }
-      //     }
-      //   }
+    // var TECHIDCARD = (rule, value, callback) => {
+    //   var city = {
+    //     11: "北京",
+    //     12: "天津",
+    //     13: "河北",
+    //     14: "山西",
+    //     15: "内蒙古",
+    //     21: "辽宁",
+    //     22: "吉林",
+    //     23: "黑龙江 ",
+    //     31: "上海",
+    //     32: "江苏",
+    //     33: "浙江",
+    //     34: "安徽",
+    //     35: "福建",
+    //     36: "江西",
+    //     37: "山东",
+    //     41: "河南",
+    //     42: "湖北 ",
+    //     43: "湖南",
+    //     44: "广东",
+    //     45: "广西",
+    //     46: "海南",
+    //     50: "重庆",
+    //     51: "四川",
+    //     52: "贵州",
+    //     53: "云南",
+    //     54: "西藏 ",
+    //     61: "陕西",
+    //     62: "甘肃",
+    //     63: "青海",
+    //     64: "宁夏",
+    //     65: "新疆",
+    //     71: "台湾",
+    //     81: "香港",
+    //     82: "澳门",
+    //     91: "国外 "
+    //   };
+    //   var tip = "";
+    //   var pass = true;
+    //   if (
+    //     !value ||
+    //     !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(
+    //       value
+    //     )
+    //   ) {
+    //     tip = "身份证号格式错误";
+    //     callback(new Error(tip));
+    //     pass = false;
+    //   } else if (!city[value.substr(0, 2)]) {
+    //     tip = "地址编码错误";
+    //     callback(new Error(tip));
+    //     pass = false;
+    //   } else {
+    //     if (value.length == 18) {
+    //       value = value.split("");
+    //       var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+    //       var parity = [1, 0, "X", 9, 8, 7, 6, 5, 4, 3, 2];
+    //       var sum = 0;
+    //       var ai = 0;
+    //       var wi = 0;
+    //       for (var i = 0; i < 17; i++) {
+    //         ai = value[i];
+    //         wi = factor[i];
+    //         sum += ai * wi;
+    //       }
+    //       var last = parity[sum % 11];
+    //       if (parity[sum % 11] != value[17]) {
+    //         tip = "校验位错误";
+    //         callback(new Error(tip));
+    //         pass = false;
+    //       }
+    //     }
+    //   }
 
-      //   if (pass) {
-      //     callback();
-      //   }
-      // };
+    //   if (pass) {
+    //     callback();
+    //   }
+    // };
     //手机号
     var TECHPHONE = (rule, value, callback) => {
       var reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
@@ -754,11 +780,11 @@ export default {
     };
     //现住地址
     var ADDRESS = (rule, value, callback) => {
-       console.log(value, "value----现住地址");
-      if(this.personal.area!=undefined && this.personal.area.length>0){
-        callback()
-      }else{
-        callback(new Error('请选择现住地址'))
+      console.log(value, "value----现住地址");
+      if (this.personal.area != undefined && this.personal.area.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择现住地址"));
       }
       // if(value.length>0){
       //   callback()
@@ -776,47 +802,59 @@ export default {
     };
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
-      console.log(this.teachArr,"this.teachArr-----------------________________")
-      if(this.teachArr.length > 0 && this.teachArr != undefined){
+      console.log(
+        this.teachArr,
+        "this.teachArr-----------------________________"
+      );
+      if (this.teachArr.length > 0 && this.teachArr != undefined) {
         callback();
-      }else{
+      } else {
         callback(new Error("请选择工作时间"));
       }
     };
     //头像图片
-    var HEADPIC = (rule,value,callback) => {
+    var HEADPIC = (rule, value, callback) => {
       // personal.headPic
-      console.log(value,"_____________________________value_____________________________")
-      console.log(this.personal.headPic,"_____________________________this.personal.headPic____________________________")
-      if(this.personal.headPic.length>0 && this.personal.headPic!=undefined){
-        callback()
-      }else{
-        callback(new Error('请上传头像'))
+      console.log(
+        value,
+        "_____________________________value_____________________________"
+      );
+      console.log(
+        this.personal.headPic,
+        "_____________________________this.personal.headPic____________________________"
+      );
+      if (
+        this.personal.headPic.length > 0 &&
+        this.personal.headPic != undefined
+      ) {
+        callback();
+      } else {
+        callback(new Error("请上传头像"));
       }
-    }
+    };
 
     //休假结束日期
-    var ENDDATE = (rule,value,callback) =>{
-      var t1 = Date.parse(this.ruleForm.startDate)
-      var t2 = Date.parse(value)
-      var c1 = Date.parse('2008-08-08 '+this.ruleForm.startTime);
-      var c2 = Date.parse('2008-08-08 '+this.ruleForm.endTime);
-      if(value){
-        if(t2>=t1){
-          if(t2==t1){
-            if(c2>c1){
-              callback()
-            }else{
-               callback(new Error('结束时间不能小于开始时间'))
+    var ENDDATE = (rule, value, callback) => {
+      var t1 = Date.parse(this.ruleForm.startDate);
+      var t2 = Date.parse(value);
+      var c1 = Date.parse("2008-08-08 " + this.ruleForm.startTime);
+      var c2 = Date.parse("2008-08-08 " + this.ruleForm.endTime);
+      if (value) {
+        if (t2 >= t1) {
+          if (t2 == t1) {
+            if (c2 > c1) {
+              callback();
+            } else {
+              callback(new Error("结束时间不能小于开始时间"));
             }
-          }else{
-            callback()
+          } else {
+            callback();
           }
-        }else{
-          callback(new Error('结束时间不能小于开始时间'))
+        } else {
+          callback(new Error("结束时间不能小于开始时间"));
         }
-      }else{
-        callback(new Error('请选择结束日期'))
+      } else {
+        callback(new Error("请选择结束日期"));
       }
       // if(t2>=t1){
       //   callback()
@@ -831,47 +869,42 @@ export default {
       // var c2 = Date.parse('2008-08-08 '+t2);
       // console.log(c1,"ca-----")
       // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
-        // if(c1<=c2){
-     
-    }
+      // if(c1<=c2){
+    };
 
     return {
-      startEnd:{"start":'09:00',"end":'18:00'},
-      btnState:false,
-      jobFlag:false,
-      kaishi:'',
-      jiehsu:'',
-      backId:'',//身份证头像
-      headerBack:'',//头像
+      startEnd: { start: "09:00", end: "18:00" },
+      btnState: false,
+      jobFlag: false,
+      kaishi: "",
+      jiehsu: "",
+      backId: "", //身份证头像
+      headerBack: "", //头像
       //搜索
-      techniSearch:{
-        stationId:'',
-        jobNature:'',
-        skillIds:[],
-        chooses:''
+      techniSearch: {
+        stationId: "",
+        jobNature: "",
+        skillIds: [],
+        chooses: ""
       },
       ruleForm: {
-        startTime:'',
-        startDate:'',
-        endTime:'',
-        endDate:'',
-        desc:''
+        startTime: "",
+        startDate: "",
+        endTime: "",
+        endDate: "",
+        desc: ""
       },
       rules: {
-        startTime: [
-          { required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        endDate:[
+        startTime: [{ required: true, message: "请选择时间", trigger: "change" }],
+        endDate: [
           // { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          {required:true,validator:ENDDATE,trigger:'change'}
+          { required: true, validator: ENDDATE, trigger: "change" }
         ],
         startDate: [
-          {type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { type: "date", required: true, message: "请选择日期", trigger: "change" }
         ],
-        endTime:[
-          {required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        desc:[
+        endTime: [{ required: true, message: "请选择时间", trigger: "change" }],
+        desc: [
           { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
         ]
       },
@@ -906,12 +939,12 @@ export default {
         cityCode: "", //市
         areaCode: "", //区
         idCardPicBefor: "", //身份证照片
-        idCardPicAfter:"", //身份证反面
+        idCardPicAfter: "", //身份证反面
         headPic: "", //头像
         workTimes: [
           //工作时间
           { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
-        ],
+        ]
       },
       Choose: [],
       mouserFlag: false,
@@ -923,7 +956,7 @@ export default {
         // 身份证
         idCard: [
           // { required: true, trigger: "blur" }
-          {required:true, validator:TECHIDCARD ,trigger:'blur'}
+          { required: true, validator: TECHIDCARD, trigger: "blur" }
         ],
         //手机号
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
@@ -938,13 +971,11 @@ export default {
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
         workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
-        headPic:[
-          { required: true, validator:HEADPIC , trigger: "blur"}
-        ],
-        address:[
-            {required:true,message:"请输入详细地址",trigger:'blur'},
-            { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
-          ]
+        headPic: [{ required: true, validator: HEADPIC, trigger: "blur" }],
+        address: [
+          { required: true, message: "请输入详细地址", trigger: "blur" },
+          { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+        ]
       },
       server: [
         {
@@ -969,7 +1000,7 @@ export default {
         }
       ],
       infoname: [],
-      chooContent:'',
+      chooContent: "",
       // infoname: [{
       //   value: '选项1',
       //   name: '李阿姨',
@@ -1021,7 +1052,7 @@ export default {
       sex: {},
       ethnics: [],
       areas: [],
-      passwordModule:'',
+      passwordModule: "",
       strong: {},
       statu: {},
       education: {},
@@ -1216,7 +1247,7 @@ export default {
       relation: {},
       key: false,
       isA: false,
-      passwordId:null,
+      passwordId: null,
       isB: false,
       isTab: false,
       sexLen: "",
@@ -1238,9 +1269,9 @@ export default {
       techniList: [],
       places: "",
       marriages: "",
-      vacationName:'',
+      vacationName: "",
       strongs: "",
-      roomSel2Arr:[],
+      roomSel2Arr: [],
       heights: "",
       educations: "",
       sexs: "",
@@ -1266,8 +1297,8 @@ export default {
       ],
       position: false,
       listLoading: false,
-      picFile:[],
-      listLoadingTech:true,
+      picFile: [],
+      listLoadingTech: true,
       list: [1, 2, 3],
       total: null,
       listLoading: false,
@@ -1284,126 +1315,172 @@ export default {
         title: undefined,
         type: undefined,
         sort: "+id",
-        sync:1
+        sync: 1
       },
       dialogVisible: false,
       dialogVisibleEdit: false,
-      storeEnd:{
-        endDate:'',
-        storeDate:''
-      }
+      storeEnd: {
+        endDate: "",
+        storeDate: ""
+      },
+      hoverState1: true,
+      hoverState2: true,
+      hoverState3: true,
+      hoverState4: true
     };
   },
   components: {
     techniEdit
   },
   computed: {
-    pickerOptions0(){
-          var data = new Date();
-          var year = data.getFullYear();
-          var month = data.getMonth() + 1;
-          var day = data.getDate();
-          var str = year+','+month+','+day
-          var time1 = Date.parse(new Date('1950,1,1'))
-          var time2 = Date.parse(new Date(str))
-          return {
-            disabledDate(time){
-              return time.getTime() <time1 || time.getTime() > time2
-            }
-          }
-      },
+    pickerOptions0() {
+      var data = new Date();
+      var year = data.getFullYear();
+      var month = data.getMonth() + 1;
+      var day = data.getDate();
+      var str = year + "," + month + "," + day;
+      var time1 = Date.parse(new Date("1950,1,1"));
+      var time2 = Date.parse(new Date(str));
+      return {
+        disabledDate(time) {
+          return time.getTime() < time1 || time.getTime() > time2;
+        }
+      };
+    },
     //权限
     btnShow() {
-      return JSON.parse(localStorage.getItem('btn'));
+      return JSON.parse(localStorage.getItem("btn"));
     },
     areaOptions() {
       console.log(this.$store.state.user.area, "this.$store.state.user.area");
       return this.$store.state.user.area;
     },
-    sign:function() {
-      console.log("-----------------------签名")
+    sign: function() {
+      console.log("-----------------------签名");
       return getSign();
     },
     //开始时间
-    startEndTime(){
+    startEndTime() {
       // startEnd.start startEnd.end
-      var t1 = Date.parse('2008-08-08 '+'09:00')
-      var tt = t1-1800000;
-      var str = new Date(tt)
-      var start = str.toLocaleString().replace(/:\d{1,2}$/,' ');
-      if(start.length==17){
-        var startTime = start.substring(start.length-6,start.length);
-      }else{
-        var startTime = start.substring(start.length-5,start.length);
+      var t1 = Date.parse("2008-08-08 " + "09:00");
+      var tt = t1 - 1800000;
+      var str = new Date(tt);
+      var start = str.toLocaleString().replace(/:\d{1,2}$/, " ");
+      if (start.length == 17) {
+        var startTime = start.substring(start.length - 6, start.length);
+      } else {
+        var startTime = start.substring(start.length - 5, start.length);
       }
-      return startTime
+      return startTime;
     },
     //结束时间
-    suspendEndTime(){
+    suspendEndTime() {
       // startEnd.start startEnd.end
-      var t1 = Date.parse('2008-08-08 '+'12:00')
-      var tt = t1+1800000;
-      var str = new Date(tt)
-      var start = str.toLocaleString().replace(/:\d{1,2}$/,' ');
-      if(start.length==17){
-        var startTime = start.substring(start.length-6,start.length);
-      }else{
-        var startTime = start.substring(start.length-5,start.length);
+      var t1 = Date.parse("2008-08-08 " + "12:00");
+      var tt = t1 + 1800000;
+      var str = new Date(tt);
+      var start = str.toLocaleString().replace(/:\d{1,2}$/, " ");
+      if (start.length == 17) {
+        var startTime = start.substring(start.length - 6, start.length);
+      } else {
+        var startTime = start.substring(start.length - 5, start.length);
       }
-      console.log(startTime,"startTime---------------")
-      return startTime
-    },
+      console.log(startTime, "startTime---------------");
+      return startTime;
+    }
   },
   methods: {
-    //全职兼职切换 
-    jobNatureTable(){
-      if(this.personal.jobNature == 'part_time'){
-          this.teachArr = []
-          this.roomSelNum = []
-          this.disbArr = []
+    //鼠标滑过
+    dataDetails1(a) {
+      console.log(a, "滑过时");
+      this.hoverState1 = false;
+    },
+    hiddenDetail1(val) {
+      console.log(val, "离开时");
+      this.hoverState1 = true;
+    },
+    dataDetails2(a) {
+      console.log(a, "滑过时");
+      this.hoverState2 = false;
+    },
+    hiddenDetail2(val) {
+      console.log(val, "离开时");
+      this.hoverState2 = true;
+    },
+    dataDetails3(a) {
+      console.log(a, "滑过时");
+      this.hoverState3 = false;
+    },
+    hiddenDetail3(val) {
+      console.log(val, "离开时");
+      this.hoverState3 = true;
+    },
+    dataDetails4(a) {
+      console.log(a, "滑过时");
+      this.hoverState4 = false;
+    },
+    hiddenDetail4(val) {
+      console.log(val, "离开时");
+      this.hoverState4 = true;
+    },
+    //全职兼职切换
+    jobNatureTable() {
+      if (this.personal.jobNature == "part_time") {
+        this.teachArr = [];
+        this.roomSelNum = [];
+        this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file){
+    beforeAvatarUpload(file) {
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")
-      if(file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
-        console.log(file.type,"file.type-----------")
-      }else{
-         console.log(file.type,"file.type-----------+++++++++")
-        this.$message.error('请上传正确的图片格式');
-        return false
+      if (
+        file.type == "image/jpg" ||
+        file.type == "image/png" ||
+        file.type == "image/jpeg"
+      ) {
+        console.log(file.type, "file.type-----------");
+      } else {
+        console.log(file.type, "file.type-----------+++++++++");
+        this.$message.error("请上传正确的图片格式");
+        return false;
       }
     },
     //编辑弹框关闭
-    closeDialog(){
-
-    },
+    closeDialog() {},
     //新增按钮
-    handleCreate(){
-      this.dialogVisible = true
+    handleCreate() {
+      this.dialogVisible = true;
       //服务时间
-      serviceTechnicianInfo().then(data=>{
-        console.log(data,"data==========")
-        this.startEnd = data.data.data
-        this.startTime = data.data.data.start
-        this.endTime = data.data.data.end
-        console.log(this.suspendEndTime,"this.startEndTime,--------------------------------------")
-      }).catch(error=>{
-        console.log(error,"新增按钮")
-      })
+      serviceTechnicianInfo()
+        .then(data => {
+          console.log(data, "data==========");
+          this.startEnd = data.data.data;
+          this.startTime = data.data.data.start;
+          this.endTime = data.data.data.end;
+          console.log(
+            this.suspendEndTime,
+            "this.startEndTime,--------------------------------------"
+          );
+        })
+        .catch(error => {
+          console.log(error, "新增按钮");
+        });
       //所属服务站
-      serviceStation({}).then(data=>{
-        var stationLocal = localStorage.getItem('station')
-        var stationObj = JSON.parse(stationLocal)
-        var obj = data.data.data
-        this.servery = stationObj.id!=0 ? obj : obj.slice(1);
-        this.personal.stationId = stationObj.id != 0 ? stationObj.id : ''
-        console.log(data,"服务站++++++++++++++")
-      }).catch(error=>{
-        console.log(error,"服务站错误+++++++")
-      })
+      serviceStation({})
+        .then(data => {
+          var stationLocal = localStorage.getItem("station");
+          var stationObj = JSON.parse(stationLocal);
+          var obj = data.data.data;
+          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+          this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
+          console.log(data, "服务站++++++++++++++");
+        })
+        .catch(error => {
+          console.log(error, "服务站错误+++++++");
+        });
     },
-    picUpload(file,flag){
+    picUpload(file, flag) {
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1420,18 +1497,18 @@ export default {
         }
       });
       var that = this;
-      pro.then(success=>{
+      pro.then(success => {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
         var y = date.getFullYear();
-        var m = date.getMonth()+1;
+        var m = date.getMonth() + 1;
         var d = date.getDate();
-        var s = date.getTime()
-        ossData.append("name",file.file.name);
+        var s = date.getTime();
+        ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/"  + s + '.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".jpg"
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1444,101 +1521,108 @@ export default {
         // console.log(ossData.get("key"),"ossData------");
 
         that.$http
-          .post(data.host,ossData,{
-            headers:{
+          .post(data.host, ossData, {
+            headers: {
               "Content-Type": "multipart/form-data; boundary={boundary}"
             }
           })
-          .then(res=>{
-              if(flag == "head"){
-                this.personal.headPic = ossData.get("key")
-              }else if(flag == "at"){
-                this.personal.idCardPicAfter = ossData.get("key")
-              }else{
-                this.personal.idCardPicBefor = ossData.get("key")
-              }
-          })
-        
+          .then(res => {
+            if (flag == "head") {
+              this.personal.headPic = ossData.get("key");
+            } else if (flag == "at") {
+              this.personal.idCardPicAfter = ossData.get("key");
+            } else {
+              this.personal.idCardPicBefor = ossData.get("key");
+            }
+          });
+
         // console.log(this.headerBack,"this.headerBack")
-      })
+      });
     },
     //搜索
-    techniSearchs(page,size){
+    techniSearchs(page, size) {
       var _page = 1 || page;
-      var _size = 6 || size
+      var _size = 6 || size;
       this.listQuery.sync = 1;
-      console.log(this.techniSearch,"techniSearch-----------------------------")
-      var obj = {}
-      if(this.techniSearch.stationId){
-        obj.stationId = this.techniSearch.stationId
+      console.log(
+        this.techniSearch,
+        "techniSearch-----------------------------"
+      );
+      var obj = {};
+      if (this.techniSearch.stationId) {
+        obj.stationId = this.techniSearch.stationId;
       }
-      if(this.techniSearch.jobNature){
-        obj.jobNature = this.techniSearch.jobNature
+      if (this.techniSearch.jobNature) {
+        obj.jobNature = this.techniSearch.jobNature;
       }
-      if(this.techniSearch.chooses){
-        obj[this.techniSearch.chooses] = this.chooContent
+      if (this.techniSearch.chooses) {
+        obj[this.techniSearch.chooses] = this.chooContent;
       }
-      if(!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)){
-        obj.skillIds = this.roomSel2Arr
+      if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
+        obj.skillIds = this.roomSel2Arr;
       }
-      console.log(obj,"------------------")
-      this.getList(_page,_size,obj)
+      console.log(obj, "------------------");
+      this.getList(_page, _size, obj);
     },
-    startDateChange(val){
-      this.storeEnd.storeDate = val
+    startDateChange(val) {
+      this.storeEnd.storeDate = val;
     },
-    endDateChange(val){
-      this.storeEnd.endDate = val
+    endDateChange(val) {
+      this.storeEnd.endDate = val;
     },
     //休假取消
-    vacationCancel(formName){
+    vacationCancel(formName) {
       this.$refs[formName].resetFields();
-      this.flags = false
+      this.flags = false;
     },
     //休假保存
-    vacationPreser(formName){
+    vacationPreser(formName) {
       // ruleForm.startDate ruleForm.startTime  ruleForm.endDate  ruleForm.endTime
-      var t1 = this.ruleForm.startTime
-      var t2 = this.ruleForm.endTime
-      console.log(t1,"t1-----")
-      console.log(t2,"t2-----")
-      var c1 = Date.parse('2008-08-08 '+t1);
-      var c2 = Date.parse('2008-08-08 '+t2);
-      console.log(c1,"ca-----")
+      var t1 = this.ruleForm.startTime;
+      var t2 = this.ruleForm.endTime;
+      console.log(t1, "t1-----");
+      console.log(t2, "t2-----");
+      var c1 = Date.parse("2008-08-08 " + t1);
+      var c2 = Date.parse("2008-08-08 " + t2);
+      console.log(c1, "ca-----");
       // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
-        // if(c1<=c2){
-          this.$refs[formName].validate(val=>{
-              if(val){
-                var obj = {}
-                  obj.techId = this.passwordId
-                  obj.startTime = this.storeEnd.storeDate+" "+this.ruleForm.startTime+':00'
-                  obj.endTime = this.storeEnd.endDate+" "+this.ruleForm.endTime+':00'
-                  obj.remark = this.ruleForm.desc
-                  console.log(obj)
-                  addVacation(obj).then(data=>{
-                    console.log(data,"data---休假")
-                    if(data.data.code){
-                      this.$message({
-                        message: "保存成功",
-                        type: "success"
-                      });
-                      this.vacationCancel('ruleForm')
-                    }else{
-                      this.$message.error(data.data.data)
-                      return false
-                    }
-                  }).catch(error=>{
-                    console.log(error,"error-----")
-                    return false
-                  })
-              }else{
-                return false
+      // if(c1<=c2){
+      this.$refs[formName].validate(val => {
+        if (val) {
+          var obj = {};
+          obj.techId = this.passwordId;
+          obj.startTime =
+            this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
+          obj.endTime =
+            this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
+          obj.remark = this.ruleForm.desc;
+          console.log(obj);
+          addVacation(obj)
+            .then(data => {
+              console.log(data, "data---休假");
+              if (data.data.code) {
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.vacationCancel("ruleForm");
+              } else {
+                this.$message.error(data.data.data);
+                return false;
               }
-          })
-        // }else{
-        //   this.$message.error("保存失败")
-        //   return false
-        // }
+            })
+            .catch(error => {
+              console.log(error, "error-----");
+              return false;
+            });
+        } else {
+          return false;
+        }
+      });
+      // }else{
+      //   this.$message.error("保存失败")
+      //   return false
+      // }
       // }else{
       //   this.$message.error("保存失败")
       //   return false
@@ -1548,56 +1632,63 @@ export default {
       //  console.log(this.storeEnd,"storeEnd----")
     },
     //休假
-    vacation(item){
-       serviceTechnicianInfo().then(data=>{
-        console.log(data,"data==========")
-        this.startEnd = data.data.data
-        this.ruleForm.startTime = data.data.data.start
-        this.ruleForm.endTime = data.data.data.end
-      }).catch(error=>{
-        console.log(error,"新增按钮")
-      })
-      this.flags = true
-      this.passwordId = item.id
-      this.vacationName = item.name
+    vacation(item) {
+      serviceTechnicianInfo()
+        .then(data => {
+          console.log(data, "data==========");
+          this.startEnd = data.data.data;
+          this.ruleForm.startTime = data.data.data.start;
+          this.ruleForm.endTime = data.data.data.end;
+        })
+        .catch(error => {
+          console.log(error, "新增按钮");
+        });
+      this.flags = true;
+      this.passwordId = item.id;
+      this.vacationName = item.name;
     },
     //修改密码取消
-    passwordCancel(formName){
+    passwordCancel(formName) {
       this.$refs[formName].resetFields();
-      this.password = false
+      this.password = false;
     },
     //修改密码保存
-    passwordPrese(formName){
-      this.$refs[formName].validate(val=>{
-        if(val){
-          appPassWord({"id":this.passwordId,"appLoginPassword":this.ruleForm2.checkPass}).then(data=>{
-            if(data.data.code){
-              this.$message({
-                message: "设置密码成功",
-                type: "success"
-              });
-              this.passwordCancel('ruleForm2')
-              this.password = false
-            }else{
-              this.$message.error("设置失败")
-              return false
-            }
-          }).catch(error=>{
-            this.$message.error("设置失败")
-              return false
-            console.log(error,"error---app密码错误")
+    passwordPrese(formName) {
+      this.$refs[formName].validate(val => {
+        if (val) {
+          appPassWord({
+            id: this.passwordId,
+            appLoginPassword: this.ruleForm2.checkPass
           })
-        }else{
-          return false
+            .then(data => {
+              if (data.data.code) {
+                this.$message({
+                  message: "设置密码成功",
+                  type: "success"
+                });
+                this.passwordCancel("ruleForm2");
+                this.password = false;
+              } else {
+                this.$message.error("设置失败");
+                return false;
+              }
+            })
+            .catch(error => {
+              this.$message.error("设置失败");
+              return false;
+              console.log(error, "error---app密码错误");
+            });
+        } else {
+          return false;
         }
-      })
+      });
     },
     //修改app密码
-    appPassword(item){
+    appPassword(item) {
       // console.log(item,"---------------")
-      this.passwordModule = item.phone
-      this.password = true
-      this.passwordId = item.id
+      this.passwordModule = item.phone;
+      this.password = true;
+      this.passwordId = item.id;
       // console.log(item,"item-----")
     },
 
@@ -1613,22 +1704,26 @@ export default {
           console.log(error, "error---技师编辑");
         });
 
-      serviceTechnicianInfo().then(data=>{
-        console.log(data,"data==========")
-        this.startEnd = data.data.data
-        this.startTime = data.data.data.start
-        this.endTime = data.data.data.end
-      }).catch(error=>{
-        console.log(error,"新增按钮")
-      })
+      serviceTechnicianInfo()
+        .then(data => {
+          console.log(data, "data==========");
+          this.startEnd = data.data.data;
+          this.startTime = data.data.data.start;
+          this.endTime = data.data.data.end;
+        })
+        .catch(error => {
+          console.log(error, "新增按钮");
+        });
 
       //所属服务站
-      serviceStation({}).then(data=>{
-        this.servery = data.data.data;
-        console.log(data,"服务站++++++++++++++")
-      }).catch(error=>{
-        console.log(error,"服务站错误+++++++")
-      })
+      serviceStation({})
+        .then(data => {
+          this.servery = data.data.data;
+          console.log(data, "服务站++++++++++++++");
+        })
+        .catch(error => {
+          console.log(error, "服务站错误+++++++");
+        });
     },
     //现住地址
     nowAdd(val) {
@@ -1639,67 +1734,70 @@ export default {
     handlePreview(file) {},
     handleClose(formName) {
       this.$refs[formName].resetFields();
-      this.personal.address = ''
-      this.personal.nation = ''
-      this.personal.idCardPicBefor = ''
-      this.personal.idCardPicAfter = ''
-      this.personal.headPic = ''
+      this.personal.address = "";
+      this.personal.nation = "";
+      this.personal.idCardPicBefor = "";
+      this.personal.idCardPicAfter = "";
+      this.personal.headPic = "";
       this.teachArr = [];
-      this.teachArr = []
-      this.roomSelNum = []
-      this.disbArr = []
-      this.addtimeno()
-      this.dialogVisible = false
+      this.teachArr = [];
+      this.roomSelNum = [];
+      this.disbArr = [];
+      this.addtimeno();
+      this.dialogVisible = false;
     },
     // 工作时间删除
-    deletes(item,index) {
-      this.disbArr = []
-      this.roomSelNum = []
-      var arr = [].concat(this.teachArr)
-      arr.splice(index,1)
-      this.teachArr = arr
+    deletes(item, index) {
+      this.disbArr = [];
+      this.roomSelNum = [];
+      var arr = [].concat(this.teachArr);
+      arr.splice(index, 1);
+      this.teachArr = arr;
 
-      for(var i =0 ; i<arr.length ; i++){
-        for(var j =0 ; j<arr[i].weeks.length ; j++){
-          this.disbArr.push(arr[i].weeks[j].id*1)
-          this.roomSelNum.push(arr[i].weeks[j].id*1)
+      for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].weeks.length; j++) {
+          this.disbArr.push(arr[i].weeks[j].id * 1);
+          this.roomSelNum.push(arr[i].weeks[j].id * 1);
         }
       }
       // this.teachArr.splice(index, 1);
     },
     handleCurrentChange(val) {
-      if(val!=null || val!=undefined){
+      if (val != null || val != undefined) {
         this.listQuery.page = val;
       }
-     
-       var obj = {}
-      if(this.techniSearch.stationId){
-        obj.stationId = this.techniSearch.stationId
+
+      var obj = {};
+      if (this.techniSearch.stationId) {
+        obj.stationId = this.techniSearch.stationId;
       }
-      if(this.techniSearch.jobNature){
-        obj.jobNature = this.techniSearch.jobNature
+      if (this.techniSearch.jobNature) {
+        obj.jobNature = this.techniSearch.jobNature;
       }
-      if(this.techniSearch.chooses){
-        obj[this.techniSearch.chooses] = this.chooContent
+      if (this.techniSearch.chooses) {
+        obj[this.techniSearch.chooses] = this.chooContent;
       }
-      if(!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)){
-        obj.skillIds = this.roomSel2Arr
+      if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
+        obj.skillIds = this.roomSel2Arr;
       }
 
-      console.log(this.listQuery.page,"this.listQuery.page------")
-      if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
-        delete this.techniSearch.skillIds
+      console.log(this.listQuery.page, "this.listQuery.page------");
+      if (
+        this.techniSearch.skillIds === undefined ||
+        this.techniSearch.skillIds.length == 0
+      ) {
+        delete this.techniSearch.skillIds;
       }
-      this.getList(val,this.listQuery.limit,obj);
-      console.log(val)
+      this.getList(val, this.listQuery.limit, obj);
+      console.log(val);
     },
     handleSizeChange(val) {
-      this.listQuery.sync = 1
+      this.listQuery.sync = 1;
       this.listQuery.limit = val;
       // if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
       //   delete this.techniSearch.skillIds
       // }
-      this.getList(this.listQuery.page,val,{});
+      this.getList(this.listQuery.page, val, {});
     },
     handleModifyStatus(row, status) {
       this.$message({
@@ -1734,14 +1832,14 @@ export default {
       } else {
         this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
       }
-       console.log(this.roomSel1Arr,"this.roomSel1Arr-------")
+      console.log(this.roomSel1Arr, "this.roomSel1Arr-------");
       // console.log(this.roomSelNum,"this.roomSelNum-----")
       item.show = !item.show;
       //  console.log(item)
     },
     //排序
-    by(name){
-      return function(o, p){
+    by(name) {
+      return function(o, p) {
         var a, b;
         if (typeof o === "object" && typeof p === "object" && o && p) {
           a = o[name];
@@ -1753,37 +1851,36 @@ export default {
             return a < b ? -1 : 1;
           }
           return typeof a < typeof b ? -1 : 1;
+        } else {
+          throw "error";
         }
-        else {
-          throw ("error");
-        }
-      }
+      };
     },
     techClick() {
-      var c1 = Date.parse('2008-08-08 '+this.startTime);
-      var c2 = Date.parse('2008-08-08 '+this.endTime);
-      if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
-        if(c2>c1){
-            var obj = {};
-                obj.startTime = this.startTime
-                obj.endTime = this.endTime
-                this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
-                obj.weeks = [].concat(this.roomSel1Arr);
-                this.disbArr = this.disbArr.concat(this.roomSelNum);
-                this.teachArr.push(obj);
-                this.isB = false;
-                this.startTime = ''
-                this.endTime = ''
-        }else{
-            this.$message({
-              type: "warning",
-              message: "结束时间不能小于开始时间"
-            });
-            return false
+      var c1 = Date.parse("2008-08-08 " + this.startTime);
+      var c2 = Date.parse("2008-08-08 " + this.endTime);
+      if (this.startTime && this.endTime && this.roomSel1Arr.length > 0) {
+        if (c2 > c1) {
+          var obj = {};
+          obj.startTime = this.startTime;
+          obj.endTime = this.endTime;
+          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
+          obj.weeks = [].concat(this.roomSel1Arr);
+          this.disbArr = this.disbArr.concat(this.roomSelNum);
+          this.teachArr.push(obj);
+          this.isB = false;
+          this.startTime = "";
+          this.endTime = "";
+        } else {
+          this.$message({
+            type: "warning",
+            message: "结束时间不能小于开始时间"
+          });
+          return false;
         }
-      }else{
-        this.$message.error("请选择日期、时段")
-        return false
+      } else {
+        this.$message.error("请选择日期、时段");
+        return false;
       }
       if (this.disbArr.length > 0) {
         this.disbArr.map(item => {
@@ -1801,18 +1898,20 @@ export default {
         type: "warning"
       })
         .then(() => {
-          console.log(item,"item----")
-          technicianDelete({"id":item.id}).then(data=>{
-            this.$message({
-              type: "success",
-              message: "删除成功!"
+          console.log(item, "item----");
+          technicianDelete({ id: item.id })
+            .then(data => {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              //  this.getList(this.listQuery.page,this.listQuery.limit,)
+              this.techniSearchs(this.listQuery.page, this.listQuery.limit);
+              // this.handleCurrentChange(this.listQuer.page)
+            })
+            .catch(error => {
+              console.log(error, "error,----删除失败");
             });
-            //  this.getList(this.listQuery.page,this.listQuery.limit,)
-            this.techniSearchs(this.listQuery.page,this.listQuery.limit)
-            // this.handleCurrentChange(this.listQuer.page)
-          }).catch(error=>{
-            console.log(error,"error,----删除失败")
-          })
         })
         .catch(() => {
           this.$message({
@@ -1822,13 +1921,13 @@ export default {
         });
     },
     roomSel2(index) {
-      if(this.roomSel2Arr.indexOf(index.id)!=-1){
-        this.remove(this.roomSel2Arr,[],index.id)
-      }else{
-        this.roomSel2Arr.push(index.id)
+      if (this.roomSel2Arr.indexOf(index.id) != -1) {
+        this.remove(this.roomSel2Arr, [], index.id);
+      } else {
+        this.roomSel2Arr.push(index.id);
       }
-       this.techniSearch.skillIds = this.roomSel2Arr
-      console.log(this.roomSel2Arr,"roomSel2Arr---------")
+      this.techniSearch.skillIds = this.roomSel2Arr;
+      console.log(this.roomSel2Arr, "roomSel2Arr---------");
       this.isA = index;
     },
     // 添加技能
@@ -1844,14 +1943,14 @@ export default {
     },
     // 添加时间
     addtime() {
-      console.log(this.startEnd,"startEnd-------------------")
+      console.log(this.startEnd, "startEnd-------------------");
       this.isB = true;
-      this.startTime = this.startEnd.start
-      this.endTime = this.startEnd.end
+      this.startTime = this.startEnd.start;
+      this.endTime = this.startEnd.end;
     },
     addtimeno() {
-      this.roomSelNum = []
-      this.roomSel1Arr =[]
+      this.roomSelNum = [];
+      this.roomSel1Arr = [];
       this.isB = false;
     },
     mouser(item, index) {
@@ -1874,9 +1973,9 @@ export default {
     },
     //个人资料保存
     submitFormPer(formName) {
-      this.$refs[formName].validate(val=>{
-        if(val){
-          this.btnState = true
+      this.$refs[formName].validate(val => {
+        if (val) {
+          this.btnState = true;
           // if(this.personal.headPic){
 
           // }else{
@@ -1887,46 +1986,48 @@ export default {
           //     return false
           // }
           // this.personal.workTimes.workTime = this.disbArr
-          
+
           this.personal.workTimes = this.teachArr;
-          Technician(this.personal).then(data=>{
-            if(data.data.code){
-              this.$message({
-                message:"保存成功",
-                type:"success"
-              })
-              this.btnState = false
-              this.dialogVisible = false;
-              this.listQuery.sync = 1;
-              this.getList(1,6,{});
-              this.techniSearch.stationId = '';
-              this.techniSearch.jobNature = '';
-              this.techniSearch.chooses = '';
-              this.chooContent = '';
-              this.roomSel2Arr = [];
-              // this.techniList = [];
-            }else{
-              var str = data.data.data
-              if(typeof str=='string'){
+          Technician(this.personal)
+            .then(data => {
+              if (data.data.code) {
                 this.$message({
-                  message:str,
-                  type:"warning"
-                })
-              }else{
-                this.$message({
-                  message:str[0],
-                  type:"warning"
-                })
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.btnState = false;
+                this.dialogVisible = false;
+                this.listQuery.sync = 1;
+                this.getList(1, 6, {});
+                this.techniSearch.stationId = "";
+                this.techniSearch.jobNature = "";
+                this.techniSearch.chooses = "";
+                this.chooContent = "";
+                this.roomSel2Arr = [];
+                // this.techniList = [];
+              } else {
+                var str = data.data.data;
+                if (typeof str == "string") {
+                  this.$message({
+                    message: str,
+                    type: "warning"
+                  });
+                } else {
+                  this.$message({
+                    message: str[0],
+                    type: "warning"
+                  });
+                }
+                this.btnState = false;
+                return false;
               }
-              this.btnState = false
-              return false
-            }
-          }).catch(error=>{
-            this.btnState = false
-            console.log(error,"error---techni----添加保存")
-            return false
-          })
-        }else{
+            })
+            .catch(error => {
+              this.btnState = false;
+              console.log(error, "error---techni----添加保存");
+              return false;
+            });
+        } else {
           // if(this.personal.headPic){
 
           // }else{
@@ -1937,9 +2038,9 @@ export default {
           //     return false
           // }
           // console.log(val,"false")
-          return false
+          return false;
         }
-      })
+      });
       // this.personal.workTimes.workTime = this.disbArr
       // this.personal.workTimes = this.teachArr
       // console.log(this.personal,"this.personal----")
@@ -1950,59 +2051,59 @@ export default {
       //     delete this.personal.birtStr;
       //     delete this.personal.area;
     },
-    dialogVisibleEditClick(){
-      this.dialogVisibleEdit = false
+    dialogVisibleEditClick() {
+      this.dialogVisibleEdit = false;
     },
-    getList(num,size,obj){
-          //技师编辑获取ID
-    // console.log(this.areaOptions,"areaOptions----")
-    //选择城市
-    console.log("------------------------------------list------------")
-        this.listLoadingTech = true
-        ChooseTheCity(num,size,obj)
-          .then(data => {
-            this.listLoadingTech = false
-            console.log(data, "选择城市---------");
-            this.Choose = data.data.data.cityCodes;
-            this.sexTypeo = data.data.data.skillInfos;
-            this.infoname = data.data.data.page.list || [];
-            this.server = data.data.data.stations
-            this.total = data.data.data.page.count   
-            var i = 0,
-              len = this.infoname.length,
-              date = new Date(),
-              year = date.getFullYear(),
-              birth = 0,
-              _infoname = this.infoname;
-            for (i = 0; i < len; i++) {
-              //遮罩
-              _infoname[i].ismouse = false;
-              // 性别
-              _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
-              // 年龄
-              // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
-              // 岗位性质
-              _infoname[i].jobName =
-                _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
-              // 岗位状态
-              _infoname[i].jobStateName =
-                _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
-              //工作年限
-              if (_infoname[i].workTime == "0") {
-                _infoname[i].workTimeName = "1年以下";
-              } else if (_infoname[i].workTime == "11") {
-                _infoname[i].workTimeName = "10年以上";
-              } else {
-                _infoname[i].workTimeName = _infoname[i].workTime + "年";
-              }
-              console.log(birth, "birth----");
+    getList(num, size, obj) {
+      //技师编辑获取ID
+      // console.log(this.areaOptions,"areaOptions----")
+      //选择城市
+      console.log("------------------------------------list------------");
+      this.listLoadingTech = true;
+      ChooseTheCity(num, size, obj)
+        .then(data => {
+          this.listLoadingTech = false;
+          console.log(data, "选择城市---------");
+          this.Choose = data.data.data.cityCodes;
+          this.sexTypeo = data.data.data.skillInfos;
+          this.infoname = data.data.data.page.list || [];
+          this.server = data.data.data.stations;
+          this.total = data.data.data.page.count;
+          var i = 0,
+            len = this.infoname.length,
+            date = new Date(),
+            year = date.getFullYear(),
+            birth = 0,
+            _infoname = this.infoname;
+          for (i = 0; i < len; i++) {
+            //遮罩
+            _infoname[i].ismouse = false;
+            // 性别
+            _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
+            // 年龄
+            // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+            // 岗位性质
+            _infoname[i].jobName =
+              _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
+            // 岗位状态
+            _infoname[i].jobStateName =
+              _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
+            //工作年限
+            if (_infoname[i].workTime == "0") {
+              _infoname[i].workTimeName = "1年以下";
+            } else if (_infoname[i].workTime == "11") {
+              _infoname[i].workTimeName = "10年以上";
+            } else {
+              _infoname[i].workTimeName = _infoname[i].workTime + "年";
             }
-            this.techniList = this.infoname;
-            console.log(this.techniList, "this.techniList----------");
-          })
-          .catch(error => {
-            console.log(error, "error-----thechni.vue-----1211");
-          });
+            console.log(birth, "birth----");
+          }
+          this.techniList = this.infoname;
+          console.log(this.techniList, "this.techniList----------");
+        })
+        .catch(error => {
+          console.log(error, "error-----thechni.vue-----1211");
+        });
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -2012,9 +2113,9 @@ export default {
     }
   },
   mounted() {
-    console.log('-------------------mouned 加载页面-----------------------------')
-    this.sign   //获取签名
-    this.getList(1,6,{})
+    console.log("-------------------mouned 加载页面-----------------------------");
+    this.sign; //获取签名
+    this.getList(1, 6, {});
     //性别,工作年限,岗位性质，岗位状态
     Whether()
       .then(({ data }) => {
@@ -2055,14 +2156,14 @@ export default {
   },
   filters: {
     trim(value) {
-        return value.trim();
+      return value.trim();
     }
   }
 };
 </script>
 <style>
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active for below version 2.1.8 */ {
+.slide-fade-enter,
+.slide-fade-leave-to {
   transform: translateY(20px);
   opacity: 0;
 }
@@ -2073,7 +2174,7 @@ export default {
 }
 
 .tech-index {
-  border-bottom: 1px solid #E8E8E8;
+  border-bottom: 1px solid #e8e8e8;
   background: #fff;
   padding: 20px;
   margin-top: 20px;
@@ -2100,11 +2201,10 @@ export default {
   min-width: 60px;
 }
 @media screen and (min-width: 1200px) {
-    .tech-btn {
-        width: 80px;
-    }
+  .tech-btn {
+    width: 80px;
+  }
 }
-
 
 .tech-btn-right {
   margin-left: 300px;
@@ -2140,8 +2240,8 @@ export default {
   background: #fff;
   position: relative;
   margin: 0 2% 2% 0;
-  border: 1px solid #E8E8E8;
-  box-shadow:2px 4px 6px #E8E8E8
+  border: 1px solid #e8e8e8;
+  box-shadow: 2px 4px 6px #e8e8e8;
 }
 .tech-section-ul li:nth-child(3n) {
   margin-right: 0;
@@ -2156,11 +2256,11 @@ export default {
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   /* justify-content: space-around; */
-  padding: 0 70px ;
+
   align-items: center;
 }
-.tech-section-ul-posi{
-  justify-content: space-around; 
+.tech-section-ul-posi {
+  justify-content: space-around;
 }
 
 .fy {
@@ -2184,7 +2284,7 @@ export default {
   font-weight: 700;
   color: black;
 }
-.tech-ul .tech-tc-prson{
+.tech-ul .tech-tc-prson {
   margin: 0;
 }
 
@@ -2216,7 +2316,7 @@ export default {
 .tech-ul li div > p {
   display: flex;
 }
-.avatar-headPic .el-upload--text{
+.avatar-headPic .el-upload--text {
   width: 100px;
 }
 .tech-span {
@@ -2273,7 +2373,7 @@ export default {
   width: 80px;
   height: 100px;
 } */
-.el-upload--text{
+.el-upload--text {
   width: 100%;
 }
 .tech-psoition {
@@ -2295,7 +2395,7 @@ export default {
   /* -o-animation: show 1s; */
 }
 
- /* @keyframes show {
+/* @keyframes show {
   25%{
     height: 25%;
   }
@@ -2340,11 +2440,11 @@ export default {
   align-items: center;
   margin: 20px 0;
 }
-.searchHeader .el-input-group__prepend .el-input__inner{
+.searchHeader .el-input-group__prepend .el-input__inner {
   width: 100px;
   text-align: center;
 }
-.searchHeader .el-input__inner{
+.searchHeader .el-input__inner {
   width: 250px;
 }
 
@@ -2421,8 +2521,12 @@ export default {
   top: 35px;
   left: -1px; */
 }
-.wirkTimes{width: 100%;border-top: none; min-width: 450px;}
-.wirkTimes .el-input__inner{
+.wirkTimes {
+  width: 100%;
+  border-top: none;
+  min-width: 450px;
+}
+.wirkTimes .el-input__inner {
   border: 1px solid #bfcbd9 !important;
 }
 
@@ -2495,7 +2599,7 @@ export default {
   margin-left: 32px;
 }
 
-.header-h4{
+.header-h4 {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2551,7 +2655,6 @@ export default {
 }
 
 .tech-section-xiu {
- 
 }
 
 .tech-section-xiu > li {
@@ -2624,15 +2727,14 @@ export default {
   color: #ff7676;
 }
 
-
 .tech-vacation .mobel {
   margin-bottom: 22px;
   display: flex;
 }
-.tect-pass .mobel{
+.tect-pass .mobel {
   height: 36px;
 }
-.tect-pass .mobel>p:nth-child(1){
+.tect-pass .mobel > p:nth-child(1) {
   width: 100px;
   text-align: right;
   padding-right: 12px;
@@ -2650,8 +2752,8 @@ export default {
 .tech-service {
   padding: 20px 0 10px 0;
 }
-.tech-service .tech-order-jn{
-  margin-left:0; 
+.tech-service .tech-order-jn {
+  margin-left: 0;
 }
 .working {
   border: 1px solid #f2f2f2;
@@ -2700,53 +2802,60 @@ export default {
 .el-input__icon {
   /* display: none; */
 }
-.el-pagination{
+.el-pagination {
   text-align: right;
 }
-.p-show{
+.p-show {
   text-align: center;
-  color: rgb(102, 102, 102)
+  color: rgb(102, 102, 102);
 }
-.tech-qj .avatar{
+.tech-qj .avatar {
   width: 100%;
   height: 100%;
   margin-top: 10px;
 }
-.passBox .el-form-item__content{
+.passBox .el-form-item__content {
   display: flex;
   justify-content: center;
   margin-left: 0 !important;
 }
-.passBox .el-form-item__content button{
+.passBox .el-form-item__content button {
   padding: 10px 30px;
 }
-.passBox .el-form-item__content button:nth-child(1){
-  color: #fff
+.passBox .el-form-item__content button:nth-child(1) {
+  color: #fff;
 }
-.headImag{
-  width:100px;
-  height:100px;
-  display:inline-block;
-  border-radius:50%;
+.headImag {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  border-radius: 50%;
   overflow: hidden;
 }
-.headImag img{
+.headImag img {
   /* width: 100px;
   height: 100px; */
   overflow: hidden;
 }
-.button-large{
+.button-large {
   display: inline-block;
   line-height: 25px;
   margin: 0 0 0 35px;
 }
-.mousehover{
-  border: 1px solid #ffffff;
-  border-radius: 50%;
-  padding: 10px;
+.mousehover {
+  width: 24%;
+  height: 50px;
+  overflow: hidden;
 }
-.upload-head,.upload-id{
-  cursor:pointer;
+.mousehover img {
+  display: block;
+  width: 100%;
+  max-width: 50px;
+  margin: 0 auto;
+}
+.upload-head,
+.upload-id {
+  cursor: pointer;
   height: 36px;
   font-size: 12px;
   text-align: center;
@@ -2756,38 +2865,37 @@ export default {
   border: 1px solid #4c70e8;
   line-height: 36px;
 }
-.upload-id{
+.upload-id {
   border: 1px solid red;
   color: red;
 }
-.tech-qj .avatar-uploader .el-upload{
+.tech-qj .avatar-uploader .el-upload {
   border: none;
   border-radius: 0;
 }
-.uploadHead .el-form-item__content{
-  margin-left:0 !important;
+.uploadHead .el-form-item__content {
+  margin-left: 0 !important;
 }
-.mousehover:hover{
-  background: rgb(82, 141, 196);
+.mousehover:hover {
   cursor: pointer;
 }
-.tech-service .el-select .el-tag{
-  line-height:23px;
+.tech-service .el-select .el-tag {
+  line-height: 23px;
 }
-.page{
+.page {
   padding-right: 20px;
   padding-bottom: 30px;
   background: #fff;
 }
 .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 122px;
-    height: 122px;
-    line-height: 122px;
-    text-align: center;
-    border: 1px dashed #d9d9d9;
-  }
+  font-size: 28px;
+  color: #8c939d;
+  width: 122px;
+  height: 122px;
+  line-height: 122px;
+  text-align: center;
+  border: 1px dashed #d9d9d9;
+}
 </style>
 
 <!--

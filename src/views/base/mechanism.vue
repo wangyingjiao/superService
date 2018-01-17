@@ -54,7 +54,7 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
+    <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr page mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -632,7 +632,11 @@ export default {
               res.data.data.areaCode
             ];
             if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
-             this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+              setTimeout(() => {
+                
+                this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+              }, 30);
+              
              setTimeout(() => {
                var time = res.data.data.workEndTime.substring(0,5)
                if(time == '23:59'){
@@ -640,7 +644,7 @@ export default {
                }else{
                  this.temp.workEndTime = time
                }
-             }, 50);
+             }, 30);
              
             }
             console.log(this.temp)
@@ -664,7 +668,7 @@ export default {
     },
     resetForm(formName) {
       this.dialogFormVisible = false;
-      this.resetTemp();
+      //this.resetTemp();
       this.$refs[formName].resetFields();
     },
     itemActive(arr){

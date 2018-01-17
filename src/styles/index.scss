@@ -570,3 +570,10 @@ body {
         }
   }
 }
+//高亮当前打开的菜单
+
+.sidebar .router-link-active{
+  span{
+    color: #fff;
+  }
+}

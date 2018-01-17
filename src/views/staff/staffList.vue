@@ -39,16 +39,16 @@
       <el-table-column align="center" label="姓名" prop="name" >
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="登录账号" prop="mobile">
+      <el-table-column align="center" label="登录账号" prop="mobile">
       </el-table-column>
 
-      <el-table-column min-width="150px"  label="岗位名称" align="center" prop="role.name">
+      <el-table-column  label="岗位名称" align="center" prop="role.name">
       </el-table-column>
 
-      <el-table-column width="150px" align="center" label="服务机构" prop="organization.name">
+      <el-table-column  align="center" label="服务机构" prop="organization.name">
       </el-table-column>
 
-      <el-table-column  min-width="110px" align="center" label="服务站" >
+      <el-table-column   align="center" label="服务站" >
         <template scope="scope">
               <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
               <span v-else>{{scope.row.station.name}}</span>
@@ -70,7 +70,7 @@
 
     </el-table>
 
-    <div v-show="!listLoading" class="pagination-container">
+    <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -1082,12 +1082,12 @@ export default {
 .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
-.el-tree-node:nth-child(1)
+/* .el-tree-node:nth-child(1)
   .el-tree-node__children
   .el-tree-node__children
   .el-tree-node {
   float: none;
-}
+} */
 .btn_addStation {
   float: right;
   height: 36px;

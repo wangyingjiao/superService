@@ -82,7 +82,7 @@
 					</el-table>
 					<!--客户数据表格结束-->
 					<!--客户数据表格分页器开始-->
-					<div v-show="!listLoading" class="selfStyle">
+					<div v-if="!listLoading" class="selfStyle">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync='jumpPage'
 						:page-sizes="[5, 10, 15, 20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
