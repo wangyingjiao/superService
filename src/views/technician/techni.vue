@@ -73,7 +73,7 @@
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
             <div class="mousehover" v-on:mouseenter.prevent="dataDetails1" v-on:mouseleave.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
-            <transition  leave-active-class="animated  fadeOutLeft">
+            <transition  >
              <img v-if="hoverState1" src="../../../static/icon/密码.png" alt="" >
              </transition>
             <transition>
@@ -83,7 +83,7 @@
              
             </div>
             <div v-on:mouseenter.prevent="dataDetails2" v-on:mouseleave.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
-              <transition leave-active-class="animated  fadeOutLeft">
+              <transition >
                 <img v-if="hoverState2" src="../../../static/icon/休假.png" alt="" >
               </transition>
               <transition >
@@ -92,7 +92,7 @@
              
             </div>
             <div class="mousehover" v-on:mouseenter.prevent="dataDetails3" v-on:mouseleave.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
-              <transition leave-active-class="animated  fadeOutLeft">
+              <transition >
               <img v-if="hoverState3" src="../../../static/icon/修改.png" alt="" >
               </transition>
               <transition >
@@ -101,7 +101,7 @@
 
             </div>
             <div class="mousehover" v-on:mouseenter.prevent="dataDetails4" v-on:mouseleave.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
-              <transition leave-active-class="animated  fadeOutLeft">
+              <transition >
               <img v-if="hoverState4" src="../../../static/icon/删除.png" alt="">
               </transition>
               <transition >
