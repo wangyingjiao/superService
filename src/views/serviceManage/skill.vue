@@ -769,7 +769,6 @@ export default {
   margin-bottom: 20px;
   height: 300px;
   position:relative;
-  /* overflow-y: scroll; */
 }
 .table-d{
   width: 677px;

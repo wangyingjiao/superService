@@ -155,7 +155,7 @@ export default {
 		  { key: "3", technicianName: "订单编号" }
 		],				
 		dialogTableVisible:false,//选择技师弹窗开关
-		technicianName:'',//技师姓名
+		technicianName:'1',//技师姓名
 		technicianName1:'',//技师姓名
 		pagetotal1:null,//表格总页数
 		pageSize1:10,//表格每页条数
