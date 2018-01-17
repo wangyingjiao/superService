@@ -382,7 +382,7 @@
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="中午、英文、数字(2~10位)"></el-input>
+            <el-input v-model="labelObj.labelName" placeholder="中午、英文、数字(2~10)"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -474,7 +474,7 @@
                 <!-- <p></span><span class="el-icon-close" @click="ImageText = false"></span></p> -->
             </div>
             <div class="image-text-body">
-                <p style="color:rgb(179, 179, 179); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
+                <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
                 <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
                    <el-upload
@@ -535,168 +535,6 @@ import {
 //挂载数据
 const option1 = ["北京", "北京"];
 var arr = [];
-var systemOptions = [
-  {
-    value:'1',
-    label:'推荐商品',
-    children:[
-      {
-        value:'1-1',
-        label:'推荐商品',
-        children:[
-          {
-            value:'1-1-1',
-            label:'戴尔电脑',
-            children:[
-              {
-                value:'1-1-1-1',
-                label:'戴尔电脑a'
-              },
-              {
-                value:'1-1-1-2',
-                label:'戴尔电脑b'
-              },
-              {
-                value:'1-1-1-3',
-                label:'戴尔电脑c'
-              },
-              {
-                value:'1-1-1-4',
-                label:'戴尔电脑c戴尔电脑c'
-              },
-              {
-                value:'1-1-1-5',
-                label:'戴尔电脑c戴尔电脑c戴尔电脑c'
-              },
-              {
-                value:'1-1-1-6',
-                label:'戴尔电脑c'
-              }
-            ]
-          },
-          {
-            value:'1-1-2',
-            label:'苹果手机',
-            children:[
-              {
-                value:'1-1-2-1',
-                label:'iP5'
-              },
-              {
-                value:'1-1-2-2',
-                label:'iP6'
-              },
-              {
-                value:'1-1-2-3',
-                label:'iP7'
-              }
-            ]
-          },
-          {
-            value:'1-1-3',
-            label:'充电器'
-          }
-        ]
-      },
-      {
-        value:'1-2',
-        label:'精致生活',
-        children:[
-          {
-            value:'1-1-1',
-            label:'戴尔电脑1'
-          },
-          {
-            value:'1-1-2',
-            label:'苹果手机2'
-          },
-          {
-            value:'1-1-3',
-            label:'充电器3'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    value:'2',
-    label:'秋红分类',
-    children:[
-      {
-        value:'2-1',
-        label:'春天',
-        children:[
-          {
-            value:'2-1-1',
-            label:'风筝',
-            children:[
-              {
-                value:'2-1-1-1',
-                label:'1111'
-              },
-              {
-                value:'2-1-1-2',
-                label:'1112'
-              }
-            ]
-          },
-          {
-            value:'2-1-2',
-            label:'运动鞋',
-          }
-        ]
-      },
-      {
-        value:'2-2',
-        label:'冬天',
-        children:[
-          {
-            value:'2-2-1',
-            label:'火锅'
-          },
-          {
-            value:'2-2-2',
-            label:'羽绒服'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    value:'3',
-    label:'肉畜分类',
-    children:[
-      {
-        value:'3-1',
-        label:'羊肉',
-        children:[
-          {
-            value:'3-1-1',
-            label:'羊杂'
-          },
-          {
-            value:'3-1-2',
-            label:'羊肉卷'
-          }
-        ]
-      },
-      {
-        value:'3-2',
-        label:'猪肉',
-        children:[
-          {
-            value:'3-2-1',
-            label:'猪头肉'
-          },
-          {
-            value:'3-2-2',
-            label:'猪鼻孔'
-          }
-        ]
-      }
-    ]
-  }
-]
 export default {
   name: "table_demo",
   directives: {
@@ -886,35 +724,33 @@ export default {
     }
     //商品名称
     var NAME = (rule,value,callback) =>{
-      console.log(rule,"rule--------------")
-      console.log(this.editName,"this.editName--------")
-      var arr = this.basicForm.commoditys
+      var editName = this.editName;
+      var arr = this.basicForm.commoditys;
       if(value){
         if(value.length>=1 && value.length<=36){
           if(this.handleEditFlag){
-            if(value == this.editName.name){
+            if(editName.name == value){
               callback()
             }else{
-              callback(new Error('商品名称重复'))
+               var flag = this.filtersName(value)
+               if(flag){
+                callback()
+               }else{
+                callback(new Error('商品名称重复'))
+               }
             }
           }else{
             if(arr!=undefined && arr.length>0){
-              for(var i=0; i<arr.length; i++){
-                if(arr[i].name == value){
-                  callback(new Error('商品名称重复'))
-                  break;
-                }else{
-                  callback()
-                }
+              var flag = this.filtersName(value)
+              if(flag){
+                callback()
+              }else{
+                callback(new Error("商品名称重复"))
               }
+              
             }else{
               callback()
             }
-            // if(JSON.stringify(this.basicForm.commoditys).indexOf(JSON.stringify(value))!=-1){
-            //   callback(new Error('商品名称重复'))
-            // }else{
-            //   callback()
-            // }
           }
         }else{
           callback(new Error("长度在 1 到 36 个字符"))
@@ -929,6 +765,7 @@ export default {
         id:null
       },
       pageNumber:1,
+      editName:{},
       alreadyArr:[],
       labelClickCon:[],
       labelClickArr:[],
@@ -955,7 +792,6 @@ export default {
       tabs: "all",
       editId: "",
       total: null,
-      editName:'',
       houseStr: "",
       whole: {},
       serverCityArr: [],
@@ -1151,6 +987,23 @@ export default {
     },
   },
   methods: {
+    filtersName(value){
+      var flag = true
+      var arr = this.basicForm.commoditys
+      for(var i=0;i<arr.length; i++){
+        if(arr[i].name==value){
+          flag = false
+          break
+        }else{
+          flag = true
+        }
+      }
+      if(flag){
+        return flag
+      }else{
+         return flag
+      }
+    },
     //保洁家修切换
     tableProject(obj,id){
       Taxonomy(obj)
@@ -1354,7 +1207,7 @@ export default {
         if(delIndex == -1){
 
         }else{
-          this.picFile.del(delIndex);
+          this.picFile.del(delIndex);         
         }
         console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
@@ -2493,7 +2346,8 @@ hr {
   overflow: hidden;
   width: 100%;
   /* height: 44px; */
-  background: rgb(228, 225, 225);
+  background: #f3f7f9;
+  border-bottom: 1px solid #eee;
   font-size: 16px;
   font-weight: bolder;
   line-height: 44px;
@@ -2501,6 +2355,9 @@ hr {
 }
 .image-text-header p:nth-child(1) {
   float: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2d3d;
 }
 .image-text p:nth-child(2) {
   float: right;

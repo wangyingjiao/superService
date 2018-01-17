@@ -835,7 +835,7 @@ export default {
     };
     //邮箱
     var EMAIL = (rule,value,callback)=>{
-      var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
+      var reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
       if(value){
         if(value.length>=6 && value.length<=30){
           if(reg.test(value)){
@@ -2283,10 +2283,12 @@ export default {
 }
 .avatar-header .el-upload--text{
   width: 100px;
+  height: 100px;
+  overflow: hidden;
 }
 .avatar-header .header-img{
-  width: 100px;
-  height: 100px;
+   width: 100px;
+  /* height: 100px;  */
 }
 
 @keyframes show {
@@ -2389,11 +2391,11 @@ export default {
   border: 1px solid #bfcbd9;
   border-top: none;
   /* display: flex; */
-  position: absolute;
+  /* position: absolute; */
   background: #fff;
-  z-index: 2;
-  top: 35px;
-  left: -1px;
+  /* z-index: 2; */
+  /* top: 35px; */
+  /* left: -1px; */
 }
 
 .tech-order-jn-sont {
@@ -2650,7 +2652,7 @@ export default {
 }
 .workHours{
 	display: flex;
-  height: 36px;
+  /* height: 36px; */
 	/* margin-bottom: 20px; */
 }
 .workHours .workHours-input{

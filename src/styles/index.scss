@@ -546,7 +546,7 @@ body {
   padding: 0px 20px 20px 20px;
 }
 //自定义弹窗大小
-.selfDialogWidth .el-dialog {width:600px}
+.selfDialogWidth .el-dialog {width:700px}
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
   line-height:23px;
@@ -555,8 +555,12 @@ body {
 .kill .el-select__tags  .is-undefined{
   height:24px;
 }
+//改派表头显示
+.tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2){
+	display:none;
+}
 .orderTab .el-tabs__item{
-  &:nth-child(2){
+  &:nth-child(8){
         &:before {
           content: '*';
           color: #ffffff;

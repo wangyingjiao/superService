@@ -83,43 +83,45 @@
         <!-- 选择技师弹出层开始 -->
         <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false" class="selfDialogWidth">
               <div class="selfFLOLeft width120">
-                <el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
+                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:180px;"></el-input>                
               </div>
-              <div class="selfFLOLeft selfMarLef10">
-                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId">
+              <div class="selfFLOLeft">
+                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:95px;">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
-              <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
-                  <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                    <div class="techNameStyle">{{item.techName}}</div>
-                  </div>                    
-                  <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                    <div class="techNameStyle">{{item.techName}}</div>
-                  </div>                                              
-              </div>                           
+              <el-collapse-transition>
+                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
+                    <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
+                      <div class="techNameStyle">{{item.techName}}</div>
+                    </div>                    
+                    <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
+                      <div class="techNameStyle">{{item.techName}}</div>
+                    </div>                                              
+                </div>
+              </el-collapse-transition>                           
               <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
-                      <table  class="selfTable" style="">
+                      <table  class="selfTable">
                         <tr class="tableHeader">
-                          <td  class="selfTdStyle" align="center" width="58px">选择</td>
-                          <td  class="selfTdStyle"  align="center" width="118px">头像</td>
-                          <td  class="selfTdStyle"  align="center" width="133px">姓名</td>
-                          <td  class="selfTdStyle"  align="center" width="58px">性别</td>
-                          <td  class="selfTdStyle"  align="center" width="173.7px">服务站</td>							
+                          <td  class="selfTdStyle" align="center" width="73px">选择</td>
+                          <td  class="selfTdStyle"  align="center" width="128px">头像</td>
+                          <td  class="selfTdStyle"  align="center" width="150px">姓名</td>
+                          <td  class="selfTdStyle"  align="center" width="73px">性别</td>
+                          <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
                         </tr>
                         <div style="margin-top:60px;">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                            <td   width="60px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
-                            <td  width="120px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                            <td  width="133px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
-                            <td  width="60px" align="center">
+                            <td   width="72px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
+                            <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                            <td  width="152px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                            <td  width="73px" align="center">
                               <span v-if="item.techSex =='male'">男</span>
                               <span v-if="item.techSex =='female'">女</span>									
                             </td>
-                            <td  width="174px" align="center"><div class="selftechStationNameStyle">{{item.techStationName}}</div></td>							
+                            <td  width="198px" align="center"><div class="selftechStationNameStyle">{{item.techStationName}}</div></td>							
                           </tr>
                         </div>
                       </table>
@@ -360,6 +362,9 @@ export default {
                   this.jumpPage = 1;
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
+                  this.$refs["ruleForm2"].resetFields();
+                  this.middleA = [];
+                  this.middleB = [];
                   this.$message({
                     type: "warning",
                     message: res.data.data
@@ -707,6 +712,7 @@ export default {
 }
 .selfFLORight {
   float: right;
+  margin-right:20px;
 }
 .selfpromMessageTab{
     position:relative;width:100%;margin-top:60px;margin-left:10px;
@@ -755,10 +761,17 @@ export default {
 }
 .selfOVerflow1 {
   margin-top: 20px;
-  width: 100%;
+  overflow: hidden;
+  width: 660px;
   margin-bottom: 20px;
   height: 300px;
+  /* overflow-y: scroll; */
+}
+.table-d{
+  width: 677px;
   overflow-y: scroll;
+  height: 300px;
+  margin-left: 15px;
 }
 .selfst1 {
   background: none;
