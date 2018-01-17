@@ -58,7 +58,7 @@
               </div>
               <div>
                 <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">{{item.stationName}}</div>
+                <div class="stationName">{{item.stationName}}</div>
               </div>
               <div>
                 <img src="../../../static/icon/工作经验.png" alt="" style="width:15px;height:15px;">              
@@ -90,7 +90,7 @@
     </div>
        <!-- </el-table> -->
       <!-- 密码弹出层 -->
-      <el-dialog title="设置技师APP端登录密码" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
+      <el-dialog title="设置技师APP端登录密码" :close-on-click-modal="false" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
 		<div class="mobel">
 			<p>手机：</p>
 			<p>{{passwordModule}}</p>
@@ -104,8 +104,10 @@
 					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
-					<el-button @click="passwordCancel('ruleForm2')">取消</el-button>
+					<!-- <el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
+					<el-button @click="passwordCancel('ruleForm2')">取消</el-button> -->
+            <button class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')">保存</button>
+            <button class="button-cancel" @click="passwordCancel('ruleForm2')">取消</button>
 				</el-form-item>
 			</el-form>
 		</div>
@@ -136,7 +138,7 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:startEnd.start,
+                            minTime:'11:59',
                             maxTime:startEnd.end
                           }"
                           placeholder="选择时间">
@@ -183,6 +185,7 @@
         <!-- </el-form> -->
       </el-dialog>
       <!-- 选择技能 -->
+      <el-collapse-transition>
         <div class="tech-psoition" v-if="position">
           <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
             <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
@@ -196,6 +199,7 @@
             <button @click="hiddenDiv" class="button-cancel">关闭</button>
           </div>
         </div>
+      </el-collapse-transition>
 
     </div>
     <!-- 分页 -->
@@ -1381,6 +1385,7 @@ export default {
     //新增按钮
     handleCreate(){
       this.dialogVisible = true
+      this.personal.status = "yes"
       //服务时间
       serviceTechnicianInfo().then(data=>{
         console.log(data,"data==========")
@@ -1464,8 +1469,8 @@ export default {
     },
     //搜索
     techniSearchs(page,size){
-      var _page = 1 || page;
-      var _size = 6 || size
+      var _page = typeof page == "string" ? page : this.listQuery.page
+      var _size = size || this.listQuery.limit
       this.listQuery.sync = 1;
       console.log(this.techniSearch,"techniSearch-----------------------------")
       var obj = {}
@@ -1482,6 +1487,8 @@ export default {
         obj.skillIds = this.roomSel2Arr
       }
       console.log(obj,"------------------")
+      console.log(page,"_____page---")
+      console.log(this.listQuery.page,"_____size---")
       this.getList(_page,_size,obj)
     },
     startDateChange(val){
@@ -1614,7 +1621,6 @@ export default {
         });
 
       serviceTechnicianInfo().then(data=>{
-        console.log(data,"data==========")
         this.startEnd = data.data.data
         this.startTime = data.data.data.start
         this.endTime = data.data.data.end
@@ -1624,7 +1630,10 @@ export default {
 
       //所属服务站
       serviceStation({}).then(data=>{
-        this.servery = data.data.data;
+        var stationLocal = localStorage.getItem('station')
+        var stationObj = JSON.parse(stationLocal)
+        var obj = data.data.data
+        this.servery = stationObj.id!=0 ? obj : obj.slice(1);
         console.log(data,"服务站++++++++++++++")
       }).catch(error=>{
         console.log(error,"服务站错误+++++++")
@@ -2217,6 +2226,7 @@ export default {
   display: flex;
 }
 .avatar-headPic .el-upload--text{
+  overflow: hidden;
   width: 100px;
 }
 .tech-span {
@@ -2276,11 +2286,19 @@ export default {
 .el-upload--text{
   width: 100%;
 }
+.stationName{
+  margin-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .tech-psoition {
   width: 100%;
   /* height: 320px; */
   background: #fff;
   position: absolute;
+  border-bottom: 1px solid #E8E8E8;
+  box-shadow: 3px 3px 5px #E8E8E8;
   top: 77px;
   left: 0;
   z-index: 1;
@@ -2718,7 +2736,7 @@ export default {
   margin-left: 0 !important;
 }
 .passBox .el-form-item__content button{
-  padding: 10px 30px;
+  /* padding: 10px 30px; */
 }
 .passBox .el-form-item__content button:nth-child(1){
   color: #fff
@@ -2782,9 +2800,9 @@ export default {
 .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 122px;
-    height: 122px;
-    line-height: 122px;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
     text-align: center;
     border: 1px dashed #d9d9d9;
   }
