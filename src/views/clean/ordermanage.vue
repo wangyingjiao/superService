@@ -70,54 +70,54 @@
 					highlight-current-row
 					style="width:100%;"
 					>
-							<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
-							</el-table-column>
-							<!-- <el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
-							</el-table-column>
-							<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
-							</el-table-column> -->
-							<el-table-column  align="center" width="150"  label="服务机构" prop="orgName">
-							</el-table-column>
-							<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
-							</el-table-column>							
-							<el-table-column  align="center"  width="150" label="服务内容"  prop="orderContent">
-							</el-table-column>
-							<el-table-column   align="center" width="150" label="付款价格"    prop="payPrice">
-							</el-table-column>
-							<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
-							</el-table-column>
-							<el-table-column  align="center" width="150" label="服务状态">
-						        <template scope="scope">
-						    		<span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
-									<span v-if="scope.row.serviceStatus =='started'">已上门</span>
-						    		<span v-if="scope.row.serviceStatus =='finish'">已完成</span>
-                                    <span v-if="scope.row.serviceStatus =='cancel'">已取消</span>																													
-								</template>									
-							</el-table-column>														
-							<el-table-column  align="center" width="150" label="订单状态">
-						        <template scope="scope">
-						    		<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
-									<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
-						    		<span v-if="scope.row.orderStatus =='finish'">已完成</span>
-									<span v-if="scope.row.orderStatus =='started'">已上门</span>
-						    		<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
-									<span v-if="scope.row.orderStatus =='success'">已成功</span>
-						    		<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
-								</template>									
-							</el-table-column>
-							<el-table-column   align="center" width="150" label="支付状态"  >
-						    <template scope="scope">
-						    		<span v-if="scope.row.payStatus =='payed'">已支付</span>
-									<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
-							</template>	
-							</el-table-column>
-							<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
-							</el-table-column>	  
-							<el-table-column align="center" label="操作" width="150" fixed="right">
-							<template scope="scope">
-									<el-button type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
-							</template>
-							</el-table-column>
+					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
+					</el-table-column>
+					<!-- <el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
+					</el-table-column>
+					<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
+					</el-table-column> -->
+					<el-table-column  align="center" width="150"  label="服务机构" prop="orgName">
+					</el-table-column>
+					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
+					</el-table-column>							
+					<el-table-column  align="center"  width="150" label="服务内容"  prop="orderContent">
+					</el-table-column>
+					<el-table-column   align="center" width="150" label="付款价格"    prop="payPrice">
+					</el-table-column>
+					<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
+					</el-table-column>
+					<el-table-column  align="center" width="150" label="服务状态">
+						<template scope="scope">
+							<span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
+							<span v-if="scope.row.serviceStatus =='started'">已上门</span>
+							<span v-if="scope.row.serviceStatus =='finish'">已完成</span>
+							<span v-if="scope.row.serviceStatus =='cancel'">已取消</span>																													
+						</template>									
+					</el-table-column>														
+					<el-table-column  align="center" width="150" label="订单状态">
+						<template scope="scope">
+							<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
+							<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
+							<span v-if="scope.row.orderStatus =='finish'">已完成</span>
+							<span v-if="scope.row.orderStatus =='started'">已上门</span>
+							<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
+							<span v-if="scope.row.orderStatus =='success'">已成功</span>
+							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
+						</template>									
+					</el-table-column>
+					<el-table-column   align="center" width="150" label="支付状态"  >
+					<template scope="scope">
+							<span v-if="scope.row.payStatus =='payed'">已支付</span>
+							<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
+					</template>	
+					</el-table-column>
+					<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
+					</el-table-column>	  
+					<el-table-column align="center" label="操作" width="150" fixed="right">
+					<template scope="scope">
+							<el-button type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
+					</template>
+					</el-table-column>
 				</el-table>
 				<div v-if="!listLoading" class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
