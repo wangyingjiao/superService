@@ -155,7 +155,7 @@ export default {
 		customerPhone:'',
 		orderNumber:'',
 		orderContent:'',
-		activeName:'whole',//当前tabs
+		activeName:'dispatched',//当前tabs
 		startTime:'',//开始时间
 		endTime:'',//结束时间
 		tabDataList:[],//表格数据
@@ -309,7 +309,7 @@ export default {
 	
   },
   mounted() {
-		this.getTableData();
+		this.getTableData({orderStatus:'dispatched'});
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;
 		this.sevicerStustasOptions=this.dict.service_status;

@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
      '/apiservice': {
-        'target': 'https://apiservice.guoanshequ.wang/',
+        'target': 'https://superservice.guoanshequ.wang/',
         //'secure': false, 
         'changeOrigin': true, // 如果接口跨域，需要进行这个参数配置
         'pathRewrite': {

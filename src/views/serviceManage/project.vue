@@ -1354,7 +1354,7 @@ export default {
         if(delIndex == -1){
 
         }else{
-          this.picFile.del(delIndex);
+          this.picFile.del(delIndex);         
         }
         console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
