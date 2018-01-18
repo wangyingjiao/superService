@@ -208,8 +208,8 @@
                     <div class="custom">
                         <span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
                     </div>
-                    <div class="labelList" v-show="basicForm.customTags != undefined && basicForm.customTags.length>0">
-                        <span v-for="(item,index) in basicForm.customTags" :key="index">{{item}}   
+                    <div class="labelList" v-show="customArr != undefined && customArr.length>0">
+                        <span v-for="(item,index) in customArr" :key="index">{{item}}   
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
@@ -279,7 +279,7 @@
                   </el-table-column>
                 </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
-              <div class="add_Btn" @click="addComm = !addComm">
+              <div class="add_Btn" @click="addCommodity">
                 <span v-if="!addComm" class="fl btn_Span1">+</span>
                 <span v-if="addComm" class="fl btn_Span1">-</span>
                 <span class="fl btn_Span2">添加商品</span>
@@ -494,6 +494,17 @@
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
+                      <!-- <el-upload
+                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                          list-type="picture-card"
+                          :on-change="handImgText"
+                          :on-remove="handleRemoveImgText"
+                          :auto-upload="false"
+                          ref="upload"
+                          :http-request="(val)=>UploadImgText(val)" 
+                          > 
+                          <i class="el-icon-plus"></i>
+                      </el-upload> -->
                       <!-- <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="">
                       </el-dialog> -->
@@ -512,7 +523,13 @@
 </div>
 </template>
 
+
+
+
 <script>
+
+// ---------------------------------------------
+
 import {
   getProject,
   addProject,
@@ -621,7 +638,7 @@ export default {
     var PICTURE = (rule,value,callback)=>{
       // callback()
       // console.log(this.picFile,"this.picFile-----------------[][][]")
-      if(this.picFile !=undefined && this.picFile.length>0){
+      if(this.picFile!=undefined && this.picFile.length>0){
         callback()
       }else{
         callback(new Error("请添加banner图"))
@@ -630,6 +647,7 @@ export default {
     //系统标签
     var SYSTAGS = (rule,value,callback)=>{
       var arr = this.labelClickArr.concat(this.alreadyArr)
+      console.log(arr,"arr------")
       if(arr!=undefined && arr.length>0){
         callback()
       }else{
@@ -641,7 +659,7 @@ export default {
       var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
       if(value){
         if(value.length>=1 && value.length<=10){
-          if(this.basicForm.customTags.indexOf(value) != -1){
+          if(this.customArr.indexOf(value) != -1){
             callback(new Error('已有该自定义标签名称'))
           }else{
              if(reg.test(value)){
@@ -767,6 +785,7 @@ export default {
       },
       pageNumber:1,
       editName:{},
+      customArr:[],
       alreadyArr:[],
       labelClickCon:[],
       labelClickArr:[],
@@ -990,6 +1009,95 @@ export default {
     },
   },
   methods: {
+    //图文详情测试
+    handImgText(file,fileList){
+      if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
+          var date = new Date();
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          if(fileList.length>4){
+          this.$message({
+            type: "warning",
+            message: "最多上传4张图片"
+            });
+          fileList.splice(fileList.indexOf(file),1)
+        }
+      }else{
+        fileList.splice(fileList.indexOf(file),1)
+         this.$message.error('请上传正确的图片格式');
+         return false
+      }
+    },
+    handleRemoveImgText(file,fileList){
+      fileList.splice(fileList.indexOf(file),1)
+    },
+    UploadImgText(file){
+      console.log(file.file.uid)
+        // 图片上传 
+        let pro = new Promise((resolve, rej) => {
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        //console.log(timestamp)
+          if (res.expire - 3 > timestamp) {
+            console.log("签名没过期");
+            resolve(res);
+          } else {
+            this.$http.get("/apiservice/oss/getSign").then(res => {
+              console.log(res, "签名过期");
+              Cookies.set("sign", JSON.stringify(res.data));
+              resolve(res.data);
+            });
+          }
+        });
+        var that = this;
+        pro.then(success => {
+            var data = success;
+            var ossData = new FormData();
+            var date = new Date();
+            var s = date.getTime()
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            ossData.append("name", file.file.name);
+            ossData.append(
+              "key",
+              data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+            );
+            ossData.append("policy", data.policy);
+            ossData.append("OSSAccessKeyId", data.accessid);
+            ossData.append("success_action_status", 201);
+            ossData.append("signature", data.signature);
+            // 添加文件
+            ossData.append("file", file.file, file.file.name);
+            that.$http
+              .post(data.host, ossData, {
+              headers: {
+              "Content-Type": "multipart/form-data; boundary={boundary}"
+              }
+            })
+            .then(res => {
+              this.testArr.push(ossData.get("key"));
+              console.log(this.testArr,"this.testArr------") 
+              console.log('aaaaa')
+            })
+            .catch(error => {
+            console.log('错误-------------上传图片失败--')
+            // this.picFile.push(ossData.get("key"));
+            console.log(error, "错误");
+            });
+        });
+    },
+    //图文详情测试----------------------
+    //添加商品
+    addCommodity(){
+      if(this.addComm){
+        this.resetForm()
+      }
+      this.addComm = !this.addComm
+    },
     converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
       var con = reg.test(val)? true : false
@@ -1096,21 +1204,27 @@ export default {
     },
     //自定义标签删除
     deleteLabel(index){
-      this.basicForm.customTags.splice(index,1)
+      // alert(index)
+      // console.log(this.basicForm.customTags,"basicForm.customTags---------")
+      // this.basicForm.customTags.splice(index,1)
+      this.customArr.splice(index,1)
+      console.log(this.basicForm.customTags,"basicForm.customTags++++++++")
     },
     //自定义标签
     CustomLabel(formName){
       this.$refs[formName].validate(valid => {
         if(valid){
-          if(this.basicForm.customTags.length>2){
+          if(this.customArr.length>2){
             this.$message({
               message: '最多设置3个自定义标签',
               type: 'warning'
             });
             return false
           }else{
-            this.basicForm.customTags.push(this.labelObj.labelName)
+            // this.basicForm.customTags.push(this.labelObj.labelName)
+            this.customArr.push(this.labelObj.labelName)
             this.labelObj.labelName = ''
+            console.log(this.customArr,"this.basicForm.customTags------")
           }
           this.addLabel = false
         }else{
@@ -1532,15 +1646,6 @@ export default {
       //   }
       // });
     },
-    //所属分类搜索
-    // queryClass(val){
-    //   console.log(val,'----queryClass----')
-    //    Orienteering({"sortId":val}).then(data=>{
-    //     this.serverCityArr = data.data.data
-    //   }).catch(error=>{
-    //     console.log(error,"error-----project")
-    //   })
-    // },
     //表格编辑
     handleEdit(index, val) {
       this.handleEditFlag = true
@@ -1552,13 +1657,7 @@ export default {
       this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
       this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
       this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
-      // this.basicForm.commoditys.splice(index,1)
-      // this.tableData[index] = this.goods_info
-      // console.log(this.goods_info, "this.goods_info.name");
-      // console.log(val, "this.commoditys.name");
       this.addComm = true;
-      // this.goods_info = val;
-      // this.basicForm.commoditys.splice(index, 1);
     },
     //表格删除
     tableHandleDelete(index, item) {
@@ -1569,12 +1668,6 @@ export default {
     houseClick(val) {
       this.basicForm.sortId = ''
       this.tableProject({majorSort:val})
-      // this.$refs['basic'].resetFields()  //基本信息重置
-      // this.basicForm.sortNum = ''  //排序号好清空
-      // this.basicForm.cityCodes = '' //定向城市
-      // this.resetForm('goods_info')  //添加商品
-      // this.goods_info.minPurchase = '' //起够数量
-      // this.basicForm.commoditys = [] //商品信息表格
       this.houseStr = val;
       console.log(val, "val----");
     },
@@ -1662,6 +1755,14 @@ export default {
             console.log(res.data, "res.data-------");
             
             this.total = res.data.data.count;
+            console.log(res.data.data.pageNo,this.pageNumber,"this.pageNumberres.data.data.pageNo-----------")
+            if(res.data.data.pageNo!=this.pageNumber){
+              console.log('project-------页码')
+              this.handleCurrentChange(res.data.data.pageNo)
+            }
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
             this.listTable = res.data.data.list;
             if(this.listTable!=undefined && this.listTable.length>0){
               // var num = page == 1? page : page-1+'1';
@@ -1783,7 +1884,8 @@ export default {
           }
           this.tableProject({majorSort:arr.majorSort},arr.sortId)
           this.basicForm = arr;
-          this.basicForm.customTags = arr.customTags || []
+          // this.basicForm.customTags = arr.customTags || []
+          this.customArr = arr.customTags || []
           console.log(this.basicForm, "basicForm------");
           this.alreadyArr = arr.sysTags || []
         })
@@ -1855,7 +1957,8 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList(this.pageNumber, this.pageSize);
+                this.handleCurrentChange(this.pageNumber)
+                // this.getList(this.pageNumber, this.pageSize);
               } else {
                 this.$message({
                   type: "warning",
@@ -1997,6 +2100,7 @@ export default {
           var obj = Object.assign({},that.basicForm)
               obj.pictures = this.picFile; //服务图片缩略图.
               obj.sysTags = this.labelClickArr //添加 系统标签
+              obj.customTags = this.customArr
               // obj.customTags = this.CustomLabelList; //添加 自定义标签
           // obj.majorSort = that.basicForm.majorSort; //所属分类
           // obj.sortId = that.basicForm.sortId; //所属分类编号
@@ -2004,7 +2108,7 @@ export default {
           // obj.name = that.basicForm.name; //项目名称
           // obj.pictures = this.picFile; //服务图片缩略图
           // obj.description = that.basicForm.description; //服务描述
-          // obj.sale = that.basicForm.sale; //是否上架
+          // obj.sale = that.basicForm.sale; //是否上架customArr
           // obj.sortNum = that.basicForm.sortNum; //排序号
           // obj.cityCodes = that.basicForm.cityCodes; //定向城市
           console.log(obj, "-----------------------------------");
@@ -2013,6 +2117,7 @@ export default {
             // that.basicForm.id = this.editId
             console.log(that.basicForm, "that.basicForm----");
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
+             that.basicForm.customTags = this.customArr
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -2112,7 +2217,7 @@ export default {
       this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
       this.alreadyArr = []
       this.labelClickArr = []
-      this.basicForm.customTags = []
+      this.customArr = []
       this.systemOptions2 = [];
       this.systemOptions3 = [];
       this.systemOptions4 = [];

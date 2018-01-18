@@ -318,55 +318,55 @@
                       <el-col :span="17" class="workHours">
                         <!-- <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p> -->
                         <el-form-item label="工作时间：" class="workHours-input" prop="workTimes">
-                          <div class="tech-order-jn">
-                              <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                               <el-collapse-transition>
-                                  <div class="tech-order-jn-sons" v-show="isB">
-                                    <div style="margin:0 10px;">
-                                        <p>新增日期</p>
-                                        <div>
-                                          <div style="display:flex;">
-                                              <div class="selfCheckBoxsday">日期</div>
-                                              <!-- <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
-                                              :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
-                                              {{item.name}}
-                                            </button> -->
-                                              <input type="button" class="selfCheckBoxs tech-order-posis"
-                                                  ref="sexOption" @click="roomSel1(item)"
-                                                  v-for="(item,$index) in sexDay" :key="$index"
-                                                  :class="[{'techTime-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
-                                                  :disabled="disbArr.indexOf(item.id)!=-1"
-                                                  :value="item.name">
-                                          </div>
-                                        </div>
-                                        <div class="startTime">
-                                          <div class="selfCheckBoxsday">时段</div>
-                                          <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                                              start: '00:00',
-                                              step: '00:30',
-                                              end: '24:00',
-                                              minTime:startend.startNew,
-                                              maxTime:startend.endNew
-                                              }" class="tech-daytim">
-                                          </el-time-select>
-                                          <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                                              start: '00:00',
-                                              step: '00:30',
-                                              end: '24:00',
-                                              minTime:startTime || startend.startNew,
-                                              maxTime:startend.endNew
-                                              }">
-                                          </el-time-select>
-                                        </div>
+                            <div class="tech-order-jn">
+                                <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
+                            </div>
+                            <el-collapse-transition>
+                              <div class="tech-order-jn-sons" v-show="isB">
+                                <div style="margin:0 10px;">
+                                    <p style="padding:10px 0;">新增日期</p>
+                                    <div>
+                                      <div style="display:flex;">
+                                          <div class="selfCheckBoxsday">日期</div>
+                                          <!-- <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
+                                          :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
+                                          {{item.name}}
+                                        </button> -->
+                                          <input type="button" class="selfCheckBoxs tech-order-posis"
+                                              ref="sexOption" @click="roomSel1(item)"
+                                              v-for="(item,$index) in sexDay" :key="$index"
+                                              :class="[{'techTime-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                              :disabled="disbArr.indexOf(item.id)!=-1"
+                                              :value="item.name">
+                                      </div>
                                     </div>
-                                    <div style="margin:0px 10px 10px;">
-                                        <span class="button-large btn-styl" @click="techClick">确认</span>
-                                        <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
-                                        <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
+                                    <div class="startTime">
+                                      <div class="selfCheckBoxsday">时段</div>
+                                      <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                                          start: '00:00',
+                                          step: '00:30',
+                                          end: '24:00',
+                                          minTime:startend.startNew,
+                                          maxTime:startend.endNew
+                                          }" class="tech-daytim">
+                                      </el-time-select>
+                                      <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                                          start: '00:00',
+                                          step: '00:30',
+                                          end: '24:00',
+                                          minTime:startTime || startend.startNew,
+                                          maxTime:startend.endNew
+                                          }">
+                                      </el-time-select>
                                     </div>
-                                  </div>
-                               </el-collapse-transition>
-                          </div>
+                                </div>
+                                <div style="margin:10px">
+                                    <span class="button-large btn-styl" @click="techClick">确认</span>
+                                    <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                                    <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
+                                </div>
+                              </div>
+                            </el-collapse-transition>
                         </el-form-item>
                     </el-col>
                   </el-row>
@@ -830,7 +830,7 @@ export default {
       if (value) {
         callback();
       } else {
-        callback(new Error("请输入出生日期"));
+        callback(new Error("请输入日期"));
       }
     };
 
@@ -1734,12 +1734,14 @@ export default {
           obj.jobNature = _perServer.jobNature
           obj.jobStatus = _perServer.jobStatus
           obj.workTime = _perServer.workTime
-          for(var i =0; i<_perServer.workTimes.length; i++){
-            if(_perServer.workTimes[i].endTimeStr){
-              _perServer.workTimes[i].endTime = _perServer.workTimes[i].endTimeStr
-              _perServer.workTimes[i].startTime = _perServer.workTimes[i].startTimeStr
-              delete _perServer.workTimes[i].endTimeStr
-              delete  _perServer.workTimes[i].startTimeStr
+          if(_perServer.workTimes!=undefined && _perServer.workTimes.length>0){
+            for(var i =0; i<_perServer.workTimes.length; i++){
+              if(_perServer.workTimes[i].endTimeStr){
+                _perServer.workTimes[i].endTime = _perServer.workTimes[i].endTimeStr
+                _perServer.workTimes[i].startTime = _perServer.workTimes[i].startTimeStr
+                delete _perServer.workTimes[i].endTimeStr
+                delete  _perServer.workTimes[i].startTimeStr
+              }
             }
           }
           obj.workTimes = _perServer.workTimes
@@ -2427,10 +2429,10 @@ export default {
 
 .tech-order-jn {
   width: 100%;
-  height: 36px;
+  height: 38px;
   border: 1px solid #bfcbd9;
   position: relative;
-  line-height: 36px;
+  line-height: 38px;
   /* margin-left:17px */
 }
 

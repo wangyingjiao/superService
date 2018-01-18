@@ -11,9 +11,7 @@
           > 
           <i class="el-icon-plus"></i>
         </el-upload>
-        <el-dialog v-model="dialogVisible" size="tiny">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
+     
         <button @click="open">上传</button>
       </div>
 </template>
