@@ -526,13 +526,16 @@ export default {
       getListdata(obj, pageNo, pageSize)
         .then(res => {
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.getListdata = res.data.data.list;
+            this.pageNumber=res.data.data.pageNo;
+            this.pageSize=res.data.data.pageSize;
             if (res.data.data.list != undefined) {
               for (var a = 0; a < this.getListdata.length; a++) {
                 this.getListdata[a].index = a + 1;
               }
             }
-            this.total = res.data.data.count;
+            
           }
           this.listLoading = false;
         })
@@ -780,13 +783,13 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 276px;
+  height: 300px;
   position:relative;
 }
 .table-d{
   width: 677px;
   overflow-y: scroll;
-  height: 300px;
+  height: 276px;
   margin-left: 15px;
 }
 .selfst1 {

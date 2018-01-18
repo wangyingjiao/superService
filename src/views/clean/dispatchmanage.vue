@@ -305,7 +305,9 @@ export default {
 		Reassignment(obj,pageNo,pageSize).then(res=>{
        if (res.data.code === 1) {
 				   this.pagetotal1=res.data.data.count;	
-					 this.tableData = res.data.data.list;															 		
+					 this.tableData = res.data.data.list;
+					 this.pageNumber=res.data.data.pageNo;
+					 this.pageSize1=res.data.data.pageSize;															 		
 					 this.listLoading = false;
 			 }else{
 				 	this.listLoading = false;
@@ -399,13 +401,13 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 267px;
+  height: 300px;
 	position:relative;
 }
 .table-d{
   width: 677px;
   overflow-y: scroll;
-  height: 300px;
+  height: 276px;
   margin-left: 15px;
 }
 .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
@@ -422,7 +424,7 @@ export default {
     transform: translateY(-10px);
     opacity: 0;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
+.tableHeader{position:absolute;z-index:99999;top:0px;}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;

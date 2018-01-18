@@ -388,6 +388,7 @@
               </div>
               </table>
               <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
+              
             </div>            
           </div> 	  	  
           <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -862,7 +863,7 @@ export default {
 .selftechNameStyle{
     width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
 }
-.tableHeader{position:absolute;z-index:99999;margin:0px;margin-top:-1px;}
+.tableHeader{position:absolute;top:0px;z-index:9999}
 .selfTdStyle1 {
   vertical-align:middle;
   height: 70px;
@@ -902,13 +903,13 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 267px;
+  height: 300px;
   position:relative;
   }
 .table-d{
   width: 677px;
   overflow-y: scroll;
-  height: 300px;
+  height: 276px;
   margin-left: 15px;
 }
 .selfpromMessageTab{
@@ -942,7 +943,7 @@ export default {
 .techTabWrap{width:690px;float:left;padding-left:30px;padding-bottom:20px;}
 .userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
 .selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
-.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
+.selfTable {  text-align: center; border-collapse: collapse; padding:2px;}
 .editServiceTabHeader{background: #F8F8F9;height:30px;}
 .editServiceTabSel{width:120px;margin-top:3px;margin-bottom:3px;}
 .editServiceTabInputNum{width:120px;margin-top:3px;margin-bottom:3px;} 
