@@ -172,7 +172,7 @@
                           <i class="el-icon-plus"></i>
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
-                        <img width="100%" :src="dialogImageUrl" alt="">
+                        <img width="100%" :src="dialogImageUrl" alt="" class="abc">
                       </el-dialog>
                   </div>
       
@@ -295,7 +295,7 @@
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入商品名称（1-36位）"
+                    placeholder="请输入商品名称（1-26位）"
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
@@ -491,7 +491,7 @@
                           :file-list="fileList"
                           :limit="3"
                           :before-upload="handleBefore"
-                          :http-request="upload"   
+                          :http-request="upload"
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
@@ -669,7 +669,7 @@ export default {
             }
           }
         }else{
-          callback(new Error('自定义标签长度2~10位'))
+          callback(new Error('自定义标签长度1~10位'))
         }
       }else{
         callback(new Error('请输入自定义标签'))
@@ -679,14 +679,18 @@ export default {
     var CAPPINPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
         if(value){
-          if(reg.test(value)){
-            if(value*1>=this.goods_info.startPerNum*1){
-               callback()
+          if(value*1<=30){
+            if(reg.test(value)){
+              if(value*1>=this.goods_info.startPerNum*1){
+                callback()
+              }else{
+                callback(new Error('起步人数不能大于封顶人数'))
+              }
             }else{
-              callback(new Error('起步人数不能大于封顶人数'))
+              callback(new Error('请输入数字'))
             }
           }else{
-            callback(new Error('请输入数字'))
+            callback(new Error('封顶人数最高30人'))
           }
         }else{
           callback()
@@ -696,11 +700,15 @@ export default {
     var STARTPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
       if(value){
+        if(value*1<=30){
           if(reg.test(value)){
             callback()
           }else{
             callback(new Error('请输入数字'))
           }
+        }else{
+          callback(new Error('起步人数最高30人'))
+        }
       }else{
          callback()
       }
@@ -720,10 +728,14 @@ export default {
     var MINPURCHASE = (rule,value,callback) =>{
       var reg = /^\d+$/;
       if(value){
-        if(reg.test(value)){
-          callback()
+        if(value*1<=999999){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入数字'))
+          }
         }else{
-          callback(new Error('请输入数字'))
+          callback(new Error('起够数量应在999999以内'))
         }
       }else{
         callback()
@@ -782,6 +794,7 @@ export default {
       systemClick3Id:null,
       systemOptions:[],
       systemOptions2:[],
+      imgNumber:0,
       systemOptions3:[],
       systemOptions4:[],
       SystemLabel:false,
@@ -804,6 +817,7 @@ export default {
       serverCityArr: [],
       wholeTable: {},
       directional: [],
+      addDetailsImg:0,
       cityArr: [],
       personsTime: false,
       addComm: false,
@@ -995,7 +1009,7 @@ export default {
   },
   methods: {
     converFilter(val){
-      var reg = /^\d+(\.\d{2})?$/;
+      var reg = /^\d+(\.\d{1,2})?$/;
       var con = reg.test(val)? true : false
       return con
     },
@@ -1139,7 +1153,7 @@ export default {
           });
           return false;
         }
-        if (this.picFile.length >= 4) {
+        if (this.imgNumber >= 4) {
           this.$message({
             type: "warning",
             message: "最多上传4张图片"
@@ -1187,6 +1201,7 @@ export default {
 
           }else{
                this.imgText.del(delIndex);
+               this.addDetailsImg--
           }
           //console.log(delIndex,'删除图片的下标')
          
@@ -1243,6 +1258,8 @@ export default {
 
         }else{
           this.picFile.del(delIndex);         
+          this.imgNumber--
+          console.log(this.imgNumber,"this.imgNumber-------")
         }
         console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
@@ -1271,7 +1288,7 @@ export default {
           return false;
         }
         console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
-        if(this.imgText.length>=4){
+        if(this.addDetailsImg>=4){
           this.$message({
             type:'warning',
             message:'最多上传4张图片'
@@ -1323,6 +1340,7 @@ export default {
       this.ImageText = false;
     }, // 关闭图文
     upload(file) {
+      this.addDetailsImg ++
       // console.log(file,"file-----------")
       // 图文上传
       let pro = new Promise((resolve, rej) => {
@@ -1380,7 +1398,9 @@ export default {
       });
     },
     picUpload(file) {
+      this.imgNumber++
       // 图片上传
+      console.log(file,"file------")
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1474,6 +1494,7 @@ export default {
               obj.startPerNum = this.goods_info.startPerNum
               obj.minPurchase = this.goods_info.minPurchase
               obj.cappingPerNum = this.goods_info.cappingPerNum
+              this.addComm = false
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
@@ -1485,6 +1506,7 @@ export default {
               console.log(obj,"obj---------------")
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
+              this.addComm = false
           }
         }else{
           return false
@@ -1722,7 +1744,8 @@ export default {
       // this.picList = []
       this.basicForm.sale = 'yes'
       this.basicForm.sortId = ''
-       this.tableProject({majorSort:"clean"})
+      this.imgNumber = 0;
+      this.tableProject({majorSort:"clean"})
       this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
@@ -1759,6 +1782,7 @@ export default {
           }
           if (data.data.data.pictures != undefined) {
             this.picFile = data.data.data.pictures;
+            this.imgNumber = data.data.data.pictures.length;
             for (var i = 0; i < data.data.data.pictures.length; i++) {
               console.log(data.data.data.pictures, "tupian");
               var obj = {
@@ -1780,6 +1804,7 @@ export default {
         });
     },
     handleUplode(row) {
+      this.addDetailsImg = 0;
       this.basicForm.sortId = ''
       this.imgText = []
       // console.log("上传");
@@ -1797,6 +1822,7 @@ export default {
 
             if (data.pictureDetails != undefined) {
               this.imgText = data.pictureDetails;
+              this.addDetailsImg = data.pictureDetails.length;
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 var obj = {
                   url:
@@ -2010,16 +2036,19 @@ export default {
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
                   this.picList = [];
+                  this.imgNumber = 0
                 } else {
                   this.$message({
                     message: data.data.data,
                     type: "warning"
                   });
                    this.btnState = false
+                   this.imgNumber = 0
                 }
               })
               .catch(error => {
                  this.btnState = false
+                 this.imgNumber = 0
                 console.log(error, "error---project---857");
               });
           } else {
@@ -2069,7 +2098,7 @@ export default {
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappingPerNum = ''
-      this.addComm = false
+      // this.addComm = false
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2088,6 +2117,7 @@ export default {
       }
       this.$refs["basic"].resetFields()
       this.addComm = false
+      this.imgNumber = 0;
       // this.goods_info = {}
       this.basicForm.commoditys = [];
       this.picFile = [] //清空图片

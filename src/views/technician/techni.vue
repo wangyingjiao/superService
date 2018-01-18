@@ -298,7 +298,7 @@
                           :before-upload="beforeAvatarUpload"
                           :http-request="(val)=>picUpload(val,'head')"
                           >
-                          <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'">
+                          <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
                           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                       </el-upload>
                       <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
@@ -358,8 +358,9 @@
                     <el-form-item label="服务状态：" class="seize">
                         <el-switch
                           v-model="personal.status"
-                          on-text="上线"
-                          off-text="暂停"
+                          width="100"
+                          on-text="提供服务"
+                          off-text="暂停服务"
                           on-value="yes"
                           off-value="no">
                         </el-switch>
@@ -1802,7 +1803,7 @@ export default {
                   this.handleCurrentChange(this.listQuery.page)
                   this.dialogVisibleEditClick()
               }else{
-                this.$message.error('删除失败!')
+                this.$message.error(data.data.data)
                 return false
               }
               //  this.getList(this.listQuery.page,this.listQuery.limit,)
@@ -2235,8 +2236,8 @@ export default {
   margin-bottom: 0;
 }
 .avatar-headPic .el-upload--text img{
-  width: 120px;
-  height: 120px;
+  /* width: 120px;
+  height: 120px; */
 }
 .tech-span {
   color: red;
