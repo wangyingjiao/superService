@@ -250,13 +250,13 @@ export default {
             this.list[i].index = i + 1;
           }
         }
-        
         setTimeout(() => {
             this.listLoading = false;   
           }, 1000);
       });
     },
     handleCurrentChange(val) {
+      this.listQuery.page = 1;
       this.pageNumber = val;
       var obj = {
         name: this.search.name,
