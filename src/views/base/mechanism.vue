@@ -1,8 +1,7 @@
 <template>
 <div>
+  <!-- 搜索开始 -->
   <div class="filter-container bgWhite">
-
-      
       <el-input @keyup.enter.native="handleFilter" style="width: 350px;" placeholder="请输入搜索的内容" v-model="search.value">
         <el-select slot="prepend" clearable style="width: 120px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
         <el-option v-for="item in importanceOptions" :key="item.id" :label="item.value" :value="item.id">
@@ -12,9 +11,11 @@
 
       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
   </div>
+  <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
      <button class="button-small btn_pad" v-if="btnShow.indexOf('office_insert') > -1"  @click="handleCreate('temp')">新增</button>
+    <!-- 列表开始 -->
     <el-table 
     :key='tableKey' 
     :data="list" 
@@ -53,13 +54,14 @@
       </el-table-column>
 
     </el-table>
-
+<!-- 列表结束 -->
+<!-- 分页器 -->
     <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr page mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
+<!-- 弹框 -->
     <el-dialog
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
@@ -107,8 +109,6 @@
         </el-form-item>
 
         <el-form-item label="所在区域:"  prop="areaCodes">
-
-
               <!-- 省市区 -->
               <el-cascader
                 @active-item-change = "codeChange"
@@ -234,6 +234,7 @@ export default {
     waves
   },
   data() {
+    // 表单验证
     var validatePhone = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
@@ -450,6 +451,7 @@ export default {
     console.log(this.orgId,'orgId')
   },
   methods: {
+    //获取列表
     getList() {
       var value = this.search.value;
       if (this.search.key == "name") {
@@ -481,6 +483,7 @@ export default {
         this.listLoading = false;
       });
     },
+    //搜索
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1
@@ -507,7 +510,6 @@ export default {
         }else{
           var obj = {}
         }
-        
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -525,6 +527,7 @@ export default {
       
       // this.getList();
     },
+    //切换页数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber =1
@@ -556,6 +559,7 @@ export default {
         this.listLoading = false;
       });
     },
+    //切换条数
     handleCurrentChange(val) {
       this.pageNumber = val;
       var value = this.search.value;
@@ -584,6 +588,7 @@ export default {
         this.listLoading = false;
       });
     },
+    //开始时间change事件
     startTimeChange(val){
       this.temp.workEndTime = ""
       this.workEndTime = []
@@ -600,14 +605,17 @@ export default {
         }
       }
     },
+    //结束时间change事件
     endTimeChange(val){
        console.log(val,'结束时间')
     },
+    //新增
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false
     },
+    //编辑
     handleUpdate(row) {
 
       //console.log(row);
@@ -661,28 +669,26 @@ export default {
         })
         .catch(error => {
           this.listLoading = false;
-          this.$message({
-            type: "error",
-            message: "与服务器断开链接，稍后再试"
-          });
+          
         });
       // console.log(this.temp.visable);
     },
+    //取消
     resetForm(formName) {
       this.dialogFormVisible = false;
       //this.resetTemp();
       this.$refs[formName].resetFields();
     },
-    itemActive(arr){
-        console.log(arr,'arr')
-    },
+    //切换省市区
     codeChange(val){
        this.temp.areaCodes.splice(0,this.temp.areaCodes.length)
     },
+    //切换搜索内容
     searchChange(val) {
       console.log(val);
       // this.search.key = val
     },
+    //新增保存
     create(formName) {
 
       var obj = {
@@ -747,6 +753,7 @@ export default {
         }
       });
     },
+    //编辑保存
     update(formName) {
       var obj = {
         id: this.updateId,
@@ -806,6 +813,7 @@ export default {
         }
       });
     },
+    //清空temp
     resetTemp() {
       this.temp = {
         address: "",
