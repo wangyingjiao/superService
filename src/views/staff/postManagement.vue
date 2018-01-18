@@ -602,32 +602,7 @@ export default {
           }
         }
         //订单处理结束
-        //员工的列表不可取消
-           
-        // if(a.permission == 'user_view'){
-        //    for (var i = 0; i < this.data2.length; i++) {
-        //     if (this.data2[i].subMenus != undefined) {
-        //       console.log(a.permission,'1')
-        //       for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-        //         if (this.data2[i].subMenus[j].permission == "user") {
-        //           console.log(this.temp.check,'gggggggggd')
-        //           console.log(a.permission,'2',this.temp.check)
-        //           var orderarr = this.data2[i].subMenus[j]
-        //           for(var k = 0;k<orderarr.subMenus.length-1;k++){
-        //             //console.log('不可取消')
-        //                if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
-        //                  console.log(a.permission,'3')
-        //                  console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
-        //                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[3].id, true);
-                        
-        //                }
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
-        //员工处理结束
+        
         //处理列表权限不可取消
         if (
             a.permission.substring(
