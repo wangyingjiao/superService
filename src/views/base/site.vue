@@ -1,9 +1,10 @@
 <template>
   <div>
+    <!-- 搜索 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
-
+        <!-- 分组搜索 -->
       <el-select class="search" v-model="search.cityCode" filterable clearable placeholder="请选择城市">     
             <el-option-group
               v-for="(group,index) in areaOptions"
@@ -22,10 +23,11 @@
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
+       <!-- 按钮组 -->
       <button class="button-small btn_pad"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
       <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
       <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
-
+      <!-- 列表 -->
       <el-table 
       id="tableColor"
         :key='tableKey' 
@@ -51,27 +53,22 @@
            <template scope="scope">
             <span v-if="scope.row.type =='join'">加盟</span>
             <span v-if="scope.row.type =='self'">直营</span>
-          </template>
-          
+          </template>    
         </el-table-column>
 
         <el-table-column label="站长" align="center" prop="user.name">
-
         </el-table-column>
 
-        <el-table-column label="所属城市" align="center" prop="cityName">
-         
+        <el-table-column label="所属城市" align="center" prop="cityName">        
         </el-table-column>
 
-        <el-table-column label="服务站电话" align="center" prop="phone">
-         
+        <el-table-column label="服务站电话" align="center" prop="phone">       
         </el-table-column>
 
         <el-table-column label="员工数量" align="center" prop="employees">
         </el-table-column>
 
-        <el-table-column label="技师数量" align="center" prop="techNum"> 
-          
+        <el-table-column label="技师数量" align="center" prop="techNum">          
         </el-table-column>
 
         <el-table-column align="center" label="状态" prop="isUseable">
@@ -89,13 +86,13 @@
         </el-table-column>
 
       </el-table>
-
+<!-- 分页器 -->
       <div v-if="!listLoading" class="pagination-container">
         <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
       </div>
-
+<!-- 新增编辑弹窗 -->
       <el-dialog 
         :title="textMap[dialogStatus]" 
         :visible.sync="dialogFormVisible"
@@ -154,7 +151,7 @@
           <button class="button-cancel" @click="resetForm('temp')">取 消</button>
         </div>
       </el-dialog>
-
+<!-- 设置站长 -->
       <el-dialog 
         title="设置站长"
         :show-close= "false"
@@ -181,7 +178,7 @@
            <button class="button-cancel" @click="resetMaster('tempMaster')">取 消</button>
         </div>
       </el-dialog>
-
+<!-- 设置范围地图 -->
       <el-dialog
 			title="服务范围选择"
         :visible.sync="severSelectdialogVisible"
@@ -244,7 +241,7 @@
         <br/>		
 	    </el-dialog>
 
-
+<!-- 设置门店 -->
       <el-dialog 
         title="门店范围" 
         :show-close= "false"
@@ -302,6 +299,7 @@ export default {
     waves
   },
   data() {
+    // 表单验证
     var validatePhone = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
@@ -430,14 +428,15 @@ export default {
 
   created() {
     this.getList();
+    // 加载字典量
     var dict = require("../../../static/dict.json");
     this.stationType = dict.service_station_type;
-    setTimeout(function() {}, 30);
+    // setTimeout(function() {}, 30);
     //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
+    //获取列表
     getList() {
-      //获取列表
       this.listLoading = true;
       var obj = {
         name: this.search.name,
@@ -455,8 +454,8 @@ export default {
         this.listLoading = false;
       });
     },
-    handleFilter() {
       //搜索
+    handleFilter() {
       this.listLoading = true;
       this.pageNumber = 1;
       this.listQuery.page = 1;
@@ -475,8 +474,8 @@ export default {
         this.listLoading = false;
       });
     },
-    handleSetMaster() {
       // 设置站长
+    handleSetMaster() {
       console.log(this.tempMaster.master)
       console.log(this.rowInfo.masterId)
       if (this.rowInfo.id == "") {
@@ -501,8 +500,8 @@ export default {
         });
       }
     },
-    handleSetRange() {
       //设置范围
+    handleSetRange() {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -851,12 +850,14 @@ export default {
       //区域截取
       this.temp.areaCodes.splice(0, this.temp.areaCodes.length);
     },
+    // 显示地图弹窗
     showdialog() {
       this.severSelectdialogVisible = true;
       this.$nextTick(() => {
         this.initMap1();
       });
     },
+    // 地图初始化
     initMap1() {
       var that = this;
       var id = this.$refs.gdMap;
