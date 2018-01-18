@@ -364,6 +364,7 @@ export default {
     handleFilter() {
       //搜索
       this.listQuery.page = 1;
+      this.pageNumber = 1
     
       var obj = {
         name: this.search.name,
@@ -371,19 +372,17 @@ export default {
       };
     
       if (obj.name != "" || obj.organization.id != "") {
-       
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+             this.total = res.data.data.count;
             this.list = res.data.data.list;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -399,6 +398,7 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+             this.total = res.data.data.count;
             this.list = res.data.data.list;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
@@ -406,7 +406,7 @@ export default {
               }
             }
 
-            this.total = res.data.data.count;
+           
             this.listLoading = false;
           }
         });

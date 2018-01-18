@@ -187,15 +187,21 @@ export default {
       };
       getClass(obj, this.pageNumber, this.pageSize)
         .then(res => {
-          console.log(res, "分类列表");
+          console.log(res.data.data, "分类列表");
+          this.total = res.data.data.count;
           this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo
+          this.pageSize = res.data.data.pageSize
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
             }
           }
-          this.listLoading = false;
-          this.total = res.data.data.count;
+          setTimeout(() => {
+            this.listLoading = false;
+            
+          }, 1000);
+          
         })
         .catch(res => {
           this.listLoading = false;
@@ -212,15 +218,18 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
-        this.listLoading = false;
-
+        
+       this.total = res.data.data.count;
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
+        
+        setTimeout(() => {
+            this.listLoading = false;   
+          }, 1000);
       });
     },
     handleSizeChange(val) {
@@ -232,15 +241,19 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
+      this.listLoading = true
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
-        this.listLoading = false;
+        
+        setTimeout(() => {
+            this.listLoading = false;   
+          }, 1000);
       });
     },
     handleCurrentChange(val) {
@@ -249,16 +262,19 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
+      console.log(1111111)
       this.listLoading = true;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.listLoading = false;
-        this.total = res.data.data.count;
+        setTimeout(() => {
+            this.listLoading = false;   
+          }, 1000);
       });
     },
     handleCreate() {
