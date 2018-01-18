@@ -19,7 +19,7 @@
 
       <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large el-icon-search btn_search" @click="getList"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -280,7 +280,8 @@
                 </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addComm = !addComm">
-                <span class="fl btn_Span1">+</span>
+                <span v-if="!addComm" class="fl btn_Span1">+</span>
+                <span v-if="addComm" class="fl btn_Span1">-</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-collapse-transition>
@@ -406,7 +407,7 @@
                   <span v-for="(item,index) in labelClickArr" :key="index">{{item}}
                     <i @click="SelectedLabel(item)" class="el-icon-close systemClose"></i>
                   </span>
-                </div>
+              </div>
           </el-col>
         </el-row>
 
@@ -419,7 +420,7 @@
                   </span> -->
                   <span v-for="(item,index) in alreadyArr" :key="index">
                     {{item}}
-                    <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                    <i @click="AlreadyLabel(item)" class="el-icon-close systemClose"></i>
                   </span>
             </div>
           </el-col>
@@ -452,12 +453,10 @@
                             v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" 
                             :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
                             class="cursor" :value="item.label"> -->
-                    <!-- <el-tooltip placement="top" :disabled="item.label.length<11" :content="item.label"> -->
                       <input type="button" v-for="item in systemOptions4" class="cursor"
                               :key="item.value" :value="item.label" @click="labelClick(item)"
                               :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                               :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                    <!-- </el-tooltip> -->
                   </div>
               </div>
           </el-col>
@@ -545,29 +544,12 @@ export default {
     waves
   },
   data() {
-    // var UNIT = (rule, value, callback) => {
-    //   var reg = /^\d+$/;
-    //   if (value) {
-    //     callback()
-    //     // if (value.length >= 1 && value.length <= 5) {
-    //     //   if (reg.test(value)) {
-    //     //     callback();
-    //     //   } else {
-    //     //     callback(new Error("商品单位必须为数字值"));
-    //     //   }
-    //     // } else {
-    //     //   callback(new Error("长度在 1 到 5 个字符"));
-    //     // }
-    //   } else {
-    //     callback(new Error("请输入商品单位"));
-    //   }
-    // };
     //价格
     var PRICE = (rule, value, callback) => {
       var val = value+''
       var reg = /^\d+(\.\d{1,2})?$/;
       if (val) {
-        if(val.length>=1 && val.length<=8){
+        if(val*1<=99999999){
           if(reg.test(val)){
             callback()
           }else{
@@ -638,11 +620,11 @@ export default {
     //服务图片
     var PICTURE = (rule,value,callback)=>{
       // callback()
-      console.log(this.picFile,"this.picFile-----------------[][][]")
+      // console.log(this.picFile,"this.picFile-----------------[][][]")
       if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
-        callback(new Error("请添加服务图片"))
+        callback(new Error("请添加banner图"))
       }
     }
     //系统标签
@@ -908,7 +890,7 @@ export default {
         picture: [
            { required: true, validator:PICTURE, trigger:"blur"}
           ],
-        sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
+        sortId:[{required:true,message:'请选择所属分类',trigger:'blur'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         // description: [
         //     { required: true, message: "请输入服务描述", trigger: "blur" },
@@ -1494,10 +1476,10 @@ export default {
               obj.startPerNum = this.goods_info.startPerNum
               obj.minPurchase = this.goods_info.minPurchase
               obj.cappingPerNum = this.goods_info.cappingPerNum
-              this.addComm = false
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
+            // this.addComm = false
             this.handleEditFlag = false
           }else{
             // var obj = Object.assign({},this.goods_info)
@@ -1506,7 +1488,7 @@ export default {
               console.log(obj,"obj---------------")
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
-              this.addComm = false
+              // this.addComm = false
           }
         }else{
           return false
@@ -1649,10 +1631,16 @@ export default {
       }
       this.personsTime = false;
     },
+    serGetList(){
+      this.getList();
+      this.pageNumber = 1;
+      this.listQuery.page = 1;
+    },
     getList(page, size,getObj) {
       var _page = page || this.pageNumber
       var _size = size || this.pageSize
       this.listLoading = true;
+      // this.pageNumber = 1
       var obj = {};
       if(getObj){
         obj = getObj
@@ -1953,6 +1941,7 @@ export default {
       this.search.sortId = ''
       this.search.name = ''
       var size = this.pageSize;
+      this.pageNumber = 1;
        Taxonomy({majorSort:tab.name})
         .then(data => {
           console.log(data,"clean++++++++++===============")
@@ -2098,7 +2087,6 @@ export default {
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappingPerNum = ''
-      // this.addComm = false
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2234,6 +2222,8 @@ export default {
   cursor: pointer;
 }
 .btn_Span1 {
+  font-size: 20px;
+  line-height: 30px;
   width: 30px;
   height: 30px;
   background-color: #3A5FCD;
@@ -2290,7 +2280,7 @@ export default {
 }
 .tabLeft .el-radio-button__inner{
   text-align: left;
-  padding-left: 25px;
+  padding-left: 25%;
   background: #f9f9f9
 }
 
@@ -2300,12 +2290,17 @@ export default {
   cursor: pointer;
 }
 
+.bgWhite .el-switch.is-checked .el-switch__core{
+  background-color: #4c70e8;
+  border: 1px solid #4c70e8;
+}
+
 .tabRight {
   width: 85%;
   height: 100%;
   border-left: 1px #eee solid;
   background-color: #ffffff;
-  padding: 10px 10px 60px 10px;
+  padding: 10px 25px 60px 25px;
   /* margin-right: 10px; */
 }
 .el-radio-button {
@@ -2545,7 +2540,7 @@ hr {
   position: absolute;
   top: 0;
   line-height: 44px;
-  right: 30px;
+  right: 15px;
 }
 .tableSer{
   padding: 5px 10px;
@@ -2556,7 +2551,7 @@ hr {
   color: red
 }
 .details{
-  font-size: 25px;
+  font-size: 18px;
   font-weight: 900;
   text-align: center;
   line-height: 80px;
@@ -2693,6 +2688,9 @@ hr {
   /* height: 50px; */
   line-height: 50px;
   word-break:keep-all;
+}
+.alreadyUl{ 
+  width: 100%
 }
 .already span{
   border: 1px solid #E8E8E8;

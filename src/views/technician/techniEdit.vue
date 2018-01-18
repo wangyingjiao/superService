@@ -79,7 +79,7 @@
                       <el-form-item label="服务状态：" class="seize">
                             <el-switch
                               v-model="personalEDit.status"
-                              width="100"
+                              :width="100"
                               on-text="提供服务"
                               off-text="暂停服务"
                               on-value="yes"
@@ -550,7 +550,8 @@
           <div style="padding:25px">
             <!-- <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button> -->
             <div class="add_Btn" @click="showTabl">
-                <span class="fl btn_Span1">+</span>
+                <span v-if="!flagso" class="fl btn_Span1">+</span>
+                <span v-else class="fl btn_Span1">-</span>
                 <span class="fl btn_Span2">家庭成员</span>
               </div>
           </div>
@@ -979,7 +980,7 @@ export default {
         // 身份证
         idCard: [{ required: true, validator: TECHIDCARD, trigger: "blur" }],
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
-        sex: [{ required: true, message: "请输入性别", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         birthDate: [
           { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
@@ -2180,7 +2181,14 @@ export default {
   font-weight: 700;
 }
 .tech-order-jn-sons .tech-dir{
-  border: 1px solid #eee;
+  border: 1px solid #a7a7a7;
+  background: url("../../../static/icon/eee.png") no-repeat;
+  background-size: 15px 15px;
+  background-position: bottom right;
+}
+.tech-edit .btn_Span1{
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .tech-tc-prson {
@@ -2362,9 +2370,9 @@ export default {
 
 .tech-green,
 .techTime-green {
-  border: solid 1px green;
+  border: solid 1px #4c70e8 !important;
   background: url("../../../static/icon/Selected.png") no-repeat;
-  background-size: 20px 20px;
+  background-size: 15px 15px;
   background-position: bottom right;
 }
 .techTime-green {

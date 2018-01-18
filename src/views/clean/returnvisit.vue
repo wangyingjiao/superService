@@ -38,7 +38,8 @@ export default {
       this.$refs.upload.submit();
     },
     handPic(file,fileList) {
-     if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
+      console.log(file.raw.type,"file.type------")
+     if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
           var date = new Date();
           var y = date.getFullYear();
           var m = date.getMonth() + 1;
@@ -46,12 +47,13 @@ export default {
           var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
           if(fileList.length>4){
           this.$message({
-          type: "warning",
-          message: "最多上传4张图片"
-          });
+            type: "warning",
+            message: "最多上传4张图片"
+            });
           fileList.splice(fileList.indexOf(file),1)
         }
       }else{
+        fileList.splice(fileList.indexOf(file),1)
          this.$message.error('请上传正确的图片格式');
          return false
       }
