@@ -304,9 +304,9 @@ export default {
 		var obj=pramsObj; 
 		Reassignment(obj,pageNo,pageSize).then(res=>{
        if (res.data.code === 1) {
-					 this.tableData = res.data.data.list;										
-					 this.pagetotal1=res.data.data.count;			
-					this.listLoading = false;
+				   this.pagetotal1=res.data.data.count;	
+					 this.tableData = res.data.data.list;															 		
+					 this.listLoading = false;
 			 }else{
 				 	this.listLoading = false;
 			 }

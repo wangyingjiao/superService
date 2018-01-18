@@ -79,8 +79,9 @@
                       <el-form-item label="状态：" class="seize">
                             <el-switch
                               v-model="personalEDit.status"
-                              on-text="上线"
-                              off-text="暂停"
+                              :width='100'
+                              on-text="服务开启"
+                              off-text="服务暂停"
                               on-value="yes"
                               off-value="no">
                             </el-switch>

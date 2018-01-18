@@ -14,7 +14,14 @@
 <el-tooltip placement="top"  :disabled="value.length<11" :content="value">
       <button style="width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{value}}</button>
 </el-tooltip>
-
+                                <el-switch
+                              v-model="testvalue"
+                              :width='100'
+                              on-text="服务开启"
+                              off-text="服务暂停"
+                              on-value="yes"
+                              off-value="no">
+                            </el-switch>
     </div>
 </template>
 
@@ -25,6 +32,7 @@ import { getSign } from "@/api/sign";
 export default {
   data() { 
     return {
+      testvalue:'yes',
       value:'ddeeeeeeeeeeeee月月儿科可',
       picList:[],
       testArr:[],
