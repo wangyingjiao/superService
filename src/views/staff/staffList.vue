@@ -102,7 +102,7 @@
           <el-input 
             v-model="temp.mobile"
             class="form_item"
-            placeholder="请输入11位手机号"></el-input>
+            placeholder="请输入登录账号（手机号）"></el-input>
         </el-form-item>
 
         <el-form-item label="密码:" prop="password">
@@ -244,6 +244,7 @@ import {
   getFuwu,
   delStaff,
   getMenudata,
+  chkName,
   addStation
 } from "@/api/staff";
 import { getSign } from "@/api/sign";
@@ -307,17 +308,38 @@ export default {
     };
     var validatePhone = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("电话号码不能为空"));
+        return callback(new Error("登录账号不能为空"));
       } else {
-        if (!/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) {
-          callback(new Error("手机号码格式不正确！"));
+        if (!/^1[3|4|5|6|7|8][0-9]\d{8}$/.test(value)) {
+          callback(new Error("登录账号（手机号）格式不正确！"));
         } else {
           callback();
         }
       }
     };
+    var validateName = (rule, value, callback) => {
+      console.log(this.temp2.officeId2);
+      var that = this;
+      if (!value) {
+        return callback(new Error("岗位名不能为空"));
+      } else {   
+          console.log(this.temp2.officeId2);
+          var obj = {
+            name: value,
+            id: this.temp2.officeId2
+          };
+          chkName(obj).then(res => {
+            if (res.data.code == 0) {
+              callback(new Error("岗位名重复！"));
+            } else {
+              callback();
+            }
+          });
+        
+      }
+    };
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
       list: null,
       total: null,
@@ -339,7 +361,7 @@ export default {
         officeId: "",
         stationId: ""
       },
-      mechanismCheck: [],//服务机构
+      mechanismCheck: [], //服务机构
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
       temp: {
@@ -385,7 +407,10 @@ export default {
         { id: "10", value: "十级" }
       ],
       roleLv: [],
-      stationStateCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
+      stationStateCheck: [
+        { id: "1", name: "可用" },
+        { id: "0", name: "不可用" }
+      ],
 
       dialogFormVisible: false,
       dialogFormStation: false,
@@ -418,21 +443,29 @@ export default {
         password3: [
           { required: true, validator: validatePass3, trigger: "blur" }
         ],
-        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
-        stationId: [{ required: true, message: "服务站不能为空", trigger: "change" }],
+        officeId: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
+        stationId: [
+          { required: true, message: "服务站不能为空", trigger: "change" }
+        ],
         role: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       },
       rules2: {
-        officeId2: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        officeId2: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
         name: [
           {
             required: true,
-            message: "请输入 2 到 15 位的岗位名称",
+            validator: validateName,
             trigger: "blur"
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        dataScope: [
+          { required: true, message: "等级不能为空", trigger: "change" }
+        ],
         check: [
           {
             type: "array",
@@ -538,7 +571,7 @@ export default {
       console.log("size-change");
       this.pageSize = val;
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       // var obj = {};
       this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -567,8 +600,8 @@ export default {
           }
           console.log(res.data.data.list, "list-------------");
         }
-          this.list = res.data.data.list;
-          this.listLoading = false;
+        this.list = res.data.data.list;
+        this.listLoading = false;
       });
     },
     timeFilter(time) {
@@ -589,35 +622,157 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
+      console.log(a, b, c, "yyyyyyyy");
+      //父级点击时取消勾选
+      // if(a.permission = 'order'){
+      //   if(b){
+      //     console.log('选中时')
+      //   }else{
+      //     console.log('mei选中时')
+      //   }
+      // }
+
+      // console.log(this.temp2.check, "check-----------------");
+      // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
+        console.log("tttttttttttttttt");
+        // 处理订单里的查看详情
+        if (
+          ["order_time", "order_dispatch", "order_addTech"].indexOf(
+            a.permission
+          ) > -1
+        ) {
+          var arr = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(this.data2[i].subMenus[j], "成功");
+                  this.$refs.domTree.setChecked(
+                    this.data2[i].subMenus[j].subMenus[
+                      this.data2[i].subMenus[j].subMenus.length - 2
+                    ].id,
+                    true
+                  );
+                }
+              }
+            } else {
+              console.log(this.data2[i].subMenus);
+            }
+          }
+        }
+        //订单详情处理完毕
+        //自动勾选列表权限
         if (a.subMenus == undefined) {
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].id == arr[2]) {
-            }
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr[3]) {
-                  var str = this.data2[i].subMenus[j].subMenus[0];
+                  var str = this.data2[i].subMenus[j].subMenus[
+                    this.data2[i].subMenus[j].subMenus.length - 1
+                  ];
+                  console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
-                    console.log(newper, "截取");
+
                     if (newper == "view") {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
+                  } else {
+                    console.log(111111111111111111);
                   }
                 }
               }
             }
           }
         } else {
-          console.log(a.permission, "父级被勾选的权限");
-          console.log(a.id, "父级被勾选的id");
-          console.log(a.subMenus[0], "父级的第一个元素");
+          //console.log(a.id, "父级被勾选的id");
+          //console.log(a.subMenus[0], "父级的第一个元素");
         }
+        //自动勾选列表权限结束
+      } else {
+        console.log("取消勾选");
+
+        //订单的查看详情不可取消
+        console.log(this.temp2.check, "dddddddddddddd");
+        if (a.permission == "order_info") {
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              console.log(a.permission, "1");
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(a.permission, "2", this.temp2.check);
+                  var orderarr = this.data2[i].subMenus[j];
+                  for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
+                    //console.log('不可取消')
+                    if (
+                      this.temp2.check.indexOf(orderarr.subMenus[k].id) > -1
+                    ) {
+                      console.log(a.permission, "3");
+                      console.log(
+                        this.data2[i].subMenus[j].subMenus[1].name,
+                        "详情权限iiiii"
+                      );
+                      this.$refs.domTree.setChecked(
+                        this.data2[i].subMenus[j].subMenus[
+                          orderarr.subMenus.length - 2
+                        ].id,
+                        true
+                      );
+                      this.temp2.check = this.$refs.domTree.getCheckedKeys();
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        //订单处理结束
+
+        //处理列表权限不可取消
+        if (
+          a.permission.substring(
+            a.permission.length - 4,
+            a.permission.length
+          ) == "view"
+        ) {
+          var arr1 = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr1[3]) {
+                  for (
+                    var k = 0;
+                    k < this.data2[i].subMenus[j].subMenus.length - 1;
+                    k++
+                  ) {
+                    if (
+                      this.temp2.check.indexOf(
+                        this.data2[i].subMenus[j].subMenus[k].id
+                      ) > -1
+                    ) {
+                      this.$refs.domTree.setChecked(
+                        this.data2[i].subMenus[j].subMenus[
+                          this.data2[i].subMenus[j].subMenus.length - 1
+                        ].id,
+                        true
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        //列表处理完毕
       }
+      //console.log(this.$refs.domTree.getCheckedKeys(false));
+      //console.log(this.$refs.domTree.getCheckedNodes());
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
+      //console.log(this.temp2.check);
     },
     handleUpdate(row) {
       //this.handleCreate();
@@ -686,7 +841,7 @@ export default {
     searchOffice(val) {
       // 搜索时机构改变
       this.search.stationId = "";
-      this.servicestationSearch = []
+      this.servicestationSearch = [];
       var obj = {
         orgId: val
       };
@@ -702,8 +857,8 @@ export default {
       this.temp.officeId = val;
       this.temp.stationId = "";
       this.temp.role = "";
-      this.servicestationCheck = []
-      this.stationCheck = []
+      this.servicestationCheck = [];
+      this.stationCheck = [];
       console.log(val, "选中机构的id");
       var obj = {
         orgId: val
@@ -755,47 +910,49 @@ export default {
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addStaff(obj).then(res => {
-            this.btnState = false;
-            console.log(res);
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.listQuery.page = 1;
-              this.pageNumber = 1;
-              this.search.mobile = "";
-              this.search.name = "";
-              var obj = {};
-              getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-                console.log(res);
-                if (res.data.code === 1) {
-                  this.list = res.data.data.list;
-                  if (this.list != undefined) {
-                    for (var i = 0; i < this.list.length; i++) {
-                      this.list[i].index = i + 1;
+          this.btnState = true;
+          addStaff(obj)
+            .then(res => {
+              this.btnState = false;
+              console.log(res);
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.listQuery.page = 1;
+                this.pageNumber = 1;
+                this.search.mobile = "";
+                this.search.name = "";
+                var obj = {};
+                getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+                  console.log(res);
+                  if (res.data.code === 1) {
+                    this.list = res.data.data.list;
+                    if (this.list != undefined) {
+                      for (var i = 0; i < this.list.length; i++) {
+                        this.list[i].index = i + 1;
+                      }
                     }
+                    this.total = res.data.data.count;
+                    this.listLoading = false;
+                  } else {
+                    this.listLoading = false;
                   }
-                  this.total = res.data.data.count;
-                  this.listLoading = false;
-                } else {
-                  this.listLoading = false;
-                }
-              });
-              this.$message({
-                type: "success",
-                message: "新增成功"
-              });
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+                });
+                this.$message({
+                  type: "success",
+                  message: "新增成功"
+                });
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -819,43 +976,45 @@ export default {
       console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addStation(obj).then(res => {
-            this.btnState = false;
-            console.log(res);
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "添加成功"
-              });
-              if (res.data.data.organization.id == this.temp.officeId) {
-                console.log("相等");
-                this.stationCheck.push(res.data.data);
-                this.temp.role = res.data.data.id;
-              } else {
-                console.log("不相等");
-              }
+          this.btnState = true;
+          addStation(obj)
+            .then(res => {
+              this.btnState = false;
+              console.log(res);
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
+                if (res.data.data.organization.id == this.temp.officeId) {
+                  console.log("相等");
+                  this.stationCheck.push(res.data.data);
+                  this.temp.role = res.data.data.id;
+                } else {
+                  console.log("不相等");
+                }
 
-              this.resetTemp2();
-              this.$refs[formName].resetFields();
-              this.$refs.domTree.setCheckedKeys([]);
-              this.dialogFormStation = false;
-            } else {
-              if (typeof res.data.data == "string") {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                this.resetTemp2();
+                this.$refs[formName].resetFields();
+                this.$refs.domTree.setCheckedKeys([]);
+                this.dialogFormStation = false;
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
+                if (typeof res.data.data == "string") {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data
+                  });
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data[0]
+                  });
+                }
               }
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -877,54 +1036,56 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          upStaff(obj).then(res => {
-            console.log(res);
-            this.btnState = false
-            if (res.data.code === 1) {
-              // 判断是不是自己修改自己
-              //if (0) {
-              if (
-                this.temp.id == localStorage.getItem("userId") &&
-                obj.newPassword.length != undefined
-              ) {
-                console.log("编辑自己密码");
-                this.$store
-                  .dispatch("LogOut")
-                  .then(res => {
-                    this.$message({
-                      type: "warning",
-                      message: "密码被修改 3 秒后进入登录页面！"
+          this.btnState = true;
+          upStaff(obj)
+            .then(res => {
+              console.log(res);
+              this.btnState = false;
+              if (res.data.code === 1) {
+                // 判断是不是自己修改自己
+                //if (0) {
+                if (
+                  this.temp.id == localStorage.getItem("userId") &&
+                  obj.newPassword.length != undefined
+                ) {
+                  console.log("编辑自己密码");
+                  this.$store
+                    .dispatch("LogOut")
+                    .then(res => {
+                      this.$message({
+                        type: "warning",
+                        message: "密码被修改 3 秒后进入登录页面！"
+                      });
+                      this.dialogFormVisible = false;
+                      setTimeout(() => {
+                        this.$store.state.app.visitedViews = []; //清空顶部导航tab对象
+                        that.$router.push({ path: "/login" });
+                      }, 2000);
+                    })
+                    .catch(() => {
+                      this.listLoading = false;
                     });
-                    this.dialogFormVisible = false;
-                    setTimeout(() => {
-                      this.$store.state.app.visitedViews=[]//清空顶部导航tab对象
-                      that.$router.push({ path: "/login" });
-                    }, 2000);
-                  })
-                  .catch(() => {
-                    this.listLoading = false;
+                } else {
+                  this.dialogFormVisible = false;
+                  this.resetTemp();
+                  this.$refs[formName].resetFields();
+                  this.getList();
+                  this.$message({
+                    type: "success",
+                    message: "修改成功"
                   });
+                }
+                // 判断结束
               } else {
-                this.dialogFormVisible = false;
-                this.resetTemp();
-                this.$refs[formName].resetFields();
-                this.getList();
                 this.$message({
-                  type: "success",
-                  message: "修改成功"
+                  type: "error",
+                  message: res.data.data
                 });
               }
-              // 判断结束
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false
-          });
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }

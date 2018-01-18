@@ -29,7 +29,7 @@
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="header-img">
+                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
@@ -76,12 +76,12 @@
                       </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                      <el-form-item label="状态：" class="seize">
+                      <el-form-item label="服务状态：" class="seize">
                             <el-switch
                               v-model="personalEDit.status"
-                              :width='100'
-                              on-text="服务开启"
-                              off-text="服务暂停"
+                              :width="100"
+                              on-text="提供服务"
+                              off-text="暂停服务"
                               on-value="yes"
                               off-value="no">
                             </el-switch>
@@ -548,9 +548,15 @@
             </el-table>
           </div>
           <div style="padding:25px">
-            <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button>
+            <!-- <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button> -->
+            <div class="add_Btn" @click="showTabl">
+                <span v-if="!flagso" class="fl btn_Span1">+</span>
+                <span v-else class="fl btn_Span1">-</span>
+                <span class="fl btn_Span2">家庭成员</span>
+              </div>
           </div>
           <el-form :model="perFamily"  ref="perFamily"  label-width="100px" :rules="rulesFamily">
+            <el-collapse-transition>
               <ul class="tech-ul ferFamilyClass" v-show="flagso" style="padding-left:50px">
                   <li>
                       <div>
@@ -614,6 +620,7 @@
                       </div>
                   </li>
               </ul>
+            </el-collapse-transition>
           </el-form>
         <!--家庭成员（选填） 完成-->
 
@@ -645,7 +652,7 @@
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                             <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic" class="remarkImg">
+                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
@@ -657,7 +664,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                             <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic" class="remarkImg">
+                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                       </p>
                   </div>
@@ -973,7 +980,7 @@ export default {
         // 身份证
         idCard: [{ required: true, validator: TECHIDCARD, trigger: "blur" }],
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
-        sex: [{ required: true, message: "请输入性别", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         birthDate: [
           { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
@@ -2063,6 +2070,15 @@ export default {
 .tech-section-lage .el-form-item__content{
 	line-height: 20px;
 }
+.add_Btn {
+  width: 100px;
+  height: 30px;
+  margin: 20px 0 10px 0;
+  color: #ffffff;
+  line-height: 30px;
+  background-color: #4c70e8;
+  cursor: pointer;
+}
 
 .tech-index {
   background: #fff;
@@ -2165,7 +2181,14 @@ export default {
   font-weight: 700;
 }
 .tech-order-jn-sons .tech-dir{
-  border: 1px solid #eee;
+  border: 1px solid #a7a7a7;
+  background: url("../../../static/icon/eee.png") no-repeat;
+  background-size: 15px 15px;
+  background-position: bottom right;
+}
+.tech-edit .btn_Span1{
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .tech-tc-prson {
@@ -2214,8 +2237,8 @@ export default {
 }
 
 .remarkImg{
-  width: 100px;
-  height: 100px;
+  /* width: 100px;
+  height: 100px; */
   margin-top: 10px;
 }
 /* .el-button{
@@ -2245,7 +2268,9 @@ export default {
   border: 1px solid #4c70e8;
 }
 
-
+.seize .el-form-item__content{
+  line-height: 38px;
+}
 
 .tech-edit .tech-fourth-rigth {
   cursor: pointer;
@@ -2280,7 +2305,7 @@ export default {
   width: 80px;
   height: 100px;
 } */
-.tech-psoition {
+/* .tech-psoition {
   width: 100%;
   height: 320px;
   background: #fff;
@@ -2290,19 +2315,17 @@ export default {
   z-index: 1;
   animation: show 1s;
   -moz-animation: show 1s;
-  /* Firefox */
   -webkit-animation: show 1s;
-  /* Safari 和 Chrome */
   -o-animation: show 1s;
-}
+} */
 .avatar-header .el-upload--text{
   width: 120px;
   height: 120px;
   overflow: hidden;
 }
 .avatar-header .header-img{
-  width: 120px;
-  height: 120px; 
+  /* width: 120px;
+  height: 120px;  */
 }
 
 @keyframes show {
@@ -2347,9 +2370,9 @@ export default {
 
 .tech-green,
 .techTime-green {
-  border: solid 1px green;
+  border: solid 1px #4c70e8 !important;
   background: url("../../../static/icon/Selected.png") no-repeat;
-  background-size: 20px 20px;
+  background-size: 15px 15px;
   background-position: bottom right;
 }
 .techTime-green {
@@ -2384,6 +2407,19 @@ export default {
 }
 .startTime{
   margin-top:10px;
+}
+
+.btn_Span1 {
+  width: 30px;
+  height: 30px;
+  background-color: #3A5FCD;
+  font-weight: bolder;
+  text-align: center;
+}
+.btn_Span2 {
+  width: 70px;
+  height: 30px;
+  text-align: center;
 }
 .startTime .el-input__inner{
     border: 1px solid #bfcbd9 !important;
@@ -2577,7 +2613,7 @@ export default {
   display: flex;
 }
 
-.tech-mouse {
+/* .tech-mouse {
   width: 50px;
   height: 20px;
   line-height: 18px;
@@ -2589,7 +2625,6 @@ export default {
 
 .tech-mouse-div {
   margin-top: 10px;
-  /* width: 120px; */
   display: inline-block;
   display: flex;
   justify-content: center;
@@ -2604,7 +2639,7 @@ export default {
   margin-left: 5px;
   border: 1px solid #ff7676;
   color: #ff7676;
-}
+} */
 /* .working {
   border: 1px solid #f2f2f2;
   width: 100%;

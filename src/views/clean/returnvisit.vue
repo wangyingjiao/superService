@@ -42,35 +42,41 @@ export default {
     };
   },
   methods: {
-    open() {
+    open(){
       this.$refs.upload.submit();
     },
-    handPic(file, fileList) {
-      // if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        if(fileList.length>4){
+    handPic(file,fileList) {
+      console.log(file.raw.type,"file.type------")
+     if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
+          var date = new Date();
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          if(fileList.length>4){
           this.$message({
             type: "warning",
             message: "最多上传4张图片"
-          });
-          return false;
+            });
+          fileList.splice(fileList.indexOf(file),1)
         }
+      }else{
+        fileList.splice(fileList.indexOf(file),1)
+         this.$message.error('请上传正确的图片格式');
+         return false
+      }
     },
-      handleRemovePic(file,fileList) {
+    handleRemovePic(file,fileList) {
         fileList.splice(fileList.indexOf(file),0)
-      },
-      picUpload(file) {
+    },
+    picUpload(file) {
         console.log(file.file.uid)
-        // 图片上传    
+        // 图片上传 
         let pro = new Promise((resolve, rej) => {
-          console.log(JSON.parse(Cookies.get("sign")), "测试1111");
-          var res = JSON.parse(Cookies.get("sign"));
-          var timestamp = Date.parse(new Date()) / 1000;
-          //console.log(timestamp)
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        //console.log(timestamp)
           if (res.expire - 3 > timestamp) {
             console.log("签名没过期");
             resolve(res);
@@ -84,42 +90,42 @@ export default {
         });
         var that = this;
         pro.then(success => {
-          var data = success;
-          var ossData = new FormData();
-          var date = new Date();
-          var s = date.getTime()
-          var y = date.getFullYear();
-          var m = date.getMonth() + 1;
-          var d = date.getDate();
-          ossData.append("name", file.file.name);
-          ossData.append(
-            "key",
-            data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
-          );
-          ossData.append("policy", data.policy);
-          ossData.append("OSSAccessKeyId", data.accessid);
-          ossData.append("success_action_status", 201);
-          ossData.append("signature", data.signature);
-          // 添加文件
-          ossData.append("file", file.file, file.file.name);
+            var data = success;
+            var ossData = new FormData();
+            var date = new Date();
+            var s = date.getTime()
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            ossData.append("name", file.file.name);
+            ossData.append(
+              "key",
+              data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+            );
+            ossData.append("policy", data.policy);
+            ossData.append("OSSAccessKeyId", data.accessid);
+            ossData.append("success_action_status", 201);
+            ossData.append("signature", data.signature);
+            // 添加文件
+            ossData.append("file", file.file, file.file.name);
             that.$http
               .post(data.host, ossData, {
-                headers: {
-                  "Content-Type": "multipart/form-data; boundary={boundary}"
-                }
-              })
-              .then(res => {
-                this.testArr.push(ossData.get("key"));
-                console.log(this.testArr,"this.testArr------")  
-                console.log('aaaaa')
-              })
-              .catch(error => {
-                console.log('错误-------------上传图片失败--')
-                // this.picFile.push(ossData.get("key"));
-                console.log(error, "错误");
-              });
+              headers: {
+              "Content-Type": "multipart/form-data; boundary={boundary}"
+              }
+            })
+            .then(res => {
+              this.testArr.push(ossData.get("key"));
+              console.log(this.testArr,"this.testArr------") 
+              console.log('aaaaa')
+            })
+            .catch(error => {
+            console.log('错误-------------上传图片失败--')
+            // this.picFile.push(ossData.get("key"));
+            console.log(error, "错误");
+            });
         });
-      },
+    },
   },
   computed: {
     sign: function() {

@@ -19,7 +19,7 @@
 
       <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input>
-      <button class="button-large el-icon-search btn_search" @click="getList"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -172,7 +172,7 @@
                           <i class="el-icon-plus"></i>
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
-                        <img width="100%" :src="dialogImageUrl" alt="">
+                        <img width="100%" :src="dialogImageUrl" alt="" class="abc">
                       </el-dialog>
                   </div>
       
@@ -284,7 +284,8 @@
                 </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addComm = !addComm">
-                <span class="fl btn_Span1">+</span>
+                <span v-if="!addComm" class="fl btn_Span1">+</span>
+                <span v-if="addComm" class="fl btn_Span1">-</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <el-collapse-transition>
@@ -299,7 +300,7 @@
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入商品名称（1-36位）"
+                    placeholder="请输入商品名称（1-26位）"
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
@@ -508,7 +509,7 @@
                           :file-list="fileList"
                           :limit="3"
                           :before-upload="handleBefore"
-                          :http-request="upload"   
+                          :http-request="upload"
                           >
                           <i class="el-icon-plus"></i>
                       </el-upload>
@@ -562,29 +563,12 @@ export default {
     waves
   },
   data() {
-    // var UNIT = (rule, value, callback) => {
-    //   var reg = /^\d+$/;
-    //   if (value) {
-    //     callback()
-    //     // if (value.length >= 1 && value.length <= 5) {
-    //     //   if (reg.test(value)) {
-    //     //     callback();
-    //     //   } else {
-    //     //     callback(new Error("商品单位必须为数字值"));
-    //     //   }
-    //     // } else {
-    //     //   callback(new Error("长度在 1 到 5 个字符"));
-    //     // }
-    //   } else {
-    //     callback(new Error("请输入商品单位"));
-    //   }
-    // };
     //价格
     var PRICE = (rule, value, callback) => {
       var val = value+''
       var reg = /^\d+(\.\d{1,2})?$/;
       if (val) {
-        if(val.length>=1 && val.length<=8){
+        if(val*1<=99999999){
           if(reg.test(val)){
             callback()
           }else{
@@ -655,11 +639,11 @@ export default {
     //服务图片
     var PICTURE = (rule,value,callback)=>{
       // callback()
-      console.log(this.picFile,"this.picFile-----------------[][][]")
+      // console.log(this.picFile,"this.picFile-----------------[][][]")
       if(this.picFile !=undefined && this.picFile.length>0){
         callback()
       }else{
-        callback(new Error("请添加服务图片"))
+        callback(new Error("请添加banner图"))
       }
     }
     //系统标签
@@ -686,7 +670,7 @@ export default {
             }
           }
         }else{
-          callback(new Error('自定义标签长度2~10位'))
+          callback(new Error('自定义标签长度1~10位'))
         }
       }else{
         callback(new Error('请输入自定义标签'))
@@ -696,14 +680,18 @@ export default {
     var CAPPINPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
         if(value){
-          if(reg.test(value)){
-            if(value*1>=this.goods_info.startPerNum*1){
-               callback()
+          if(value*1<=30){
+            if(reg.test(value)){
+              if(value*1>=this.goods_info.startPerNum*1){
+                callback()
+              }else{
+                callback(new Error('起步人数不能大于封顶人数'))
+              }
             }else{
-              callback(new Error('起步人数不能大于封顶人数'))
+              callback(new Error('请输入数字'))
             }
           }else{
-            callback(new Error('请输入数字'))
+            callback(new Error('封顶人数最高30人'))
           }
         }else{
           callback()
@@ -713,11 +701,15 @@ export default {
     var STARTPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
       if(value){
+        if(value*1<=30){
           if(reg.test(value)){
             callback()
           }else{
             callback(new Error('请输入数字'))
           }
+        }else{
+          callback(new Error('起步人数最高30人'))
+        }
       }else{
          callback()
       }
@@ -737,10 +729,14 @@ export default {
     var MINPURCHASE = (rule,value,callback) =>{
       var reg = /^\d+$/;
       if(value){
-        if(reg.test(value)){
-          callback()
+        if(value*1<=999999){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入数字'))
+          }
         }else{
-          callback(new Error('请输入数字'))
+          callback(new Error('起够数量应在999999以内'))
         }
       }else{
         callback()
@@ -799,6 +795,7 @@ export default {
       systemClick3Id:null,
       systemOptions:[],
       systemOptions2:[],
+      imgNumber:0,
       systemOptions3:[],
       systemOptions4:[],
       SystemLabel:false,
@@ -821,6 +818,7 @@ export default {
       serverCityArr: [],
       wholeTable: {},
       directional: [],
+      addDetailsImg:0,
       cityArr: [],
       personsTime: false,
       addComm: false,
@@ -911,7 +909,7 @@ export default {
         picture: [
            { required: true, validator:PICTURE, trigger:"blur"}
           ],
-        sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
+        sortId:[{required:true,message:'请选择所属分类',trigger:'blur'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         // description: [
         //     { required: true, message: "请输入服务描述", trigger: "blur" },
@@ -1012,7 +1010,7 @@ export default {
   },
   methods: {
     converFilter(val){
-      var reg = /^\d+(\.\d{2})?$/;
+      var reg = /^\d+(\.\d{1,2})?$/;
       var con = reg.test(val)? true : false
       return con
     },
@@ -1156,7 +1154,7 @@ export default {
           });
           return false;
         }
-        if (this.picFile.length >= 4) {
+        if (this.imgNumber >= 4) {
           this.$message({
             type: "warning",
             message: "最多上传4张图片"
@@ -1204,6 +1202,7 @@ export default {
 
           }else{
                this.imgText.del(delIndex);
+               this.addDetailsImg--
           }
           //console.log(delIndex,'删除图片的下标')
          
@@ -1260,6 +1259,8 @@ export default {
 
         }else{
           this.picFile.del(delIndex);         
+          this.imgNumber--
+          console.log(this.imgNumber,"this.imgNumber-------")
         }
         console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
@@ -1288,7 +1289,7 @@ export default {
           return false;
         }
         console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
-        if(this.imgText.length>=4){
+        if(this.addDetailsImg>=4){
           this.$message({
             type:'warning',
             message:'最多上传4张图片'
@@ -1340,6 +1341,7 @@ export default {
       this.ImageText = false;
     }, // 关闭图文
     upload(file) {
+      this.addDetailsImg ++
       // console.log(file,"file-----------")
       // 图文上传
       let pro = new Promise((resolve, rej) => {
@@ -1397,7 +1399,9 @@ export default {
       });
     },
     picUpload(file) {
+      this.imgNumber++
       // 图片上传
+      console.log(file,"file------")
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1494,6 +1498,7 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
+            // this.addComm = false
             this.handleEditFlag = false
           }else{
             // var obj = Object.assign({},this.goods_info)
@@ -1502,6 +1507,7 @@ export default {
               console.log(obj,"obj---------------")
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
+              // this.addComm = false
           }
         }else{
           return false
@@ -1644,10 +1650,16 @@ export default {
       }
       this.personsTime = false;
     },
+    serGetList(){
+      this.getList();
+      this.pageNumber = 1;
+      this.listQuery.page = 1;
+    },
     getList(page, size,getObj) {
       var _page = page || this.pageNumber
       var _size = size || this.pageSize
       this.listLoading = true;
+      // this.pageNumber = 1
       var obj = {};
       if(getObj){
         obj = getObj
@@ -1739,7 +1751,8 @@ export default {
       // this.picList = []
       this.basicForm.sale = 'yes'
       this.basicForm.sortId = ''
-       this.tableProject({majorSort:"clean"})
+      this.imgNumber = 0;
+      this.tableProject({majorSort:"clean"})
       this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
@@ -1776,6 +1789,7 @@ export default {
           }
           if (data.data.data.pictures != undefined) {
             this.picFile = data.data.data.pictures;
+            this.imgNumber = data.data.data.pictures.length;
             for (var i = 0; i < data.data.data.pictures.length; i++) {
               console.log(data.data.data.pictures, "tupian");
               var obj = {
@@ -1797,6 +1811,7 @@ export default {
         });
     },
     handleUplode(row) {
+      this.addDetailsImg = 0;
       this.basicForm.sortId = ''
       this.imgText = []
       // console.log("上传");
@@ -1814,6 +1829,7 @@ export default {
 
             if (data.pictureDetails != undefined) {
               this.imgText = data.pictureDetails;
+              this.addDetailsImg = data.pictureDetails.length;
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 var obj = {
                   url:
@@ -1944,6 +1960,7 @@ export default {
       this.search.sortId = ''
       this.search.name = ''
       var size = this.pageSize;
+      this.pageNumber = 1;
        Taxonomy({majorSort:tab.name})
         .then(data => {
           console.log(data,"clean++++++++++===============")
@@ -2027,16 +2044,19 @@ export default {
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
                   this.picList = [];
+                  this.imgNumber = 0
                 } else {
                   this.$message({
                     message: data.data.data,
                     type: "warning"
                   });
                    this.btnState = false
+                   this.imgNumber = 0
                 }
               })
               .catch(error => {
                  this.btnState = false
+                 this.imgNumber = 0
                 console.log(error, "error---project---857");
               });
           } else {
@@ -2086,7 +2106,6 @@ export default {
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappingPerNum = ''
-      this.addComm = false
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2105,6 +2124,7 @@ export default {
       }
       this.$refs["basic"].resetFields()
       this.addComm = false
+      this.imgNumber = 0;
       // this.goods_info = {}
       this.basicForm.commoditys = [];
       this.picFile = [] //清空图片
@@ -2232,6 +2252,8 @@ export default {
   cursor: pointer;
 }
 .btn_Span1 {
+  font-size: 20px;
+  line-height: 30px;
   width: 30px;
   height: 30px;
   background-color: #3A5FCD;
@@ -2288,7 +2310,7 @@ export default {
 }
 .tabLeft .el-radio-button__inner{
   text-align: left;
-  padding-left: 25px;
+  padding-left: 25%;
   background: #f9f9f9
 }
 
@@ -2298,12 +2320,17 @@ export default {
   cursor: pointer;
 }
 
+.bgWhite .el-switch.is-checked .el-switch__core{
+  background-color: #4c70e8;
+  border: 1px solid #4c70e8;
+}
+
 .tabRight {
   width: 85%;
   height: 100%;
   border-left: 1px #eee solid;
   background-color: #ffffff;
-  padding: 10px 10px 60px 10px;
+  padding: 10px 25px 60px 25px;
   /* margin-right: 10px; */
 }
 .el-radio-button {
@@ -2543,7 +2570,7 @@ hr {
   position: absolute;
   top: 0;
   line-height: 44px;
-  right: 30px;
+  right: 15px;
 }
 .tableSer{
   padding: 5px 10px;
@@ -2554,7 +2581,7 @@ hr {
   color: red
 }
 .details{
-  font-size: 25px;
+  font-size: 18px;
   font-weight: 900;
   text-align: center;
   line-height: 80px;
@@ -2691,6 +2718,9 @@ hr {
   /* height: 50px; */
   line-height: 50px;
   word-break:keep-all;
+}
+.alreadyUl{ 
+  width: 100%
 }
 .already span{
   border: 1px solid #E8E8E8;

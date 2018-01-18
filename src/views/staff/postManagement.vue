@@ -39,6 +39,7 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
+          <!-- v-if判断按钮权限 -->
           <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
           <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('role_delete') != -1" @click="handleDelete(scope.row)"></el-button>
 
@@ -363,6 +364,7 @@ export default {
     handleFilter() {
       //搜索
       this.listQuery.page = 1;
+      this.pageNumber = 1
     
       var obj = {
         name: this.search.name,
@@ -370,19 +372,17 @@ export default {
       };
     
       if (obj.name != "" || obj.organization.id != "") {
-       
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+             this.total = res.data.data.count;
             this.list = res.data.data.list;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -398,6 +398,7 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+             this.total = res.data.data.count;
             this.list = res.data.data.list;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
@@ -405,7 +406,7 @@ export default {
               }
             }
 
-            this.total = res.data.data.count;
+           
             this.listLoading = false;
           }
         });
@@ -523,27 +524,27 @@ export default {
       if (b) {
         console.log('tttttttttttttttt')
         // 处理订单里的查看详情
-        // if (
-        //   ["order_time", "order_dispatch", "order_addTech"].indexOf(
-        //     a.permission
-        //   ) > -1
-        // ) {
+        if (
+          ["order_time", "order_dispatch", "order_addTech"].indexOf(
+            a.permission
+          ) > -1
+        ) {
   
-        //   var arr = a.parentIds.split(",");
-        //    for (var i = 0; i < this.data2.length; i++) {
-        //      if (this.data2[i].subMenus != undefined) {
-        //        for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+          var arr = a.parentIds.split(",");
+           for (var i = 0; i < this.data2.length; i++) {
+             if (this.data2[i].subMenus != undefined) {
+               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 
-        //         if (this.data2[i].subMenus[j].permission == "order") {
-        //           console.log(this.data2[i].subMenus[j],'成功')
-        //           this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
-        //         }
-        //        }
-        //      }else{
-        //        console.log(this.data2[i].subMenus)
-        //      }
-        //    }
-        // }
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(this.data2[i].subMenus[j],'成功')
+                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-2].id, true);
+                }
+               }
+             }else{
+               console.log(this.data2[i].subMenus)
+             }
+           }
+        }
         //订单详情处理完毕
         //自动勾选列表权限
         if (a.subMenus == undefined) {
@@ -587,12 +588,12 @@ export default {
                 if (this.data2[i].subMenus[j].permission == "order") {
                   console.log(a.permission,'2',this.temp.check)
                   var orderarr = this.data2[i].subMenus[j]
-                  for(var k = 2;k<orderarr.subMenus.length;k++){
+                  for(var k = 0;k<orderarr.subMenus.length-2;k++){
                     //console.log('不可取消')
                        if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
                          console.log(a.permission,'3')
                          console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
-                         this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[1].id, true);
+                         this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[orderarr.subMenus.length-2].id, true);
                          this.temp.check = this.$refs.domTree.getCheckedKeys();
                        }
                   }
@@ -602,32 +603,7 @@ export default {
           }
         }
         //订单处理结束
-        //员工的列表不可取消
-           
-        // if(a.permission == 'user_view'){
-        //    for (var i = 0; i < this.data2.length; i++) {
-        //     if (this.data2[i].subMenus != undefined) {
-        //       console.log(a.permission,'1')
-        //       for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-        //         if (this.data2[i].subMenus[j].permission == "user") {
-        //           console.log(this.temp.check,'gggggggggd')
-        //           console.log(a.permission,'2',this.temp.check)
-        //           var orderarr = this.data2[i].subMenus[j]
-        //           for(var k = 0;k<orderarr.subMenus.length-1;k++){
-        //             //console.log('不可取消')
-        //                if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
-        //                  console.log(a.permission,'3')
-        //                  console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
-        //                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[3].id, true);
-                        
-        //                }
-        //           }
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
-        //员工处理结束
+        
         //处理列表权限不可取消
         if (
             a.permission.substring(
