@@ -474,6 +474,8 @@ export default {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if(this.list != undefined){
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -517,6 +519,8 @@ export default {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if(this.list != undefined){
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -554,6 +558,8 @@ export default {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if(this.list != undefined){
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -586,6 +592,8 @@ export default {
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if(this.list != undefined){
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;

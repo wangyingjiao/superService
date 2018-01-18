@@ -168,17 +168,18 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      console.log(obj);
-
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "休假列表");
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
+
         this.listLoading = false;
       });
     },
@@ -225,18 +226,20 @@ export default {
       console.log(obj, "搜索参数");
       this.listLoading = true;
       this.listQuery.page = 1;
-      this.pageNumber = 1
+      this.pageNumber = 1;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "搜索");
         if (res.data.code == 1) {
-          
+          this.total = res.data.data.count;
           this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
             }
           }
-          this.total = res.data.data.count;
+
           this.listLoading = false;
         }
       });
@@ -244,7 +247,7 @@ export default {
     handleSizeChange(val) {
       this.listLoading = true;
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       this.pageSize = val;
       var obj = {};
       //console.log(this.search.startTime)
@@ -287,13 +290,16 @@ export default {
 
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
+          this.total = res.data.data.count;
           this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
             }
           }
-          this.total = res.data.data.count;
+
           this.listLoading = false;
         }
       });
@@ -341,13 +347,16 @@ export default {
       this.listLoading = true;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
+          this.total = res.data.data.count;
           this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
             }
           }
-          this.total = res.data.data.count;
+
           this.listLoading = false;
         }
       });

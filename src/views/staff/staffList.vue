@@ -322,20 +322,19 @@ export default {
       var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
-      } else {   
-          console.log(this.temp2.officeId2);
-          var obj = {
-            name: value,
-            id: this.temp2.officeId2
-          };
-          chkName(obj).then(res => {
-            if (res.data.code == 0) {
-              callback(new Error("岗位名重复！"));
-            } else {
-              callback();
-            }
-          });
-        
+      } else {
+        console.log(this.temp2.officeId2);
+        var obj = {
+          name: value,
+          id: this.temp2.officeId2
+        };
+        chkName(obj).then(res => {
+          if (res.data.code == 0) {
+            callback(new Error("岗位名重复！"));
+          } else {
+            callback();
+          }
+        });
       }
     };
     return {
@@ -516,13 +515,16 @@ export default {
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res.data, "员工列表");
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
+
         //this.pageSize = res.data.data.pageSize;
         this.listLoading = false;
       });
@@ -539,13 +541,16 @@ export default {
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res, "搜索");
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-            this.total = res.data.data.count;
+
             this.listLoading = false;
             this.listQuery.page = 1;
           } else {
@@ -580,7 +585,10 @@ export default {
             res.data.data.list[i].index = i + 1;
           }
         }
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         this.listLoading = false;
       });
     },
@@ -600,7 +608,10 @@ export default {
           }
           console.log(res.data.data.list, "list-------------");
         }
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         this.listLoading = false;
       });
     },
@@ -927,13 +938,16 @@ export default {
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
                   console.log(res);
                   if (res.data.code === 1) {
+                    this.total = res.data.data.count;
                     this.list = res.data.data.list;
+                    this.pageNumber = res.data.data.pageNo;
+                    this.pageSize = res.data.data.pageSize;
                     if (this.list != undefined) {
                       for (var i = 0; i < this.list.length; i++) {
                         this.list[i].index = i + 1;
                       }
                     }
-                    this.total = res.data.data.count;
+
                     this.listLoading = false;
                   } else {
                     this.listLoading = false;
