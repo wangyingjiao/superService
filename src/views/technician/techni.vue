@@ -2495,7 +2495,7 @@ export default {
 
 .tech-order-posis {
   background-color: #fff;
-  border: 1px solid #48576a;
+  border: 1px solid #bfcbd9;
   margin: 0 5px;
   display: flex;
   flex-wrap: wrap;
