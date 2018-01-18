@@ -641,7 +641,6 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr1[3]) {
-                  
                   for (
                     var k = 0;
                     k < this.data2[i].subMenus[j].subMenus.length-1;
