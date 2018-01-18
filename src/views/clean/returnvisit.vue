@@ -29,7 +29,8 @@ export default {
       picList:[],
       testArr:[],
       dialogVisible:false,
-      dialogImageUrl:''     		
+      dialogImageUrl:'',
+      picFile:[]		
     };
   },
   methods: {
@@ -48,7 +49,7 @@ export default {
             type: "warning",
             message: "最多上传4张图片"
           });
-          fileList.splice(fileList.indexOf(file),1)
+          return false;
         }
     },
       handleRemovePic(file,fileList) {

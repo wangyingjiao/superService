@@ -37,11 +37,7 @@
         <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
-              <div style="margin-top:10px;">
-                <span>{{item.sexname}}</span>
-                <span>{{item.age+"岁"}}</span>
-              </div>
+              <div class="headImag"><img  :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div class="tech-mouse-div">
                 <span class="tech-mouse">{{item.jobName}}</span>
                 <span class="tech-mouse">{{item.jobStateName}}</span>
@@ -53,20 +49,20 @@
               </el-tooltip> -->
               <h4 class="header-h4">{{item.name}}</h4>
               <div>
-                  <img src="../../../static/icon/服务机构@3x.png" alt="" style="width:15px;height:15px;">              
-                  <div style="margin-left:5px;">{{item.orgName}}</div>
+                  <img src="../../../static/icon/性别年龄.png" alt="" style="width:15px;height:15px;">              
+                  <div class="sexAge">{{item.sexname+' '+item.age+"岁"}}</div>
               </div>
               <div>
                 <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
-                <div class="stationName">{{item.stationName}}</div>
+                <div class="sexAge">{{item.stationName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/工作经验.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">{{item.workTimeName}}</div>
+                <img src="../../../static/icon/工龄.png" alt="" style="width:15px;height:15px;">              
+                <div class="sexAge">{{item.workTimeName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/手机.png" alt="" style="width:15px;height:15px;">              
-                <div style="margin-left:5px;">{{item.phone}}</div>
+                <img src="../../../static/icon/电话.png" alt="" style="width:15px;height:15px;">              
+                <div class="sexAge">{{item.phone}}</div>
               </div>
             </div>
           </div>
@@ -159,10 +155,8 @@
 					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<!-- <el-button type="primary" @click="passwordPrese('ruleForm2')">保存</el-button>
-					<el-button @click="passwordCancel('ruleForm2')">取消</el-button> -->
-            <button class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')">保存</button>
-            <button class="button-cancel" @click="passwordCancel('ruleForm2')">取消</button>
+            <input type="button" class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')" value="保存">
+            <input type="button" class="button-cancel" @click="passwordCancel('ruleForm2')" value="取消">
 				</el-form-item>
 			</el-form>
 		</div>
@@ -193,8 +187,8 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:'11:59',
-                            maxTime:startEnd.end
+                            minTime:startEnd.startNew,
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                       </el-time-select>
@@ -216,8 +210,8 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:startEnd.start,
-                            maxTime:startEnd.end
+                            minTime:ruleForm.startDate || startEnd.startNew,
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                     </el-time-select>
@@ -307,7 +301,7 @@
                           <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'">
                           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                       </el-upload>
-                      <p style="width:100%; color:#ccc; font-size:12px;">*为了浏览效果,建议上传大于240*240的正方形图片</p>
+                      <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                   </el-form-item>
               </el-col>  
             </el-row>
@@ -462,54 +456,56 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="personal.jobNature!='part_time'" class="abc">
-            <el-col :span="17">
+          <el-row v-if="personal.jobNature!='part_time'">
+            <el-col :span="17" class="addTime">
               <el-form-item label="工作时间：" prop="workTimes">
                   <div class="tech-order-jn" style="width:100%">
                     <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                    <div class="tech-order-jn-sons wirkTimes" v-show="isB">
-                      <div style="margin:0 10px;">
-                        <p>新增日期</p>
-                        <div>
+                     <el-collapse-transition>
+                        <div class="tech-order-jn-sons wirkTimes" v-show="isB">
+                          <div style="margin:0 10px;">
+                            <p>新增日期</p>
+                            <div>
 
-                          <div style="display:flex;">
-                            <div class="selfCheckBoxsday">日期</div>
-                            <!-- <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
-                              {{item.name}}
-                            </button> -->
-                            <input type="button" class="selfCheckBoxs tech-order-posis"
-                              :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
-                              @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
-                              :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}"
-                              :value="item.name"
-                            >
+                              <div style="display:flex;">
+                                <div class="selfCheckBoxsday">日期</div>
+                                <!-- <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
+                                  {{item.name}}
+                                </button> -->
+                                <input type="button" class="selfCheckBoxs tech-order-posis"
+                                  :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
+                                  @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
+                                  :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                  :value="item.name"
+                                >
+                              </div>
+                            </div>
+                            <div style="margin-top:10px;">
+                              <div class="selfCheckBoxsday">时段</div>
+                              <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                                  start: '00:00',
+                                  step: '00:30',
+                                  end: '24:00',
+                                  minTime:startEnd.startNew,
+                                  maxTime:startEnd.endNew
+                                }" class="tech-daytim">
+                              </el-time-select>
+                              <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                                  start: '00:00',
+                                  step: '00:30',
+                                  end: '24:00',
+                                  minTime:startTime || startEnd.startNew,
+                                  maxTime:startEnd.endNew
+                                }">
+                              </el-time-select>
+                            </div>
+                          </div>
+                          <div style="margin:0px 10px 10px;">
+                            <span class="button-large btn-styl" @click="techClick">确认</span>
+                            <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
                           </div>
                         </div>
-                        <div style="margin-top:10px;">
-                          <div class="selfCheckBoxsday">时段</div>
-                          <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                              start: '00:00',
-                              step: '00:30',
-                              end: '24:00',
-                              minTime:startEnd.start,
-                              maxTime:startEnd.end
-                            }" class="tech-daytim">
-                          </el-time-select>
-                          <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                              start: '00:00',
-                              step: '00:30',
-                              end: '24:00',
-                              minTime:startTime || startEnd.start,
-                              maxTime:startEnd.end
-                            }">
-                          </el-time-select>
-                        </div>
-                      </div>
-                      <div style="margin:0px 10px 10px;">
-                        <span class="button-large btn-styl" @click="techClick">确认</span>
-                        <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
-                      </div>
-                    </div>
+                     </el-collapse-transition>
                   </div>
                 </el-form-item>
             </el-col>
@@ -1798,15 +1794,24 @@ export default {
           console.log(item, "item----");
           technicianDelete({ id: item.id })
             .then(data => {
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
+              if(data.data.code){
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  this.handleCurrentChange(this.listQuery.page)
+                  this.dialogVisibleEditClick()
+              }else{
+                this.$message.error('删除失败!')
+                return false
+              }
               //  this.getList(this.listQuery.page,this.listQuery.limit,)
-              this.techniSearchs(this.listQuery.page, this.listQuery.limit);
+              // this.techniSearchs(this.listQuery.page, this.listQuery.limit);
               // this.handleCurrentChange(this.listQuer.page)
             })
             .catch(error => {
+              this.$message.error('删除失败!')
+              return false
               console.log(error, "error,----删除失败");
             });
         })
@@ -2107,6 +2112,10 @@ export default {
   margin-left: 300px;
 }
 
+.wirkTimes .tech-dir{
+  border: 1px solid #eee
+}
+
 .tech-section {
   /* margin: 20px; */
   background: #fff;
@@ -2134,11 +2143,15 @@ export default {
 .tech-section-ul li {
   width: 32%;
   height: 200px;
-  background: #fff;
+  /* background: #fff; */
+  background-image:url('../../../static/icon/员工卡背景.png') no-repeat;
   position: relative;
   margin: 0 2% 2% 0;
-  border: 1px solid #e8e8e8;
-  box-shadow: 2px 4px 6px #e8e8e8;
+  background-color: #F8FAFD;
+  box-shadow: 0 3px 6px 0 #DFE4ED;
+  border-radius: 8px;
+  /* border: 1px solid #e8e8e8; */
+  /* box-shadow: 2px 4px 6px #e8e8e8; */
 }
 .tech-section-ul li:nth-child(3n) {
   margin-right: 0;
@@ -2176,7 +2189,7 @@ export default {
 .tech-tc-prson {
   margin: 0px 20px;
   padding: 0px 20px 10px 0;
-  border-bottom: #f3f1f1 solid 1px;
+  border-bottom: #eee solid 1px;
   font-size: 14px;
   font-weight: 700;
   color: black;
@@ -2215,7 +2228,15 @@ export default {
 }
 .avatar-headPic .el-upload--text{
   overflow: hidden;
-  width: 100px;
+  width: 120px;
+  height: 120px;
+}
+.addTime .el-form-item{
+  margin-bottom: 0;
+}
+.avatar-headPic .el-upload--text img{
+  width: 120px;
+  height: 120px;
 }
 .tech-span {
   color: red;
@@ -2267,6 +2288,10 @@ export default {
   border-radius: 0px;
 }
 
+.tech-section-lage{
+    width: 70%;
+}
+
 /* .el-upload-list {
   width: 80px;
   height: 100px;
@@ -2274,12 +2299,7 @@ export default {
 .el-upload--text {
   width: 100%;
 }
-.stationName{
-  margin-left: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
 .tech-psoition {
   width: 100%;
   /* height: 320px; */
@@ -2406,6 +2426,17 @@ export default {
   margin-left: 10px;
 }
 
+.sexAge{
+  margin-left:5px;
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: #666666;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .tech-order-jn {
   width: 300px;
   height: 36px;
@@ -2417,6 +2448,7 @@ export default {
 .tech-order-jn-son,
 .tech-order-jn-sons {
   /* height: 100px; */
+  width: 100%;
   border: 1px solid #bfcbd9;
   /* border-top: none; */
   /* display: flex; */
@@ -2506,6 +2538,10 @@ export default {
 }
 
 .header-h4 {
+  font-family: PingFangSC-Semibold;
+  font-size: 18px;
+  color: #333333;
+  letter-spacing: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2581,12 +2617,13 @@ export default {
 .tech-xiu-div {
   width: 100%;
   height: 100%;
-  padding: 20px 40px;
+  padding: 20px 0px;
   display: flex;
   justify-content: space-around;
 }
 
 .tech-xiu-div-one {
+  margin: 10px 0;
   width: 50%;
   text-align: center;
   /* display: flex;
@@ -2605,12 +2642,12 @@ export default {
 }
 
 .tech-mouse {
-  width: 50px;
-  height: 20px;
-  line-height: 18px;
-  background: #fff;
+  width: 46px;
+  height: 21px;
+  line-height: 21px;
+  background: #E0C998;
+  border-radius: 3px;
   display: block;
-
   text-align: center;
 }
 
@@ -2622,15 +2659,20 @@ export default {
   justify-content: center;
 }
 .tech-mouse-div > span:nth-of-type(1) {
-  margin-right: 5px;
-  border: 1px solid #707cd2;
-  color: #707cd2;
+  /* border: 1px solid #707cd2; */
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #333333;
+  letter-spacing: 0
 }
 
 .tech-mouse-div > span:nth-of-type(2) {
   margin-left: 5px;
-  border: 1px solid #ff7676;
-  color: #ff7676;
+  /* border: 1px solid #707cd2; */
+  font-family: PingFangSC-Regular;
+  font-size: 12px;
+  color: #333333;
+  letter-spacing: 0
 }
 
 .tech-vacation .mobel {
@@ -2662,8 +2704,9 @@ export default {
   margin-left: 0;
 }
 .working {
-  border: 1px solid #f2f2f2;
-  width: 400px;
+  border: 1px solid #bfcbd9;
+  border-top: none;
+  /* width: 400px; */
   box-sizing: border-box;
   padding: 0 0 0 20px;
 }
@@ -2681,6 +2724,7 @@ export default {
   position: absolute;
   right: 20px;
   top: 20px;
+  cursor: pointer;
 }
 .time {
   /* padding: 10px 0; */
@@ -2734,6 +2778,7 @@ export default {
 .headImag {
   width: 100px;
   height: 100px;
+  background: url('../../../static/icon/头像背景.png') no-repeat;
   display: inline-block;
   border-radius: 50%;
   overflow: hidden;
@@ -2741,7 +2786,7 @@ export default {
 .headImag img {
   /* width: 100px;
   height: 100px; */
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .button-large {
   display: inline-block;
@@ -2793,12 +2838,15 @@ export default {
   padding-bottom: 30px;
   background: #fff;
 }
-.avatar-uploader-icon {
+.avatar-headPic{
+  line-height: 0;
+}
+.avatar-headPic .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
+    width: 100%;
+    height: 100%;
+    line-height: 120px;
     text-align: center;
     border: 1px dashed #d9d9d9;
   }

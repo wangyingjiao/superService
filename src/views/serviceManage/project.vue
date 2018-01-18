@@ -157,7 +157,7 @@
                     </ul>
                 </el-form-item> -->
 
-                <el-form-item label="服务图片：" prop="picture">
+                <el-form-item label="banner图：" prop="picture">
                   <div class="upload-demo upload_box form_item">
                       <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
@@ -179,14 +179,14 @@
                     <div class="el-upload__tip">*请选择上传的图片，且不超过4张</div>
                 </el-form-item>
 
-                <el-form-item label="服务描述：" prop="description">
+                <!-- <el-form-item label="服务描述：" prop="description">
                   <el-input
                   :rows="4"
                   class="form_item"
                   v-model="basicForm.description"
                   type="textarea"
                   placeholder="服务内容；服务流程；服务保障"></el-input>
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
@@ -198,7 +198,7 @@
                         </span> -->
                         <span v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index">
                             {{item}}
-                            <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
+                            <i @click="AlreadyLabel(item)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
                     <div class="el-upload__tip">* 最多设置3个系统标签</div>
@@ -210,7 +210,7 @@
                     </div>
                     <div class="labelList" v-show="basicForm.customTags != undefined && basicForm.customTags.length>0">
                         <span v-for="(item,index) in basicForm.customTags" :key="index">{{item}}   
-                          <i @click="deleteLabel(index)" class="cursor" style="font-weight: bolder;">X</i>
+                          <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
                      <div class="el-upload__tip">* 最多设置3个自定义标签</div>
@@ -283,7 +283,7 @@
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
-            <el-collapse-transition>
+              <el-collapse-transition>
               <el-form 
                 v-if="addComm"
                 :model="goods_info"
@@ -371,7 +371,7 @@
                   <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
-            </el-collapse-transition>
+              </el-collapse-transition>
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -384,7 +384,7 @@
       <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="中午、英文、数字(2~10)"></el-input>
+            <el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(1~10)"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -404,7 +404,7 @@
                     <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
                   </span> -->
                   <span v-for="(item,index) in labelClickArr" :key="index">{{item}}
-                    <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
+                    <i @click="SelectedLabel(item)" class="el-icon-close systemClose"></i>
                   </span>
                 </div>
           </el-col>
@@ -452,10 +452,12 @@
                             v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" 
                             :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
                             class="cursor" :value="item.label"> -->
-                    <input type="button" v-for="item in systemOptions4" class="cursor"
-                            :key="item.value" :value="item.label" @click="labelClick(item)"
-                            :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
-                            :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+                    <!-- <el-tooltip placement="top" :disabled="item.label.length<11" :content="item.label"> -->
+                      <input type="button" v-for="item in systemOptions4" class="cursor"
+                              :key="item.value" :value="item.label" @click="labelClick(item)"
+                              :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
+                              :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+                    <!-- </el-tooltip> -->
                   </div>
               </div>
           </el-col>
@@ -580,12 +582,13 @@ export default {
     };
     //折算时长
     var CONVERTHOURS = (rule, value, callback) => {
-      var reg = /^\d+$/;
+      var reg = /^d*(?:.d{0,2})?$/;
       if (value) {
           if(this.goods_info.type == 'num'){
             // console.log(value)
             if(value>=0.01 && value<=1.5){
-              callback();
+              var con = this.converFilter(value)
+              con ? callback() : callback(new Error('请精确到小数后两位'))
             }else{
               callback(new Error('请正确输入(0.01~1.5小时)'))
             }
@@ -593,7 +596,8 @@ export default {
 
          if(this.goods_info.type == 'area'){
             if(value>=0.01 && value<=0.5){
-              callback()
+              var con = this.converFilter(value)
+              con ? callback() : callback(new Error('请精确到小数后两位'))
             }else{
               callback(new Error('请正确输入(0.01~0.5小时)'))
             }
@@ -601,7 +605,8 @@ export default {
 
         if(this.goods_info.type == 'house'){
             if(value>=2 && value<=12){
-                callback()
+                var con = this.converFilter(value)
+                con ? callback() : callback(new Error('请精确到小数后两位'))
             }else{
               callback(new Error('请正确输入(2~12小时)'))
             }
@@ -653,7 +658,7 @@ export default {
     var LABELNAME = (rule,value,callback)=>{
       var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
       if(value){
-        if(value.length>=2 && value.length<=10){
+        if(value.length>=1 && value.length<=10){
           if(this.basicForm.customTags.indexOf(value) != -1){
             callback(new Error('已有该自定义标签名称'))
           }else{
@@ -729,7 +734,7 @@ export default {
       var editName = this.editName;
       var arr = this.basicForm.commoditys;
       if(value){
-        if(value.length>=1 && value.length<=36){
+        if(value.length>=1 && value.length<=26){
           if(this.handleEditFlag){
             if(editName.name == value){
               callback()
@@ -755,10 +760,10 @@ export default {
             }
           }
         }else{
-          callback(new Error("长度在 1 到 36 个字符"))
+          callback(new Error("长度在 1 到 26 个字符"))
         }
       }else{
-        callback(new Error('请输入商品名称(1-36位)'))
+        callback(new Error('请输入商品名称(1-26位)'))
       }
     }
     return {
@@ -877,7 +882,7 @@ export default {
         majorSort: "all",
         commoditys: [],
         // cityCodes: [],
-        description: "",
+        // description: "",
         sysTags:[],
         customTags:[]
       },
@@ -891,10 +896,10 @@ export default {
           ],
         sortId:[{required:true,message:'请选择所属分类',trigger:'change'}],
         info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-        description: [
-            { required: true, message: "请输入服务描述", trigger: "blur" },
-            { min: 0, max: 255, message: "服务描述长度介于0和255之间", trigger: "blur" }
-          ],
+        // description: [
+        //     { required: true, message: "请输入服务描述", trigger: "blur" },
+        //     { min: 0, max: 255, message: "服务描述长度介于0和255之间", trigger: "blur" }
+        //   ],
         sysTags:[{required:true,validator:SYSTAGS,trigger:'blur'}]
       },
       // goods_info: {
@@ -989,6 +994,11 @@ export default {
     },
   },
   methods: {
+    converFilter(val){
+      var reg = /^\d+(\.\d{2})?$/;
+      var con = reg.test(val)? true : false
+      return con
+    },
     filtersName(value){
       var flag = true
       var arr = this.basicForm.commoditys
@@ -1152,10 +1162,15 @@ export default {
       // console.log(this.imgText,'imgtext')
       // console.log(this.fileList,'filelist')
       // alert("123123")
+      console.log(file,"file+++++++")
       if(this.Imagestext){
           var str = "";
           var index = file.url.lastIndexOf("/");
-          str = file.url.substring(index + 1, file.url.length);
+          if(file.raw){
+            str = file.raw.uid+'.jpg'
+          }else{
+             str = file.url.substring(index + 1, file.url.length);
+          }
           
           let newarr = []
           for(var i = 0;i<this.imgText.length;i++){
@@ -1164,9 +1179,10 @@ export default {
             newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
             newarr.push(newstr)
           }
-          // console.log(str);
-          // console.log(newarr,'截取')
+          console.log(str,"src----");
+          console.log(newarr,'截取')
           var delIndex = newarr.indexOf(str)
+           console.log(delIndex,'delIndex')
           if(delIndex==-1){
 
           }else{
@@ -1183,13 +1199,24 @@ export default {
       // alert("dwadawd")
       //删除服务图片
       // console.log(fileList,'文件');
-      // console.log(file, "删除一张图片");
+      console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
       // console.log(this.picList,'filelist')
       if(this.imgFlag){
         var str = "";
-        var index = file.url.lastIndexOf("/");
-        str = file.url.substring(index + 1, file.url.length);
+        var index = ''
+        if(file.raw){
+          if(file.raw.url){
+             index = file.raw.url.lastIndexOf("/");
+             str = file.raw.url.substring(index + 1, file.raw.url.length);
+          }else{
+            return false
+          }
+        }else{
+          index = file.url.lastIndexOf("/");
+          str = file.url.substring(index + 1, file.url.length);
+        }
+        console.log(str,"str------")
         var src = ''
         if (file.name != undefined) {
           src = file.name;
@@ -1204,8 +1231,14 @@ export default {
           newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
           newarr.push(newstr)
         }
-          //console.log(newarr,'截取')
-        var delIndex = newarr.indexOf(src)
+        var delIndex = null
+        if(this.dialogStatus == "update"){
+          console.log(newarr,"newarrnewarrnewarr")
+          console.log(src,"srcsrc-------------")
+          delIndex = newarr.indexOf(str)
+        }else{
+          delIndex = newarr.indexOf(file.uid+'.jpg')
+        }
         if(delIndex == -1){
 
         }else{
@@ -1318,7 +1351,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" +s+'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1375,7 +1408,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s +'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1396,6 +1429,7 @@ export default {
             .then(res => {
               console.log(this.picList);
               this.picFile.push(ossData.get("key"));
+              file.file.url = 'https://openservice.guoanshequ.com/'+ data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
               // console.log(this.picFile,"this.picFile------------------")
               console.log(this.picFile, "picfile");
             })
@@ -1616,6 +1650,7 @@ export default {
         getProject(obj, _page, _size)
           .then(res => {
             console.log(res.data, "res.data-------");
+            
             this.total = res.data.data.count;
             this.listTable = res.data.data.list;
             if(this.listTable!=undefined && this.listTable.length>0){
@@ -1643,13 +1678,14 @@ export default {
     },
     handleSizeChange(val) {
       // alert(val)
-      this.listQuery.page = 1
       this.pageSize = val;
       // this.getList();
       // var obj = Object.assign({},this.search)
       // obj.majorSort = this.basicForm.majorSort
       // console.log(this.basicForm.majorSort,'this.basicForm.majorSort-----------')
-      this.getList(this.pageNumber, this.pageSize)
+      this.getList(1, this.pageSize)
+      this.pageNumber = 1
+      this.listQuery.page = 1
       // getProject(obj, this.pageNumber, this.pageSize).then(res => {
       //   this.listTable = res.data.data.list;
       //   this.total = res.data.data.count;
@@ -1684,12 +1720,14 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
+      this.basicForm.sale = 'yes'
+      this.basicForm.sortId = ''
        this.tableProject({majorSort:"clean"})
       this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
       this.basicForm.name = ''
-      this.basicForm.description = ''
+      // this.basicForm.description = ''
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
     },
@@ -2031,6 +2069,7 @@ export default {
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappingPerNum = ''
+      this.addComm = false
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2043,7 +2082,10 @@ export default {
       // this.goods_info.minPurchase = "";
     },
     emptyingForm(){
-      this.$refs["goods_info"].resetFields()
+      // this.$refs["goods_info"].resetFields()
+      if( this.$refs["goods_info"]){
+        this.$refs["goods_info"].resetFields()
+      }
       this.$refs["basic"].resetFields()
       this.addComm = false
       // this.goods_info = {}
@@ -2165,6 +2207,7 @@ export default {
   width: 30px;
   height: 30px;
   background-color: #3A5FCD;
+  font-weight: bolder;
   text-align: center;
 }
 .btn_Span2 {
@@ -2196,7 +2239,7 @@ export default {
 .tabBox {
   overflow: hidden;
   width: 100%;
-  border: 1px #f5f5f5 solid;
+  border: 1px #eee solid;
   background-color: #f9f9f9;
 }
 .tabLeft {
@@ -2215,14 +2258,24 @@ export default {
   background-color: #6d8dfc;
   color: #ffffff;
 }
+.tabLeft .el-radio-button__inner{
+  text-align: left;
+  padding-left: 25px;
+  background: #f9f9f9
+}
+
+.systemClose{
+  transform:scale(.7);
+  opacity: .75;
+  cursor: pointer;
+}
 
 .tabRight {
   width: 85%;
   height: 100%;
-  border-left: 1px #f5f5f5 solid;
-  padding-top: 10px;
+  border-left: 1px #eee solid;
   background-color: #ffffff;
-  padding: 10px;
+  padding: 10px 10px 60px 10px;
   /* margin-right: 10px; */
 }
 .el-radio-button {
@@ -2243,11 +2296,14 @@ export default {
   display: none;
 }
 .tit {
+  font-size: 14px;
   font-weight: bold;
-  padding: 10px 0 5px 0;
+  padding: 10px 0 8px 0;
 }
 .el-upload--picture-card {
-  width: 148px;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
 }
 .upload-back {
   display: inline-block;
@@ -2297,6 +2353,14 @@ export default {
   margin-right: 8px;
   color: red;
 }
+.upload-demo .el-upload-list__item-thumbnail{
+  width: 100px;
+  height: 100px;
+}
+.upload-demo .el-upload-list--picture-card .el-upload-list__item{
+  width: 100px;
+  height: 100px;
+}
 .tech-center {
   margin: 0px 20px 10px 0;
   display: flex;
@@ -2332,7 +2396,7 @@ export default {
 }
 
 hr {
-  border: .5px solid #f1f1f1
+  border: .5px solid #eee
 }
 .image-text .el-dialog__body,
 .image-text .el-dialog__header {
@@ -2392,14 +2456,14 @@ hr {
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
 }
-.avatar-uploader-icon {
+/* .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
   height: 178px;
   line-height: 178px;
   text-align: center;
-}
+} */
 .avatar {
   width: 178px;
   height: 178px;
@@ -2497,10 +2561,12 @@ hr {
   width: 30%;
 }
 .labelName .el-dialog__header,.systemLabel .el-dialog__header{
-  padding: 0 0 0 10px;
-  height: 40px;
-  background: #dddcdc;
-  line-height: 40px;
+  padding: 0 0 0 20px;
+  height: 45px;
+  background: #f3f7f9;
+  border-bottom:1px solid #eee;
+  font-size: 16px;
+  line-height: 45px;
 }
 .labelName .el-form-item__label{
   width: 80px;
@@ -2570,7 +2636,7 @@ hr {
 }
 .labelSystem{
   float: left;
-  border: 1px solid rgb(190, 187, 187);
+  border: 1px solid #E8E8E8;
   width: 31%;
   height: 300px;
   border-left: 0;
@@ -2594,8 +2660,9 @@ hr {
   background: #e0f1fb;
 }
 .already{
-  height: 50px;
+  /* height: 50px; */
   line-height: 50px;
+  word-break:keep-all;
 }
 .already span{
   border: 1px solid #E8E8E8;
@@ -2608,6 +2675,7 @@ hr {
 }
 .cursor{
     cursor: pointer;
+    word-wrap:break-word
 }
 .projectLabel{
   width: 90%;
