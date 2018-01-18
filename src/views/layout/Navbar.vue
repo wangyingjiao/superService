@@ -23,7 +23,7 @@
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
           
-          <div><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
+          <div class="out"><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
         </li>
         <!-- <li class="liBtn">
@@ -127,13 +127,7 @@ export default {
   .color{
     color: #4C70E8
   }
-  &:hover{
-    color: #fff;
-    background-color: #4C70E8;
-    .color{
-    color: #ffffff;
-  }
-  }
+  
 }
 .nav-ul li img {
   margin-top: 7px;
@@ -223,5 +217,12 @@ export default {
 }
 .el-dropdown-menu {
   border-radius: 2px;
+}
+.out{
+  background-color: #4C70E8;
+  color: #fff;
+  .color{
+    color: #fff !important;
+  }
 }
 </style>

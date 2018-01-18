@@ -513,6 +513,7 @@ export default {
             this.listLoading = false;
             this.storeTree = res.data.data;
             this.dialogStoreVisible = true;
+            console.log(this.rowInfo.storeList,'选中的门店')
             this.$nextTick(() => {
               this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
             });
@@ -710,6 +711,7 @@ export default {
         }, 1000);
         if (res.data.code == 1) {
           this.dialogStoreVisible = false;
+          this.rowInfo.storeList = []
           this.$refs.domTree.setCheckedKeys([]);
           this.rowInfo.id = ""
           this.$message({
@@ -835,6 +837,7 @@ export default {
     resetStore() {
       //取消门店
       this.tempStore.tree = [];
+      this.rowInfo.storeList = []
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },

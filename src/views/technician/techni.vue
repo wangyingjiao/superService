@@ -76,7 +76,7 @@
             <!-- <transition enter-active-class="animated flipInX">
              <img v-if="!hoverState1" src="../../../static/icon/密码hov.png" alt="" style='position:absolute;'>
              </transition> -->
-             <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+             <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
                     <img src="../../../static/icon/密码.png" alt="">
@@ -96,7 +96,7 @@
               <transition enter-active-class="animated flipInX">
                 <img v-if="!hoverState2" src="../../../static/icon/休假hov.png" alt="" style='position:absolute;'>
               </transition> -->
-              <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+              <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
                     <img src="../../../static/icon/休假.png" alt="">
@@ -109,7 +109,7 @@
              
             </div>
             <div class="mousehover" v-on:mouseover.prevent="dataDetails3" v-on:mouseout.prevent="hiddenDetail3"  @click="technician(item)" v-if="btnShow.indexOf('techni_update') > -1">
-             <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+             <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
                     <img src="../../../static/icon/修改.png" alt="">
@@ -122,7 +122,7 @@
 
             </div>
             <div class="mousehover" v-on:mouseover.prevent="dataDetails4" v-on:mouseout.prevent="hiddenDetail4"  @click="techDelete(item)" v-if="btnShow.indexOf('techni_delete') > -1">
-              <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+              <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
                     <img src="../../../static/icon/删除.png" alt="">
@@ -799,7 +799,7 @@ export default {
         stationId: "",
         jobNature: "",
         skillIds: [],
-        chooses: ""
+        chooses: "name"
       },
       ruleForm: {
         startTime: "",
@@ -2853,9 +2853,10 @@ export default {
 /* //动画 */
 .flip-container {
   perspective: 1000;
+  -webkit-perspective: 1000; 
 }
   /* flip the pane when hovered */
-  .flip-container:hover .flipper, .flip-container.hover1 .flipper {
+  .flip-container:hover .flipper, .flip-container.hover .flipper {
     transform: rotateY(180deg);
   }
 
@@ -2878,7 +2879,10 @@ export default {
 
 /* hide back of pane during swap */
 .front, .back {
-  backface-visibility: hidden;
+  backface-visibility:hidden;
+-webkit-backface-visibility:hidden;	/* Chrome 和 Safari */
+-moz-backface-visibility:hidden; 	/* Firefox */
+-ms-backface-visibility:hidden; 	/* Internet Explorer */
 
   position: absolute;
   top: 0;
@@ -2887,7 +2891,7 @@ export default {
 
 /* front pane, placed above back */
 .front {
-  z-index: 2;
+  z-index: -2;
 }
 
 /* back, initially hidden pane */

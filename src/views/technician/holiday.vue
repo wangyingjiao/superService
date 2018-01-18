@@ -112,7 +112,7 @@ export default {
       pageSize: 10,
       total: 1,
       search: {
-        type: "",
+        type: "techName",
         val: "",
         startTime: "",
         endTime: ""
