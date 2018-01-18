@@ -546,7 +546,8 @@ export default {
                         type: "success",
                         message: "更换时间成功!"
                       });
-                      this.tableData1=res.data.data;
+                      this.tableData1=res.data.data.list;
+                      this.otherInfo.serviceHour=res.data.data.serviceHour;
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb
                   }else{
                     this.$message({
@@ -732,7 +733,8 @@ export default {
                 type: "success",
                 message: "新增成功!"
               });
-              this.tableData1=res.data.data;
+              this.tableData1=res.data.data.list;
+              this.otherInfo.serviceHour=res.data.data.serviceHour
               this.middleA=[];
               this.listTech=[];                         
               this.dialogTableVisible = false
@@ -759,7 +761,9 @@ export default {
                 type: "success",
                 message: "改派成功!"
               });
-              this.tableData1=res.data.data;
+              this.tableData1=res.data.data.list;
+              console.log(res.data.data.serviceHour)
+              this.otherInfo.serviceHour=res.data.data.serviceHour
               this.middleA=[];
               this.listTech=[];                         
               this.dialogTableVisible = false

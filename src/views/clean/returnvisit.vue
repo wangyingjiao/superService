@@ -1,21 +1,28 @@
 <template>
-      <div class="addorder-container"> 
-        <el-upload
-          action="http://openservice.oss-cn-beijing.aliyuncs.com"
-          list-type="picture-card"
-          :on-change="handPic"
-          :on-remove="handleRemovePic"
-          :auto-upload="false"
-          ref="upload"
-          :http-request="(val)=>picUpload(val)" 
-          > 
-          <i class="el-icon-plus"></i>
-        </el-upload>
-        <el-dialog v-model="dialogVisible" size="tiny">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
-        <button @click="open">上传</button>
-      </div>
+    <div class="addorder-container"> 
+        <div class="flip-container" v-on:mouse="this.classList.toggle('hover1');">
+  <div class="flipper">
+    <div class="front">
+      <img src="http://img0.imgtn.bdimg.com/it/u=1060021971,3692248015&fm=27&gp=0.jpg" alt="">
+    </div>
+    <div class="back">
+      背面内容
+      <img src="http://img2.imgtn.bdimg.com/it/u=3561648708,880870854&fm=27&gp=0.jpg">
+    </div>
+  </div>
+</div>			
+<el-tooltip placement="top"  :disabled="value.length<11" :content="value">
+      <button style="width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{value}}</button>
+</el-tooltip>
+                                <el-switch
+                              v-model="testvalue"
+                              :width='100'
+                              on-text="服务开启"
+                              off-text="服务暂停"
+                              on-value="yes"
+                              off-value="no">
+                            </el-switch>
+    </div>
 </template>
 
 <script>
@@ -25,6 +32,7 @@ import { getSign } from "@/api/sign";
 export default {
   data() { 
     return {
+      testvalue:'yes',
       value:'ddeeeeeeeeeeeee月月儿科可',
       picList:[],
       testArr:[],

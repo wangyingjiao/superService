@@ -211,9 +211,9 @@ export default {
 					if(res.data.data.orgList[a].id == 0){
 						res.data.data.orgList.remove(res.data.data.orgList[a])
 					}					
-				}										
-				this.mechanismOptions=res.data.data.orgList;
-				this.total=res.data.data.page.count;
+				}
+				this.total=res.data.data.page.count;										
+				this.mechanismOptions=res.data.data.orgList;				
 				this.listLoading = false;
 			}else{
 				this.listLoading = false;
