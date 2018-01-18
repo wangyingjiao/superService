@@ -705,7 +705,7 @@ export default {
                 if (this.data2[i].subMenus[j].permission == "order") {
                   console.log(a.permission, "2", this.temp2.check);
                   var orderarr = this.data2[i].subMenus[j];
-                  for (var k = 2; k < orderarr.subMenus.length - 1; k++) {
+                  for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
                     //console.log('不可取消')
                     if (
                       this.temp2.check.indexOf(orderarr.subMenus[k].id) > -1
