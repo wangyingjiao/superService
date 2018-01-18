@@ -221,6 +221,8 @@ export default {
         
        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -245,6 +247,8 @@ export default {
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -256,7 +260,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      this.listQuery.page = 1;
       this.pageNumber = val;
       var obj = {
         name: this.search.name,
@@ -267,6 +270,8 @@ export default {
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;

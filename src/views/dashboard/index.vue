@@ -30,10 +30,10 @@ export default {
 .dashboard-container {
   margin: 0 -15px;
   background:#f7f8f9;
-  height: 90%;
+  height: 100%;
   .hollebg {
     width: 100%;
-    height: 90%;
+    height: 100%;
     img {
       width: 100%;
       height: 100%;

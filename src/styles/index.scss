@@ -35,6 +35,11 @@ p{
   -webkit-margin-before: 0em;  
   -webkit-margin-after: 0em;
 }
+input, button{
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  }
 .clearfix {
   &:after {
     visibility: hidden;

@@ -1284,36 +1284,27 @@ export default {
   methods: {
     //鼠标滑过
     dataDetails1(a) {
-      console.log("滑过时");
-      console.log('')
       this.hoverState1 = false;
     },
     hiddenDetail1(val) {
-      console.log(val, "离开时");
       this.hoverState1 = true;
     },
     dataDetails2(a) {
-      console.log(a, "滑过时");
       this.hoverState2 = false;
     },
     hiddenDetail2(val) {
-      console.log(val, "离开时");
       this.hoverState2 = true;
     },
     dataDetails3(a) {
-      console.log(a, "滑过时");
       this.hoverState3 = false;
     },
     hiddenDetail3(val) {
-      console.log(val, "离开时");
       this.hoverState3 = true;
     },
     dataDetails4(a) {
-      console.log(a, "滑过时");
       this.hoverState4 = false;
     },
     hiddenDetail4(val) {
-      console.log(val, "离开时");
       this.hoverState4 = true;
     },
     //全职兼职切换
