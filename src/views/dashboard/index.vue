@@ -9,7 +9,7 @@
   </transition>
 </div> -->
     <div class='hollebg'>
-      <img src="../../../static/icon/hello(2).png" alt="">
+      <img src="../../../static/icon/hello.png" alt="">
     </div>  
   </div>
 </template>
