@@ -197,10 +197,10 @@
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
                         <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa" style="border-radius:20px;">
-                          <el-tooltip placement="top" :disabled="item.length <= 4" :content="item">
+                          <el-tooltip placement="top" :disabled="item.length <= 6" :content="item">
                               <div>
-                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;">{{item}}</span>
-                                  <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;"></span>
+                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;width:104px;margin-right:0px">{{item}}</span>
+                                  <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
                               </div>
                           </el-tooltip>
                         </div>                        
