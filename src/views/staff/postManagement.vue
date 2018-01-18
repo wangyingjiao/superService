@@ -39,6 +39,7 @@
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
+          <!-- v-if判断按钮权限 -->
           <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('role_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
           <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('role_delete') != -1" @click="handleDelete(scope.row)"></el-button>
 
