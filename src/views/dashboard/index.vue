@@ -9,7 +9,7 @@
   </transition>
 </div> -->
     <div class='hollebg'>
-      <img src="../../../static/icon/hello(2).png" alt="">
+      <img src="../../../static/icon/hello.png" alt="">
     </div>  
   </div>
 </template>
@@ -30,11 +30,11 @@ export default {
 .dashboard-container {
   margin: 0 -15px;
   background:#f7f8f9;
-  height: 100%;
+  height: 90%;
   .hollebg {
     width: 100%;
-    height: 100%;
-    img {     
+    height: 90%;
+    img {
       width: 100%;
       height: 100%;
     }
