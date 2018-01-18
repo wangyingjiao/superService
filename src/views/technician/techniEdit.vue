@@ -31,7 +31,7 @@
                             >
                             <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="header-img">
                           </el-upload>
-                          <p style="width:100%; color:#ccc; font-size:12px;">*为了浏览效果,建议上传大于240*240的正方形图片</p>
+                          <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
                     </el-col>
                 </el-row>
@@ -314,61 +314,63 @@
                       </el-col>
                     </el-row>
                     <el-row class="workHours-time" :gutter="60" v-if="perServer.jobNature!='part_time'">
-                      <el-col :span="18" class="workHours">
+                      <el-col :span="17" class="workHours">
                         <!-- <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p> -->
                         <el-form-item label="工作时间：" class="workHours-input" prop="workTimes">
                           <div class="tech-order-jn">
                               <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                              <div class="tech-order-jn-sons" v-show="isB">
-                              <div style="margin:0 10px;">
-                                  <p>新增日期</p>
-                                  <div>
-                                    <div style="display:flex;">
-                                        <div class="selfCheckBoxsday">日期</div>
-                                        <!-- <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
-                                        :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
-                                        {{item.name}}
-                                      </button> -->
-                                        <input type="button" class="selfCheckBoxs tech-order-posis"
-                                            ref="sexOption" @click="roomSel1(item)"
-                                            v-for="(item,$index) in sexDay" :key="$index"
-                                            :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}"
-                                            :disabled="disbArr.indexOf(item.id)!=-1"
-                                            :value="item.name">
+                               <el-collapse-transition>
+                                  <div class="tech-order-jn-sons" v-show="isB">
+                                    <div style="margin:0 10px;">
+                                        <p>新增日期</p>
+                                        <div>
+                                          <div style="display:flex;">
+                                              <div class="selfCheckBoxsday">日期</div>
+                                              <!-- <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
+                                              :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
+                                              {{item.name}}
+                                            </button> -->
+                                              <input type="button" class="selfCheckBoxs tech-order-posis"
+                                                  ref="sexOption" @click="roomSel1(item)"
+                                                  v-for="(item,$index) in sexDay" :key="$index"
+                                                  :class="[{'techTime-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                                  :disabled="disbArr.indexOf(item.id)!=-1"
+                                                  :value="item.name">
+                                          </div>
+                                        </div>
+                                        <div class="startTime">
+                                          <div class="selfCheckBoxsday">时段</div>
+                                          <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                                              start: '00:00',
+                                              step: '00:30',
+                                              end: '24:00',
+                                              minTime:startend.startNew,
+                                              maxTime:startend.endNew
+                                              }" class="tech-daytim">
+                                          </el-time-select>
+                                          <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                                              start: '00:00',
+                                              step: '00:30',
+                                              end: '24:00',
+                                              minTime:startTime || startend.startNew,
+                                              maxTime:startend.endNew
+                                              }">
+                                          </el-time-select>
+                                        </div>
+                                    </div>
+                                    <div style="margin:0px 10px 10px;">
+                                        <span class="button-large btn-styl" @click="techClick">确认</span>
+                                        <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                                        <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
                                     </div>
                                   </div>
-                                  <div class="startTime">
-                                    <div class="selfCheckBoxsday">时段</div>
-                                    <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                                        start: '00:00',
-                                        step: '00:30',
-                                        end: '24:00',
-                                        minTime:startend.startNew,
-                                        maxTime:startend.endNew
-                                        }" class="tech-daytim">
-                                    </el-time-select>
-                                    <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                                        start: '00:00',
-                                        step: '00:30',
-                                        end: '24:00',
-                                        minTime:startTime || startend.startNew,
-                                        maxTime:startend.endNew
-                                        }">
-                                    </el-time-select>
-                                  </div>
-                              </div>
-                              <div style="margin:0px 10px 10px;">
-                                  <span class="button-large btn-styl" @click="techClick">确认</span>
-                                  <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
-                                  <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
-                              </div>
-                              </div>
+                               </el-collapse-transition>
                           </div>
                         </el-form-item>
                     </el-col>
                   </el-row>
                   <el-row class="weekDate" :gutter="60" v-if="perServer.workTimes!=undefined && perServer.workTimes.length>0  && perServer.jobNature!='part_time'">
-                    <el-col :span="18">
+                    <el-col :span="17">
                       <el-form-item>
                         <ul class="working">
                           <li v-for="(item,index) in perServer.workTimes" :key="index">
@@ -1665,7 +1667,7 @@ export default {
       for(var i =0 ; i<arr.length ; i++){
         for(var j =0 ; j<arr[i].weeks.length ; j++){
           this.disbArr.push(arr[i].weeks[j].id*1)
-          this.roomSelNum.push(arr[i].weeks[j].id*1)
+          // this.roomSelNum.push(arr[i].weeks[j].id*1)
         }
       }
 
@@ -2148,8 +2150,8 @@ export default {
 .tech-section-lage {
   /* margin: 0px; */
   padding: 0px;
-  left: 40px;
-  width: 60%;
+  /* left: 40px; */
+  width: 70%;
 }
 .tech-section-lage > div {
   margin: 0px;
@@ -2161,11 +2163,14 @@ export default {
   font-size: 14;
   font-weight: 700;
 }
+.tech-order-jn-sons .tech-dir{
+  border: 1px solid #eee;
+}
 
 .tech-tc-prson {
   margin: 0px 20px;
   padding: 30px 20px 10px 0;
-  border-bottom: #f3f1f1 solid 1px;
+  border-bottom: #eee solid 1px;
   font-size: 14px;
   font-weight: 700;
   color: black;
@@ -2290,13 +2295,13 @@ export default {
   -o-animation: show 1s;
 }
 .avatar-header .el-upload--text{
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   overflow: hidden;
 }
 .avatar-header .header-img{
-   width: 100px;
-  /* height: 100px;  */
+  width: 120px;
+  height: 120px; 
 }
 
 @keyframes show {
@@ -2394,7 +2399,7 @@ export default {
 
 .tech-order-jn-son,
 .tech-order-jn-sons {
-  width: 545px;
+  width: 100%;
   /* height: 100px; */
   border: 1px solid #bfcbd9;
   border-top: none;
@@ -2599,7 +2604,7 @@ export default {
   border: 1px solid #ff7676;
   color: #ff7676;
 }
-.working {
+/* .working {
   border: 1px solid #f2f2f2;
   width: 100%;
   box-sizing: border-box;
@@ -2609,7 +2614,7 @@ export default {
   position: relative;
   border-bottom: 1px solid #f2f2f2;
   padding-top: 15px;
-}
+} */
 .woking-div {
   display: flex;
   flex-direction: column;
@@ -2618,6 +2623,7 @@ export default {
   position: absolute;
   right: 20px;
   top: 20px;
+  cursor: pointer;
 }
 .time {
   padding: 10px 0;
@@ -2664,6 +2670,7 @@ export default {
 	/* margin-bottom: 20px; */
 }
 .workHours .workHours-input{
+  margin-bottom: 0;
   width: 100%;
 }
 .ferFamilyClass>li{
