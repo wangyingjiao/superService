@@ -210,7 +210,7 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:ruleForm.startDate || startEnd.startNew,
+                            minTime:ruleForm.startTime || startEnd.startNew,
                             maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
@@ -240,7 +240,7 @@
             <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
               {{item.name}}
               <div :class="{'triangle-bottomright':item.show===true}"></div>
-              <div class="tally">&#10004;</div>
+              <!-- <div class="tally">&#10004;</div> -->
             </div>
           </div>
           <div class="tech-pos-btn">
@@ -358,7 +358,7 @@
                     <el-form-item label="服务状态：" class="seize">
                         <el-switch
                           v-model="personal.status"
-                          width="100"
+                          :width="100"
                           on-text="提供服务"
                           off-text="暂停服务"
                           on-value="yes"
@@ -875,7 +875,7 @@ export default {
         ],
         //手机号
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
-        sex: [{ required: true, message: "请输入性别", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         birtStr: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
         ],
@@ -2114,7 +2114,10 @@ export default {
 }
 
 .wirkTimes .tech-dir{
-  border: 1px solid #eee
+  border: 1px solid #a7a7a7;
+  background: url("../../../static/icon/eee.png") no-repeat;
+  background-size: 15px 15px;
+  background-position: bottom right;
 }
 
 .tech-section {
@@ -2376,7 +2379,7 @@ export default {
 }
 
 .tech-green {
-  border: solid 1px green !important;
+  border: solid 1px #4c70e8 !important;
   background: url("../../../static/icon/Selected.png") no-repeat;
   background-size: 15px 15px;
   background-position: bottom right;
@@ -2501,6 +2504,11 @@ export default {
   padding: 0 7px;
   justify-content: center;
   overflow: hidden;
+}
+
+.seize .el-switch.is-checked .el-switch__core{
+  background-color: #4c70e8;
+  border: 1px solid #4c70e8;
 }
 
 .tallyo {
