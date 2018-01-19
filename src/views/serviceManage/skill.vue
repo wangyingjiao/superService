@@ -234,7 +234,7 @@ export default {
             }
           }          
         }
-        console.log("改变存储时",this.middleA)
+        
       }
 
       if (this.dialogStatus == "edit") {
@@ -248,6 +248,7 @@ export default {
             }
           }
         }
+        console.log("改变存储时",this.middleB)
       }
     },
     //全局新增按钮
@@ -506,6 +507,7 @@ export default {
           console.log("取消时",this.middleA)     
       }      
       if (this.dialogStatus == "edit") {
+        console.log("取消时",this.middleC)
         this.middleB = this.middleC;
         var arr1 = [];
         if (this.middleC != undefined && this.middleC.length != 0) {
@@ -632,25 +634,25 @@ export default {
           }
         })
         .catch(res => {});
-      // if (this.dialogStatus == "edit") {
-      //   this.middleC = Object.assign([], this.middleB);
-      //   for (var b = 0; b < this.middleB.length; b++) {
-      //     for (var a = 0; a < this.listTech.length; a++) {
-      //       if (this.listTech[a].techId == this.middleB[b].techId) {
-      //         this.listTech[a].techChecked = true;
-      //       }
-      //     }
-      //   }
-      // }
-      // if (this.dialogStatus == "add") {
-      //   for (var d = 0; d < this.middleA.length; d++) {
-      //     for (var e = 0; e < this.listTech.length; e++) {
-      //       if (this.listTech[e].techId == this.middleA[d].techId) {
-      //         this.listTech[e].techChecked = true;
-      //       }
-      //     }
-      //   }
-      // }
+      if (this.dialogStatus == "edit") {
+        this.middleC = Object.assign([], this.middleB);
+        for (var b = 0; b < this.middleB.length; b++) {
+          for (var a = 0; a < this.listTech.length; a++) {
+            if (this.listTech[a].techId == this.middleB[b].techId) {
+              this.listTech[a].techChecked = true;
+            }
+          }
+        }
+      }
+      if (this.dialogStatus == "add") {
+        for (var d = 0; d < this.middleA.length; d++) {
+          for (var e = 0; e < this.listTech.length; e++) {
+            if (this.listTech[e].techId == this.middleA[d].techId) {
+              this.listTech[e].techChecked = true;
+            }
+          }
+        }
+      }
     },
     //选择技师弹出层查询按钮
     searchTeh() {
