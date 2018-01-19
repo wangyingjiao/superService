@@ -206,14 +206,17 @@ export default {
 		var obj=pramsObj; 
 	    getOrderTable(obj,pageNo,pageSize).then(res => {
 			if(res.data.code === 1){
+				this.total=res.data.data.page.count;
 				this.tabDataList = res.data.data.page.list;
+				this.pageNumber=res.data.data.page.pageNo;
+				this.size=res.data.data.page.pageSize;
 				for(var a=0;a<res.data.data.orgList.length;a++){
 					if(res.data.data.orgList[a].id == 0){
 						res.data.data.orgList.remove(res.data.data.orgList[a])
 					}					
-				}										
-				this.mechanismOptions=res.data.data.orgList;
-				this.total=res.data.data.page.count;
+				}
+														
+				this.mechanismOptions=res.data.data.orgList;				
 				this.listLoading = false;
 			}else{
 				this.listLoading = false;

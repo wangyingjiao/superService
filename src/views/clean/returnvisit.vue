@@ -23,6 +23,7 @@ import { getSign } from "@/api/sign";
 export default {
   data() { 
     return {
+      testvalue:'yes',
       value:'ddeeeeeeeeeeeee月月儿科可',
       picList:[],
       testArr:[],

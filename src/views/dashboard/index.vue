@@ -9,7 +9,7 @@
   </transition>
 </div> -->
     <div class='hollebg'>
-      <img src="../../../static/icon/hello(2).png" alt="">
+      <img src="../../../static/icon/hello.png" alt="">
     </div>  
   </div>
 </template>
@@ -33,8 +33,8 @@ export default {
   height: 100%;
   .hollebg {
     width: 100%;
-    height: 100vh;
-    img {     
+    height: 100%;
+    img {
       width: 100%;
       height: 100%;
     }

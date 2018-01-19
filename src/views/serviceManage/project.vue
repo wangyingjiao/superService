@@ -196,10 +196,14 @@
                         <!-- <span v-for="item in alreadyArr.concat(labelClickCon)" :key="item.value">{{item.label}}
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
-                        <span v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index">
-                            {{item}}
-                            <i @click="AlreadyLabel(item)" class="el-icon-close systemClose"></i>
-                        </span>
+                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa" style="border-radius:20px;">
+                          <el-tooltip placement="top" :disabled="item.length <= 6" :content="item">
+                              <div>
+                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;width:104px;margin-right:0px">{{item}}</span>
+                                  <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
+                              </div>
+                          </el-tooltip>
+                        </div>                        
                     </div>
                     <div class="el-upload__tip">* 最多设置3个系统标签</div>
                 </el-form-item>
@@ -400,28 +404,35 @@
         <el-row>
           <el-col :span="24">
               <div class="already">
-                  当前选择标签：
-                  <!-- <span v-for="item in labelClickCon" :key="item.value">{{item.label}}
-                    <i @click="SelectedLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
-                  </span> -->
-                  <span v-for="(item,index) in labelClickArr" :key="index">{{item}}
-                    <i @click="SelectedLabel(item)" class="el-icon-close systemClose"></i>
-                  </span>
-              </div>
+                  <div class="selfTitle1">当前选择标签：</div>
+                  <div v-for="(item,index) in labelClickArr" :key="index" class="selfTabsaa">
+                    <el-tooltip placement="top" :disabled="item.length <= 4" :content="item">
+                        <div>
+                            <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
+                            <span @click="SelectedLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;"></span>
+                        </div>
+                    </el-tooltip>
+                  </div>
+                </div>
           </el-col>
         </el-row>
 
         <el-row>
           <el-col :span="24" v-show="alreadyArr.length>0">
             <div class="already">
-                  已添加标签：
+                  <div class="selfTitle1">已添加标签：</div>
                   <!-- <span v-for="item in alreadyArr" :key="item.value">{{item.label}}
                     <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
                   </span> -->
-                  <span v-for="(item,index) in alreadyArr" :key="index">
-                    {{item}}
-                    <i @click="AlreadyLabel(item)" class="el-icon-close systemClose"></i>
-                  </span>
+                  <div v-for="(item,index) in alreadyArr" :key="index" class="selfTabsaa">
+                    <el-tooltip placement="top" :disabled="item.length <= 4" :content="item">
+                        <div>
+                          <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
+                          <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:2px;"></span>
+                        </div>
+                    </el-tooltip>
+                    <!-- <i  class="cursor" style="font-weight: bolder;">x</i> -->
+                  </div>
             </div>
           </el-col>
         </el-row>
@@ -453,10 +464,18 @@
                             v-for="item in systemOptions4" :key="item.value" @click="labelClick(item)" 
                             :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
                             class="cursor" :value="item.label"> -->
-                      <input type="button" v-for="item in systemOptions4" class="cursor"
-                              :key="item.value" :value="item.label" @click="labelClick(item)"
-                              :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
-                              :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+                    <!-- <el-tooltip placement="top" :disabled="item.label.length<11" :content="item.label"> -->
+                      <div  v-for="item in systemOptions4"  style="margin-left:5px;">
+                          <el-tooltip placement="top" :disabled="item.label.length<4" :content="item.label">
+                            <input type="button"
+                                    class="cursor" 
+                                    style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
+                                    :key="item.value" :value="item.label" @click="labelClick(item)"
+                                    :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
+                                    :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+                        </el-tooltip>
+                      </div>        
+                    <!--  -->
                   </div>
               </div>
           </el-col>
@@ -2245,7 +2264,18 @@ export default {
 };
 </script>
 <style>
-
+.selfTitle1{
+  display:inline-block;float:left;
+}
+.selfTabsaa{
+   display:inline-block;margin-top:10px;idth:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
+}
+.selfTabContent{
+    float:left;width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
+}
+.selfCloseSty{
+    float:right;margin-top:5px;border:none;
+}
 .el-radio-group {
   width: 100%;
 }

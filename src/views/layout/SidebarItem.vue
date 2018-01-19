@@ -57,12 +57,11 @@ export default {
 }
 .slde-bcak-log {
   width: 100%;
-  height: 50px;
-
+  height: 75px;
 }
 .slde-bcak-log .imgleft {
   width: 190px;
-  height: 50px;
+  height: 55px;
 }
 .slde-bcak-log .imgright {
   width: 145px;

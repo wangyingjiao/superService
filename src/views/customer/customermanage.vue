@@ -436,14 +436,16 @@ export default {
 						var obj = pramsObj;
 						getCusTable(obj,pageNo,pageSize).then(res => {
 							if(res.data.code === 1){
-								this.tableData = res.data.data.page.list
+								this.pagetotal1 = res.data.data.page.count;
+								this.tableData = res.data.data.page.list;
+								this.pageNumber=res.data.data.page.pageNo;
+								this.pageSize1=res.data.data.page.pageSize;
 								if(res.data.data.page.list != undefined){
 											for(var a=0;a<this.tableData.length;a++){
 												this.tableData[a].index=a+1;
 											}								
 								}
-								this.organizationOptions=res.data.data.orgList;											
-								this.pagetotal1 = res.data.data.page.count;  								
+								this.organizationOptions=res.data.data.orgList;																			  								
 								this.listLoading = false
 							}
 						}).catch(res=>{

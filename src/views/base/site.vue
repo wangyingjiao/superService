@@ -444,13 +444,15 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res, "服务站列表");
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -464,13 +466,15 @@ export default {
         cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-        this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
@@ -535,7 +539,10 @@ export default {
         cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        this.total = res.data.data.count
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -553,7 +560,10 @@ export default {
       };
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
+        this.total = res.data.data.count
         this.list = res.data.data.list;
+        this.pageNumber = res.data.data.pageNo
+        this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;

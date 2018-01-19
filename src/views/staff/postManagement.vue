@@ -255,7 +255,9 @@ export default {
       powerList: [],
       isIndeterminate: true,
       rules: {
-        officeId: [{ required: true, message: "机构不能为空", trigger: "change" }],
+        officeId: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
         name: [
           {
             required: true,
@@ -264,7 +266,9 @@ export default {
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        dataScope: [{ required: true, message: "等级不能为空", trigger: "change" }],
+        dataScope: [
+          { required: true, message: "等级不能为空", trigger: "change" }
+        ],
         check: [
           {
             type: "array",
@@ -326,14 +330,16 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -348,14 +354,16 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           }
         });
@@ -364,26 +372,27 @@ export default {
     handleFilter() {
       //搜索
       this.listQuery.page = 1;
-    
+      this.pageNumber = 1;
+
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
-    
+
       if (obj.name != "" || obj.organization.id != "") {
-       
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -395,18 +404,20 @@ export default {
         });
       } else {
         var obj = {};
- 
+
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           }
         });
@@ -415,7 +426,7 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
@@ -426,14 +437,16 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -448,14 +461,16 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           }
         });
@@ -473,14 +488,16 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -495,21 +512,23 @@ export default {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
 
-            this.total = res.data.data.count;
             this.listLoading = false;
           }
         });
       }
     },
     handTreechange(a, b, c) {
-      console.log(a, b,c,'yyyyyyyy');
+      console.log(a, b, c, "yyyyyyyy");
       //父级点击时取消勾选
       // if(a.permission = 'order'){
       //   if(b){
@@ -522,28 +541,31 @@ export default {
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        console.log('tttttttttttttttt')
+        console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
             a.permission
           ) > -1
         ) {
-  
           var arr = a.parentIds.split(",");
-           for (var i = 0; i < this.data2.length; i++) {
-             if (this.data2[i].subMenus != undefined) {
-               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(this.data2[i].subMenus[j],'成功')
-                  this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-2].id, true);
+                  console.log(this.data2[i].subMenus[j], "成功");
+                  this.$refs.domTree.setChecked(
+                    this.data2[i].subMenus[j].subMenus[
+                      this.data2[i].subMenus[j].subMenus.length - 2
+                    ].id,
+                    true
+                  );
                 }
-               }
-             }else{
-               console.log(this.data2[i].subMenus)
-             }
-           }
+              }
+            } else {
+              console.log(this.data2[i].subMenus);
+            }
+          }
         }
         //订单详情处理完毕
         //自动勾选列表权限
@@ -553,8 +575,10 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].id == arr[3]) {
-                  var str = this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-1];
-                  console.log(str.name,'vvvvvvvvvvvv')
+                  var str = this.data2[i].subMenus[j].subMenus[
+                    this.data2[i].subMenus[j].subMenus.length - 1
+                  ];
+                  console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -562,72 +586,46 @@ export default {
                     if (newper == "view") {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
-                  }else{
-                    console.log(111111111111111111)
+                  } else {
+                    console.log(111111111111111111);
                   }
                 }
               }
             }
           }
         } else {
-         
           //console.log(a.id, "父级被勾选的id");
           //console.log(a.subMenus[0], "父级的第一个元素");
         }
         //自动勾选列表权限结束
       } else {
-        console.log('取消勾选')
-       
+        console.log("取消勾选");
+
         //订单的查看详情不可取消
-           console.log(this.temp.check,'dddddddddddddd')
-        if(a.permission == 'order_info'){
-           for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              console.log(a.permission,'1')
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(a.permission,'2',this.temp.check)
-                  var orderarr = this.data2[i].subMenus[j]
-                  for(var k = 2;k<orderarr.subMenus.length-1;k++){
-                    //console.log('不可取消')
-                       if(this.temp.check.indexOf(orderarr.subMenus[k].id)>-1){
-                         console.log(a.permission,'3')
-                         console.log(this.data2[i].subMenus[j].subMenus[1].name,'详情权限iiiii')
-                         this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[orderarr.subMenus.length-2].id, true);
-                         this.temp.check = this.$refs.domTree.getCheckedKeys();
-                       }
-                  }
-                }
-              }
-            }
-          }
-        }
-        //订单处理结束
-        
-        //处理列表权限不可取消
-        if (
-            a.permission.substring(
-            a.permission.length - 4,
-            a.permission.length
-          ) == "view"
-        ) {
-          
-           var arr1 = a.parentIds.split(",");
+        console.log(this.temp.check, "dddddddddddddd");
+        if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
+              console.log(a.permission, "1");
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].id == arr1[3]) {
-                  for (
-                    var k = 0;
-                    k < this.data2[i].subMenus[j].subMenus.length-1;
-                    k++
-                  ) {
-                    if (
-                      this.temp.check.indexOf(
-                        this.data2[i].subMenus[j].subMenus[k].id
-                      ) > -1
-                    ) {
-                      this.$refs.domTree.setChecked(this.data2[i].subMenus[j].subMenus[this.data2[i].subMenus[j].subMenus.length-1].id, true);
+                if (this.data2[i].subMenus[j].permission == "order") {
+                  console.log(a.permission, "2", this.temp.check);
+                  var orderarr = this.data2[i].subMenus[j];
+                  for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
+                    //console.log('不可取消')
+                    if (this.temp.check.indexOf(orderarr.subMenus[k].id) > -1) {
+                      console.log(a.permission, "3");
+                      console.log(
+                        this.data2[i].subMenus[j].subMenus[1].name,
+                        "详情权限iiiii"
+                      );
+                      this.$refs.domTree.setChecked(
+                        this.data2[i].subMenus[j].subMenus[
+                          orderarr.subMenus.length - 2
+                        ].id,
+                        true
+                      );
+                      this.temp.check = this.$refs.domTree.getCheckedKeys();
                     }
                   }
                 }
@@ -635,7 +633,44 @@ export default {
             }
           }
         }
-        
+        //订单处理结束
+
+        //处理列表权限不可取消
+        if (
+          a.permission.substring(
+            a.permission.length - 4,
+            a.permission.length
+          ) == "view"
+        ) {
+          var arr1 = a.parentIds.split(",");
+          for (var i = 0; i < this.data2.length; i++) {
+            if (this.data2[i].subMenus != undefined) {
+              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
+                if (this.data2[i].subMenus[j].id == arr1[3]) {
+                  for (
+                    var k = 0;
+                    k < this.data2[i].subMenus[j].subMenus.length - 1;
+                    k++
+                  ) {
+                    if (
+                      this.temp.check.indexOf(
+                        this.data2[i].subMenus[j].subMenus[k].id
+                      ) > -1
+                    ) {
+                      this.$refs.domTree.setChecked(
+                        this.data2[i].subMenus[j].subMenus[
+                          this.data2[i].subMenus[j].subMenus.length - 1
+                        ].id,
+                        true
+                      );
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
         //列表处理完毕
       }
       //console.log(this.$refs.domTree.getCheckedKeys(false));
@@ -647,7 +682,7 @@ export default {
       console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
-      console.log(a, b,"currentchange选中节点变化时");
+      console.log(a, b, "currentchange选中节点变化时");
     },
     nodeExpand(a, b, c) {
       console.log(a, b, c, "nodeexpand节点被展开时");

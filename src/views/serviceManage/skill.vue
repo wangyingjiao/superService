@@ -130,8 +130,7 @@
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
                   <button class="button-large"   @click="submitForm2()">保存</button>
-                  <button  v-if="dialogStatus == 'edit'" class="button-cancel"  @click="resetForm2()">取消</button>
-                  <button  v-if="dialogStatus == 'add'" class="button-cancel"  @click="resetForm2()">关闭</button>
+                  <button  class="button-cancel"  @click="resetForm2()">取消</button>
               </div>           
         </el-dialog>
         <!-- 选择技师弹出层结束 -->
@@ -209,7 +208,8 @@ export default {
       promInf1: "搜索内容不存在!",
       middleA: [],
       middleB: [],
-      middleC: []
+      middleC: [],
+      middleD:[]
     };
   },
   methods: {
@@ -234,6 +234,7 @@ export default {
             }
           }          
         }
+        console.log("改变存储时",this.middleA)
       }
 
       if (this.dialogStatus == "edit") {
@@ -254,6 +255,7 @@ export default {
       var obj = {};
       this.middleA = [];
       this.middleB = [];
+      this.middleD=[];
       this.listLoading = true;
       this.dialogStatus = status;
       this.tabOptions = [];
@@ -355,6 +357,7 @@ export default {
                   this.ruleForm2.staffClass=[];
                   this.middleA = [];
                   this.middleB = [];
+                  this.middleD=[];
                   this.localSearch = "";
                   var obj1 = {};
                   this.listLoading = false;
@@ -365,6 +368,7 @@ export default {
                   this.$refs["ruleForm2"].resetFields();
                   this.middleA = [];
                   this.middleB = [];
+                  this.middleD=[];
                   this.$message({
                     type: "warning",
                     message: res.data.data
@@ -391,6 +395,7 @@ export default {
                   this.ruleForm2.staffClass=[];
                   this.middleA = [];
                   this.middleB = [];
+                  this.middleD=[];
                   this.dialogVisible = false;
                   var obj1 = {
                     name: this.localSearch
@@ -443,6 +448,7 @@ export default {
             }
           }
         }
+        console.log("删除时",this.middleA)
         if (this.dialogStatus == "edit") {
           for (var c = 0; c < this.middleB.length; c++) {
             if (obj.techId == this.middleB[c].techId) {
@@ -450,7 +456,6 @@ export default {
             }
           }
         }
-
         this.tabOptions.remove(obj);
       } else {
       }
@@ -461,6 +466,7 @@ export default {
       this.techStationId = "";
       //先遍历数据中选中的再保存
       if (this.dialogStatus == "add") {
+        console.log("保存时",this.middleA)
         var arr = [];
         if (this.middleA != undefined && this.middleA.length != 0) {
           for (var a = 0; a < this.middleA.length; a++) {
@@ -469,8 +475,10 @@ export default {
             }
           }
         }
-        this.tabOptions = arr;
-        this.middleA=arr
+        this.tabOptions =Object.assign([],arr);
+        // this.middleD=Object.assign([],arr);
+        console.log("保存时Options",this.tabOptions)
+        //this.middleA=arr
       }
       if (this.dialogStatus == "edit") {
         var arr1 = [];
@@ -490,8 +498,12 @@ export default {
       this.techName = "";
       this.techStationId = "";
       if (this.dialogStatus == "add") {
-          // this.tabOptions=[];
-        // this.middleA=[];
+          console.log("取消时Options",this.tabOptions)
+          this.middleA=Object.assign([],this.tabOptions);
+            for (var a = 0; a < this.listTech.length; a++) {
+                this.listTech[a].techChecked = false;
+            }          
+          console.log("取消时",this.middleA)     
       }      
       if (this.dialogStatus == "edit") {
         this.middleB = this.middleC;
@@ -514,13 +526,16 @@ export default {
       getListdata(obj, pageNo, pageSize)
         .then(res => {
           if (res.data.code === 1) {
+            this.total = res.data.data.count;
             this.getListdata = res.data.data.list;
+            this.pageNumber=res.data.data.pageNo;
+            this.pageSize=res.data.data.pageSize;
             if (res.data.data.list != undefined) {
               for (var a = 0; a < this.getListdata.length; a++) {
                 this.getListdata[a].index = a + 1;
               }
             }
-            this.total = res.data.data.count;
+            
           }
           this.listLoading = false;
         })
@@ -595,6 +610,7 @@ export default {
           if (res.data.code === 1) {
             this.listTech = res.data.data.techs;
             if (this.dialogStatus == "add") {
+              console.log("开始时",this.middleA)
               for (var b = 0; b < this.middleA.length; b++) {
                 for (var a = 0; a < this.listTech.length; a++) {
                   if (this.listTech[a].techId == this.middleA[b].techId) {
@@ -615,25 +631,25 @@ export default {
           }
         })
         .catch(res => {});
-      if (this.dialogStatus == "edit") {
-        this.middleC = Object.assign([], this.middleB);
-        for (var b = 0; b < this.middleB.length; b++) {
-          for (var a = 0; a < this.listTech.length; a++) {
-            if (this.listTech[a].techId == this.middleB[b].techId) {
-              this.listTech[a].techChecked = true;
-            }
-          }
-        }
-      }
-      if (this.dialogStatus == "add") {
-        for (var d = 0; d < this.middleA.length; d++) {
-          for (var e = 0; e < this.listTech.length; e++) {
-            if (this.listTech[e].techId == this.middleA[d].techId) {
-              this.listTech[e].techChecked = true;
-            }
-          }
-        }
-      }
+      // if (this.dialogStatus == "edit") {
+      //   this.middleC = Object.assign([], this.middleB);
+      //   for (var b = 0; b < this.middleB.length; b++) {
+      //     for (var a = 0; a < this.listTech.length; a++) {
+      //       if (this.listTech[a].techId == this.middleB[b].techId) {
+      //         this.listTech[a].techChecked = true;
+      //       }
+      //     }
+      //   }
+      // }
+      // if (this.dialogStatus == "add") {
+      //   for (var d = 0; d < this.middleA.length; d++) {
+      //     for (var e = 0; e < this.listTech.length; e++) {
+      //       if (this.listTech[e].techId == this.middleA[d].techId) {
+      //         this.listTech[e].techChecked = true;
+      //       }
+      //     }
+      //   }
+      // }
     },
     //选择技师弹出层查询按钮
     searchTeh() {
@@ -648,7 +664,7 @@ export default {
             this.listTech = res.data.data.techs;
             if (this.dialogStatus == "add") {
               for (var b = 0; b < this.middleA.length; b++) {
-                for (var a = 0; a < this.listTech.length; a++) {
+                for (var a = 0; a < this.listTech.length; a++) {                  
                   if (this.listTech[a].techId == this.middleA[b].techId) {
                     this.listTech[a].techChecked = true;
                   }
@@ -767,13 +783,13 @@ export default {
   overflow: hidden;
   width: 660px;
   margin-bottom: 20px;
-  height: 276px;
+  height: 300px;
   position:relative;
 }
 .table-d{
   width: 677px;
   overflow-y: scroll;
-  height: 300px;
+  height: 276px;
   margin-left: 15px;
 }
 .selfst1 {
