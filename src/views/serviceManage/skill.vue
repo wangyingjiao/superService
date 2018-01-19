@@ -529,6 +529,7 @@ export default {
             this.total = res.data.data.count;
             this.getListdata = res.data.data.list;
             this.pageNumber=res.data.data.pageNo;
+            this.jumpPage=res.data.data.pageNo;
             this.pageSize=res.data.data.pageSize;
             if (res.data.data.list != undefined) {
               for (var a = 0; a < this.getListdata.length; a++) {

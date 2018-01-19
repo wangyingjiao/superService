@@ -197,9 +197,9 @@
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
                         <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa" style="border-radius:20px;">
-                          <el-tooltip placement="top" :disabled="item.length <= 6" :content="item">
+                          <el-tooltip placement="top" :disabled="item.length <=5" :content="item">
                               <div>
-                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;width:104px;margin-right:0px">{{item}}</span>
+                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;margin-right:0px">{{item}}</span>
                                   <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
                               </div>
                           </el-tooltip>
@@ -2271,7 +2271,7 @@ export default {
    display:inline-block;margin-top:10px;idth:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
 }
 .selfTabContent{
-    float:left;width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
+    float:left;max-width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
 }
 .selfCloseSty{
     float:right;margin-top:5px;border:none;
