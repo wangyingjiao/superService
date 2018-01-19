@@ -90,7 +90,7 @@
           <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
         </el-form-item>
 
-        <el-form-item label="权限:" prop="check" >
+        <el-form-item label="权限:" class="treecss" prop="check" >
             <el-tree
             class="scrollBox form_item"
               :data="data2"
@@ -334,6 +334,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -358,6 +359,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -388,6 +390,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -412,6 +415,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -600,7 +604,6 @@ export default {
         //自动勾选列表权限结束
       } else {
         console.log("取消勾选");
-
         //订单的查看详情不可取消
         console.log(this.temp.check, "dddddddddddddd");
         if (a.permission == "order_info") {
@@ -1025,7 +1028,7 @@ export default {
 .btn_pad {
   margin: 0px 0px 20px 20px;
 }
-.el-tree-node
+.treecss .el-tree-node
   .el-tree-node__children
   .el-tree-node
   .el-tree-node__children
@@ -1033,7 +1036,7 @@ export default {
   .el-tree-node {
   float: left;
 }
-.el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+.treecss .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
 /* .el-tree-node:nth-child(1)

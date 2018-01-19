@@ -295,9 +295,9 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
-      btnState:false,
-      typeState:false,
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnState: false,
+      typeState: false,
       list: [],
       total: null,
       listLoading: true,
@@ -325,9 +325,9 @@ export default {
         telephone: "",
         masterName: "",
         masterPhone: "",
-        workStartTime:"",
-        workEndTime:"",
-        jointEshopCode:"",
+        workStartTime: "",
+        workEndTime: "",
+        jointEshopCode: "",
         remark: "",
         areaCodes: [],
         scopeType: "",
@@ -340,8 +340,8 @@ export default {
         { id: "masterPhone", value: "负责人手机号" }
       ],
       scopeType: [],
-      workTime:[],
-      workEndTime:[],
+      workTime: [],
+      workEndTime: [],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -353,7 +353,7 @@ export default {
       cityOptions: [],
       countyOptions: [],
       textarea: "",
-      orgId:"",// 判断是不是全平台用户
+      orgId: "", // 判断是不是全平台用户
       updateId: "",
       rules: {
         name: [
@@ -384,13 +384,22 @@ export default {
           { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
         ],
         address: [
-          {required: true,message: "请输入 6 到 100 位的详细地址",trigger: "blur"},
-          {min: 6, max: 100,message: "长度在 6 到 100 个字符",trigger: "blur"}
+          {
+            required: true,
+            message: "请输入 6 到 100 位的详细地址",
+            trigger: "blur"
+          },
+          {
+            min: 6,
+            max: 100,
+            message: "长度在 6 到 100 个字符",
+            trigger: "blur"
+          }
         ],
         scopeType: [
           { required: true, message: "服务范围类型不能为空", trigger: "change" }
         ],
-    
+
         cusTownId: [
           { required: true, message: "服务城市地址不能为空", trigger: "change" }
         ],
@@ -409,27 +418,26 @@ export default {
           { required: true, message: "工作结束时间不能为空", trigger: "change" }
         ],
         jointEshopCode: [
-          { required: true, message: "E店编码不能为空", trigger: "blur" },
-          { max: 50,message: "长度不超过50个字符",trigger: "blur"}
+          { max: 50, message: "长度不超过50个字符", trigger: "blur" }
         ],
         url: [
-          {validator: validateurl,trigger: "blur"},
-          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
+          { validator: validateurl, trigger: "blur" },
+          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
         ],
         fax: [
-          {validator: validatefax, trigger: "blur" },
-          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
+          { validator: validatefax, trigger: "blur" },
+          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
         ],
         tel400: [
-          { validator: validatetel400,trigger: "blur"},
-          {min: 0, max: 100,message: "长度不超过255个字符",trigger: "blur"}
+          { validator: validatetel400, trigger: "blur" },
+          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
         ]
       }
     };
   },
-  computed:{
-    areaOptions:function(){
-      return this.$store.state.user.area
+  computed: {
+    areaOptions: function() {
+      return this.$store.state.user.area;
     }
   },
   filters: {
@@ -447,8 +455,8 @@ export default {
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     this.workTime = dict.work_start_time;
-    this.orgId = localStorage.getItem('orgId')
-    console.log(this.orgId,'orgId')
+    this.orgId = localStorage.getItem("orgId");
+    console.log(this.orgId, "orgId");
   },
   methods: {
     //获取列表
@@ -466,30 +474,31 @@ export default {
         var obj = {
           masterPhone: value
         };
-      }else{
-        var obj = {}
+      } else {
+        var obj = {};
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
-        if(this.list != undefined){
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo;
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
-         setTimeout(() => {
-            this.listLoading = false;   
-          }, 500);
+        setTimeout(() => {
+          this.listLoading = false;
+        }, 500);
       });
     },
     //搜索
     handleFilter() {
       this.listQuery.page = 1;
-      this.pageNumber = 1
+      this.pageNumber = 1;
       var value = this.search.value;
       if (this.search.key == "name") {
         var obj = {
@@ -503,15 +512,15 @@ export default {
         var obj = {
           masterPhone: value
         };
-      }else{
-        if(this.search.value != ''){
-           this.$message({
+      } else {
+        if (this.search.value != "") {
+          this.$message({
             type: "warning",
             message: "搜索条件不足,不能搜索"
           });
-          return
-        }else{
-          var obj = {}
+          return;
+        } else {
+          var obj = {};
         }
       }
       this.listLoading = true;
@@ -519,25 +528,25 @@ export default {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
-        if(this.list != undefined){
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo;
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
         setTimeout(() => {
-            this.listLoading = false;   
-          }, 500);
+          this.listLoading = false;
+        }, 500);
       });
-      
+
       // this.getList();
     },
     //切换tiao数
     handleSizeChange(val) {
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       this.pageSize = val;
       var value = this.search.value;
       if (this.search.key == "name") {
@@ -553,22 +562,21 @@ export default {
           masterPhone: value
         };
       }
-      this.listLoading = true
+      this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
-        if(this.list != undefined){
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
-         setTimeout(() => {
-            this.listLoading = false;   
-          }, 500);
+        setTimeout(() => {
+          this.listLoading = false;
+        }, 500);
       });
     },
     //切换页数
@@ -592,49 +600,47 @@ export default {
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
-        if(this.list != undefined){
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
-         setTimeout(() => {
-            this.listLoading = false;   
-          }, 500);
+        setTimeout(() => {
+          this.listLoading = false;
+        }, 500);
       });
     },
     //开始时间change事件
-    startTimeChange(val){
-      this.temp.workEndTime = ""
-      this.workEndTime = []
-      console.log(val,'开始时间')
-      for(var i = 0;i<this.workTime.length;i++){
-        if(val == this.workTime[i]){
-          console.log(i,'下标')
-          console.log(this.workTime,'下标')
-          for(var j =i+1;j < this.workTime.length;j++){
-            this.workEndTime.push(this.workTime[j])
+    startTimeChange(val) {
+      this.temp.workEndTime = "";
+      this.workEndTime = [];
+      console.log(val, "开始时间");
+      for (var i = 0; i < this.workTime.length; i++) {
+        if (val == this.workTime[i]) {
+          console.log(i, "下标");
+          console.log(this.workTime, "下标");
+          for (var j = i + 1; j < this.workTime.length; j++) {
+            this.workEndTime.push(this.workTime[j]);
           }
           //this.workEndTime = this.workTime.subString(i,this.workTime.length)
-          console.log(this.workEndTime,'workEndTime')
+          console.log(this.workEndTime, "workEndTime");
         }
       }
     },
     //结束时间change事件
-    endTimeChange(val){
-       console.log(val,'结束时间')
+    endTimeChange(val) {
+      console.log(val, "结束时间");
     },
     //新增
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-      this.typeState = false
+      this.typeState = false;
     },
     //编辑
     handleUpdate(row) {
-
       //console.log(row);
       this.listLoading = true;
       const obj = {
@@ -642,14 +648,17 @@ export default {
       };
       setMech(obj)
         .then(res => {
-          console.log(res,'编辑');
+          console.log(res, "编辑");
 
           if (res.data.code == "1") {
             this.listLoading = false;
-            if(res.data.data.haveStation !== 0){
-              this.typeState = true
+            if (res.data.data.haveStation !== 0) {
+              this.typeState = true;
             }
-            this.temp = Object.assign({workStartTime:"",workEndTime:"",jointEshopCode:""}, res.data.data);
+            this.temp = Object.assign(
+              { workStartTime: "", workEndTime: "", jointEshopCode: "" },
+              res.data.data
+            );
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -658,23 +667,27 @@ export default {
               res.data.data.cityCode,
               res.data.data.areaCode
             ];
-            if(res.data.data.workStartTime != undefined && res.data.data.workEndTime != undefined){
+            if (
+              res.data.data.workStartTime != undefined &&
+              res.data.data.workEndTime != undefined
+            ) {
               setTimeout(() => {
-                
-                this.temp.workStartTime = res.data.data.workStartTime.substring(0,5)
+                this.temp.workStartTime = res.data.data.workStartTime.substring(
+                  0,
+                  5
+                );
               }, 30);
-              
-             setTimeout(() => {
-               var time = res.data.data.workEndTime.substring(0,5)
-               if(time == '23:59'){
-                 this.temp.workEndTime = '24:00'
-               }else{
-                 this.temp.workEndTime = time
-               }
-             }, 30);
-             
+
+              setTimeout(() => {
+                var time = res.data.data.workEndTime.substring(0, 5);
+                if (time == "23:59") {
+                  this.temp.workEndTime = "24:00";
+                } else {
+                  this.temp.workEndTime = time;
+                }
+              }, 30);
             }
-            console.log(this.temp)
+            console.log(this.temp);
             this.dialogFormVisible = true;
           } else {
             this.listLoading = false;
@@ -686,7 +699,6 @@ export default {
         })
         .catch(error => {
           this.listLoading = false;
-          
         });
       // console.log(this.temp.visable);
     },
@@ -697,8 +709,8 @@ export default {
       this.$refs[formName].resetFields();
     },
     //切换省市区
-    codeChange(val){
-       this.temp.areaCodes.splice(0,this.temp.areaCodes.length)
+    codeChange(val) {
+      this.temp.areaCodes.splice(0, this.temp.areaCodes.length);
     },
     //切换搜索内容
     searchChange(val) {
@@ -707,7 +719,6 @@ export default {
     },
     //新增保存
     create(formName) {
-
       var obj = {
         name: this.temp.name, //机构名
         telephone: this.temp.telephone, //机构电话
@@ -715,8 +726,8 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        workStartTime:this.temp.workStartTime +':00',//开始时间
-        workEndTime:this.temp.workEndTime +':00',//结束时间
+        workStartTime: this.temp.workStartTime + ":00", //开始时间
+        workEndTime: this.temp.workEndTime + ":00", //结束时间
         jointEshopCode: this.temp.jointEshopCode, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
@@ -727,44 +738,46 @@ export default {
         areaCode: this.temp.areaCodes[2] //区
       };
       //防止数据库24:00:00乱码
-      if(obj.workEndTime =='24:00:00'){
-        obj.workEndTime = '23:59:59'
+      if (obj.workEndTime == "24:00:00") {
+        obj.workEndTime = "23:59:59";
       }
       //防止数据库08:00:00乱码
-      if(obj.workStartTime == '08:00:00'){
-        obj.workStartTime = '08:00:01'
+      if (obj.workStartTime == "08:00:00") {
+        obj.workStartTime = "08:00:01";
       }
-      if(obj.workEndTime == '08:00:00'){
-        obj.workEndTime = '08:00:01'
+      if (obj.workEndTime == "08:00:00") {
+        obj.workEndTime = "08:00:01";
       }
-      
+
       console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addMech(obj).then(res => {
-            console.log(res);
-          this.btnState = false
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.$message({
-                type: "success",
-                message: "添加成功"
-              });
-              this.search.key = ""
-              this.search.value = ""
-              this.handleFilter();
-              this.dialogFormVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false
-          });
+          this.btnState = true;
+          addMech(obj)
+            .then(res => {
+              console.log(res);
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
+                this.search.key = "";
+                this.search.value = "";
+                this.handleFilter();
+                this.dialogFormVisible = false;
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -780,8 +793,8 @@ export default {
         masterPhone: this.temp.masterPhone, //负责人
         address: this.temp.address, //详细地址
         scopeType: this.temp.scopeType, //服务类型
-        workStartTime:this.temp.workStartTime +':00',//开始时间
-        workEndTime:this.temp.workEndTime +':00',//结束时间
+        workStartTime: this.temp.workStartTime + ":00", //开始时间
+        workEndTime: this.temp.workEndTime + ":00", //结束时间
         jointEshopCode: this.temp.jointEshopCode, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
@@ -792,41 +805,43 @@ export default {
         areaCode: this.temp.areaCodes[2] //区
       };
       //防止数据库24:00:00乱码
-      if(obj.workEndTime =='24:00:00'){
-        obj.workEndTime = '23:59:59'
+      if (obj.workEndTime == "24:00:00") {
+        obj.workEndTime = "23:59:59";
       }
       //防止数据库08:00:00乱码
-      if(obj.workStartTime == '08:00:00'){
-        obj.workStartTime = '08:00:01'
+      if (obj.workStartTime == "08:00:00") {
+        obj.workStartTime = "08:00:01";
       }
-      if(obj.workEndTime == '08:00:00'){
-        obj.workEndTime = '08:00:01'
+      if (obj.workEndTime == "08:00:00") {
+        obj.workEndTime = "08:00:01";
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          upMech(obj).then(res => {
-            this.btnState = false
-            console.log(res);
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.$message({
-                type: "success",
-                message: "修改成功"
-              });
-             
-              this.getList();
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(()=>{
-            this.btnState = false
-          });
+          this.btnState = true;
+          upMech(obj)
+            .then(res => {
+              this.btnState = false;
+              console.log(res);
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.$message({
+                  type: "success",
+                  message: "修改成功"
+                });
+
+                this.getList();
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(() => {
+              this.btnState = false;
+            });
         }
       });
     },
@@ -843,9 +858,9 @@ export default {
         masterPhone: "",
         remark: "",
         areaCodes: [],
-        workStartTime:"",
-        workEndTime:"",
-        jointEshopCode:"",
+        workStartTime: "",
+        workEndTime: "",
+        jointEshopCode: "",
         scopeType: ""
       };
     }
