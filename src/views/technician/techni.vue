@@ -2,7 +2,7 @@
   <div class="tech">
     <div class="tech-index">
       <div style="width:85%">
-        <el-select class="search" v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+        <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -238,7 +238,9 @@
         <div class="tech-psoition" v-if="position">
           <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
             <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
-              {{item.name}}
+              <el-tooltip placement="top" :disabled="item.name.length <= 5" :content="item.name">
+                 <span>{{item.name}}</span>
+              </el-tooltip>
               <div :class="{'triangle-bottomright':item.show===true}"></div>
               <!-- <div class="tally">&#10004;</div> -->
             </div>
@@ -505,7 +507,7 @@
                               </el-time-select>
                             </div>
                           </div>
-                          <div style="margin:0px 10px 10px;">
+                          <div style="margin:10px 10px 10px;">
                             <span class="button-large btn-styl" @click="techClick">确认</span>
                             <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
                           </div>
@@ -2278,9 +2280,17 @@ export default {
 
 .positionbox {
   margin: 20px;
+  /* overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; */
+  float: left;
+}
+.positionbox span{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  display:block;
+  padding: 0 4px;
 }
 
 .tech-positon-odvi {

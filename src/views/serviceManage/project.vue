@@ -30,6 +30,7 @@
     :data="listTable" 
     v-loading="listLoading" 
     fit 
+    stripe
     border
     highlight-current-row 
     element-loading-text="正在加载" 
@@ -52,6 +53,9 @@
       <el-table-column  label="项目名称" align="center" prop="name">
       </el-table-column>
 
+      <el-table-column  label="所属分类" align="center" prop="sortName">
+      </el-table-column>
+
       <el-table-column  label="商品名称" align="center">
         <template scope="scope">
           <div 
@@ -72,25 +76,26 @@
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
           >
-          <el-tooltip placement="top" :disabled="item.price.length+item.unit.length <= 15" :content="item.price+'元 /'+item.unit">
+          <el-tooltip placement="top" :disabled="(item.unit+item.price).length <= 10" :content="item.price+'元 / '+item.unit">
             <span class="proName">{{item.price+"元"}} / {{item.unit}}</span>
           </el-tooltip>
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center" prop="sortName">
-      </el-table-column>
-
-      <!-- <el-table-column label="城市" align="center" prop="cityName">
+      <el-table-column label="对接编码" align="center">
         <template scope="scope">
-          <span class="branchSpan" ref="branchee" v-for="(item,index) in scope.row.citys" :key="index">{{item.cityName}}&nbsp;</span>
-        </template>
-      </el-table-column> -->
+          <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
+            <el-tooltip placement="top" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+' — '+item.id">
+              <span class="proName">{{scope.row.sortId+" — "+item.id}}</span>
+            </el-tooltip>
+          </div>
+        </template>  
+      </el-table-column>
 
       <el-table-column  label="状态" align="center" >
         <template scope="scope">
-          <span v-show="scope.row.sale == 'no'">下架</span>
+          <span style="color:red" v-show="scope.row.sale == 'no'">下架</span>
           <span v-show="scope.row.sale == 'yes'">上架</span>
         </template>
       </el-table-column>
@@ -1620,6 +1625,10 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
+            //  this.$refs["goods_info"].resetFields()
+      // this.goods_info.minPurchase = "";
+      // this.goods_info.startPerNum = '';
+      // this.goods_info.cappingPerNum = ''
             // this.addComm = false
             this.handleEditFlag = false
           }else{
@@ -1677,14 +1686,15 @@ export default {
     handleEdit(index, val) {
       this.handleEditFlag = true
       this.handleEditIndex = index
-      console.log(index,"index------------")
-      console.log(val,"val--------------")
+      // console.log(index,"index------------")
+      // console.log(val,"val--------------")
       this.editName = Object.assign({},val)
       this.goods_info = Object.assign({},val)
       this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
       this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
       this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
       this.addComm = true;
+      console.log(this.goods_info,"this.goods_info----------")
     },
     //表格删除
     tableHandleDelete(index, item) {
@@ -2216,6 +2226,11 @@ export default {
     resetForm(ser) {
       // this.resetEmpty(ser)
       this.$refs["goods_info"].resetFields()
+      this.goods_info.name = ''
+      this.goods_info.unit = ''
+      this.goods_info.type = ''
+      this.goods_info.price = ''
+      this.goods_info.convertHours = ''
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
       this.goods_info.cappingPerNum = ''
@@ -2380,12 +2395,13 @@ export default {
 }
 .branch,
 .branchSpan {
+  padding: 0 10px;
   width: 100%;
   height: 45px;
   line-height: 45px;
-  white-space: nowrap;
+  /* white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; */
 }
 .branch{
   border-bottom: 1px solid #dfe6ec

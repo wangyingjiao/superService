@@ -2489,7 +2489,7 @@ export default {
   cursor: pointer;
 }
 
-.selfCheckBox:nth-of-type(1){
+.level .selfCheckBox:nth-of-type(1){
 	margin-left:0; 
 }
 
