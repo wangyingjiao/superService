@@ -747,6 +747,7 @@ export default {
         //订单处理结束
 
         //处理列表权限不可取消
+        
         if (
           a.permission.substring(
             a.permission.length - 4,
@@ -1000,22 +1001,22 @@ export default {
               this.btnState = false;
               console.log(res);
               if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: "添加成功"
-                });
+                this.$refs[formName].resetFields();
+                this.dialogFormStation = false;
                 if (res.data.data.organization.id == this.temp.officeId) {
                   console.log("相等");
                   this.stationCheck.push(res.data.data);
                   this.temp.role = res.data.data.id;
-                } else {
-                  console.log("不相等");
                 }
 
-                this.resetTemp2();
-                this.$refs[formName].resetFields();
-                this.$refs.domTree.setCheckedKeys([]);
-                this.dialogFormStation = false;
+                //this.resetTemp2();
+                
+                //this.$refs.domTree.setCheckedKeys([]);
+                
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
               } else {
                 if (typeof res.data.data == "string") {
                   this.$message({

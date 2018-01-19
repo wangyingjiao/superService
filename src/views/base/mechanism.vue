@@ -46,6 +46,14 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
+      <el-table-column  label="E店编码" align="center"  prop="">
+         <!-- <template scope="scope">
+           <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
+             <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
+           </el-tooltip>
+        </template> -->
+      </el-table-column>
+
       <el-table-column align="center" label="操作">
         <template scope="scope">
            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('office_update') > -1" @click="handleUpdate(scope.row)"></el-button>

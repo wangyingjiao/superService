@@ -450,6 +450,9 @@ body {
   }
 }
 //弹框样式
+.el-dialog{
+  top: 5% !important;
+}
 .el-dialog__header{
   height: 45px;
   line-height: 45px;
@@ -460,7 +463,7 @@ body {
 }
 //弹框底部固定
 .el-dialog__body{
-  max-height: 400px;
+  max-height: 550px;
   overflow: auto;
 }
 .el-dialog__footer{
