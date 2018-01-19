@@ -80,6 +80,7 @@
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible" 
       :show-close= "false"
+      :lock-scroll="true"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
       minwidth = "700px">
@@ -163,6 +164,7 @@
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
+       
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -196,7 +198,7 @@
            <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
         </el-form-item>
 
-        <el-form-item label="权限:" prop="check">
+        <el-form-item label="权限:" class="treecss" prop="check">
            <el-tree
               class="scrollBox"
               :data="data2"
@@ -519,6 +521,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -545,6 +548,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -1246,7 +1250,7 @@ export default {
 .dialog-footer {
   text-align: center;
 }
-.el-tree-node
+.treecss .el-tree-node
   .el-tree-node__children
   .el-tree-node
   .el-tree-node__children
@@ -1254,7 +1258,7 @@ export default {
   .el-tree-node {
   float: left;
 }
-.el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+.treecss .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
   float: left;
 }
 /* .el-tree-node:nth-child(1)

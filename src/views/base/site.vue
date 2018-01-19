@@ -316,7 +316,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
       severSelectdialogVisible: false, //地图
       inputvalue: [],
@@ -381,7 +381,11 @@ export default {
       master: [],
       rules: {
         name: [
-          { required: true, message: "请输入 2 到 15 位的服务站名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的服务站名称",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         type: [
@@ -400,8 +404,17 @@ export default {
           }
         ],
         address: [
-          { required: true, message: "请输入 6 到 100 位的详细地址", trigger: "blur" },
-          { min: 6, max: 100, message: "长度在 6 到 100 个字符", trigger: "blur" }
+          {
+            required: true,
+            message: "请输入 6 到 100 位的详细地址",
+            trigger: "blur"
+          },
+          {
+            min: 6,
+            max: 100,
+            message: "长度在 6 到 100 个字符",
+            trigger: "blur"
+          }
         ],
         phone: [{ required: true, validator: validatePhone, trigger: "blur" }]
       },
@@ -446,8 +459,9 @@ export default {
         console.log(res, "服务站列表");
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -456,7 +470,7 @@ export default {
         this.listLoading = false;
       });
     },
-      //搜索
+    //搜索
     handleFilter() {
       this.listLoading = true;
       this.pageNumber = 1;
@@ -468,8 +482,9 @@ export default {
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -478,10 +493,10 @@ export default {
         this.listLoading = false;
       });
     },
-      // 设置站长
+    // 设置站长
     handleSetMaster() {
-      console.log(this.tempMaster.master)
-      console.log(this.rowInfo.masterId)
+      console.log(this.tempMaster.master);
+      console.log(this.rowInfo.masterId);
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -489,22 +504,24 @@ export default {
         var obj = {
           id: this.rowInfo.id
         };
-        getMaster(obj).then(res => {
-          console.log(res, "服务站下的员工");
-          this.master = res.data.data;
-          if(this.rowInfo.masterId){
-            this.tempMaster.master = this.rowInfo.masterId;
-          }else{
-            this.tempMaster.master = ""
-          }
-          this.dialogMasterVisible = true;
-          this.listLoading = false;
-        }).catch(err=>{
-          this.listLoading = false
-        });
+        getMaster(obj)
+          .then(res => {
+            console.log(res, "服务站下的员工");
+            this.master = res.data.data;
+            if (this.rowInfo.masterId) {
+              this.tempMaster.master = this.rowInfo.masterId;
+            } else {
+              this.tempMaster.master = "";
+            }
+            this.dialogMasterVisible = true;
+            this.listLoading = false;
+          })
+          .catch(err => {
+            this.listLoading = false;
+          });
       }
     },
-      //设置范围
+    //设置范围
     handleSetRange() {
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
@@ -516,7 +533,7 @@ export default {
             this.listLoading = false;
             this.storeTree = res.data.data;
             this.dialogStoreVisible = true;
-            console.log(this.rowInfo.storeList,'选中的门店')
+            console.log(this.rowInfo.storeList, "选中的门店");
             this.$nextTick(() => {
               this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
             });
@@ -532,17 +549,17 @@ export default {
     handleSizeChange(val) {
       //每页展示数量
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       this.pageSize = val;
       var obj = {
         name: this.search.name,
         cityCode: this.search.cityCode
       };
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -560,10 +577,10 @@ export default {
       };
       this.listLoading = true;
       getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -677,30 +694,32 @@ export default {
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addSite(obj).then(res => {
-            this.btnState = false
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.$message({
-                type: "success",
-                message: "添加成功"
-              });
-              this.rowInfo.id = ""
-              this.search.name = "";
-              this.search.cityCode = "";
-              this.handleFilter();
-              this.dialogFormVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(()=>{
-            this.btnState = false
-          });
+          this.btnState = true;
+          addSite(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
+                this.rowInfo.id = "";
+                this.search.name = "";
+                this.search.cityCode = "";
+                this.handleFilter();
+                this.dialogFormVisible = false;
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(() => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -714,42 +733,44 @@ export default {
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
       this.btnState = true;
-      setStore(obj).then(res => {
-        setTimeout(() => {
-          this.btnState = false;
-        }, 1000);
-        if (res.data.code == 1) {
-          this.dialogStoreVisible = false;
-          this.rowInfo.storeList = []
-          this.$refs.domTree.setCheckedKeys([]);
-          this.rowInfo.id = ""
-          this.$message({
-            type: "success",
-            message: "保存成功!"
-          });
-          var obj = {
-            name: this.search.name,
-            cityCode: this.search.cityCode
-          };
-          getSite(obj, this.pageNumber, this.pageSize).then(res => {
-            this.list = res.data.data.list;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
+      setStore(obj)
+        .then(res => {
+          setTimeout(() => {
+            this.btnState = false;
+          }, 1000);
+          if (res.data.code == 1) {
+            this.dialogStoreVisible = false;
+            this.rowInfo.storeList = [];
+            this.$refs.domTree.setCheckedKeys([]);
+            this.rowInfo.id = "";
+            this.$message({
+              type: "success",
+              message: "保存成功!"
+            });
+            var obj = {
+              name: this.search.name,
+              cityCode: this.search.cityCode
+            };
+            getSite(obj, this.pageNumber, this.pageSize).then(res => {
+              this.list = res.data.data.list;
+              if (this.list != undefined) {
+                for (var i = 0; i < this.list.length; i++) {
+                  this.list[i].index = i + 1;
+                }
               }
-            }
-            this.total = res.data.data.count;
-            this.listLoading = false;
-          });
-        } else {
-          this.$message({
-            type: "error",
-            message: res.data.data
-          });
-        }
-      }).catch((err)=>{
-        this.btnState = false
-      });
+              this.total = res.data.data.count;
+              this.listLoading = false;
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: res.data.data
+            });
+          }
+        })
+        .catch(err => {
+          this.btnState = false;
+        });
       this.tempStore.tree = [];
     },
     createMaster(formName) {
@@ -760,29 +781,31 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          setMaster(obj).then(res => {
-            this.btnState = false
-            if (res.data.code == "1") {
-              this.$message({
-                type: "success",
-                message: "设置成功"
-              });
-              this.rowInfo.id = ""
-              this.tempMaster.master = ""
-              this.$refs[formName].resetFields();
-              this.getList();
-              this.dialogMasterVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-              this.dialogMasterVisible = false;
-            }
-          }).catch(()=>{
-            this.btnState = false
-          });
+          this.btnState = true;
+          setMaster(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code == "1") {
+                this.$message({
+                  type: "success",
+                  message: "设置成功"
+                });
+                this.rowInfo.id = "";
+                this.tempMaster.master = "";
+                this.$refs[formName].resetFields();
+                this.getList();
+                this.dialogMasterVisible = false;
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+                this.dialogMasterVisible = false;
+              }
+            })
+            .catch(() => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -804,29 +827,31 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          upSite(obj).then(res => {
-            this.btnState = false
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.rowInfo.id = "";
-              this.$message({
-                type: "success",
-                message: "修改成功"
-              });
-              this.getList();
-              this.dialogFormVisible = false;
-            } else {
-              this.rowInfo.id = "";
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false
-          });
+          this.btnState = true;
+          upSite(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.rowInfo.id = "";
+                this.$message({
+                  type: "success",
+                  message: "修改成功"
+                });
+                this.getList();
+                this.dialogFormVisible = false;
+              } else {
+                this.rowInfo.id = "";
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -846,7 +871,7 @@ export default {
     resetStore() {
       //取消门店
       this.tempStore.tree = [];
-      this.rowInfo.storeList = []
+      this.rowInfo.storeList = [];
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },
@@ -1023,33 +1048,35 @@ export default {
           id: this.rowInfo.id,
           servicePoint: this.tableData[0].path.join(" ")
         };
-        this.btnState = true
-        setScope(obj).then(res => {
-          this.btnState = false
-          if (res.data.code == "1") {
-            this.$message({
-              type: "success",
-              message: "设置成功"
-            });
-            this.rowInfo.id = ""
-            this.getList();
-            this.rowInfo.servicePoint = "";
-            this.tableData = [];
-            this.inputvalue = [];
-            this.$refs.pickerInput.value = "";
-            this.severSelectdialogVisible = false;
-          } else {
-            this.$message({
-              type: "error",
-              message: res.data.data
-            });
-            this.severSelectdialogVisible = false;
-            this.inputvalue = [];
-            this.$refs.pickerInput.value = "";
-          }
-        }).catch(err=>{
-          this.btnState = false
-        });
+        this.btnState = true;
+        setScope(obj)
+          .then(res => {
+            this.btnState = false;
+            if (res.data.code == "1") {
+              this.$message({
+                type: "success",
+                message: "设置成功"
+              });
+              this.rowInfo.id = "";
+              this.getList();
+              this.rowInfo.servicePoint = "";
+              this.tableData = [];
+              this.inputvalue = [];
+              this.$refs.pickerInput.value = "";
+              this.severSelectdialogVisible = false;
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+              this.severSelectdialogVisible = false;
+              this.inputvalue = [];
+              this.$refs.pickerInput.value = "";
+            }
+          })
+          .catch(err => {
+            this.btnState = false;
+          });
       }
     },
     closeMap() {
