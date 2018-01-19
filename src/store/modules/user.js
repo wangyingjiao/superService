@@ -103,7 +103,7 @@ const user = {
     Getbutton({ commit }) {
       return new Promise((resolve, reject) => {
         getButton().then(res => {
-          console.log(res.data.data, '测试kkkkk')
+          console.log(res, '按钮权限')
           commit('SET_BUTTONSHOW', res.data.data)
           localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)

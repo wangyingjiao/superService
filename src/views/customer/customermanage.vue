@@ -18,7 +18,6 @@
 				    <el-table
 					  :data="tableData"
 						v-loading="listLoading"
-						tooltip-effect='light'
 					  style="width:100%;"
 						>
 					  <el-table-column
@@ -63,12 +62,15 @@
 								</template>							
 					  </el-table-column>											 
 						<el-table-column
-						align="center"
-						prop="address"						
+						align="center"				
 						width="130"
-						label="地址"
-						:show-overflow-tooltip="true"
-						>						            
+						label="地址"						
+						>
+						<template scope="scope">
+							<el-tooltip placement="top" :disabled="scope.row.address.length < 9" :content="scope.row.address">
+							 <div class="selfToolTip">{{scope.row.address}}</div>
+							</el-tooltip>
+						</template>						            
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
@@ -439,6 +441,7 @@ export default {
 								this.pagetotal1 = res.data.data.page.count;
 								this.tableData = res.data.data.page.list;
 								this.pageNumber=res.data.data.page.pageNo;
+								this.jumpPage=res.data.data.page.pageNo;
 								this.pageSize1=res.data.data.page.pageSize;
 								if(res.data.data.page.list != undefined){
 											for(var a=0;a<this.tableData.length;a++){
@@ -508,6 +511,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.selfToolTip{
+   width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .tableWarp{
 	width:100%;background:#fff;padding:20px 20px 70px 20px;
 }

@@ -2611,7 +2611,9 @@ export default {
   line-height: 34px;
 }
 .closeThe{
-  margin: 30px 0;
+  margin: 20px 0;
+  height: 30px;
+  line-height: 30px;
 }
 .level {
   flex: 1;

@@ -63,7 +63,12 @@
       <el-table-column align="center" label="结束时间" prop="endTime">      
       </el-table-column>
       
-      <el-table-column align="center" :show-overflow-tooltip="true" width="200px" label="备注" prop="remark">      
+      <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
+        <template scope="scope">
+           <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
+             <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
+           </el-tooltip>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -174,7 +179,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo
+        this.listQuery.page = res.data.data.pageNo;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -235,7 +240,7 @@ export default {
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo;
           this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo
+          this.listQuery.page = res.data.data.pageNo;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;

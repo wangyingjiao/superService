@@ -2350,7 +2350,7 @@ export default {
 }
 
 .tech-qj .selfFooter{
-  padding: 30px 0;
+  padding: 20px 0;
 }
 
 .triangle-bottomrights {

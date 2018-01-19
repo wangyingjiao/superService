@@ -450,6 +450,9 @@ body {
   }
 }
 //弹框样式
+.el-dialog{
+  top: 5% !important;
+}
 .el-dialog__header{
   height: 45px;
   line-height: 45px;
@@ -460,7 +463,7 @@ body {
 }
 //弹框底部固定
 .el-dialog__body{
-  max-height: 400px;
+  max-height: 550px;
   overflow: auto;
 }
 .el-dialog__footer{
@@ -569,6 +572,10 @@ body {
 //改派表头显示
 .tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
+}
+//改派内部表格样式自定义
+.dispatchTaleSelf  .cell{
+	padding: 0;
 }
 .orderTab .el-tabs__item{
   &:nth-child(8){

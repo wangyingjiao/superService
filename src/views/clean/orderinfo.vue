@@ -440,7 +440,7 @@ import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData,addTechSave,disp
   } from '@/api/skill'
 export default {
   name: "",
-  data() { 
+  data() {
     return {
           btnShow: JSON.parse(localStorage.getItem('btn')),
           timeSaveFlag:false,
@@ -587,19 +587,25 @@ export default {
       this.dialogTableVisible = false
     },
     //日期变化时改变时间对象
-    dateChange(value){     
+    dateChange(value){  
       if(value != undefined){
         this.changTime=value 
         var obj={
           id:this.orderId,
           serviceTime:value+' 00:00:00'
         } 
-        ChangeTimeData(obj).then(res => {      
+        ChangeTimeData(obj).then(res => {
+                
           if (res.data.code === 1) {
+              console.log(res.data.data)
               if(res.data.data != undefined){
                   this.timeObj=res.data.data;
+              }else{
+                  console.log('aaaa')
+                  this.timeObj=[];
+                  console.log(this.timeObj)
               }                                       
-              if(this.timeObj != undefined){
+              if(this.timeObj.length != 0){
                 //样式复位
                 for(var a=0;a<this.timeObj.length;a++){
                     this.$set(this.timeObj[a],'selected',false)
@@ -834,7 +840,14 @@ export default {
     },
     //改变服务时间按钮
     changeTime(){
-      this.dialogVisible=true; 
+      this.dialogVisible=true;
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth()+1;
+            var d = date.getDate(); 
+            var str=y+'-'+m+'-'+d;
+            this.formInline.Date=str
+            this.dateChange(this.formInline.Date)
       this.$nextTick( () => {
           //样式复位
           for(var a=0;a<this.timeObj.length;a++){
