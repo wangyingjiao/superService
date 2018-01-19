@@ -31,7 +31,6 @@ export default {
 .dashboard-container {
   margin: 0 -15px;
   background:#f7f8f9;
-  width: 100%;
   height: 100vm;
     // padding: 0;
     // background: url('../../../static/icon/hello.png');
