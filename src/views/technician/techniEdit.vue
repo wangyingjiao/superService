@@ -62,7 +62,7 @@
                     </el-col>
                     <el-col :span="12">
                          <el-form-item label="民族:">
-                            <el-select v-model="personalEDit.nation" clearable placeholder="请选择" style="width:100%">
+                            <el-select v-model="personalEDit.nation" filterable clearable placeholder="请选择" style="width:100%">
                               <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
                               </el-option>
                             </el-select>
@@ -682,7 +682,9 @@
 
         <!--关闭按钮-->
           <div class="techniFooter">
-            <span class="button-large-fourth" @click="closeThe('perServer')">关闭</span>
+              <div slot="footer" class="dialog-footer" style="text-align:center">
+                <input type="button" class="button-large-fourth" @click="closeThe('perServer')" value="关 闭">
+              </div>
           </div>
       </div>
 </template>
@@ -929,7 +931,7 @@ export default {
         stationCityCode: [
           { required: true, message: "请选择城市", trigger: "change" }
         ],
-        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
         jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
@@ -2655,10 +2657,10 @@ export default {
 }
 .techniFooter{
   text-align: center;
+  padding:30px 0 ; 
 }
-.techniFooter span{
+.techniFooter .button-large-fourth{
   display: inline-block;
   width: 20%;
-  margin-bottom: 30px;
 }
 </style>

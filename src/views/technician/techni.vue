@@ -49,19 +49,19 @@
               </el-tooltip> -->
               <h4 class="header-h4">{{item.name}}</h4>
               <div>
-                  <img src="../../../static/icon/性别年龄.png" alt="" style="width:15px;height:15px;">              
+                  <img src="../../../static/icon/性别年龄.png" alt="" >              
                   <div class="sexAge">{{item.sexname+' '+item.age+"岁"}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/服务站.png" alt="" >              
                 <div class="sexAge">{{item.stationName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/工龄.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/工龄.png" alt="" >              
                 <div class="sexAge">{{item.workTimeName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/电话.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/电话.png" alt="" style="padding:0 2px">              
                 <div class="sexAge">{{item.phone}}</div>
               </div>
             </div>
@@ -488,8 +488,8 @@
                                   start: '00:00',
                                   step: '00:30',
                                   end: '24:00',
-                                  minTime:startEnd.startNew,
-                                  maxTime:startEnd.endNew
+                                  minTime:'23:10',
+                                  maxTime:'24:10' 
                                 }" class="tech-daytim">
                               </el-time-select>
                               <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -531,9 +531,11 @@
               </el-col>
           </el-row>
           <li id="confirmation">
-                <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
-                <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                <input class="button-cancel" value="取消" @click="handleClose('personal')"/> 
+              <div slot="footer" class="dialog-footer" style="text-align:center">
+                  <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
+                  <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
+                  <input class="button-cancel" value="取消" @click="handleClose('personal')"/> 
+              </div>
           </li>
         </ul>
 		 </ul>
@@ -799,7 +801,7 @@ export default {
         birtStr: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
         ],
-        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
         jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
@@ -2062,7 +2064,7 @@ export default {
   background-image:url('../../../static/icon/员工卡背景.png') no-repeat;
   background-size:100%; 
   position: relative;
-  margin: 0 2% 2% 0;
+  margin: 0 2% 30px 0;
   background-color: #F8FAFD;
   box-shadow: 0 3px 6px 0 #DFE4ED;
   border-radius: 8px;
@@ -2137,6 +2139,10 @@ export default {
   display: flex;
   align-items: center;
   font-size: 12px;
+  /* justify-content: center */
+}
+#confirmation .dialog-footer{
+  justify-content: center;
 }
 
 .tech-ul li div > p {
