@@ -573,6 +573,10 @@ body {
 .tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
 }
+//改派内部表格样式自定义
+.dispatchTaleSelf  .cell{
+	padding: 0;
+}
 .orderTab .el-tabs__item{
   &:nth-child(8){
         &:before {

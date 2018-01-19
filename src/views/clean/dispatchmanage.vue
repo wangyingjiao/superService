@@ -13,15 +13,21 @@
 	<!-- 搜索结束 -->
 		<div class="second-bar" style="height:500px;">
 			<div class="tableWarpaa" style="width:100%;background:#fff;padding:20px 20px;">
-					<el-table :data="tableData" border style="width:100%" >
-					  <el-table-column  align="center" label="订单编号">
+					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
+					  <el-table-column  align="center" width="170px"  label="订单编号">
 							<template scope="scope" >
 								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
 						</el-table-column>
-					  <el-table-column align="center" prop="serviceTime" label="服务时间"></el-table-column>
+					  <el-table-column align="center"  width="160px" label="服务时间">
+							<template scope="scope" >
+								<div  class="dispatchNumberStyle1">
+										{{scope.row.serviceTime}}
+								</div>
+							</template>							
+						</el-table-column>
 					  <el-table-column style="padding:0" align="center" label="头像">
 								<template scope="scope">
 										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
@@ -307,6 +313,7 @@ export default {
 				   this.pagetotal1=res.data.data.count;	
 					 this.tableData = res.data.data.list;
 					 this.pageNumber=res.data.data.pageNo;
+					 this.jumpPage=res.data.data.pageNo;
 					 this.pageSize1=res.data.data.pageSize;															 		
 					 this.listLoading = false;
 			 }else{
@@ -319,11 +326,17 @@ export default {
 	//全局搜索按钮
 	localSearch(){
 		if(this.technicianName =='1'){
-        this.techName1=this.techName;
+				this.techName1=this.techName;
+				this.techPhone1='';
+				this.orderNumber1='';
 		}else if(this.technicianName =='2'){
 				this.techPhone1=this.techName;
+				this.orderNumber1='';
+        this.techName1='';
 		}else if(this.technicianName =='3'){
 				this.orderNumber1=this.techName;
+				this.techName1='';
+				this.techPhone1='';
 		}else{
 				this.techName1='';
 				this.techPhone1='';
@@ -366,7 +379,13 @@ export default {
 </script>
 <style scoped>
 .dispatchNumberStyle{
-   cursor:pointer;
+	 cursor:pointer;
+	 padding-left:18px;
+	 padding-right:18px;
+}
+.dispatchNumberStyle1{
+	 padding-left:18px;
+	 padding-right:18px;
 }
 .dispatchNumberStyle:hover{
 	color:#1d85fe;
@@ -446,8 +465,6 @@ export default {
 	text-align:center;
 	height:60px;
 	line-height:60px;
-	width:150%;
-	margin-left:-17px;
 	border-bottom:1px solid #dfe6ec
 }
 .selfTd:last-child{
@@ -472,11 +489,6 @@ export default {
   margin-right:0px;
   
 }
-
-.el-table .cell{
-	padding: 0;
-}
-
 .tableWarpaa .el-pagination{
 	text-align: right;
 }

@@ -76,11 +76,16 @@
 					</el-table-column>
 					<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
 					</el-table-column> -->
-					<el-table-column  align="center" width="150"  label="服务机构" prop="orgName">
+					<el-table-column  align="center" width="150"   label="服务机构" prop="orgName">
 					</el-table-column>
 					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
 					</el-table-column>							
-					<el-table-column  align="center"  width="150" label="服务内容"  prop="orderContent">
+					<el-table-column  align="center"  width="150" label="服务内容">
+						<template scope="scope">
+							<el-tooltip placement="top" :disabled="scope.row.orderContent.length < 8" :content="scope.row.orderContent">
+								<div class="selfToolTip">{{scope.row.orderContent}}</div>
+							</el-tooltip>
+						</template>	
 					</el-table-column>
 					<el-table-column   align="center" width="150" label="付款价格"    prop="payPrice">
 					</el-table-column>
@@ -209,6 +214,7 @@ export default {
 				this.total=res.data.data.page.count;
 				this.tabDataList = res.data.data.page.list;
 				this.pageNumber=res.data.data.page.pageNo;
+				this.jumpPage=res.data.data.page.pageNo;
 				this.size=res.data.data.page.pageSize;
 				for(var a=0;a<res.data.data.orgList.length;a++){
 					if(res.data.data.orgList[a].id == 0){
@@ -404,6 +410,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.selfToolTip{
+   width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .addorder-container{
   width:100%;
 	float:left;
