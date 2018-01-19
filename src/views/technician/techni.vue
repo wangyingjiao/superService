@@ -531,10 +531,12 @@
               </el-col>
           </el-row>
           <li id="confirmation">
-              <div slot="footer" class="dialog-footer" style="text-align:center">
-                  <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
+              <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+                  <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+                  <button class="button-cancel" @click="handleClose('personal')">取消</button>
+                  <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
                   <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                  <input class="button-cancel" value="取消" @click="handleClose('personal')"/> 
+                  <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
               </div>
           </li>
         </ul>

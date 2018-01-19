@@ -682,8 +682,8 @@
 
         <!--关闭按钮-->
           <div class="techniFooter">
-              <div slot="footer" class="dialog-footer" style="text-align:center">
-                <input type="button" class="button-large-fourth" @click="closeThe('perServer')" value="关 闭">
+              <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+                <button class="button-large-fourth" @click="closeThe('perServer')">关 闭</button>
               </div>
           </div>
       </div>
