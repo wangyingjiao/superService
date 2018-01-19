@@ -334,6 +334,7 @@
                   <el-input v-model="goods_info.convertHours" style="width:70%">
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
+                  <i class="question"></i>
                 </el-form-item>
              
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
@@ -2479,6 +2480,12 @@ export default {
   background-position: 33.33333% 33.33333%;
   width: 50px;
   height: 50px;
+}
+.question{
+  width: 30px;
+  height: 30px;
+  background: url("../../../static/icon/问号.png") no-repeat;
+  background-size:100%; 
 }
 .upload-back::before {
   content: "点击上传";

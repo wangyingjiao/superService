@@ -259,12 +259,15 @@
     </div>
     <!-- 编辑技师 -->
 	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
-		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
+		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" ref="techniEditDlog"
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
                   :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
                   :listquer="listQuery" :servery="servery" :startend="startEnd"
                   ></techni-edit>
+     <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+          <button class="button-large-fourth closeThe" @click="abc">关 闭</button>
+      </div>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
@@ -530,18 +533,16 @@
                 </el-form-item>
               </el-col>
           </el-row>
-          <li id="confirmation">
-              <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-                  <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
-                  <button class="button-cancel" @click="handleClose('personal')">取消</button>
-                  <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
-                  <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                  <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
-              </div>
-          </li>
         </ul>
 		 </ul>
 		</el-form>
+      </div>
+      <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+          <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+          <button class="button-cancel" @click="handleClose('personal')">取消</button>
+          <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
+          <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
+          <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
       </div>
     </el-dialog>
   </div>
@@ -1206,6 +1207,9 @@ export default {
     }
   },
   methods: {
+    abc(){
+      this.$refs['techniEditDlog'].closeThe()
+    },
     //鼠标滑过
     dataDetails1(a) {
       this.hoverState1 = false;
@@ -2331,6 +2335,14 @@ export default {
   margin-left: 35px;
 }
 
+.techniAdd .tech-ul{
+  border-bottom: none;
+}
+
+.tech-qj .selfFooter{
+  padding: 30px 0;
+}
+
 .triangle-bottomrights {
   width: 0;
   height: 0;
@@ -2666,7 +2678,7 @@ export default {
 .button-large-fourth,
 .button-cancel-fourth {
   margin-right: 40px;
-  display: block;
+  /* display: block; */
   line-height: 34px;
 }
 .button-cancel-fourth {

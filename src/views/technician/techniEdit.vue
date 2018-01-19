@@ -120,7 +120,16 @@
                 </el-row>
                 <el-row>
                   <el-col :span="24">
-                      <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span>
+                      <!-- <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span> -->
+                      <!-- <span class="button-large-fourth perServer" @click="perSubmitForm('personalEDit')">保存信息</span> -->
+                       <li>
+                          <div>
+                            <p></p>
+                            <p>
+                                  <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
+                            </p>
+                          </div>
+                        </li>
                   </el-col>
                 </el-row>
                 <!-- 新的完成 -->
@@ -681,11 +690,11 @@
         <!--其他信息完成 -->
 
         <!--关闭按钮-->
-          <div class="techniFooter">
-              <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-                <button class="button-large-fourth" @click="closeThe('perServer')">关 闭</button>
-              </div>
-          </div>
+          <!-- <div class="techniFooter"> -->
+              <!-- <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+                <button class="button-large-fourth closeThe" @click="closeThe('perServer')">关 闭</button>
+              </div> -->
+          <!-- </div> -->
       </div>
 </template>
 <script>
@@ -2595,9 +2604,14 @@ export default {
   margin-top: 30px;
 }
 .button-large-fourth {
-  display: block;
+  /* display: block; */
+  display:inline-block;
+  widows: 20%;
   text-align: center;
   line-height: 34px;
+}
+.closeThe{
+  margin: 30px 0;
 }
 .level {
   flex: 1;
