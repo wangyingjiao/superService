@@ -518,7 +518,7 @@ export default {
         });
     },
     //更换时间的保存
-    submitTime(formName){      
+    submitTime(formName){ 
       this.$refs[formName].validate((valid) => {
           if (valid) {
             this.timeSaveFlag=true; 
@@ -547,6 +547,7 @@ export default {
                         type: "success",
                         message: "更换时间成功!"
                       });
+                      this.$refs['formInline'].resetFields();
                       this.tableData1=res.data.data.list;
                       this.otherInfo.serviceHour=res.data.data.serviceHour;
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb
@@ -594,14 +595,12 @@ export default {
           id:this.orderId,
           serviceTime:value+' 00:00:00'
         } 
-        ChangeTimeData(obj).then(res => {
-                
+        ChangeTimeData(obj).then(res => {                
           if (res.data.code === 1) {
               console.log(res.data.data)
               if(res.data.data != undefined){
                   this.timeObj=res.data.data;
               }else{
-                  console.log('aaaa')
                   this.timeObj=[];
                   console.log(this.timeObj)
               }                                       
@@ -617,11 +616,11 @@ export default {
               }
              
           }else{
-            this.timeObj=[];
             this.$message({
               type: "error",
               message: res.data.data
-            });             
+            });
+            this.timeObj=[];             
           }          
         }).catch(res=>{
           
@@ -769,7 +768,6 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1=res.data.data.list;
-              console.log(res.data.data.serviceHour)
               this.otherInfo.serviceHour=res.data.data.serviceHour
               this.middleA=[];
               this.listTech=[];                         
@@ -840,14 +838,14 @@ export default {
     },
     //改变服务时间按钮
     changeTime(){
-      this.dialogVisible=true;
+            this.dialogVisible=true;
             var date = new Date();
             var y = date.getFullYear();
             var m = date.getMonth()+1;
             var d = date.getDate(); 
             var str=y+'-'+m+'-'+d;
-            this.formInline.Date=str
-            this.dateChange(this.formInline.Date)
+            this.formInline.Date=date;
+            this.dateChange(str)
       this.$nextTick( () => {
           //样式复位
           for(var a=0;a<this.timeObj.length;a++){
