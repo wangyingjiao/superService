@@ -458,9 +458,15 @@ body {
   padding: 0 0 0 20px;
   font-size: 16px;
 }
+//弹框底部固定
+.el-dialog__body{
+  max-height: 400px;
+  overflow: auto;
+}
 .el-dialog__footer{
-  margin-top: -22px;
-  padding: 0px 0px 30px 0px;
+  border-top: #eee 1px solid;
+  margin-top: 20px;
+  padding: 20px 0px 20px 0px;
 }
 // 搜索框样式
 .search{

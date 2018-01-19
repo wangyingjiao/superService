@@ -9,7 +9,7 @@
   </transition>
 </div> -->
     <div class='hollebg'>
-      <img src="../../../static/icon/hello.png" alt="">
+      <!-- //<img src="../../../static/icon/hello1.png" alt=""> -->
     </div>  
   </div>
 </template>
@@ -31,14 +31,23 @@ export default {
   margin: 0 -15px;
   background:#f7f8f9;
   height: 100%;
-  .hollebg {
-    width: 100%;
-    height: 100%;
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
+ 
+  
+    margin: 0;
+    padding: 0;
+    background: url('../../../static/icon/hello.png');
+    repeat: no-repeat;
+    background-attachment:fixed;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
+    background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    // img {
+    //   width: 100%;
+    //   height: 100%;
+    // }
+  
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s

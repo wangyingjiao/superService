@@ -174,6 +174,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -234,6 +235,7 @@ export default {
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo;
           this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;

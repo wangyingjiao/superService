@@ -192,6 +192,7 @@ export default {
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo
           this.pageSize = res.data.data.pageSize
+          this.listQuery.page = res.data.data.pageNo
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
@@ -223,6 +224,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo
         this.pageSize = res.data.data.pageSize
+        this.listQuery.page = res.data.data.pageNo
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -234,6 +236,7 @@ export default {
           }, 1000);
       });
     },
+//页数变化
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber =1
@@ -245,20 +248,20 @@ export default {
       };
       this.listLoading = true
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
         this.pageSize = res.data.data.pageSize
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
+        //this.total = res.data.data.count;
         setTimeout(() => {
             this.listLoading = false;   
           }, 1000);
       });
     },
+    //页码变化
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
@@ -270,8 +273,9 @@ export default {
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
+        // this.pageNumber = res.data.data.pageNo
+        // this.pageSize = res.data.data.pageSize
+        
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;

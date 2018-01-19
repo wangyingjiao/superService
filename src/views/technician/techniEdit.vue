@@ -62,7 +62,7 @@
                     </el-col>
                     <el-col :span="12">
                          <el-form-item label="民族:">
-                            <el-select v-model="personalEDit.nation" clearable placeholder="请选择" style="width:100%">
+                            <el-select v-model="personalEDit.nation" filterable clearable placeholder="请选择" style="width:100%">
                               <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
                               </el-option>
                             </el-select>
@@ -120,7 +120,16 @@
                 </el-row>
                 <el-row>
                   <el-col :span="24">
-                      <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span>
+                      <!-- <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span> -->
+                      <!-- <span class="button-large-fourth perServer" @click="perSubmitForm('personalEDit')">保存信息</span> -->
+                       <li>
+                          <div>
+                            <p></p>
+                            <p>
+                                  <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
+                            </p>
+                          </div>
+                        </li>
                   </el-col>
                 </el-row>
                 <!-- 新的完成 -->
@@ -681,9 +690,11 @@
         <!--其他信息完成 -->
 
         <!--关闭按钮-->
-          <div class="techniFooter">
-            <span class="button-large-fourth" @click="closeThe('perServer')">关闭</span>
-          </div>
+          <!-- <div class="techniFooter"> -->
+              <!-- <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+                <button class="button-large-fourth closeThe" @click="closeThe('perServer')">关 闭</button>
+              </div> -->
+          <!-- </div> -->
       </div>
 </template>
 <script>
@@ -929,7 +940,7 @@ export default {
         stationCityCode: [
           { required: true, message: "请选择城市", trigger: "change" }
         ],
-        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
         jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
@@ -2593,9 +2604,14 @@ export default {
   margin-top: 30px;
 }
 .button-large-fourth {
-  display: block;
+  /* display: block; */
+  display:inline-block;
+  widows: 20%;
   text-align: center;
   line-height: 34px;
+}
+.closeThe{
+  margin: 30px 0;
 }
 .level {
   flex: 1;
@@ -2655,10 +2671,10 @@ export default {
 }
 .techniFooter{
   text-align: center;
+  padding:30px 0 ; 
 }
-.techniFooter span{
+.techniFooter .button-large-fourth{
   display: inline-block;
   width: 20%;
-  margin-bottom: 30px;
 }
 </style>

@@ -58,17 +58,24 @@
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-              {{item.name}}
+            <el-tooltip placement="top" :disabled="item.name.length <= 10" :content="item.name">
+                <span class="proName">{{item.name}}</span>
+            </el-tooltip>
           </div>
         </template>
       </el-table-column>
+
       <el-table-column label="价格/单位" align="center">
         <template scope="scope">
           <div
           class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
-          >{{item.price+"元"}} / {{item.unit}}</div>
+          >
+          <el-tooltip placement="top" :disabled="item.price.length+item.unit.length <= 15" :content="item.price+'元 /'+item.unit">
+            <span class="proName">{{item.price+"元"}} / {{item.unit}}</span>
+          </el-tooltip>
+          </div>
         </template>
       </el-table-column>
 
@@ -327,6 +334,7 @@
                   <el-input v-model="goods_info.convertHours" style="width:70%">
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
+                  <i class="question"></i>
                 </el-form-item>
              
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
@@ -465,7 +473,7 @@
                             :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item))!=-1}" 
                             class="cursor" :value="item.label"> -->
                     <!-- <el-tooltip placement="top" :disabled="item.label.length<11" :content="item.label"> -->
-                      <div  v-for="item in systemOptions4"  style="margin-left:5px;">
+                      <div  v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
                           <el-tooltip placement="top" :disabled="item.label.length<4" :content="item.label">
                             <input type="button"
                                     class="cursor" 
@@ -1744,8 +1752,8 @@ export default {
       this.personsTime = false;
     },
     serGetList(){
-      this.getList();
       this.pageNumber = 1;
+      this.getList(this.pageNumber);
       this.listQuery.page = 1;
     },
     getList(page, size,getObj) {
@@ -2473,6 +2481,12 @@ export default {
   width: 50px;
   height: 50px;
 }
+.question{
+  width: 30px;
+  height: 30px;
+  background: url("../../../static/icon/问号.png") no-repeat;
+  background-size:100%; 
+}
 .upload-back::before {
   content: "点击上传";
   font-size: 12px;
@@ -2538,6 +2552,13 @@ export default {
   font-size: 12px;
   cursor: pointer;
 }
+.proName{
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
 .cityClass {
   display: flex;
   flex-wrap: wrap;
@@ -2549,7 +2570,7 @@ export default {
 }
 .main-container .techTime-green {
   background-size: 15px 15px;
-  border: solid 1px green;
+  border: solid 1px #4c70e8;
   background: url("../../../static/icon/Selected.png") no-repeat;
   background-size: 20px 20px;
   background-position: bottom right;
@@ -2764,7 +2785,7 @@ hr {
   margin-right: 10px;
 }
 .labelList span i{
-  font-size: 1px;
+  font-size: 12px;
   margin-left: 5px;
 }
 .systemLabel ul{
@@ -2838,7 +2859,8 @@ hr {
 }
 .cursor{
     cursor: pointer;
-    word-wrap:break-word
+    word-wrap:break-word;
+    color: #48576a
 }
 .projectLabel{
   width: 90%;

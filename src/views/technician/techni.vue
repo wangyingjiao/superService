@@ -49,19 +49,19 @@
               </el-tooltip> -->
               <h4 class="header-h4">{{item.name}}</h4>
               <div>
-                  <img src="../../../static/icon/性别年龄.png" alt="" style="width:15px;height:15px;">              
+                  <img src="../../../static/icon/性别年龄.png" alt="" >              
                   <div class="sexAge">{{item.sexname+' '+item.age+"岁"}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/服务站.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/服务站.png" alt="" >              
                 <div class="sexAge">{{item.stationName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/工龄.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/工龄.png" alt="" >              
                 <div class="sexAge">{{item.workTimeName}}</div>
               </div>
               <div>
-                <img src="../../../static/icon/电话.png" alt="" style="width:15px;height:15px;">              
+                <img src="../../../static/icon/电话.png" alt="" style="padding:0 2px">              
                 <div class="sexAge">{{item.phone}}</div>
               </div>
             </div>
@@ -259,12 +259,15 @@
     </div>
     <!-- 编辑技师 -->
 	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
-		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" 
+		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" ref="techniEditDlog"
                   :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                   :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
                   :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
                   :listquer="listQuery" :servery="servery" :startend="startEnd"
                   ></techni-edit>
+     <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+          <button class="button-large-fourth closeThe" @click="abc">关 闭</button>
+      </div>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
     <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
@@ -488,8 +491,8 @@
                                   start: '00:00',
                                   step: '00:30',
                                   end: '24:00',
-                                  minTime:startEnd.startNew,
-                                  maxTime:startEnd.endNew
+                                  minTime:'23:10',
+                                  maxTime:'24:10' 
                                 }" class="tech-daytim">
                               </el-time-select>
                               <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -530,14 +533,16 @@
                 </el-form-item>
               </el-col>
           </el-row>
-          <li id="confirmation">
-                <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息">
-                <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-                <input class="button-cancel" value="取消" @click="handleClose('personal')"/> 
-          </li>
         </ul>
 		 </ul>
 		</el-form>
+      </div>
+      <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+          <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+          <button class="button-cancel" @click="handleClose('personal')">取消</button>
+          <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
+          <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
+          <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
       </div>
     </el-dialog>
   </div>
@@ -799,7 +804,7 @@ export default {
         birtStr: [
           { type: "date", required: true, message: "请选择日期", trigger: "blur" }
         ],
-        jobNature: [{ required: true, message: "请选择岗位", trigger: "change" }],
+        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
         stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
         jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
         workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
@@ -1202,6 +1207,9 @@ export default {
     }
   },
   methods: {
+    abc(){
+      this.$refs['techniEditDlog'].closeThe()
+    },
     //鼠标滑过
     dataDetails1(a) {
       this.hoverState1 = false;
@@ -2062,7 +2070,7 @@ export default {
   background-image:url('../../../static/icon/员工卡背景.png') no-repeat;
   background-size:100%; 
   position: relative;
-  margin: 0 2% 2% 0;
+  margin: 0 2% 30px 0;
   background-color: #F8FAFD;
   box-shadow: 0 3px 6px 0 #DFE4ED;
   border-radius: 8px;
@@ -2137,6 +2145,10 @@ export default {
   display: flex;
   align-items: center;
   font-size: 12px;
+  /* justify-content: center */
+}
+#confirmation .dialog-footer{
+  justify-content: center;
 }
 
 .tech-ul li div > p {
@@ -2321,6 +2333,14 @@ export default {
   position: absolute;
   margin-top: 10px;
   margin-left: 35px;
+}
+
+.techniAdd .tech-ul{
+  border-bottom: none;
+}
+
+.tech-qj .selfFooter{
+  padding: 30px 0;
 }
 
 .triangle-bottomrights {
@@ -2658,7 +2678,7 @@ export default {
 .button-large-fourth,
 .button-cancel-fourth {
   margin-right: 40px;
-  display: block;
+  /* display: block; */
   line-height: 34px;
 }
 .button-cancel-fourth {
