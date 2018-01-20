@@ -262,7 +262,7 @@ export default {
         name: [
           {
             required: true,
-            validator: validateName,
+            message: "岗位名称不能为空",
             trigger: "blur"
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
@@ -335,16 +335,15 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-           setTimeout(() => {
-             
-             this.listLoading = false;
-           }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -362,16 +361,15 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
@@ -395,14 +393,13 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           } else {
@@ -423,14 +420,13 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           }
@@ -441,7 +437,7 @@ export default {
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.listLoading = true
+      this.listLoading = true;
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
@@ -460,10 +456,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -487,7 +482,6 @@ export default {
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           }
@@ -496,7 +490,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.listLoading = true
+      this.listLoading = true;
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
@@ -515,10 +509,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-              setTimeout(() => {
-                
-                this.listLoading = false;
-              }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -541,9 +534,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
@@ -747,8 +740,8 @@ export default {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
-          if(localStorage.getItem('orgId') == res.data.data.organization.id){
-            this.myselfUpdate = false
+          if (localStorage.getItem("orgId") == res.data.data.organization.id) {
+            this.myselfUpdate = false;
           }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
@@ -854,10 +847,6 @@ export default {
     },
     //新增
     create(formName) {
-      this.search = {
-        name: "",
-        officeId: ""
-      };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
@@ -894,14 +883,25 @@ export default {
                 this.dialogFormVisible = false;
                 this.listQuery.page = 1;
                 this.pageNumber = 1;
+                this.search = {
+                  name: "",
+                  officeId: ""
+                };
                 this.handleFilter();
               } else {
                 //this.$refs.domTree.setCheckedKeys([]);
                 // this.resetTemp();
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
+                if (typeof res.data.data == "string") {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data
+                  });
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data[0]
+                  });
+                }
               }
             })
             .catch(err => {
@@ -976,7 +976,7 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
-      this.myselfUpdate = true
+      this.myselfUpdate = true;
     },
     //清空data
     resetTemp() {
@@ -1049,7 +1049,8 @@ export default {
 .btn_pad {
   margin: 0px 0px 20px 20px;
 }
-.treecss .el-tree-node
+.treecss
+  .el-tree-node
   .el-tree-node__children
   .el-tree-node
   .el-tree-node__children
@@ -1057,7 +1058,11 @@ export default {
   .el-tree-node {
   float: left;
 }
-.treecss .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+.treecss
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
   float: left;
 }
 /* .el-tree-node:nth-child(1)

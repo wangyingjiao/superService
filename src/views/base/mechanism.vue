@@ -829,7 +829,7 @@ export default {
           upMech(obj)
             .then(res => {
               this.btnState = false;
-              console.log(res);
+              //console.log(res,'编辑信息');
               if (res.data.code === 1) {
                 this.dialogFormVisible = false;
                 this.resetTemp();
