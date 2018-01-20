@@ -411,6 +411,7 @@
                         :type="select"
                         :picker-options="pickerOptions0"
                         class="selfDateStyle"
+                        popper-class="selfTestStyle1"
                         @change='dateChange'                      
                         >
                       </el-date-picker>
@@ -914,8 +915,7 @@ export default {
   margin-top: 20px;
   overflow: hidden;
   width: 660px;
-  margin-bottom: 20px;
-  height: 300px;
+  height: 280px;
   position:relative;
   }
 .table-d{
