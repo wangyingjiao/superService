@@ -86,8 +86,8 @@
       <el-table-column label="对接编码" align="center">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="top" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+' — '+item.id">
-              <span class="proName">{{scope.row.sortId+" — "+item.id}}</span>
+            <el-tooltip placement="top-end" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'—'+item.id">
+              <span class="proName">{{scope.row.sortId+"—"+item.id}}</span>
             </el-tooltip>
           </div>
         </template>  
@@ -337,9 +337,17 @@
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
                   <el-input v-model="goods_info.convertHours" style="width:70%">
-                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>
+                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
-                  <i class="question"></i>
+                  <el-popover
+                      ref="popover1"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                      content="请录入1单位所需服务时长（以小时为单位）
+例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
+                    </el-popover>
+                   <span  v-popover:popover1  class="question"></span>
                 </el-form-item>
              
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
@@ -355,26 +363,6 @@
                     style="width:70%"
                     v-model="goods_info.cappingPerNum"></el-input>
                 </el-form-item>
-
-
-                <!-- <el-form-item label="派人数量:" class="send" prop="persons">
-                   <table class="table-pro" style="width:70%">
-                     <tr>
-                       <th @click="addTable">+</th>
-                       <th>临界值</th>
-                       <th>人数</th>
-                     </tr>
-                     <tr v-for="(item,index) in goods_info.persons" :key="index">
-                        <td @click="tableDelete(index)">-</td>
-                        <td>
-                          <input class="table-input" type="text" v-model="item.critical">
-                        </td>
-                        <td>
-                          <input class="table-input" type="text" v-model="item.quantity">
-                        </td>
-                     </tr>
-                   </table>
-                </el-form-item> -->
 
                 <el-form-item label="起购数量:" class="seize" prop="minPurchase">
                   <el-input
@@ -2498,10 +2486,14 @@ export default {
   height: 50px;
 }
 .question{
+  border-radius: 50%;
   width: 30px;
   height: 30px;
+  display: inline-block;
   background: url("../../../static/icon/问号.png") no-repeat;
   background-size:100%; 
+  vertical-align:middle;
+  cursor: pointer;
 }
 .upload-back::before {
   content: "点击上传";
