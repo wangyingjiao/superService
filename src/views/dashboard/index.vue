@@ -9,8 +9,8 @@
   </transition>
 </div> -->
     <div class='hollebg'>
-      <img src="../../../static/icon/hello.png" alt="">
-      <div></div>
+      <!-- <img src="../../../static/icon/hello.png" alt=""> -->
+      <div class="img"></div>
     </div>  
   </div>
 </template>
@@ -19,10 +19,10 @@
 import { mapGetters } from "vuex";
 export default {
   name: "dashboard",
-  data(){
-    return{
+  data() {
+    return {
       show: true
-    }
+    };
   }
 };
 </script>
@@ -30,27 +30,43 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .dashboard-container {
   margin: 0 -15px;
-  background:#f7f8f9;
-  height: 100vm;
-    // padding: 0;
-    // background: url('../../../static/icon/hello.png');
-    // repeat: no-repeat;
-    // background-attachment:fixed;
-    // filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
-    // -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
-    // background-size: cover;
-    // -moz-background-size: cover;
-    // -webkit-background-size: cover;
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  
+  background: #f7f8f9;
+  margin-top: -100px;
+  // margin-bottom: -200px;
+  // padding: 0;
+  // background: url('../../../static/icon/hello.png');
+  // repeat: no-repeat;
+  // background-attachment:fixed;
+  // filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
+  // -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../../../static/icon/hello.png', sizingMethod='scale');
+  // background-size: cover;
+  // -moz-background-size: cover;
+  // -webkit-background-size: cover;
+  .img {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    background: url("../../../static/icon/hello.png") no-repeat 0 85px;
+    // background-attachment: fixed;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
+        src="../../../static/icon/hello.png",
+        sizingMethod="scale"
+      );
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
+        src="../../../static/icon/hello.png",
+        sizingMethod="scale"
+      );
+    background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+  }
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-active {
-  opacity: 0
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>

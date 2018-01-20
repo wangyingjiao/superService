@@ -118,8 +118,8 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" :disabled="btnState" v-else @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -193,6 +193,7 @@ export default {
       btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
       selsctState: false,
+      myselfUpdate: true,
       list: [],
       officeIds: [],
       total: null,
@@ -746,6 +747,9 @@ export default {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
+          if(localStorage.getItem('orgId') == res.data.data.organization.id){
+            this.myselfUpdate = false
+          }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
           var a = res.data.data;
@@ -972,6 +976,7 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
+      this.myselfUpdate = true
     },
     //清空data
     resetTemp() {
