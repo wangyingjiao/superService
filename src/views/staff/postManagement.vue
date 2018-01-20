@@ -340,8 +340,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+           setTimeout(() => {
+             
+             this.listLoading = false;
+           }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -365,8 +367,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+             setTimeout(() => {
+               
+               this.listLoading = false;
+             }, 500);
           }
         });
       }
@@ -381,8 +385,8 @@ export default {
         organization: { id: this.search.officeId }
       };
 
+      this.listLoading = true;
       if (obj.name != "" || obj.organization.id != "") {
-        this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
@@ -396,7 +400,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-            this.listLoading = false;
+            setTimeout(() => {
+              
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -421,8 +428,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+            setTimeout(() => {
+              
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
@@ -431,13 +440,13 @@ export default {
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
+      this.listLoading = true
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
       console.log(obj);
       if (obj.name != "" || obj.organization.id != "") {
-        this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
@@ -450,8 +459,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+             setTimeout(() => {
+               
+               this.listLoading = false;
+             }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -474,21 +485,23 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+            setTimeout(() => {
+              
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
+      this.listLoading = true
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
       console.log(obj);
       if (obj.name != "" || obj.organization.id != "") {
-        this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
           console.log(res);
           if (res.data.code === 1) {
@@ -501,8 +514,10 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+              setTimeout(() => {
+                
+                this.listLoading = false;
+              }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -525,8 +540,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
-            this.listLoading = false;
+             setTimeout(() => {
+               this.listLoading = false;
+             }, 500);
           }
         });
       }

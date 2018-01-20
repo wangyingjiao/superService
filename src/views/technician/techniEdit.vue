@@ -762,7 +762,7 @@ export default {
       if (value) {
         callback();
       } else {
-        callback(new Error("请输入日期"));
+        callback(new Error("请选择日期"));
       }
     };
 
@@ -1327,10 +1327,14 @@ export default {
         console.log(this.perServer,"this.perServer----------------------____________++++++++++++===")
         // this.perServer.stationId = val.stationId
         // //工作时间默认选中
-        var work = val.workTimes || [],
+        var work = this.perServer.workTimes || [],
             i,j,weeks_i,num;
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
+            console.log(work[i],"work----------")
+            if(work[i].endTimeStr == "23:59"){
+              work[i].endTimeStr = "24:00"
+            }
             weeks_i = work[i].weeks
             for( j =0 ; j<weeks_i.length ; j++){
               num = weeks_i[j].id*1
@@ -1699,14 +1703,6 @@ export default {
           return false
         }
       })
-      // this.$refs[formName].validate(valid => {
-      //   if (valid) {
-      //     // alert('true')
-      //   } else {
-      //     alert("false");
-      //     return false;
-      //   }
-      // });
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;

@@ -66,7 +66,7 @@
       <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
         <template scope="scope">
            <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
-             <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
+             <div class="tool" >{{scope.row.remark}}</div>
            </el-tooltip>
         </template>
       </el-table-column>
@@ -306,14 +306,16 @@ export default {
               this.list[i].index = i + 1;
             }
           }
-
-          this.listLoading = false;
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 500);
         }
       });
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {};
+      this.listLoading = true;
       console.log(this.search.startTime);
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
@@ -363,8 +365,9 @@ export default {
               this.list[i].index = i + 1;
             }
           }
-
-          this.listLoading = false;
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 500);
         }
       });
     },
@@ -430,5 +433,12 @@ export default {
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
+}
+.tool {
+  width: 115px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
