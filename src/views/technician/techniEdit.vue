@@ -48,7 +48,7 @@
                   </el-col>
                   <el-col :span="12">
                       <el-form-item label="出生日期:" prop="birthDate">
-                          <el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
+                          <el-date-picker v-model="personalEDit.birthDate" :editable='false' type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
                           format="yyyy-MM-dd" :picker-options="pickerOptions0">
                           </el-date-picker>
                       </el-form-item>
@@ -99,7 +99,7 @@
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor" class="avatar">
+                                <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -113,7 +113,7 @@
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicAfter" class="avatar">
+                                <img v-if="personalEDit.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -1675,6 +1675,9 @@ export default {
               if(_perServer.workTimes[i].endTimeStr){
                 _perServer.workTimes[i].endTime = _perServer.workTimes[i].endTimeStr
                 _perServer.workTimes[i].startTime = _perServer.workTimes[i].startTimeStr
+                if( _perServer.workTimes[i].endTime=='24:00'){
+                  _perServer.workTimes[i].endTime = '23:59'
+                }
                 // delete _perServer.workTimes[i].endTimeStr
                 // delete  _perServer.workTimes[i].startTimeStr
               }
@@ -2229,6 +2232,7 @@ export default {
 .tech-edit .avatar-uploader .el-upload{
   border: none;
   border-radius: 0;
+  width: 100px;
 }
 
 /* .el-upload-list {
@@ -2630,8 +2634,9 @@ export default {
   color: #4c70e8;
 }
 .tech-edit .avatar{
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
+  float: left;
   margin-top: 10px;
 }
 .el-form-item{
