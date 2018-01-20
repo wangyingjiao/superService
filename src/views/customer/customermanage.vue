@@ -67,7 +67,7 @@
 						label="地址"						
 						>
 						<template scope="scope">
-							<el-tooltip placement="top" :disabled="scope.row.address.length < 9" :content="scope.row.address">
+							<el-tooltip placement="left" :disabled="scope.row.address.length < 9" :content="scope.row.address">
 							 <div class="selfToolTip">{{scope.row.address}}</div>
 							</el-tooltip>
 						</template>						            
@@ -512,7 +512,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .selfToolTip{
-   width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+	 width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
 }
 .tableWarp{
 	width:100%;background:#fff;padding:20px 20px 70px 20px;

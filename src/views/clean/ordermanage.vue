@@ -82,7 +82,7 @@
 					</el-table-column>							
 					<el-table-column  align="center"  width="150" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="top" :disabled="scope.row.orderContent.length < 8" :content="scope.row.orderContent">
+							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 8" :content="scope.row.orderContent">
 								<div class="selfToolTip">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
@@ -411,7 +411,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .selfToolTip{
-   width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+   width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
 }
 .addorder-container{
   width:100%;
