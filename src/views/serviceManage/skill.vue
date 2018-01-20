@@ -405,7 +405,7 @@ export default {
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
                   this.$message({
-                    type: "warning",
+                    type: "error",
                     message: res.data.data
                   });
                 }
@@ -586,7 +586,7 @@ export default {
                 this.getList(obj, this.pageNumber, this.pageSize);
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
