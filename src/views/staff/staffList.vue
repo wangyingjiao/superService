@@ -582,6 +582,7 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       // var obj = {};
+      this.listLoading = true
       this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.data.list != undefined) {
@@ -593,7 +594,10 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
-        this.listLoading = false;
+        setTimeout(() => {
+          
+          this.listLoading = false;
+        }, 500);
       });
     },
     handleCurrentChange(val) {
@@ -604,7 +608,6 @@ export default {
         mobile: this.search.mobile
       };
       this.listLoading = true;
-      this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.data.list != undefined) {
           for (var i = 0; i < res.data.data.list.length; i++) {
@@ -616,7 +619,10 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
-        this.listLoading = false;
+        setTimeout(() => {
+          this.listLoading = false;
+          
+        }, 500);
       });
     },
     timeFilter(time) {

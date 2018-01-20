@@ -306,14 +306,16 @@ export default {
               this.list[i].index = i + 1;
             }
           }
-
-          this.listLoading = false;
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 500);
         }
       });
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {};
+      this.listLoading = true;
       console.log(this.search.startTime);
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
@@ -363,8 +365,9 @@ export default {
               this.list[i].index = i + 1;
             }
           }
-
-          this.listLoading = false;
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 500);
         }
       });
     },
