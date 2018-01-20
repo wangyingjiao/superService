@@ -2351,7 +2351,7 @@ export default {
 }
 
 .tech-qj .selfFooter{
-  padding:0;
+  padding: 0px 0;
 }
 
 .triangle-bottomrights {

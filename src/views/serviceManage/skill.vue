@@ -248,7 +248,6 @@ export default {
             }
           }
         }
-        console.log("改变存储时",this.middleB)
       }
     },
     //全局新增按钮
@@ -345,8 +344,7 @@ export default {
           };
           if (this.dialogStatus == "add") {
             saveServer(obj)
-              .then(res => {
-                this.dialogVisible = false;
+              .then(res => {                
                 if (res.data.code === 1) {
                   this.$message({
                     type: "success",
@@ -361,17 +359,16 @@ export default {
                   this.middleD=[];
                   this.localSearch = "";
                   var obj1 = {};
+                  this.dialogVisible = false;
                   this.listLoading = false;
                   this.pageNumber = 1;
                   this.jumpPage = 1;
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
-                  this.$refs["ruleForm2"].resetFields();
-                  this.middleA = [];
                   this.middleB = [];
                   this.middleD=[];
                   this.$message({
-                    type: "warning",
+                    type: "error",
                     message: res.data.data
                   });
                 }
@@ -405,7 +402,7 @@ export default {
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
                   this.$message({
-                    type: "warning",
+                    type: "error",
                     message: res.data.data
                   });
                 }
@@ -449,7 +446,6 @@ export default {
             }
           }
         }
-        console.log("删除时",this.middleA)
         if (this.dialogStatus == "edit") {
           for (var c = 0; c < this.middleB.length; c++) {
             if (obj.techId == this.middleB[c].techId) {
@@ -467,7 +463,6 @@ export default {
       this.techStationId = "";
       //先遍历数据中选中的再保存
       if (this.dialogStatus == "add") {
-        console.log("保存时",this.middleA)
         var arr = [];
         if (this.middleA != undefined && this.middleA.length != 0) {
           for (var a = 0; a < this.middleA.length; a++) {
@@ -477,9 +472,6 @@ export default {
           }
         }
         this.tabOptions =Object.assign([],arr);
-        // this.middleD=Object.assign([],arr);
-        console.log("保存时Options",this.tabOptions)
-        //this.middleA=arr
       }
       if (this.dialogStatus == "edit") {
         var arr1 = [];
@@ -499,15 +491,9 @@ export default {
       this.techName = "";
       this.techStationId = "";
       if (this.dialogStatus == "add") {
-          console.log("取消时Options",this.tabOptions)
-          this.middleA=Object.assign([],this.tabOptions);
-            for (var a = 0; a < this.listTech.length; a++) {
-                this.listTech[a].techChecked = false;
-            }          
-          console.log("取消时",this.middleA)     
+          this.middleA=Object.assign([],this.tabOptions);           
       }      
       if (this.dialogStatus == "edit") {
-        console.log("取消时",this.middleC)
         this.middleB = this.middleC;
         var arr1 = [];
         if (this.middleC != undefined && this.middleC.length != 0) {
@@ -519,6 +505,9 @@ export default {
         }
         this.tabOptions = arr1;
       }
+      for (var a = 0; a < this.listTech.length; a++) {
+          this.listTech[a].techChecked = false;
+      }         
       this.ordertech = false;
     },
     //表格数据获取
@@ -586,7 +575,7 @@ export default {
                 this.getList(obj, this.pageNumber, this.pageSize);
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
@@ -602,7 +591,7 @@ export default {
     },
     //选择技师按钮
     orderTech() {
-      this.ordertech = true;      
+           
       var obj = {
         techName: "",
         techStationId: ""
@@ -613,7 +602,6 @@ export default {
           if (res.data.code === 1) {
             this.listTech = res.data.data.techs;
             if (this.dialogStatus == "add") {
-              console.log("开始时",this.middleA)
               for (var b = 0; b < this.middleA.length; b++) {
                 for (var a = 0; a < this.listTech.length; a++) {
                   if (this.listTech[a].techId == this.middleA[b].techId) {
@@ -653,6 +641,7 @@ export default {
           }
         }
       }
+      this.ordertech = true; 
     },
     //选择技师弹出层查询按钮
     searchTeh() {
@@ -749,7 +738,6 @@ export default {
 }
 .selfFooter {
   text-align: center;
-  margin-top: 30px;
 }
 .selfTdStyle {
   background: #eef1f6;
@@ -785,8 +773,7 @@ export default {
   margin-top: 20px;
   overflow: hidden;
   width: 660px;
-  margin-bottom: 20px;
-  height: 300px;
+  height: 280px;
   position:relative;
 }
 .table-d{

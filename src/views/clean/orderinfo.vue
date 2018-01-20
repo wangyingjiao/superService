@@ -404,21 +404,23 @@
           :close-on-click-modal="false"
           >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
-              <el-form-item label="选择日期" prop='Date'>
-                    <el-date-picker
-                      v-model="formInline.Date"                      
-                      placeholder="年-月-日"                     
-                      :type="select"
-                      :picker-options="pickerOptions0"
-                      class="selfDateStyle"
-                      @change='dateChange'
-                      >
-                    </el-date-picker>
+              <el-form-item label="选择日期" prop='Date' >
+                      <el-date-picker
+                        v-model="formInline.Date"                      
+                        placeholder="年-月-日"                     
+                        :type="select"
+                        :picker-options="pickerOptions0"
+                        class="selfDateStyle"
+                        popper-class="selfTestStyle1"
+                        @change='dateChange'                      
+                        >
+                      </el-date-picker>
+
               </el-form-item>
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                     <div class="marginTopDec46">
-                      <div v-if="timeObj.length == 0" class="promMessage">当前没有可服务的技师，请更换时间!</div>                                            
+                      <div v-if="timeObj.length == 0" class="promMessage">当前所选择日期没有可服务的技师,请更换日期!</div>                                            
                       <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
                     </div>                    
               </el-form-item>              
@@ -597,12 +599,10 @@ export default {
         } 
         ChangeTimeData(obj).then(res => {                
           if (res.data.code === 1) {
-              console.log(res.data.data)
               if(res.data.data != undefined){
                   this.timeObj=res.data.data;
               }else{
                   this.timeObj=[];
-                  console.log(this.timeObj)
               }                                       
               if(this.timeObj.length != 0){
                 //样式复位
@@ -913,8 +913,7 @@ export default {
   margin-top: 20px;
   overflow: hidden;
   width: 660px;
-  margin-bottom: 20px;
-  height: 300px;
+  height: 280px;
   position:relative;
   }
 .table-d{

@@ -115,7 +115,6 @@ export default {
       this.listLoading = true;
       var obj = {};
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
         this.list = res.data.data.list;
         if(this.list != undefined){
           for (var i = 0; i < this.list.length; i++) {
@@ -218,7 +217,6 @@ export default {
       // });
     }, 
     searchChange(val) {
-      console.log(val);
     },
     
   }

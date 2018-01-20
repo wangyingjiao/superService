@@ -1,6 +1,7 @@
 @import './element-ui.scss';
 @import './mixin.scss';
 body {
+  min-width: 960px;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -10,6 +11,7 @@ body {
 }
 
 html {
+  min-width: 960px;
   box-sizing: border-box;
 }
 
@@ -468,7 +470,6 @@ body {
 }
 .el-dialog__footer{
   border-top: #eee 1px solid;
-  margin-top: 20px;
   padding: 20px 0px 20px 0px;
 }
 // 搜索框样式
@@ -577,6 +578,13 @@ body {
 .dispatchTaleSelf  .cell{
 	padding: 0;
 }
+//自定义日期显示样式
+.selfTestStyle1 .el-date-table td.next-month,.selfTestStyle1 .el-date-table td.prev-month{
+   color:#48576A;
+}
+.selfTestStyle1 .el-date-table td.disabled,.selfTestStyle1 .el-date-table td.disabled{
+  color:#CCC;
+}
 .orderTab .el-tabs__item{
   &:nth-child(8){
         &:before {
@@ -594,4 +602,21 @@ body {
   span{
     color: #fff;
   }
+}
+// 字体图标
+@font-face {
+  font-family: 'iconfont';  /* project id 531557 */
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot');
+  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.svg#iconfont') format('svg');
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 14px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
 }

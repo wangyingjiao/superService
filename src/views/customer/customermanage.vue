@@ -67,7 +67,7 @@
 						label="地址"						
 						>
 						<template scope="scope">
-							<el-tooltip placement="top" :disabled="scope.row.address.length < 9" :content="scope.row.address">
+							<el-tooltip placement="left" :disabled="scope.row.address.length < 9" :content="scope.row.address">
 							 <div class="selfToolTip">{{scope.row.address}}</div>
 							</el-tooltip>
 						</template>						            
@@ -260,7 +260,7 @@ export default {
 		pageSize1:10,//表格每页条数
 		pageNumber:1,
 		kkkk:'',
-		mymap:{},	
+		mymap:{},
     };
   },
   methods:{
@@ -271,7 +271,7 @@ export default {
 				}				
 			},
 			//地址POI选择初始城市值
-		  testFun(value){
+		  testFun(value){				  
 					this.$nextTick(() => {
 							this.test(value[1]);
 					})	
@@ -322,7 +322,7 @@ export default {
 											this.getData(obj,this.pageNumber,this.pageSize1);
 									}else{
 										this.$message({
-												type: 'warning',
+												type: 'error',
 												message: res.data.data
 										});
 										this.$refs.pickerInput.value=''
@@ -418,7 +418,7 @@ export default {
 										this.getData(obj1,this.pageNumber,this.pageSize1);
 										}else{
 											this.$message({
-													type: 'warning',
+													type: 'error',
 													message: '删除失败'
 												});
 										}
@@ -457,7 +457,7 @@ export default {
 
 					},
 					//地图初始化
-					test(area){
+					test(area){						  
 							var that=this;							
 							var inputname=this.$refs.pickerInput;
 							var inputname1=this.$refs.pickerInput1;
@@ -472,7 +472,7 @@ export default {
 									poiPickerReady(poiPicker);
 									poiPicker.clearSearchResults()
 									poiPicker.onCityReady(function() {																							  
-											poiPicker.searchByKeyword(inputname.value);	
+											poiPicker.searchByKeyword(that.$refs.pickerInput.value);	
 									});									
 							});
 							function poiPickerReady(poiPicker) {
@@ -512,7 +512,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .selfToolTip{
-   width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+	 width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
 }
 .tableWarp{
 	width:100%;background:#fff;padding:20px 20px 70px 20px;
