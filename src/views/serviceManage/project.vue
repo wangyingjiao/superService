@@ -2189,8 +2189,9 @@ export default {
                   this.search.sortId = '';
                   this.search.name ='';
                   this.tabs = 'all';
-                  this.getList(1, 10);
+                  // this.getList(1, 10);
                   this.listQuery.page = 1
+                  // this.pageNumber = 1
                   this.picFile = [];
                 } else {
                   this.$message({
