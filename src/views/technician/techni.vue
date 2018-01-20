@@ -346,7 +346,7 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="民族：" class="seize">
-                      <el-select v-model="personal.nation" clearable placeholder="请选择" style="width:100%">
+                      <el-select v-model="personal.nation" filterable clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
                           </el-option>
                       </el-select>
@@ -493,8 +493,8 @@
                                   start: '00:00',
                                   step: '00:30',
                                   end: '24:00',
-                                  minTime:'23:10',
-                                  maxTime:'24:10' 
+                                  minTime:startEnd.startNew,
+                                  maxTime:startEnd.endNew 
                                 }" class="tech-daytim">
                               </el-time-select>
                               <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
@@ -1267,20 +1267,7 @@ export default {
       this.dialogVisible = true
       this.personal.status = "yes"
       //服务时间
-      serviceTechnicianInfo()
-        .then(data => {
-          console.log(data, "data==========");
-          this.startEnd = data.data.data;
-          this.startTime = data.data.data.start;
-          this.endTime = data.data.data.end;
-          console.log(
-            this.suspendEndTime,
-            "this.startEndTime,--------------------------------------"
-          );
-        })
-        .catch(error => {
-          console.log(error, "新增按钮");
-        });
+      this.serviceTech()
       //所属服务站
       serviceStation({})
         .then(data => {
@@ -1452,8 +1439,15 @@ export default {
     vacation(item) {
       serviceTechnicianInfo()
         .then(data => {
-          console.log(data, "data==========");
           this.startEnd = data.data.data;
+
+          if(this.startEnd.end=='23:59'){
+            this.startEnd.end = "24:00"
+          }
+          if(this.startEnd.endNew.slice(0,2) == "00"){
+            this.startEnd.endNew = "24:10"
+          }
+
           this.ruleForm.startTime = data.data.data.start;
           this.ruleForm.endTime = data.data.data.end;
         })
@@ -1509,6 +1503,23 @@ export default {
       // console.log(item,"item-----")
     },
 
+    // 服务机构时间
+    serviceTech(){
+        serviceTechnicianInfo().then(data=>{
+          this.startEnd = data.data.data
+          if(this.startEnd.end=='23:59'){
+              this.startEnd.end = "24:00"
+            }
+            if(this.startEnd.endNew.slice(0,2) == "00"){
+              this.startEnd.endNew = "24:10"
+            }
+          this.startTime = data.data.data.start
+          this.endTime = data.data.data.end
+        }).catch(error=>{
+          console.log(error,"新增按钮")
+        })
+    },
+
     //技师编辑获取ID
     technician(item) {
       // console.log(item,"item-------")
@@ -1521,13 +1532,7 @@ export default {
           console.log(error, "error---技师编辑");
         });
 
-      serviceTechnicianInfo().then(data=>{
-        this.startEnd = data.data.data
-        this.startTime = data.data.data.start
-        this.endTime = data.data.data.end
-      }).catch(error=>{
-        console.log(error,"新增按钮")
-      })
+      this.serviceTech()
 
       //所属服务站
       serviceStation({}).then(data=>{
@@ -1852,6 +1857,7 @@ export default {
               return false;
             });
         } else {
+           this.btnState = false;
           // if(this.personal.headPic){
 
           // }else{
@@ -2350,7 +2356,7 @@ export default {
 }
 
 .tech-qj .selfFooter{
-  padding: 20px 0;
+  padding: 30px 0;
 }
 
 .triangle-bottomrights {
