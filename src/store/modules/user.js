@@ -52,6 +52,7 @@ const user = {
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             localStorage.setItem('orgId', response.data.data.user.organization.id)
             localStorage.setItem('userId', response.data.data.user.id)
+            localStorage.setItem('roleId', response.data.data.user.role.id)
             localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
@@ -127,6 +128,7 @@ const user = {
           localStorage.removeItem('menu')
           localStorage.removeItem('station')
           localStorage.removeItem('btn')
+          localStorage.removeItem('roleId')
           resolve()
         }).catch(error => {
           reject(error)

@@ -740,8 +740,8 @@ export default {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
-          if (localStorage.getItem("orgId") == res.data.data.organization.id) {
-            this.myselfUpdate = false;
+          if (localStorage.getItem("roleId") == res.data.data.id) {
+           this.myselfUpdate = false;
           }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
