@@ -184,22 +184,7 @@ export default {
 .nav-posi > li:hover {
   color: red;
 }
-@font-face {
-  font-family: 'iconfont';  /* project id 531557 */
-  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot');
-  src: url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.woff') format('woff'),
-  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_531557_z2s5sgto7q8mpldi.svg#iconfont') format('svg');
-}
-.iconfont {
-  font-family: "iconfont" !important;
-  font-size: 14px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
+
 .liBtn {
   color: #48576a;
   border-left: 1px solid #fff;
