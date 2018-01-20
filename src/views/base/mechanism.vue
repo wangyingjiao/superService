@@ -713,7 +713,7 @@ export default {
     //取消
     resetForm(formName) {
       this.dialogFormVisible = false;
-      //this.resetTemp();
+      this.resetTemp();
       this.$refs[formName].resetFields();
     },
     //切换省市区
@@ -864,12 +864,12 @@ export default {
         phone: "",
         masterName: "",
         masterPhone: "",
-        remark: "",
         areaCodes: [],
         workStartTime: "",
         workEndTime: "",
         jointEshopCode: "",
-        scopeType: ""
+        scopeType: "",
+        remark: ""
       };
     }
   }
