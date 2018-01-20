@@ -260,7 +260,7 @@ export default {
 		pageSize1:10,//表格每页条数
 		pageNumber:1,
 		kkkk:'',
-		mymap:{},	
+		mymap:{},
     };
   },
   methods:{
@@ -271,7 +271,7 @@ export default {
 				}				
 			},
 			//地址POI选择初始城市值
-		  testFun(value){
+		  testFun(value){				  
 					this.$nextTick(() => {
 							this.test(value[1]);
 					})	
@@ -457,7 +457,7 @@ export default {
 
 					},
 					//地图初始化
-					test(area){
+					test(area){						  
 							var that=this;							
 							var inputname=this.$refs.pickerInput;
 							var inputname1=this.$refs.pickerInput1;
@@ -472,7 +472,7 @@ export default {
 									poiPickerReady(poiPicker);
 									poiPicker.clearSearchResults()
 									poiPicker.onCityReady(function() {																							  
-											poiPicker.searchByKeyword(inputname.value);	
+											poiPicker.searchByKeyword(that.$refs.pickerInput.value);	
 									});									
 							});
 							function poiPickerReady(poiPicker) {

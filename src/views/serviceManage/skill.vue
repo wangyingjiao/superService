@@ -500,10 +500,7 @@ export default {
       this.techStationId = "";
       if (this.dialogStatus == "add") {
           console.log("取消时Options",this.tabOptions)
-          this.middleA=Object.assign([],this.tabOptions);
-            for (var a = 0; a < this.listTech.length; a++) {
-                this.listTech[a].techChecked = false;
-            }          
+          this.middleA=Object.assign([],this.tabOptions);       
           console.log("取消时",this.middleA)     
       }      
       if (this.dialogStatus == "edit") {
@@ -519,6 +516,9 @@ export default {
         }
         this.tabOptions = arr1;
       }
+      for (var a = 0; a < this.listTech.length; a++) {
+          this.listTech[a].techChecked = false;
+      }         
       this.ordertech = false;
     },
     //表格数据获取
@@ -602,7 +602,7 @@ export default {
     },
     //选择技师按钮
     orderTech() {
-      this.ordertech = true;      
+           
       var obj = {
         techName: "",
         techStationId: ""
@@ -653,6 +653,7 @@ export default {
           }
         }
       }
+      this.ordertech = true; 
     },
     //选择技师弹出层查询按钮
     searchTeh() {
@@ -749,7 +750,6 @@ export default {
 }
 .selfFooter {
   text-align: center;
-  margin-top: 30px;
 }
 .selfTdStyle {
   background: #eef1f6;
@@ -785,8 +785,7 @@ export default {
   margin-top: 20px;
   overflow: hidden;
   width: 660px;
-  margin-bottom: 20px;
-  height: 300px;
+  height: 280px;
   position:relative;
 }
 .table-d{

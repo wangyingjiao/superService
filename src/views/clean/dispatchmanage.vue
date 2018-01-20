@@ -356,16 +356,56 @@ export default {
 		this.pageNumber=1;
 		this.jumpPage=1;
 		this.pageSize1=val;
-		var obj={
+		if(this.technicianName =='1'){
+				this.techName1=this.techName;
+				this.techPhone1='';
+				this.orderNumber1='';
+		}else if(this.technicianName =='2'){
+				this.techPhone1=this.techName;
+				this.orderNumber1='';
+        this.techName1='';
+		}else if(this.technicianName =='3'){
+				this.orderNumber1=this.techName;
+				this.techName1='';
+				this.techPhone1='';
+		}else{
+				this.techName1='';
+				this.techPhone1='';
+				this.orderNumber1='';
 		}
+		var obj={
+			techName:this.techName1,
+			techPhone:this.techPhone1, 
+			orderNumber:this.orderNumber1,
+		};
 		this.reassList(obj,this.pageNumber,this.pageSize1);	
 
 	},
 	//表格当前页改变
 	handleCurrentChange1(val) {
 		this.pageNumber=val;
-		var obj={
+		if(this.technicianName =='1'){
+				this.techName1=this.techName;
+				this.techPhone1='';
+				this.orderNumber1='';
+		}else if(this.technicianName =='2'){
+				this.techPhone1=this.techName;
+				this.orderNumber1='';
+        this.techName1='';
+		}else if(this.technicianName =='3'){
+				this.orderNumber1=this.techName;
+				this.techName1='';
+				this.techPhone1='';
+		}else{
+				this.techName1='';
+				this.techPhone1='';
+				this.orderNumber1='';
 		}
+		var obj={
+			techName:this.techName1,
+			techPhone:this.techPhone1, 
+			orderNumber:this.orderNumber1,
+		};
 		this.reassList(obj,this.pageNumber,this.pageSize1);
 	}	
   },
@@ -419,8 +459,7 @@ export default {
 	margin-top: 20px;
   overflow: hidden;
   width: 660px;
-  margin-bottom: 20px;
-  height: 300px;
+  height: 280px;
 	position:relative;
 }
 .table-d{
