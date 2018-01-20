@@ -345,8 +345,7 @@ export default {
           };
           if (this.dialogStatus == "add") {
             saveServer(obj)
-              .then(res => {
-                this.dialogVisible = false;
+              .then(res => {                
                 if (res.data.code === 1) {
                   this.$message({
                     type: "success",
@@ -361,17 +360,18 @@ export default {
                   this.middleD=[];
                   this.localSearch = "";
                   var obj1 = {};
+                  this.dialogVisible = false;
                   this.listLoading = false;
                   this.pageNumber = 1;
                   this.jumpPage = 1;
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
-                  this.$refs["ruleForm2"].resetFields();
-                  this.middleA = [];
+                  // this.$refs["ruleForm2"].resetFields();
+                  // this.middleA = [];
                   this.middleB = [];
                   this.middleD=[];
                   this.$message({
-                    type: "warning",
+                    type: "error",
                     message: res.data.data
                   });
                 }
