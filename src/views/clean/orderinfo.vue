@@ -419,7 +419,7 @@
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                     <div class="marginTopDec46">
-                      <div v-if="timeObj.length == 0" class="promMessage">当前所摆选择日期没有可服务的技师，请更换日期!</div>                                            
+                      <div v-if="timeObj.length == 0" class="promMessage">当前所选择日期没有可服务的技师,请更换日期!</div>                                            
                       <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
                     </div>                    
               </el-form-item>              
