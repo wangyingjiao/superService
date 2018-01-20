@@ -464,7 +464,6 @@ export default {
     this.scopeType = dict.service_area_type;
     this.workTime = dict.work_start_time;
     this.orgId = localStorage.getItem("orgId");
-    console.log(this.orgId, "orgId");
   },
   methods: {
     //获取列表
@@ -487,7 +486,7 @@ export default {
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
+        //console.log(res,'获取列表');
         this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
@@ -533,7 +532,7 @@ export default {
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
+        //console.log(res,'搜索内容');
         this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
@@ -572,7 +571,6 @@ export default {
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res);
         this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
@@ -624,16 +622,13 @@ export default {
     startTimeChange(val) {
       this.temp.workEndTime = "";
       this.workEndTime = [];
-      console.log(val, "开始时间");
       for (var i = 0; i < this.workTime.length; i++) {
         if (val == this.workTime[i]) {
-          console.log(i, "下标");
-          console.log(this.workTime, "下标");
+         
           for (var j = i + 1; j < this.workTime.length; j++) {
             this.workEndTime.push(this.workTime[j]);
           }
           //this.workEndTime = this.workTime.subString(i,this.workTime.length)
-          console.log(this.workEndTime, "workEndTime");
         }
       }
     },
