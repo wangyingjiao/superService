@@ -37,7 +37,6 @@ export default {
       this.$refs.upload.submit();
     },
     handPic(file,fileList) {
-      console.log(file.raw.type,"file.type------")
      if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
           var date = new Date();
           var y = date.getFullYear();
@@ -61,19 +60,14 @@ export default {
         fileList.splice(fileList.indexOf(file),0)
     },
     picUpload(file) {
-        console.log(file.file.uid)
         // 图片上传 
         let pro = new Promise((resolve, rej) => {
-        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
-        //console.log(timestamp)
           if (res.expire - 3 > timestamp) {
-            console.log("签名没过期");
             resolve(res);
           } else {
             this.$http.get("/apiservice/oss/getSign").then(res => {
-              console.log(res, "签名过期");
               Cookies.set("sign", JSON.stringify(res.data));
               resolve(res.data);
             });
@@ -107,13 +101,8 @@ export default {
             })
             .then(res => {
               this.testArr.push(ossData.get("key"));
-              console.log(this.testArr,"this.testArr------") 
-              console.log('aaaaa')
             })
             .catch(error => {
-            console.log('错误-------------上传图片失败--')
-            // this.picFile.push(ossData.get("key"));
-            console.log(error, "错误");
             });
         });
     },

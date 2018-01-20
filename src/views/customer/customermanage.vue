@@ -322,7 +322,7 @@ export default {
 											this.getData(obj,this.pageNumber,this.pageSize1);
 									}else{
 										this.$message({
-												type: 'warning',
+												type: 'error',
 												message: res.data.data
 										});
 										this.$refs.pickerInput.value=''
@@ -418,7 +418,7 @@ export default {
 										this.getData(obj1,this.pageNumber,this.pageSize1);
 										}else{
 											this.$message({
-													type: 'warning',
+													type: 'error',
 													message: '删除失败'
 												});
 										}

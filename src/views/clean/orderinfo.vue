@@ -599,12 +599,10 @@ export default {
         } 
         ChangeTimeData(obj).then(res => {                
           if (res.data.code === 1) {
-              console.log(res.data.data)
               if(res.data.data != undefined){
                   this.timeObj=res.data.data;
               }else{
                   this.timeObj=[];
-                  console.log(this.timeObj)
               }                                       
               if(this.timeObj.length != 0){
                 //样式复位
