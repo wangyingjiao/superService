@@ -100,7 +100,8 @@
             </el-form-item>
         
         <el-form-item label="登录账号:" prop="mobile">
-          <el-input 
+          <el-input
+           :disabled="dialogStatus == 'update'"
             v-model="temp.mobile"
             class="form_item"
             placeholder="请输入登录账号（手机号）"></el-input>
@@ -152,8 +153,8 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-        <button class="button-large" v-else :disabled="btnState"  @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
+        <button class="button-large" v-if="dialogStatus == 'create'" :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     
@@ -312,7 +313,7 @@ export default {
       if (!value) {
         return callback(new Error("登录账号不能为空"));
       } else {
-        if (!/^1[3|4|5|6|7|8][0-9]\d{8}$/.test(value)) {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value)) {
           callback(new Error("登录账号（手机号）格式不正确！"));
         } else {
           callback();
@@ -342,6 +343,7 @@ export default {
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
+      myselfUpdate:true,
       list: null,
       total: null,
       listLoading: true,
@@ -802,6 +804,9 @@ export default {
       this.dialogFormVisible = true;
       console.log(row);
       this.dialogStatus = "update";
+      if(localStorage.getItem('userId') == row.id){
+        this.myselfUpdate = false
+      }
       this.temp = {
         id: row.id,
         name: row.name,
@@ -1007,6 +1012,7 @@ export default {
               this.btnState = false;
               console.log(res);
               if (res.data.code === 1) {
+                this.$refs.domTree.setCheckedKeys([]);
                 this.$refs[formName].resetFields();
                 this.dialogFormStation = false;
                 if (res.data.data.organization.id == this.temp.officeId) {
@@ -1017,7 +1023,6 @@ export default {
 
                 //this.resetTemp2();
                 
-                //this.$refs.domTree.setCheckedKeys([]);
                 
                 this.$message({
                   type: "success",
@@ -1142,6 +1147,7 @@ export default {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
+      this.myselfUpdate = true
     },
     resetForm2(formName) {
       this.temp2 = {
