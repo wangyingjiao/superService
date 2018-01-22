@@ -410,12 +410,12 @@ export default {
 													type: 'success',
 													message: '删除成功!'
 												});
-										var obj1={
-												name:this.customName,
-												phone:this.customPhone,
-												// orgId:this.organizationName,
-										}
-										this.getData(obj1,this.pageNumber,this.pageSize1);
+												var obj1={
+														name:this.customName,
+														phone:this.customPhone,
+														// orgId:this.organizationName,
+												}
+												this.getData(obj1,this.pageNumber,this.pageSize1);
 										}else{
 											this.$message({
 													type: 'error',

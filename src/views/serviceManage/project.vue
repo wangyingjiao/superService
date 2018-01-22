@@ -2271,7 +2271,7 @@ export default {
   display:inline-block;float:left;
 }
 .selfTabsaa{
-   display:inline-block;margin-top:10px;idth:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
+   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
 }
 .selfTabContent{
     float:left;max-width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
@@ -2318,11 +2318,11 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.projectTableStyle .el-table th > .cell {
+.projectTableStyle  th > .cell {
   text-align: -webkit-center;
 }
-.projectTableStyle .el-table .cell,
-projectTableStyle  .el-table th > div {
+.projectTableStyle .cell,
+.projectTableStyle th > div {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -2392,7 +2392,7 @@ projectTableStyle  .el-table th > div {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.projectTableStyle .el-table .cell {
+.projectTableStyle  .cell {
   padding: 0;
 }
 .tabBox {
