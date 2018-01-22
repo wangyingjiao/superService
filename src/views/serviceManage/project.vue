@@ -2318,14 +2318,14 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.projectTableStyle .el-table th > .cell {
+.projectTableStyle  th > .cell {
   text-align: -webkit-center;
 }
-.projectTableStyle .el-table .cell,
-projectTableStyle  .el-table th > div {
+/* .projectTableStyle  .cell,
+.projectTableStyle th > div {
   padding-left: 10px;
   padding-right: 10px;
-}
+} */
 .upload_box {
   /* text-align: center; */
   box-sizing: border-box;
@@ -2392,7 +2392,7 @@ projectTableStyle  .el-table th > div {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.projectTableStyle .el-table .cell {
+.projectTableStyle .cell {
   padding: 0;
 }
 .tabBox {
