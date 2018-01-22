@@ -542,7 +542,7 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-      console.log(a, b, c, "yyyyyyyy");
+      //console.log(a, b, c, "yyyyyyyy");
       //父级点击时取消勾选
       // if(a.permission = 'order'){
       //   if(b){
@@ -555,7 +555,7 @@ export default {
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        console.log("tttttttttttttttt");
+        //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
@@ -567,7 +567,7 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(this.data2[i].subMenus[j], "成功");
+                  //console.log(this.data2[i].subMenus[j], "成功");
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
@@ -577,7 +577,7 @@ export default {
                 }
               }
             } else {
-              console.log(this.data2[i].subMenus);
+              //console.log(this.data2[i].subMenus);
             }
           }
         }
@@ -592,7 +592,7 @@ export default {
                   var str = this.data2[i].subMenus[j].subMenus[
                     this.data2[i].subMenus[j].subMenus.length - 1
                   ];
-                  console.log(str.name, "vvvvvvvvvvvv");
+                  //console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -601,7 +601,7 @@ export default {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   } else {
-                    console.log(111111111111111111);
+                    
                   }
                 }
               }
@@ -613,25 +613,25 @@ export default {
         }
         //自动勾选列表权限结束
       } else {
-        console.log("取消勾选");
+        //console.log("取消勾选");
         //订单的查看详情不可取消
-        console.log(this.temp.check, "dddddddddddddd");
+        //console.log(this.temp.check, "dddddddddddddd");
         if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
-              console.log(a.permission, "1");
+              //console.log(a.permission, "1");
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(a.permission, "2", this.temp.check);
+                  //console.log(a.permission, "2", this.temp.check);
                   var orderarr = this.data2[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
                     //console.log('不可取消')
                     if (this.temp.check.indexOf(orderarr.subMenus[k].id) > -1) {
-                      console.log(a.permission, "3");
-                      console.log(
-                        this.data2[i].subMenus[j].subMenus[1].name,
-                        "详情权限iiiii"
-                      );
+                      // console.log(a.permission, "3");
+                      // console.log(
+                      //   this.data2[i].subMenus[j].subMenus[1].name,
+                      //   "详情权限iiiii"
+                      // );
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
@@ -735,13 +735,23 @@ export default {
     },
     //点击编辑时
     handleUpdate(row) {
+      this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
           if (localStorage.getItem("roleId") == res.data.data.id) {
+            console.log(11111111)
            this.myselfUpdate = false;
+          }
+          if(res.data.data.flag){
+            console.log(2222222222)
+            this.myselfUpdate = false;
+            this.$nextTick(()=>{
+            this.myselfUpdate = false;
+
+            })
           }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
@@ -976,7 +986,9 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
-      this.myselfUpdate = true;
+      //setTimeout(() => { 
+       
+      //}, 900);
     },
     //清空data
     resetTemp() {

@@ -124,27 +124,28 @@
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable :disabled="officeState"  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable :disabled="statStatte"  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="选择岗位:" prop="role">
-          <el-select  filterable ref="domSelect" style="width:80%" v-model="temp.role" placeholder="请选择">
+          <el-select  filterable :disabled="roleState" ref="domSelect" style="width:80%" v-model="temp.role" placeholder="请选择">
             <el-option v-for="item in stationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-           <div class="btn_addStation" style="width:20%" @click="addRole">新 增</div>
+           <div class="btn_gray" v-if="crBtnState" style="width:20%" >新 增</div>
+           <div class="btn_addStation" v-else style="width:20%" @click="addRole">新 增</div>
         </el-form-item>
         <el-form-item  label="可用状态:" >
-          <el-select class="form_item"  v-model="temp.useable" placeholder="请选择">
+          <el-select class="form_item" :disabled="useableState"  v-model="temp.useable" placeholder="请选择">
             <el-option v-for="item in useableCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -153,7 +154,7 @@
         
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
         <button class="button-large" v-if="dialogStatus == 'create'" :disabled="btnState"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
@@ -277,7 +278,8 @@ export default {
           callback();
         }
       } else {
-        if (value == undefined) {
+        console.log(value,'密码')
+        if (value == "") {
           callback();
         } else {
           if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(value)) {
@@ -342,8 +344,12 @@ export default {
     };
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
-      btnState: false,
-      myselfUpdate: true,
+      btnState: false, //按钮禁用
+      officeState: false, //机构禁用
+      statStatte: false, //服务站禁用
+      roleState: false, //岗位禁用
+      crBtnState: false, //新增岗位按钮状态
+      useableState: false, //可用状态禁用
       list: null,
       total: null,
       listLoading: true,
@@ -803,12 +809,18 @@ export default {
       console.log(row);
       this.dialogStatus = "update";
       if (localStorage.getItem("userId") == row.id) {
-        this.myselfUpdate = false;
+        //判断是不是编辑自己：是，禁用；
+        this.officeState = true;
+        this.statStatte = true;
+        this.roleState = true;
+        this.crBtnState = true;
+        this.useableState = true;
       }
       this.temp = {
         id: row.id,
         name: row.name,
         mobile: row.mobile,
+        password:"",
         officeId: "",
         stationId: row.station.id,
         role: row.role.id,
@@ -941,13 +953,18 @@ export default {
               this.btnState = false;
               console.log(res);
               if (res.data.code === 1) {
+               
+                //关闭弹框
                 this.dialogFormVisible = false;
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.listQuery.page = 1;
                 this.pageNumber = 1;
+                //清空搜索条件
                 this.search.mobile = "";
                 this.search.name = "";
+                
+               
                 var obj = {};
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
                   console.log(res);
@@ -1066,14 +1083,20 @@ export default {
           this.btnState = true;
           upStaff(obj)
             .then(res => {
-              console.log(res);
+
+              console.log(res,'编辑时');
               this.btnState = false;
-              if (res.data.code === 1) {
-                // 判断是不是自己修改自己
-                //if (0) {
+              if (res.data.code == 1) {
+                 //将禁用的选项启用
+                this.officeState = false;
+                this.statStatte = false;
+                this.roleState = false;
+                this.crBtnState = false;
+                this.useableState = false;
+                
                 if (
                   this.temp.id == localStorage.getItem("userId") &&
-                  obj.newPassword.length != undefined
+                  obj.newPassword != ""
                 ) {
                   console.log("编辑自己密码");
                   this.$store
@@ -1093,6 +1116,7 @@ export default {
                       this.listLoading = false;
                     });
                 } else {
+                  console.log(1111111111111111)
                   this.dialogFormVisible = false;
                   this.resetTemp();
                   this.$refs[formName].resetFields();
@@ -1144,7 +1168,11 @@ export default {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
-      this.myselfUpdate = true;
+      this.officeState = false;
+      this.statStatte = false;
+      this.roleState = false;
+      this.crBtnState = false;
+      this.useableState = false;
     },
     resetForm2(formName) {
       this.temp2 = {
@@ -1292,6 +1320,17 @@ export default {
   line-height: 34px;
   color: #4c70e8;
   cursor: pointer;
+}
+.btn_gray{
+  float: right;
+  height: 36px;
+  width: 80px;
+  background-color: #eef1f6;
+  border: 1px solid #d1dbe5;
+  text-align: center;
+  line-height: 34px;
+  color: #bbb;
+  cursor: wait;
 }
 .scrollBox {
   height: 400px;
