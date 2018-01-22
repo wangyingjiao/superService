@@ -482,20 +482,17 @@
           </el-col>
         </el-row>
         <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-large" @click="SystemLabel = false" value="确 定">
           <input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
         </div>
       </el-dialog>
     <!-- 系统标签结束 -->
 
     <!-- 图文详情 -->
-      <div class="image-text">
-          <el-dialog :visible.sync="ImageText" :close-on-click-modal="false">
-            <div class="image-text-header">
+      <!-- <div class="image-text"> -->
+          <el-dialog title="添加详情" :visible.sync="ImageText" :close-on-click-modal="false">
+            <!-- <div class="image-text-header">
                 <p>添加详情</p>
-                <!-- <span class="el-icon-plus" @click="addImage"> -->
-                <!-- <p></span><span class="el-icon-close" @click="ImageText = false"></span></p> -->
-            </div>
+            </div> -->
             <div class="image-text-body">
                 <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
                 <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
@@ -535,7 +532,7 @@
               <input type="button" class="button-cancel" @click="resImgText('a')" value="取 消">
             </div>
         </el-dialog>
-      </div>
+      <!-- </div> -->
     <!-- 图文详情 完成 -->
 
   </div>
@@ -1116,6 +1113,7 @@ export default {
       if(this.addComm){
         this.resetForm()
       }
+      this.handleEditFlag = false
       this.addComm = !this.addComm
     },
     converFilter(val){
@@ -1780,14 +1778,15 @@ export default {
             console.log(res.data, "res.data-------");
             
             this.total = res.data.data.count;
-            console.log(res.data.data.pageNo,this.pageNumber,"this.pageNumberres.data.data.pageNo-----------")
-            if(res.data.data.pageNo!=this.pageNumber){
-              console.log('project-------页码')
-              this.handleCurrentChange(res.data.data.pageNo)
-            }
+            // console.log(res.data.data.pageNo,this.pageNumber,"this.pageNumberres.data.data.pageNo-----------")
+            // if(res.data.data.pageNo!=this.pageNumber){
+            //   console.log('project-------页码')
+            //   this.handleCurrentChange(res.data.data.pageNo)
+            // }
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
             this.listQuery.page = res.data.data.pageNo;
+            console.log(this.listQuery.page,"this.listQuery.page----------")
             this.listTable = res.data.data.list;
             if(this.listTable!=undefined && this.listTable.length>0){
               // var num = page == 1? page : page-1+'1';
@@ -1982,7 +1981,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.handleCurrentChange(this.pageNumber)
+                this.handleCurrentChange(this.listQuery.page)
                 // this.getList(this.pageNumber, this.pageSize);
               } else {
                 this.$message({
@@ -2126,16 +2125,6 @@ export default {
               obj.pictures = this.picFile; //服务图片缩略图.
               obj.sysTags = this.labelClickArr //添加 系统标签
               obj.customTags = this.customArr
-              // obj.customTags = this.CustomLabelList; //添加 自定义标签
-          // obj.majorSort = that.basicForm.majorSort; //所属分类
-          // obj.sortId = that.basicForm.sortId; //所属分类编号
-          // obj.commoditys = that.basicForm.commoditys; //商品信息
-          // obj.name = that.basicForm.name; //项目名称
-          // obj.pictures = this.picFile; //服务图片缩略图
-          // obj.description = that.basicForm.description; //服务描述
-          // obj.sale = that.basicForm.sale; //是否上架customArr
-          // obj.sortNum = that.basicForm.sortNum; //排序号
-          // obj.cityCodes = that.basicForm.cityCodes; //定向城市
           console.log(obj, "-----------------------------------");
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
@@ -2190,8 +2179,9 @@ export default {
                   this.search.name ='';
                   this.tabs = 'all';
                   // this.getList(1, 10);
-                  this.listQuery.page = 1
                   // this.pageNumber = 1
+                  this.listQuery.page = 1
+                  this.getList(1, 10);
                   this.picFile = [];
                 } else {
                   this.$message({
@@ -2588,13 +2578,13 @@ export default {
 hr {
   border: .5px solid #eee
 }
-.image-text .el-dialog__body,
+/* .image-text .el-dialog__body,
 .image-text .el-dialog__header {
   padding: 0;
 }
 .image-text .el-dialog__header{
   height: 0;
-}
+} */
 .bgWhite .el-dialog__footer{
   margin-top: 0;
 }
@@ -2615,12 +2605,12 @@ hr {
   font-weight: 700;
   color: #1f2d3d;
 }
-.image-text p:nth-child(2) {
+/* .image-text p:nth-child(2) {
   float: right;
 }
 .image-text p:nth-child(2) span {
   margin: 0 5px;
-}
+} */
 .image-text-body {
   width: 100%;
   height: 100%;
@@ -2872,6 +2862,7 @@ hr {
     color: #48576a
 }
 .projectLabel{
+  cursor: pointer;
   width: 90%;
   display: inline-block;
   white-space: nowrap;

@@ -343,7 +343,7 @@ export default {
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
-      myselfUpdate:true,
+      myselfUpdate: true,
       list: null,
       total: null,
       listLoading: true,
@@ -461,7 +461,7 @@ export default {
         name: [
           {
             required: true,
-            validator: validateName,
+            message: "岗位名称不能为空",
             trigger: "blur"
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
@@ -523,7 +523,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo
+        this.listQuery.page = res.data.data.pageNo;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
@@ -550,7 +550,7 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
@@ -584,7 +584,7 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       // var obj = {};
-      this.listLoading = true
+      this.listLoading = true;
       this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.data.list != undefined) {
@@ -597,7 +597,6 @@ export default {
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
         setTimeout(() => {
-          
           this.listLoading = false;
         }, 500);
       });
@@ -623,7 +622,6 @@ export default {
         this.pageSize = res.data.data.pageSize;
         setTimeout(() => {
           this.listLoading = false;
-          
         }, 500);
       });
     },
@@ -755,7 +753,7 @@ export default {
         //订单处理结束
 
         //处理列表权限不可取消
-        
+
         if (
           a.permission.substring(
             a.permission.length - 4,
@@ -804,8 +802,8 @@ export default {
       this.dialogFormVisible = true;
       console.log(row);
       this.dialogStatus = "update";
-      if(localStorage.getItem('userId') == row.id){
-        this.myselfUpdate = false
+      if (localStorage.getItem("userId") == row.id) {
+        this.myselfUpdate = false;
       }
       this.temp = {
         id: row.id,
@@ -1022,8 +1020,7 @@ export default {
                 }
 
                 //this.resetTemp2();
-                
-                
+
                 this.$message({
                   type: "success",
                   message: "添加成功"
@@ -1147,7 +1144,7 @@ export default {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
-      this.myselfUpdate = true
+      this.myselfUpdate = true;
     },
     resetForm2(formName) {
       this.temp2 = {
@@ -1263,7 +1260,8 @@ export default {
 .dialog-footer {
   text-align: center;
 }
-.treecss .el-tree-node
+.treecss
+  .el-tree-node
   .el-tree-node__children
   .el-tree-node
   .el-tree-node__children
@@ -1271,7 +1269,11 @@ export default {
   .el-tree-node {
   float: left;
 }
-.treecss .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+.treecss
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
   float: left;
 }
 /* .el-tree-node:nth-child(1)

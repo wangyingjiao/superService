@@ -268,7 +268,7 @@
                   :listquer="listQuery" :servery="servery" :startend="startEnd"
                   ></techni-edit>
      <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-          <button class="button-large-fourth closeThe" @click="abc">关 闭</button>
+          <button class="button-large-fourth closeThe" @click="closeThef">关 闭</button>
       </div>
 	</el-dialog>
     <!-- 弹出层 新增技师-->
@@ -325,7 +325,8 @@
                 <el-col :span="12">
                     <el-form-item label="出生日期：" required>
                         <el-form-item prop="birtStr">
-                            <el-date-picker 
+                            <el-date-picker
+                                :editable='false'
                                 type="date" placeholder="选择日期" 
                                 v-model="personal.birtStr" 
                                 style="width:100%"
@@ -383,7 +384,7 @@
                             :before-upload="beforeAvatarUpload"
                             >
                             <div class="upload-head"><span>点击上传</span></div>
-                            <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor" class="avatar">
+                            <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                         </el-upload>
                     </el-form-item>
                 </el-col>
@@ -397,7 +398,7 @@
                             :before-upload="beforeAvatarUpload"
                             >
                             <div class="upload-head"><span>点击上传</span></div>
-                            <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter" class="avatar">
+                            <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                         </el-upload>
                     </el-form-item>
                 </el-col>
@@ -719,6 +720,7 @@ export default {
       btnState: false,
       jobFlag: false,
       kaishi: "",
+      pageNumber:'',
       jiehsu: "",
       backId: "", //身份证头像
       headerBack: "", //头像
@@ -1209,7 +1211,7 @@ export default {
     }
   },
   methods: {
-    abc(){
+    closeThef(){
       this.$refs['techniEditDlog'].closeThe()
     },
     //鼠标滑过
@@ -1395,10 +1397,16 @@ export default {
         if (val) {
           var obj = {};
           obj.techId = this.passwordId;
+          if(this.ruleForm.endTime == "24:00"){
+              this.ruleForm.endTime = "23:59"
+              obj.endTime =
+                this.storeEnd.endDate + " " + this.ruleForm.endTime + ":59";
+          }else{
+            obj.endTime =
+                this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
+          }
           obj.startTime =
             this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
-          obj.endTime =
-            this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
           obj.remark = this.ruleForm.desc;
           console.log(obj);
           addVacation(obj)
@@ -1586,6 +1594,7 @@ export default {
       if (val != null || val != undefined) {
         this.listQuery.page = val;
       }
+      this.pageNumber = val
 
       var obj = {};
       if (this.techniSearch.stationId) {
@@ -1726,6 +1735,7 @@ export default {
                     type: "success",
                     message: "删除成功!"
                   });
+                  alert(this.listQuery.page)
                   this.handleCurrentChange(this.listQuery.page)
                   this.dialogVisibleEditClick()
               }else{
@@ -1826,8 +1836,11 @@ export default {
                 });
                 this.btnState = false;
                 this.dialogVisible = false;
-                this.listQuery.sync = 1;
-                this.getList(1, 6, {});
+                if(this.listQuery.sync!=1){
+                  this.listQuery.sync = 1;
+                }else{
+                  this.getList(1, 6, {});
+                }
                 this.techniSearch.stationId = "";
                 this.techniSearch.jobNature = "";
                 this.techniSearch.chooses = "";
@@ -1858,28 +1871,9 @@ export default {
             });
         } else {
            this.btnState = false;
-          // if(this.personal.headPic){
-
-          // }else{
-          //    this.$message({
-          //       message:'头像不能为空',
-          //       type:"warning"
-          //     })
-          //     return false
-          // }
-          // console.log(val,"false")
           return false;
         }
       });
-      // this.personal.workTimes.workTime = this.disbArr
-      // this.personal.workTimes = this.teachArr
-      // console.log(this.personal,"this.personal----")
-      // this.$refs[formName].validate(val => {
-      //   console.log(val, "val---");
-      //   if (val) {
-      //     this.personal.workTimes = this.teachArr;
-      //     delete this.personal.birtStr;
-      //     delete this.personal.area;
     },
     dialogVisibleEditClick() {
       this.dialogVisibleEdit = false;
@@ -1896,6 +1890,7 @@ export default {
           console.log(data, "选择城市---------");
           this.Choose = data.data.data.cityCodes;
           this.sexTypeo = data.data.data.skillInfos;
+          this.listQuery.sync = data.data.data.page.pageNo
           this.infoname = data.data.data.page.list || [];
           this.server = data.data.data.stations;
           this.total = data.data.data.page.count;
@@ -2115,7 +2110,7 @@ export default {
   left: 40px;
   width: 60%;
 }
-.tech-section-lage > div {
+.tech-qj .tech-section-lage > div {
   margin: 0px;
 }
 .tech-tc-prson {
@@ -2717,8 +2712,9 @@ export default {
   color: rgb(102, 102, 102);
 }
 .tech-qj .avatar {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
+  float: left;
   margin-top: 10px;
 }
 .passBox .el-form-item__content {
@@ -2781,6 +2777,7 @@ export default {
 .tech-qj .avatar-uploader .el-upload {
   border: none;
   border-radius: 0;
+  width: 100px;
 }
 .uploadHead .el-form-item__content {
   margin-left: 0 !important;
