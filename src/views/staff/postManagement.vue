@@ -83,7 +83,7 @@
         </el-form-item>
 
         <el-form-item label="等级:" prop="dataScope">
-          <el-select class="form_item" @change="lvChange" v-model="temp.dataScope" placeholder="请选择">
+          <el-select class="form_item" @change="lvChange" disabled v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -216,7 +216,7 @@ export default {
       total: 1,
       temp: {
         name: "",
-        dataScope: "",
+        dataScope: "10",
         check: [],
         officeId: ""
       },
@@ -601,7 +601,6 @@ export default {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   } else {
-                    
                   }
                 }
               }
@@ -742,16 +741,15 @@ export default {
         this.listLoading = false;
         if (res.data.code == 1) {
           if (localStorage.getItem("roleId") == res.data.data.id) {
-            console.log(11111111)
-           this.myselfUpdate = false;
+            console.log(11111111);
+            this.myselfUpdate = false;
           }
-          if(res.data.data.flag){
-            console.log(2222222222)
+          if (res.data.data.flag) {
+            console.log(2222222222);
             this.myselfUpdate = false;
-            this.$nextTick(()=>{
-            this.myselfUpdate = false;
-
-            })
+            this.$nextTick(() => {
+              this.myselfUpdate = false;
+            });
           }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
@@ -759,7 +757,10 @@ export default {
           this.roleId = a.id;
           this.temp.officeId = a.organization.id;
           this.temp.name = a.name;
-          this.temp.dataScope = a.dataScope;
+          //this.temp.dataScope = a.dataScope;
+          //一期默认10级
+          this.temp.dataScope = "10";
+
           this.temp.check = a.menuIdList;
           //console.log(a.menuIdList);
           if (res.data.data.flag) {
@@ -986,8 +987,8 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
-      //setTimeout(() => { 
-       
+      //setTimeout(() => {
+
       //}, 900);
     },
     //清空data
