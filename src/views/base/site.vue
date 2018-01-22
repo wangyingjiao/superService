@@ -595,7 +595,7 @@ export default {
     },
     resetForm(formName) {
       //清空表单
-      this.rowInfo.id = "";
+      // this.rowInfo.id = "";
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
@@ -658,14 +658,12 @@ export default {
           delSite(obj)
             .then(res => {
               if (res.data.code === 1) {
-                this.rowInfo.id = "";
                 this.$message({
                   type: "success",
                   message: "删除成功!"
                 });
                 this.getList();
               } else {
-                this.rowInfo.id = "";
                 this.$message({
                   type: "error",
                   message: res.data.data
@@ -680,7 +678,6 @@ export default {
             });
         })
         .catch(() => {
-          this.rowInfo.id = "";
           this.$message({
             type: "info",
             message: "已取消删除"
@@ -713,7 +710,6 @@ export default {
                   type: "success",
                   message: "添加成功"
                 });
-                this.rowInfo.id = "";
                 this.search.name = "";
                 this.search.cityCode = "";
                 this.handleFilter();
@@ -750,7 +746,7 @@ export default {
             this.dialogStoreVisible = false;
             //this.rowInfo.storeList = [];
             this.$refs.domTree.setCheckedKeys([]);
-            this.rowInfo.id = "";
+            // this.rowInfo.id = "";
             this.$message({
               type: "success",
               message: "保存成功!"
@@ -760,6 +756,7 @@ export default {
               cityCode: this.search.cityCode
             };
             getSite(obj, this.pageNumber, this.pageSize).then(res => {
+              this.rowInfo.id = "";
               this.list = res.data.data.list;
               if (this.list != undefined) {
                 for (var i = 0; i < this.list.length; i++) {
@@ -798,7 +795,7 @@ export default {
                   type: "success",
                   message: "设置成功"
                 });
-                this.rowInfo.id = "";
+                // this.rowInfo.id = "";
                 this.tempMaster.master = "";
                 this.$refs[formName].resetFields();
                 this.getList();
@@ -842,7 +839,7 @@ export default {
               if (res.data.code === 1) {
                 this.resetTemp();
                 this.$refs[formName].resetFields();
-                this.rowInfo.id = "";
+                //this.rowInfo.id = "";
                 this.$message({
                   type: "success",
                   message: "修改成功"
@@ -850,7 +847,7 @@ export default {
                 this.getList();
                 this.dialogFormVisible = false;
               } else {
-                this.rowInfo.id = "";
+                //this.rowInfo.id = "";
                 this.$message({
                   type: "error",
                   message: res.data.data
