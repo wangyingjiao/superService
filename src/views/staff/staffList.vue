@@ -193,7 +193,7 @@
           <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
         <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 100%;'  v-model="temp2.dataScope" placeholder="请选择">
+          <el-select style='width: 100%;' disabled  v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -278,7 +278,6 @@ export default {
           callback();
         }
       } else {
-        console.log(value,'密码')
         if (value == "") {
           callback();
         } else {
@@ -300,7 +299,6 @@ export default {
       }
     };
     var validatePass3 = (rule, value, callback) => {
-      console.log(value, "value");
       if (value == undefined) {
         callback();
       } else {
@@ -396,7 +394,7 @@ export default {
       temp2: {
         officeId2: "",
         check: [],
-        dataScope: "",
+        dataScope: "10",
         stationState: ""
       },
       stationState: "",
@@ -1034,13 +1032,11 @@ export default {
           addStation(obj)
             .then(res => {
               this.btnState = false;
-              console.log(res);
               if (res.data.code === 1) {
                 this.$refs.domTree.setCheckedKeys([]);
                 this.$refs[formName].resetFields();
                 this.dialogFormStation = false;
                 if (res.data.data.organization.id == this.temp.officeId) {
-                  console.log("相等");
                   this.stationCheck.push(res.data.data);
                   this.temp.role = res.data.data.id;
                 }
@@ -1085,15 +1081,12 @@ export default {
         roles: [this.temp.role],
         useable: this.temp.useable
       };
-      console.log(obj);
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           upStaff(obj)
             .then(res => {
-
-              console.log(res,'编辑时');
               this.btnState = false;
               if (res.data.code == 1) {
                  //将禁用的选项启用
@@ -1107,7 +1100,6 @@ export default {
                   this.temp.id == localStorage.getItem("userId") &&
                   obj.newPassword != ""
                 ) {
-                  console.log("编辑自己密码");
                   this.$store
                     .dispatch("LogOut")
                     .then(res => {
@@ -1125,7 +1117,6 @@ export default {
                       this.listLoading = false;
                     });
                 } else {
-                  console.log(1111111111111111)
                   this.dialogFormVisible = false;
                   this.resetTemp();
                   this.$refs[formName].resetFields();
@@ -1187,7 +1178,7 @@ export default {
       this.temp2 = {
         officeId2: "",
         name: "",
-        dataScope: "",
+        dataScope: "10",
         check: []
       };
       //this.dataScope = "";
