@@ -133,116 +133,6 @@
                   </el-col>
                 </el-row>
                 <!-- 新的完成 -->
-                <!-- <el-row :gutter="60">
-                    <el-col :span="12">
-                      <el-form-item label="姓名:" prop="name">
-                        <el-input placeholder="请输入2~15位姓名" v-model="personalEDit.name"></el-input>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-form-item label="身份证号:" prop="idCard">
-                        <el-input placeholder="请输入正确的身份证号" v-model="personalEDit.idCard"></el-input>
-                      </el-form-item>
-                    </el-col>
-                </el-row> -->
-                <!-- <el-row :gutter="60">
-                  <el-col :span="12">
-                    <el-form-item label="手机号:" prop="phone">
-                      <el-input placeholder="请输入11位手机号" v-model="personalEDit.phone"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="现住地址:" prop="area">
-                                      <el-cascader
-                                          :options="areaOptions"
-                                          :show-all-levels="true"
-                                          v-model="personalEDit.area"
-                                          style="width:100%"
-                                      ></el-cascader>
-                    </el-form-item>
-                  </el-col>
-                </el-row> -->
-                <!-- <el-row :gutter="60">
-                    <el-col :span="12">
-                      <el-form-item label="性别:" prop="sex">
-                        <el-select v-model="personalEDit.sex" clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="(item,key) in sex" :key="key" :label="item" :value="key">
-                          </el-option>
-                        </el-select>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                      <el-form-item prop="address">
-                        <el-input placeholder="请输入6-20位详细地址"  v-model="personalEDit.address"></el-input>
-                      </el-form-item>
-                    </el-col>
-                  </el-row>
-                  <el-row :gutter="60">
-                      <el-col :span="12">
-                        <el-form-item label="民族:">
-                          <el-select v-model="personalEDit.nation" clearable placeholder="请选择" style="width:100%">
-                            <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                          </el-select>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="12">
-                        <el-form-item label="出生日期:" prop="birthDate">
-                          <el-date-picker v-model="personalEDit.birthDate" type="date" placeholder="选择日期" style="width:100%" @change="dateChange"
-                          format="yyyy-MM-dd" :picker-options="pickerOptions0">
-                          </el-date-picker>
-                        </el-form-item>
-                      </el-col>
-                  </el-row>
-                  <el-row :gutter="60">
-                    <el-col :span="12">
-                        <el-form-item label="状态：" class="seize">
-                            <el-switch
-                              v-model="personalEDit.status"
-                              on-text="上线"
-                              off-text="暂停"
-                              on-value="yes"
-                              off-value="no">
-                            </el-switch>
-                        </el-form-item>
-                    </el-col>
-                  </el-row>
-                  <li>
-                      <div>
-                      <p></p>
-                      <p>
-                        <el-upload
-                            class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                            :show-file-list="false"
-                            :http-request="(val)=>picUpload(val,'head')"
-                            :before-upload="beforeAvatarUpload"
-                            >
-                              <div class="upload-head"><span>*上传头像</span></div>
-                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic" class="avatar">
-                          </el-upload>
-                          <el-upload
-                            class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                            :show-file-list="false"
-                            :http-request="(val)=>picUpload(val,'id')"
-                            :before-upload="beforeAvatarUpload"
-                            style="margin-left:20px;" 
-                            >
-                            <div class="upload-id"><span>上传身份证</span></div>
-                            <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor" class="avatar">
-                          </el-upload>
-                      </p>
-                      </div>
-                  </li>
-                  <li>
-                    <div>
-                      <p></p>
-                      <p>
-                          <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
-                      </p>
-                    </div>
-                  </li> -->
               </ul>
             </el-form>
         <!--个人信息 完成-->
@@ -351,7 +241,7 @@
                                     </div>
                                     <div class="startTime">
                                       <div class="selfCheckBoxsday">时段</div>
-                                      <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
+                                      <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
                                           start: '00:00',
                                           step: '00:30',
                                           end: '24:00',
@@ -359,7 +249,7 @@
                                           maxTime:startend.endNew
                                           }" class="tech-daytim">
                                       </el-time-select>
-                                      <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
+                                      <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
                                           start: '00:00',
                                           step: '00:30',
                                           end: '24:00',
@@ -469,6 +359,7 @@
                 <el-col :span="12">
                   <el-form-item label="入职日期:">
                     <el-date-picker
+                      :editable="false"
                       style="width:100%"
                       v-model="value1"
                       type="date"
