@@ -54,7 +54,7 @@
               <span v-else>{{scope.row.station.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="状态" width="100px" prop="useable">
+      <el-table-column class-name="status-col" label="状态" align="center" prop="useable">
          <template scope="scope">
           <span v-if="scope.row.useable =='1'">可用</span>
 					<span v-if="scope.row.useable =='0'">不可用</span>
@@ -1321,7 +1321,7 @@ export default {
   color: #4c70e8;
   cursor: pointer;
 }
-.btn_gray{
+.btn_gray {
   float: right;
   height: 36px;
   width: 80px;
@@ -1330,7 +1330,7 @@ export default {
   text-align: center;
   line-height: 34px;
   color: #bbb;
-  cursor: wait;
+  cursor: pointer;
 }
 .scrollBox {
   height: 400px;
