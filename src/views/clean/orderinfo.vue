@@ -535,6 +535,7 @@ export default {
             this.$confirm('此操作将更改技师, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
+              closeOnClickModal:false,
               type: 'warning'
             }).then(() => {
                 //更换时间的保存
