@@ -188,8 +188,8 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:'00:00',
-                            maxTime:startEnd.endNew
+                            minTime:'00:10',
+                            maxTime:'24:10'
                           }"
                           placeholder="选择时间">
                       </el-time-select>
@@ -1837,11 +1837,10 @@ export default {
                 });
                 this.btnState = false;
                 this.dialogVisible = false;
-                this.getList(1, 6, {});
                 if(this.listQuery.sync!=1){
                   this.listQuery.sync = 1;
                 }else{
-                  this.getList(1, 6, {});
+                  this.getList(1,this.listQuery.limit);
                 }
                 this.techniSearch.stationId = "";
                 this.techniSearch.jobNature = "";
@@ -1888,47 +1887,53 @@ export default {
       this.listLoadingTech = true;
       ChooseTheCity(num, size, obj)
         .then(data => {
-          this.listLoadingTech = false;
-          console.log(data, "选择城市---------");
-          this.Choose = data.data.data.cityCodes;
-          this.sexTypeo = data.data.data.skillInfos;
-          this.listQuery.sync = data.data.data.page.pageNo
-          this.infoname = data.data.data.page.list || [];
-          this.server = data.data.data.stations;
-          this.total = data.data.data.page.count;
-          var i = 0,
-            len = this.infoname.length,
-            date = new Date(),
-            year = date.getFullYear(),
-            birth = 0,
-            _infoname = this.infoname;
-          for (i = 0; i < len; i++) {
-            //遮罩
-            _infoname[i].ismouse = false;
-            // 性别
-            _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
-            // 年龄
-            // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
-            // 岗位性质
-            _infoname[i].jobName =
-              _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
-            // 岗位状态
-            _infoname[i].jobStateName =
-              _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
-            //工作年限
-            if (_infoname[i].workTime == "0") {
-              _infoname[i].workTimeName = "1年以下";
-            } else if (_infoname[i].workTime == "11") {
-              _infoname[i].workTimeName = "10年以上";
-            } else {
-              _infoname[i].workTimeName = _infoname[i].workTime + "年";
-            }
-            console.log(birth, "birth----");
+          if(data.data.code){
+              this.listLoadingTech = false;
+              console.log(data, "选择城市---------");
+              this.Choose = data.data.data.cityCodes;
+              this.sexTypeo = data.data.data.skillInfos;
+              // this.listQuery.sync = data.data.data.page.pageNo
+              this.infoname = data.data.data.page.list || [];
+              this.server = data.data.data.stations;
+              this.total = data.data.data.page.count;
+              var i = 0,
+                len = this.infoname.length,
+                date = new Date(),
+                year = date.getFullYear(),
+                birth = 0,
+                _infoname = this.infoname;
+              for (i = 0; i < len; i++) {
+                //遮罩
+                _infoname[i].ismouse = false;
+                // 性别
+                _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
+                // 年龄
+                // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+                // 岗位性质
+                _infoname[i].jobName =
+                  _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
+                // 岗位状态
+                _infoname[i].jobStateName =
+                  _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
+                //工作年限
+                if (_infoname[i].workTime == "0") {
+                  _infoname[i].workTimeName = "1年以下";
+                } else if (_infoname[i].workTime == "11") {
+                  _infoname[i].workTimeName = "10年以上";
+                } else {
+                  _infoname[i].workTimeName = _infoname[i].workTime + "年";
+                }
+                console.log(birth, "birth----");
+              }
+              this.techniList = this.infoname;
+              console.log(this.techniList, "this.techniList----------");
+          }else{
+            this.$message.error(data.data.data)
+            return false
           }
-          this.techniList = this.infoname;
-          console.log(this.techniList, "this.techniList----------");
         })
         .catch(error => {
+          return false
           console.log(error, "error-----thechni.vue-----1211");
         });
     },

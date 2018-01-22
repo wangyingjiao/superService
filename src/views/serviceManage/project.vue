@@ -33,6 +33,7 @@
     stripe
     border
     highlight-current-row 
+    class="projectTabel"
     element-loading-text="正在加载" 
     style="width: 100%;" >
       <el-table-column align="center" label="编号" width="100">
@@ -932,8 +933,27 @@ export default {
         //     { required: true, message: "请输入服务描述", trigger: "blur" },
         //     { min: 0, max: 255, message: "服务描述长度介于0和255之间", trigger: "blur" }
         //   ],
-        sysTags:[{required:true,validator:SYSTAGS,trigger:'blur'}]
+        sysTags:[{required:true,validator:(rule,value,callback)=>{
+          console.log(this.labelClickArr,"this.labelClickArr++++++")
+          console.log(this.alreadyArr,"this.alreadyArr+++++++")
+             var arr = this.labelClickArr.concat(this.alreadyArr)
+             if(arr!=undefined && arr.length>0){
+               callback()
+             }else{
+               callback(new Error('请选择系统标签'))
+             }
+        },trigger:'change'}]
       },
+
+    //       var SYSTAGS = (rule,value,callback)=>{
+    //   var arr = this.labelClickArr.concat(this.alreadyArr)
+    //   console.log(arr,"arr------")
+    //   if(arr!=undefined && arr.length>0){
+    //     callback()
+    //   }else{
+    //     callback(new Error('请选择系统标签'))
+    //   }
+    // }
       // goods_info: {
       //   name: "",
       //   unit: "",
@@ -1611,16 +1631,14 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
-            //  this.$refs["goods_info"].resetFields()
-      // this.goods_info.minPurchase = "";
-      // this.goods_info.startPerNum = '';
-      // this.goods_info.cappingPerNum = ''
-            // this.addComm = false
             this.handleEditFlag = false
           }else{
             // var obj = Object.assign({},this.goods_info)
             //   obj.startPerNum = this.goods_info.startPerNum || 1
             //   obj.minPurchase = this.goods_info.minPurchase ||1
+              if("id" in obj){
+                delete obj.id
+              }
               console.log(obj,"obj---------------")
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
@@ -1877,22 +1895,23 @@ export default {
       this.editId = row.id;
       ServerEdit({ id: this.editId })
         .then(data => {
+          console.log(data,"dataopopopopo")
           this.dialogFormVisible = true;   
           // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
           // console.log(data, "data-----编辑");
           // this.basicForm = data.data.data
           var arr = data.data.data;
           console.log(arr,"arr--------------")
-          for (var i = 0; i < arr.commoditys.length; i++) {
-            if (arr.commoditys[i].id) {
-              delete arr.commoditys[i].id;
-            }
+          // for (var i = 0; i < arr.commoditys.length; i++) {
+          //   if (arr.commoditys[i].id) {
+          //     delete arr.commoditys[i].id;
+          //   }
             // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
             //   if (arr.commoditys[i].persons[j].id) {
             //     delete arr.commoditys[i].persons[j].id;
             //   }
             // }
-          }
+          // }
           if (data.data.data.pictures != undefined) {
             this.picFile = data.data.data.pictures;
             this.imgNumber = data.data.data.pictures.length;
@@ -2119,6 +2138,14 @@ export default {
       this.$refs[formName].validate(valid => {
         // console.log(this.basicForm, "basicForm------");
         if (valid) {
+          console.log(this.basicForm.commoditys,"this.basicForm.commoditys-------")
+          if(this.basicForm.commoditys.length<=0){
+            this.$message({
+              message: '请添加商品',
+              type: "warning"
+            });
+            return false
+          }
           this.btnState = true
           var arr = []
           var obj = Object.assign({},that.basicForm)
@@ -2129,9 +2156,9 @@ export default {
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             // that.basicForm.id = this.editId
-            console.log(that.basicForm, "that.basicForm----");
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
-             that.basicForm.customTags = this.customArr
+            that.basicForm.customTags = this.customArr
+            console.log(that.basicForm, "that.basicForm----");
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -2160,7 +2187,7 @@ export default {
                 console.log(error, "error---project---857");
               });
           } else {
-            console.log(obj);
+            console.log(obj,"OBJ---------------------------");
             if("id" in obj){
               delete obj.id
             }
@@ -2320,8 +2347,8 @@ export default {
 .el-table th > .cell {
   text-align: -webkit-center;
 }
-.el-table .cell,
-.el-table th > div {
+.projectTabel .el-table .cell,
+.projectTabel .el-table th > div {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -2391,7 +2418,7 @@ export default {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.el-table .cell {
+.projectTabel .el-table__row .cell {
   padding: 0;
 }
 .tabBox {
