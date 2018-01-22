@@ -46,7 +46,7 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="E店编码" align="center"  prop="">
+      <el-table-column  label="E店编码" align="center"  prop="jointEshopCode">
          <!-- <template scope="scope">
            <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
              <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
