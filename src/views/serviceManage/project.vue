@@ -33,6 +33,7 @@
     stripe
     border
     highlight-current-row 
+    class="projectTableStyle"
     element-loading-text="正在加载" 
     style="width: 100%;" >
       <el-table-column align="center" label="编号" width="100">
@@ -86,8 +87,8 @@
       <el-table-column label="对接编码" align="center">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'—'+item.id">
-              <span class="proName">{{scope.row.sortId+"—"+item.id}}</span>
+            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'-'+item.id">
+              <span class="proName">{{scope.row.sortId+"-"+item.id}}</span>
             </el-tooltip>
           </div>
         </template>  
@@ -2317,11 +2318,11 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.el-table th > .cell {
+.projectTableStyle .el-table th > .cell {
   text-align: -webkit-center;
 }
-.el-table .cell,
-.el-table th > div {
+.projectTableStyle .el-table .cell,
+projectTableStyle  .el-table th > div {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -2391,7 +2392,7 @@ export default {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.el-table .cell {
+.projectTableStyle .el-table .cell {
   padding: 0;
 }
 .tabBox {
