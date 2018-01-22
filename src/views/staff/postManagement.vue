@@ -154,14 +154,13 @@ export default {
   data() {
     //表单验证
     var validateName = (rule, value, callback) => {
-      console.log(this.temp.officeId);
       var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
-        console.log(this.dialogStatus);
+
         if (this.dialogStatus == "create") {
-          console.log(this.temp.officeId);
+
           var obj = {
             name: value,
             id: this.temp.officeId
@@ -299,24 +298,22 @@ export default {
       this.data2 = res.data.data;
     });
     //获取机构
-    getSList({}).then(res => {
-      console.log("所属机构,机构搜索");
-      console.log(res);
+    getSList({}).then(res => {   
       this.officeIds = res.data.data.list;
-      console.log(this.officeIds);
+
     });
     //获取用户等级
     var lv = localStorage.getItem("dataScope");
-    console.log(lv, "用户等级");
+    //console.log(lv, "用户等级");
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
-    console.log(this.roleLv, "用户看到的等级");
+    //console.log(this.roleLv, "用户看到的等级");
   },
   methods: {
     aaa(val) {
       //测试函数
-      console.log(val);
+  
     },
     getList() {
       //获取列表
@@ -325,11 +322,10 @@ export default {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
-      console.log(obj);
       if (obj.name != "" || obj.organization.id != "") {
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
+
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -355,7 +351,6 @@ export default {
       } else {
         var obj = {};
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -387,7 +382,6 @@ export default {
       this.listLoading = true;
       if (obj.name != "" || obj.organization.id != "") {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -414,7 +408,6 @@ export default {
         var obj = {};
 
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -442,10 +435,8 @@ export default {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
-      console.log(obj);
       if (obj.name != "" || obj.organization.id != "") {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -470,7 +461,6 @@ export default {
       } else {
         var obj = {};
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -495,10 +485,8 @@ export default {
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
-      console.log(obj);
       if (obj.name != "" || obj.organization.id != "") {
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -523,7 +511,6 @@ export default {
       } else {
         var obj = {};
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res);
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -691,16 +678,16 @@ export default {
       //console.log(this.temp.check);
     },
     nodeClick(a, b, c) {
-      console.log(a, b, c, "nodeclick节点被点击时");
+      //console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
-      console.log(a, b, "currentchange选中节点变化时");
+      //console.log(a, b, "currentchange选中节点变化时");
     },
     nodeExpand(a, b, c) {
-      console.log(a, b, c, "nodeexpand节点被展开时");
+      //console.log(a, b, c, "nodeexpand节点被展开时");
     },
     nodeCollapse(a, b, c) {
-      console.log(a, b, c, "nodecollapse节点关闭");
+      //console.log(a, b, c, "nodecollapse节点关闭");
     },
     timeFilter(time) {
       if (!time[0]) {
@@ -712,15 +699,10 @@ export default {
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
     lvChange(value) {
-      // console.log(value);
-      // console.log(this.temp.officeId);
-      // console.log(this.temp.name);
-      // console.log(this.roleId);
-      // console.log(this.temp);
-      // // this.temp.dataScope = value;
+     
     },
     offChange(val) {
-      //console.log(val);
+      
     },
     //点击新增时
     handleCreate() {
@@ -728,7 +710,6 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       if (this.officeIds.length == 1) {
-        console.log(this.officeIds[0].id);
         this.temp.officeId = this.officeIds[0].id;
       }
     },
@@ -737,15 +718,12 @@ export default {
       this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
-        console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
           if (localStorage.getItem("roleId") == res.data.data.id) {
-            console.log(11111111);
             this.myselfUpdate = false;
           }
-          if (res.data.data.flag) {
-            console.log(2222222222);
+          if (res.data.data.flagRoleId) {
             this.myselfUpdate = false;
             this.$nextTick(() => {
               this.myselfUpdate = false;
@@ -805,13 +783,11 @@ export default {
         type: "warning"
       })
         .then(() => {
-          console.log(row);
           var obj = {
             id: row.id
           };
           delStation(obj)
             .then(res => {
-              console.log(res);
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -844,14 +820,13 @@ export default {
       // }
     },
     getFather(data) {
-      console.log(121233213);
+
       for (var i in data) {
         if (data[i].subMenus != undefined) {
-          console.log(i);
           this.getFather(data[i].subMenus);
         } else {
           if (this.data2.indexOf(data[i].id) > -1) {
-            console.log(data[i].parentId);
+
           }
         }
       }
@@ -874,15 +849,13 @@ export default {
           id: this.temp.officeId
         }
       };
-      console.log(obj);
-
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           addStation(obj)
             .then(res => {
               this.btnState = false;
-              console.log(res);
+
               if (res.data.code === 1) {
                 this.resetTemp();
                 this.$refs[formName].resetFields();
@@ -940,7 +913,6 @@ export default {
           id: this.temp.officeId
         }
       };
-      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
