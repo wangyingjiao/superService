@@ -45,7 +45,6 @@ const user = {
           username: userInfo.username,
           password: userInfo.password
         }
-
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
             localStorage.setItem('name', response.data.data.user.name)
@@ -77,7 +76,7 @@ const user = {
         return new Promise((resolve, reject) => {
           getUserInfo().then(response => {
             const data = response.data
-            console.log(data, '权限列表')
+            // console.log(data, '权限列表')
             localStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
             resolve(response)
@@ -104,7 +103,7 @@ const user = {
     Getbutton({ commit }) {
       return new Promise((resolve, reject) => {
         getButton().then(res => {
-          console.log(res, '按钮权限')
+          // console.log(res, '按钮权限')
           commit('SET_BUTTONSHOW', res.data.data)
           localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)
