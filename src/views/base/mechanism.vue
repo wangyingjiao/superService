@@ -46,7 +46,7 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="E店编码" align="center"  prop="">
+      <el-table-column  label="E店编码" align="center"  prop="jointEshopCode">
          <!-- <template scope="scope">
            <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
              <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
@@ -247,7 +247,7 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (!/^(\d{1,4}-)?(\d{1,4}-)?\d{7,9}$/.test(value)) {
+        if (!/^(\d{1,4})?(\d{1,4}-)?\d{7,9}$/.test(value)) {
           callback(new Error("请输入正确固话格式，如：010-88886666"));
         } else {
           callback();
@@ -768,7 +768,7 @@ export default {
                   type: "success",
                   message: "添加成功"
                 });
-                this.search.key = "";
+                this.search.key = "name";
                 this.search.value = "";
                 this.handleFilter();
                 this.dialogFormVisible = false;

@@ -968,7 +968,7 @@ export default {
       this.temp = {
         officeId: "",
         name: "",
-        dataScope: "",
+        dataScope: "10",
         check: []
       };
     },
