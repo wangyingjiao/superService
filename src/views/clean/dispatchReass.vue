@@ -1,5 +1,6 @@
 <template>
     <div class="tableWarp">
+        <!-- 表格开始 -->
         <el-table :data="reassList"  style="width: 100%" border>
             <el-table-column prop="headPic" label="头像" align="center">
                 <template scope="scope">
@@ -27,6 +28,7 @@
             <el-table-column prop="createDate" label="派单时间" align="center">
             </el-table-column>
         </el-table>
+        <!-- 表格结束 -->
     </div>
 </template>
 
@@ -40,6 +42,7 @@ export default {
     }
   },
   methods:{
+      //列表获取
       reassClick(id){
           var obj={
               orderId:id

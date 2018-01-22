@@ -535,6 +535,7 @@ export default {
           this.listLoading = false;
         });
     },
+    //改变一页多少行
     handleSizeChange(val) {
       this.pageNumber=1;
       this.jumpPage=1;
@@ -544,6 +545,7 @@ export default {
       };
       this.getList(obj, this.pageNumber, this.pageSize);
     },
+    //改变当前页
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
@@ -590,8 +592,7 @@ export default {
         });
     },
     //选择技师按钮
-    orderTech() {
-           
+    orderTech() {          
       var obj = {
         techName: "",
         techStationId: ""
