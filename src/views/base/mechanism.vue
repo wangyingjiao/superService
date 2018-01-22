@@ -707,6 +707,7 @@ export default {
     },
     //取消
     resetForm(formName) {
+      this.typeState = false;
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
@@ -827,6 +828,7 @@ export default {
               //console.log(res,'编辑信息');
               if (res.data.code === 1) {
                 this.dialogFormVisible = false;
+                this.typeState = false;
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.$message({
