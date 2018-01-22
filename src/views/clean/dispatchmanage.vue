@@ -410,9 +410,6 @@ export default {
 	}	
   },
   mounted() {
-		// var obj={
-
-		// }
     this.reassList();
   }
 };

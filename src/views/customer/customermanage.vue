@@ -157,6 +157,7 @@ import {getMech} from "@/api/base";
 export default {
   name: "",
   data() {
+		//手机号验证规则
 		var checkPhone = (rule, value, callback) => {			  
 				if (!value) {
 					return callback(new Error('请输入11位手机号码'));
@@ -168,6 +169,7 @@ export default {
 					}
 				}
 		};
+		//邮箱验证规则
 		var checkEmail = (rule, value, callback) => {
 				if (!value) {
             callback();
@@ -183,6 +185,7 @@ export default {
 					}
 				}			
 		};
+		//客户名验证规则
 		var checkName = (rule, value, callback) => {
 				if (!value) {
             callback(new Error('请输入2-15位客户姓名'));
@@ -194,6 +197,7 @@ export default {
               }
 				}			
 		};
+		//详细地址验证规则
 		var checkAddress = (rule, value, callback) => {			  
 				if (!value) {
             callback(new Error('请选取地点,并填写详细地址'));
@@ -410,12 +414,12 @@ export default {
 													type: 'success',
 													message: '删除成功!'
 												});
-										var obj1={
-												name:this.customName,
-												phone:this.customPhone,
-												// orgId:this.organizationName,
-										}
-										this.getData(obj1,this.pageNumber,this.pageSize1);
+												var obj1={
+														name:this.customName,
+														phone:this.customPhone,
+														// orgId:this.organizationName,
+												}
+												this.getData(obj1,this.pageNumber,this.pageSize1);
 										}else{
 											this.$message({
 													type: 'error',
@@ -456,7 +460,7 @@ export default {
 						});
 
 					},
-					//地图初始化
+					//按区域POI搜索
 					test(area){						  
 							var that=this;							
 							var inputname=this.$refs.pickerInput;

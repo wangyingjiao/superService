@@ -87,8 +87,8 @@
       <el-table-column label="对接编码" align="center">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'—'+item.id">
-              <span class="proName">{{scope.row.sortId+"—"+item.id}}</span>
+            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'-'+item.id">
+              <span class="proName">{{scope.row.sortId+"-"+item.id}}</span>
             </el-tooltip>
           </div>
         </template>  
@@ -2297,7 +2297,7 @@ export default {
   display:inline-block;float:left;
 }
 .selfTabsaa{
-   display:inline-block;margin-top:10px;idth:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
+   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
 }
 .selfTabContent{
     float:left;max-width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
@@ -2344,14 +2344,14 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.el-table th > .cell {
+.projectTableStyle  th > .cell {
   text-align: -webkit-center;
 }
 .projectTabel .el-table .cell,
 .projectTabel .el-table th > div {
   padding-left: 10px;
   padding-right: 10px;
-}
+} 
 .upload_box {
   /* text-align: center; */
   box-sizing: border-box;

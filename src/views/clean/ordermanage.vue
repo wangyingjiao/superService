@@ -24,11 +24,7 @@
 			  <el-select clearable class="search"  v-model="sevicerStustas" placeholder="请选择服务状态">
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
-			  </el-select>
-				<!-- <el-input  v-if="orderProject === '1'" class="width200"  placeholder="请输入客户姓名" v-model="customerName"></el-input>
-				<el-input  v-else-if="orderProject === '2'" class="width200"  placeholder="请输入客户手机号" v-model="customerPhone"></el-input>
-				<el-input  v-else-if="orderProject === '3'" class="width200"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>
-				<el-input  v-else-if="orderProject === '4'" class="width200"  placeholder="请输入项目名称" v-model="orderContent"></el-input> -->							  
+			  </el-select>						  
 			  <button type="button" class="search-button floatRight btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
 					<el-date-picker
@@ -72,10 +68,6 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<!-- <el-table-column align="center"  width="150" label="客户姓名"  prop="customerName">
-					</el-table-column>
-					<el-table-column  align="center" width="150" label="客户电话"  prop="customerPhone">
-					</el-table-column> -->
 					<el-table-column  align="center" width="150"   label="服务机构" prop="orgName">
 					</el-table-column>
 					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
