@@ -2325,7 +2325,7 @@ export default {
 .projectTableStyle th > div {
   padding-left: 10px;
   padding-right: 10px;
-}
+} */
 .upload_box {
   /* text-align: center; */
   box-sizing: border-box;
