@@ -62,7 +62,7 @@
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-            <el-tooltip placement="top" :disabled="item.name.length <= 10" :content="item.name">
+            <el-tooltip placement="left" :disabled="item.name.length <= 10" :content="item.name">
                 <span class="proName">{{item.name}}</span>
             </el-tooltip>
           </div>
@@ -76,7 +76,7 @@
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
           >
-          <el-tooltip placement="top" :disabled="(item.unit+item.price).length <= 10" :content="item.price+'元 / '+item.unit">
+          <el-tooltip placement="left" :disabled="(item.unit+item.price).length <= 10" :content="item.price+'元 / '+item.unit">
             <span class="proName">{{item.price+"元"}} / {{item.unit}}</span>
           </el-tooltip>
           </div>
@@ -209,7 +209,7 @@
                           <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">X</i>
                         </span> -->
                         <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa" style="border-radius:20px;">
-                          <el-tooltip placement="top" :disabled="item.length <=5" :content="item">
+                          <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
                               <div>
                                   <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;margin-right:0px">{{item}}</span>
                                   <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
@@ -407,7 +407,7 @@
               <div class="already">
                   <div class="selfTitle1">当前选择标签：</div>
                   <div v-for="(item,index) in labelClickArr" :key="index" class="selfTabsaa">
-                    <el-tooltip placement="top" :disabled="item.length <= 4" :content="item">
+                    <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
                         <div>
                             <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
                             <span @click="SelectedLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;"></span>
@@ -426,7 +426,7 @@
                     <i @click="AlreadyLabel(item)" class="cursor" style="font-weight: bolder;">x</i>
                   </span> -->
                   <div v-for="(item,index) in alreadyArr" :key="index" class="selfTabsaa">
-                    <el-tooltip placement="top" :disabled="item.length <= 4" :content="item">
+                    <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
                         <div>
                           <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
                           <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:2px;"></span>
@@ -467,7 +467,7 @@
                             class="cursor" :value="item.label"> -->
                     <!-- <el-tooltip placement="top" :disabled="item.label.length<11" :content="item.label"> -->
                       <div  v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
-                          <el-tooltip placement="top" :disabled="item.label.length<4" :content="item.label">
+                          <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 

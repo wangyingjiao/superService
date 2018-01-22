@@ -612,9 +612,13 @@ export default {
       }
       if (row.storeList != undefined) {
         this.rowInfo.storeList = row.storeList;
+      }else{
+        this.rowInfo.storeList = []
       }
       if (row.servicePoint != undefined) {
         this.rowInfo.servicePoint = row.servicePoint;
+      }else{
+        this.rowInfo.servicePoint = ""
       }
     },
     handleCreate() {
@@ -744,7 +748,7 @@ export default {
           }, 1000);
           if (res.data.code == 1) {
             this.dialogStoreVisible = false;
-            this.rowInfo.storeList = [];
+            //this.rowInfo.storeList = [];
             this.$refs.domTree.setCheckedKeys([]);
             this.rowInfo.id = "";
             this.$message({
@@ -875,7 +879,7 @@ export default {
     resetStore() {
       //取消门店
       this.tempStore.tree = [];
-      this.rowInfo.storeList = [];
+      //this.rowInfo.storeList = [];
       this.$refs.domTree.setCheckedKeys([]);
       this.dialogStoreVisible = false;
     },

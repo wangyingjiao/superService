@@ -262,7 +262,7 @@ export default {
         name: [
           {
             required: true,
-            validator: validateName,
+            message: "岗位名称不能为空",
             trigger: "blur"
           },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
@@ -335,16 +335,15 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-           setTimeout(() => {
-             
-             this.listLoading = false;
-           }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -362,16 +361,15 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
@@ -395,14 +393,13 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           } else {
@@ -423,14 +420,13 @@ export default {
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo
+            this.listQuery.page = res.data.data.pageNo;
             if (this.list != undefined) {
               for (var i = 0; i < this.list.length; i++) {
                 this.list[i].index = i + 1;
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           }
@@ -441,7 +437,7 @@ export default {
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.listLoading = true
+      this.listLoading = true;
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
@@ -460,10 +456,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -487,7 +482,6 @@ export default {
               }
             }
             setTimeout(() => {
-              
               this.listLoading = false;
             }, 500);
           }
@@ -496,7 +490,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.listLoading = true
+      this.listLoading = true;
       var obj = {
         name: this.search.name,
         organization: { id: this.search.officeId }
@@ -515,10 +509,9 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-              setTimeout(() => {
-                
-                this.listLoading = false;
-              }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           } else {
             this.listLoading = false;
             this.$message({
@@ -541,15 +534,15 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-             setTimeout(() => {
-               this.listLoading = false;
-             }, 500);
+            setTimeout(() => {
+              this.listLoading = false;
+            }, 500);
           }
         });
       }
     },
     handTreechange(a, b, c) {
-      console.log(a, b, c, "yyyyyyyy");
+      //console.log(a, b, c, "yyyyyyyy");
       //父级点击时取消勾选
       // if(a.permission = 'order'){
       //   if(b){
@@ -562,7 +555,7 @@ export default {
       // console.log(this.temp.check, "check-----------------");
       // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        console.log("tttttttttttttttt");
+        //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
@@ -574,7 +567,7 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(this.data2[i].subMenus[j], "成功");
+                  //console.log(this.data2[i].subMenus[j], "成功");
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
@@ -584,7 +577,7 @@ export default {
                 }
               }
             } else {
-              console.log(this.data2[i].subMenus);
+              //console.log(this.data2[i].subMenus);
             }
           }
         }
@@ -599,7 +592,7 @@ export default {
                   var str = this.data2[i].subMenus[j].subMenus[
                     this.data2[i].subMenus[j].subMenus.length - 1
                   ];
-                  console.log(str.name, "vvvvvvvvvvvv");
+                  //console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -608,7 +601,7 @@ export default {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   } else {
-                    console.log(111111111111111111);
+                    
                   }
                 }
               }
@@ -620,25 +613,25 @@ export default {
         }
         //自动勾选列表权限结束
       } else {
-        console.log("取消勾选");
+        //console.log("取消勾选");
         //订单的查看详情不可取消
-        console.log(this.temp.check, "dddddddddddddd");
+        //console.log(this.temp.check, "dddddddddddddd");
         if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
-              console.log(a.permission, "1");
+              //console.log(a.permission, "1");
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(a.permission, "2", this.temp.check);
+                  //console.log(a.permission, "2", this.temp.check);
                   var orderarr = this.data2[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
                     //console.log('不可取消')
                     if (this.temp.check.indexOf(orderarr.subMenus[k].id) > -1) {
-                      console.log(a.permission, "3");
-                      console.log(
-                        this.data2[i].subMenus[j].subMenus[1].name,
-                        "详情权限iiiii"
-                      );
+                      // console.log(a.permission, "3");
+                      // console.log(
+                      //   this.data2[i].subMenus[j].subMenus[1].name,
+                      //   "详情权限iiiii"
+                      // );
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
@@ -742,13 +735,23 @@ export default {
     },
     //点击编辑时
     handleUpdate(row) {
+      this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
         console.log(res);
         this.listLoading = false;
         if (res.data.code == 1) {
-          if(localStorage.getItem('orgId') == res.data.data.organization.id){
-            this.myselfUpdate = false
+          if (localStorage.getItem("roleId") == res.data.data.id) {
+            console.log(11111111)
+           this.myselfUpdate = false;
+          }
+          if(res.data.data.flag){
+            console.log(2222222222)
+            this.myselfUpdate = false;
+            this.$nextTick(()=>{
+            this.myselfUpdate = false;
+
+            })
           }
           this.dialogStatus = "update";
           this.dialogFormVisible = true;
@@ -854,10 +857,6 @@ export default {
     },
     //新增
     create(formName) {
-      this.search = {
-        name: "",
-        officeId: ""
-      };
       //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
@@ -894,14 +893,25 @@ export default {
                 this.dialogFormVisible = false;
                 this.listQuery.page = 1;
                 this.pageNumber = 1;
+                this.search = {
+                  name: "",
+                  officeId: ""
+                };
                 this.handleFilter();
               } else {
                 //this.$refs.domTree.setCheckedKeys([]);
                 // this.resetTemp();
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
+                if (typeof res.data.data == "string") {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data
+                  });
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: res.data.data[0]
+                  });
+                }
               }
             })
             .catch(err => {
@@ -976,7 +986,9 @@ export default {
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
-      this.myselfUpdate = true
+      //setTimeout(() => { 
+       
+      //}, 900);
     },
     //清空data
     resetTemp() {
@@ -1049,7 +1061,8 @@ export default {
 .btn_pad {
   margin: 0px 0px 20px 20px;
 }
-.treecss .el-tree-node
+.treecss
+  .el-tree-node
   .el-tree-node__children
   .el-tree-node
   .el-tree-node__children
@@ -1057,7 +1070,11 @@ export default {
   .el-tree-node {
   float: left;
 }
-.treecss .el-tree-node .el-tree-node__children .el-tree-node__children .el-tree-node {
+.treecss
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
   float: left;
 }
 /* .el-tree-node:nth-child(1)
