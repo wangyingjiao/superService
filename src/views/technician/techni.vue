@@ -140,28 +140,28 @@
     </div>
 
        <!-- </el-table> -->
-      <!-- 密码弹出层 -->
+    <!-- 密码弹出层 -->
       <el-dialog title="设置技师APP端登录密码" :close-on-click-modal="false" :visible.sync="password" custom-class="tech-section-lages tect-pass" style="top：10%">
-		<div class="mobel">
-			<p>手机：</p>
-			<p>{{passwordModule}}</p>
-		</div>
-		<div class="passBox">
-			<el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
-				<el-form-item label="设置密码：" prop="pass">
-					<el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="至少8个字符,同时包含字母与数字"></el-input>
-				</el-form-item>
-				<el-form-item label="重复密码：" prop="checkPass">
-					<el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
-				</el-form-item>
-				<el-form-item>
-            <input type="button" class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')" value="保存">
-            <input type="button" class="button-cancel" @click="passwordCancel('ruleForm2')" value="取消">
-				</el-form-item>
-			</el-form>
-		</div>
+        <div class="mobel">
+          <p>手机：</p>
+          <p>{{passwordModule}}</p>
+        </div>
+        <div class="passBox">
+          <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+            <el-form-item label="设置密码：" prop="pass">
+              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="至少8个字符,同时包含字母与数字"></el-input>
+            </el-form-item>
+            <el-form-item label="重复密码：" prop="checkPass">
+              <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <input type="button" class="button-large" style="margin-right:10px;" @click="passwordPrese('ruleForm2')" value="保存">
+                <input type="button" class="button-cancel" @click="passwordCancel('ruleForm2')" value="取消">
+            </el-form-item>
+          </el-form>
+        </div>
       </el-dialog>
-      <!-- 休息弹出层 -->
+    <!-- 休息弹出层 -->
       <el-dialog title="休假" :visible.sync="flags" :close-on-click-modal="false" custom-class="tech-section-lages tech-vacation" style="top:10%;">
         <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
         <ul class="tech-section-xiu">
@@ -182,12 +182,13 @@
                 <el-col :span="11">
                   <el-form-item prop="startTime">
                     	<el-time-select
+                          :editable='false'
                           v-model="ruleForm.startTime"
                           :picker-options="{
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:startEnd.startNew,
+                            minTime:'00:00',
                             maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
@@ -205,6 +206,7 @@
                 <el-col :span="11">
                   <el-form-item prop="endTime">
                     <el-time-select
+                          :editable='false'
                           v-model="ruleForm.endTime"
                           :picker-options="{
                             start: '00:00',
@@ -233,13 +235,13 @@
           </div>
         <!-- </el-form> -->
       </el-dialog>
-      <!-- 选择技能 -->
+    <!-- 选择技能 -->
       <el-collapse-transition>
         <div class="tech-psoition" v-if="position">
           <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
             <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
               <el-tooltip placement="top" :disabled="item.name.length <= 5" :content="item.name">
-                 <span>{{item.name}}</span>
+                <span>{{item.name}}</span>
               </el-tooltip>
               <div :class="{'triangle-bottomright':item.show===true}"></div>
               <!-- <div class="tally">&#10004;</div> -->
@@ -254,300 +256,300 @@
 
     </div>
     <!-- 分页 -->
-    <div v-show="!listLoading" class="pagination-container fy">
-      <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
-        :page-sizes="[6,12,18,24]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
-    <!-- 编辑技师 -->
-	<el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
-		<techni-edit :areaOptions="areaOptions" :technicianData="technicianData" ref="techniEditDlog"
-                  :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
-                  :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
-                  :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
-                  :listquer="listQuery" :servery="servery" :startend="startEnd"
-                  ></techni-edit>
-     <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-          <button class="button-large-fourth closeThe" @click="closeThef">关 闭</button>
+      <div v-show="!listLoading" class="pagination-container fy">
+        <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
+          :page-sizes="[6,12,18,24]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+        </el-pagination>
       </div>
-	</el-dialog>
+    <!-- 编辑技师 -->
+      <el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
+        <techni-edit :areaOptions="areaOptions" :technicianData="technicianData" ref="techniEditDlog"
+                      :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
+                      :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
+                      :marriage="marriage" :education="education" :relation = "relation" @getlist="handleCurrentChange"
+                      :listquer="listQuery" :servery="servery" :startend="startEnd"
+                      ></techni-edit>
+        <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
+              <button class="button-large-fourth closeThe" @click="closeThef">关 闭</button>
+          </div>
+      </el-dialog>
     <!-- 弹出层 新增技师-->
-    <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-      <div class="techniAdd">
-        <!-- 个人资料 -->
-        <h3 class="tech-tc-prson">个人资料</h3>
-		<el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
-			<ul class="tech-ul">
-        <!-- 新的 -->
-            <el-row :gutter="60">
-              <el-col :span="12">
-                  <el-form-item label="姓名：" prop="name">
-                      <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
-                  </el-form-item>
-                  <el-form-item label="手机号：" prop="phone">
-                      <el-input placeholder="请输入11位手机号" v-model="personal.phone"></el-input>
-                  </el-form-item>
-                  <el-form-item label="性别：" prop="sex">
-                      <el-select v-model="personal.sex" clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
-                          </el-option>
-                      </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                  <el-form-item label="头像：" prop="headPic">
-                      <el-upload
-                          class="avatar-headPic"
-                          action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                          :show-file-list="false"
-                          :before-upload="beforeAvatarUpload"
-                          :http-request="(val)=>picUpload(val,'head')"
-                          >
-                          <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
-                          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                      </el-upload>
-                      <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
-                  </el-form-item>
-              </el-col>  
-            </el-row>
-            <el-row :gutter="60">
+      <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
+        <div class="techniAdd">
+          <!-- 个人资料 -->
+          <h3 class="tech-tc-prson">个人资料</h3>
+      <el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
+        <ul class="tech-ul">
+          <!-- 新的 -->
+              <el-row :gutter="60">
                 <el-col :span="12">
-                    <el-form-item label="现住地址：" prop="area">
-                        <el-cascader
-                        style="width:100%"
-                            @change="nowAdd"
-                            :options="areaOptions"
-                            :show-all-levels="true"
-                            v-model="personal.area"
-                        ></el-cascader>
+                    <el-form-item label="姓名：" prop="name">
+                        <el-input placeholder="请输入2~15位姓名" v-model="personal.name"></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="出生日期：" required>
-                        <el-form-item prop="birtStr">
-                            <el-date-picker
-                                :editable='false'
-                                type="date" placeholder="选择日期" 
-                                v-model="personal.birtStr" 
-                                style="width:100%"
-                                format="yyyy-MM-dd"
-                                @change="dateChange"
-                                :picker-options="pickerOptions0"
-                                >
-                            </el-date-picker>
-                        </el-form-item>
+                    <el-form-item label="手机号：" prop="phone">
+                        <el-input placeholder="请输入11位手机号" v-model="personal.phone"></el-input>
                     </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="60">
-                <el-col :span="12">
-                    <el-form-item prop="address">
-                      <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="民族：" class="seize">
-                      <el-select v-model="personal.nation" filterable clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
-                          </el-option>
-                      </el-select>
+                    <el-form-item label="性别：" prop="sex">
+                        <el-select v-model="personal.sex" clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,key,index) in sex" :key="index" :label="item" :value="key">
+                            </el-option>
+                        </el-select>
                   </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row :gutter="60">
                 <el-col :span="12">
-                    <el-form-item label="身份证号：" prop="idCard">
-                        <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="服务状态：" class="seize">
-                        <el-switch
-                          v-model="personal.status"
-                          :width="100"
-                          on-text="提供服务"
-                          off-text="暂停服务"
-                          on-value="yes"
-                          off-value="no">
-                        </el-switch>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="60">
-                <el-col :span="12">
-                    <el-form-item label="身份证正面：">
+                    <el-form-item label="头像：" prop="headPic">
                         <el-upload
-                            class="avatar-uploader"
+                            class="avatar-headPic"
                             action="http://openservice.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
-                            :http-request="(val)=>picUpload(val,'id')"
                             :before-upload="beforeAvatarUpload"
+                            :http-request="(val)=>picUpload(val,'head')"
                             >
-                            <div class="upload-head"><span>点击上传</span></div>
-                            <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                            <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
+                        <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
+                    </el-form-item>
+                </el-col>  
+              </el-row>
+              <el-row :gutter="60">
+                  <el-col :span="12">
+                      <el-form-item label="现住地址：" prop="area">
+                          <el-cascader
+                          style="width:100%"
+                              @change="nowAdd"
+                              :options="areaOptions"
+                              :show-all-levels="true"
+                              v-model="personal.area"
+                          ></el-cascader>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-form-item label="出生日期：" required>
+                          <el-form-item prop="birtStr">
+                              <el-date-picker
+                                  :editable='false'
+                                  type="date" placeholder="选择日期" 
+                                  v-model="personal.birtStr" 
+                                  style="width:100%"
+                                  format="yyyy-MM-dd"
+                                  @change="dateChange"
+                                  :picker-options="pickerOptions0"
+                                  >
+                              </el-date-picker>
+                          </el-form-item>
+                      </el-form-item>
+                  </el-col>
+              </el-row>
+              <el-row :gutter="60">
+                  <el-col :span="12">
+                      <el-form-item prop="address">
+                        <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="民族：" class="seize">
+                        <el-select v-model="personal.nation" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="item in ethnics" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                  </el-col>
+              </el-row>
+              <el-row :gutter="60">
+                  <el-col :span="12">
+                      <el-form-item label="身份证号：" prop="idCard">
+                          <el-input placeholder="请输入正确的身份证号" v-model="personal.idCard"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-form-item label="服务状态：" class="seize">
+                          <el-switch
+                            v-model="personal.status"
+                            :width="100"
+                            on-text="提供服务"
+                            off-text="暂停服务"
+                            on-value="yes"
+                            off-value="no">
+                          </el-switch>
+                      </el-form-item>
+                  </el-col>
+              </el-row>
+              <el-row :gutter="60">
+                  <el-col :span="12">
+                      <el-form-item label="身份证正面：">
+                          <el-upload
+                              class="avatar-uploader"
+                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              :show-file-list="false"
+                              :http-request="(val)=>picUpload(val,'id')"
+                              :before-upload="beforeAvatarUpload"
+                              >
+                              <div class="upload-head"><span>点击上传</span></div>
+                              <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                          </el-upload>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-form-item  label="身份证反面：">
+                          <el-upload
+                              class="avatar-uploader"
+                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              :show-file-list="false"
+                              :http-request="(val)=>picUpload(val,'at')"
+                              :before-upload="beforeAvatarUpload"
+                              >
+                              <div class="upload-head"><span>点击上传</span></div>
+                              <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                          </el-upload>
+                      </el-form-item>
+                  </el-col>
+              </el-row>
+          <!-- 新的结束  -->
+        
+          
+          <!-- 服务信息 -->
+          <h3 class="tech-tc-prson">服务信息</h3>
+          <ul class="tech-ul tech-service">
+            <el-row :gutter="60">
+                <el-col :span="12">
+                  <el-form-item label="所属服务站：" prop="stationId">
+                        <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-form-item  label="身份证反面：">
-                        <el-upload
-                            class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
-                            :show-file-list="false"
-                            :http-request="(val)=>picUpload(val,'at')"
-                            :before-upload="beforeAvatarUpload"
-                            >
-                            <div class="upload-head"><span>点击上传</span></div>
-                            <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
-                        </el-upload>
+                    <el-form-item label="岗位性质：" prop="jobNature">
+                        <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
+                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
-        <!-- 新的结束  -->
-       
-         
-        <!-- 服务信息 -->
-        <h3 class="tech-tc-prson">服务信息</h3>
-        <ul class="tech-ul tech-service">
-          <el-row :gutter="60">
-              <el-col :span="12">
-                <el-form-item label="所属服务站：" prop="stationId">
-                      <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                          </el-option>
-                      </el-select>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                  <el-form-item label="岗位性质：" prop="jobNature">
-                      <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
-                          <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-                          </el-option>
-                      </el-select>
-                  </el-form-item>
-              </el-col>
-          </el-row>
-          <el-row :gutter="60">
-              <el-col :span="12">
-                <el-form-item label="工作年限：" prop="workTime">
-                    <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
-                      <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                  <el-form-item label="岗位状态：" prop="jobStatus">
-                      <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
-                        <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+            <el-row :gutter="60">
+                <el-col :span="12">
+                  <el-form-item label="工作年限：" prop="workTime">
+                      <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                        <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                         </el-option>
                       </el-select>
-                  </el-form-item>
-              </el-col>
-          </el-row>
-          <el-row :gutter="60">
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="岗位状态：" prop="jobStatus">
+                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row :gutter="60">
+                <el-col :span="12">
+                </el-col>
+            </el-row>
+            <el-row :gutter="60">
               <el-col :span="12">
+                  <el-form-item label="选择技能：" prop="skillIds">
+                    <el-select v-model="personal.skillIds" multiple placeholder="请选择技能" style="width:100%" filterable >
+                      <el-option
+                      v-for="(item,index) in sexTypeo"
+                      :key="index"
+                      :label="item.name"
+                      :value="item.id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
               </el-col>
-          </el-row>
-          <el-row :gutter="60">
-            <el-col :span="12">
-                <el-form-item label="选择技能：" prop="skillIds">
-                  <el-select v-model="personal.skillIds" multiple placeholder="请选择技能" style="width:100%" filterable >
-                    <el-option
-                    v-for="(item,index) in sexTypeo"
-                    :key="index"
-                    :label="item.name"
-                    :value="item.id">
-                    </el-option>
-                  </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row v-if="personal.jobNature!='part_time'">
-            <el-col :span="17" class="addTime">
-              <el-form-item label="工作时间：" prop="workTimes">
-                    <div class="tech-order-jn" style="width:100%">
-                      <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
-                    </div>
-                     <el-collapse-transition>
-                        <div class="tech-order-jn-sons wirkTimes" v-show="isB">
-                          <div style="margin:0 10px;">
-                            <p style="padding:10px 0;">新增日期</p>
-                            <div>
+            </el-row>
+            <el-row v-if="personal.jobNature!='part_time'">
+              <el-col :span="17" class="addTime">
+                <el-form-item label="工作时间：" prop="workTimes">
+                      <div class="tech-order-jn" style="width:100%">
+                        <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
+                      </div>
+                      <el-collapse-transition>
+                          <div class="tech-order-jn-sons wirkTimes" v-show="isB">
+                            <div style="margin:0 10px;">
+                              <p style="padding:10px 0;">新增日期</p>
+                              <div>
 
-                              <div style="display:flex;">
-                                <div class="selfCheckBoxsday">日期</div>
-                                <!-- <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
-                                  {{item.name}}
-                                </button> -->
-                                <input type="button" class="selfCheckBoxs tech-order-posis"
-                                  :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
-                                  @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
-                                  :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
-                                  :value="item.name"
-                                >
+                                <div style="display:flex;">
+                                  <div class="selfCheckBoxsday">日期</div>
+                                  <!-- <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
+                                    {{item.name}}
+                                  </button> -->
+                                  <input type="button" class="selfCheckBoxs tech-order-posis"
+                                    :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
+                                    @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
+                                    :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                    :value="item.name"
+                                  >
+                                </div>
+                              </div>
+                              <div style="margin-top:10px;">
+                                <div class="selfCheckBoxsday">时段</div>
+                                <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                    start: '00:00',
+                                    step: '00:30',
+                                    end: '24:00',
+                                    minTime:startEnd.startNew,
+                                    maxTime:startEnd.endNew 
+                                  }" class="tech-daytim">
+                                </el-time-select>
+                                <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                    start: '00:00',
+                                    step: '00:30',
+                                    end: '24:00',
+                                    minTime:startTime || startEnd.startNew,
+                                    maxTime:startEnd.endNew
+                                  }">
+                                </el-time-select>
                               </div>
                             </div>
-                            <div style="margin-top:10px;">
-                              <div class="selfCheckBoxsday">时段</div>
-                              <el-time-select placeholder="起始时间" v-model="startTime" :picker-options="{
-                                  start: '00:00',
-                                  step: '00:30',
-                                  end: '24:00',
-                                  minTime:startEnd.startNew,
-                                  maxTime:startEnd.endNew 
-                                }" class="tech-daytim">
-                              </el-time-select>
-                              <el-time-select placeholder="结束时间" v-model="endTime" :picker-options="{
-                                  start: '00:00',
-                                  step: '00:30',
-                                  end: '24:00',
-                                  minTime:startTime || startEnd.startNew,
-                                  maxTime:startEnd.endNew
-                                }">
-                              </el-time-select>
+                            <div style="margin:10px 10px 10px;">
+                              <span class="button-large btn-styl" @click="techClick">确认</span>
+                              <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
                             </div>
                           </div>
-                          <div style="margin:10px 10px 10px;">
-                            <span class="button-large btn-styl" @click="techClick">确认</span>
-                            <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                      </el-collapse-transition>
+                  </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="17" v-show="teachArr.length>0">
+                  <el-form-item>
+                    <ul class="working" style="width:100%">
+                      <li v-for="(item,index) in teachArr" :key="index">
+                        <div>
+                          <div class="woking-div">
+                            <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
+                            <div class="time">{{item.startTime+"~"+item.endTime}}</div>
                           </div>
                         </div>
-                     </el-collapse-transition>
-                </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-              <el-col :span="17" v-show="teachArr.length>0">
-                <el-form-item>
-                  <ul class="working" style="width:100%">
-                    <li v-for="(item,index) in teachArr" :key="index">
-                      <div>
-                        <div class="woking-div">
-                          <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
-                          <div class="time">{{item.startTime+"~"+item.endTime}}</div>
+                        <div>
+                          <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
                         </div>
-                      </div>
-                      <div>
-                        <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
-                      </div>
-                    </li>
-                  </ul>
-                </el-form-item>
-              </el-col>
-          </el-row>
-        </ul>
-		 </ul>
-		</el-form>
-      </div>
-      <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-          <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
-          <button class="button-cancel" @click="handleClose('personal')">取消</button>
-          <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
-          <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-          <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
-      </div>
-    </el-dialog>
+                      </li>
+                    </ul>
+                  </el-form-item>
+                </el-col>
+            </el-row>
+          </ul>
+      </ul>
+      </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer selfFooter" style="text-align:center; padding:30px 0">
+            <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+            <button class="button-cancel" @click="handleClose('personal')">取消</button>
+            <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
+            <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
+            <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
+        </div>
+      </el-dialog>
   </div>
 </template>
 <script>
@@ -1397,16 +1399,16 @@ export default {
         if (val) {
           var obj = {};
           obj.techId = this.passwordId;
-          if(this.ruleForm.endTime == "24:00"){
-              this.ruleForm.endTime = "23:59"
-              obj.endTime =
-                this.storeEnd.endDate + " " + this.ruleForm.endTime + ":59";
-          }else{
-            obj.endTime =
-                this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
-          }
-          obj.startTime =
-            this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
+          // if(this.ruleForm.endTime == "24:00"){
+          //     this.ruleForm.endTime = "23:59"
+          //     obj.endTime =
+          //       this.storeEnd.endDate + " " + this.ruleForm.endTime + ":59";
+          // }else{
+          //   obj.endTime =
+          //       this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
+          // }
+          obj.endTime = this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
+          obj.startTime = this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
           obj.remark = this.ruleForm.desc;
           console.log(obj);
           addVacation(obj)
@@ -1735,7 +1737,6 @@ export default {
                     type: "success",
                     message: "删除成功!"
                   });
-                  alert(this.listQuery.page)
                   this.handleCurrentChange(this.listQuery.page)
                   this.dialogVisibleEditClick()
               }else{
@@ -1836,6 +1837,7 @@ export default {
                 });
                 this.btnState = false;
                 this.dialogVisible = false;
+                this.getList(1, 6, {});
                 if(this.listQuery.sync!=1){
                   this.listQuery.sync = 1;
                 }else{

@@ -347,7 +347,7 @@
                       content="请录入1单位所需服务时长（以小时为单位）
 例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
                     </el-popover>
-                   <span  v-popover:popover1  class="question"></span>
+                   <span  v-popover:popover1 class="iconfont">&#xe62a;</span>
                 </el-form-item>
              
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
@@ -2625,7 +2625,7 @@ hr {
   margin: 10px 0;
 }
 
-.avatar-uploader .el-upload {
+/* .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -2635,7 +2635,7 @@ hr {
 }
 .avatar-uploader .el-upload:hover {
   border-color: #20a0ff;
-}
+} */
 /* .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -2644,11 +2644,11 @@ hr {
   line-height: 178px;
   text-align: center;
 } */
-.avatar {
+/* .avatar {
   width: 178px;
   height: 178px;
   display: block;
-}
+} */
 .sortInput {
   width: 40px;
   text-align: center;
