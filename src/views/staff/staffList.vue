@@ -515,6 +515,7 @@ export default {
     }
   },
   methods: {
+    //获取列表
     getList() {
       var obj = {
         roleName: this.search.name,
@@ -540,6 +541,7 @@ export default {
         this.listLoading = false;
       });
     },
+    //搜索
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -835,6 +837,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal: false,
         type: "warning"
       })
         .then(() => {
