@@ -635,8 +635,8 @@ export default {
       for(var a=0;a<this.timeObj.length;a++){
           this.$set(this.timeObj[a],'selected',false)
           if(a==index){
-              this.$refs.TimeWrap[a].style.borderColor = "green";
-              this.$refs.TimeWrap[a].style.color = "green";
+              this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+              this.$refs.TimeWrap[a].style.color = "#4c70e8";
               this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
               this.timeObj[a].selected = !this.timeObj[a].selected;
               this.formInline.Time=this.timeObj[a].serviceTimeStr       
