@@ -9,13 +9,13 @@
         <span class="svg-container svg-container_login">
           <icon-svg icon-class="yonghuming" />
         </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="登录账号(手机号)" />
+        <el-input class="username" name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="登录账号(手机号)" />
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container">
           <icon-svg icon-class="mima"></icon-svg>
         </span> 
-        <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
+        <el-input class="password" name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
           placeholder="密码(6-20位数字、字母组合)"></el-input>
       </el-form-item>
       <el-form-item class="loginitem">
@@ -134,6 +134,13 @@ $light_gray: #eee;
     display: inline-block;
     height: 50px;
     width: 85%;
+  }
+  // 用户名与密码的hover效果
+  .username input:hover{
+    cursor: pointer;
+  }
+  .password input:hover{
+    cursor: pointer;
   }
   .tips {
     font-size: 14px;
