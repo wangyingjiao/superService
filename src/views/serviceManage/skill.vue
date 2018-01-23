@@ -112,7 +112,7 @@
                             <td  class="selfTdStyle"  align="center" width="73px">性别</td>
                             <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
                           </tr>                
-                        <div style="margin-top:60px;">
+                        <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="72px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
@@ -281,7 +281,9 @@ export default {
               });
             }
           })
-          .catch(res => {});
+          .catch(res => {
+            this.listLoading = false;
+          });
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
         //编辑操作
@@ -314,7 +316,9 @@ export default {
               });
             }
           })
-          .catch(res => {});
+          .catch(res => {
+            this.listLoading = false;
+          });
       }
     },
     //技师数据回显二级选中
@@ -558,6 +562,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal:false,
         type: "warning"
       })
         .then(() => {
@@ -754,6 +759,9 @@ export default {
 }
 .selftechNameStyle{
     width:130px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+}
+.skillMarginTop60{
+   margin-top:60px;
 }
 .selftechStationNameStyle{
     width:174px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;

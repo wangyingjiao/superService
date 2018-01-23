@@ -1728,7 +1728,7 @@ export default {
           this.$refs['endPicker'].positi();
         } else {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "结束时间不能小于开始时间"
           });
           return false;
@@ -1750,6 +1750,7 @@ export default {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal:false,
         type: "warning"
       })
         .then(() => {
@@ -1884,12 +1885,12 @@ export default {
                 if (typeof str == "string") {
                   this.$message({
                     message: str,
-                    type: "warning"
+                    type: "error"
                   });
                 } else {
                   this.$message({
                     message: str[0],
-                    type: "warning"
+                    type: "error"
                   });
                 }
                 this.btnState = false;

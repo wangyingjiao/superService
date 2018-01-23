@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 搜索 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索登录账号" v-model="search.mobile">
       </el-input>
@@ -192,13 +193,13 @@
         <el-form-item label="岗位名称:" prop="name">
           <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级:" prop="dataScope">
+        <!-- <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 100%;' disabled  v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
            <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check">
            <el-tree
@@ -321,12 +322,12 @@ export default {
       }
     };
     var validateName = (rule, value, callback) => {
-      console.log(this.temp2.officeId2);
+      //console.log(this.temp2.officeId2);
       var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
-        console.log(this.temp2.officeId2);
+        //console.log(this.temp2.officeId2);
         var obj = {
           name: value,
           id: this.temp2.officeId2
@@ -501,20 +502,21 @@ export default {
       this.mechanismCheck = res.data.data.list;
     });
     // getStation().then(res => {
-    //   // console.log(res.data.data);
+    //   // //console.log(res.data.data);
     //   this.stationCheck = res.data.data;
     // });
     getMenudata().then(res => {
-      console.log(res);
+      //console.log(res);
       this.data2 = res.data.data;
     });
     var lv = localStorage.getItem("dataScope");
-    console.log(lv, "用户等级");
+    //console.log(lv, "用户等级");
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
   },
   methods: {
+    //获取列表
     getList() {
       var obj = {
         roleName: this.search.name,
@@ -524,22 +526,26 @@ export default {
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res.data, "员工列表");
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+        if (res.data.code == "1") {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
+          //this.pageSize = res.data.data.pageSize;
+          this.listLoading = false;
+        } else {
+          this.listLoading = false;
         }
-
-        //this.pageSize = res.data.data.pageSize;
-        this.listLoading = false;
+        //console.log(res.data, "员工列表");
       });
     },
+    //搜索
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -551,9 +557,9 @@ export default {
       };
       if (obj.roleName || obj.mobile) {
         this.listLoading = true;
-        console.log(obj,'111111111')
+        //console.log(obj, "111111111");
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          console.log(res, "搜索");
+          //console.log(res, "搜索");
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -579,7 +585,7 @@ export default {
     addRole() {
       this.dialogFormStation = true;
       if (this.mechanismCheck.length == 1) {
-        console.log(this.mechanismCheck[0].id);
+        //console.log(this.mechanismCheck[0].id);
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
     },
@@ -590,7 +596,7 @@ export default {
         orgId: this.search.officeId,
         stationId: this.search.stationId
       };
-      console.log("size-change");
+      //console.log("size-change");
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -613,7 +619,7 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log(val, "current-change");
+      //console.log(val, "current-change");
       this.pageNumber = val;
       var obj = {
         roleName: this.search.name,
@@ -627,7 +633,7 @@ export default {
           for (var i = 0; i < res.data.data.list.length; i++) {
             res.data.data.list[i].index = i + 1;
           }
-          console.log(res.data.data.list, "list-------------");
+          //console.log(res.data.data.list, "list-------------");
         }
         this.total = res.data.data.count;
         this.list = res.data.data.list;
@@ -656,20 +662,18 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
-      console.log(a, b, c, "yyyyyyyy");
+      //console.log(a, b, c, "yyyyyyyy");
       //父级点击时取消勾选
       // if(a.permission = 'order'){
       //   if(b){
-      //     console.log('选中时')
+      //     //console.log('选中时')
       //   }else{
-      //     console.log('mei选中时')
+      //     //console.log('mei选中时')
       //   }
       // }
 
-      // console.log(this.temp2.check, "check-----------------");
-      // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
-        console.log("tttttttttttttttt");
+        //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
@@ -681,7 +685,7 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(this.data2[i].subMenus[j], "成功");
+                  //console.log(this.data2[i].subMenus[j], "成功");
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
@@ -691,7 +695,7 @@ export default {
                 }
               }
             } else {
-              console.log(this.data2[i].subMenus);
+              //console.log(this.data2[i].subMenus);
             }
           }
         }
@@ -706,7 +710,7 @@ export default {
                   var str = this.data2[i].subMenus[j].subMenus[
                     this.data2[i].subMenus[j].subMenus.length - 1
                   ];
-                  console.log(str.name, "vvvvvvvvvvvv");
+                  //console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -715,40 +719,30 @@ export default {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   } else {
-                    console.log(111111111111111111);
+                    //console.log(111111111111111111);
                   }
                 }
               }
             }
           }
         } else {
-          //console.log(a.id, "父级被勾选的id");
-          //console.log(a.subMenus[0], "父级的第一个元素");
         }
         //自动勾选列表权限结束
       } else {
-        console.log("取消勾选");
+        ////console.log("取消勾选");
 
         //订单的查看详情不可取消
-        console.log(this.temp2.check, "dddddddddddddd");
+
         if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
-              console.log(a.permission, "1");
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  console.log(a.permission, "2", this.temp2.check);
                   var orderarr = this.data2[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
-                    //console.log('不可取消')
                     if (
                       this.temp2.check.indexOf(orderarr.subMenus[k].id) > -1
                     ) {
-                      console.log(a.permission, "3");
-                      console.log(
-                        this.data2[i].subMenus[j].subMenus[1].name,
-                        "详情权限iiiii"
-                      );
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
@@ -804,16 +798,16 @@ export default {
 
         //列表处理完毕
       }
-      //console.log(this.$refs.domTree.getCheckedKeys(false));
-      //console.log(this.$refs.domTree.getCheckedNodes());
+      ////console.log(this.$refs.domTree.getCheckedKeys(false));
+      ////console.log(this.$refs.domTree.getCheckedNodes());
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
-      //console.log(this.temp2.check);
+      ////console.log(this.temp2.check);
     },
     handleUpdate(row) {
       //this.handleCreate();
-      console.log(this.temp2, "岗位信息");
+      //console.log(this.temp2, "岗位信息");
       this.dialogFormVisible = true;
-      console.log(row);
+      //console.log(row);
       this.dialogStatus = "update";
       if (localStorage.getItem("userId") == row.id) {
         //判断是不是编辑自己：是，禁用；
@@ -827,7 +821,7 @@ export default {
         id: row.id,
         name: row.name,
         mobile: row.mobile,
-        password:"",
+        password: "",
         officeId: "",
         stationId: row.station.id,
         role: row.role.id,
@@ -841,16 +835,17 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal: false,
         type: "warning"
       })
         .then(() => {
-          console.log(row);
+          //console.log(row);
           var obj = {
             id: row.id
           };
           delStaff(obj)
             .then(res => {
-              console.log(res);
+              //console.log(res);
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -859,14 +854,14 @@ export default {
                 this.getList();
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "删除失败"
               });
             });
@@ -891,7 +886,7 @@ export default {
       };
       getFuwu(obj).then(res => {
         // 请求服务站列表
-        console.log(res);
+        //console.log(res);
         this.servicestationSearch = res.data.data;
         // console.log(res.data)
       });
@@ -903,34 +898,38 @@ export default {
       this.temp.role = "";
       this.servicestationCheck = [];
       this.stationCheck = [];
-      console.log(val, "选中机构的id");
+      //console.log(val, "选中机构的id");
       var obj = {
         orgId: val
       };
       getFuwu(obj).then(res => {
         // 请求服务站
-        console.log(res);
+        //console.log(res);
         this.servicestationCheck = res.data.data;
-        // console.log(res.data)
+        // //console.log(res.data)
       });
       var obj2 = {
         organization: {
           id: val
         }
       };
-      console.log(obj2, "岗位参数");
+      //console.log(obj2, "岗位参数");
       getStation(obj2)
         .then(res => {
           // 请求岗位
-          console.log(res, "岗位");
-          if (typeof res.data.data != "string") {
-            this.stationCheck = res.data.data;
+          //console.log(res.data.data, "岗位");
+          if (res.data.data != undefined) {
+            if (typeof res.data.data != "string") {
+              this.stationCheck = res.data.data;
+            } else {
+              this.stationCheck = [];
+            }
           } else {
             this.stationCheck = [];
           }
         })
         .catch(err => {
-          console.log(err);
+          //console.log(err);
         });
     },
     getId(str) {
@@ -951,16 +950,15 @@ export default {
         roles: [this.temp.role],
         useable: this.temp.useable
       };
-      console.log(obj);
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           addStaff(obj)
             .then(res => {
               this.btnState = false;
-              console.log(res);
+              //console.log(res);
               if (res.data.code === 1) {
-               
                 //关闭弹框
                 this.dialogFormVisible = false;
                 this.resetTemp();
@@ -970,11 +968,10 @@ export default {
                 //清空搜索条件
                 this.search.mobile = "";
                 this.search.name = "";
-                
-               
+
                 var obj = {};
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-                  console.log(res);
+                  //console.log(res);
                   if (res.data.code === 1) {
                     this.total = res.data.data.count;
                     this.list = res.data.data.list;
@@ -1018,14 +1015,15 @@ export default {
       }
       var obj = {
         name: this.temp2.name,
-        dataScope: this.temp2.dataScope,
+        //dataScope: this.temp2.dataScope,
+        dataScope: "10",
         menuIds: str,
         useable: "1",
         organization: {
           id: this.temp2.officeId2
         }
       };
-      console.log(obj, "新增岗位");
+      //console.log(obj, "新增岗位");
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -1089,13 +1087,18 @@ export default {
             .then(res => {
               this.btnState = false;
               if (res.data.code == 1) {
-                 //将禁用的选项启用
+                //编辑自己姓名时同步更改右上角展示
+                if(this.temp.id == localStorage.getItem("userId") && obj.name != localStorage.getItem('name')){
+                  localStorage.setItem('name',obj.name)
+                  this.$store.commit('SET_NAME', localStorage.getItem('name'))
+                }
+                //将禁用的选项启用
                 this.officeState = false;
                 this.statStatte = false;
                 this.roleState = false;
                 this.crBtnState = false;
                 this.useableState = false;
-                
+
                 if (
                   this.temp.id == localStorage.getItem("userId") &&
                   obj.newPassword != ""
@@ -1104,7 +1107,7 @@ export default {
                     .dispatch("LogOut")
                     .then(res => {
                       this.$message({
-                        type: "warning",
+                        type: "error",
                         message: "密码被修改 3 秒后进入登录页面！"
                       });
                       this.dialogFormVisible = false;

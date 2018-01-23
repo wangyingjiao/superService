@@ -45,9 +45,9 @@ const user = {
           username: userInfo.username,
           password: userInfo.password
         }
-
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
+            commit('SET_NAME', response.data.data.user.name)
             localStorage.setItem('name', response.data.data.user.name)
             localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             localStorage.setItem('orgId', response.data.data.user.organization.id)
@@ -73,13 +73,15 @@ const user = {
     GetUserInfo({ commit, userInfo }) {
       if (JSON.parse(localStorage.getItem('menu'))) {
         commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
+        commit('SET_NAME', localStorage.getItem('name'))
       } else {
         return new Promise((resolve, reject) => {
           getUserInfo().then(response => {
             const data = response.data
-            console.log(data, '权限列表')
+            // console.log(data, '权限列表')
             localStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
+            commit('SET_NAME', localStorage.getItem('name'))
             resolve(response)
           }).catch(error => {
             reject(error)
@@ -104,7 +106,7 @@ const user = {
     Getbutton({ commit }) {
       return new Promise((resolve, reject) => {
         getButton().then(res => {
-          console.log(res, '按钮权限')
+          // console.log(res, '按钮权限')
           commit('SET_BUTTONSHOW', res.data.data)
           localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)

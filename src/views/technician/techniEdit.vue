@@ -1719,7 +1719,7 @@ export default {
             this.endTime = ''
         }else{
            this.$message({
-              type: "warning",
+              type: "error",
               message: "结束时间不能小于开始时间"
             });
             return false

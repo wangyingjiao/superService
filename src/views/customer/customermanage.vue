@@ -12,7 +12,7 @@
 		</div>
 		<!--搜索结束-->
 		<div class="second-bar">
-		  <button type="button" class="add-button selfPosi3 btn_pad" style="margin-top:20px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut">新增</button>
+		  <button type="button" class="add-button selfPosi3 marginTop20"  v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut">新增</button>
 			<!--客户数据表格开始-->
 			<div class="tableWarp">			      
 				    <el-table
@@ -22,8 +22,7 @@
 						>
 					  <el-table-column
 						align="center"
-						label="编号"
-						
+						label="编号"						
 						width="80">
 						<template scope="scope">
 							{{scope.row.index+(pageNumber-1)*pageSize1}}
@@ -100,8 +99,7 @@
 					ref="ruleForm" 
 					label-width="160px" 
 					label-position="left" 
-					style='width: 100%; padding:0 10%;'
-					class="demo-ruleForm">
+					class="demo-ruleForm padding10Prent">
 					<el-form-item label="姓名:" prop="name"  >
 						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
@@ -127,7 +125,7 @@
 					<el-form-item label="详细地址:" prop="address">
 		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputBlur" value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input style='width: 50%;margin-left:-5px'  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
+								<el-input class="customerAddress"   v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="email" >
 						<el-input  v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
@@ -403,6 +401,7 @@ export default {
 						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 									confirmButtonText: '确定',
 									cancelButtonText: '取消',
+									closeOnClickModal:false,
 									type: 'warning'
 								}).then(() => {
 									var obj = {
@@ -453,6 +452,8 @@ export default {
 											}								
 								}
 								this.organizationOptions=res.data.data.orgList;																			  								
+								this.listLoading = false
+							}else{
 								this.listLoading = false
 							}
 						}).catch(res=>{
@@ -546,6 +547,15 @@ export default {
 }
 .selfPosi3{
 	float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;
+}
+.customerAddress{
+  width: 50%;margin-left:-5px
+}
+.padding10Prent{
+  width: 100%; padding:0 10%;
+}
+.marginTop20{
+   margin-top:20px;
 }
 .fist-bar{
   padding:20px;

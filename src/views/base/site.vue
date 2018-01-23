@@ -304,11 +304,7 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (
-          !/^1[3|4|5|6|7|8|9][0-9]\d{8}$|^0\d{2,3}-?\d{7,8}$/.test(
-            value
-          )
-        ) {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{8}$|^0\d{2,3}-?\d{7,8}$/.test(value)) {
           callback(new Error("号码格式不正确！"));
         } else {
           callback();
@@ -469,6 +465,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     //搜索
@@ -485,7 +483,7 @@ export default {
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo
+        this.listQuery.page = res.data.data.pageNo;
         this.rowInfo.id = "";
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
@@ -493,6 +491,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     // 设置站长
@@ -569,6 +569,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     handleCurrentChange(val) {
@@ -591,6 +593,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     resetForm(formName) {
@@ -612,13 +616,13 @@ export default {
       }
       if (row.storeList != undefined) {
         this.rowInfo.storeList = row.storeList;
-      }else{
-        this.rowInfo.storeList = []
+      } else {
+        this.rowInfo.storeList = [];
       }
       if (row.servicePoint != undefined) {
         this.rowInfo.servicePoint = row.servicePoint;
-      }else{
-        this.rowInfo.servicePoint = ""
+      } else {
+        this.rowInfo.servicePoint = "";
       }
     },
     handleCreate() {
@@ -649,6 +653,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal: false,
         type: "warning"
       })
         .then(() => {
@@ -672,7 +677,7 @@ export default {
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "请稍后再试"
               });
             });
