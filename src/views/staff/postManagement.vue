@@ -360,6 +360,8 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
+          }else{
+            this.listLoading = false;
           }
         });
       }
@@ -393,10 +395,6 @@ export default {
             }, 500);
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "warning",
-              message: "岗位名不存在"
-            });
           }
         });
       } else {
@@ -417,6 +415,8 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
+          }else{
+            this.listLoading = false;
           }
         });
       }
@@ -447,10 +447,6 @@ export default {
             }, 500);
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "warning",
-              message: "岗位名不存在"
-            });
           }
         });
       } else {
@@ -469,6 +465,8 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
+          }else{
+            this.listLoading = false;
           }
         });
       }
@@ -497,10 +495,6 @@ export default {
             }, 500);
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "warning",
-              message: "岗位名不存在"
-            });
           }
         });
       } else {
@@ -519,6 +513,8 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
+          }else{
+            this.listLoading = false;
           }
         });
       }
@@ -759,9 +755,10 @@ export default {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
         } else {
+          this.listLoading = false
           this.$message({
             type: "warning",
-            message: "请求失败"
+            message: "获取数据失败"
           });
         }
       });

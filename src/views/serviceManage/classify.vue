@@ -230,7 +230,6 @@ export default {
             this.list[i].index = i + 1;
           }
         }
-        
         setTimeout(() => {
             this.listLoading = false;   
           }, 1000);
@@ -259,6 +258,8 @@ export default {
         setTimeout(() => {
             this.listLoading = false;   
           }, 1000);
+      }).catch(()=>{
+        this.listLoading = false;   
       });
     },
     //页码变化
@@ -284,6 +285,8 @@ export default {
         setTimeout(() => {
             this.listLoading = false;   
           }, 1000);
+      }).catch(()=>{
+        this.listLoading = false;
       });
     },
     handleCreate() {

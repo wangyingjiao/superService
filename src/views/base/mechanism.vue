@@ -37,7 +37,12 @@
       <el-table-column  label="机构电话" align="center"  prop="telephone">
       </el-table-column>
 
-      <el-table-column  label="机构地址" :show-overflow-tooltip="true" align="center"  prop="address">
+      <el-table-column  label="机构地址"  align="center" width="200px" >
+         <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.address.length < 10" :content="scope.row.address">
+             <div class="overheidden" >{{scope.row.address}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column  label="负责人姓名" align="center"  prop="masterName">
@@ -47,11 +52,11 @@
       </el-table-column>
 
       <el-table-column  label="E店编码" align="center"  prop="jointEshopCode">
-         <!-- <template scope="scope">
-           <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
-             <div style="width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{scope.row.remark}}</div>
+          <template scope="scope">
+           <el-tooltip placement="left"  :content="scope.row.jointEshopCode">
+             <div class="tool" >{{scope.row.jointEshopCode}}</div>
            </el-tooltip>
-        </template> -->
+         </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -247,7 +252,7 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (!/^(\d{1,4}-)?\d{7,9}$/.test(value)) {
+        if (!/^(\d{1,4}-)?\d{7,13}$/.test(value)) {
           callback(new Error("请输入正确固话格式，如：010-88886666"));
         } else {
           callback();
@@ -284,7 +289,7 @@ export default {
       if (!value) {
         callback();
       } else {
-        if (!/^(\d{3,4}-)?\d{7,8}$/.test(value)) {
+        if (!/^(\d{1,4}-)?\d{7,13}$/.test(value)) {
           callback(new Error("请输入正确的传真地址"));
         } else {
           callback();
@@ -500,6 +505,8 @@ export default {
         setTimeout(() => {
           this.listLoading = false;
         }, 500);
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     //搜索
@@ -546,6 +553,8 @@ export default {
         setTimeout(() => {
           this.listLoading = false;
         }, 500);
+      }).catch(()=>{
+        this.listLoading = false
       });
 
       // this.getList();
@@ -583,6 +592,8 @@ export default {
         setTimeout(() => {
           this.listLoading = false;
         }, 500);
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     //切换页数
@@ -616,6 +627,8 @@ export default {
         setTimeout(() => {
           this.listLoading = false;
         }, 500);
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     //开始时间change事件
@@ -624,7 +637,6 @@ export default {
       this.workEndTime = [];
       for (var i = 0; i < this.workTime.length; i++) {
         if (val == this.workTime[i]) {
-         
           for (var j = i + 1; j < this.workTime.length; j++) {
             this.workEndTime.push(this.workTime[j]);
           }
@@ -922,4 +934,9 @@ export default {
     font-size: 1px;
     vertical-align:middle;
 } */
+.overheidden {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>

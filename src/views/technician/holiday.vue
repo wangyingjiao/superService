@@ -173,7 +173,7 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {       
         console.log(res, "休假列表");
         this.total = res.data.data.count;
         this.list = res.data.data.list;
@@ -185,8 +185,9 @@ export default {
             this.list[i].index = i + 1;
           }
         }
-
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     handleFilter() {
@@ -249,6 +250,8 @@ export default {
 
           this.listLoading = false;
         }
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     handleSizeChange(val) {
@@ -310,6 +313,8 @@ export default {
             this.listLoading = false;
           }, 500);
         }
+      }).catch(()=>{
+        this.listLoading = false;
       });
     },
     handleCurrentChange(val) {
@@ -369,6 +374,8 @@ export default {
             this.listLoading = false;
           }, 500);
         }
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     handleDelete(row) {
