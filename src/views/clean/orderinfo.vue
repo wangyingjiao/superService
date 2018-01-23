@@ -189,7 +189,7 @@
                     <el-table
                       :data="tableData1"
                       border                  
-                      style="width: 100%;display:inline-block;">
+                      class="orderInfoHeaderPic">
                       <el-table-column
                         align="center"
                         label="头像"
@@ -352,8 +352,8 @@
         <!--门店信息结束-->                                                
         <!--技师选择弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-          <el-input placeholder="输入要搜索的姓名" v-model="techName" style="width:180px;margin-left:15px;"></el-input> 
-          <button class="button-large FloatRight" @click="searchTeh" style="margin-right:15px;">查询</button>
+          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
+          <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
           <el-collapse-transition>
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -371,7 +371,7 @@
                 <td  class="selfTableHEADTD" align="center" width="73px">性别</td>
                 <td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
               </tr>
-              <div style="padding-top:60px;">
+              <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
                     <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
@@ -635,8 +635,8 @@ export default {
       for(var a=0;a<this.timeObj.length;a++){
           this.$set(this.timeObj[a],'selected',false)
           if(a==index){
-              this.$refs.TimeWrap[a].style.borderColor = "green";
-              this.$refs.TimeWrap[a].style.color = "green";
+              this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+              this.$refs.TimeWrap[a].style.color = "#4c70e8";
               this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
               this.timeObj[a].selected = !this.timeObj[a].selected;
               this.formInline.Time=this.timeObj[a].serviceTimeStr       
@@ -1037,4 +1037,16 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
     margin-top: -14px;
 }
 .selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
+.orderInfoHeaderPic{
+   width: 100%;display:inline-block;
+}
+.orderinfoTechNameStyle{
+   width:180px;margin-left:15px;
+}
+.orderinfoTechSearchStyle{
+   margin-right:15px;
+}
+.orderinfoTechTablePadding{
+   padding-top:60px;
+}
 </style>
