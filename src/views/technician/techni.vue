@@ -1704,7 +1704,7 @@ export default {
           this.endTime = "";
         } else {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "结束时间不能小于开始时间"
           });
           return false;
@@ -1854,12 +1854,12 @@ export default {
                 if (typeof str == "string") {
                   this.$message({
                     message: str,
-                    type: "warning"
+                    type: "error"
                   });
                 } else {
                   this.$message({
                     message: str[0],
-                    type: "warning"
+                    type: "error"
                   });
                 }
                 this.btnState = false;

@@ -338,7 +338,7 @@ export default {
           } else {
             this.listLoading = false;
             this.$message({
-              type: "warning",
+              type: "error",
               message: "岗位名不存在"
             });
           }
@@ -757,7 +757,7 @@ export default {
         } else {
           this.listLoading = false
           this.$message({
-            type: "warning",
+            type: "error",
             message: "获取数据失败"
           });
         }
@@ -785,7 +785,7 @@ export default {
                 this.getList();
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }

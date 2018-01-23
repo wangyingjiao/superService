@@ -654,7 +654,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        type: "warning"
+        type: ""warning
       })
         .then(() => {
           var obj = {
@@ -677,7 +677,7 @@ export default {
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "请稍后再试"
               });
             });

@@ -529,7 +529,7 @@ export default {
       } else {
         if (this.search.value != "") {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "搜索条件不足,不能搜索"
           });
           return;

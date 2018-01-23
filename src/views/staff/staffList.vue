@@ -854,14 +854,14 @@ export default {
                 this.getList();
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "删除失败"
               });
             });
@@ -1107,7 +1107,7 @@ export default {
                     .dispatch("LogOut")
                     .then(res => {
                       this.$message({
-                        type: "warning",
+                        type: "error",
                         message: "密码被修改 3 秒后进入登录页面！"
                       });
                       this.dialogFormVisible = false;

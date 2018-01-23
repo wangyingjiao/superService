@@ -1056,7 +1056,7 @@ export default {
           var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
           if(fileList.length>4){
           this.$message({
-            type: "warning",
+            type: "error",
             message: "最多上传4张图片"
             });
           fileList.splice(fileList.indexOf(file),1)
@@ -1191,7 +1191,7 @@ export default {
            if(this.labelClickArr.length+this.alreadyArr.length>2){
              this.$message({
                message:'最多设置3个系统标签',
-               type:'warning'
+               type:'error'
              })
              return false
            }
@@ -1255,7 +1255,7 @@ export default {
           if(this.customArr.length>2){
             this.$message({
               message: '最多设置3个自定义标签',
-              type: 'warning'
+              type: 'error'
             });
             return false
           }else{
@@ -1282,14 +1282,14 @@ export default {
         console.log(this.picFile,"this.picFile------")
         if (this.picFile.indexOf(src) > -1) {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "此图片已经上传"
           });
           return false;
         }
         if (this.imgNumber >= 4) {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "最多上传4张图片"
           });
           return false;
@@ -1416,7 +1416,7 @@ export default {
         var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
         if (this.imgText.indexOf(src) > -1) {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "此图片已经上传"
           });
           return false;
@@ -1424,7 +1424,7 @@ export default {
         console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
         if(this.addDetailsImg>=4){
           this.$message({
-            type:'warning',
+            type:'error',
             message:'最多上传4张图片'
           })
           // this.Imagestext = false
@@ -1460,7 +1460,7 @@ export default {
         });
       }else{
           this.$message({
-            type:'warning',
+            type:'error',
             message:'请上传图片'
           })
           return false
@@ -1977,7 +1977,7 @@ export default {
           console.log(err);
           this.listLoading = false;
           this.$message({
-            type: "warning",
+            type: "error",
             message: "获取数据失败"
           });
         });
@@ -2007,7 +2007,7 @@ export default {
                 // this.getList(this.pageNumber, this.pageSize);
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: "删除失败"
                 });
               }
@@ -2145,7 +2145,7 @@ export default {
           if(this.basicForm.commoditys.length<=0){
             this.$message({
               message: '请添加商品',
-              type: "warning"
+              type: "error"
             });
             return false
           }
@@ -2178,7 +2178,7 @@ export default {
                 } else {
                   this.$message({
                     message: data.data.data,
-                    type: "warning"
+                    type: "error"
                   });
                    this.btnState = false
                    this.imgNumber = 0
@@ -2216,7 +2216,7 @@ export default {
                 } else {
                   this.$message({
                     message: data.data.data,
-                    type: "warning"
+                    type: "error"
                   });
                   this.btnState = false
                 }
