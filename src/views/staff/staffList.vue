@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 搜索 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索登录账号" v-model="search.mobile">
       </el-input>
@@ -192,13 +193,13 @@
         <el-form-item label="岗位名称:" prop="name">
           <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级:" prop="dataScope">
+        <!-- <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 100%;' disabled  v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
            <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check">
            <el-tree
@@ -1017,7 +1018,8 @@ export default {
       }
       var obj = {
         name: this.temp2.name,
-        dataScope: this.temp2.dataScope,
+        //dataScope: this.temp2.dataScope,
+        dataScope: "10",
         menuIds: str,
         useable: "1",
         organization: {
