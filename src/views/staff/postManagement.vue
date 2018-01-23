@@ -705,6 +705,7 @@ export default {
       this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
+        //this.data2
         this.listLoading = false;
         if (res.data.code == 1) {
           if (localStorage.getItem("roleId") == res.data.data.id) {
