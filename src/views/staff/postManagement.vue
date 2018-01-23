@@ -707,7 +707,7 @@ export default {
       getPower(row.id).then(res => {
         this.listLoading = false;
         if (res.data.code == 1) {
-        this.data2 = res.data.data.menuListUnion
+        //this.data2 = res.data.data.menuListUnion
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
