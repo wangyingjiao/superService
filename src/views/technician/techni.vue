@@ -1929,11 +1929,13 @@ export default {
               this.techniList = this.infoname;
               console.log(this.techniList, "this.techniList----------");
           }else{
+            this.listLoadingTech = false;
             this.$message.error(data.data.data)
             return false
           }
         })
         .catch(error => {
+          this.listLoadingTech = false;
           return false
           console.log(error, "error-----thechni.vue-----1211");
         });

@@ -198,7 +198,7 @@ export default {
 		}
 	},
   //获取表格数据
-	getTableData(pramsObj,pageNo,pageSize){
+	getTableData(pramsObj,pageNo,pageSize){ 
 		this.listLoading = true;
 		var obj=pramsObj; 
 	    getOrderTable(obj,pageNo,pageSize).then(res => {
@@ -396,6 +396,7 @@ export default {
 	
   },
   mounted() {
+
 		this.getTableData({orderStatus:'dispatched'});
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;

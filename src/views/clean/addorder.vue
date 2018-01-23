@@ -121,6 +121,7 @@
 								:type="select"
 								 class="width400 marginLeft20"
 								 @change='dateChange'
+								 popper-class="selfTestStyle1"
 								:picker-options="pickerOptions0"
 								>
 							</el-date-picker>							
