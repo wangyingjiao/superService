@@ -669,7 +669,7 @@ export default {
       //console.log(this.temp.check);
     },
     nodeClick(a, b, c) {
-      //console.log(a, b, c, "nodeclick节点被点击时");
+      console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
       //console.log(a, b, "currentchange选中节点变化时");
@@ -705,9 +705,9 @@ export default {
       this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
-        //this.data2
         this.listLoading = false;
         if (res.data.code == 1) {
+        this.data2 = res.data.data.menuListUnion
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
