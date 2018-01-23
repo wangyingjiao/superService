@@ -465,6 +465,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     //搜索
@@ -489,6 +491,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     // 设置站长
@@ -565,6 +569,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     handleCurrentChange(val) {
@@ -587,6 +593,8 @@ export default {
           }
         }
         this.listLoading = false;
+      }).catch(()=>{
+        this.listLoading = false
       });
     },
     resetForm(formName) {

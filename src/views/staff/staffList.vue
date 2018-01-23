@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 搜索 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索登录账号" v-model="search.mobile">
       </el-input>
@@ -192,13 +193,13 @@
         <el-form-item label="岗位名称:" prop="name">
           <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <el-form-item label="等级:" prop="dataScope">
+        <!-- <el-form-item label="等级:" prop="dataScope">
           <el-select style='width: 100%;' disabled  v-model="temp2.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
            <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check">
            <el-tree
@@ -525,20 +526,23 @@ export default {
       };
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        //console.log(res.data, "员工列表");
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+        if (res.data.code == "1") {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
+          //this.pageSize = res.data.data.pageSize;
+          this.listLoading = false;
+        } else {
+          this.listLoading = false;
         }
-
-        //this.pageSize = res.data.data.pageSize;
-        this.listLoading = false;
+        //console.log(res.data, "员工列表");
       });
     },
     //搜索
@@ -668,7 +672,6 @@ export default {
       //   }
       // }
 
-      
       if (b) {
         //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
@@ -723,28 +726,23 @@ export default {
             }
           }
         } else {
-         
         }
         //自动勾选列表权限结束
       } else {
         ////console.log("取消勾选");
 
         //订单的查看详情不可取消
-    
+
         if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
-         
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                 
                   var orderarr = this.data2[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
-                 
                     if (
                       this.temp2.check.indexOf(orderarr.subMenus[k].id) > -1
                     ) {
-                      
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
@@ -952,7 +950,7 @@ export default {
         roles: [this.temp.role],
         useable: this.temp.useable
       };
-     
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -1017,7 +1015,8 @@ export default {
       }
       var obj = {
         name: this.temp2.name,
-        dataScope: this.temp2.dataScope,
+        //dataScope: this.temp2.dataScope,
+        dataScope: "10",
         menuIds: str,
         useable: "1",
         organization: {
