@@ -219,7 +219,9 @@ export default {
 			}else{
 				this.listLoading = false;
 			}
-        });
+        }).catch(res=>{
+          		this.listLoading = false;
+		});
 	},
 	//tabs操作需要请求表格数据
 	handleClick(tab, event) {

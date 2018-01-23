@@ -1,7 +1,7 @@
 <template>
     <div class="tableWarp">
         <!-- 表格开始 -->
-        <el-table :data="reassList"  style="width: 100%" border>
+        <el-table :data="reassList"  v-loading="listLoading"  style="width: 100%" border>
             <el-table-column prop="headPic" label="头像" align="center">
                 <template scope="scope">
                     <div>
@@ -38,21 +38,26 @@ export default {
   name: "",
   data() {
     return {
-        reassList:[]
+        reassList:[],
+        listLoading:false
     }
   },
   methods:{
       //列表获取
       reassClick(id){
+          this.listLoading=true;
           var obj={
               orderId:id
           }
           reassId(obj).then(res=>{
             if(res.data.code === 1){
-                this.reassList=res.data.data
+                this.reassList=res.data.data;
+                this.listLoading=false;
+            }else{
+                this.listLoading=false;
             }              
           }).catch(res=>{
-
+                this.listLoading=false;
           })
       }
   },

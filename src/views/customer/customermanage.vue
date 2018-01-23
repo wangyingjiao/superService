@@ -453,6 +453,8 @@ export default {
 								}
 								this.organizationOptions=res.data.data.orgList;																			  								
 								this.listLoading = false
+							}else{
+								this.listLoading = false
 							}
 						}).catch(res=>{
 							this.listLoading = false
