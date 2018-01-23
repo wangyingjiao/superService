@@ -348,7 +348,7 @@
                       content="请录入1单位所需服务时长（以小时为单位）
 例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
                     </el-popover>
-                   <span  v-popover:popover1 class="iconfont">&#xe62a;</span>
+                   <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
                 </el-form-item>
              
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
@@ -2299,11 +2299,23 @@ export default {
 .selfTabsaa{
    display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
 }
+.selfTabsaa .el-tooltip{
+  height:30px;
+  padding:0 5px;
+  /* padding:0 5px; */
+}
 .selfTabContent{
-    float:left;max-width:80px;display:inline-block;overflow:hidden;margin-top:-5px;text-align:center;text-overflow:ellipsis;white-space:nowrap;border:none;
+  float:left;
+  width:70px;
+  display:inline-block;
+  overflow:hidden;
+  text-align:center;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  border:none;
 }
 .selfCloseSty{
-    float:right;margin-top:5px;border:none;
+    border:none;
 }
 .el-radio-group {
   width: 100%;
@@ -2394,6 +2406,12 @@ export default {
   font-weight: bolder;
   text-align: center;
 }
+.doubt{
+  font-size: 25px;
+  vertical-align: middle;
+  cursor: pointer;
+  color:#bfcbd9
+}
 .btn_Span2 {
   width: 70px;
   height: 30px;
@@ -2453,6 +2471,10 @@ export default {
   transform:scale(.7);
   opacity: .75;
   cursor: pointer;
+  float: right;
+  line-height: 30px;
+  display: inline-block;
+  height:30px
 }
 
 .bgWhite .el-switch.is-checked .el-switch__core{
@@ -2805,10 +2827,14 @@ hr {
 .labelList span{
   display: inline-block;
   border: 1px solid #bfcbd9;
-  padding: 0 10px;
+  /* padding: 0 10px; */
   border-radius: 20px;
   line-height: 20px;
   margin-right: 10px;
+}
+.labelDav .labelList span{
+  padding:0 5px;
+  line-height:30px;
 }
 .labelList span i{
   font-size: 12px;
@@ -2876,8 +2902,9 @@ hr {
 }
 .already span{
   border: 1px solid #E8E8E8;
-  padding: 5px;
-  margin-right: 5px;
+  /* line-height:20px; */
+  /* padding: 5px;
+  margin-right: 5px; */
 }
 .already span i{
   font-weight: bolder;
