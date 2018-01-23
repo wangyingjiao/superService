@@ -158,9 +158,7 @@ export default {
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
-
         if (this.dialogStatus == "create") {
-
           var obj = {
             name: value,
             id: this.temp.officeId
@@ -298,9 +296,8 @@ export default {
       this.data2 = res.data.data;
     });
     //获取机构
-    getSList({}).then(res => {   
+    getSList({}).then(res => {
       this.officeIds = res.data.data.list;
-
     });
     //获取用户等级
     var lv = localStorage.getItem("dataScope");
@@ -313,7 +310,6 @@ export default {
   methods: {
     aaa(val) {
       //测试函数
-  
     },
     getList() {
       //获取列表
@@ -325,7 +321,6 @@ export default {
       if (obj.name != "" || obj.organization.id != "") {
         this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -698,12 +693,8 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {
-     
-    },
-    offChange(val) {
-      
-    },
+    lvChange(value) {},
+    offChange(val) {},
     //点击新增时
     handleCreate() {
       //this.resetTemp();
@@ -780,6 +771,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
+        closeOnClickModal: false,
         type: "warning"
       })
         .then(() => {
@@ -820,13 +812,11 @@ export default {
       // }
     },
     getFather(data) {
-
       for (var i in data) {
         if (data[i].subMenus != undefined) {
           this.getFather(data[i].subMenus);
         } else {
           if (this.data2.indexOf(data[i].id) > -1) {
-
           }
         }
       }

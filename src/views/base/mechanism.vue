@@ -247,7 +247,7 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (!/^(\d{1,4})?(\d{1,4}-)?\d{7,9}$/.test(value)) {
+        if (!/^(\d{1,4}-)?\d{7,9}$/.test(value)) {
           callback(new Error("请输入正确固话格式，如：010-88886666"));
         } else {
           callback();
@@ -258,7 +258,7 @@ export default {
       if (!value) {
         return callback(new Error("电话号码不能为空"));
       } else {
-        if (!/^1[3|4|5|7|8][0-9]\d{8}$/.test(value)) {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value)) {
           callback(new Error("请输入正确11位手机号"));
         } else {
           callback();

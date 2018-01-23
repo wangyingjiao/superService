@@ -44,7 +44,7 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '基础服务',
     children: [
-    { path: 'organization', name: '服务机构', component: _import('base/mechanism') }
+      { path: 'organization', name: '服务机构', component: _import('base/mechanism') }
 
     ]
   },
@@ -55,8 +55,8 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '服务技师管理',
     children: [
-    { path: 'holiday', name: '休假管理', component: _import('technician/holiday') },
-    { path: 'techni', name: '技师管理', component: _import('technician/techni') }
+      { path: 'holiday', name: '休假管理', component: _import('technician/holiday') },
+      { path: 'techni', name: '技师管理', component: _import('technician/techni') }
     ]
   },
 
@@ -66,10 +66,10 @@ export const constantRouterMap = [
     redirect: 'service',
     name: '服务管理',
     children: [
-    { path: 'class', name: '服务分类', component: _import('serviceManage/classify') },
-    { path: 'project', name: '服务项目', component: _import('serviceManage/project') },
-    { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') },
-    { path: 'station', name: '服务站', component: _import('base/site') }
+      { path: 'class', name: '服务分类', component: _import('serviceManage/classify') },
+      { path: 'project', name: '服务项目', component: _import('serviceManage/project') },
+      { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') },
+      { path: 'station', name: '服务站', component: _import('base/site') }
     ]
   },
   {
@@ -78,12 +78,12 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '保洁订单',
     children: [
-    { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage') },
-    { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
-    { path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
-    { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
-    { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
-    { path: 'dispatchReass', name:'改派记录', component:_import('clean/dispatchReass') },
+      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage') },
+      { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
+      { path: 'dispatchmanage', name: '派单管理', component: _import('clean/dispatchmanage') },
+      { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
+      { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
+      { path: 'dispatchReass', name: '改派记录', component: _import('clean/dispatchReass') }
     ]
   },
   {
@@ -92,12 +92,12 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '客户管理',
     children: [
-    { path: 'customermanage', name: ' 客户管理', component: _import('customer/customermanage') },
-    { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') }
+      { path: 'customermanage', name: ' 客户管理', component: _import('customer/customermanage') },
+      { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') }
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true },
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
