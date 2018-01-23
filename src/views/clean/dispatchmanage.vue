@@ -3,7 +3,7 @@
 		<!-- 搜索开始 -->
 		<div class="filter-container bgWhite">
 			<el-input  style="width:30%" placeholder="请输入搜索内容" v-model="techName">
-        <el-select  clearable slot="prepend" style="width:120px" v-model="technicianName" placeholder="请选择">
+        <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
         </el-select>
@@ -11,8 +11,8 @@
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
 	<!-- 搜索结束 -->
-		<div class="second-bar" style="height:500px;">
-			<div class="tableWarpaa" style="width:100%;background:#fff;padding:20px 20px;">
+		<div class="second-bar">
+			<div class="tableWarpaa addStyle">
 					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
 					  <el-table-column  align="center" width="170px"  label="订单编号">
 							<template scope="scope" >
@@ -28,7 +28,7 @@
 								</div>
 							</template>							
 						</el-table-column>
-					  <el-table-column style="padding:0" align="center" label="头像">
+					  <el-table-column  align="center" label="头像">
 								<template scope="scope">
 										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
 											<img class="head-images" :src="imgSrc+item.headPic+picWidth60" alt="">
@@ -85,18 +85,17 @@
 							</el-table-column>			  
 						</el-table-column>
 				</el-table>				
-				<div v-if="!listLoading" style="margin-top:20px;padding-bottom:0px;">
+				<div v-if="!listLoading" class="dispatchMangFooter">
 					<el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync='jumpPage'
 					:page-sizes="[5,10,15,20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					</el-pagination>
-				</div>					
-					
+				</div>										
 			</div>
 		</div>
 		<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-			<el-input placeholder="输入要搜索的姓名" v-model="techName2" style="width:180px;margin-left:15px;"></el-input> 
-			<button class="button-large FloatRight" @click="searchTeh" style="margin-right:15px;">查询</button>
+			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
+			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
 			<el-collapse-transition>
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
 					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -114,7 +113,7 @@
 						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
 						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
 					</tr>
-					<div style="padding-top:60px;">
+					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
 								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
@@ -517,13 +516,32 @@ export default {
   margin-right:20px;
  
 }
+.width120{
+	width:120px
+}
+.paddingTop60{
+   padding-top:60px;
+}
+.marginRight15{
+   margin-right:15px;
+}
+.dispatchTechNameSearch{
+   width:180px;margin-left:15px;
+}
+.dispatchMangFooter{
+  margin-top:20px;padding-bottom:0px;
+}
 .second-bar{
   padding-top:0px;
   padding-bottom:20px;
   background:#eef1f6;
   margin-left:0px;
   margin-right:0px;
+	height:500px;
   
+}
+.addStyle{
+	width:100%;background:#fff;padding:20px 20px;
 }
 .tableWarpaa .el-pagination{
 	text-align: right;
