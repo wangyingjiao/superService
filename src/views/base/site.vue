@@ -451,23 +451,25 @@ export default {
         name: this.search.name,
         cityCode: this.search.cityCode
       };
-      getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res, "服务站列表");
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        this.rowInfo.id = "";
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getSite(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          console.log(res, "服务站列表");
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          this.rowInfo.id = "";
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        this.listLoading = false;
-      }).catch(()=>{
-        this.listLoading = false
-      });
+          this.listLoading = false;
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //搜索
     handleFilter() {
@@ -478,22 +480,24 @@ export default {
         name: this.search.name,
         cityCode: this.search.cityCode
       };
-      getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        this.rowInfo.id = "";
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getSite(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          this.rowInfo.id = "";
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        this.listLoading = false;
-      }).catch(()=>{
-        this.listLoading = false
-      });
+          this.listLoading = false;
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     // 设置站长
     handleSetMaster() {
@@ -508,15 +512,22 @@ export default {
         };
         getMaster(obj)
           .then(res => {
-            console.log(res, "服务站下的员工");
-            this.master = res.data.data;
-            if (this.rowInfo.masterId) {
-              this.tempMaster.master = this.rowInfo.masterId;
+            if (res.data.code == 1) {
+              this.master = res.data.data;
+              if (this.rowInfo.masterId) {
+                this.tempMaster.master = this.rowInfo.masterId;
+              } else {
+                this.tempMaster.master = "";
+              }
+              this.dialogMasterVisible = true;
+              this.listLoading = false;
             } else {
-              this.tempMaster.master = "";
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
             }
-            this.dialogMasterVisible = true;
-            this.listLoading = false;
+            console.log(res, "服务站下的员工");
           })
           .catch(err => {
             this.listLoading = false;
@@ -532,13 +543,20 @@ export default {
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
           getStore({}).then(res => {
-            this.listLoading = false;
-            this.storeTree = res.data.data;
-            this.dialogStoreVisible = true;
-            console.log(this.rowInfo.storeList, "选中的门店");
-            this.$nextTick(() => {
-              this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
-            });
+            if (res.data.code == 1) {
+              this.listLoading = false;
+              this.storeTree = res.data.data;
+              this.dialogStoreVisible = true;
+              console.log(this.rowInfo.storeList, "选中的门店");
+              this.$nextTick(() => {
+                this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
+              });
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+            }
           });
         } else {
           this.severSelectdialogVisible = true;
@@ -557,21 +575,23 @@ export default {
         name: this.search.name,
         cityCode: this.search.cityCode
       };
-      getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.rowInfo.id = "";
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getSite(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.rowInfo.id = "";
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        this.listLoading = false;
-      }).catch(()=>{
-        this.listLoading = false
-      });
+          this.listLoading = false;
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     handleCurrentChange(val) {
       //页数
@@ -581,21 +601,23 @@ export default {
         cityCode: this.search.cityCode
       };
       this.listLoading = true;
-      getSite(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.rowInfo.id = "";
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getSite(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.rowInfo.id = "";
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        this.listLoading = false;
-      }).catch(()=>{
-        this.listLoading = false
-      });
+          this.listLoading = false;
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     resetForm(formName) {
       //清空表单
