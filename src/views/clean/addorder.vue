@@ -605,7 +605,7 @@ export default {
 						this.dialogTableVisible1 = false;
 					}else{
 						this.$message({
-							type: 'warning',
+							type: 'error',
 							message: res.data.data
 						});
 						this.$refs.pickerInput.value=''

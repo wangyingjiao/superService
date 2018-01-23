@@ -677,7 +677,7 @@ export default {
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "请稍后再试"
               });
             });

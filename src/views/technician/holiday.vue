@@ -402,14 +402,14 @@ export default {
                 this.getList();
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: res.data.data
                 });
               }
             })
             .catch(() => {
               this.$message({
-                type: "warning",
+                type: "error",
                 message: "删除失败"
               });
             });

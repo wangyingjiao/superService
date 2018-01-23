@@ -180,7 +180,8 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <el-form-item prop="startTime">
+                  <timePicker :width="'80%'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changePickerStart"></timePicker>
+                  <!-- <el-form-item prop="startTime">
                     	<el-time-select
                           :editable='false'
                           v-model="ruleForm.startTime"
@@ -188,12 +189,12 @@
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
-                            minTime:'00:10',
-                            maxTime:'24:10'
+                            minTime:startEnd.startNew,
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                       </el-time-select>
-                  </el-form-item>
+                  </el-form-item> -->
                 </el-col>
               </el-form-item>
               <el-form-item label="结束时间:" required>
@@ -204,7 +205,8 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <el-form-item prop="endTime">
+                  <timePicker :width="'80%'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changePickerEnd"></timePicker>
+                  <!-- <el-form-item prop="endTime">
                     <el-time-select
                           :editable='false'
                           v-model="ruleForm.endTime"
@@ -217,7 +219,7 @@
                           }"
                           placeholder="选择时间">
                     </el-time-select>
-                  </el-form-item>
+                  </el-form-item> -->
                 </el-col>
               </el-form-item>
               <el-form-item label="备注:" prop="desc">
@@ -490,24 +492,26 @@
                                   >
                                 </div>
                               </div>
-                              <div style="margin-top:10px;">
+                              <div style="margin-top:10px;" class="timepickerClass">
                                 <div class="selfCheckBoxsday">时段</div>
-                                <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                  <timePicker :width="'200px'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changeAddStart"></timePicker>
+                                  <timePicker :width="'200px'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changeAddEnd"></timePicker>
+                                <!-- <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startEnd.startNew,
                                     maxTime:startEnd.endNew 
                                   }" class="tech-daytim">
-                                </el-time-select>
-                                <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                </el-time-select> -->
+                                <!-- <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startTime || startEnd.startNew,
                                     maxTime:startEnd.endNew
                                   }">
-                                </el-time-select>
+                                </el-time-select> -->
                               </div>
                             </div>
                             <div style="margin:10px 10px 10px;">
@@ -573,6 +577,7 @@ import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
 import { Whether } from "@/api/project";
 import Cookies from "js-cookie";
+import timePicker from './timePicker.vue'
 
 export default {
   data() {
@@ -1153,7 +1158,8 @@ export default {
     };
   },
   components: {
-    techniEdit
+    techniEdit,
+    timePicker
   },
   computed: {
     pickerOptions0() {
@@ -1213,6 +1219,19 @@ export default {
     }
   },
   methods: {
+    changePickerStart(path){
+      console.log(path,"path----------")
+      this.ruleForm.startTime = path
+    },
+    changePickerEnd(path){
+      this.ruleForm.endTime = path
+    },
+    changeAddStart(path){
+      this.startTime = path
+    },
+    changeAddEnd(path){
+      this.endTime = path
+    },
     closeThef(){
       this.$refs['techniEditDlog'].closeThe()
     },
@@ -1381,6 +1400,8 @@ export default {
     //休假取消
     vacationCancel(formName) {
       this.$refs[formName].resetFields();
+      this.$refs['startPicker'].positi();
+      this.$refs['endPicker'].positi();
       this.flags = false;
     },
     //休假保存
@@ -1420,6 +1441,7 @@ export default {
                   type: "success"
                 });
                 this.vacationCancel("ruleForm");
+                this.$refs['startPicker'].positi();
               } else {
                 this.$message.error(data.data.data);
                 return false;
@@ -1484,18 +1506,18 @@ export default {
             .then(data => {
               if (data.data.code) {
                 this.$message({
-                  message: "设置密码成功",
+                  message: data.data.data,
                   type: "success"
                 });
                 this.passwordCancel("ruleForm2");
                 this.password = false;
               } else {
-                this.$message.error("设置失败");
+                this.$message.error(data.data.data);
                 return false;
               }
             })
             .catch(error => {
-              this.$message.error("设置失败");
+              this.$message.error(data.data.data);
               return false;
               console.log(error, "error---app密码错误");
             });
@@ -1702,9 +1724,11 @@ export default {
           this.isB = false;
           this.startTime = "";
           this.endTime = "";
+          this.$refs['startPicker'].positi();
+          this.$refs['endPicker'].positi();
         } else {
           this.$message({
-            type: "warning",
+            type: "error",
             message: "结束时间不能小于开始时间"
           });
           return false;
@@ -1793,6 +1817,8 @@ export default {
       this.roomSelNum = [];
       this.roomSel1Arr = [];
       this.isB = false;
+      this.$refs['startPicker'].positi();
+      this.$refs['endPicker'].positi();
     },
     mouser(item, index) {
       if (!item.ismouse) {
@@ -1826,8 +1852,13 @@ export default {
           //     })
           //     return false
           // }
-          // this.personal.workTimes.workTime = this.disbArr
-
+          // this.personal.workTimes.workTime = this.disbAr
+          for(var i = 0; i<this.teachArr.length ; i++){
+            if(this.teachArr[i].endTime == '24:00'){
+              this.teachArr[i].endTime = '23:59'
+            }
+          }
+          console.log(this.teachArr,"this.teachArr-----+++++++")
           this.personal.workTimes = this.teachArr;
           Technician(this.personal)
             .then(data => {
@@ -1854,12 +1885,12 @@ export default {
                 if (typeof str == "string") {
                   this.$message({
                     message: str,
-                    type: "warning"
+                    type: "error"
                   });
                 } else {
                   this.$message({
                     message: str[0],
-                    type: "warning"
+                    type: "error"
                   });
                 }
                 this.btnState = false;
@@ -2479,6 +2510,12 @@ export default {
   margin-top: 10px;
   margin-left: 35px;
 }
+.timepickerClass{
+  display:flex;
+}
+.timepickerClass .addorder-container{
+  margin-left: 5px;
+}
 
 .tallyose {
   color: #fff;
@@ -2538,7 +2575,7 @@ export default {
 .selfCheckBoxsday {
   width: 30px;
   height: 24px;
-  line-height: 24px;
+  line-height: 34px;
   /* border: 1px solid #bfcbd9; */
   display: inline-block;
   /* text-align: center; */

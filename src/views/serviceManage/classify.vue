@@ -345,7 +345,7 @@ export default {
                 this.getList();
               } else {
                 this.$message({
-                  type: "warning",
+                  type: "error",
                   message: "分类下有服务项目，不可删除"
                 });
               }
