@@ -3,40 +3,15 @@
     <div style="width:100%;float:left;background:#fff;position:relative">
       <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
       <ul class="nav-ul">
-        <!-- <li style="cursor: pointer;">
-          <div>+</div>
-          <el-dropdown @command="handleCommand">
-            <span class="el-dropdown-link">
-              新增
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="a">新增订单</el-dropdown-item>
-              <el-dropdown-item command="b">新增技师</el-dropdown-item>
-              <el-dropdown-item command="c">新增服务站</el-dropdown-item>
-              <el-dropdown-item command="d">新增员工</el-dropdown-item>
-              <el-dropdown-item command="e">新增客户</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li> -->
         <li class="liBtn liUser">
-          <div><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{username}}</div>
+          <div ref="username"><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{name}}</div>
         </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
           
           <div class="out"><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
         </li>
-        <!-- <li class="liBtn">
-          <el-dropdown @command="handleCommand" menu-align="start" >
-            <span class="el-dropdown-link">
-              <i class="iconfont">&#xe60f;</i>
-              <span>退出</span>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="logout">退出系统</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li> -->
+        
       </ul>
       
     </div>
@@ -55,18 +30,17 @@ export default {
     TabsView,
     Hamburger
   },
-  computed: {
-    ...mapGetters(["sidebar", "name", "avatar"])
-  },
   data() {
     return {
       flag: false,
-      username: localStorage.getItem("name")
+      username: ""
     };
+  },
+  computed: {
+    ...mapGetters(["sidebar", "name", "avatar"])
   },
   methods: {
     handleCommand(command) {
-      console.log(command, "点击时触发");
       if (command == "logout") {
         this.logout();
       }

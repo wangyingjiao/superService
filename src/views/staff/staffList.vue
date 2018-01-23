@@ -1087,6 +1087,11 @@ export default {
             .then(res => {
               this.btnState = false;
               if (res.data.code == 1) {
+                //编辑自己姓名时同步更改右上角展示
+                if(this.temp.id == localStorage.getItem("userId") && obj.name != localStorage.getItem('name')){
+                  localStorage.setItem('name',obj.name)
+                  this.$store.commit('SET_NAME', localStorage.getItem('name'))
+                }
                 //将禁用的选项启用
                 this.officeState = false;
                 this.statStatte = false;
