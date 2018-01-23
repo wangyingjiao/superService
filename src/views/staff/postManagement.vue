@@ -82,13 +82,13 @@
           <el-input v-model.trim="temp.name" class="form_item" placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
-        <el-form-item label="等级:" prop="dataScope">
+        <!-- <el-form-item label="等级:" prop="dataScope">
           <el-select class="form_item" @change="lvChange" disabled v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
           <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check" >
             <el-tree
@@ -832,7 +832,8 @@ export default {
       //return;
       var obj = {
         name: this.temp.name,
-        dataScope: this.temp.dataScope,
+        //dataScope: this.temp.dataScope,
+        dataScope: "10",
         menuIds: str,
         useable: "1", //状态
         organization: {
@@ -897,6 +898,7 @@ export default {
         id: this.roleId,
         name: this.temp.name,
         dataScope: this.temp.dataScope,
+        //dataScope: "10",
         menuIds: str,
         useable: "1", //状态
         organization: {
