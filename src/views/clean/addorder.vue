@@ -50,7 +50,7 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="选择商品:" prop="serverPro" required>
-							<div class="table-d">
+							<div class="table-d1">
 								<table width="80%" class="selfTable">
 									<tr>
 										<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
@@ -194,7 +194,7 @@
 	</el-dialog>
 	<!--新增客户弹窗结束-->		
 	<!--技师选择弹窗开始-->
-	<el-dialog title="选择技师" :visible.sync="dialogTableVisible">
+	<!-- <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
 		<div class="selectTechHL">
 		<el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
 		</div>
@@ -203,7 +203,6 @@
 			<el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
 			</el-option>
 		</el-select>
-		<span v-show="promShow1" class="selfPromINF">{{promInf1}}</span>
 		</div>
 		<div class="FloatRight"><button class="button-large" @click="searchTeh">查询</button></div> 	
 		<div class="selfTableWrapONE">
@@ -233,7 +232,51 @@
 			<button class="button-large" @click="submitForm2()">确 定</button>
 			<button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
 		</div>
-	</el-dialog>
+	</el-dialog> -->
+		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
+			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
+			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
+			<el-collapse-transition>
+				<div class="selfpromMessageTab" v-if="middleA.length !=0">
+					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+						<div class="techNameStyle">{{item.techName}}</div>
+					</div>                         
+				</div>
+			</el-collapse-transition>                                               	
+			<div class="selfTableWrapONE">
+				<div class="table-d">
+					<table  class="selfTable">
+					<tr class="tableHeader">
+						<td  class="selfTableHEADTD" align="center" width="73px">选择</td>
+						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
+						<td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
+						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
+					</tr>
+					<div class="paddingTop60">
+							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+								<td  width="72px" class="fontSize12" align="center">
+									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
+									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+								</td>
+								<td width="140px" class="fontSize12"  align="center">
+											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+								</td>							
+							</tr>
+					</div>
+					</table>
+					<!-- <div   v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div> -->
+				</div>            
+			</div> 	  	  
+			<div slot="footer" class="dialog-footer" style="text-align:center">
+				<button class="button-large" :disabled="techSaveFlag" @click="submitForm2()">保存</button>
+				<button class="button-cancel" @click="cancelForm2()">取 消</button>
+			</div>
+		</el-dialog>	
 	<!--技师选择弹窗结束-->
 	<div ref="gdMap" class="mapWrap"></div>
   </div>
@@ -283,6 +326,8 @@ export default {
 			}			
 	};		  
     return {
+		middleA:[],
+		techSaveFlag:false,
 		form2:{},
 		btnShow: JSON.parse(localStorage.getItem('btn')),
 		//服务站下拉选项
@@ -290,7 +335,6 @@ export default {
 		techName:'',
 		techStationId:'',
 		promShow1:false, 
-		promInf1:'搜索内容不存在!',
         pickerOptions0: {
           disabledDate(time) {
 			  if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
@@ -652,6 +696,9 @@ export default {
 		}
 		this.tabOptions=arr
 		this.dialogTableVisible = false	
+	},
+	cancelForm2(){
+		this.dialogTableVisible = false	
 	},	
     //叉号点击关闭TAB
     errorClose(obj,index){
@@ -767,6 +814,24 @@ export default {
 };
 </script>
 <style  lang="scss" scoped>
+.dispatchTechNameSearch{
+   width:180px;margin-left:15px;
+}
+.width120{
+	width:120px
+}
+.paddingTop60{
+   padding-top:60px;
+}
+.marginRight15{
+   margin-right:15px;
+}
+.dispatchTechNameSearch{
+   width:180px;margin-left:15px;
+}
+.dispatchMangFooter{
+  margin-top:20px;padding-bottom:0px;
+}
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
@@ -810,8 +875,6 @@ export default {
 .selfEmailStyle{margin-left:-10px;width:400px;}
 .selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
 .FloatRight{float:right;}
-.selfTableWrapONE{float:left;margin-top:20px;width:100%;margin-bottom:20px;height:300px;overflow-y:scroll;}
-.selfTableHEADTD{background: #F8F8F9;height:30px;}
 .roomTypeStyle{width:120px;margin-top:3px;margin-bottom:3px;}
 .selfINputNumStyle{width:120px;margin-top:3px;margin-bottom:3px;}
 .NumberINputStyle{width: 120px;margin-top:3px;margin-bottom:3px;}
@@ -922,4 +985,50 @@ export default {
 .sugg-item{
 	width:180px !important;
 }
+.FloatRight{float:right;}
+.selfpromMessageTab{position:relative;width:100%;margin-top:20px;margin-left:10px;}
+.techNameStyle {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tabWrap1 {
+  width: 80px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top:5px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+}
+.selfTableWrapONE{
+	margin-top: 20px;
+	overflow: hidden;
+	width: 660px;
+	height: 280px;
+	position:relative;
+}
+.table-d{
+  width: 677px;
+  overflow-y: scroll;
+  height: 276px;
+  margin-left: 15px;
+}
+.table-d1{
+  width: 750px;
+  height: 276px;
+}
+.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
+.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
+.height70{height:70px;}
+.imgStyle{display:block;}
+.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
 </style>

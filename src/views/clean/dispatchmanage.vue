@@ -319,7 +319,7 @@ export default {
 				 	this.listLoading = false;
 			 }
 		}).catch(res=>{
-
+          this.listLoading = false;
 		})
 	},
 	//全局搜索按钮

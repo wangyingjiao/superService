@@ -1968,6 +1968,8 @@ export default {
             this.ImageText = true;
             // console.log(this.fileList, "编辑图文");
             // console.log(this.imgText, "编辑图文");
+          }else{
+            this.listLoading = false;
           }
           // console.log(res, "列表信息");
         })

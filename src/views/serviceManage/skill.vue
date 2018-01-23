@@ -281,7 +281,9 @@ export default {
               });
             }
           })
-          .catch(res => {});
+          .catch(res => {
+            this.listLoading = false;
+          });
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
         //编辑操作
@@ -314,7 +316,9 @@ export default {
               });
             }
           })
-          .catch(res => {});
+          .catch(res => {
+            this.listLoading = false;
+          });
       }
     },
     //技师数据回显二级选中
