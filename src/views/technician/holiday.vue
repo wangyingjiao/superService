@@ -173,9 +173,9 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {       
-        console.log(res, "休假列表");
-        this.total = res.data.data.count;
+      getHoliday(obj, this.pageNumber, this.pageSize).then(res => { 
+        if(res.data.code == 1){
+          this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
@@ -186,6 +186,10 @@ export default {
           }
         }
         this.listLoading = false;
+        }else{
+          this.listLoading = false
+        }
+        
       }).catch(()=>{
         this.listLoading = false
       });
@@ -249,6 +253,8 @@ export default {
           }
 
           this.listLoading = false;
+        }else{
+          this.listLoading = false
         }
       }).catch(()=>{
         this.listLoading = false
@@ -312,6 +318,8 @@ export default {
           setTimeout(() => {
             this.listLoading = false;
           }, 500);
+        }else{
+          this.listLoading = false
         }
       }).catch(()=>{
         this.listLoading = false;
@@ -373,6 +381,8 @@ export default {
           setTimeout(() => {
             this.listLoading = false;
           }, 500);
+        }else{
+          this.listLoading = false
         }
       }).catch(()=>{
         this.listLoading = false
