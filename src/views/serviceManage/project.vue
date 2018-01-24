@@ -94,11 +94,11 @@
         </template>  
       </el-table-column>
 
-      <el-table-column  label="状态" align="center" >
-        <template scope="scope">
+      <el-table-column  label="对接商品ID" align="center" prop="jointGoodsCode">
+        <!-- <template scope="scope">
           <span style="color:red" v-show="scope.row.sale == 'no'">下架</span>
           <span v-show="scope.row.sale == 'yes'">上架</span>
-        </template>
+        </template> -->
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="200px">
@@ -106,7 +106,15 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-          </template>
+            
+            <el-popover
+              ref="popover21"
+              placement="top-start"
+              trigger="hover"
+              content="对接商品">
+            </el-popover>
+            <el-button v-popover:popover21 class="ceshi3 iconfont senddata" v-if="btnShow.indexOf('project_delete')>-1" @click="handleSendData(scope.row)">&#xe62a;</el-button>
+        </template>
       </el-table-column>
 
     </el-table>
@@ -313,7 +321,7 @@
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入商品名称（1-26位）"
+                    placeholder="请输入商品名称（1-24位）"
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
@@ -567,7 +575,8 @@ import {
   ServerEdit,
   serverEditPre,
   sortList,
-  serGasqSort
+  serGasqSort,
+  sendData
 } from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
@@ -764,7 +773,7 @@ export default {
       var editName = this.editName;
       var arr = this.basicForm.commoditys;
       if(value){
-        if(value.length>=1 && value.length<=26){
+        if(value.length>=1 && value.length<=24){
           if(this.handleEditFlag){
             if(editName.name == value){
               callback()
@@ -790,10 +799,10 @@ export default {
             }
           }
         }else{
-          callback(new Error("长度在 1 到 26 个字符"))
+          callback(new Error("长度在 1 到 24 个字符"))
         }
       }else{
-        callback(new Error('请输入商品名称(1-26位)'))
+        callback(new Error('请输入商品名称(1-24位)'))
       }
     }
     return {
@@ -1033,7 +1042,7 @@ export default {
       });
 
     // this.orient({}, 0); // 所属分类
-    this.getList(1, 10); //搜索 ，分页
+    // this.getList(1, 10); //搜索 ，分页
     this.sign   //获取签名
   },
   computed: {
@@ -1046,6 +1055,15 @@ export default {
     },
   },
   methods: {
+    handleSendData(row){
+      console.log(row,"row--------")
+      var obj = {id:row.id}
+      sendData(obj).then(data=>{
+        console.log(data,"data=========")
+      }).catch(error=>{
+        console.log(error,"error========")
+      })
+    },
     //图文详情测试
     handImgText(file,fileList){
       if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
@@ -1873,6 +1891,7 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
+      console.log(this.goods_info,"goods_info")
       this.basicForm.sale = 'yes'
       this.basicForm.sortId = ''
       this.imgNumber = 0;
@@ -1888,6 +1907,7 @@ export default {
     //编辑方法
     handleUpdate(row) {
       // console.log(row,"------row`````");
+      this.resetForm()
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
@@ -2170,6 +2190,7 @@ export default {
                     message: data.data.data,
                     type: "success"
                   });
+                  this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
@@ -2234,7 +2255,9 @@ export default {
     },
     resetForm(ser) {
       // this.resetEmpty(ser)
-      this.$refs["goods_info"].resetFields()
+      if(this.$refs["goods_info"]){
+        this.$refs["goods_info"].resetFields()
+      }
       this.goods_info.name = ''
       this.goods_info.unit = ''
       this.goods_info.type = ''
@@ -2509,6 +2532,9 @@ export default {
 
 .el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
+}
+.senddata{
+  margin-left:10px;
 }
 .tit {
   font-size: 14px;

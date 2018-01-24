@@ -241,14 +241,17 @@
                                     </div>
                                     <div class="startTime">
                                       <div class="selfCheckBoxsday">时段</div>
-                                        <timePicker :width="'200px'" ref="startPicker" :mintime="startend.start" :maxtime="startend.end" :mound="startend.start" @changepicker="changeEditStart"></timePicker>
-                                        <timePicker :width="'200px'" ref="endPicker" :mintime="startend.start" :maxtime="startend.end" :mound="startend.end" @changepicker="changeEditEnd"></timePicker>
-                                      <!-- <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                      <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="startend.start=='00:00'?{
                                           start: '00:00',
                                           step: '00:30',
                                           end: '24:00',
-                                          minTime:startend.startNew,
                                           maxTime:startend.endNew
+                                          }:{
+                                            start: '00:00',
+                                            step: '00:30',
+                                            end: '24:00',
+                                            minTime:startend.startNew,
+                                            maxTime:startend.endNew
                                           }" class="tech-daytim">
                                       </el-time-select>
                                       <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
@@ -258,7 +261,7 @@
                                           minTime:startTime || startend.startNew,
                                           maxTime:startend.endNew
                                           }">
-                                      </el-time-select> -->
+                                      </el-time-select>
                                     </div>
                                 </div>
                                 <div style="margin:10px">
@@ -609,7 +612,6 @@ import {
 
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
-import timePicker from './timePicker.vue'
 
 export default {
   data() {
@@ -1292,12 +1294,6 @@ export default {
     "startend"
   ],
   methods: {
-    changeEditStart(path){
-      this.startTime = path
-    },
-    changeEditEnd(path){
-      this.endTime = path
-    },
     //全职兼职切换
     jobStatusTable(){
       if(this.perServer.jobNature == 'part_time'){
@@ -1712,14 +1708,12 @@ export default {
             }else{
               this.perServer.workTimes = [].concat(arr)
             }
-            this.$refs['startPicker'].positi();
-            this.$refs['endPicker'].positi();
             this.isB = false;
             this.startTime = ''
             this.endTime = ''
         }else{
            this.$message({
-              type: "error",
+              type: "warning",
               message: "结束时间不能小于开始时间"
             });
             return false
@@ -1766,8 +1760,6 @@ export default {
     addtimeno() {
       this.roomSel1Arr = []
       this.roomSelNum = []
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
       this.isB = false;
     },
     mouser(item) {
@@ -1894,9 +1886,6 @@ export default {
             }
           }
       },
-  },
-  components:{
-    timePicker
   }
 };
 </script>
@@ -2248,13 +2237,7 @@ export default {
 }
 .startTime{
   margin-top:10px;
-  display:flex;
-  line-height:34px;
 }
-.startTime .addorder-container:nth-child(2){
-  margin-left:5px;
-}
-
 
 .btn_Span1 {
   width: 30px;

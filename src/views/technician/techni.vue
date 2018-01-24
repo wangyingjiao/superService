@@ -180,21 +180,26 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <timePicker :width="'80%'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changePickerStart"></timePicker>
-                  <!-- <el-form-item prop="startTime">
+                  <!-- <timePicker></timePicker> -->
+                  <el-form-item prop="startTime">
                     	<el-time-select
                           :editable='false'
                           v-model="ruleForm.startTime"
-                          :picker-options="{
+                          :picker-options="timeFlag?{
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
                             minTime:startEnd.startNew,
                             maxTime:startEnd.endNew
+                          }:{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00',
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                       </el-time-select>
-                  </el-form-item> -->
+                  </el-form-item>
                 </el-col>
               </el-form-item>
               <el-form-item label="结束时间:" required>
@@ -205,8 +210,7 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <timePicker :width="'80%'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changePickerEnd"></timePicker>
-                  <!-- <el-form-item prop="endTime">
+                  <el-form-item prop="endTime">
                     <el-time-select
                           :editable='false'
                           v-model="ruleForm.endTime"
@@ -219,7 +223,7 @@
                           }"
                           placeholder="选择时间">
                     </el-time-select>
-                  </el-form-item> -->
+                  </el-form-item>
                 </el-col>
               </el-form-item>
               <el-form-item label="备注:" prop="desc">
@@ -492,26 +496,29 @@
                                   >
                                 </div>
                               </div>
-                              <div style="margin-top:10px;" class="timepickerClass">
+                              <div style="margin-top:10px;">
                                 <div class="selfCheckBoxsday">时段</div>
-                                  <timePicker :width="'200px'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changeAddStart"></timePicker>
-                                  <timePicker :width="'200px'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changeAddEnd"></timePicker>
-                                <!-- <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startEnd.startNew,
                                     maxTime:startEnd.endNew 
+                                  }:{
+                                    start: '00:00',
+                                    step: '00:30',
+                                    end: '24:00',
+                                    maxTime:startEnd.endNew 
                                   }" class="tech-daytim">
-                                </el-time-select> -->
-                                <!-- <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                </el-time-select>
+                                <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startTime || startEnd.startNew,
                                     maxTime:startEnd.endNew
                                   }">
-                                </el-time-select> -->
+                                </el-time-select>
                               </div>
                             </div>
                             <div style="margin:10px 10px 10px;">
@@ -726,6 +733,8 @@ export default {
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
       jobFlag: false,
+      timeFlag:true,
+      addtimeFlag:true,
       kaishi: "",
       pageNumber:'',
       jiehsu: "",
@@ -1219,19 +1228,6 @@ export default {
     }
   },
   methods: {
-    changePickerStart(path){
-      console.log(path,"path----------")
-      this.ruleForm.startTime = path
-    },
-    changePickerEnd(path){
-      this.ruleForm.endTime = path
-    },
-    changeAddStart(path){
-      this.startTime = path
-    },
-    changeAddEnd(path){
-      this.endTime = path
-    },
     closeThef(){
       this.$refs['techniEditDlog'].closeThe()
     },
@@ -1400,8 +1396,6 @@ export default {
     //休假取消
     vacationCancel(formName) {
       this.$refs[formName].resetFields();
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
       this.flags = false;
     },
     //休假保存
@@ -1441,7 +1435,6 @@ export default {
                   type: "success"
                 });
                 this.vacationCancel("ruleForm");
-                this.$refs['startPicker'].positi();
               } else {
                 this.$message.error(data.data.data);
                 return false;
@@ -1475,6 +1468,11 @@ export default {
 
           if(this.startEnd.end=='23:59'){
             this.startEnd.end = "24:00"
+          }
+          if(this.startEnd.start == '00:00'){
+            this.timeFlag = false
+          }else{
+            this.timeFlag = true
           }
           if(this.startEnd.endNew.slice(0,2) == "00"){
             this.startEnd.endNew = "24:10"
@@ -1541,10 +1539,15 @@ export default {
           this.startEnd = data.data.data
           if(this.startEnd.end=='23:59'){
               this.startEnd.end = "24:00"
-            }
-            if(this.startEnd.endNew.slice(0,2) == "00"){
-              this.startEnd.endNew = "24:10"
-            }
+          }
+          if(this.startEnd.endNew.slice(0,2) == "00"){
+            this.startEnd.endNew = "24:10"
+          }
+          if(this.startEnd.start == '00:00'){
+            this.addtimeFlag = false
+          }else{
+            this.addtimeFlag = true
+          }
           this.startTime = data.data.data.start
           this.endTime = data.data.data.end
         }).catch(error=>{
@@ -1724,11 +1727,9 @@ export default {
           this.isB = false;
           this.startTime = "";
           this.endTime = "";
-          this.$refs['startPicker'].positi();
-          this.$refs['endPicker'].positi();
         } else {
           this.$message({
-            type: "error",
+            type: "warning",
             message: "结束时间不能小于开始时间"
           });
           return false;
@@ -1750,7 +1751,6 @@ export default {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false,
         type: "warning"
       })
         .then(() => {
@@ -1817,8 +1817,6 @@ export default {
       this.roomSelNum = [];
       this.roomSel1Arr = [];
       this.isB = false;
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
     },
     mouser(item, index) {
       if (!item.ismouse) {
@@ -1853,10 +1851,13 @@ export default {
           //     return false
           // }
           // this.personal.workTimes.workTime = this.disbAr
-          for(var i = 0; i<this.teachArr.length ; i++){
+           for(var i = 0; i<this.teachArr.length ; i++){
             if(this.teachArr[i].endTime == '24:00'){
-              this.teachArr[i].endTime = '23:59'
+              this.teachArr[i].endTime = '23:59:59'
             }
+          }
+          if(this.teachArr.endTime == '24:00'){
+            this.teachArr.endTime = '23:59'
           }
           console.log(this.teachArr,"this.teachArr-----+++++++")
           this.personal.workTimes = this.teachArr;
@@ -1885,12 +1886,12 @@ export default {
                 if (typeof str == "string") {
                   this.$message({
                     message: str,
-                    type: "error"
+                    type: "warning"
                   });
                 } else {
                   this.$message({
                     message: str[0],
-                    type: "error"
+                    type: "warning"
                   });
                 }
                 this.btnState = false;
@@ -1960,13 +1961,11 @@ export default {
               this.techniList = this.infoname;
               console.log(this.techniList, "this.techniList----------");
           }else{
-            this.listLoadingTech = false;
             this.$message.error(data.data.data)
             return false
           }
         })
         .catch(error => {
-          this.listLoadingTech = false;
           return false
           console.log(error, "error-----thechni.vue-----1211");
         });
@@ -2510,12 +2509,6 @@ export default {
   margin-top: 10px;
   margin-left: 35px;
 }
-.timepickerClass{
-  display:flex;
-}
-.timepickerClass .addorder-container{
-  margin-left: 5px;
-}
 
 .tallyose {
   color: #fff;
@@ -2575,7 +2568,7 @@ export default {
 .selfCheckBoxsday {
   width: 30px;
   height: 24px;
-  line-height: 34px;
+  line-height: 24px;
   /* border: 1px solid #bfcbd9; */
   display: inline-block;
   /* text-align: center; */
