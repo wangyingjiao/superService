@@ -302,12 +302,12 @@
                     <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-headPic"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"
                             >
-                            <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
+                            <img v-if="personal.headPic" :src="'https://imgcdn.guoanshequ.com'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                         <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
@@ -1344,14 +1344,15 @@ export default {
         //this.ossData = ossData;
         // console.log(ossData.get("name"),"ossData-----");
         // console.log(ossData.get("key"),"ossData------");
-
+  console.log(22222222222)
         that.$http
-          .post(data.host, ossData, {
+          .post(data.host1, ossData, {
             headers: {
               "Content-Type": "multipart/form-data; boundary={boundary}"
             }
           })
           .then(res => {
+            console.log(11111111111111111)
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
             } else if (flag == "at") {
@@ -1359,6 +1360,8 @@ export default {
             } else {
               this.personal.idCardPicBefor = ossData.get("key");
             }
+          }).catch(err=>{
+            console.log(err)
           });
 
         // console.log(this.headerBack,"this.headerBack")
