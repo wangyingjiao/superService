@@ -544,7 +544,6 @@ export default {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               closeOnClickModal:false,
-              type: 'warning'
             }).then(() => {
                 //更换时间的保存
                 var obj={
@@ -574,7 +573,10 @@ export default {
                   this.timeSaveFlag=false; 
                 });
             }).catch(() => { 
-
+               		this.$message({
+										type: 'warning',
+										message: '已取消更换时间'
+									});
             });                         
                        
           }
