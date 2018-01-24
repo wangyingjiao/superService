@@ -1295,7 +1295,6 @@ export default {
 }
 .twoDialog {
   width: 100%;
-  padding: 10%;
 }
 .bgWhite {
   background-color: #ffffff;
