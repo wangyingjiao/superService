@@ -1188,7 +1188,7 @@ export default {
       };
     },
     pickerOptionsTech(){
-      //当前时期
+      //当前时间
       // var data = new Date();
       // var year = data.getFullYear();
       // var month = data.getMonth() + 1;
