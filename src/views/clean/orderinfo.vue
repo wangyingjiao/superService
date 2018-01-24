@@ -169,9 +169,14 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        label="金额"
+                        label="单价"
                         prop="payPrice">                   
                       </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="小计"
+                        prop="payPriceSum">                   
+                      </el-table-column>                      
                     </el-table>
             </div>                                     		
 		    </div>
