@@ -364,7 +364,7 @@ export default {
       pageSize: 10,
       total: 1,
       search: {
-        type: "",
+        type: "name",
         val: "",
         officeId: "",
         stationId: ""
@@ -723,7 +723,6 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
-      
 
       if (b) {
         //console.log("tttttttttttttttt");
@@ -1021,8 +1020,10 @@ export default {
                 this.listQuery.page = 1;
                 this.pageNumber = 1;
                 //清空搜索条件
-                this.search.mobile = "";
-                this.search.name = "";
+                this.search.type = "name";
+                this.search.val = "";
+                this.search.officeId = "";
+                this.search.stationId = "";
 
                 var obj = {};
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
