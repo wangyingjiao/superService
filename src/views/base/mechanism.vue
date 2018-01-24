@@ -646,15 +646,15 @@ export default {
     },
     //结束时间change事件
     endTimeChange(val) {
-      console.log(val, "结束时间");
+      //console.log(val, "结束时间");
     },
-    //新增
+    //点击新增
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false;
     },
-    //编辑
+    //点击编辑
     handleUpdate(row) {
       //console.log(row);
       this.listLoading = true;
@@ -663,8 +663,6 @@ export default {
       };
       setMech(obj)
         .then(res => {
-          console.log(res, "编辑");
-
           if (res.data.code == "1") {
             this.listLoading = false;
             if (res.data.data.haveStation !== 0) {
@@ -702,7 +700,6 @@ export default {
                 }
               }, 30);
             }
-            console.log(this.temp);
             this.dialogFormVisible = true;
           } else {
             this.listLoading = false;
@@ -730,7 +727,7 @@ export default {
     },
     //切换搜索内容
     searchChange(val) {
-      console.log(val);
+     // console.log(val);
       // this.search.key = val
     },
     //新增保存
@@ -765,13 +762,11 @@ export default {
         obj.workEndTime = "08:00:01";
       }
 
-      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           addMech(obj)
             .then(res => {
-              console.log(res);
               this.btnState = false;
               if (res.data.code === 1) {
                 this.resetTemp();
@@ -802,7 +797,7 @@ export default {
     //编辑保存
     update(formName) {
       var obj = {
-        id: this.updateId,
+        id: this.updateId,//被编辑的id
         name: this.temp.name, //机构名
         telephone: this.temp.telephone, //机构电话
         masterName: this.temp.masterName, //负责人
