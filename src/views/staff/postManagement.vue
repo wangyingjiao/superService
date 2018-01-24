@@ -360,7 +360,7 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
-          }else{
+          } else {
             this.listLoading = false;
           }
         });
@@ -415,7 +415,7 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
-          }else{
+          } else {
             this.listLoading = false;
           }
         });
@@ -465,7 +465,7 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
-          }else{
+          } else {
             this.listLoading = false;
           }
         });
@@ -513,7 +513,7 @@ export default {
             setTimeout(() => {
               this.listLoading = false;
             }, 500);
-          }else{
+          } else {
             this.listLoading = false;
           }
         });
@@ -537,7 +537,9 @@ export default {
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
-                    ].id,true);
+                    ].id,
+                    true
+                  );
                 }
               }
             } else {
@@ -548,8 +550,8 @@ export default {
         //订单详情处理完毕
         //自动勾选列表权限
         if (a.subMenus == undefined) {
-          console.log(a)
-          console.log(a.parentIds)
+          console.log(a);
+          console.log(a.parentIds);
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
@@ -682,11 +684,22 @@ export default {
     //点击新增时
     handleCreate() {
       //this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-      if (this.officeIds.length == 1) {
-        this.temp.officeId = this.officeIds[0].id;
-      }
+      this.listLoading = true
+      getMenudata().then(res => {
+        this.data2 = res.data.data;
+        if (res.data.code == 1) {
+          this.dialogStatus = "create";
+          this.dialogFormVisible = true;
+          this.listLoading = false
+          if (this.officeIds.length == 1) {
+            this.temp.officeId = this.officeIds[0].id;
+          }
+        }else{
+          this.listLoading = false
+        }
+      }).catch(()=>{
+        this.listLoading = false
+      });
     },
     //点击编辑时
     handleUpdate(row) {
@@ -695,7 +708,7 @@ export default {
       getPower(row.id).then(res => {
         this.listLoading = false;
         if (res.data.code == 1) {
-        //this.data2 = res.data.data.menuListUnion
+          this.data2 = res.data.data.menuListUnion;
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
@@ -715,7 +728,8 @@ export default {
           //一期默认10级
           this.temp.dataScope = "10";
 
-          this.temp.check = a.menuIdList;
+          //this.temp.check = a.menuIdList;
+          this.temp.check = a.menuIdListEdit;
           //console.log(a.menuIdList);
           if (res.data.data.flag) {
             this.selsctState = true;
@@ -740,7 +754,7 @@ export default {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
         } else {
-          this.listLoading = false
+          this.listLoading = false;
           this.$message({
             type: "error",
             message: "获取数据失败"
