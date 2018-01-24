@@ -97,7 +97,9 @@
       <el-table-column  label="对接商品ID" align="center" prop="jointGoodsCode">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
+            <el-tooltip placement="left" :content="item.jointGoodsCode">
                 <span class="proName">{{item.jointGoodsCode}}</span>
+             </el-tooltip>
           </div>
           <!-- <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index" v-if="scope.row.commoditys!=undefined">
             <el-tooltip placement="left" :disabled="item.jointGoodsCode.length <= 10" :content="item.jointGoodsCode">
@@ -123,7 +125,7 @@
               trigger="hover"
               content="对接商品">
             </el-popover>
-            <el-button v-popover:popover21 class="ceshi3 iconfont senddata" v-if="btnShow.indexOf('project_delete')>-1" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            <el-button v-if="scope.row.jointStatus=='yes'" v-popover:popover21 class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
         </template>
       </el-table-column>
 
@@ -1065,12 +1067,29 @@ export default {
     },
   },
   methods: {
+    //对接商品
     handleSendData(row){
       console.log(row,"row--------")
       var obj = {id:row.id}
       sendData(obj).then(data=>{
+        if(data.data.code){
+          this.$message({
+              type: "success",
+              message: data.data.data
+          });
+        }else{
+          this.$message({
+            type: "error",
+            message: data.data.data
+          });
+        }
         console.log(data,"data=========")
       }).catch(error=>{
+        this.$message({
+              type: "error",
+              message: data.data.data
+        });
+        return false
         console.log(error,"error========")
       })
     },
@@ -1483,9 +1502,21 @@ export default {
             this.ImageText = false;
             this.$message({
               type: "success",
-              message: "图片上传成功"
+              message: res.data.data
             });
+          }else{
+            this.$message({
+              type:'error',
+              message:res.data.data
+            })
           }
+        }).catch(error=>{
+            this.$message({
+              type:'error',
+              message:res.data.data
+            })
+          console.log(error,"上传失败")
+          return false
         });
       }else{
           this.$message({
@@ -1925,46 +1956,63 @@ export default {
       this.basicForm.majorSort = "clean";
       this.picList = []
       this.editId = row.id;
+      this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(data => {
-          console.log(data,"dataopopopopo")
-          this.dialogFormVisible = true;   
-          // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
-          // console.log(data, "data-----编辑");
-          // this.basicForm = data.data.data
-          var arr = data.data.data;
-          console.log(arr,"arr--------------")
-          // for (var i = 0; i < arr.commoditys.length; i++) {
-          //   if (arr.commoditys[i].id) {
-          //     delete arr.commoditys[i].id;
-          //   }
-            // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
-            //   if (arr.commoditys[i].persons[j].id) {
-            //     delete arr.commoditys[i].persons[j].id;
-            //   }
-            // }
-          // }
-          if (data.data.data.pictures != undefined) {
-            this.picFile = data.data.data.pictures;
-            this.imgNumber = data.data.data.pictures.length;
-            for (var i = 0; i < data.data.data.pictures.length; i++) {
-              console.log(data.data.data.pictures, "tupian");
-              var obj = {
-                url:
-                  "https://imgcdn.guoanshequ.com/" +
-                  data.data.data.pictures[i]
-              };
-              this.picList.push(obj);
-            }
+          if(data.data.code){
+              console.log(data,"dataopopopopo")
+              this.listLoading = false;
+              this.dialogFormVisible = true;   
+              // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
+              // console.log(data, "data-----编辑");
+              // this.basicForm = data.data.data
+              var arr = data.data.data;
+              console.log(arr,"arr--------------")
+              // for (var i = 0; i < arr.commoditys.length; i++) {
+              //   if (arr.commoditys[i].id) {
+              //     delete arr.commoditys[i].id;
+              //   }
+                // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
+                //   if (arr.commoditys[i].persons[j].id) {
+                //     delete arr.commoditys[i].persons[j].id;
+                //   }
+                // }
+              // }
+              if (data.data.data.pictures != undefined) {
+                this.picFile = data.data.data.pictures;
+                this.imgNumber = data.data.data.pictures.length;
+                for (var i = 0; i < data.data.data.pictures.length; i++) {
+                  console.log(data.data.data.pictures, "tupian");
+                  var obj = {
+                    url:
+                      "https://imgcdn.guoanshequ.com/" +
+                      data.data.data.pictures[i]
+                  };
+                  this.picList.push(obj);
+                }
+              }
+              this.tableProject({majorSort:arr.majorSort},arr.sortId)
+              this.basicForm = arr;
+              // this.basicForm.customTags = arr.customTags || []
+              this.customArr = arr.customTags || []
+              console.log(this.basicForm, "basicForm------");
+              this.alreadyArr = arr.sysTags || []
+          }else{
+            this.listLoading = false;
+            this.$message({
+              type:'error',
+              message:data.data.data
+            })
+            return false
           }
-          this.tableProject({majorSort:arr.majorSort},arr.sortId)
-          this.basicForm = arr;
-          // this.basicForm.customTags = arr.customTags || []
-          this.customArr = arr.customTags || []
-          console.log(this.basicForm, "basicForm------");
-          this.alreadyArr = arr.sysTags || []
         })
         .catch(error => {
+          this.$message({
+              type:'error',
+              message:data.data.data
+          })
+          this.listLoading = false;
+          return false
           console.log(error);
         });
     },
@@ -2040,11 +2088,19 @@ export default {
               } else {
                 this.$message({
                   type: "error",
-                  message: "删除失败"
+                  message: res.data.data
                 });
+                return false
               }
             })
-            .catch(() => console.log("未知错误"));
+            .catch((error) =>{
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+                console.log(error,"未知错误");
+                 return false
+            })
         })
         .catch(() => {
           this.$message({
@@ -2244,7 +2300,7 @@ export default {
                   // this.getList(1, 10);
                   // this.pageNumber = 1
                   this.listQuery.page = 1
-                  this.getList(1, 10);
+                  this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
                 } else {
                   this.$message({
@@ -2566,6 +2622,9 @@ export default {
   width: 50px;
   height: 50px;
 }
+/* .bgWhite .el-popover{
+  text-align: center;
+} */
 .question{
   border-radius: 50%;
   width: 30px;

@@ -176,7 +176,7 @@
                 <el-col :span="11">
                   <el-form-item prop="startDate">
                     <el-date-picker type="date" placeholder="选择日期" 
-                    v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"
+                    v-model="ruleForm.startDate" style="width: 100%;" :editable='false' format="yyyy-MM-dd" @change="startDateChange" :picker-options="pickerOptionsTech"
                    ></el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -207,7 +207,8 @@
               <el-form-item label="结束时间:" required>
                 <el-col :span="11">
                   <el-form-item prop="endDate">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.endDate" style="width: 100%;" format="yyyy-MM-dd" @change="endDateChange"></el-date-picker>
+                    <el-date-picker type="date" placeholder="选择日期" :editable='false' v-model="ruleForm.endDate" style="width: 100%;" format="yyyy-MM-dd" @change="endDateChange"
+                        :picker-options="pickerOptionsTech"></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
@@ -229,7 +230,7 @@
                 </el-col>
               </el-form-item>
               <el-form-item label="备注:" prop="desc">
-                 <el-col :span="23">
+                 <el-col :span="21">
                     <el-input type="textarea" v-model="ruleForm.desc"></el-input>
                  </el-col>
               </el-form-item>
@@ -586,7 +587,7 @@ import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
 import { Whether } from "@/api/project";
 import Cookies from "js-cookie";
-import timePicker from './timePicker.vue'
+// import timePicker from './timePicker.vue'
 
 export default {
   data() {
@@ -1170,7 +1171,6 @@ export default {
   },
   components: {
     techniEdit,
-    timePicker
   },
   computed: {
     pickerOptions0() {
@@ -1187,21 +1187,26 @@ export default {
         }
       };
     },
-    // pickerOptionsTech(){
-    //   var data = new Date();
-    //   var year = data.getFullYear();
-    //   var month = data.getMonth() + 1;
-    //   var day = data.getDate();
-    //   var str = year + "," + month + "," + day;
-    //   console.log(str,"str----------")
-    //   var time1 = Date.parse(new Date("1950,1,1"));
-    //   var time2 = Date.parse(new Date(str));
-    //   return {
-    //     disabledDate(time) {
-    //       return time.getTime() < time2;
-    //     }
-    //   };
-    // },
+    pickerOptionsTech(){
+      //当前时期
+      // var data = new Date();
+      // var year = data.getFullYear();
+      // var month = data.getMonth() + 1;
+      // var day = data.getDate();
+      // var str = year + "," + month + "," + day;
+      //前2个月
+      var dt = new Date();  
+          dt.setMonth( dt.getMonth()-3 );  
+      var dtstr = dt.toLocaleString()
+      var dtarr = dtstr.split(' ')[0].split('/') 
+      // var time1 = Date.parse(new Date("1950,1,1"));
+      var time2 = Date.parse(new Date(dtarr[0],dtarr[1],dtarr[2]));
+      return {
+        disabledDate(time) {
+          return time.getTime() < time2;
+        }
+      };
+    },
     //权限
     btnShow() {
       return JSON.parse(localStorage.getItem("btn"));
@@ -1357,7 +1362,7 @@ export default {
         //this.ossData = ossData;
         // console.log(ossData.get("name"),"ossData-----");
         // console.log(ossData.get("key"),"ossData------");
-  console.log(22222222222)
+          console.log(22222222222)
         that.$http
           .post(data.host1, ossData, {
             headers: {
@@ -1587,12 +1592,30 @@ export default {
     //技师编辑获取ID
     technician(item) {
       // console.log(item,"item-------")
+      this.listLoadingTech = true;
       technicianEditId({ id: item.id })
         .then(data => {
-          this.technicianData = data.data.data;
-          this.dialogVisibleEdit = true;
+          if(data.data.code){
+            console.log(data,"bienji---------++++")
+            this.listLoadingTech = false;
+            this.technicianData = data.data.data;
+            this.dialogVisibleEdit = true;
+          }else{
+            this.$message({
+              message: data.data.data,
+              type: "error"
+            });
+            this.listLoadingTech = false;
+            return false
+          }
         })
         .catch(error => {
+          this.$message({
+              message: data.data.data,
+              type: "error"
+          });
+          this.listLoadingTech = false;
+          return false
           console.log(error, "error---技师编辑");
         });
 
@@ -1990,11 +2013,13 @@ export default {
               this.techniList = this.infoname;
               console.log(this.techniList, "this.techniList----------");
           }else{
+            this.listLoadingTech = false;
             this.$message.error(data.data.data)
             return false
           }
         })
         .catch(error => {
+          this.listLoadingTech = false;
           return false
           console.log(error, "error-----thechni.vue-----1211");
         });
