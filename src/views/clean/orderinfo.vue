@@ -410,17 +410,14 @@
           >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
               <el-form-item label="选择日期" prop='Date' >
-                      <el-date-picker
-                        v-model="formInline.Date"                      
-                        placeholder="年-月-日"                     
-                        :type="select"
-                        :picker-options="pickerOptions0"
-                        class="selfDateStyle"
-                        popper-class="selfTestStyle1"
-                        @change='dateChange'                      
-                        >
-                      </el-date-picker>
-
+                      <el-select v-model="formInline.Date" class="selfDateStyle"  @change='dateChange' placeholder="请选择">
+                        <el-option
+                          v-for="item in options2"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>                      
               </el-form-item>
               <el-form-item label="选择时间" prop='Time'>
                     <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
@@ -441,7 +438,7 @@
 </template>
 
 <script>
-import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData,addTechSave,dispatchTechSave,saveTime} from "@/api/order";
+import {getOrderInf,addTechData,dispatchTechData,addTechSave,dispatchTechSave,saveTime} from "@/api/order";
   import {
     orderServer
   } from '@/api/skill'
@@ -449,6 +446,7 @@ export default {
   name: "",
   data() {
     return {
+          options2:[],
           btnShow: JSON.parse(localStorage.getItem('btn')),
           timeSaveFlag:false,
           techSaveFlag:false,
@@ -464,7 +462,7 @@ export default {
           },
           formInline1rules: {
             Date: [
-            { required: true,type: 'date',message:'请选择服务日期', trigger: 'change' },
+            { required: true,message:'请选择服务日期', trigger: 'change' },
             ],
             Time: [
               { required: true,message:'请选择服务时间', trigger: 'change' },
@@ -518,6 +516,7 @@ export default {
             this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
             this.tableData1=AllInfo.techList//技师信息表格
             this.payInfo=AllInfo.payInfo//支付信息
+            this.options2=AllInfo.orderTimeList;//服务时间下拉菜单值
           }else{
           }          
         }).catch(res=>{
@@ -558,7 +557,9 @@ export default {
                       this.$refs['formInline'].resetFields();
                       this.tableData1=res.data.data.list;
                       this.otherInfo.serviceHour=res.data.data.serviceHour;
-                      this.otherInfo.serviceTime=that.changTime+' '+that.bb
+                      this.otherInfo.serviceTime=that.changTime+' '+that.bb;
+                      this.dialogVisible = false 
+
                   }else{
                     this.$message({
                       type: "error",
@@ -571,7 +572,7 @@ export default {
             }).catch(() => { 
 
             });                         
-            this.dialogVisible = false            
+                       
           }
       })
 
@@ -596,44 +597,28 @@ export default {
       this.dialogTableVisible = false
     },
     //日期变化时改变时间对象
-    dateChange(value){  
-      if(value != undefined){
-        this.changTime=value 
-        var obj={
-          id:this.orderId,
-          serviceTime:value+' 00:00:00'
-        } 
-        ChangeTimeData(obj).then(res => {                
-          if (res.data.code === 1) {
-              if(res.data.data != undefined){
-                  this.timeObj=res.data.data;
-              }else{
-                  this.timeObj=[];
-              }                                       
-              if(this.timeObj.length != 0){
-                //样式复位
+    dateChange(val){  
+        var that=this;
+        for(var b=0;b<this.options2.length;b++){
+          if(val==this.options2[b].value){
+              this.timeObj=this.options2[b].serviceTime;
+              this.changTime=this.options2[b].label;
+          }
+        }
+        if(this.timeObj.length !=0){
+            //样式复位
+            this.$nextTick( () => {
                 for(var a=0;a<this.timeObj.length;a++){
-                    this.$set(this.timeObj[a],'selected',false)
-                    this.$refs.TimeWrap[a].style.borderColor = "#fff";
-                    this.$refs.TimeWrap[a].style.color = "#000";
-                    this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-                    this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-                } 
-              }
-             
-          }else{
-            this.$message({
-              type: "error",
-              message: res.data.data
-            });
-            this.timeObj=[];             
-          }          
-        }).catch(res=>{
-          
-        });        
-      }else{
-        this.timeObj=[];
-      }
+                    that.$set(this.timeObj[a],'selected',false)
+                    that.$refs.TimeWrap[a].style.borderColor = "#fff";
+                    that.$refs.TimeWrap[a].style.color = "#000";
+                    that.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+                    that.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+                }          
+            })
+        }
+ 
+
     },
     //时间选项点击
     timeChange(index,obj){
@@ -844,26 +829,13 @@ export default {
     },
     //改变服务时间按钮
     changeTime(){
-            this.dialogVisible=true;
-            var date = new Date();
-            var y = date.getFullYear();
-            var m = date.getMonth()+1;
-            var d = date.getDate(); 
-            var str=y+'-'+m+'-'+d;
-            this.formInline.Date=date;
-            this.dateChange(str)
-      this.$nextTick( () => {
-          //样式复位
-          for(var a=0;a<this.timeObj.length;a++){
-              this.$set(this.timeObj[a],'selected',false)
-              this.$refs.TimeWrap[a].style.borderColor = "#fff";
-              this.$refs.TimeWrap[a].style.color = "#000";
-              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-          }        
-      })
-
-            
+      this.timeObj=[];
+      //默认选择当前日期
+      if(this.options2.length != 0 && this.options2 !=undefined){
+        this.formInline.Date=this.options2[0].value
+        this.dateChange(this.formInline.Date) 
+      }      
+      this.dialogVisible=true;                 
     }	
   },
   mounted() {
@@ -872,7 +844,7 @@ export default {
       this.getOrderAllInf(orderId)
     }else{
       this.getOrderAllInf(this.$route.query.id)
-    }    
+    }  
   }
 };
 </script>
@@ -1055,3 +1027,7 @@ text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;b
    padding-top:60px;
 }
 </style>
+
+
+
+
