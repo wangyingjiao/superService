@@ -565,7 +565,6 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal:false,
-        type: "warning"
       })
         .then(() => {
           var obj = {
@@ -593,7 +592,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });
