@@ -1127,13 +1127,7 @@ export default {
       endTime: "05:00",
       startTimes: "",
       endTimes: "",
-      fileList2: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ],
+      fileList2: [],
       position: false,
       listLoading: false,
       picFile: [],
@@ -1211,7 +1205,6 @@ export default {
       return this.$store.state.user.area;
     },
     sign: function() {
-      console.log("-----------------------签名");
       return getSign();
     },
     //开始时间
