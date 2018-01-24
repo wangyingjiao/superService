@@ -1,324 +1,1057 @@
 <template>
-      <div class="addorder-container"> 
-          <div @click="btnTime" class="btnTime">{{timeValue}}
-            <i v-on:mouseover.prevent="iconTime = false" v-if="iconTime"  class="el-icon-time iCon"></i>
-            <i @click="iconRem" v-on:mouseover.prevent="iconTime = true" v-on:mouseout.prevent="iconTime = true" v-if="!iconTime" class="el-icon-close iCon"></i>
-          </div>
-          <!-- <el-collapse-transition> -->
-            <div class="timeList" v-if="timeShow">
-              <ul>
-                <li v-for="(item,index) in TimePicker" :key="index">
-                    <input :class="[{'inputBtnIndex':timeClassId==index},'inputBtn']" :disabled='startTimeArr.indexOf(item)>-1' type="button" :value="item" @click="timePickerFous(item,index)">
-                </li>
-              </ul>
+    <div class="addorder-container">
+       <!--订单信息开始-->
+        <div class="thrid-bar">
+            <div class="custom-action orderOneBar">订单信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">订单状态:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
+                          <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
+                          <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.orderStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
+                          <span v-if="otherInfo.orderStatus =='success'">已成功</span>
+                          <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
+                      </span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">订单类型:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
+                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
+                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
+                      </span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">服务机构:</span>
+                      <span class="lineContent">{{otherInfo.orgName}}</span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle">订单编号:</span>
+                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
+                   </p>                  
+                   <p class="contentLine">
+                      <span class="lineTitle">订单来源:</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
+                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
+                      </span>
+                   </p>                                                         
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务状态:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
+                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
+                      </span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">订单分类:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.majorSort =='clean'">保洁</span>
+                          <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
+                      </span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">服务站:</span>
+                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                   </p>                                                          
+                   <p class="contentLine">
+                      <span class="lineTitle">下单时间:</span>
+                      <span class="lineContent">{{otherInfo.orderTime}}</span>
+                   </p>                                                          
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--订单信息结束-->
+        <!--支付信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">支付信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">交易单号:</span>
+                      <span class="lineContent">{{payInfo.payNumber}}</span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
+                       <span class="lineTitle">支付状态:</span>
+                       <span>待支付</span> 
+                   </p>                   
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付方式:</span>
+                      <span class="lineContent">
+                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
+                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
+                      </span>
+                   </p>                                                         
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付总额:</span>
+                      <span class="lineContent">{{payInfo.payAccount}}元</span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付状态:</span>
+                      <span class="lineContent" >
+                        <span>已支付</span>                                                                        
+                      </span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付平台:</span>
+                      <span class="lineContent">
+                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
+                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
+                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
+                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
+                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
+                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
+                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
+                      </span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付时间:</span>
+                      <span class="lineContent">{{payInfo.payTime}}</span>
+                   </p>                                       
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--支付信息结束-->
+        <!--服务信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">服务信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务项目:</span>
+                      <span class="lineContent">{{goodsInfo.itemName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">建议服务时长:</span>
+                      <span class="lineContent">{{otherInfo.serviceHour}}小时</span>
+                   </p>                                                        
+                </div>
+                <div class="rightArea width390">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务时间:</span>
+                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
+                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
+                      <span class="lineTitle">完成时间:</span>
+                      <span class="lineContent">{{otherInfo.finishTime}}</span>
+                   </p>                                     
+                </div> 
             </div>
-          <!-- </el-collapse-transition> -->
-        <!-- <el-upload
-          action="http://openservice.oss-cn-beijing.aliyuncs.com"
-          list-type="picture-card"
-          :on-change="handPic"
-          :on-remove="handleRemovePic"
-          :auto-upload="false"
-          ref="upload"
-          :http-request="(val)=>picUpload(val)" 
-          > 
-          <i class="el-icon-plus"></i>
-        </el-upload> -->
-     
-        <!-- <button @click="open">上传</button> -->
-      </div>
+            <div class="selfTableWrapStyle">
+                    <el-table
+                      :data="tableData"
+                      border
+                      class="self-table-style">
+                      <el-table-column
+                        align="center"
+                        label="商品名称"
+                        prop="goodsName"
+                        > 
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="服务数量"
+                        prop="goodsNum">                    
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="单价"
+                        prop="payPrice">                   
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="小计"
+                        prop="payPriceSum">                   
+                      </el-table-column>                      
+                    </el-table>
+            </div>                                     		
+		    </div>
+        <!--服务信息结束-->
+        <!--技师信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">技师信息</div>
+            <div class="hr-style"></div>
+            <div class="techTabWrap">
+                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
+                  <span class="plusComb">&#10010</span>
+                  <span class="plusComtent">增加技师</span>
+                </div>
+                <div class="selfTableWrapStyle1">                
+                    <el-table
+                      :data="tableData1"
+                      border                  
+                      class="orderInfoHeaderPic">
+                      <el-table-column
+                        align="center"
+                        label="头像"
+                        >
+                        <template scope="scope">
+                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="techName"
+                        align="center"
+                        label="姓名"
+                        >
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="性别">
+                          <template scope="scope">
+                              <span v-if="scope.row.techSex =='male'">男</span>
+                            <span v-if="scope.row.techSex =='female'">女</span>
+                          </template>	                    
+                      </el-table-column>
+                      <el-table-column
+                        prop="techPhone"
+                        align="center"
+                        label="手机号">
+                      </el-table-column>                  
+                      <el-table-column
+                        align="center"
+                        label="操作">
+                          <template scope="scope">
+                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
+                          </template>                    
+                      </el-table-column>                  
+                    </el-table>
+                </div>
+            </div>                     		
+		    </div>
+        <!--技师信息结束-->
+        <!--客户备注开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">客户备注</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea" style="width:100%;">
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
+                   </p> 
+                   <p class="contentLine">
+                      <span class="lineTitle"></span>
+                      <span class="lineContent width1000">
+                        <div class="picWrap selfMarTL">
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
+                        </div>
+                      </span>
+                   </p>                                                                         
+                </div>
+                 
+            </div>                                     		
+		    </div>
+        <!--客户备注结束-->
+        <!--订单备注开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">订单备注</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea" style="width:100%;">
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle"></span>
+                      <span class="lineContent width1000">
+                        <div class="picWrap selfMarTL">
+                            <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
+                        </div>
+                      </span>
+                   </p>                                                        
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--订单备注结束-->               
+        <!--业务人员信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">业务人员信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">姓名:</span>
+                      <span class="lineContent">{{otherInfo.businessName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">备注:</span>
+                      <span class="lineContent1 selfbeizhu1">{{otherInfo.businessRemark}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle"></span>
+                      <span class="lineContent width1000">
+                        <div class="picWrap marginLeft82">
+                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
+                        </div>
+                      </span>
+                   </p>                                                        
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">电话:</span>
+                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
+                   </p>                    
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--业务人员信息结束-->
+        <!--门店信息开始-->
+        <div class="thrid-bar marginTop15 marginBOT20">
+            <div class="custom-action">门店信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">名称:</span>
+                      <span class="lineContent">{{otherInfo.shopName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">地址:</span>
+                      <span class="lineContent">{{otherInfo.shopAddr}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">备注:</span>
+                      <span class="lineContent1 selfbeizhu1">{{otherInfo.shopRemark}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle"></span>
+                      <span class="lineContent width1000">
+                        <div class="picWrap marginLeft82">
+                            <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
+                              <img :src="imgSrc+item+picWidth120"/>
+                            </div>
+                        </div>
+                      </span>
+                   </p>                                                        
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">电话:</span>
+                      <span class="lineContent">{{otherInfo.shopPhone}}</span>
+                   </p>                  
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--门店信息结束-->                                                
+        <!--技师选择弹窗开始-->
+        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
+          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
+          <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
+          <el-collapse-transition>
+            <div class="selfpromMessageTab" v-if="middleA.length !=0">
+              <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
+                <div class="techNameStyle">{{item.techName}}</div>
+              </div>                         
+            </div>
+          </el-collapse-transition>                                              	
+          <div class="selfTableWrapONE">
+            <div class="table-d">
+              <table  class="selfTable">
+              <tr class="tableHeader">
+                <td  class="selfTableHEADTD" align="center" width="73px">选择</td>
+                <td  class="selfTableHEADTD" align="center" width="158px">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="73px">性别</td>
+                <td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
+              </tr>
+              <div class="orderinfoTechTablePadding">
+                  <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+                    <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+                    <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                    <td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                    <td  width="72px" class="fontSize12" align="center">
+                      <span class="fontSize12" v-if="item.techSex =='male'">男</span>
+                      <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+                    </td>
+                    <td width="140px" class="fontSize12"  align="center">
+                          <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+                          <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+                    </td>							
+                  </tr>
+              </div>
+              </table>
+              <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
+              
+            </div>            
+          </div> 	  	  
+          <div slot="footer" class="dialog-footer" style="text-align:center">
+            <button class="button-large" :disabled="techSaveFlag" @click="submitForm2()">保存</button>
+            <button class="button-cancel" @click="cancelForm2()">取 消</button>
+          </div>
+        </el-dialog>
+        <!--技师选择弹窗结束-->        
+        <!--修改服务时间弹窗开始-->
+        <el-dialog
+          title="选择服务时间"
+          :visible.sync="dialogVisible"
+          :close-on-click-modal="false"
+          >
+            <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
+              <el-form-item label="选择日期" prop='Date' >
+                      <el-date-picker
+                        v-model="formInline.Date"                      
+                        placeholder="年-月-日"                     
+                        :type="select"
+                        :picker-options="pickerOptions0"
+                        class="selfDateStyle"
+                        popper-class="selfTestStyle1"
+                        @change='dateChange'                      
+                        >
+                      </el-date-picker>
+
+              </el-form-item>
+              <el-form-item label="选择时间" prop='Time'>
+                    <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
+                    <div class="marginTopDec46">
+                      <div v-if="timeObj.length == 0" class="promMessage">当前所选择日期没有可服务的技师,请更换日期!</div>                                            
+                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
+                    </div>                    
+              </el-form-item>              
+
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" :disabled="timeSaveFlag"  @click="submitTime('formInline')">保存</button>
+              <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
+            </div>
+        </el-dialog>
+        <!--修改服务时间弹窗结束-->        
+  </div>
 </template>
 
 <script>
+import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData,addTechSave,dispatchTechSave,saveTime} from "@/api/order";
+  import {
+    orderServer
+  } from '@/api/skill'
 export default {
-  data() { 
+  name: "",
+  data() {
     return {
-      timeShow:false,
-      iconTime:true,
-      startTime:'08:00',
-      timeClassId:null,
-      endTime:'16:30',
-      timeAee:[],
-      timeValue:'',
-      TimePicker :[
-        '00:00',
-        '00:30',
-        '01:00',
-        '01:30',
-        '02:00',
-        '02:30',
-        '03:00',
-        '03:30',
-        '04:00',
-        '04:30',
-        '05:00',
-        '05:30',
-        '06:30',
-        '07:30',
-        '08:00',
-        '08:30',
-        '09:00',
-        '09:30',
-        '10:00',
-        '10:30',
-        '11:00',
-        '11:30',
-        '12:00',
-        '12:30',
-        '13:00',
-        '13:30',
-        '14:00',
-        '14:30',
-        '15:00',
-        '15:30',
-        '16:00',
-        '16:30',
-        '17:00',
-        '17:30',
-        '18:00',
-        '18:30',
-        '19:00',
-        '19:30',
-        '20:00',
-        '20:30',
-        '21:00',
-        '21:30',
-        '22:00',
-        '22:30',
-        '23:00',
-        '23:30',
-        '24:00',
-      ]
+          btnShow: JSON.parse(localStorage.getItem('btn')),
+          timeSaveFlag:false,
+          techSaveFlag:false,
+          pickerOptions0: {
+                disabledDate(time) {
+              if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
+                        return false;
+              }else{
+                return true;
+              }
+                
+                }
+          },
+          formInline1rules: {
+            Date: [
+            { required: true,type: 'date',message:'请选择服务日期', trigger: 'change' },
+            ],
+            Time: [
+              { required: true,message:'请选择服务时间', trigger: 'change' },
+            ]          
+          },      
+          timeObj:[],//时间对象
+          addressInfo:[],//服务地址信息
+          otherInfo:[],
+          payInfo:[],//支付信息
+          refundInfo:[],//退款信息
+          goodsInfo:[],//服务信息
+          options:[],
+          techName:'',
+          techStationId:'',
+          promShow1:false, 
+          promInf1:'搜索内容不存在!',
+          listTech:[],          
+          selectCommidty:[],      
+          select:'date',
+          formInline:{
+            Date:'',
+            Time:''
+          },
+          value1:'',
+          value2:'',
+          tabOptions:[],
+          dialogTableVisible:false,				
+          tableData:[], 
+          tableData1:[],
+          dialogVisible:false, 
+          middleA:[],
+          changTime:'',
+          status:'add',
+          aa:'',
+          bb:'',
+          orderId:''               		
     };
   },
-  computed:{
-    startTimeArr(){
-      var arr = []
-      var startTime = this.startTime
-      var endTime = this.endTime
-      var TimePicker_i = this.TimePicker
-      for(var i = 0;i<TimePicker_i.length;i++){
-        if(this.stringTime(TimePicker_i[i])*1<this.stringTime(startTime)*1 || this.stringTime(endTime)*1 < this.stringTime(TimePicker_i[i])*1){
-          this.timeAee.push(TimePicker_i[i])
+  methods:{
+    //用订单ID获取页面相关信息
+    getOrderAllInf(orderId){
+      this.orderId=orderId;
+      var obj={
+        id:orderId
+      }
+      getOrderInf(obj).then(res => {      
+          if (res.data.code === 1) {                                   
+            var AllInfo=res.data.data;
+            this.otherInfo=AllInfo;//所有其他信息变量
+            this.goodsInfo=AllInfo.goodsInfo//服务信息
+            this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
+            this.tableData1=AllInfo.techList//技师信息表格
+            this.payInfo=AllInfo.payInfo//支付信息
+          }else{
+          }          
+        }).catch(res=>{
+          
+        });
+    },
+    //更换时间的保存
+    submitTime(formName){ 
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.timeSaveFlag=true; 
+            var time='';
+            for(var a=0;a<this.timeObj.length;a++){
+              if(this.timeObj[a].selected==true){
+                time=this.timeObj[a].serviceTimeStr;
+                this.bb=this.timeObj[a].serviceTimeStr;
+              }
+            }
+            var that=this;
+            this.$confirm('此操作将更改技师, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              closeOnClickModal:false,
+              type: 'warning'
+            }).then(() => {
+                //更换时间的保存
+                var obj={
+                  id:this.orderId,
+                  serviceTime:this.changTime+' '+time+':00'
+                }
+                saveTime(obj).then(res => {
+                  this.timeSaveFlag=false;      
+                  if (res.data.code === 1) {                         
+                      this.$message({
+                        type: "success",
+                        message: "更换时间成功!"
+                      });
+                      this.$refs['formInline'].resetFields();
+                      this.tableData1=res.data.data.list;
+                      this.otherInfo.serviceHour=res.data.data.serviceHour;
+                      this.otherInfo.serviceTime=that.changTime+' '+that.bb
+                  }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                     
+                  }          
+                }).catch(res=>{
+                  this.timeSaveFlag=false; 
+                });
+            }).catch(() => { 
+
+            });                         
+            this.dialogVisible = false            
+          }
+      })
+
+    },
+    //更换时间取消
+    cancelTime(formName){
+      this.$refs[formName].resetFields();
+      //样式复位
+      for(var a=0;a<this.timeObj.length;a++){
+          this.$set(this.timeObj[a],'selected',false)
+          this.$refs.TimeWrap[a].style.borderColor = "#fff";
+          this.$refs.TimeWrap[a].style.color = "#000";
+          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+      }      
+      this.dialogVisible = false
+    },
+    //选择技师弹出层取消
+    cancelForm2(){
+      this.middleA=[];
+      this.listTech=[];     
+      this.dialogTableVisible = false
+    },
+    //日期变化时改变时间对象
+    dateChange(value){  
+      if(value != undefined){
+        this.changTime=value 
+        var obj={
+          id:this.orderId,
+          serviceTime:value+' 00:00:00'
+        } 
+        ChangeTimeData(obj).then(res => {                
+          if (res.data.code === 1) {
+              if(res.data.data != undefined){
+                  this.timeObj=res.data.data;
+              }else{
+                  this.timeObj=[];
+              }                                       
+              if(this.timeObj.length != 0){
+                //样式复位
+                for(var a=0;a<this.timeObj.length;a++){
+                    this.$set(this.timeObj[a],'selected',false)
+                    this.$refs.TimeWrap[a].style.borderColor = "#fff";
+                    this.$refs.TimeWrap[a].style.color = "#000";
+                    this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+                    this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+                } 
+              }
+             
+          }else{
+            this.$message({
+              type: "error",
+              message: res.data.data
+            });
+            this.timeObj=[];             
+          }          
+        }).catch(res=>{
+          
+        });        
+      }else{
+        this.timeObj=[];
+      }
+    },
+    //时间选项点击
+    timeChange(index,obj){
+      for(var a=0;a<this.timeObj.length;a++){
+          this.$set(this.timeObj[a],'selected',false)
+          if(a==index){
+              this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+              this.$refs.TimeWrap[a].style.color = "#4c70e8";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
+              this.timeObj[a].selected = !this.timeObj[a].selected;
+              this.formInline.Time=this.timeObj[a].serviceTimeStr       
+          }else{
+              this.$refs.TimeWrap[a].style.borderColor = "#fff";
+              this.$refs.TimeWrap[a].style.color = "#000";
+              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+                                        
+          }
+      }
+    },      
+    //选择技师弹出层查询按钮
+    searchTeh(){  
+        var obj = {
+          id:this.orderId,
+          techName: this.techName
+        };
+        //服务技师获取
+        if(this.status == 'add'){
+            addTechData(obj).then(res => {
+                this.listTech=[];
+                if (res.data.code === 1) {                  
+                  if(res.data.data != undefined){
+                      this.listTech = res.data.data;
+                      for (var b = 0; b < this.middleA.length; b++) {
+                        for (var a = 0; a <this.listTech.length; a++) {
+                          this.$set(this.listTech[a],'techChecked',false)
+                          if (
+                            this.listTech[a].techId ==
+                            this.middleA[b].techId
+                          ) {
+                            this.listTech[a].techChecked = true;
+                          }
+                        }
+                      }                      
+                  }else{
+                    this.listTech=[];                     
+                  }
+                }
+              }).catch(res=>{
+                      
+              });
+        }else{
+            dispatchTechData(obj).then(res => {
+                if (res.data.code === 1) {
+                  if(res.data.data != undefined){
+                    this.listTech = res.data.data;
+                    for (var c = 0; c < this.middleA.length; c++) {
+                      for (var d = 0; d <this.listTech.length; d++) {
+                        this.$set(this.listTech[d],'techChecked',false)
+                        if (
+                          this.listTech[d].techId ==
+                          this.middleA[c].techId
+                        ) {
+                          this.listTech[d].techChecked = true;
+                        }
+                      }
+                    }
+                  }else{
+                    this.listTech=[]                     
+                  }
+                }
+              }).catch(res=>{
+                      
+              });          
+        }                         
+    },
+    //存储选择技师对象
+    ChangeTech(obj){
+      if(obj.techChecked){
+          obj.techChecked = true;
+          this.middleA.push(obj)          
+      }else{
+          obj.techChecked = false;
+          this.middleA.remove(obj)          
+      }
+    },    
+    //选择技师弹出层保存
+    submitForm2() {
+      this.techSaveFlag=true;
+      //先遍历数据中选中的再保存
+      var arr = [];
+      if (this.middleA != undefined && this.middleA.length != 0) {
+        for (let a = 0; a < this.middleA.length; a++) {
+          if (this.middleA[a].techChecked == true) {
+            arr.push(this.middleA[a].techId);
+          }
         }
       }
-      return this.timeAee
+      if(this.status == 'add' && arr.length !=0 ){
+      //保存技师接口调用
+        var obj={
+          id:this.orderId,
+          techIdList:arr
+        }
+        addTechSave(obj).then(res => {
+          this.techSaveFlag=false;      
+          if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "新增成功!"
+              });
+              this.tableData1=res.data.data.list;
+              this.otherInfo.serviceHour=res.data.data.serviceHour
+              this.middleA=[];
+              this.listTech=[];                         
+              this.dialogTableVisible = false
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });                         
+          }          
+        }).catch(res=>{
+          this.techSaveFlag=false;
+        });
+      }
+      if(this.status == 'edit' && arr.length !=0 ){
+        var obj1={
+          id:this.orderId,
+          dispatchTechId:this.aa,
+          techIdList:arr
+        }
+        dispatchTechSave(obj1).then(res => {
+          this.techSaveFlag=false;      
+          if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "改派成功!"
+              });
+              this.tableData1=res.data.data.list;
+              this.otherInfo.serviceHour=res.data.data.serviceHour
+              this.middleA=[];
+              this.listTech=[];                         
+              this.dialogTableVisible = false
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });             
+          }          
+        }).catch(res=>{
+          this.techSaveFlag=false;
+        });        
+      }
+      if(arr.length ==0){
+         this.techSaveFlag=false;
+         this.dialogTableVisible = false;
+      }             	
+    },         
+    //改派或新增技师
+    gaiPai(status,obj){
+        this.aa=obj.techId;
+        this.status=status;
+        this.techName='';         
+        if(status == 'add'){
+              var obj={
+                id:this.orderId
+              };            
+              addTechData(obj).then(res => {      
+                if (res.data.code === 1) { 
+                  this.dialogTableVisible=true;                                   
+                  if(res.data.data != undefined){
+                      this.listTech=res.data.data;                 
+                      for(var a=0;a<this.listTech.length;a++){
+                        this.$set(this.listTech[a],'techChecked',false)
+                      }                    
+                  }                                                                            
+                }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                  
+                }          
+              }).catch(res=>{
+                
+              });
+        }else{
+              var obj1={
+                id:this.orderId
+              };            
+              dispatchTechData(obj1).then(res => {      
+                if (res.data.code === 1) {
+                  this.dialogTableVisible=true;                                          
+                  if(res.data.data != undefined){ 
+                    this.listTech=res.data.data; 
+                  }
+                }else{
+                    this.$message({
+                      type: "error",
+                      message: res.data.data
+                    });                   
+                }          
+              }).catch(res=>{
+                
+              });          
+        }
+    
     },
-  },
-  methods:{
-    iconRem(){
-      this.timeValue = '';
-      this.timeClassId = null;
-    },
-    btnTime(){
-      this.timeShow = !this.timeShow
-    },
-    timePickerFous(item,index){
-      this.timeValue = item
-      this.timeClassId = index
-      this.timeShow = false
-    },
-    stringTime(time){
-        var s = '';
-        var hour = time.split(':')[0];
-        var min = time.split(':')[1];
-        s = Number(hour*3600) + Number(min*60)
-        return s;
-    }
-  }
-}
-// import Cookies from "js-cookie";
-    // import { getSign } from "@/api/sign";
+    //改变服务时间按钮
+    changeTime(){
+            this.dialogVisible=true;
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth()+1;
+            var d = date.getDate(); 
+            var str=y+'-'+m+'-'+d;
+            this.formInline.Date=date;
+            this.dateChange(str)
+      this.$nextTick( () => {
+          //样式复位
+          for(var a=0;a<this.timeObj.length;a++){
+              this.$set(this.timeObj[a],'selected',false)
+              this.$refs.TimeWrap[a].style.borderColor = "#fff";
+              this.$refs.TimeWrap[a].style.color = "#000";
+              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
+          }        
+      })
 
-    // export default {
-    //   data() { 
-    //     return {
-    //       testvalue:'yes',
-    //       value:'ddeeeeeeeeeeeee月月儿科可',
-    //       picList:[],
-    //       testArr:[],
-    //       dialogVisible:false,
-    //       dialogImageUrl:'',
-    //       picFile:[]		
-    //     };
-    //   },
-    //   methods: {
-    //     open(){
-    //       this.$refs.upload.submit();
-    //     },
-    //     handPic(file,fileList) {
-    //      if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
-    //           var date = new Date();
-    //           var y = date.getFullYear();
-    //           var m = date.getMonth() + 1;
-    //           var d = date.getDate();
-    //           var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-    //           if(fileList.length>4){
-    //           this.$message({
-    //             type: "warning",
-    //             message: "最多上传4张图片"
-    //             });
-    //           fileList.splice(fileList.indexOf(file),1)
-    //         }
-    //       }else{
-    //         fileList.splice(fileList.indexOf(file),1)
-    //          this.$message.error('请上传正确的图片格式');
-    //          return false
-    //       }
-    //     },
-    //     handleRemovePic(file,fileList) {
-    //         fileList.splice(fileList.indexOf(file),0)
-    //     },
-    //     picUpload(file) {
-    //         let pro = new Promise((resolve, rej) => {
-    //         var res = JSON.parse(Cookies.get("sign"));
-    //         var timestamp = Date.parse(new Date()) / 1000;
-    //           if (res.expire - 3 > timestamp) {
-    //             resolve(res);
-    //           } else {
-    //             this.$http.get("/apiservice/oss/getSign").then(res => {
-    //               Cookies.set("sign", JSON.stringify(res.data));
-    //               resolve(res.data);
-    //             });
-    //           }
-    //         });
-    //         var that = this;
-    //         pro.then(success => {
-    //             var data = success;
-    //             var ossData = new FormData();
-    //             var date = new Date();
-    //             var s = date.getTime()
-    //             var y = date.getFullYear();
-    //             var m = date.getMonth() + 1;
-    //             var d = date.getDate();
-    //             ossData.append("name", file.file.name);
-    //             ossData.append(
-    //               "key",
-    //               data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
-    //             );
-    //             ossData.append("policy", data.policy);
-    //             ossData.append("OSSAccessKeyId", data.accessid);
-    //             ossData.append("success_action_status", 201);
-    //             ossData.append("signature", data.signature);
-    //             ossData.append("file", file.file, file.file.name);
-    //             that.$http
-    //               .post(data.host, ossData, {
-    //               headers: {
-    //               "Content-Type": "multipart/form-data; boundary={boundary}"
-    //               }
-    //             })
-    //             .then(res => {
-    //               this.testArr.push(ossData.get("key"));
-    //             })
-    //             .catch(error => {
-    //             });
-    //         });
-    //     },
-    //   },
-    //   computed: {
-    //     sign: function() {
-    //       return getSign();
-    //     }
-    //   },
-    //   mounted() {}
-// };
+            
+    }	
+  },
+  mounted() {
+    var orderId=window.localStorage.getItem("orderId")
+    if(this.$route.query.id == undefined){
+      this.getOrderAllInf(orderId)
+    }else{
+      this.getOrderAllInf(this.$route.query.id)
+    }    
+  }
+};
 </script>
 <style   scoped>
-.addorder-container{
-  width: 15%;
+.selftechNameStyle{
+    width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
 }
-li{
-  list-style: none;
+.tableHeader{position:absolute;top:0px;z-index:9999}
+.selfTdStyle1 {
+  vertical-align:middle;
+  height: 70px;
+  line-height:70px;
 }
-.timeList{
-  width: 100%;
-  margin:5px 0;
-  border:1px solid #d1dbe5;
-  box-shadow:0 2px 6px #ccc;
-  background: #fff;
-  border-radius:2px;
-  line-height: 20px;
-  height: 185px;
+.promMessage{width:90%;height:56px;line-height:56px;margin-left:22px;color: #8391a5;}
+.mark {
+  background: url(../../../static/icon/Selected.png) right bottom no-repeat;
+  background-size: 20px 20px;
+}
+.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
+.picHeader{margin-top:10px;}
+.selfDateStyle{width:200px;margin-left:20px;}
+.marginTopDec46{margin-top:-46px;}
+.selfSeverTimeSt{
+    width: 80px;
+    height: 34px;
+    line-height: 34px;
+    border: 1px solid #bfcbd9;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    margin-left: 20px;
+    margin-top:10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.selfMarTL{margin-top:0px;}
+.selfbeizhu{min-width:800px;margin-left:22px;float:left;}
+.selfbeizhu1{min-width:800px;margin-left: 102px;margin-top: -15px;float:left;}
+.width120{width:120px;}
+.selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
+.FloatRight{float:right;}
+.FloatLeft{float:left;}
+.selfTableWrapONE{
+  margin-top: 20px;
   overflow: hidden;
-  overflow-y: auto;
-}
-
-.timeList ul,.timeList ul li,.timeList ul li input{
-  width: 100%;
-}
-.inputBtn{
-  text-align: left;
-  background-color:#e4e8f1;
-  cursor:pointer;
-  box-sizing: border-box;
-  font-size: 14px;
-  padding:15px 20px;
-  border: none;
-  background: #fff;
-}
-.inputBtn:hover{
-  background: #eef1f6;
-}
-.inputBtnIndex{
-  color: #fff;
-  background: #20a0ff !important;
-}
-.iCon{
-  font-size: 14px;
-  color:#bfcbd9;
-  float: right;
-  line-height: 30px;
-  cursor: pointer;
-}
-.btnTime{
-  border: 1px solid #bfcbd9;
-  box-sizing:border-box;
-  height:36px;
-  width: 100%;
-  line-height: 30px;
-  background: #fff;
-  outline: 0;
-  padding: 3px 10px ;
-  transition:border-color .2s cubic-bezier(.645,.045,.355,1);
-}
-.btnTime:hover{
-  border: 1px solid #000;
-}
-/* .flip-container {
-  perspective: 1000;
-}
-  .flip-container:hover .flipper, .flip-container.hover1 .flipper {
-    transform: rotateY(180deg);
+  width: 660px;
+  height: 280px;
+  position:relative;
   }
-
-.flip-container, .front, .back {
+.table-d{
+  width: 677px;
+  overflow-y: scroll;
+  height: 276px;
+  margin-left: 15px;
+}
+.selfpromMessageTab{
+   position:relative;width:100%;margin-top:20px;margin-left:10px;
+}
+.techNameStyle {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
   overflow: hidden;
-  width: 50px;
-  height: 50px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.front img,.back img{
-  width: 100%;
-}
-.flipper {
-  transition: 0.6s;
-  transform-style: preserve-3d;
-
+.tabWrap1 {
+  width: 80px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top:5px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
   position: relative;
 }
-
-.front, .back {
-  backface-visibility: hidden;
-
-  position: absolute;
-  top: 0;
-  left: 0;
+.height70{height:70px;}
+.imgStyle{display:block;}
+.fontSize12{font-size:12px;}
+.techTabWrap{width:690px;float:left;padding-left:30px;padding-bottom:20px;}
+.userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
+.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
+.selfTable {  text-align: center; border-collapse: collapse; padding:2px;}
+.editServiceTabHeader{background: #F8F8F9;height:30px;}
+.editServiceTabSel{width:120px;margin-top:3px;margin-bottom:3px;}
+.editServiceTabInputNum{width:120px;margin-top:3px;margin-bottom:3px;} 
+.height30{height:30px;}
+.width1000{min-width:900px;}
+.picWrap{width:100%;height:120px;line-height:120px;margin-left:82px;}
+.marginLeft82{margin-left:82px;margin-top:-30px;}
+.marginBOT20{margin-bottom:20px;}
+.picStyle{float:left;width:120px;height:120px;margin-right:20px;margin-top:20px;}
+.addorder-container{
+  width:100%;
+  font-size:12px;
+	float:left;
+	background:#eef1f6;
+  /* padding: 20px 5px; */
 }
-
-.front {
-  z-index: 2;
+.order-selfTd{
+text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
 }
-
-.back {
-  transform: rotateY(180deg);
-} */
+.order-selfTd:last-child{
+   border:none;
+}
+.orderOneBar{
+   width:95%;height:34px;line-height:34px;
+}
+.selfMarLeft70{
+    display: inline-block;
+    margin-top: -4px;
+    margin-left:-50px;
+    position: absolute;
+    cursor: pointer;
+}
+.selfTableWrapStyle{
+  width:720px;padding-left:30px;padding-bottom:20px;padding-top:40px;
+}
+.selfTableWrapStyle1{
+  width:690px;padding-bottom:20px;margin-top:20px;
+}
+.servicerFont{cursor:pointer;color:#4c70e8}
+.self-table-style{width:100%;display:inline-block;margin-top:20px;}
+.selfWrap1{
+  width:100%;
+}
+.marginTop15{
+  margin-top:15px;
+}
+.addTechWrap{width:110px;height:32px;line-height:32px;margin-top: 10px;background:#ccc;cursor:pointer;}
+.plusComb{display:inline-block;float:left;width:32px;height:32px;line-height:32px;color:#fff;background:#3a5fcd;text-align:center;font-size:20px;}
+.plusComtent{display:inline-block;float:left;width:78px;height:32px;line-height:32px;color:#fff;background:#4c70e8;text-align:center;font-size:14px;}
+.width390{
+  width:390px;
+}
+.height25{
+  height:25px;
+}
+.orderInf-cancel{
+   width:80px; float:right;height:34px;font-size:14px;font-weight:500;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8
+}
+.custom-action{
+	margin-left:30px;
+  font-size:14px;
+  font-weight:600;
+}
+.thrid-bar{
+  padding-top:20px;
+  width:100%;
+  float:left;
+  background:#fff;
+}
+.leftArea{width:320px;float:left;}
+.rightArea{width:320px;float:left;margin-left:50px;}
+.contentLine{margin: 20px 0 20px 30px;;font-size:12px;}
+.lineTitle{display:inline-block;width:80px;}
+.lineContent{display:inline-block;margin-left:20px;width:170px;}
+.lineContent1{display:inline-block;}
+.lineContentWidth{
+    display: block;
+    width: 900px;
+    margin-left: 100px;
+    margin-top: -14px;
+}
+.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
+.orderInfoHeaderPic{
+   width: 100%;display:inline-block;
+}
+.orderinfoTechNameStyle{
+   width:180px;margin-left:15px;
+}
+.orderinfoTechSearchStyle{
+   margin-right:15px;
+}
+.orderinfoTechTablePadding{
+   padding-top:60px;
+}
 </style>
