@@ -3,7 +3,7 @@
     <!-- 搜索 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
-        <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
+        <el-select  clearable slot="prepend" @change="searchChange" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in userSearch" :key="key" :label="val" :value="key">
           </el-option>
         </el-select>
@@ -17,7 +17,7 @@
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      
+
       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
@@ -372,7 +372,7 @@ export default {
       mechanismCheck: [], //服务机构
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
-      userSearch:[],//搜索条件
+      userSearch: [], //搜索条件
       temp: {
         mobile: "",
         name: "",
@@ -515,14 +515,32 @@ export default {
     }
   },
   methods: {
+    searchChange(val) {
+      console.log(val);
+    },
     //获取列表
     getList() {
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.mobile,
-        orgId: this.search.officeId,
-        stationId: this.search.stationId
-      };
+      if (this.search.type == "name") {
+        var obj = {
+          name: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type =='mobile'){
+        var obj = {
+          mobile: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type == 'roleName'){
+         var obj = {
+          roleName: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else{
+        var obj = {}
+      }
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == "1") {
@@ -548,13 +566,29 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.mobile,
-        orgId: this.search.officeId,
-        stationId: this.search.stationId
-      };
-      if (obj.roleName || obj.mobile) {
+      if (this.search.type == "name") {
+        var obj = {
+          name: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type =='mobile'){
+        var obj = {
+          mobile: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type == 'roleName'){
+         var obj = {
+          roleName: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else{
+        var obj = {}
+      }
+      //console.log(obj,'搜索条件')
+      
         this.listLoading = true;
         //console.log(obj, "111111111");
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -577,9 +611,7 @@ export default {
             this.listLoading = false;
           }
         });
-      } else {
-        this.getList();
-      }
+      
     },
     addRole() {
       this.dialogFormStation = true;
@@ -589,12 +621,27 @@ export default {
       }
     },
     handleSizeChange(val) {
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.mobile,
-        orgId: this.search.officeId,
-        stationId: this.search.stationId
-      };
+      if (this.search.type == "name") {
+        var obj = {
+          name: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type =='mobile'){
+        var obj = {
+          mobile: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type == 'roleName'){
+         var obj = {
+          roleName: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else{
+        var obj = {}
+      }
       //console.log("size-change");
       this.pageSize = val;
       this.listQuery.page = 1;
@@ -620,12 +667,27 @@ export default {
     handleCurrentChange(val) {
       //console.log(val, "current-change");
       this.pageNumber = val;
-      var obj = {
-        roleName: this.search.name,
-        mobile: this.search.mobile,
-        orgId: this.search.officeId,
-        stationId: this.search.stationId
-      };
+      if (this.search.type == "name") {
+        var obj = {
+          name: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type =='mobile'){
+        var obj = {
+          mobile: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else if(this.search.type == 'roleName'){
+         var obj = {
+          roleName: this.search.val,
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
+      }else{
+        var obj = {}
+      }
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.data.list != undefined) {
@@ -661,15 +723,7 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
-      //console.log(a, b, c, "yyyyyyyy");
-      //父级点击时取消勾选
-      // if(a.permission = 'order'){
-      //   if(b){
-      //     //console.log('选中时')
-      //   }else{
-      //     //console.log('mei选中时')
-      //   }
-      // }
+      
 
       if (b) {
         //console.log("tttttttttttttttt");
@@ -891,47 +945,47 @@ export default {
       });
     },
     mechChange(val) {
-      if(val != ""){
-      // 机构发生改变
-      this.temp.officeId = val;
-      this.temp.stationId = "";
-      this.temp.role = "";
-      this.servicestationCheck = [];
-      this.stationCheck = [];
-      //console.log(val, "选中机构的id");
-      var obj = {
-        orgId: val
-      };
-      getFuwu(obj).then(res => {
-        // 请求服务站
-        //console.log(res);
-        this.servicestationCheck = res.data.data;
-        // //console.log(res.data)
-      });
-      var obj2 = {
-        organization: {
-          id: val
-        }
-      };
-      //console.log(obj2, "岗位参数");
-      getStation(obj2)
-        .then(res => {
-          // 请求岗位
-          //console.log(res.data.data, "岗位");
-          if (res.data.data != undefined) {
-            if (typeof res.data.data != "string") {
-              this.stationCheck = res.data.data;
+      if (val != "") {
+        // 机构发生改变
+        this.temp.officeId = val;
+        this.temp.stationId = "";
+        this.temp.role = "";
+        this.servicestationCheck = [];
+        this.stationCheck = [];
+        //console.log(val, "选中机构的id");
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站
+          //console.log(res);
+          this.servicestationCheck = res.data.data;
+          // //console.log(res.data)
+        });
+        var obj2 = {
+          organization: {
+            id: val
+          }
+        };
+        //console.log(obj2, "岗位参数");
+        getStation(obj2)
+          .then(res => {
+            // 请求岗位
+            //console.log(res.data.data, "岗位");
+            if (res.data.data != undefined) {
+              if (typeof res.data.data != "string") {
+                this.stationCheck = res.data.data;
+              } else {
+                this.stationCheck = [];
+              }
             } else {
               this.stationCheck = [];
             }
-          } else {
-            this.stationCheck = [];
-          }
-        })
-        .catch(err => {
-          //console.log(err);
-        });
-    }
+          })
+          .catch(err => {
+            //console.log(err);
+          });
+      }
     },
     getId(str) {
       for (var i = 0; i < this.objOptions.length; i++) {
@@ -1089,9 +1143,12 @@ export default {
               this.btnState = false;
               if (res.data.code == 1) {
                 //编辑自己姓名时同步更改右上角展示
-                if(this.temp.id == localStorage.getItem("userId") && obj.name != localStorage.getItem('name')){
-                  localStorage.setItem('name',obj.name)
-                  this.$store.commit('SET_NAME', localStorage.getItem('name'))
+                if (
+                  this.temp.id == localStorage.getItem("userId") &&
+                  obj.name != localStorage.getItem("name")
+                ) {
+                  localStorage.setItem("name", obj.name);
+                  this.$store.commit("SET_NAME", localStorage.getItem("name"));
                 }
                 //将禁用的选项启用
                 this.officeState = false;
