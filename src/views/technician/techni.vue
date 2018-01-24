@@ -32,7 +32,8 @@
           v-loading="listLoadingTech" 
           style="width: 100%" > -->
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
-    <div v-loading="listLoadingTech" class="listTechni">
+    <div v-loading="listLoadingTech"
+    element-loading-text="正在加载"  class="projectTabel listTechni">
       <ul class="tech-section-ul">
         <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">

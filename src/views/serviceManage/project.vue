@@ -125,7 +125,7 @@
               trigger="hover"
               content="对接商品">
             </el-popover>
-            <el-button v-if="scope.row.jointStatus=='yes'" v-popover:popover21 class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            <el-button v-if="scope.row.jointStatus!='yes'" v-popover:popover21 class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
         </template>
       </el-table-column>
 
