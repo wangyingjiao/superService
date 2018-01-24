@@ -72,7 +72,7 @@
 		    </div>
         <!--订单信息结束-->
         <!--支付信息开始-->
-        <div class="thrid-bar marginTop15">
+        <!-- <div class="thrid-bar marginTop15">
             <div class="custom-action">支付信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -122,7 +122,7 @@
                    </p>                                       
                 </div> 
             </div>                                     		
-		    </div>
+		    </div> -->
         <!--支付信息结束-->
         <!--服务信息开始-->
         <div class="thrid-bar marginTop15">
