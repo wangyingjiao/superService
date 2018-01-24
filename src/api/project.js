@@ -108,7 +108,7 @@ export function serGasqSort(){
 
 //对接
 export function sendData(obj){
-  return new Promise((resolce,reject)=>{
+  return new Promise((resolve,reject)=>{
     instance.post(`apiservice/a/service/item/serItemInfo/sendData`,obj).then(data=>{
       resolve(data)
     }).catch(error=>{
