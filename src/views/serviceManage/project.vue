@@ -47,7 +47,7 @@
 
       <el-table-column align="center" label="图片">
         <template scope="scope" >
-          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
+          <span v-if="scope.row.pictures != undefined"><img :src="'https://imgcdn.guoanshequ.com/' + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -95,6 +95,16 @@
       </el-table-column>
 
       <el-table-column  label="对接商品ID" align="center" prop="jointGoodsCode">
+        <template scope="scope">
+          <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
+                <span class="proName">{{item.jointGoodsCode}}</span>
+          </div>
+          <!-- <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index" v-if="scope.row.commoditys!=undefined">
+            <el-tooltip placement="left" :disabled="item.jointGoodsCode.length <= 10" :content="item.jointGoodsCode">
+              <span class="proName">{{scope.row.jointGoodsCode}}</span>
+            </el-tooltip>
+          </div> -->
+        </template>
         <!-- <template scope="scope">
           <span style="color:red" v-show="scope.row.sale == 'no'">下架</span>
           <span v-show="scope.row.sale == 'yes'">上架</span>
@@ -113,7 +123,7 @@
               trigger="hover"
               content="对接商品">
             </el-popover>
-            <el-button v-popover:popover21 class="ceshi3 iconfont senddata" v-if="btnShow.indexOf('project_delete')>-1" @click="handleSendData(scope.row)">&#xe62a;</el-button>
+            <el-button v-popover:popover21 class="ceshi3 iconfont senddata" v-if="btnShow.indexOf('project_delete')>-1" @click="handleSendData(scope.row)">&#xe641;</el-button>
         </template>
       </el-table-column>
 
@@ -241,7 +251,7 @@
                      <div class="el-upload__tip">* 最多设置3个自定义标签</div>
                 </el-form-item> 
             
-                <el-form-item label="是否上架：" class="seize">
+                <!-- <el-form-item label="是否上架：" class="seize">
                     <el-switch
                       @change="isNo"
                       v-model="basicForm.sale"
@@ -250,7 +260,7 @@
                       on-value="yes"
                       off-value="no">
                     </el-switch>
-                </el-form-item>
+                </el-form-item> -->
 
                 <!-- <el-form-item label="排序号：" class="seize">
                     <el-input
@@ -855,7 +865,7 @@ export default {
       persons: [],
       commoditys: [],
       imageUrl: "",
-      dialogImageUrl: "",
+      dialogImageUrl:"",
       handleEditFlag:false,
       handleEditIndex:null,
       dialogVisible: false,
@@ -919,7 +929,7 @@ export default {
         name: "",
         // picture: "123123132", //服务图片
         sortId: "",
-        sale: "yes",
+        // sale: "yes",
         // sortNum: "",
         majorSort: "all",
         commoditys: [],
@@ -1373,12 +1383,13 @@ export default {
         var str = "";
         var index = ''
         if(file.raw){
-          if(file.raw.url){
-             index = file.raw.url.lastIndexOf("/");
-             str = file.raw.url.substring(index + 1, file.raw.url.length);
-          }else{
-            return false
-          }
+          str = file.raw.uid+'.jpg'
+          // if(file.raw.url){
+          //    index = file.raw.url.lastIndexOf("/");
+          //    str = file.raw.url.substring(index + 1, file.raw.url.length);
+          // }else{
+          //   return false
+          // }
         }else{
           index = file.url.lastIndexOf("/");
           str = file.url.substring(index + 1, file.url.length);
@@ -1545,6 +1556,7 @@ export default {
             // console.log(this.imgText, "imgtext");
           })
           .catch(error => {
+            this.imgText.push(ossData.get("key"));
             console.log(error, "错误");
           });
       });
@@ -1601,13 +1613,13 @@ export default {
             .then(res => {
               console.log(this.picList);
               this.picFile.push(ossData.get("key"));
-              file.file.url = 'https://openservice.guoanshequ.com/'+ data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
               // console.log(this.picFile,"this.picFile------------------")
-              console.log(this.picFile, "picfile");
+              console.log(this.picFile, "picfile----------------");
             })
             .catch(error => {
               console.log('错误-------------上传图片失败--')
               this.picFile.push(ossData.get("key"));
+              console.log(this.picFile, "picfile----------------");
               console.log(error, "错误");
             });
       });
@@ -1892,7 +1904,7 @@ export default {
       // this.resetTemp();
       // this.picList = []
       console.log(this.goods_info,"goods_info")
-      this.basicForm.sale = 'yes'
+      // this.basicForm.sale = 'yes'
       this.basicForm.sortId = ''
       this.imgNumber = 0;
       this.tableProject({majorSort:"clean"})
@@ -1939,7 +1951,7 @@ export default {
               console.log(data.data.data.pictures, "tupian");
               var obj = {
                 url:
-                  "https://openservice.guoanshequ.com/" +
+                  "https://imgcdn.guoanshequ.com/" +
                   data.data.data.pictures[i]
               };
               this.picList.push(obj);
@@ -1979,7 +1991,7 @@ export default {
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 var obj = {
                   url:
-                    "https://openservice.guoanshequ.com/" +
+                    "https://imgcdn.guoanshequ.com/" +
                     data.pictureDetails[i]
                 };
                 this.fileList.push(obj);
@@ -2081,7 +2093,7 @@ export default {
         pictures:
           "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
         description: "服务描述测试",
-        sale: "1", //是否上架
+        // sale: "1", //是否上架
         sortNum: 1 //排序号
       };
       addProject(obj).then(res => {

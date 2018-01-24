@@ -24,12 +24,12 @@
                       <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-header"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
+                            <img v-if="personalEDit.headPic" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
@@ -93,13 +93,13 @@
                     <el-form-item label="身份证正面：">
                         <el-upload
                                 class="avatar-uploader"
-                                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                                action="https://imgcdn.guoanshequ.com/"
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'id')"
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -113,7 +113,7 @@
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -550,18 +550,18 @@
                       <p>
                           <el-upload
                             class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'cert')"
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                             <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.jobPic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'life')"
@@ -569,7 +569,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                             <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.lifePic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                       </p>
                   </div>
@@ -1408,7 +1408,22 @@ export default {
         }else{
 					this.personalEDit.idCardPicBefor = ossData.get("key")
 				}
-			})
+      })
+      .catch(error=>{
+        if(flag == "head"){
+					this.personalEDit.headPic = ossData.get("key")
+				}else if(flag == "life"){
+					this.otherInfo.lifePic = ossData.get("key")
+				}else if(flag == 'cert'){
+					this.otherInfo.jobPic = ossData.get("key")
+				}else if(flag == 'after'){
+          this.personalEDit.idCardPicAfter = ossData.get("key")
+        }else{
+					this.personalEDit.idCardPicBefor = ossData.get("key")
+        }
+        console.log(error,"上传失败")
+        return false
+      })
         
         // console.log(this.headerBack,"this.headerBack")
       })

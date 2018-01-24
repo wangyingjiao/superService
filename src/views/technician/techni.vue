@@ -37,7 +37,7 @@
         <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img  :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
+              <div class="headImag"><img  :src="'https://imgcdn.guoanshequ.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div class="tech-mouse-div">
                 <span class="tech-mouse">{{item.jobName}}</span>
                 <span class="tech-mouse">{{item.jobStateName}}</span>
@@ -175,7 +175,9 @@
               <el-form-item label="开始时间:" required>
                 <el-col :span="11">
                   <el-form-item prop="startDate">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"></el-date-picker>
+                    <el-date-picker type="date" placeholder="选择日期" 
+                    v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"
+                   ></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
@@ -306,12 +308,12 @@
                     <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-headPic"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"
                             >
-                            <img v-if="personal.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
+                            <img v-if="personal.headPic" :src="'https://imgcdn.guoanshequ.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                         <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
@@ -386,13 +388,13 @@
                       <el-form-item label="身份证正面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              action="https://imgcdn.guoanshequ.com/"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'id')"
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
@@ -400,13 +402,13 @@
                       <el-form-item  label="身份证反面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              action="https://imgcdn.guoanshequ.com/"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'at')"
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
@@ -1185,6 +1187,21 @@ export default {
         }
       };
     },
+    // pickerOptionsTech(){
+    //   var data = new Date();
+    //   var year = data.getFullYear();
+    //   var month = data.getMonth() + 1;
+    //   var day = data.getDate();
+    //   var str = year + "," + month + "," + day;
+    //   console.log(str,"str----------")
+    //   var time1 = Date.parse(new Date("1950,1,1"));
+    //   var time2 = Date.parse(new Date(str));
+    //   return {
+    //     disabledDate(time) {
+    //       return time.getTime() < time2;
+    //     }
+    //   };
+    // },
     //权限
     btnShow() {
       return JSON.parse(localStorage.getItem("btn"));
@@ -1355,6 +1372,17 @@ export default {
             } else {
               this.personal.idCardPicBefor = ossData.get("key");
             }
+          })
+          .catch(error=>{
+            if (flag == "head") {
+              this.personal.headPic = ossData.get("key");
+            } else if (flag == "at") {
+              this.personal.idCardPicAfter = ossData.get("key");
+            } else {
+              this.personal.idCardPicBefor = ossData.get("key");
+            }
+            console.log(error,"上传图片失败")
+            return false
           });
 
         // console.log(this.headerBack,"this.headerBack")
