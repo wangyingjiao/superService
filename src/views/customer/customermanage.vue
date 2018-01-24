@@ -401,8 +401,7 @@ export default {
 						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 									confirmButtonText: '确定',
 									cancelButtonText: '取消',
-									closeOnClickModal:false,
-									type: 'warning'
+									closeOnClickModal:false
 								}).then(() => {
 									var obj = {
 										id:row.id
@@ -429,7 +428,7 @@ export default {
 									
 								}).catch(() => {
 									this.$message({
-										type: 'info',
+										type: 'warning',
 										message: '已取消删除'
 									});          
 								});			

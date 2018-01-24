@@ -540,8 +540,7 @@ export default {
             this.$confirm('此操作将更改技师, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
-              closeOnClickModal:false,
-              type: 'warning'
+              closeOnClickModal:false
             }).then(() => {
                 //更换时间的保存
                 var obj={
@@ -558,7 +557,8 @@ export default {
                       this.$refs['formInline'].resetFields();
                       this.tableData1=res.data.data.list;
                       this.otherInfo.serviceHour=res.data.data.serviceHour;
-                      this.otherInfo.serviceTime=that.changTime+' '+that.bb
+                      this.otherInfo.serviceTime=that.changTime+' '+that.bb;
+                      this.dialogVisible = false 
                   }else{
                     this.$message({
                       type: "error",
@@ -569,9 +569,12 @@ export default {
                   this.timeSaveFlag=false; 
                 });
             }).catch(() => { 
-
+                 this.$message({
+										type: 'warning',
+										message: '已取消更换时间'
+									});
             });                         
-            this.dialogVisible = false            
+                       
           }
       })
 

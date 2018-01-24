@@ -544,7 +544,6 @@ export default {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               closeOnClickModal:false,
-              type: 'warning'
             }).then(() => {
                 //更换时间的保存
                 var obj={
@@ -574,7 +573,10 @@ export default {
                   this.timeSaveFlag=false; 
                 });
             }).catch(() => { 
-
+               		this.$message({
+										type: 'warning',
+										message: '已取消更换时间'
+									});
             });                         
                        
           }
@@ -605,11 +607,15 @@ export default {
         var that=this;
         for(var b=0;b<this.options2.length;b++){
           if(val==this.options2[b].value){
-              this.timeObj=this.options2[b].serviceTime;
-              this.changTime=this.options2[b].label;
+             if(this.options2[b].serviceTime != undefined){
+                this.timeObj=this.options2[b].serviceTime;                
+             }
+             if(this.options2[b].label != undefined){
+               this.changTime=this.options2[b].label;
+             }
           }
         }
-        if(this.timeObj.length !=0){
+        if(this.timeObj != undefined && this.timeObj.length != 0){
             //样式复位
             this.$nextTick( () => {
                 for(var a=0;a<this.timeObj.length;a++){
