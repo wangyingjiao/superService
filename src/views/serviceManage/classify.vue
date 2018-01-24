@@ -346,7 +346,7 @@ export default {
               } else {
                 this.$message({
                   type: "error",
-                  message: "分类下有服务项目，不可删除"
+                  message: res.data.data
                 });
               }
             })

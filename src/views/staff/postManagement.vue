@@ -520,18 +520,6 @@ export default {
       }
     },
     handTreechange(a, b, c) {
-      //console.log(a, b, c, "yyyyyyyy");
-      //父级点击时取消勾选
-      // if(a.permission = 'order'){
-      //   if(b){
-      //     console.log('选中时')
-      //   }else{
-      //     console.log('mei选中时')
-      //   }
-      // }
-
-      // console.log(this.temp.check, "check-----------------");
-      // console.log(a, b, c, "checkchange节点选中状态发生变化");
       if (b) {
         //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
@@ -549,9 +537,7 @@ export default {
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
-                    ].id,
-                    true
-                  );
+                    ].id,true);
                 }
               }
             } else {
@@ -562,6 +548,8 @@ export default {
         //订单详情处理完毕
         //自动勾选列表权限
         if (a.subMenus == undefined) {
+          console.log(a)
+          console.log(a.parentIds)
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
@@ -669,7 +657,7 @@ export default {
       //console.log(this.temp.check);
     },
     nodeClick(a, b, c) {
-      //console.log(a, b, c, "nodeclick节点被点击时");
+      console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
       //console.log(a, b, "currentchange选中节点变化时");
@@ -705,9 +693,9 @@ export default {
       this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
-        //this.data2
         this.listLoading = false;
         if (res.data.code == 1) {
+        //this.data2 = res.data.data.menuListUnion
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
@@ -727,7 +715,7 @@ export default {
           //一期默认10级
           this.temp.dataScope = "10";
 
-          this.temp.check = a.menuIdList;
+          this.temp.check = a.menuIdListEdit;
           //console.log(a.menuIdList);
           if (res.data.data.flag) {
             this.selsctState = true;
@@ -735,9 +723,6 @@ export default {
           for (let i = 0; i < this.data2.length; i++) {
             //特殊首页处理
             if (this.data2[i].permission == "index") {
-              //console.log(this.data2[i].permission);
-              //this.temp.check.remove(this.data2[i].id);
-              //this.temp.check.push(this.data2[0].id);
             } else {
               this.temp.check.remove(this.data2[i].id);
             }
@@ -745,7 +730,6 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               var child = this.data2[i];
               for (let j = 0; j < child.subMenus.length; j++) {
-                //console.log(child.subMenus[j].id);
                 this.temp.check.remove(child.subMenus[j].id);
               }
             }
