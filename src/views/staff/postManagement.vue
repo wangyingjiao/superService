@@ -715,7 +715,7 @@ export default {
           //一期默认10级
           this.temp.dataScope = "10";
 
-          this.temp.check = a.menuIdListEdit;
+          this.temp.check = a.menuIdList;
           //console.log(a.menuIdList);
           if (res.data.data.flag) {
             this.selsctState = true;

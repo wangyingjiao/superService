@@ -13,7 +13,7 @@
         </el-option>
       </el-select>
        
-      <el-select filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
+      <el-select filterable class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
