@@ -8,7 +8,7 @@
             <div class="timeList" v-if="timeShow">
               <ul>
                 <li v-for="(item,index) in TimePicker" :key="index">
-                    <input :class="[{'inputBtnIndex':timeClassId==index},'inputBtn',{'disabClass':startTimeArr.indexOf(item)>-1}]" :disabled='startTimeArr.indexOf(item)>-1' type="button" :value="item" @click="timePickerFous(item,index)">
+                    <input :class="[{'inputBtnIndex':timeClassId==item},'inputBtn',{'disabClass':startTimeArr.indexOf(item)>-1}]" :disabled='startTimeArr.indexOf(item)>-1' type="button" :value="item" @click="timePickerFous(item,index)">
                 </li>
               </ul>
             </div>
@@ -81,6 +81,13 @@ export default {
     };
   },
   props:['mintime',"maxtime","mound","width"],
+  watch:{
+      mound(value){
+          alert("dawdawdwad")
+          console.log(value,"value---------")
+          this.timeClassId = value
+      }
+  },
   computed:{
     startTimeArr(){
       var arr = []
@@ -112,7 +119,7 @@ export default {
     },
     timePickerFous(item,index){
       this.timeValue = item
-      this.timeClassId = index
+      this.timeClassId = item
       this.timeShow = false
       this.$emit('changepicker',item || mound)
     },

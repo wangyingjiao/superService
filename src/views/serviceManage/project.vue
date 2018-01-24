@@ -47,7 +47,7 @@
 
       <el-table-column align="center" label="图片">
         <template scope="scope" >
-          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
+          <span v-if="scope.row.pictures != undefined"><img :src="'https://imgcdn.guoanshequ.com/' + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
         </template>
       </el-table-column>
 
@@ -94,11 +94,21 @@
         </template>  
       </el-table-column>
 
-      <el-table-column  label="状态" align="center" >
+      <el-table-column  label="对接商品ID" align="center" prop="jointGoodsCode">
         <template scope="scope">
+          <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
+                <span class="proName">{{item.jointGoodsCode}}</span>
+          </div>
+          <!-- <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index" v-if="scope.row.commoditys!=undefined">
+            <el-tooltip placement="left" :disabled="item.jointGoodsCode.length <= 10" :content="item.jointGoodsCode">
+              <span class="proName">{{scope.row.jointGoodsCode}}</span>
+            </el-tooltip>
+          </div> -->
+        </template>
+        <!-- <template scope="scope">
           <span style="color:red" v-show="scope.row.sale == 'no'">下架</span>
           <span v-show="scope.row.sale == 'yes'">上架</span>
-        </template>
+        </template> -->
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="200px">
@@ -106,7 +116,15 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-          </template>
+            
+            <el-popover
+              ref="popover21"
+              placement="top-start"
+              trigger="hover"
+              content="对接商品">
+            </el-popover>
+            <el-button v-popover:popover21 class="ceshi3 iconfont senddata" v-if="btnShow.indexOf('project_delete')>-1" @click="handleSendData(scope.row)">&#xe641;</el-button>
+        </template>
       </el-table-column>
 
     </el-table>
@@ -233,7 +251,7 @@
                      <div class="el-upload__tip">* 最多设置3个自定义标签</div>
                 </el-form-item> 
             
-                <el-form-item label="是否上架：" class="seize">
+                <!-- <el-form-item label="是否上架：" class="seize">
                     <el-switch
                       @change="isNo"
                       v-model="basicForm.sale"
@@ -242,7 +260,7 @@
                       on-value="yes"
                       off-value="no">
                     </el-switch>
-                </el-form-item>
+                </el-form-item> -->
 
                 <!-- <el-form-item label="排序号：" class="seize">
                     <el-input
@@ -313,7 +331,7 @@
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
-                    placeholder="请输入商品名称（1-26位）"
+                    placeholder="请输入商品名称（1-24位）"
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
@@ -567,7 +585,8 @@ import {
   ServerEdit,
   serverEditPre,
   sortList,
-  serGasqSort
+  serGasqSort,
+  sendData
 } from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
@@ -764,7 +783,7 @@ export default {
       var editName = this.editName;
       var arr = this.basicForm.commoditys;
       if(value){
-        if(value.length>=1 && value.length<=26){
+        if(value.length>=1 && value.length<=24){
           if(this.handleEditFlag){
             if(editName.name == value){
               callback()
@@ -790,10 +809,10 @@ export default {
             }
           }
         }else{
-          callback(new Error("长度在 1 到 26 个字符"))
+          callback(new Error("长度在 1 到 24 个字符"))
         }
       }else{
-        callback(new Error('请输入商品名称(1-26位)'))
+        callback(new Error('请输入商品名称(1-24位)'))
       }
     }
     return {
@@ -846,7 +865,7 @@ export default {
       persons: [],
       commoditys: [],
       imageUrl: "",
-      dialogImageUrl: "",
+      dialogImageUrl:"",
       handleEditFlag:false,
       handleEditIndex:null,
       dialogVisible: false,
@@ -910,7 +929,7 @@ export default {
         name: "",
         // picture: "123123132", //服务图片
         sortId: "",
-        sale: "yes",
+        // sale: "yes",
         // sortNum: "",
         majorSort: "all",
         commoditys: [],
@@ -1033,7 +1052,7 @@ export default {
       });
 
     // this.orient({}, 0); // 所属分类
-    this.getList(1, 10); //搜索 ，分页
+    // this.getList(1, 10); //搜索 ，分页
     this.sign   //获取签名
   },
   computed: {
@@ -1046,6 +1065,15 @@ export default {
     },
   },
   methods: {
+    handleSendData(row){
+      console.log(row,"row--------")
+      var obj = {id:row.id}
+      sendData(obj).then(data=>{
+        console.log(data,"data=========")
+      }).catch(error=>{
+        console.log(error,"error========")
+      })
+    },
     //图文详情测试
     handImgText(file,fileList){
       if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
@@ -1355,12 +1383,13 @@ export default {
         var str = "";
         var index = ''
         if(file.raw){
-          if(file.raw.url){
-             index = file.raw.url.lastIndexOf("/");
-             str = file.raw.url.substring(index + 1, file.raw.url.length);
-          }else{
-            return false
-          }
+          str = file.raw.uid+'.jpg'
+          // if(file.raw.url){
+          //    index = file.raw.url.lastIndexOf("/");
+          //    str = file.raw.url.substring(index + 1, file.raw.url.length);
+          // }else{
+          //   return false
+          // }
         }else{
           index = file.url.lastIndexOf("/");
           str = file.url.substring(index + 1, file.url.length);
@@ -1527,6 +1556,7 @@ export default {
             // console.log(this.imgText, "imgtext");
           })
           .catch(error => {
+            this.imgText.push(ossData.get("key"));
             console.log(error, "错误");
           });
       });
@@ -1583,13 +1613,13 @@ export default {
             .then(res => {
               console.log(this.picList);
               this.picFile.push(ossData.get("key"));
-              file.file.url = 'https://openservice.guoanshequ.com/'+ data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
               // console.log(this.picFile,"this.picFile------------------")
-              console.log(this.picFile, "picfile");
+              console.log(this.picFile, "picfile----------------");
             })
             .catch(error => {
               console.log('错误-------------上传图片失败--')
               this.picFile.push(ossData.get("key"));
+              console.log(this.picFile, "picfile----------------");
               console.log(error, "错误");
             });
       });
@@ -1873,7 +1903,8 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
-      this.basicForm.sale = 'yes'
+      console.log(this.goods_info,"goods_info")
+      // this.basicForm.sale = 'yes'
       this.basicForm.sortId = ''
       this.imgNumber = 0;
       this.tableProject({majorSort:"clean"})
@@ -1888,6 +1919,7 @@ export default {
     //编辑方法
     handleUpdate(row) {
       // console.log(row,"------row`````");
+      this.resetForm()
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
@@ -1919,7 +1951,7 @@ export default {
               console.log(data.data.data.pictures, "tupian");
               var obj = {
                 url:
-                  "https://openservice.guoanshequ.com/" +
+                  "https://imgcdn.guoanshequ.com/" +
                   data.data.data.pictures[i]
               };
               this.picList.push(obj);
@@ -1959,7 +1991,7 @@ export default {
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 var obj = {
                   url:
-                    "https://openservice.guoanshequ.com/" +
+                    "https://imgcdn.guoanshequ.com/" +
                     data.pictureDetails[i]
                 };
                 this.fileList.push(obj);
@@ -2061,7 +2093,7 @@ export default {
         pictures:
           "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
         description: "服务描述测试",
-        sale: "1", //是否上架
+        // sale: "1", //是否上架
         sortNum: 1 //排序号
       };
       addProject(obj).then(res => {
@@ -2170,6 +2202,7 @@ export default {
                     message: data.data.data,
                     type: "success"
                   });
+                  this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
@@ -2234,7 +2267,9 @@ export default {
     },
     resetForm(ser) {
       // this.resetEmpty(ser)
-      this.$refs["goods_info"].resetFields()
+      if(this.$refs["goods_info"]){
+        this.$refs["goods_info"].resetFields()
+      }
       this.goods_info.name = ''
       this.goods_info.unit = ''
       this.goods_info.type = ''
@@ -2509,6 +2544,9 @@ export default {
 
 .el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
+}
+.senddata{
+  margin-left:10px;
 }
 .tit {
   font-size: 14px;

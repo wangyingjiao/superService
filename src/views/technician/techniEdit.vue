@@ -24,12 +24,12 @@
                       <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-header"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-                            <img v-if="personalEDit.headPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
+                            <img v-if="personalEDit.headPic" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
@@ -93,13 +93,13 @@
                     <el-form-item label="身份证正面：">
                         <el-upload
                                 class="avatar-uploader"
-                                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                                action="https://imgcdn.guoanshequ.com/"
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'id')"
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -113,7 +113,7 @@
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -241,14 +241,17 @@
                                     </div>
                                     <div class="startTime">
                                       <div class="selfCheckBoxsday">时段</div>
-                                        <timePicker :width="'200px'" ref="startPicker" :mintime="startend.start" :maxtime="startend.end" :mound="startend.start" @changepicker="changeEditStart"></timePicker>
-                                        <timePicker :width="'200px'" ref="endPicker" :mintime="startend.start" :maxtime="startend.end" :mound="startend.end" @changepicker="changeEditEnd"></timePicker>
-                                      <!-- <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                      <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="startend.start=='00:00'?{
                                           start: '00:00',
                                           step: '00:30',
                                           end: '24:00',
-                                          minTime:startend.startNew,
                                           maxTime:startend.endNew
+                                          }:{
+                                            start: '00:00',
+                                            step: '00:30',
+                                            end: '24:00',
+                                            minTime:startend.startNew,
+                                            maxTime:startend.endNew
                                           }" class="tech-daytim">
                                       </el-time-select>
                                       <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
@@ -258,7 +261,7 @@
                                           minTime:startTime || startend.startNew,
                                           maxTime:startend.endNew
                                           }">
-                                      </el-time-select> -->
+                                      </el-time-select>
                                     </div>
                                 </div>
                                 <div style="margin:10px">
@@ -547,18 +550,18 @@
                       <p>
                           <el-upload
                             class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'cert')"
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                             <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.jobPic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
-                            action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'life')"
@@ -566,7 +569,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                             <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.lifePic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
                           </el-upload>
                       </p>
                   </div>
@@ -609,7 +612,6 @@ import {
 
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
-import timePicker from './timePicker.vue'
 
 export default {
   data() {
@@ -1292,12 +1294,6 @@ export default {
     "startend"
   ],
   methods: {
-    changeEditStart(path){
-      this.startTime = path
-    },
-    changeEditEnd(path){
-      this.endTime = path
-    },
     //全职兼职切换
     jobStatusTable(){
       if(this.perServer.jobNature == 'part_time'){
@@ -1412,7 +1408,22 @@ export default {
         }else{
 					this.personalEDit.idCardPicBefor = ossData.get("key")
 				}
-			})
+      })
+      .catch(error=>{
+        if(flag == "head"){
+					this.personalEDit.headPic = ossData.get("key")
+				}else if(flag == "life"){
+					this.otherInfo.lifePic = ossData.get("key")
+				}else if(flag == 'cert'){
+					this.otherInfo.jobPic = ossData.get("key")
+				}else if(flag == 'after'){
+          this.personalEDit.idCardPicAfter = ossData.get("key")
+        }else{
+					this.personalEDit.idCardPicBefor = ossData.get("key")
+        }
+        console.log(error,"上传失败")
+        return false
+      })
         
         // console.log(this.headerBack,"this.headerBack")
       })
@@ -1712,14 +1723,12 @@ export default {
             }else{
               this.perServer.workTimes = [].concat(arr)
             }
-            this.$refs['startPicker'].positi();
-            this.$refs['endPicker'].positi();
             this.isB = false;
             this.startTime = ''
             this.endTime = ''
         }else{
            this.$message({
-              type: "error",
+              type: "warning",
               message: "结束时间不能小于开始时间"
             });
             return false
@@ -1766,8 +1775,6 @@ export default {
     addtimeno() {
       this.roomSel1Arr = []
       this.roomSelNum = []
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
       this.isB = false;
     },
     mouser(item) {
@@ -1894,9 +1901,6 @@ export default {
             }
           }
       },
-  },
-  components:{
-    timePicker
   }
 };
 </script>
@@ -2248,13 +2252,7 @@ export default {
 }
 .startTime{
   margin-top:10px;
-  display:flex;
-  line-height:34px;
 }
-.startTime .addorder-container:nth-child(2){
-  margin-left:5px;
-}
-
 
 .btn_Span1 {
   width: 30px;

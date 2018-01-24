@@ -37,7 +37,7 @@
         <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img  :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
+              <div class="headImag"><img  :src="'https://imgcdn.guoanshequ.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
               <div class="tech-mouse-div">
                 <span class="tech-mouse">{{item.jobName}}</span>
                 <span class="tech-mouse">{{item.jobStateName}}</span>
@@ -175,26 +175,33 @@
               <el-form-item label="开始时间:" required>
                 <el-col :span="11">
                   <el-form-item prop="startDate">
-                    <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"></el-date-picker>
+                    <el-date-picker type="date" placeholder="选择日期" 
+                    v-model="ruleForm.startDate" style="width: 100%;" format="yyyy-MM-dd" @change="startDateChange"
+                   ></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <timePicker :width="'80%'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changePickerStart"></timePicker>
-                  <!-- <el-form-item prop="startTime">
+                  <!-- <timePicker></timePicker> -->
+                  <el-form-item prop="startTime">
                     	<el-time-select
                           :editable='false'
                           v-model="ruleForm.startTime"
-                          :picker-options="{
+                          :picker-options="timeFlag?{
                             start: '00:00',
                             step: '00:30',
                             end: '24:00',
                             minTime:startEnd.startNew,
                             maxTime:startEnd.endNew
+                          }:{
+                            start: '00:00',
+                            step: '00:30',
+                            end: '24:00',
+                            maxTime:startEnd.endNew
                           }"
                           placeholder="选择时间">
                       </el-time-select>
-                  </el-form-item> -->
+                  </el-form-item>
                 </el-col>
               </el-form-item>
               <el-form-item label="结束时间:" required>
@@ -205,8 +212,7 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <timePicker :width="'80%'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changePickerEnd"></timePicker>
-                  <!-- <el-form-item prop="endTime">
+                  <el-form-item prop="endTime">
                     <el-time-select
                           :editable='false'
                           v-model="ruleForm.endTime"
@@ -219,7 +225,7 @@
                           }"
                           placeholder="选择时间">
                     </el-time-select>
-                  </el-form-item> -->
+                  </el-form-item>
                 </el-col>
               </el-form-item>
               <el-form-item label="备注:" prop="desc">
@@ -302,12 +308,12 @@
                     <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-headPic"
-                            action="https://gemini-wlcb.oss-cn-beijing.aliyuncs.com"
+                            action="https://imgcdn.guoanshequ.com/"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"
                             >
-                            <img v-if="personal.headPic" :src="'https://imgcdn.guoanshequ.com'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
+                            <img v-if="personal.headPic" :src="'https://imgcdn.guoanshequ.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                         <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
@@ -382,13 +388,13 @@
                       <el-form-item label="身份证正面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              action="https://imgcdn.guoanshequ.com/"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'id')"
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicBefor" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
@@ -396,13 +402,13 @@
                       <el-form-item  label="身份证反面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                              action="https://imgcdn.guoanshequ.com/"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'at')"
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicAfter" :src="'https://openservice.oss-cn-beijing.aliyuncs.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
@@ -492,26 +498,29 @@
                                   >
                                 </div>
                               </div>
-                              <div style="margin-top:10px;" class="timepickerClass">
+                              <div style="margin-top:10px;">
                                 <div class="selfCheckBoxsday">时段</div>
-                                  <timePicker :width="'200px'" ref="startPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.start"  @changepicker="changeAddStart"></timePicker>
-                                  <timePicker :width="'200px'" ref="endPicker" :mintime="startEnd.start" :maxtime="startEnd.end" :mound="startEnd.end"  @changepicker="changeAddEnd"></timePicker>
-                                <!-- <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="{
+                                <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startEnd.startNew,
                                     maxTime:startEnd.endNew 
+                                  }:{
+                                    start: '00:00',
+                                    step: '00:30',
+                                    end: '24:00',
+                                    maxTime:startEnd.endNew 
                                   }" class="tech-daytim">
-                                </el-time-select> -->
-                                <!-- <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                </el-time-select>
+                                <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
                                     minTime:startTime || startEnd.startNew,
                                     maxTime:startEnd.endNew
                                   }">
-                                </el-time-select> -->
+                                </el-time-select>
                               </div>
                             </div>
                             <div style="margin:10px 10px 10px;">
@@ -726,6 +735,8 @@ export default {
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
       jobFlag: false,
+      timeFlag:true,
+      addtimeFlag:true,
       kaishi: "",
       pageNumber:'',
       jiehsu: "",
@@ -1176,6 +1187,21 @@ export default {
         }
       };
     },
+    // pickerOptionsTech(){
+    //   var data = new Date();
+    //   var year = data.getFullYear();
+    //   var month = data.getMonth() + 1;
+    //   var day = data.getDate();
+    //   var str = year + "," + month + "," + day;
+    //   console.log(str,"str----------")
+    //   var time1 = Date.parse(new Date("1950,1,1"));
+    //   var time2 = Date.parse(new Date(str));
+    //   return {
+    //     disabledDate(time) {
+    //       return time.getTime() < time2;
+    //     }
+    //   };
+    // },
     //权限
     btnShow() {
       return JSON.parse(localStorage.getItem("btn"));
@@ -1219,19 +1245,6 @@ export default {
     }
   },
   methods: {
-    changePickerStart(path){
-      console.log(path,"path----------")
-      this.ruleForm.startTime = path
-    },
-    changePickerEnd(path){
-      this.ruleForm.endTime = path
-    },
-    changeAddStart(path){
-      this.startTime = path
-    },
-    changeAddEnd(path){
-      this.endTime = path
-    },
     closeThef(){
       this.$refs['techniEditDlog'].closeThe()
     },
@@ -1360,8 +1373,17 @@ export default {
             } else {
               this.personal.idCardPicBefor = ossData.get("key");
             }
-          }).catch(err=>{
-            console.log(err)
+          })
+          .catch(error=>{
+            if (flag == "head") {
+              this.personal.headPic = ossData.get("key");
+            } else if (flag == "at") {
+              this.personal.idCardPicAfter = ossData.get("key");
+            } else {
+              this.personal.idCardPicBefor = ossData.get("key");
+            }
+            console.log(error,"上传图片失败")
+            return false
           });
 
         // console.log(this.headerBack,"this.headerBack")
@@ -1403,8 +1425,6 @@ export default {
     //休假取消
     vacationCancel(formName) {
       this.$refs[formName].resetFields();
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
       this.flags = false;
     },
     //休假保存
@@ -1444,7 +1464,6 @@ export default {
                   type: "success"
                 });
                 this.vacationCancel("ruleForm");
-                this.$refs['startPicker'].positi();
               } else {
                 this.$message.error(data.data.data);
                 return false;
@@ -1478,6 +1497,11 @@ export default {
 
           if(this.startEnd.end=='23:59'){
             this.startEnd.end = "24:00"
+          }
+          if(this.startEnd.start == '00:00'){
+            this.timeFlag = false
+          }else{
+            this.timeFlag = true
           }
           if(this.startEnd.endNew.slice(0,2) == "00"){
             this.startEnd.endNew = "24:10"
@@ -1544,10 +1568,15 @@ export default {
           this.startEnd = data.data.data
           if(this.startEnd.end=='23:59'){
               this.startEnd.end = "24:00"
-            }
-            if(this.startEnd.endNew.slice(0,2) == "00"){
-              this.startEnd.endNew = "24:10"
-            }
+          }
+          if(this.startEnd.endNew.slice(0,2) == "00"){
+            this.startEnd.endNew = "24:10"
+          }
+          if(this.startEnd.start == '00:00'){
+            this.addtimeFlag = false
+          }else{
+            this.addtimeFlag = true
+          }
           this.startTime = data.data.data.start
           this.endTime = data.data.data.end
         }).catch(error=>{
@@ -1727,11 +1756,9 @@ export default {
           this.isB = false;
           this.startTime = "";
           this.endTime = "";
-          this.$refs['startPicker'].positi();
-          this.$refs['endPicker'].positi();
         } else {
           this.$message({
-            type: "error",
+            type: "warning",
             message: "结束时间不能小于开始时间"
           });
           return false;
@@ -1753,7 +1780,6 @@ export default {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false,
         type: "warning"
       })
         .then(() => {
@@ -1820,8 +1846,6 @@ export default {
       this.roomSelNum = [];
       this.roomSel1Arr = [];
       this.isB = false;
-      this.$refs['startPicker'].positi();
-      this.$refs['endPicker'].positi();
     },
     mouser(item, index) {
       if (!item.ismouse) {
@@ -1856,10 +1880,13 @@ export default {
           //     return false
           // }
           // this.personal.workTimes.workTime = this.disbAr
-          for(var i = 0; i<this.teachArr.length ; i++){
+           for(var i = 0; i<this.teachArr.length ; i++){
             if(this.teachArr[i].endTime == '24:00'){
-              this.teachArr[i].endTime = '23:59'
+              this.teachArr[i].endTime = '23:59:59'
             }
+          }
+          if(this.teachArr.endTime == '24:00'){
+            this.teachArr.endTime = '23:59'
           }
           console.log(this.teachArr,"this.teachArr-----+++++++")
           this.personal.workTimes = this.teachArr;
@@ -1888,12 +1915,12 @@ export default {
                 if (typeof str == "string") {
                   this.$message({
                     message: str,
-                    type: "error"
+                    type: "warning"
                   });
                 } else {
                   this.$message({
                     message: str[0],
-                    type: "error"
+                    type: "warning"
                   });
                 }
                 this.btnState = false;
@@ -1963,13 +1990,11 @@ export default {
               this.techniList = this.infoname;
               console.log(this.techniList, "this.techniList----------");
           }else{
-            this.listLoadingTech = false;
             this.$message.error(data.data.data)
             return false
           }
         })
         .catch(error => {
-          this.listLoadingTech = false;
           return false
           console.log(error, "error-----thechni.vue-----1211");
         });
@@ -2513,12 +2538,6 @@ export default {
   margin-top: 10px;
   margin-left: 35px;
 }
-.timepickerClass{
-  display:flex;
-}
-.timepickerClass .addorder-container{
-  margin-left: 5px;
-}
 
 .tallyose {
   color: #fff;
@@ -2578,7 +2597,7 @@ export default {
 .selfCheckBoxsday {
   width: 30px;
   height: 24px;
-  line-height: 34px;
+  line-height: 24px;
   /* border: 1px solid #bfcbd9; */
   display: inline-block;
   /* text-align: center; */

@@ -1,5 +1,6 @@
 
 import instance from '@/utils/fetch'
+import { resolve } from 'url';
 // --------------------------------服务管理----------------------------
 
 // -----------服务项目------------
@@ -102,6 +103,18 @@ export function serGasqSort(){
             reject(error)
         })
     })
+}
+
+
+//对接
+export function sendData(obj){
+  return new Promise((resolce,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/sendData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
 }
 
 // --------------------------------服务管理 结束----------------------------
