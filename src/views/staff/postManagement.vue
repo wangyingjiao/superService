@@ -722,7 +722,7 @@ export default {
                   for (var k = 0; k < arrj.length; k++) {
                     var arrk = arrj[k];
                     if (arrk.permission != undefined) {
-                      console.log(arrk.name, "111111");
+                      //console.log(arrk.name, "111111");
                       if (arrk.permission == "order_info") {
                         if (arrk.disabled == undefined) {
                           arrj.remove(arrk);
@@ -745,7 +745,7 @@ export default {
                   for (var k = 0; k < arrj.length; k++) {
                     var arrk = arrj[k];
                     if (arrk.permission != undefined) {
-                      console.log(arrk.name, "111111");
+                      //console.log(arrk.name, "111111");
                       if (
                         arrk.permission.substring(
                           arrk.permission.length - 4,
@@ -753,7 +753,7 @@ export default {
                         ) == "view"
                       ) {
                         if (arrk.disabled == undefined) {
-                          console.log(arrk.name);
+                          //console.log(arrk.name);
                           var obj = arrk;
                           arrj.remove(arrk);
                           arrj.push(arrk);
@@ -824,8 +824,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
-        type: "warning"
+        closeOnClickModal: false
       })
         .then(() => {
           var obj = {
@@ -852,7 +851,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });

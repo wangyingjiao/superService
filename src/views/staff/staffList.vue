@@ -920,7 +920,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });
