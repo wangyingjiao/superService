@@ -659,7 +659,7 @@ export default {
       //console.log(this.temp.check);
     },
     nodeClick(a, b, c) {
-      console.log(a, b, c, "nodeclick节点被点击时");
+      //console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
       //console.log(a, b, "currentchange选中节点变化时");
