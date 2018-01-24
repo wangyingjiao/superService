@@ -831,7 +831,7 @@ export default {
     changeTime(){
       this.timeObj=[];
       //默认选择当前日期
-      if(this.options2.length != 0 && this.options2 !=undefined){
+      if(this.options2 != undefined ){
         this.formInline.Date=this.options2[0].value
         this.dateChange(this.formInline.Date) 
       }      
