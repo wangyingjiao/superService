@@ -1357,7 +1357,6 @@ export default {
         //this.ossData = ossData;
         // console.log(ossData.get("name"),"ossData-----");
         // console.log(ossData.get("key"),"ossData------");
-  console.log(22222222222)
         that.$http
           .post(data.host, ossData, {
             headers: {
@@ -1365,7 +1364,6 @@ export default {
             }
           })
           .then(res => {
-            console.log(11111111111111111)
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
             } else if (flag == "at") {
