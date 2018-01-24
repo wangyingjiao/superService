@@ -518,6 +518,10 @@ export default {
             this.payInfo=AllInfo.payInfo//支付信息
             this.options2=AllInfo.orderTimeList;//服务时间下拉菜单值
           }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });            
           }          
         }).catch(res=>{
           
@@ -831,7 +835,7 @@ export default {
     changeTime(){
       this.timeObj=[];
       //默认选择当前日期
-      if(this.options2 != undefined ){
+      if(this.options2 != undefined && this.options2[0] != undefined){
         this.formInline.Date=this.options2[0].value
         this.dateChange(this.formInline.Date) 
       }      
