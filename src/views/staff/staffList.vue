@@ -2,16 +2,18 @@
   <div>
     <!-- 搜索 -->
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索登录账号" v-model="search.mobile">
+      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+        <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
+          <el-option v-for="(val,key,index) in userSearch" :key="key" :label="val" :value="key">
+          </el-option>
+        </el-select>
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索的岗位名称" v-model="search.name">
-      </el-input>
-      <el-select  filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
+      <el-select filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
        
-      <el-select  filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
+      <el-select filterable  class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -364,14 +366,15 @@ export default {
       pageSize: 10,
       total: 1,
       search: {
-        mobile: "",
-        name: "",
+        type: "",
+        val: "",
         officeId: "",
         stationId: ""
       },
       mechanismCheck: [], //服务机构
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
+      userSearch:[],//搜索条件
       temp: {
         mobile: "",
         name: "",
@@ -501,14 +504,12 @@ export default {
       // 服务机构
       this.mechanismCheck = res.data.data.list;
     });
-    // getStation().then(res => {
-    //   // //console.log(res.data.data);
-    //   this.stationCheck = res.data.data;
-    // });
     getMenudata().then(res => {
-      //console.log(res);
       this.data2 = res.data.data;
     });
+    //从字典量里获取搜索内容
+    var dict = require("../../../static/dict.json");
+    this.userSearch = dict.user_search;
     var lv = localStorage.getItem("dataScope");
     //console.log(lv, "用户等级");
     for (var i = 0; i < lv; i++) {
