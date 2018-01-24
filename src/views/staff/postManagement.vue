@@ -684,22 +684,24 @@ export default {
     //点击新增时
     handleCreate() {
       //this.resetTemp();
-      this.listLoading = true
-      getMenudata().then(res => {
-        this.data2 = res.data.data;
-        if (res.data.code == 1) {
-          this.dialogStatus = "create";
-          this.dialogFormVisible = true;
-          this.listLoading = false
-          if (this.officeIds.length == 1) {
-            this.temp.officeId = this.officeIds[0].id;
+      this.listLoading = true;
+      getMenudata()
+        .then(res => {
+          this.data2 = res.data.data;
+          if (res.data.code == 1) {
+            this.dialogStatus = "create";
+            this.dialogFormVisible = true;
+            this.listLoading = false;
+            if (this.officeIds.length == 1) {
+              this.temp.officeId = this.officeIds[0].id;
+            }
+          } else {
+            this.listLoading = false;
           }
-        }else{
-          this.listLoading = false
-        }
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //点击编辑时
     handleUpdate(row) {
@@ -709,20 +711,53 @@ export default {
         this.listLoading = false;
         if (res.data.code == 1) {
           //处理权限位置
-          var arr = res.data.data.menuListUnion
-          for(var i = 0;i < arr.length;i++){
-            if(arr[i].subMenus != undefined){
-            var arri = arr[i].subMenus
-              for(var j = 0;j<arri.length;j++){
-                if(arri[j].subMenus != undefined){
-                var arrj = arri[j].subMenus
-                  for(var k = 0; k<arrj.length;k++){
-                    var arrk = arrj[k]
-                    if(arrk.permission.substring(arrk.permission.length - 4,arrk.permission.length) == 'view'){
-                      if(arrk.disabled == undefined){
-                          var obj = arrk
-                          arrj.remove(arrk)
-                          arrj.push(arrk)
+          //处理订单的查看详情
+          var arr = res.data.data.menuListUnion;
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      console.log(arrk.name, "111111");
+                      if (arrk.permission == "order_info") {
+                        if (arrk.disabled == undefined) {
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          //处理所有列表权限
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      console.log(arrk.name, "111111");
+                      if (
+                        arrk.permission.substring(
+                          arrk.permission.length - 4,
+                          arrk.permission.length
+                        ) == "view"
+                      ) {
+                        if (arrk.disabled == undefined) {
+                          console.log(arrk.name);
+                          var obj = arrk;
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
                       }
                     }
                   }
