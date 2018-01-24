@@ -394,7 +394,6 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        type: "warning"
       })
         .then(() => {
           console.log(row);
@@ -426,7 +425,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });
