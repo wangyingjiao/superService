@@ -1346,7 +1346,7 @@ export default {
         // console.log(ossData.get("key"),"ossData------");
   console.log(22222222222)
         that.$http
-          .post(data.host1, ossData, {
+          .post(data.host, ossData, {
             headers: {
               "Content-Type": "multipart/form-data; boundary={boundary}"
             }
