@@ -708,32 +708,29 @@ export default {
       getPower(row.id).then(res => {
         this.listLoading = false;
         if (res.data.code == 1) {
-          this.data2 = res.data.data.menuListUnion;
+          //处理权限位置
           var arr = res.data.data.menuListUnion
           for(var i = 0;i < arr.length;i++){
-            console.log(arr[i].subMenus)
             if(arr[i].subMenus != undefined){
-            console.log(222222)
             var arri = arr[i].subMenus
               for(var j = 0;j<arri.length;j++){
-                console.log(111111111)
                 if(arri[j].subMenus != undefined){
                 var arrj = arri[j].subMenus
                   for(var k = 0; k<arrj.length;k++){
                     var arrk = arrj[k]
-                    console.log(arrk.permission.substring(
-            arrk.permission.length - 4,
-            arrk.permission.length
-          ) == "view")
-                    if(arrk.permission.substring(arrk.permission.length-4,arrk.permission) == 'view'){
-                    console.log(arrk.name,'名字')
-
+                    if(arrk.permission.substring(arrk.permission.length - 4,arrk.permission.length) == 'view'){
+                      if(arrk.disabled == undefined){
+                          var obj = arrk
+                          arrj.remove(arrk)
+                          arrj.push(arrk)
+                      }
                     }
                   }
                 }
               }
             }
           }
+          this.data2 = arr;
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
