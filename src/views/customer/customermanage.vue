@@ -424,7 +424,9 @@ export default {
 													message: '删除失败'
 												});
 										}
-									}).catch(()=>console.log("未知错误"))
+									}).catch(()=>{
+										this.getData(obj1,this.pageNumber,this.pageSize1);
+									})
 									
 								}).catch(() => {
 									this.$message({
