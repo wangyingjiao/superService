@@ -103,6 +103,8 @@
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 						</template>									
 					</el-table-column>
+                    <el-table-column   align="center" width="150" label="对接订单ID"  prop="joinOrderId">	
+					</el-table-column>					
 					<!-- <el-table-column   align="center" width="150" label="支付状态"  >
 					<template scope="scope">
 							<span v-if="scope.row.payStatus =='payed'">已支付</span>
