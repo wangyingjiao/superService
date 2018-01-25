@@ -1285,16 +1285,19 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {  
+    beforeAvatarUpload(file) {         
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
-      // console.log(isPIC,"isPIC--------------------")
+      // console.log(isPIC,"isPIC--------------------")         
       if (
         file.type == "image/jpg" ||
         file.type == "image/png" ||
         file.type == "image/jpeg"
       ) {
         console.log(file.type, "file.type-----------");
-      } else {
+
+          
+                             
+      } else {       
         console.log(file.type, "file.type-----------+++++++++");
         this.$message.error("请上传正确的图片格式");
         return false;
@@ -1341,6 +1344,7 @@ export default {
       });
       var that = this;
       pro.then(success => {
+
         var data = success;
         var ossData = new FormData();
         var date = new Date();

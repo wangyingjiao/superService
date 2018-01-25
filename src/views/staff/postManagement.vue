@@ -521,7 +521,6 @@ export default {
     },
     handTreechange(a, b, c) {
       if (b) {
-        //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
@@ -533,7 +532,6 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  //console.log(this.data2[i].subMenus[j], "成功");
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
@@ -543,7 +541,6 @@ export default {
                 }
               }
             } else {
-              //console.log(this.data2[i].subMenus);
             }
           }
         }
