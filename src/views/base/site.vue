@@ -453,7 +453,7 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize)
         .then(res => {
-          //console.log(res, "服务站列表");
+          
           this.total = res.data.data.count;
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo;
@@ -501,8 +501,7 @@ export default {
     },
     // 设置站长
     handleSetMaster() {
-      // console.log(this.tempMaster.master);
-      // console.log(this.rowInfo.masterId);
+      
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -546,7 +545,7 @@ export default {
               this.listLoading = false;
               this.storeTree = res.data.data;
               this.dialogStoreVisible = true;
-              // console.log(this.rowInfo.storeList, "选中的门店");
+              
               this.$nextTick(() => {
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
               });
@@ -627,7 +626,6 @@ export default {
     },
     rowClick(row, event, column) {
       //行被点击时
-      // console.log(row, "点击行的信息");
       this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
       if (row.user == undefined) {
@@ -756,7 +754,6 @@ export default {
     },
     createStore() {
       //保存门店
-      // console.log(this.$refs.domTree.getCheckedKeys(true), "选中的门店");
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)

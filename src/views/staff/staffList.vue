@@ -322,12 +322,12 @@ export default {
       }
     };
     var validateName = (rule, value, callback) => {
-      //console.log(this.temp2.officeId2);
+      
       var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
-        //console.log(this.temp2.officeId2);
+       
         var obj = {
           name: value,
           id: this.temp2.officeId2
@@ -509,14 +509,13 @@ export default {
     var dict = require("../../../static/dict.json");
     this.userSearch = dict.user_search;
     var lv = localStorage.getItem("dataScope");
-    //console.log(lv, "用户等级");
+  
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
   },
   methods: {
     searchChange(val) {
-      console.log(val);
     },
     //获取列表
     getList() {
@@ -559,7 +558,7 @@ export default {
         } else {
           this.listLoading = false;
         }
-        //console.log(res.data, "员工列表");
+     
       });
     },
     //搜索
@@ -587,12 +586,10 @@ export default {
       }else{
         var obj = {}
       }
-      //console.log(obj,'搜索条件')
-      
+    
         this.listLoading = true;
-        //console.log(obj, "111111111");
+      
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          //console.log(res, "搜索");
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -616,7 +613,6 @@ export default {
     addRole() {
       this.dialogFormStation = true;
       if (this.mechanismCheck.length == 1) {
-        //console.log(this.mechanismCheck[0].id);
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
     },
@@ -642,7 +638,7 @@ export default {
       }else{
         var obj = {}
       }
-      //console.log("size-change");
+  
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -665,7 +661,7 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      //console.log(val, "current-change");
+
       this.pageNumber = val;
       if (this.search.type == "name") {
         var obj = {
@@ -694,7 +690,7 @@ export default {
           for (var i = 0; i < res.data.data.list.length; i++) {
             res.data.data.list[i].index = i + 1;
           }
-          //console.log(res.data.data.list, "list-------------");
+   
         }
         this.total = res.data.data.count;
         this.list = res.data.data.list;
@@ -725,7 +721,6 @@ export default {
     handTreechange(a, b, c) {
 
       if (b) {
-        //console.log("tttttttttttttttt");
         // 处理订单里的查看详情
         if (
           ["order_time", "order_dispatch", "order_addTech"].indexOf(
@@ -737,7 +732,6 @@ export default {
             if (this.data2[i].subMenus != undefined) {
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  //console.log(this.data2[i].subMenus[j], "成功");
                   this.$refs.domTree.setChecked(
                     this.data2[i].subMenus[j].subMenus[
                       this.data2[i].subMenus[j].subMenus.length - 2
@@ -747,7 +741,6 @@ export default {
                 }
               }
             } else {
-              //console.log(this.data2[i].subMenus);
             }
           }
         }
@@ -762,7 +755,6 @@ export default {
                   var str = this.data2[i].subMenus[j].subMenus[
                     this.data2[i].subMenus[j].subMenus.length - 1
                   ];
-                  //console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -771,7 +763,6 @@ export default {
                       this.$refs.domTree.setChecked(str.id, true);
                     }
                   } else {
-                    //console.log(111111111111111111);
                   }
                 }
               }
@@ -781,7 +772,7 @@ export default {
         }
         //自动勾选列表权限结束
       } else {
-        ////console.log("取消勾选");
+      
 
         //订单的查看详情不可取消
 
@@ -850,16 +841,14 @@ export default {
 
         //列表处理完毕
       }
-      ////console.log(this.$refs.domTree.getCheckedKeys(false));
-      ////console.log(this.$refs.domTree.getCheckedNodes());
+      
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
-      ////console.log(this.temp2.check);
+      
     },
     handleUpdate(row) {
       //this.handleCreate();
-      //console.log(this.temp2, "岗位信息");
+      
       this.dialogFormVisible = true;
-      //console.log(row);
       this.dialogStatus = "update";
       if (localStorage.getItem("userId") == row.id) {
         //判断是不是编辑自己：是，禁用；
@@ -890,13 +879,12 @@ export default {
         closeOnClickModal: false
       })
         .then(() => {
-          //console.log(row);
+         
           var obj = {
             id: row.id
           };
           delStaff(obj)
             .then(res => {
-              //console.log(res);
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -925,7 +913,6 @@ export default {
         });
     },
     stationChange(val) {
-      // console.log(val);
       // this.temp.stationId = val;
     },
     searchOffice(val) {
@@ -937,9 +924,7 @@ export default {
       };
       getFuwu(obj).then(res => {
         // 请求服务站列表
-        //console.log(res);
         this.servicestationSearch = res.data.data;
-        // console.log(res.data)
       });
     },
     mechChange(val) {
@@ -950,26 +935,21 @@ export default {
         this.temp.role = "";
         this.servicestationCheck = [];
         this.stationCheck = [];
-        //console.log(val, "选中机构的id");
         var obj = {
           orgId: val
         };
         getFuwu(obj).then(res => {
           // 请求服务站
-          //console.log(res);
           this.servicestationCheck = res.data.data;
-          // //console.log(res.data)
         });
         var obj2 = {
           organization: {
             id: val
           }
         };
-        //console.log(obj2, "岗位参数");
         getStation(obj2)
           .then(res => {
             // 请求岗位
-            //console.log(res.data.data, "岗位");
             if (res.data.data != undefined) {
               if (typeof res.data.data != "string") {
                 this.stationCheck = res.data.data;
@@ -981,7 +961,6 @@ export default {
             }
           })
           .catch(err => {
-            //console.log(err);
           });
       }
     },
@@ -1010,7 +989,6 @@ export default {
           addStaff(obj)
             .then(res => {
               this.btnState = false;
-              //console.log(res);
               if (res.data.code === 1) {
                 //关闭弹框
                 this.dialogFormVisible = false;
@@ -1026,7 +1004,7 @@ export default {
 
                 var obj = {};
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-                  //console.log(res);
+            
                   if (res.data.code === 1) {
                     this.total = res.data.data.count;
                     this.list = res.data.data.list;
@@ -1078,7 +1056,7 @@ export default {
           id: this.temp2.officeId2
         }
       };
-      //console.log(obj, "新增岗位");
+      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;

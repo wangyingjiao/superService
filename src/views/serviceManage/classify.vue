@@ -172,11 +172,11 @@ export default {
     // 字典表中获取分类
     var dict = require("../../../static/dict.json");
     this.majorSorts = dict.ser_majorsort;
-    console.log(this.majorSorts, "majorSorts");
+  
   },
   methods: {
     majorChange(val) {
-      console.log(val);
+     
     },
     getList() {
       // 获取列表
@@ -187,7 +187,7 @@ export default {
       };
       getClass(obj, this.pageNumber, this.pageSize)
         .then(res => {
-          console.log(res.data.data, "分类列表");
+         
           this.total = res.data.data.count;
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo
@@ -214,7 +214,7 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
-      console.log(obj, "搜索参数");
+     
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -269,7 +269,7 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
-      console.log(1111111)
+      
       this.listLoading = true;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
         this.total = res.data.data.count;
@@ -297,16 +297,13 @@ export default {
       this.listLoading = true;
       this.dialogStatus = "update";
       this.selectState = true;
-      console.log(row);
       var obj = {
         id: row.id
       };
       setClass(obj).then(res => {
-        console.log(res, "编辑");
         this.listLoading = true;
         if (res.data.code == 1) {
           var data = res.data.data;
-          console.log(data, "编辑信息");
           this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({}, row);
@@ -322,20 +319,20 @@ export default {
     },
     handleDelete(row) {
       //删除
-      console.log(this.activeName);
+      
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
       })
         .then(() => {
-          console.log(row);
+          
           var obj = {
             id: row.id
           };
           delClass(obj)
             .then(res => {
-              console.log(res, "删除");
+             
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -349,7 +346,9 @@ export default {
                 });
               }
             })
-            .catch(() => console.log("未知错误"));
+            .catch(() =>{
+              this.listLoading = false
+            });
         })
         .catch(() => {
           this.$message({
@@ -364,13 +363,13 @@ export default {
         majorSort: this.temp.majorSort,
         name: this.temp.name
       };
-      console.log(obj);
+      
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true
           addClass(obj).then(res => {
             this.btnState = false;
-            console.log(res, "添加");
+           
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
               this.activeName = "all";
@@ -429,10 +428,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-          console.log(obj, "参数");
+         
           upClass(obj).then(res => {
             this.btnState = false;
-            console.log(res);
+           
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -468,7 +467,7 @@ export default {
       };
     },
     handleClick(tab, event) {
-      console.log(tab, event, "tab切换");
+     
       this.handleFilter();
     }
   }
