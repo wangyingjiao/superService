@@ -7,7 +7,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable class="search"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+      <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -118,14 +118,9 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            
-            <el-popover
-              ref="popover21"
-              placement="top-start"
-              trigger="hover"
-              content="对接商品">
-            </el-popover>
-            <el-button v-if="scope.row.jointStatus!='yes'" v-popover:popover21 class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            <el-tooltip class="item" effect="dark" content="对接商品" placement="left">
+              <el-button v-if="scope.row.jointStatus!='yes'" class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            </el-tooltip>
         </template>
       </el-table-column>
 
@@ -151,8 +146,8 @@
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
             <el-radio-button label="1" style="display:none"></el-radio-button>
-            <el-radio-button class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
-            <el-radio-button style="width:100%;" label="repair">家修</el-radio-button>
+            <el-radio-button :disabled="jointCode"  class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
+            <el-radio-button :disabled="jointCode"  style="width:100%;" label="repair">家修</el-radio-button>
             <el-radio-button label="2" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
@@ -167,7 +162,7 @@
                 :rules="basicRles" >
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
+                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -563,9 +558,8 @@
 
 
 
-
 <script>
-
+// 有一个就不能修改
 // ---------------------------------------------
 
 import {
@@ -588,7 +582,8 @@ import {
   serverEditPre,
   sortList,
   serGasqSort,
-  sendData
+  sendData,
+  deleteGoodsData
 } from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
@@ -825,6 +820,7 @@ export default {
       pageNumber:1,
       editName:{},
       customArr:[],
+      jointCode:false,
       alreadyArr:[],
       labelClickCon:[],
       labelClickArr:[],
@@ -1077,6 +1073,7 @@ export default {
               type: "success",
               message: data.data.data
           });
+          this.getList(this.pageNumber, this.pageSize);
         }else{
           this.$message({
             type: "error",
@@ -1084,6 +1081,7 @@ export default {
           });
         }
         console.log(data,"data=========")
+        return false
       }).catch(error=>{
         this.$message({
               type: "error",
@@ -1763,9 +1761,18 @@ export default {
     },
     //表格删除
     tableHandleDelete(index, item) {
+      // console.log(item,"item-------")
+      // if(item.id){
+      //   deleteGoodsData({id:item.id}).then(data=>{
+      //     console.log(data,"data00000000")
+      //   }).catch(error=>{
+      //     console.log(error,"error--------")
+      //   })
+      // }else{
+        this.handleEditFlag = false
+        this.basicForm.commoditys.splice(index,1)
+      // }
       // this.basicForm.commoditys.splice(index, 1);
-      this.handleEditFlag = false
-      this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
       this.basicForm.sortId = ''
@@ -1961,6 +1968,18 @@ export default {
         .then(data => {
           if(data.data.code){
               console.log(data,"dataopopopopo")
+              var dataUpdate = data.data.data
+              if(dataUpdate.commoditys!=undefined){
+                for(var i = 0;i<dataUpdate.commoditys.length;i++){
+                  if(dataUpdate.commoditys[i].jointGoodsCode){
+                    this.jointCode = true
+                    break;
+                  }else{
+                    this.jointCode = false
+                  }
+                }
+                console.log(this.jointCode,"---------this.jointCode--------")
+              }
               this.listLoading = false;
               this.dialogFormVisible = true;   
               // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
@@ -2300,7 +2319,7 @@ export default {
                   // this.getList(1, 10);
                   // this.pageNumber = 1
                   this.listQuery.page = 1
-                  this.getList(this.pageNumber, this.pageSize);
+                  this.getList(1, this.pageSize);
                   this.picFile = [];
                 } else {
                   this.$message({
@@ -2351,6 +2370,7 @@ export default {
         this.$refs["goods_info"].resetFields()
       }
       this.$refs["basic"].resetFields()
+      this.jointCode = false
       this.addComm = false
       this.imgNumber = 0;
       // this.goods_info = {}
@@ -2481,6 +2501,10 @@ export default {
 }
 .content-rowspan div:last-child {
   border-bottom: 0;
+}
+.tabBox .codeClean .el-radio-button__inner{
+  background-color:#eef1f6 !important;
+  color: #bbb !important; 
 }
 .add_Btn {
   width: 100px;
@@ -2845,6 +2869,7 @@ hr {
   top: 0;
   line-height: 44px;
   right: 15px;
+  z-index: 100;
 }
 .tableSer{
   padding: 5px 10px;
@@ -2949,6 +2974,10 @@ hr {
 }
 .systemLabel ul:nth-of-type(2){
   border-left:0;
+}
+.top-start{
+  min-width: 100px;
+  text-align: center;
 }
 .systemLabel ul:nth-of-type(3){
    border-left: 0;

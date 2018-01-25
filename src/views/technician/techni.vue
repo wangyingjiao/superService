@@ -502,7 +502,7 @@
                               </div>
                               <div style="margin-top:10px;">
                                 <div class="selfCheckBoxsday">时段</div>
-                                <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
+                                <el-time-select placeholder="起始时间" @change="endEmpty" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
                                     start: '00:00',
                                     step: '00:30',
                                     end: '24:00',
@@ -1251,6 +1251,11 @@ export default {
     }
   },
   methods: {
+    endEmpty(){
+      if(this.startTime != this.startEnd.start){
+        this.endTime = ''
+      }
+    },
     closeThef(){
       this.$refs['techniEditDlog'].closeThe()
     },
