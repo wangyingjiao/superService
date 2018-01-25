@@ -650,7 +650,9 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {},
+    lvChange(value) {
+      
+    },
     offChange(val) {},
     //点击新增时
     handleCreate() {
