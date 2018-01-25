@@ -540,7 +540,8 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
-          getStore({}).then(res => {
+          
+          getStore({stationId:this.rowInfo.id}).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
               this.storeTree = res.data.data;

@@ -117,4 +117,14 @@ export function sendData(obj){
   })
 }
 
+//商品删除
+export function deleteGoodsData(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/deleteGoodsData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
 // --------------------------------服务管理 结束----------------------------

@@ -241,7 +241,7 @@
                                     </div>
                                     <div class="startTime">
                                       <div class="selfCheckBoxsday">时段</div>
-                                      <el-time-select placeholder="起始时间" :editable="false" v-model="startTime" :picker-options="startend.start=='00:00'?{
+                                      <el-time-select placeholder="起始时间" @change="endEmpty" :editable="false" v-model="startTime" :picker-options="startend.start=='00:00'?{
                                           start: '00:00',
                                           step: '00:30',
                                           end: '24:00',
@@ -1294,6 +1294,11 @@ export default {
     "startend"
   ],
   methods: {
+    endEmpty(){
+      if(this.startTime != this.startend.start){
+         this.endTime = ''
+      }
+    },
     //全职兼职切换
     jobStatusTable(){
       if(this.perServer.jobNature == 'part_time'){

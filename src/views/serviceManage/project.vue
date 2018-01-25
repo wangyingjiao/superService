@@ -7,7 +7,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable class="search"  filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
+      <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类"  @change="(val)=>open(val,1)">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -87,8 +87,8 @@
       <el-table-column label="对接编码" align="center">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'-'+item.id">
-              <span class="proName">{{scope.row.sortId+"-"+item.id}}</span>
+            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'_'+item.id">
+              <span class="proName">{{scope.row.sortId+"_"+item.id}}</span>
             </el-tooltip>
           </div>
         </template>  
@@ -118,14 +118,9 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            
-            <el-popover
-              ref="popover21"
-              placement="top-start"
-              trigger="hover"
-              content="对接商品">
-            </el-popover>
-            <el-button v-if="scope.row.jointStatus!='yes'" v-popover:popover21 class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            <el-tooltip class="item" effect="dark" content="对接商品" placement="left">
+              <el-button v-if="scope.row.jointStatus!='yes'" class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            </el-tooltip>
         </template>
       </el-table-column>
 
@@ -151,8 +146,8 @@
           <span class="tabBtn" @click="refbtn2" ref="refbtn2">家修</span> -->
           <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
             <el-radio-button label="1" style="display:none"></el-radio-button>
-            <el-radio-button class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
-            <el-radio-button style="width:100%;" label="repair">家修</el-radio-button>
+            <el-radio-button :disabled="jointCode"  class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
+            <el-radio-button :disabled="jointCode"  style="width:100%;" label="repair">家修</el-radio-button>
             <el-radio-button label="2" style="display:none"></el-radio-button>
           </el-radio-group>
         </div>
@@ -167,7 +162,7 @@
                 :rules="basicRles" >
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
+                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="(val)=>open(val,2)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -563,9 +558,8 @@
 
 
 
-
 <script>
-
+// 有一个就不能修改
 // ---------------------------------------------
 
 import {
@@ -588,7 +582,8 @@ import {
   serverEditPre,
   sortList,
   serGasqSort,
-  sendData
+  sendData,
+  deleteGoodsData
 } from "@/api/project";
 // var without = require('lodash.without')
 //挂载数据
@@ -825,11 +820,14 @@ export default {
       pageNumber:1,
       editName:{},
       customArr:[],
+      jointCode:false,
       alreadyArr:[],
       labelClickCon:[],
       labelClickArr:[],
       systemClickId:null,
       systemClick2Id:null,
+      imgWidth:'',
+      imgHeight:'',
       imgFlag:true,
       systemClick3Id:null,
       systemOptions:[],
@@ -1077,6 +1075,7 @@ export default {
               type: "success",
               message: data.data.data
           });
+          this.getList(this.pageNumber, this.pageSize);
         }else{
           this.$message({
             type: "error",
@@ -1084,6 +1083,7 @@ export default {
           });
         }
         console.log(data,"data=========")
+        return false
       }).catch(error=>{
         this.$message({
               type: "error",
@@ -1248,22 +1248,6 @@ export default {
          }
 
          console.log(this.labelClickArr,"this.labelClickArr------------------")
-        //  if(this.labelClickArr.indexOf(item.label)==-1){
-        //     if((this.alreadyArr.length + this.labelClickArr.length)>2){
-        //       this.$message({
-        //         message:'最多设置3个系统标签',
-        //         type:'warning'
-        //       });
-        //       return false
-        //     }else{
-        //       this.labelClickArr.push(item.label)
-        //       this.labelClickCon.push(item)
-        //     }
-        //   }else{
-        //     this.remove(this.labelClickArr, item.value);
-        //     this.remove(this.labelClickCon, item.value,'value');
-        //   }
-      // }
     },
     //系统列表一级列表事件
     systemClick(item){
@@ -1317,35 +1301,59 @@ export default {
         }
       })
     },
+    imgCallback(file,callback){
+      var img = new Image()
+      var reader = new FileReader()
+      var canvas = document.createElement("canvas") 
+      reader.onload = function(e){
+        img.src = e.target.result
+        img.onload = function (e){
+          var width = img.width
+          var height = img.height
+          callback({'width':width,'height':height})
+        } 
+      } 
+      reader.readAsDataURL(file)
+    },
     //服务图片验证
     handPic(file) {
-      if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
-        this.imgFlag = true
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        console.log(this.picFile,"this.picFile------")
-        if (this.picFile.indexOf(src) > -1) {
-          this.$message({
-            type: "error",
-            message: "此图片已经上传"
-          });
-          return false;
+      // var flag;
+      //  this.imgCallback(file,(data)=>{
+      //       console.log(data,"data---------")
+      //       if(data.width>=750 && data.height/data.width>=0.9 &&  data.height/data.width<=1.1){
+      //          flag = true
+      //       }else{
+      //          flag = false
+      //       }
+      //   })
+      // console.log(flag,"flag")
+        if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
+            this.imgFlag = true
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+            console.log(this.picFile,"this.picFile------")
+            if (this.picFile.indexOf(src) > -1) {
+              this.$message({
+                type: "error",
+                message: "此图片已经上传"
+              });
+              return false;
+            }
+            if (this.imgNumber >= 4) {
+              this.$message({
+                type: "error",
+                message: "最多上传4张图片"
+              });
+              return false;
+            }
+        }else{
+          this.imgFlag = false
+          this.$message.error('请上传正确的图片格式');
+          return false
         }
-        if (this.imgNumber >= 4) {
-          this.$message({
-            type: "error",
-            message: "最多上传4张图片"
-          });
-          return false;
-        }
-      }else{
-        this.imgFlag = false
-        this.$message.error('请上传正确的图片格式');
-        return false
-      }
       //服务图片
       // console.log(file, "上传前");
       // console.log(this.picFile);
@@ -1362,7 +1370,8 @@ export default {
           var str = "";
           var index = file.url.lastIndexOf("/");
           if(file.raw){
-            str = file.raw.uid+'.jpg'
+            var type = file.file.name.split('.')
+            str = file.raw.uid+'.'+type[type.length-1]
           }else{
              str = file.url.substring(index + 1, file.url.length);
           }
@@ -1402,13 +1411,8 @@ export default {
         var str = "";
         var index = ''
         if(file.raw){
-          str = file.raw.uid+'.jpg'
-          // if(file.raw.url){
-          //    index = file.raw.url.lastIndexOf("/");
-          //    str = file.raw.url.substring(index + 1, file.raw.url.length);
-          // }else{
-          //   return false
-          // }
+          var type = file.raw.name.split('.')
+          str = file.raw.uid+'.'+type[type.length-1]
         }else{
           index = file.url.lastIndexOf("/");
           str = file.url.substring(index + 1, file.url.length);
@@ -1537,6 +1541,7 @@ export default {
       this.addDetailsImg ++
       // console.log(file,"file-----------")
       // 图文上传
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
@@ -1563,7 +1568,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1584,10 +1589,10 @@ export default {
             // console.log(this.fileList);
             this.imgText.push(ossData.get("key"));
             console.log(this.imgText,"this.imgText-------------")
-            // console.log(this.imgText, "imgtext");
           })
           .catch(error => {
             this.imgText.push(ossData.get("key"));
+            console.log(this.imgText,"this.imgText-------------")
             console.log(error, "错误");
           });
       });
@@ -1596,6 +1601,7 @@ export default {
       this.imgNumber++
       // 图片上传
       console.log(file,"file------")
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1623,7 +1629,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1763,9 +1769,45 @@ export default {
     },
     //表格删除
     tableHandleDelete(index, item) {
+      if(this.basicForm.commoditys.length<=1){
+        this.$message.error('商品信息不能为空')
+        return false
+      }else{
+          if(item.id){
+            deleteGoodsData({id:item.id}).then(data=>{
+              console.log(data,"data00000000")
+              if(data.data.code){
+                this.$message({
+                      message: data.data.data,
+                      type: "success"
+                });
+                this.handleEditFlag = false
+                this.basicForm.commoditys.splice(index,1)
+              }else{
+                this.$message({
+                      message: data.data.data,
+                      type: "error"
+                });
+                return false
+              }
+            }).catch(error=>{
+              this.$message({
+                      message: data.data.data,
+                      type: "error"
+                });
+              return false
+              console.log(error,"error--------")
+            })
+          }else{
+            this.$message({
+                message: '删除成功',
+                type: "success"
+              });
+            this.handleEditFlag = false
+            this.basicForm.commoditys.splice(index,1)
+          }
+       }
       // this.basicForm.commoditys.splice(index, 1);
-      this.handleEditFlag = false
-      this.basicForm.commoditys.splice(index,1)
     },
     houseClick(val) {
       this.basicForm.sortId = ''
@@ -1961,6 +2003,18 @@ export default {
         .then(data => {
           if(data.data.code){
               console.log(data,"dataopopopopo")
+              var dataUpdate = data.data.data
+              if(dataUpdate.commoditys!=undefined){
+                for(var i = 0;i<dataUpdate.commoditys.length;i++){
+                  if(dataUpdate.commoditys[i].jointGoodsCode){
+                    this.jointCode = true
+                    break;
+                  }else{
+                    this.jointCode = false
+                  }
+                }
+                console.log(this.jointCode,"---------this.jointCode--------")
+              }
               this.listLoading = false;
               this.dialogFormVisible = true;   
               // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
@@ -2067,7 +2121,8 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false
+        closeOnClickModal:false,
+        type: "warning"
       })
         .then(() => {
           console.log(row);
@@ -2103,7 +2158,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "warning",
+            type: "info",
             message: "已取消删除"
           });
         });
@@ -2299,7 +2354,7 @@ export default {
                   // this.getList(1, 10);
                   // this.pageNumber = 1
                   this.listQuery.page = 1
-                  this.getList(this.pageNumber, this.pageSize);
+                  this.getList(1, this.pageSize);
                   this.picFile = [];
                 } else {
                   this.$message({
@@ -2350,6 +2405,7 @@ export default {
         this.$refs["goods_info"].resetFields()
       }
       this.$refs["basic"].resetFields()
+      this.jointCode = false
       this.addComm = false
       this.imgNumber = 0;
       // this.goods_info = {}
@@ -2480,6 +2536,10 @@ export default {
 }
 .content-rowspan div:last-child {
   border-bottom: 0;
+}
+.tabBox .codeClean .el-radio-button__inner{
+  background-color:#eef1f6 !important;
+  color: #bbb !important; 
 }
 .add_Btn {
   width: 100px;
@@ -2844,6 +2904,7 @@ hr {
   top: 0;
   line-height: 44px;
   right: 15px;
+  z-index: 1000;
 }
 .tableSer{
   padding: 5px 10px;
@@ -2948,6 +3009,10 @@ hr {
 }
 .systemLabel ul:nth-of-type(2){
   border-left:0;
+}
+.top-start{
+  min-width: 100px;
+  text-align: center;
 }
 .systemLabel ul:nth-of-type(3){
    border-left: 0;

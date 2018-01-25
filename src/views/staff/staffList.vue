@@ -37,16 +37,31 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" prop="name" >
+      <el-table-column align="center" label="姓名" >
+         <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
+             <div class="overheidden">{{scope.row.name}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column align="center" label="登录账号" prop="mobile">
       </el-table-column>
 
       <el-table-column  label="岗位名称" align="center" prop="role.name">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.role.name.length < 10" :content="scope.row.role.name">
+             <div class="overheidden">{{scope.row.role.name}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column  align="center" label="服务机构" prop="organization.name">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.organization.name.length < 10" :content="scope.row.organization.name">
+             <div class="overheidden">{{scope.row.organization.name}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column   align="center" label="服务站" >
@@ -1377,5 +1392,10 @@ export default {
 }
 .diasize .el-dialog {
   width: 70%;
+}
+.overheidden {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

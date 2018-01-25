@@ -31,7 +31,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="机构名称" align="center"  prop="name" >
+      <el-table-column  label="机构名称" align="center" >
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
+             <div class="overheidden" >{{scope.row.name}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column  label="机构电话" align="center"  prop="telephone">
@@ -39,13 +44,18 @@
 
       <el-table-column  label="机构地址"  align="center" width="200px" >
          <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.address.length < 10" :content="scope.row.address">
+           <el-tooltip  placement="left" :disabled="scope.row.address.length < 10" :content="scope.row.address">
              <div class="overheidden" >{{scope.row.address}}</div>
            </el-tooltip>
          </template>
       </el-table-column>
 
-      <el-table-column  label="负责人姓名" align="center"  prop="masterName">
+      <el-table-column  label="负责人姓名" align="center">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.masterName.length < 10" :content="scope.row.masterName">
+             <div class="overheidden" >{{scope.row.masterName}}</div>
+           </el-tooltip>
+         </template>
       </el-table-column>
 
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
