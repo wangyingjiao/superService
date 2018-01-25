@@ -1280,7 +1280,7 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload(file) {  
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")
       if (
