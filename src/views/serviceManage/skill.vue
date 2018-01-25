@@ -265,7 +265,7 @@ export default {
         this.id = "";
         this.listLoading = false;
         this.dialogVisible = true;
-        服务技师与分类、服务站获取
+        //服务技师与分类、服务站获取
         orderServer(obj)
           .then(res => {
             if (res.data.code === 1) {
