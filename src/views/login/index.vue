@@ -50,7 +50,6 @@ export default {
       }
     };
     var validatePassword = (rule, value, callback) => {
-      console.log(value, "value");
       if (value == undefined) {
         callback();
       } else {
@@ -84,7 +83,6 @@ export default {
       localStorage.removeItem("menu");
 
       this.$refs.loginForm.validate(valid => {
-        //console.log(valid)
         if (valid) {
           this.loading = true;
           this.$store
@@ -97,7 +95,6 @@ export default {
               this.loading = false;
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

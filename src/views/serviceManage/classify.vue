@@ -289,10 +289,12 @@ export default {
         this.listLoading = false;
       });
     },
+    //点击新增
     handleCreate() {
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
     },
+    // 点击编辑
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
@@ -300,6 +302,7 @@ export default {
       var obj = {
         id: row.id
       };
+      // 请求回显的数据
       setClass(obj).then(res => {
         this.listLoading = true;
         if (res.data.code == 1) {
@@ -317,6 +320,7 @@ export default {
         }
       });
     },
+    // 点击删除
     handleDelete(row) {
       //删除
       
@@ -357,8 +361,8 @@ export default {
           });
         });
     },
+    // 新增保存
     create(formName) {
-      //新增
       var obj = {
         majorSort: this.temp.majorSort,
         name: this.temp.name
@@ -416,9 +420,8 @@ export default {
         majorSort: ""
       };
     },
+    // 编辑保存
     update(formName) {
-      // 编辑
-
       var obj = {
         id: this.rowId,
         majorSort: this.temp.majorSort,
@@ -428,10 +431,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-         
           upClass(obj).then(res => {
             this.btnState = false;
-           
             if (res.data.code === 1) {
               this.resetTemp();
               this.$refs[formName].resetFields();
@@ -458,16 +459,15 @@ export default {
         }
       });
     },
+    // 清空v-modle绑定的值
     resetTemp() {
-      // this.temp.name = "";
-      // this.temp.majorSort = "";
       this.temp = {
         name: "",
         majorSort: ""
       };
     },
+    // tab切换
     handleClick(tab, event) {
-     
       this.handleFilter();
     }
   }

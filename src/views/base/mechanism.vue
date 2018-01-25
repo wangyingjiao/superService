@@ -501,7 +501,6 @@ export default {
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        //console.log(res,'获取列表');
         this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
@@ -549,7 +548,6 @@ export default {
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        //console.log(res,'搜索内容');
         this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
@@ -656,7 +654,6 @@ export default {
     },
     //结束时间change事件
     endTimeChange(val) {
-      //console.log(val, "结束时间");
     },
     //点击新增
     handleCreate(formName) {
@@ -666,7 +663,6 @@ export default {
     },
     //点击编辑
     handleUpdate(row) {
-      //console.log(row);
       this.listLoading = true;
       const obj = {
         id: row.id
@@ -722,7 +718,6 @@ export default {
         .catch(error => {
           this.listLoading = false;
         });
-      // console.log(this.temp.visable);
     },
     //取消
     resetForm(formName) {
@@ -737,7 +732,6 @@ export default {
     },
     //切换搜索内容
     searchChange(val) {
-     // console.log(val);
       // this.search.key = val
     },
     //新增保存
@@ -842,7 +836,6 @@ export default {
           upMech(obj)
             .then(res => {
               this.btnState = false;
-              //console.log(res,'编辑信息');
               if (res.data.code === 1) {
                 this.dialogFormVisible = false;
                 this.typeState = false;

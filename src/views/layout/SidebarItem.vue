@@ -34,8 +34,7 @@ export default {
   created() {},
   methods: {
     show() {
-      console.log(this.$store.state.user.menu);
-      console.log(this.menu);
+     
     }
   }
 };
