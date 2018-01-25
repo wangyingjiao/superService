@@ -540,6 +540,7 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
+          //staionId:this.rowInfo.id
           getStore({}).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
