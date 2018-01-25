@@ -588,7 +588,7 @@ export default {
                 });
               }
             })
-            .catch(() => console.log("未知错误"));
+            .catch(() => console.log("错误"));
         })
         .catch(() => {
           this.$message({

@@ -737,10 +737,10 @@ export default {
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
       jobFlag: false,
-      timeFlag:true,
-      addtimeFlag:true,
+      timeFlag: true,
+      addtimeFlag: true,
       kaishi: "",
-      pageNumber:'',
+      pageNumber: "",
       jiehsu: "",
       backId: "", //身份证头像
       headerBack: "", //头像
@@ -759,17 +759,29 @@ export default {
         desc: ""
       },
       rules: {
-        startTime: [{ required: true, message: "请选择时间", trigger: "change" }],
+        startTime: [
+          { required: true, message: "请选择时间", trigger: "change" }
+        ],
         endDate: [
           // { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
           { required: true, validator: ENDDATE, trigger: "change" }
         ],
         startDate: [
-          { type: "date", required: true, message: "请选择日期", trigger: "change" }
+          {
+            type: "date",
+            required: true,
+            message: "请选择日期",
+            trigger: "change"
+          }
         ],
         endTime: [{ required: true, message: "请选择时间", trigger: "change" }],
         desc: [
-          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+          {
+            min: 1,
+            max: 200,
+            message: "长度在 1 到 200 个字符",
+            trigger: "blur"
+          }
         ]
       },
       ruleForm2: {
@@ -826,12 +838,25 @@ export default {
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         birtStr: [
-          { type: "date", required: true, message: "请选择日期", trigger: "blur" }
+          {
+            type: "date",
+            required: true,
+            message: "请选择日期",
+            trigger: "blur"
+          }
         ],
-        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
-        stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
-        jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
-        workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
+        jobNature: [
+          { required: true, message: "请选择岗位性质", trigger: "change" }
+        ],
+        stationId: [
+          { required: true, message: "请选择服务站", trigger: "change" }
+        ],
+        jobStatus: [
+          { required: true, message: "请选择岗位状态", trigger: "change" }
+        ],
+        workTime: [
+          { required: true, message: "请选择工作年限", trigger: "change" }
+        ],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         area: [{ required: true, validator: ADDRESS, trigger: "change" }],
         workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
@@ -1165,7 +1190,7 @@ export default {
     };
   },
   components: {
-    techniEdit,
+    techniEdit
   },
   computed: {
     pickerOptions0() {
@@ -1182,7 +1207,7 @@ export default {
         }
       };
     },
-    pickerOptionsTech(){
+    pickerOptionsTech() {
       //当前时间
       // var data = new Date();
       // var year = data.getFullYear();
@@ -1190,12 +1215,12 @@ export default {
       // var day = data.getDate();
       // var str = year + "," + month + "," + day;
       //前2个月
-      var dt = new Date();  
-          dt.setMonth( dt.getMonth()-3 );  
-      var dtstr = dt.toLocaleString()
-      var dtarr = dtstr.split(' ')[0].split('/') 
+      var dt = new Date();
+      dt.setMonth(dt.getMonth() - 3);
+      var dtstr = dt.toLocaleString();
+      var dtarr = dtstr.split(" ")[0].split("/");
       // var time1 = Date.parse(new Date("1950,1,1"));
-      var time2 = Date.parse(new Date(dtarr[0],dtarr[1],dtarr[2]));
+      var time2 = Date.parse(new Date(dtarr[0], dtarr[1], dtarr[2]));
       return {
         disabledDate(time) {
           return time.getTime() < time2;
@@ -1244,13 +1269,13 @@ export default {
     }
   },
   methods: {
-    endEmpty(){
-      if(this.startTime != this.startEnd.start){
-        this.endTime = ''
+    endEmpty() {
+      if (this.startTime != this.startEnd.start) {
+        this.endTime = "";
       }
     },
-    closeThef(){
-      this.$refs['techniEditDlog'].closeThe()
+    closeThef() {
+      this.$refs["techniEditDlog"].closeThe();
     },
     //鼠标滑过
     dataDetails1(a) {
@@ -1285,7 +1310,7 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {         
+    beforeAvatarUpload(file) {        
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")         
       if (
@@ -1306,11 +1331,11 @@ export default {
     //编辑弹框关闭
     closeDialog() {},
     //新增按钮
-    handleCreate(){
-      this.dialogVisible = true
-      this.personal.status = "yes"
+    handleCreate() {
+      this.dialogVisible = true;
+      this.personal.status = "yes";
       //服务时间
-      this.serviceTech()
+      this.serviceTech();
       //所属服务站
       serviceStation({})
         .then(data => {
@@ -1366,7 +1391,7 @@ export default {
         //this.ossData = ossData;
         // console.log(ossData.get("name"),"ossData-----");
         // console.log(ossData.get("key"),"ossData------");
-          console.log(22222222222)
+        console.log(22222222222);
         that.$http
           .post(data.host1, ossData, {
             headers: {
@@ -1374,7 +1399,7 @@ export default {
             }
           })
           .then(res => {
-            console.log(11111111111111111)
+            console.log(11111111111111111);
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
             } else if (flag == "at") {
@@ -1383,7 +1408,7 @@ export default {
               this.personal.idCardPicBefor = ossData.get("key");
             }
           })
-          .catch(error=>{
+          .catch(error => {
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
             } else if (flag == "at") {
@@ -1391,17 +1416,17 @@ export default {
             } else {
               this.personal.idCardPicBefor = ossData.get("key");
             }
-            console.log(error,"上传图片失败")
-            return false
+            console.log(error, "上传图片失败");
+            return false;
           });
 
         // console.log(this.headerBack,"this.headerBack")
       });
     },
     //搜索
-    techniSearchs(page,size){
-      var _page = typeof page == "string" ? page : this.listQuery.page
-      var _size = size || this.listQuery.limit
+    techniSearchs(page, size) {
+      var _page = typeof page == "string" ? page : this.listQuery.page;
+      var _size = size || this.listQuery.limit;
       this.listQuery.sync = 1;
       console.log(
         this.techniSearch,
@@ -1420,10 +1445,10 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
-      console.log(obj,"------------------")
-      console.log(page,"_____page---")
-      console.log(this.listQuery.page,"_____size---")
-      this.getList(_page,_size,obj)
+      console.log(obj, "------------------");
+      console.log(page, "_____page---");
+      console.log(this.listQuery.page, "_____size---");
+      this.getList(_page, _size, obj);
     },
     startDateChange(val) {
       this.storeEnd.storeDate = val;
@@ -1460,8 +1485,10 @@ export default {
           //   obj.endTime =
           //       this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
           // }
-          obj.endTime = this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
-          obj.startTime = this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
+          obj.endTime =
+            this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
+          obj.startTime =
+            this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
           obj.remark = this.ruleForm.desc;
           console.log(obj);
           addVacation(obj)
@@ -1503,20 +1530,20 @@ export default {
       serviceTechnicianInfo()
         .then(data => {
           this.startEnd = data.data.data;
-          console.log(this.startEnd,"this.startEnd------")
-          if(this.startEnd.end=='23:59'){
-            this.startEnd.end = "24:00"
+          console.log(this.startEnd, "this.startEnd------");
+          if (this.startEnd.end == "23:59") {
+            this.startEnd.end = "24:00";
           }
-          if(this.startEnd.start == '00:00'){
-            this.timeFlag = false
-          }else{
-            this.timeFlag = true
+          if (this.startEnd.start == "00:00") {
+            this.timeFlag = false;
+          } else {
+            this.timeFlag = true;
           }
-          if(this.startEnd.endNew.slice(0,2) == "00"){
-            if(this.startEnd.endNew == "00:00"){
-              this.startEnd.endNew = '24:00'
-            }else{
-              this.startEnd.endNew = "24:10"
+          if (this.startEnd.endNew.slice(0, 2) == "00") {
+            if (this.startEnd.endNew == "00:00") {
+              this.startEnd.endNew = "24:00";
+            } else {
+              this.startEnd.endNew = "24:10";
             }
           }
 
@@ -1576,29 +1603,31 @@ export default {
     },
 
     // 服务机构时间
-    serviceTech(){
-        serviceTechnicianInfo().then(data=>{
-          this.startEnd = data.data.data
-          if(this.startEnd.end=='23:59'){
-              this.startEnd.end = "24:00"
+    serviceTech() {
+      serviceTechnicianInfo()
+        .then(data => {
+          this.startEnd = data.data.data;
+          if (this.startEnd.end == "23:59") {
+            this.startEnd.end = "24:00";
           }
-          if(this.startEnd.endNew.slice(0,2) == "00"){
-            if(this.startEnd.endNew == "00:00"){
-              this.startEnd.endNew = '24:00'
-            }else{
-              this.startEnd.endNew = "24:10"
+          if (this.startEnd.endNew.slice(0, 2) == "00") {
+            if (this.startEnd.endNew == "00:00") {
+              this.startEnd.endNew = "24:00";
+            } else {
+              this.startEnd.endNew = "24:10";
             }
           }
-          if(this.startEnd.start == '00:00'){
-            this.addtimeFlag = false
-          }else{
-            this.addtimeFlag = true
+          if (this.startEnd.start == "00:00") {
+            this.addtimeFlag = false;
+          } else {
+            this.addtimeFlag = true;
           }
-          this.startTime = data.data.data.start
-          this.endTime = data.data.data.end
-        }).catch(error=>{
-          console.log(error,"新增按钮")
+          this.startTime = data.data.data.start;
+          this.endTime = data.data.data.end;
         })
+        .catch(error => {
+          console.log(error, "新增按钮");
+        });
     },
 
     //技师编辑获取ID
@@ -1607,42 +1636,44 @@ export default {
       this.listLoadingTech = true;
       technicianEditId({ id: item.id })
         .then(data => {
-          if(data.data.code){
-            console.log(data,"bienji---------++++")
+          if (data.data.code) {
+            console.log(data, "bienji---------++++");
             this.listLoadingTech = false;
             this.technicianData = data.data.data;
             this.dialogVisibleEdit = true;
-          }else{
+          } else {
             this.$message({
               message: data.data.data,
               type: "error"
             });
             this.listLoadingTech = false;
-            return false
+            return false;
           }
         })
         .catch(error => {
           this.$message({
-              message: data.data.data,
-              type: "error"
+            message: data.data.data,
+            type: "error"
           });
           this.listLoadingTech = false;
-          return false
+          return false;
           console.log(error, "error---技师编辑");
         });
 
-      this.serviceTech()
+      this.serviceTech();
 
       //所属服务站
-      serviceStation({}).then(data=>{
-        var stationLocal = localStorage.getItem('station')
-        var stationObj = JSON.parse(stationLocal)
-        var obj = data.data.data
-        this.servery = stationObj.id!=0 ? obj : obj.slice(1);
-        console.log(data,"服务站++++++++++++++")
-      }).catch(error=>{
-        console.log(error,"服务站错误+++++++")
-      })
+      serviceStation({})
+        .then(data => {
+          var stationLocal = localStorage.getItem("station");
+          var stationObj = JSON.parse(stationLocal);
+          var obj = data.data.data;
+          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+          console.log(data, "服务站++++++++++++++");
+        })
+        .catch(error => {
+          console.log(error, "服务站错误+++++++");
+        });
     },
     //现住地址
     nowAdd(val) {
@@ -1685,7 +1716,7 @@ export default {
       if (val != null || val != undefined) {
         this.listQuery.page = val;
       }
-      this.pageNumber = val
+      this.pageNumber = val;
 
       var obj = {};
       if (this.techniSearch.stationId) {
@@ -1825,31 +1856,29 @@ export default {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false
+        closeOnClickModal: false
       })
         .then(() => {
-          console.log(item, "item----");
           technicianDelete({ id: item.id })
             .then(data => {
-              if(data.data.code){
-                  this.$message({
-                    type: "success",
-                    message: "删除成功!"
-                  });
-                  this.handleCurrentChange(this.listQuery.page)
-                  this.dialogVisibleEditClick()
-              }else{
-                this.$message.error(data.data.data)
-                return false
+              if (data.data.code) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.handleCurrentChange(this.listQuery.page);
+                this.dialogVisibleEditClick();
+              } else {
+                this.$message.error(data.data.data);
+                return false;
               }
               //  this.getList(this.listQuery.page,this.listQuery.limit,)
               // this.techniSearchs(this.listQuery.page, this.listQuery.limit);
               // this.handleCurrentChange(this.listQuer.page)
             })
             .catch(error => {
-              this.$message.error('删除失败!')
-              return false
-              console.log(error, "error,----删除失败");
+              this.$message.error("删除失败!");
+              return false;
             });
         })
         .catch(() => {
@@ -1866,7 +1895,6 @@ export default {
         this.roomSel2Arr.push(index.id);
       }
       this.techniSearch.skillIds = this.roomSel2Arr;
-      console.log(this.roomSel2Arr, "roomSel2Arr---------");
       this.isA = index;
     },
     // 添加技能
@@ -1882,7 +1910,6 @@ export default {
     },
     // 添加时间
     addtime() {
-      console.log(this.startEnd, "startEnd-------------------");
       this.isB = true;
       this.startTime = this.startEnd.start;
       this.endTime = this.startEnd.end;
@@ -1925,15 +1952,15 @@ export default {
           //     return false
           // }
           // this.personal.workTimes.workTime = this.disbAr
-           for(var i = 0; i<this.teachArr.length ; i++){
-            if(this.teachArr[i].endTime == '24:00'){
-              this.teachArr[i].endTime = '23:59:59'
+          for (var i = 0; i < this.teachArr.length; i++) {
+            if (this.teachArr[i].endTime == "24:00") {
+              this.teachArr[i].endTime = "23:59:59";
             }
           }
-          if(this.teachArr.endTime == '24:00'){
-            this.teachArr.endTime = '23:59'
+          if (this.teachArr.endTime == "24:00") {
+            this.teachArr.endTime = "23:59";
           }
-          console.log(this.teachArr,"this.teachArr-----+++++++")
+
           this.personal.workTimes = this.teachArr;
           Technician(this.personal)
             .then(data => {
@@ -1944,10 +1971,10 @@ export default {
                 });
                 this.btnState = false;
                 this.dialogVisible = false;
-                if(this.listQuery.sync!=1){
+                if (this.listQuery.sync != 1) {
                   this.listQuery.sync = 1;
-                }else{
-                  this.getList(1,this.listQuery.limit);
+                } else {
+                  this.getList(1, this.listQuery.limit);
                 }
                 this.techniSearch.stationId = "";
                 this.techniSearch.jobNature = "";
@@ -1974,11 +2001,11 @@ export default {
             })
             .catch(error => {
               this.btnState = false;
-              console.log(error, "error---techni----添加保存");
+
               return false;
             });
         } else {
-           this.btnState = false;
+          this.btnState = false;
           return false;
         }
       });
@@ -1988,61 +2015,61 @@ export default {
     },
     getList(num, size, obj) {
       //技师编辑获取ID
-      // console.log(this.areaOptions,"areaOptions----")
+
       //选择城市
-      console.log("------------------------------------list------------");
+
       this.listLoadingTech = true;
       ChooseTheCity(num, size, obj)
         .then(data => {
-          if(data.data.code){
-              this.listLoadingTech = false;
-              console.log(data, "选择城市---------");
-              this.Choose = data.data.data.cityCodes;
-              this.sexTypeo = data.data.data.skillInfos;
-              // this.listQuery.sync = data.data.data.page.pageNo
-              this.infoname = data.data.data.page.list || [];
-              this.server = data.data.data.stations;
-              this.total = data.data.data.page.count;
-              var i = 0,
-                len = this.infoname.length,
-                date = new Date(),
-                year = date.getFullYear(),
-                birth = 0,
-                _infoname = this.infoname;
-              for (i = 0; i < len; i++) {
-                //遮罩
-                _infoname[i].ismouse = false;
-                // 性别
-                _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
-                // 年龄
-                // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
-                // 岗位性质
-                _infoname[i].jobName =
-                  _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
-                // 岗位状态
-                _infoname[i].jobStateName =
-                  _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
-                //工作年限
-                if (_infoname[i].workTime == "0") {
-                  _infoname[i].workTimeName = "1年以下";
-                } else if (_infoname[i].workTime == "11") {
-                  _infoname[i].workTimeName = "10年以上";
-                } else {
-                  _infoname[i].workTimeName = _infoname[i].workTime + "年";
-                }
-                console.log(birth, "birth----");
-              }
-              this.techniList = this.infoname;
-              console.log(this.techniList, "this.techniList----------");
-          }else{
+          if (data.data.code) {
             this.listLoadingTech = false;
-            this.$message.error(data.data.data)
-            return false
+
+            this.Choose = data.data.data.cityCodes;
+            this.sexTypeo = data.data.data.skillInfos;
+            // this.listQuery.sync = data.data.data.page.pageNo
+            this.infoname = data.data.data.page.list || [];
+            this.server = data.data.data.stations;
+            this.total = data.data.data.page.count;
+            var i = 0,
+              len = this.infoname.length,
+              date = new Date(),
+              year = date.getFullYear(),
+              birth = 0,
+              _infoname = this.infoname;
+            for (i = 0; i < len; i++) {
+              //遮罩
+              _infoname[i].ismouse = false;
+              // 性别
+              _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
+              // 年龄
+              // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
+              // 岗位性质
+              _infoname[i].jobName =
+                _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
+              // 岗位状态
+              _infoname[i].jobStateName =
+                _infoname[i].jobStatus == "online" ? "在岗" : "离岗";
+              //工作年限
+              if (_infoname[i].workTime == "0") {
+                _infoname[i].workTimeName = "1年以下";
+              } else if (_infoname[i].workTime == "11") {
+                _infoname[i].workTimeName = "10年以上";
+              } else {
+                _infoname[i].workTimeName = _infoname[i].workTime + "年";
+              }
+              console.log(birth, "birth----");
+            }
+            this.techniList = this.infoname;
+            console.log(this.techniList, "this.techniList----------");
+          } else {
+            this.listLoadingTech = false;
+            this.$message.error(data.data.data);
+            return false;
           }
         })
         .catch(error => {
           this.listLoadingTech = false;
-          return false
+          return false;
           console.log(error, "error-----thechni.vue-----1211");
         });
     },
@@ -2054,7 +2081,9 @@ export default {
     }
   },
   mounted() {
-    console.log("-------------------mouned 加载页面-----------------------------");
+    console.log(
+      "-------------------mouned 加载页面-----------------------------"
+    );
     this.sign; //获取签名
     this.getList(1, 6, {});
     //性别,工作年限,岗位性质，岗位状态
@@ -2151,7 +2180,7 @@ export default {
   margin-left: 300px;
 }
 
-.wirkTimes .tech-dir{
+.wirkTimes .tech-dir {
   border: 1px solid #a7a7a7;
   background: url("../../../static/icon/eee.png") no-repeat;
   background-size: 15px 15px;
@@ -2186,12 +2215,12 @@ export default {
   width: 32%;
   height: 200px;
   /* background: #fff; */
-  background-image:url('../../../static/icon/员工卡背景.png') no-repeat;
-  background-size:100%; 
+  background-image: url("../../../static/icon/员工卡背景.png") no-repeat;
+  background-size: 100%;
   position: relative;
   margin: 0 2% 30px 0;
-  background-color: #F8FAFD;
-  box-shadow: 0 3px 6px 0 #DFE4ED;
+  background-color: #f8fafd;
+  box-shadow: 0 3px 6px 0 #dfe4ed;
   border-radius: 8px;
   /* border: 1px solid #e8e8e8; */
   /* box-shadow: 2px 4px 6px #e8e8e8; */
@@ -2266,22 +2295,22 @@ export default {
   font-size: 12px;
   /* justify-content: center */
 }
-#confirmation .dialog-footer{
+#confirmation .dialog-footer {
   justify-content: center;
 }
 
 .tech-ul li div > p {
   display: flex;
 }
-.avatar-headPic .el-upload--text{
+.avatar-headPic .el-upload--text {
   overflow: hidden;
   width: 120px;
   height: 120px;
 }
-.addTime .el-form-item{
+.addTime .el-form-item {
   margin-bottom: 0;
 }
-.avatar-headPic .el-upload--text img{
+.avatar-headPic .el-upload--text img {
   /* width: 120px;
   height: 120px; */
 }
@@ -2335,8 +2364,8 @@ export default {
   border-radius: 0px;
 }
 
-.tech-section-lage{
-    width: 70%;
+.tech-section-lage {
+  width: 70%;
 }
 
 /* .el-upload-list {
@@ -2352,8 +2381,8 @@ export default {
   /* height: 320px; */
   background: #fff;
   position: absolute;
-  border-bottom: 1px solid #E8E8E8;
-  box-shadow: 3px 3px 5px #E8E8E8;
+  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 3px 3px 5px #e8e8e8;
   top: 77px;
   left: 0;
   z-index: 1;
@@ -2402,11 +2431,11 @@ export default {
   text-overflow: ellipsis; */
   float: left;
 }
-.positionbox span{
+.positionbox span {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  display:block;
+  display: block;
   padding: 0 4px;
 }
 
@@ -2462,11 +2491,11 @@ export default {
   margin-left: 35px;
 }
 
-.techniAdd .tech-ul{
+.techniAdd .tech-ul {
   border-bottom: none;
 }
 
-.tech-qj .selfFooter{
+.tech-qj .selfFooter {
   padding: 0px 0;
 }
 
@@ -2489,8 +2518,8 @@ export default {
   margin-left: 10px;
 }
 
-.sexAge{
-  margin-left:5px;
+.sexAge {
+  margin-left: 5px;
   font-family: PingFangSC-Regular;
   font-size: 14px;
   color: #666666;
@@ -2565,7 +2594,7 @@ export default {
   overflow: hidden;
 }
 
-.seize .el-switch.is-checked .el-switch__core{
+.seize .el-switch.is-checked .el-switch__core {
   background-color: #4c70e8;
   border: 1px solid #4c70e8;
 }
@@ -2713,7 +2742,7 @@ export default {
   width: 46px;
   height: 21px;
   line-height: 21px;
-  background: #E0C998;
+  background: #e0c998;
   border-radius: 3px;
   display: block;
   text-align: center;
@@ -2731,7 +2760,7 @@ export default {
   font-family: PingFangSC-Regular;
   font-size: 12px;
   color: #333333;
-  letter-spacing: 0
+  letter-spacing: 0;
 }
 
 .tech-mouse-div > span:nth-of-type(2) {
@@ -2740,7 +2769,7 @@ export default {
   font-family: PingFangSC-Regular;
   font-size: 12px;
   color: #333333;
-  letter-spacing: 0
+  letter-spacing: 0;
 }
 
 .tech-vacation .mobel {
@@ -2838,7 +2867,7 @@ export default {
   justify-content: center;
   margin-left: 0 !important;
 }
-.passBox .el-form-item__content button{
+.passBox .el-form-item__content button {
   /* padding: 10px 30px; */
 }
 .passBox .el-form-item__content button:nth-child(1) {
@@ -2847,8 +2876,8 @@ export default {
 .headImag {
   width: 100px;
   height: 100px;
-  background: url('../../../static/icon/头像背景.png') no-repeat;
-  background-size:100%; 
+  background: url("../../../static/icon/头像背景.png") no-repeat;
+  background-size: 100%;
   display: inline-block;
   border-radius: 50%;
   overflow: hidden;
@@ -2909,35 +2938,39 @@ export default {
   padding-bottom: 30px;
   background: #fff;
 }
-.avatar-headPic{
+.avatar-headPic {
   line-height: 0;
 }
 .avatar-headPic .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100%;
-    height: 100%;
-    line-height: 120px;
-    text-align: center;
-    border: 1px dashed #d9d9d9;
-  }
+  font-size: 28px;
+  color: #8c939d;
+  width: 100%;
+  height: 100%;
+  line-height: 120px;
+  text-align: center;
+  border: 1px dashed #d9d9d9;
+}
 /* //动画 */
 .flip-container {
   perspective: 1000;
-  -webkit-perspective: 1000; 
+  -webkit-perspective: 1000;
 }
-  /* flip the pane when hovered */
-  .flip-container:hover .flipper, .flip-container.hover .flipper {
-    transform: rotateY(180deg);
-  }
+/* flip the pane when hovered */
+.flip-container:hover .flipper,
+.flip-container.hover .flipper {
+  transform: rotateY(180deg);
+}
 
-.flip-container, .front, .back {
+.flip-container,
+.front,
+.back {
   overflow: hidden;
-  margin:  0 auto;
+  margin: 0 auto;
   width: 50px;
   height: 50px;
 }
-.front img,.back img{
+.front img,
+.back img {
   width: 100%;
 }
 /* flip speed goes here */
@@ -2949,11 +2982,12 @@ export default {
 }
 
 /* hide back of pane during swap */
-.front, .back {
-  backface-visibility:hidden;
--webkit-backface-visibility:hidden;	/* Chrome 和 Safari */
--moz-backface-visibility:hidden; 	/* Firefox */
--ms-backface-visibility:hidden; 	/* Internet Explorer */
+.front,
+.back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Chrome 和 Safari */
+  -moz-backface-visibility: hidden; /* Firefox */
+  -ms-backface-visibility: hidden; /* Internet Explorer */
 
   position: absolute;
   top: 0;

@@ -45,7 +45,12 @@
         </template>
         </el-table-column>
 
-        <el-table-column label="服务站名称" align="center" prop="name">
+        <el-table-column label="服务站名称" align="center">
+           <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.name.length < 5" :content="scope.row.name">
+             <div class="overheidden" >{{scope.row.name}}</div>
+           </el-tooltip>
+         </template>
 
         </el-table-column>
 
@@ -453,7 +458,6 @@ export default {
       };
       getSite(obj, this.pageNumber, this.pageSize)
         .then(res => {
-          
           this.total = res.data.data.count;
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo;
@@ -501,7 +505,6 @@ export default {
     },
     // 设置站长
     handleSetMaster() {
-      
       if (this.rowInfo.id == "") {
         this.$message.error("您未选择任何操作对象，请选择一行数据");
       } else {
@@ -540,13 +543,13 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
-          
-          getStore({stationId:this.rowInfo.id}).then(res => {
+
+          getStore({ stationId: this.rowInfo.id }).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
               this.storeTree = res.data.data;
               this.dialogStoreVisible = true;
-              
+
               this.$nextTick(() => {
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
               });
@@ -673,7 +676,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
+        closeOnClickModal: false
       })
         .then(() => {
           var obj = {
@@ -1220,5 +1223,10 @@ export default {
   height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+.overheidden {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

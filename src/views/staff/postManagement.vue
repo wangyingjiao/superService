@@ -301,11 +301,9 @@ export default {
     });
     //获取用户等级
     var lv = localStorage.getItem("dataScope");
-    //console.log(lv, "用户等级");
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
-    //console.log(this.roleLv, "用户看到的等级");
   },
   methods: {
     aaa(val) {
@@ -547,8 +545,6 @@ export default {
         //订单详情处理完毕
         //自动勾选列表权限
         if (a.subMenus == undefined) {
-          // console.log(a);
-          // console.log(a.parentIds);
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
@@ -557,7 +553,6 @@ export default {
                   var str = this.data2[i].subMenus[j].subMenus[
                     this.data2[i].subMenus[j].subMenus.length - 1
                   ];
-                  //console.log(str.name, "vvvvvvvvvvvv");
                   if (str.permission != undefined) {
                     var per = str.permission;
                     var newper = per.substring(per.length - 4, per.length);
@@ -572,30 +567,19 @@ export default {
             }
           }
         } else {
-          //console.log(a.id, "父级被勾选的id");
-          //console.log(a.subMenus[0], "父级的第一个元素");
         }
         //自动勾选列表权限结束
       } else {
-        //console.log("取消勾选");
         //订单的查看详情不可取消
-        //console.log(this.temp.check, "dddddddddddddd");
+
         if (a.permission == "order_info") {
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
-              //console.log(a.permission, "1");
               for (var j = 0; j < this.data2[i].subMenus.length; j++) {
                 if (this.data2[i].subMenus[j].permission == "order") {
-                  //console.log(a.permission, "2", this.temp.check);
                   var orderarr = this.data2[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
-                    //console.log('不可取消')
                     if (this.temp.check.indexOf(orderarr.subMenus[k].id) > -1) {
-                      // console.log(a.permission, "3");
-                      // console.log(
-                      //   this.data2[i].subMenus[j].subMenus[1].name,
-                      //   "详情权限iiiii"
-                      // );
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
@@ -650,23 +634,13 @@ export default {
 
         //列表处理完毕
       }
-      //console.log(this.$refs.domTree.getCheckedKeys(false));
-      //console.log(this.$refs.domTree.getCheckedNodes());
+
       this.temp.check = this.$refs.domTree.getCheckedKeys();
-      //console.log(this.temp.check);
     },
-    nodeClick(a, b, c) {
-      //console.log(a, b, c, "nodeclick节点被点击时");
-    },
-    currentChange(a, b) {
-      //console.log(a, b, "currentchange选中节点变化时");
-    },
-    nodeExpand(a, b, c) {
-      //console.log(a, b, c, "nodeexpand节点被展开时");
-    },
-    nodeCollapse(a, b, c) {
-      //console.log(a, b, c, "nodecollapse节点关闭");
-    },
+    nodeClick(a, b, c) {},
+    currentChange(a, b) {},
+    nodeExpand(a, b, c) {},
+    nodeCollapse(a, b, c) {},
     timeFilter(time) {
       if (!time[0]) {
         this.listQuery.start = undefined;
@@ -676,7 +650,9 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {},
+    lvChange(value) {
+      
+    },
     offChange(val) {},
     //点击新增时
     handleCreate() {
@@ -719,7 +695,6 @@ export default {
                   for (var k = 0; k < arrj.length; k++) {
                     var arrk = arrj[k];
                     if (arrk.permission != undefined) {
-                      //console.log(arrk.name, "111111");
                       if (arrk.permission == "order_info") {
                         if (arrk.disabled == undefined) {
                           arrj.remove(arrk);
@@ -742,7 +717,6 @@ export default {
                   for (var k = 0; k < arrj.length; k++) {
                     var arrk = arrj[k];
                     if (arrk.permission != undefined) {
-                      //console.log(arrk.name, "111111");
                       if (
                         arrk.permission.substring(
                           arrk.permission.length - 4,
@@ -750,7 +724,6 @@ export default {
                         ) == "view"
                       ) {
                         if (arrk.disabled == undefined) {
-                          //console.log(arrk.name);
                           var obj = arrk;
                           arrj.remove(arrk);
                           arrj.push(arrk);
@@ -784,7 +757,7 @@ export default {
 
           //this.temp.check = a.menuIdList;
           this.temp.check = a.menuIdListEdit;
-          //console.log(a.menuIdList);
+
           if (res.data.data.flag) {
             this.selsctState = true;
           }
@@ -802,8 +775,7 @@ export default {
               }
             }
           }
-          // console.log(a.menuIdList);
-          //console.log(this.temp.check, "选中1231231111111111111111");
+
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
@@ -872,7 +844,6 @@ export default {
     },
     //新增
     create(formName) {
-      //console.log(this.temp.check);
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
