@@ -1310,16 +1310,19 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload(file) {         
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
-      // console.log(isPIC,"isPIC--------------------")
+      // console.log(isPIC,"isPIC--------------------")         
       if (
         file.type == "image/jpg" ||
         file.type == "image/png" ||
         file.type == "image/jpeg"
       ) {
         console.log(file.type, "file.type-----------");
-      } else {
+
+          
+                             
+      } else {       
         console.log(file.type, "file.type-----------+++++++++");
         this.$message.error("请上传正确的图片格式");
         return false;
@@ -1348,6 +1351,7 @@ export default {
         });
     },
     picUpload(file, flag) {
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1365,6 +1369,7 @@ export default {
       });
       var that = this;
       pro.then(success => {
+
         var data = success;
         var ossData = new FormData();
         var date = new Date();
@@ -1375,7 +1380,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".jpg"
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + "."+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
