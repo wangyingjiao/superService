@@ -266,26 +266,26 @@ export default {
         this.listLoading = false;
         this.dialogVisible = true;
         //服务技师与分类、服务站获取
-        // orderServer(obj)
-        //   .then(res => {
-        //     if (res.data.code === 1) {
-        //       this.Options2 = res.data.data.list;
-        //       this.options = res.data.data.stations;
-        //       this.listTech = res.data.data.techs;
-        //       this.dialogVisible = true;
-        //       this.listLoading = false;
-        //     } else {
-        //       this.listLoading = false;
-        //       this.dialogVisible = false;
-        //       this.$message({
-        //         type: "error",
-        //         message: "请求错误！"
-        //       });
-        //     }
-        //   })
-        //   .catch(res => {
-        //     this.listLoading = false;
-        //   });
+        orderServer(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.Options2 = res.data.data.list;
+              this.options = res.data.data.stations;
+              this.listTech = res.data.data.techs;
+              this.dialogVisible = true;
+              this.listLoading = false;
+            } else {
+              this.listLoading = false;
+              this.dialogVisible = false;
+              this.$message({
+                type: "error",
+                message: "请求错误！"
+              });
+            }
+          })
+          .catch(res => {
+            this.listLoading = false;
+          });
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
         //编辑操作
@@ -564,8 +564,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false,
-        type: "warning"
+        closeOnClickModal:false
       })
         .then(() => {
           var obj = {
@@ -593,7 +592,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });

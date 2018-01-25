@@ -9,10 +9,11 @@
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
 				<div class="searchs">
-			  <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
+			  <!-- <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
 						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
 						</el-option>
-			  </el-select>
+			  </el-select> -->
+			  				<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
@@ -49,7 +50,7 @@
 						class="search"
 						placeholder="选择服务时间">
 					</el-date-picker>
-					<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>							  
+							  
 		    	</div>
 			  </div>
 				<!--搜索条件选择结束-->				
@@ -102,12 +103,14 @@
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 						</template>									
 					</el-table-column>
-					<el-table-column   align="center" width="150" label="支付状态"  >
+                    <el-table-column   align="center" width="150" label="对接订单ID"  prop="jointOrderId">	
+					</el-table-column>					
+					<!-- <el-table-column   align="center" width="150" label="支付状态"  >
 					<template scope="scope">
 							<span v-if="scope.row.payStatus =='payed'">已支付</span>
 							<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
 					</template>	
-					</el-table-column>
+					</el-table-column> -->
 					<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
 					</el-table-column>	  
 					<el-table-column align="center" label="操作" width="150" fixed="right">
@@ -280,7 +283,7 @@ export default {
 		var obj={
 			orderStatus:this.active1,
 			serviceStatus:this.sevicerStustas,//服务状态 
-			payStatus:this.payStus,
+			// payStatus:this.payStus,
 			orgId:this.mechanism,
 			stationId:this.payType,
 			orderNumber:this.orderNumber,
@@ -337,7 +340,7 @@ export default {
 		var obj={
 			orderStatus:this.active1,
 			serviceStatus:this.sevicerStustas,//服务状态 
-			payStatus:this.payStus,
+			// payStatus:this.payStus,
 			orgId:this.mechanism,
 			stationId:this.payType,
 			orderNumber:this.orderNumber,
@@ -382,7 +385,7 @@ export default {
 		var obj={
 			orderStatus:this.active1,
 			serviceStatus:this.sevicerStustas,//服务状态 
-			payStatus:this.payStus,
+			// payStatus:this.payStus,
 			orgId:this.mechanism,
 			stationId:this.payType,
 			orderNumber:this.orderNumber,

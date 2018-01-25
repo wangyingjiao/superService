@@ -1129,13 +1129,7 @@ export default {
       endTime: "05:00",
       startTimes: "",
       endTimes: "",
-      fileList2: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ],
+      fileList2: [],
       position: false,
       listLoading: false,
       picFile: [],
@@ -1217,7 +1211,6 @@ export default {
       return this.$store.state.user.area;
     },
     sign: function() {
-      console.log("-----------------------签名");
       return getSign();
     },
     //开始时间
@@ -1292,7 +1285,7 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload(file) {  
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")
       if (
@@ -1809,7 +1802,7 @@ export default {
       this.$confirm("此操作将永久删除该技师, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        closeOnClickModal:false
       })
         .then(() => {
           console.log(item, "item----");
@@ -1838,7 +1831,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });

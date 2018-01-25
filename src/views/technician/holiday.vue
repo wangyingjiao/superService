@@ -136,7 +136,7 @@ export default {
   methods: {
     getList() {
       var obj = {};
-      //console.log(this.search.startTime)
+     
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),
@@ -146,7 +146,7 @@ export default {
           startTime: startTime
         };
         obj = Object.assign(obj, start);
-        console.log(start);
+      
       }
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
@@ -157,7 +157,7 @@ export default {
           endTime: endTime
         };
         obj = Object.assign(obj, end);
-        console.log(end);
+       
       }
       if (this.search.type == "techName") {
         var name = {
@@ -196,7 +196,7 @@ export default {
     },
     handleFilter() {
       var obj = {};
-      //console.log(this.search.startTime)
+     
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),
@@ -206,7 +206,7 @@ export default {
           startTime: startTime
         };
         obj = Object.assign(obj, start);
-        console.log(start);
+      
       }
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
@@ -217,7 +217,7 @@ export default {
           endTime: endTime
         };
         obj = Object.assign(obj, end);
-        console.log(end);
+    
       }
       if (this.search.type == "techName") {
         var name = {
@@ -234,12 +234,12 @@ export default {
         obj = Object.assign(obj, newobj);
       }
 
-      console.log(obj, "搜索参数");
+     
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
       getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
-        console.log(res, "搜索");
+        
         if (res.data.code == 1) {
           this.total = res.data.data.count;
           this.list = res.data.data.list;
@@ -266,7 +266,7 @@ export default {
       this.pageNumber = 1;
       this.pageSize = val;
       var obj = {};
-      //console.log(this.search.startTime)
+      
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),
@@ -276,7 +276,7 @@ export default {
           startTime: startTime
         };
         obj = Object.assign(obj, start);
-        console.log(start);
+      
       }
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
@@ -287,7 +287,7 @@ export default {
           endTime: endTime
         };
         obj = Object.assign(obj, end);
-        console.log(end);
+      
       }
       if (this.search.type == "techName") {
         var name = {
@@ -329,7 +329,7 @@ export default {
       this.pageNumber = val;
       var obj = {};
       this.listLoading = true;
-      console.log(this.search.startTime);
+     
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),
@@ -339,7 +339,7 @@ export default {
           startTime: startTime
         };
         obj = Object.assign(obj, start);
-        console.log(start);
+       
       }
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
@@ -350,7 +350,7 @@ export default {
           endTime: endTime
         };
         obj = Object.assign(obj, end);
-        console.log(end);
+       
       }
       if (this.search.type == "techName") {
         var name = {
@@ -389,21 +389,18 @@ export default {
       });
     },
     handleDelete(row) {
-      console.log(row);
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
-        type: "warning"
+        closeOnClickModal: false
       })
         .then(() => {
-          console.log(row);
           var obj = {
             id: row.id
           };
           delHoliday(obj)
             .then(res => {
-              console.log(res);
+        
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -426,7 +423,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });

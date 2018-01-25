@@ -550,8 +550,8 @@ export default {
         //订单详情处理完毕
         //自动勾选列表权限
         if (a.subMenus == undefined) {
-          console.log(a);
-          console.log(a.parentIds);
+          // console.log(a);
+          // console.log(a.parentIds);
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
             if (this.data2[i].subMenus != undefined) {
@@ -659,7 +659,7 @@ export default {
       //console.log(this.temp.check);
     },
     nodeClick(a, b, c) {
-      console.log(a, b, c, "nodeclick节点被点击时");
+      //console.log(a, b, c, "nodeclick节点被点击时");
     },
     currentChange(a, b) {
       //console.log(a, b, "currentchange选中节点变化时");
@@ -684,22 +684,24 @@ export default {
     //点击新增时
     handleCreate() {
       //this.resetTemp();
-      this.listLoading = true
-      getMenudata().then(res => {
-        this.data2 = res.data.data;
-        if (res.data.code == 1) {
-          this.dialogStatus = "create";
-          this.dialogFormVisible = true;
-          this.listLoading = false
-          if (this.officeIds.length == 1) {
-            this.temp.officeId = this.officeIds[0].id;
+      this.listLoading = true;
+      getMenudata()
+        .then(res => {
+          this.data2 = res.data.data;
+          if (res.data.code == 1) {
+            this.dialogStatus = "create";
+            this.dialogFormVisible = true;
+            this.listLoading = false;
+            if (this.officeIds.length == 1) {
+              this.temp.officeId = this.officeIds[0].id;
+            }
+          } else {
+            this.listLoading = false;
           }
-        }else{
-          this.listLoading = false
-        }
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //点击编辑时
     handleUpdate(row) {
@@ -708,7 +710,62 @@ export default {
       getPower(row.id).then(res => {
         this.listLoading = false;
         if (res.data.code == 1) {
-          this.data2 = res.data.data.menuListUnion;
+          //处理权限位置
+          //处理订单的查看详情
+          var arr = res.data.data.menuListUnion;
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      //console.log(arrk.name, "111111");
+                      if (arrk.permission == "order_info") {
+                        if (arrk.disabled == undefined) {
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          //处理所有列表权限
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      //console.log(arrk.name, "111111");
+                      if (
+                        arrk.permission.substring(
+                          arrk.permission.length - 4,
+                          arrk.permission.length
+                        ) == "view"
+                      ) {
+                        if (arrk.disabled == undefined) {
+                          //console.log(arrk.name);
+                          var obj = arrk;
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          this.data2 = arr;
           if (localStorage.getItem("roleId") == res.data.data.id) {
             this.myselfUpdate = false;
           }
@@ -767,8 +824,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
-        type: "warning"
+        closeOnClickModal: false
       })
         .then(() => {
           var obj = {
@@ -795,7 +851,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });
