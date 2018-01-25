@@ -1301,32 +1301,9 @@ export default {
         }
       })
     },
-    imgCallback(file,callback){
-      var img = new Image()
-      var reader = new FileReader()
-      var canvas = document.createElement("canvas") 
-      reader.onload = function(e){
-        img.src = e.target.result
-        img.onload = function (e){
-          var width = img.width
-          var height = img.height
-          callback({'width':width,'height':height})
-        } 
-      } 
-      reader.readAsDataURL(file)
-    },
     //服务图片验证
     handPic(file) {
-      // var flag;
-      //  this.imgCallback(file,(data)=>{
-      //       console.log(data,"data---------")
-      //       if(data.width>=750 && data.height/data.width>=0.9 &&  data.height/data.width<=1.1){
-      //          flag = true
-      //       }else{
-      //          flag = false
-      //       }
-      //   })
-      // console.log(flag,"flag")
+      //判断图片格式
         if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
             this.imgFlag = true
             var date = new Date();
@@ -1354,9 +1331,29 @@ export default {
           this.$message.error('请上传正确的图片格式');
           return false
         }
-      //服务图片
-      // console.log(file, "上传前");
-      // console.log(this.picFile);
+
+      //判断图片大小-----------
+        var _this = this
+        let imgCallback = new Promise((resolve,reject)=>{
+          var img = new Image()
+          var reader = new FileReader()
+          var canvas = document.createElement("canvas") 
+          reader.onload = function(e){
+            img.src = e.target.result
+          } 
+          img.onload = function (e){
+            var width = img.width
+            var height = img.height
+            if(width>=750 && height/width>=0.9 && height/width<=1.1){
+              resolve(true)
+            }else{
+              _this.$message.error('为了保证浏览效果，请上传大于750px*750px的正方形图片')
+              reject(false)
+            }
+          } 
+          reader.readAsDataURL(file)
+        })
+        return imgCallback
     },
     //删除图片
     handleRemove(file, fileList) {//删除图文
@@ -1370,7 +1367,7 @@ export default {
           var str = "";
           var index = file.url.lastIndexOf("/");
           if(file.raw){
-            var type = file.file.name.split('.')
+            var type = file.raw.name.split('.')
             str = file.raw.uid+'.'+type[type.length-1]
           }else{
              str = file.url.substring(index + 1, file.url.length);
@@ -1456,41 +1453,60 @@ export default {
       // console.log(this.picFile);
     },
     handleBefore(file) {
-      // console.log(file,"file,++++++++++")
-      if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
-        this.Imagestext = true
-        // console.log(this.imgText, "imgtext");
-        // console.log(file);
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        if (this.imgText.indexOf(src) > -1) {
-          this.$message({
-            type: "error",
-            message: "此图片已经上传"
-          });
-          return false;
-        }
-        console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
-        if(this.addDetailsImg>=4){
-          this.$message({
-            type:'error',
-            message:'最多上传4张图片'
-          })
-          // this.Imagestext = false
-          // alert("true")
-          return false
-        }else{
+      //判断图文图片类型和个数
+        if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
           this.Imagestext = true
+          var date = new Date();
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          // if (this.imgText.indexOf(src) > -1) {
+          //   this.$message({
+          //     type: "error",
+          //     message: "此图片已经上传"
+          //   });
+          //   return false;
+          // }
+          console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
+          if(this.addDetailsImg>=4){
+            this.$message({
+              type:'error',
+              message:'最多上传4张图片'
+            })
+            // this.Imagestext = false
+            // alert("true")
+            return false
+          }else{
+            this.Imagestext = true
+          }
+        }else{
+          this.Imagestext = false
+          this.$message.error('请上传正确的图片格式');
+          return false
         }
-      }else{
-        this.Imagestext = false
-        this.$message.error('请上传正确的图片格式');
-        return false
-      }
-      // 去重
+      //判断图片大小-----------
+       var _this = this
+        let imgCallback = new Promise((resolve,reject)=>{
+          var img = new Image()
+          var reader = new FileReader()
+          var canvas = document.createElement("canvas") 
+          reader.onload = function(e){
+            img.src = e.target.result
+          } 
+          img.onload = function (e){
+            var width = img.width
+            var height = img.height
+            if(width>=750 && height/width>=0 && height/width<=8){
+              resolve(true)
+            }else{
+              _this.$message.error('为了保证浏览效果，请上传大于750px*10px且小于750px*6000px的图片')
+              reject(false)
+            }
+          } 
+          reader.readAsDataURL(file)
+        })
+        return imgCallback
     },
     subImgText(a) {
       // console.log(this.imgText);

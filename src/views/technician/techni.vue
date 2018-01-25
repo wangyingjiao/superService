@@ -1323,6 +1323,7 @@ export default {
         });
     },
     picUpload(file, flag) {
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1350,7 +1351,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".jpg"
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + "."+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
