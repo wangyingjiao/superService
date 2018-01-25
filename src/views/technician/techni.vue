@@ -1498,7 +1498,7 @@ export default {
       serviceTechnicianInfo()
         .then(data => {
           this.startEnd = data.data.data;
-
+          console.log(this.startEnd,"this.startEnd------")
           if(this.startEnd.end=='23:59'){
             this.startEnd.end = "24:00"
           }
@@ -1508,7 +1508,11 @@ export default {
             this.timeFlag = true
           }
           if(this.startEnd.endNew.slice(0,2) == "00"){
-            this.startEnd.endNew = "24:10"
+            if(this.startEnd.endNew == "00:00"){
+              this.startEnd.endNew = '24:00'
+            }else{
+              this.startEnd.endNew = "24:10"
+            }
           }
 
           this.ruleForm.startTime = data.data.data.start;
@@ -1574,7 +1578,11 @@ export default {
               this.startEnd.end = "24:00"
           }
           if(this.startEnd.endNew.slice(0,2) == "00"){
-            this.startEnd.endNew = "24:10"
+            if(this.startEnd.endNew == "00:00"){
+              this.startEnd.endNew = '24:00'
+            }else{
+              this.startEnd.endNew = "24:10"
+            }
           }
           if(this.startEnd.start == '00:00'){
             this.addtimeFlag = false
@@ -1701,10 +1709,20 @@ export default {
     handleSizeChange(val) {
       this.listQuery.sync = 1;
       this.listQuery.limit = val;
-      // if(this.techniSearch.skillIds ===undefined || this.techniSearch.skillIds.length == 0){
-      //   delete this.techniSearch.skillIds
-      // }
-      this.getList(this.listQuery.page, val, {});
+      var obj = {};
+      if (this.techniSearch.stationId) {
+        obj.stationId = this.techniSearch.stationId;
+      }
+      if (this.techniSearch.jobNature) {
+        obj.jobNature = this.techniSearch.jobNature;
+      }
+      if (this.techniSearch.chooses) {
+        obj[this.techniSearch.chooses] = this.chooContent;
+      }
+      if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
+        obj.skillIds = this.roomSel2Arr;
+      }
+      this.getList(this.listQuery.page, val, obj);
     },
     handleModifyStatus(row, status) {
       this.$message({
