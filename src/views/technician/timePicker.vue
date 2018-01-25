@@ -84,7 +84,6 @@ export default {
   watch:{
       mound(value){
           alert("dawdawdwad")
-          console.log(value,"value---------")
           this.timeClassId = value
       }
   },
@@ -109,7 +108,6 @@ export default {
         this.timeShow = false
     },
     iconRem(){
-        // console.log(this.mound,"-----------mount")
       this.timeValue = '';
     //   this.mound = '';
       this.timeClassId = null;
@@ -132,7 +130,6 @@ export default {
     }
   },
   mounted(){
-      console.log(this.startTime,"---------------------awdwadwadawwd")
   }
 }
 </script>
