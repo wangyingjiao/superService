@@ -1285,7 +1285,7 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {         
+    beforeAvatarUpload(file) {        
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       // console.log(isPIC,"isPIC--------------------")         
       if (
@@ -1325,7 +1325,7 @@ export default {
           console.log(error, "服务站错误+++++++");
         });
     },
-    picUpload(file, flag) {        
+    picUpload(file, flag) {       
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
