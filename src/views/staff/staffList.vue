@@ -670,7 +670,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-
       this.pageNumber = val;
       if (this.search.type == "name") {
         var obj = {
