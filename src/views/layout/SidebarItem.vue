@@ -2,7 +2,8 @@
   <div class="sidebar">
     <div class="slde-bcak-log">
       <router-link to='/dashboard'>
-       <img class="imgleft" src="../../../static/icon/logo@3x.png" alt="">
+       <!-- <img class="imgleft" src="../../../static/icon/logo@3x.png" alt=""> -->
+       <h3 class="logo">国安社区服务平台</h3>
       </router-link>
     </div>
      <template>
@@ -57,7 +58,20 @@ export default {
 }
 .slde-bcak-log {
   width: 100%;
-  height: 75px;
+  height: 50px;
+
+  .logo {
+    text-align: center;
+    display: block;
+    width: 100%;
+    height: 50px;
+    font-size: 20px;
+    color: #eee;
+    line-height: 50px;
+    text-shadow: 0 -1px 1px #2f323e;
+    -moz-text-shadow: 0 -1px 1px #2f323e;
+    -webkit-text-shadow: 0 -1px 1px #2f323e;
+  }
 }
 .slde-bcak-log .imgleft {
   width: 190px;
