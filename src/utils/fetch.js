@@ -8,6 +8,7 @@ const instance = axios.create({
   timeout: 15000,                 // 请求超时时间
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 })
+var arr = []
 // 拦截请求
 // instance.interceptors.request.use(config => {
 //   for (var i in config.data) {
@@ -24,14 +25,8 @@ const instance = axios.create({
 instance.interceptors.response.use(res => {
   // console.log(res.data.code, '响应')
   if (res.data.code === 11111) {
-    store.dispatch('LogOut').then(() => {
-      console.log(11111111)
-      Message.error('登录过期,请重新登录')
-      setTimeout(() => {
-        store.state.app.visitedViews = []
-        router.push({ path: '/login' })
-      }, 3000)
-    })
+    var timestamp = new Date().getTime()
+    arr.push(timestamp)
   }
   return res
 }, error => {
@@ -59,4 +54,19 @@ instance.interceptors.response.use(res => {
   // }
   return Promise.reject(error)
 })
+if (arr.length > 0) {
+  for (var i = 1; i < arr.length; i++) {
+    if (arr[i] - arr[i - 1] < 500) {
+      store.dispatch('LogOut').then(() => {
+        Message.error('登录过期,请重新登录')
+        setTimeout(() => {
+          store.state.app.visitedViews = []
+          router.push({ path: '/login' })
+        }, 3000)
+      })
+      break
+    }
+  }
+}
+
 export default instance

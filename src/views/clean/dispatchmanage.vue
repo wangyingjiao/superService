@@ -144,7 +144,7 @@
 <script>
 import {dispatchTechData1,dispatchTechSave1,Reassignment} from "@/api/order";
 export default {
-  name: "",
+  name: "dispatchmanage",
   data() {
     return {
 			btnShow: JSON.parse(localStorage.getItem('btn')),

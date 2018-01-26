@@ -280,7 +280,7 @@
                       :listquer="listQuery" :servery="servery" :startend="startEnd"
                       ></techni-edit>
         <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-              <button class="button-large-fourth closeThe" @click="closeThef">关 闭</button>
+              <button class="button-cancel closeThe" @click="closeThef">关 闭</button>
           </div>
       </el-dialog>
     <!-- 弹出层 新增技师-->
@@ -461,8 +461,8 @@
                 <el-col :span="12">
                 </el-col>
             </el-row>
-            <el-row :gutter="60">
-              <el-col :span="12">
+            <el-row>
+              <el-col :span="17">
                   <el-form-item label="选择技能：" prop="skillIds">
                     <el-select v-model="personal.skillIds" multiple placeholder="请选择技能" style="width:100%" filterable >
                       <el-option
@@ -2208,7 +2208,7 @@ export default {
 
 .tech-table {
   margin: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 0px;
 }
 
 .tech-section-ul li {
@@ -2699,6 +2699,7 @@ export default {
 .tech-section-xiu > li {
   display: flex;
   padding: 10px;
+  font-size: 12px;
 }
 
 .tech-section-xiu > li > div:nth-of-type(1) {
@@ -2778,6 +2779,7 @@ export default {
 }
 .tect-pass .mobel {
   height: 36px;
+  font-size: 12px;
 }
 .tect-pass .mobel > p:nth-child(1) {
   width: 100px;

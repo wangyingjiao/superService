@@ -449,7 +449,7 @@ import {
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 export default {
-  name: "",
+  name: "orderinfo",
   data() {
     return {
       options2: [],
