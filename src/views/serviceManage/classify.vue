@@ -171,7 +171,7 @@ export default {
     this.getList();
     // 字典表中获取分类
     var dict = require("../../../static/dict.json");
-    this.majorSorts = dict.ser_majorsort;
+    this.majorSorts = dict.order_majorSort;
   
   },
   methods: {

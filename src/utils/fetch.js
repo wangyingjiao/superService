@@ -23,14 +23,22 @@ var arr = []
 
 // 拦截响应
 instance.interceptors.response.use(res => {
-  // console.log(res.data.code, '响应')
-  if (res.data.code === 11111) {
+  if (res.data.code === 3) {
     var timestamp = new Date().getTime()
     arr.push(timestamp)
+    if (arr.length === 1) {
+      store.dispatch('LogOut').then(() => {
+        Message.error('登录过期,请重新登录,3秒后回到登录页面')
+        setTimeout(() => {
+          store.state.app.visitedViews = []
+          router.push({ path: '/login' })
+        }, 3000)
+      })
+    }
   }
   return res
 }, error => {
-  // console.log(error.response, '请求错误')
+  // console.log(error, '请求错误')
   // const errorStatus = error.response.status
   // console.log(errorStatus, '响应错误')
   // switch (errorStatus) {
@@ -54,19 +62,5 @@ instance.interceptors.response.use(res => {
   // }
   return Promise.reject(error)
 })
-if (arr.length > 0) {
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] - arr[i - 1] < 500) {
-      store.dispatch('LogOut').then(() => {
-        Message.error('登录过期,请重新登录')
-        setTimeout(() => {
-          store.state.app.visitedViews = []
-          router.push({ path: '/login' })
-        }, 3000)
-      })
-      break
-    }
-  }
-}
 
 export default instance

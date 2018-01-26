@@ -337,12 +337,10 @@ export default {
       }
     };
     var validateName = (rule, value, callback) => {
-      
       var that = this;
       if (!value) {
         return callback(new Error("岗位名不能为空"));
       } else {
-       
         var obj = {
           name: value,
           id: this.temp2.officeId2
@@ -521,17 +519,20 @@ export default {
       this.data2 = res.data.data;
     });
     //从字典量里获取搜索内容
-    var dict = require("../../../static/dict.json");
-    this.userSearch = dict.user_search;
+    //var dict = require("../../../static/dict.json");
+    this.userSearch = {
+      name: "姓名",
+      mobile: "手机",
+      roleName: "岗位名称"
+    };
     var lv = localStorage.getItem("dataScope");
-  
+
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
   },
   methods: {
-    searchChange(val) {
-    },
+    searchChange(val) {},
     //获取列表
     getList() {
       if (this.search.type == "name") {
@@ -540,20 +541,20 @@ export default {
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type =='mobile'){
+      } else if (this.search.type == "mobile") {
         var obj = {
           mobile: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type == 'roleName'){
-         var obj = {
+      } else if (this.search.type == "roleName") {
+        var obj = {
           roleName: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else{
-        var obj = {}
+      } else {
+        var obj = {};
       }
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -573,7 +574,6 @@ export default {
         } else {
           this.listLoading = false;
         }
-     
       });
     },
     //搜索
@@ -586,40 +586,40 @@ export default {
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type =='mobile'){
+      } else if (this.search.type == "mobile") {
         var obj = {
           mobile: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type == 'roleName'){
-         var obj = {
+      } else if (this.search.type == "roleName") {
+        var obj = {
           roleName: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else{
-        var obj = {}
+      } else {
+        var obj = {};
       }
-        this.listLoading = true;
-        getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
+      this.listLoading = true;
+      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
+        if (res.data.code === 1) {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
             }
-            this.listLoading = false;
-            this.listQuery.page = 1;
-          } else {
-            this.listLoading = false;
           }
-        });
+          this.listLoading = false;
+          this.listQuery.page = 1;
+        } else {
+          this.listLoading = false;
+        }
+      });
     },
     addRole() {
       this.dialogFormStation = true;
@@ -634,20 +634,20 @@ export default {
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type =='mobile'){
+      } else if (this.search.type == "mobile") {
         var obj = {
           mobile: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type == 'roleName'){
-         var obj = {
+      } else if (this.search.type == "roleName") {
+        var obj = {
           roleName: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else{
-        var obj = {}
+      } else {
+        var obj = {};
       }
       this.pageSize = val;
       this.listQuery.page = 1;
@@ -677,20 +677,20 @@ export default {
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type =='mobile'){
+      } else if (this.search.type == "mobile") {
         var obj = {
           mobile: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else if(this.search.type == 'roleName'){
-         var obj = {
+      } else if (this.search.type == "roleName") {
+        var obj = {
           roleName: this.search.val,
           orgId: this.search.officeId,
           stationId: this.search.stationId
         };
-      }else{
-        var obj = {}
+      } else {
+        var obj = {};
       }
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -698,7 +698,6 @@ export default {
           for (var i = 0; i < res.data.data.list.length; i++) {
             res.data.data.list[i].index = i + 1;
           }
-   
         }
         this.total = res.data.data.count;
         this.list = res.data.data.list;
@@ -727,7 +726,6 @@ export default {
       this.resetTemptwo();
     },
     handTreechange(a, b, c) {
-
       if (b) {
         // 处理订单里的查看详情
         if (
@@ -780,8 +778,6 @@ export default {
         }
         //自动勾选列表权限结束
       } else {
-      
-
         //订单的查看详情不可取消
 
         if (a.permission == "order_info") {
@@ -849,13 +845,12 @@ export default {
 
         //列表处理完毕
       }
-      
+
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
-      
     },
     handleUpdate(row) {
       //this.handleCreate();
-      
+
       this.dialogFormVisible = true;
       this.dialogStatus = "update";
       if (localStorage.getItem("userId") == row.id) {
@@ -967,8 +962,7 @@ export default {
               this.stationCheck = [];
             }
           })
-          .catch(err => {
-          });
+          .catch(err => {});
       }
     },
     getId(str) {
@@ -1011,7 +1005,6 @@ export default {
 
                 var obj = {};
                 getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-            
                   if (res.data.code === 1) {
                     this.total = res.data.data.count;
                     this.list = res.data.data.list;
@@ -1063,7 +1056,7 @@ export default {
           id: this.temp2.officeId2
         }
       };
-      
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
