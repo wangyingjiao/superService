@@ -273,7 +273,7 @@ import waves from "@/directive/waves/index.js"; // 水波纹指令
 // arr to obj
 
 export default {
-  name: "staffList",
+  name: "user",
   directives: {
     waves
   },

@@ -107,7 +107,7 @@ import { parseTime } from "@/utils";
 //挂载数据
 
 export default {
-  name: "table_demo",
+  name: "class",
   directives: {
     waves
   },

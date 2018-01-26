@@ -149,7 +149,7 @@ import {
 } from "@/api/serviceManage";
 //挂载数据
 export default {
-  name: "",
+  name: "skill",
   data() {
     var checkName = (rule, value, callback) => {
       if (!value) {
@@ -167,7 +167,7 @@ export default {
       submitFlag: false,
       jumpPage: 1,
       title: "新增技能",
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       promShow: false,
       promShow1: false,
       checkAll: false,
@@ -179,7 +179,12 @@ export default {
       rules: {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         staffClass: [
-          { required: true, type: "array", message: "请选择分类", trigger: "change" }
+          {
+            required: true,
+            type: "array",
+            message: "请选择分类",
+            trigger: "change"
+          }
         ]
       },
       ruleForm2: {
@@ -209,14 +214,14 @@ export default {
       middleA: [],
       middleB: [],
       middleC: [],
-      middleD:[]
+      middleD: []
     };
   },
   methods: {
     //全局搜索按钮
     search() {
       var obj = {
-        name:this.localSearch
+        name: this.localSearch
       };
       this.pageNumber = 1;
       this.jumpPage = 1;
@@ -232,9 +237,8 @@ export default {
             if (this.middleA[a1].techId == obj.techId) {
               this.middleA.remove(this.middleA[a1]);
             }
-          }          
+          }
         }
-        
       }
 
       if (this.dialogStatus == "edit") {
@@ -255,7 +259,7 @@ export default {
       var obj = {};
       this.middleA = [];
       this.middleB = [];
-      this.middleD=[];
+      this.middleD = [];
       this.listLoading = true;
       this.dialogStatus = status;
       this.tabOptions = [];
@@ -341,7 +345,7 @@ export default {
       this.ruleForm2.technicians = this.tabOptions;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.saveFlag=true;
+          this.saveFlag = true;
           var obj = {
             id: this.id,
             name: this.ruleForm2.name,
@@ -350,19 +354,19 @@ export default {
           };
           if (this.dialogStatus == "add") {
             saveServer(obj)
-              .then(res => {                
+              .then(res => {
                 if (res.data.code === 1) {
                   this.$message({
                     type: "success",
                     message: "新增成功!"
                   });
-                  this.saveFlag=false;
+                  this.saveFlag = false;
                   this.$refs["ruleForm2"].resetFields();
                   this.ruleForm2.name = "";
-                  this.ruleForm2.staffClass=[];
+                  this.ruleForm2.staffClass = [];
                   this.middleA = [];
                   this.middleB = [];
-                  this.middleD=[];
+                  this.middleD = [];
                   this.localSearch = "";
                   var obj1 = {};
                   this.dialogVisible = false;
@@ -372,7 +376,7 @@ export default {
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
                   this.middleB = [];
-                  this.middleD=[];
+                  this.middleD = [];
                   this.$message({
                     type: "error",
                     message: res.data.data
@@ -381,25 +385,25 @@ export default {
               })
               .catch(res => {
                 this.listLoading = false;
-                this.saveFlag=false;
+                this.saveFlag = false;
               });
           }
           if (this.dialogStatus == "edit") {
             upDataTech(obj)
               .then(res => {
-                this.saveFlag=false;
+                this.saveFlag = false;
                 if (res.data.code === 1) {
                   this.$message({
                     type: "success",
                     message: "编辑成功!"
                   });
-                  
+
                   this.$refs["ruleForm2"].resetFields();
                   this.ruleForm2.name = "";
-                  this.ruleForm2.staffClass=[];
+                  this.ruleForm2.staffClass = [];
                   this.middleA = [];
                   this.middleB = [];
-                  this.middleD=[];
+                  this.middleD = [];
                   this.dialogVisible = false;
                   var obj1 = {
                     name: this.localSearch
@@ -428,12 +432,12 @@ export default {
       if (this.dialogStatus == "add") {
         this.$refs[formName].resetFields();
         this.ruleForm2.name = "";
-        this.ruleForm2.staffClass=[];
+        this.ruleForm2.staffClass = [];
       }
       if (this.dialogStatus == "edit") {
         this.$refs[formName].resetFields();
-        this.ruleForm2.name='';
-        this.ruleForm2.staffClass=[];
+        this.ruleForm2.name = "";
+        this.ruleForm2.staffClass = [];
       }
       this.dialogVisible = false;
     },
@@ -477,7 +481,7 @@ export default {
             }
           }
         }
-        this.tabOptions =Object.assign([],arr);
+        this.tabOptions = Object.assign([], arr);
       }
       if (this.dialogStatus == "edit") {
         var arr1 = [];
@@ -497,8 +501,8 @@ export default {
       this.techName = "";
       this.techStationId = "";
       if (this.dialogStatus == "add") {
-          this.middleA=Object.assign([],this.tabOptions);           
-      }      
+        this.middleA = Object.assign([], this.tabOptions);
+      }
       if (this.dialogStatus == "edit") {
         this.middleB = this.middleC;
         var arr1 = [];
@@ -512,8 +516,8 @@ export default {
         this.tabOptions = arr1;
       }
       for (var a = 0; a < this.listTech.length; a++) {
-          this.listTech[a].techChecked = false;
-      }         
+        this.listTech[a].techChecked = false;
+      }
       this.ordertech = false;
     },
     //表格数据获取
@@ -525,15 +529,14 @@ export default {
           if (res.data.code === 1) {
             this.total = res.data.data.count;
             this.getListdata = res.data.data.list;
-            this.pageNumber=res.data.data.pageNo;
-            this.jumpPage=res.data.data.pageNo;
-            this.pageSize=res.data.data.pageSize;
+            this.pageNumber = res.data.data.pageNo;
+            this.jumpPage = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
             if (res.data.data.list != undefined) {
               for (var a = 0; a < this.getListdata.length; a++) {
                 this.getListdata[a].index = a + 1;
               }
             }
-            
           }
           this.listLoading = false;
         })
@@ -543,8 +546,8 @@ export default {
     },
     //改变一页多少行
     handleSizeChange(val) {
-      this.pageNumber=1;
-      this.jumpPage=1;
+      this.pageNumber = 1;
+      this.jumpPage = 1;
       this.pageSize = val;
       var obj = {
         name: this.localSearch
@@ -564,7 +567,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false
+        closeOnClickModal: false
       })
         .then(() => {
           var obj = {
@@ -598,7 +601,7 @@ export default {
         });
     },
     //选择技师按钮
-    orderTech() {          
+    orderTech() {
       var obj = {
         techName: "",
         techStationId: ""
@@ -648,7 +651,7 @@ export default {
           }
         }
       }
-      this.ordertech = true; 
+      this.ordertech = true;
     },
     //选择技师弹出层查询按钮
     searchTeh() {
@@ -663,7 +666,7 @@ export default {
             this.listTech = res.data.data.techs;
             if (this.dialogStatus == "add") {
               for (var b = 0; b < this.middleA.length; b++) {
-                for (var a = 0; a < this.listTech.length; a++) {                  
+                for (var a = 0; a < this.listTech.length; a++) {
                   if (this.listTech[a].techId == this.middleA[b].techId) {
                     this.listTech[a].techChecked = true;
                   }
@@ -690,8 +693,8 @@ export default {
 };
 </script>
 <style  scoped>
-.kill .el-select__tags .el-select .el-tag{
-  line-height:23px !important;
+.kill .el-select__tags .el-select .el-tag {
+  line-height: 23px !important;
 }
 .selfTabProm {
   width: 100%;
@@ -729,10 +732,13 @@ export default {
 }
 .selfFLORight {
   float: right;
-  margin-right:20px;
+  margin-right: 20px;
 }
-.selfpromMessageTab{
-    position:relative;width:100%;margin-top:60px;margin-left:10px;
+.selfpromMessageTab {
+  position: relative;
+  width: 100%;
+  margin-top: 60px;
+  margin-left: 10px;
 }
 .selfFLOLeft {
   float: left;
@@ -749,27 +755,39 @@ export default {
 .selfTdStyle {
   background: #eef1f6;
   height: 60px;
-  line-height:60px;
-  border:none !important;
+  line-height: 60px;
+  border: none !important;
 }
-.tableHeader{position:absolute;z-index:99999;top:0px;margin:0px;margin-top:-1px;}
+.tableHeader {
+  position: absolute;
+  z-index: 99999;
+  top: 0px;
+  margin: 0px;
+  margin-top: -1px;
+}
 .selfTdStyle1 {
-  vertical-align:middle;
+  vertical-align: middle;
   height: 70px;
-  line-height:70px;
+  line-height: 70px;
 }
-.selftechNameStyle{
-    width:130px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+.selftechNameStyle {
+  width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.skillMarginTop60{
-   margin-top:60px;
+.skillMarginTop60 {
+  margin-top: 60px;
 }
-.selftechStationNameStyle{
-    width:174px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+.selftechStationNameStyle {
+  width: 174px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .imgStyle {
-  border:none;
-  display:block;
+  border: none;
+  display: block;
 }
 .selfOVerflow {
   float: left;
@@ -784,9 +802,9 @@ export default {
   overflow: hidden;
   width: 660px;
   height: 280px;
-  position:relative;
+  position: relative;
 }
-.table-d{
+.table-d {
   width: 677px;
   overflow-y: scroll;
   height: 276px;
@@ -852,7 +870,7 @@ export default {
   width: 80px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top:5px;
+  margin-top: 5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;

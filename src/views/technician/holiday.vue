@@ -97,7 +97,7 @@ import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "table_demo",
+  name: "holiday",
   directives: {
     waves
   },

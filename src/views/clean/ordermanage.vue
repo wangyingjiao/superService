@@ -135,7 +135,7 @@ import {getOrderTable} from "@/api/order";
 import {getFuwu} from "@/api/staff";
 import util from "@/utils/date";
 export default {
-	name: "",
+	name: "ordermanage",
   data() { 		
     return {
 		btnShow:JSON.parse(localStorage.getItem('btn')),

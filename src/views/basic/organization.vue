@@ -252,7 +252,7 @@ import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 
 export default {
-  name: "table_demo",
+  name: "prganization",
   directives: {
     waves
   },
