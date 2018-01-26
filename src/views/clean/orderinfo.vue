@@ -441,6 +441,7 @@
 import {
   getOrderInf,
   addTechData,
+  ChangeTimeData,
   dispatchTechData,
   addTechSave,
   dispatchTechSave,
@@ -508,29 +509,28 @@ export default {
   },
   methods: {
     //用订单ID获取页面相关信息
-    getOrderAllInf(orderId) {
-      this.orderId = orderId;
-      var obj = {
-        id: orderId
-      };
-      getOrderInf(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            var AllInfo = res.data.data;
-            this.otherInfo = AllInfo; //所有其他信息变量
-            this.goodsInfo = AllInfo.goodsInfo; //服务信息
-            this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
-            this.tableData1 = AllInfo.techList; //技师信息表格
-            this.payInfo = AllInfo.payInfo; //支付信息
-            this.options2 = AllInfo.orderTimeList; //服务时间下拉菜单值
-          } else {
-            this.$message({
-              type: "error",
-              message: res.data.data
-            });
-          }
-        })
-        .catch(res => {});
+    getOrderAllInf(orderId){
+      this.orderId=orderId;
+      var obj={
+        id:orderId
+      }
+      getOrderInf(obj).then(res => {      
+          if (res.data.code === 1) {                                   
+            var AllInfo=res.data.data;
+            this.otherInfo=AllInfo;//所有其他信息变量
+            this.goodsInfo=AllInfo.goodsInfo//服务信息
+            this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
+            this.tableData1=AllInfo.techList//技师信息表格
+            this.payInfo=AllInfo.payInfo//支付信息
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });            
+          }          
+        }).catch(res=>{
+          
+        });
     },
     //更换时间的保存
     submitTime(formName) {
@@ -538,56 +538,62 @@ export default {
         if (valid) {
           this.timeSaveFlag = true;
           var time = "";
-          for (var a = 0; a < this.timeObj.length; a++) {
-            if (this.timeObj[a].selected == true) {
-              time = this.timeObj[a].serviceTimeStr;
-              this.bb = this.timeObj[a].serviceTimeStr;
+            for (var a = 0; a < this.timeObj.length; a++) {
+              if (this.timeObj[a].selected == true) {
+                time = this.timeObj[a].serviceTimeStr;
+                this.bb = this.timeObj[a].serviceTimeStr;
+              }
             }
-          }
-          var that = this;
-          this.$confirm("此操作将更改技师, 是否继续?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            closeOnClickModal: false
-          })
-            .then(() => {
-              //更换时间的保存
-              var obj = {
-                id: this.orderId,
-                serviceTime: this.changTime + " " + time + ":00"
-              };
-              saveTime(obj)
-                .then(res => {
-                  this.timeSaveFlag = false;
-                  if (res.data.code === 1) {
-                    this.$message({
-                      type: "success",
-                      message: "更换时间成功!"
-                    });
-                    this.$refs["formInline"].resetFields();
-                    this.tableData1 = res.data.data.list;
-                    this.otherInfo.serviceHour = res.data.data.serviceHour;
-                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
-                    this.dialogVisible = false;
-                  } else {
+            var that=this;
+            this.$confirm('此操作将更改技师, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              closeOnClickModal:false,
+            }).then(() => {
+                //更换时间的保存
+                var obj={
+                  id:this.orderId,
+                  serviceTime:this.changTime+' '+time+':00'
+                }
+                saveTime(obj).then(res => {
+                  this.timeSaveFlag=false;
+                  this.dialogVisible = false ;      
+                  if (res.data.code === 1) {                         
+                      this.$message({
+                        type: "success",
+                        message: "更换时间成功!"
+                      });
+                      this.$refs['formInline'].resetFields();
+                      this.timeObj=[];
+                      this.tableData1=res.data.data.list;
+                      this.otherInfo.serviceHour=res.data.data.serviceHour;
+                      this.otherInfo.serviceTime=that.changTime+' '+that.bb;
+                  }else{
                     this.$message({
                       type: "error",
                       message: res.data.data
                     });
-                  }
-                })
-                .catch(res => {
-                  this.timeSaveFlag = false;
+                    this.timeObj=[];
+                    this.timeSaveFlag=false;                     
+                  }          
+                }).catch(res=>{
+                  this.timeSaveFlag=false;
+                  this.timeObj=[]; 
                 });
-            })
-            .catch(() => {
-              this.$message({
-                type: "warning",
-                message: "已取消更换时间"
-              });
-            });
-        }
-      });
+            }).catch(() => { 
+               		this.$message({
+										type: 'warning',
+										message: '已取消更换时间'
+									});
+                  this.timeSaveFlag=false;
+                  this.timeObj=[];
+                  this.formInline.Date=this.options2[0].value
+                  this.dateChange(this.formInline.Date)                    
+            });                         
+                       
+          }
+      })
+
     },
     //更换时间取消
     cancelTime(formName) {
@@ -778,11 +784,11 @@ export default {
                 type: "error",
                 message: res.data.data
               });
-            }
-          })
-          .catch(res => {
-            this.techSaveFlag = false;
-          });
+              this.techSaveFlag=false;             
+          }          
+        }).catch(res=>{
+          this.techSaveFlag=false;
+        });        
       }
       if (arr.length == 0) {
         this.techSaveFlag = false;
@@ -838,15 +844,31 @@ export default {
       }
     },
     //改变服务时间按钮
-    changeTime() {
-      this.timeObj = [];
-      //默认选择当前日期
-      if (this.options2 != undefined && this.options2[0] != undefined) {
-        this.formInline.Date = this.options2[0].value;
-        this.dateChange(this.formInline.Date);
+    changeTime(){
+      this.timeObj=[]; 
+      var obj={
+        id:this.orderId
       }
-      this.dialogVisible = true;
-    }
+      //请求服务时间下拉菜单值
+      ChangeTimeData(obj).then(res => {      
+          if (res.data.code === 1) {
+            this.dialogVisible=true;                                 
+            this.options2=res.data.data;//服务时间下拉菜单值
+            //默认选择当前日期
+            if(this.options2 != undefined && this.options2[0] != undefined){
+              this.formInline.Date=this.options2[0].value
+              this.dateChange(this.formInline.Date) 
+            }             
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });            
+          }          
+        }).catch(res=>{
+          
+        });                            
+    }	
   },
   mounted() {
     var orderId = window.localStorage.getItem("orderId");
