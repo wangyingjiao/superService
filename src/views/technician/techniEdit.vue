@@ -200,7 +200,7 @@
                       </el-col>
                     </el-row>
                     <el-row :gutter="60">
-                      <el-col :span="12">
+                      <el-col :span="17">
                         <el-form-item label="选择技能:" prop="skillIds">
                           <el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
                             <el-option
@@ -327,7 +327,7 @@
               <el-row :gutter="60">
                   <el-col :span="12">
                     <el-form-item label="身高:">
-                      <el-select v-model="supplement.height" clearable placeholder="请选择" style="width:100%">
+                      <el-select v-model="supplement.height" filterable clearable placeholder="请选择" style="width:100%">
                         <el-option v-for="item in height" :key="item.value" :label="item.value" :value="item.label">
                         </el-option>
                       </el-select>
@@ -335,7 +335,7 @@
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="体重:">
-                      <el-select v-model="supplement.weight" clearable placeholder="请选择" style="width:100%">
+                      <el-select v-model="supplement.weight" filterable clearable placeholder="请选择" style="width:100%">
                         <el-option v-for="item in strong" :key="item.value" :label="item.value" :value="item.label">
                         </el-option>
                       </el-select>
@@ -452,7 +452,7 @@
 
             </el-table>
           </div>
-          <div style="padding:25px">
+          <div style="padding:0px 25px 0 25px">
             <!-- <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button> -->
             <div class="add_Btn" @click="showTabl">
                 <span v-if="!flagso" class="fl btn_Span1">+</span>
