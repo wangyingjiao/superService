@@ -146,7 +146,7 @@ import {
   techDelet,
   editTech,
   upDataTech
-} from "@/api/skill";
+} from "@/api/serviceManage";
 //挂载数据
 export default {
   name: "",

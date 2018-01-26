@@ -187,7 +187,8 @@
 
                 <el-form-item label="banner图：" prop="picture">
                   <div class="upload-demo upload_box form_item">
-                      <el-upload
+                    <imgService @imgclick = "imgClick" :piclist = "picList"></imgService>
+                      <!-- <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
                           :on-preview="handlePreview"
@@ -201,7 +202,7 @@
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="" class="abc">
-                      </el-dialog>
+                      </el-dialog> -->
                   </div>
       
                     <div class="el-upload__tip">*请选择上传的图片，且不超过4张</div>
@@ -584,7 +585,8 @@ import {
   serGasqSort,
   sendData,
   deleteGoodsData
-} from "@/api/project";
+} from "@/api/serviceManage";
+import imgService from '../clean/returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -671,7 +673,7 @@ export default {
     //服务图片
     var PICTURE = (rule,value,callback)=>{
       // callback()
-      // console.log(this.picFile,"this.picFile-----------------[][][]")
+      console.log(this.picFile,"this.picFile-----------------[][][]")
       if(this.picFile!=undefined && this.picFile.length>0){
         callback()
       }else{
@@ -1065,6 +1067,15 @@ export default {
     },
   },
   methods: {
+    imgClick(item){
+      var arr = []
+      console.log(item,"item-____))))))))")
+      for(var i = 0;i<item.length;i++){
+        arr.push(item[i].url)
+      }
+      this.picFile = arr
+      console.log(this.picFile,"--------------+++++++____________")
+    },
     //对接商品
     handleSendData(row){
       console.log(row,"row--------")
@@ -2045,11 +2056,14 @@ export default {
                 this.imgNumber = data.data.data.pictures.length;
                 for (var i = 0; i < data.data.data.pictures.length; i++) {
                   console.log(data.data.data.pictures, "tupian");
+                  // var obj = {
+                  //   url:
+                  //     "https://imgcdn.guoanshequ.com/" +
+                  //     data.data.data.pictures[i]
+                  // };
                   var obj = {
-                    url:
-                      "https://imgcdn.guoanshequ.com/" +
-                      data.data.data.pictures[i]
-                  };
+                    url:data.data.data.pictures[i]
+                  }
                   this.picList.push(obj);
                 }
               }
@@ -2311,6 +2325,7 @@ export default {
             // that.basicForm.id = this.editId
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             that.basicForm.customTags = this.customArr
+            that.basicForm.pictures = this.picFile
             console.log(that.basicForm, "that.basicForm----");
             serverEditPre(that.basicForm)
               .then(data => {
@@ -2446,6 +2461,9 @@ export default {
         this.dialogFormVisible = false;
       }
     }
+  },
+  components:{
+    imgService
   }
 };
 </script>

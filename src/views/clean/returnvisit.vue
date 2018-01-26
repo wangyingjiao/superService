@@ -10,7 +10,7 @@
 		<div v-if="!pass && progress !== 0" class="img-content img-progress">
 			<el-progress type="circle" :percentage="progress" :status="proStatus"></el-progress>
 		</div>
-		<div class="img-upload">
+		<div class="img-upload" v-if="imgFlag">
 			<el-upload class="uploader" accept="image/*"
 			  ref="upload"
 			  list-type="picture-card"
@@ -23,7 +23,6 @@
 			  :on-error="uploadOnError"
 			  :on-progress="uploadOnProgress">
         <i class="el-icon-plus avatar-uploader-icon"></i>
-			  	<!-- <el-button type="primary">点击上传</el-button> -->
 			</el-upload>
 		</div>
 	</div>
@@ -39,7 +38,7 @@ export default{
 			progress: 0,//上传进度
 			pass: null,//是否上传成功
       isEnlargeImage: false,//放大图片
-      imgPath:"",
+      imgFlag:true,
       enlargeImage: '',//放大图片地址
       imagelist:[],
 			// imagelist: [{
@@ -76,8 +75,31 @@ export default{
       console.log("-------------------------------")
       return getSign();
     },
-	},
+  },
+  watch:{
+    piclist:{
+      immediate: true,
+       handler(val, oldval) {
+         this.imagelist = val
+         if(val.length>3){
+           this.imgFlag = false
+         }else{
+           this.imgFlag = true
+         }
+         console.log(val,"val++++++++")
+       },
+       deep: true
+    }
+  },
+  props:[
+    'piclist'
+  ],
 	methods: {
+    uploadOnProgress(e,file){//开始上传
+      console.log("------------------------------------")
+			console.log(e.percent,file)
+			this.progress = Math.floor(e.percent)
+		},
     beforeUpload(file){
       //判断图片格式
         if(file.type == 'image/gif' || file.type == 'image/jpg' || file.type=='image/png' || file.type == 'image/jpeg'){
@@ -115,10 +137,6 @@ export default{
         })
         return imgCallback
     },
-		uploadOnProgress(e,file){//开始上传
-			console.log(e.percent,file)
-			this.progress = Math.floor(e.percent)
-		},
 		uploadOnChange(file){
 			console.log("——————————change——————————")
 			// console.log(file)
@@ -173,11 +191,16 @@ export default{
           .then(res=>{
             var str = ossData.get("key")
             this.imagelist.push({url:str})
+            this.$emit('imgclick',this.imagelist)
             console.log(this.imagelist,"this.imagelist------------")
           })
           .catch(error=>{
             var str = ossData.get("key")
             this.imagelist.push({url:str})
+            if(this.imagelist.length>3){
+               this.imgFlag = false
+            }
+            this.$emit('imgclick',this.imagelist)
             console.log(this.imagelist,"this.imagelist------------")
           })
       })
@@ -216,24 +239,13 @@ export default{
 				return false;
       }
       this.imagelist.splice(i,1)
-			// let that = this;
-			// this.$confirm('是否删除此附件？','提示',{
-			// 	confirmButtonText: '确定',
-			// 	cancelButtonText: '取消',
-			// 	type: 'warning'
-			// }).then(() => {
-			// 	//可添加ajax
-			// 	this.$message.success("删除成功")
-			// 	this.$message({
-			// 		type: 'success',
-			// 		message: '删除成功',
-			// 		onClose: () => {
-			// 			that.imagelist.splice(i,1)
-			// 		}
-			// 	})
-			// }).catch((meg) => console.log(meg))
+      console.log(this.imagelist.length,"this.imagelist.length-----")
+      if(this.imagelist.length<4){
+        this.imgFlag = true
+      }
+      this.$emit('imgclick',this.imagelist)
 		}
-	}
+  },
 }
 </script>
 

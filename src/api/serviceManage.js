@@ -1,7 +1,4 @@
-import axios from 'axios'
-const instance = axios.create({
-  headers: { 'content-type': 'application/json;charset=UTF-8' }
-})
+import instance from '@/utils/fetch'
 
 export function getCity() {
   return instance.get(`/apiservice/a/sys/organization/getOrgCityCodes`)
@@ -49,4 +46,152 @@ export function upProject(obj) {
 // 编辑分类
 export function upClass(obj) {
   return instance.post(`/apiservice/a/service/sort/serSortInfo/upData`, obj)
+}
+
+// -----------服务项目------------
+// 所属分类
+export function Taxonomy(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/sort/serSortInfo/listDataAll`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+  // return instance.post(`apiservice/a/service/sort/serSortInfo/listData`)
+}
+
+// 定向城市
+export function Orienteering(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/getAllCityCodes`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+  // return instance.post(`apiservice/a/service/item/serItemInfo/getAllCityCodes`)
+}
+
+// 是否
+export function Whether() {
+  return new Promise((resolve, reject) => {
+    instance.get('../../static/dict.json').then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 服务项目添加
+export function ServerAdd(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/saveData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 项目删除
+export function ServerDelete(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/deleteData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 项目编辑
+export function ServerEdit(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/formData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 项目编辑保存
+export function serverEditPre(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/upData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+export function sortList(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/upDataSortNum`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 系统标签
+export function serGasqSort() {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serGasqSort/getList`).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 对接
+export function sendData(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/sendData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+// 商品删除
+export function deleteGoodsData(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/item/serItemInfo/deleteGoodsData`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+// -------------技能-----------------
+
+export function getListdata(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
+// 新增保存技能
+export function saveServer(obj) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/saveData`, obj)
+}
+// 选择服务
+export function orderServer(obj) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/insertData`, obj)
+}
+// 删除技能
+export function techDelet(obj) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/deleteSortInfo`, obj)
+}
+// 编辑技能
+export function editTech(obj) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/formData`, obj)
+}
+// 编辑保存技能
+export function upDataTech(obj) {
+  return instance.post(`/apiservice/a/service/skill/serSkillInfo/upData`, obj)
 }

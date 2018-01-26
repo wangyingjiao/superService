@@ -151,7 +151,7 @@ import {
 	deleteCus,  //删除客户
 	saveCus     //保存客户（新增）
 	} from "@/api/customer";
-import {getMech} from "@/api/base";
+import {getMech} from "@/api/basic";
 export default {
   name: "",
   data() {

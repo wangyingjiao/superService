@@ -247,7 +247,7 @@ import {
   upMech,
   getMechPage,
   getCity
-} from "@/api/base";
+} from "@/api/basic";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 

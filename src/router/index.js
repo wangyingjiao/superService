@@ -33,18 +33,18 @@ export const constantRouterMap = [
     redirect: 'sys',
     name: '员工管理',
     children: [
-      { path: 'user/index', component: _import('staff/staffList'), name: '员工列表' },
-      { path: 'role/list', component: _import('staff/postManagement'), name: '岗位管理' }
+      { path: 'user/index', component: _import('staff/user'), name: '员工列表' },
+      { path: 'role/list', component: _import('staff/role'), name: '岗位管理' }
     ]
   },
 
   {
     path: '/basic',
     component: Layout,
-    redirect: 'base',
+    redirect: 'basic',
     name: '基础服务',
     children: [
-      { path: 'organization', name: '服务机构', component: _import('base/mechanism') }
+      { path: 'organization', name: '服务机构', component: _import('basic/organization') }
 
     ]
   },
@@ -69,7 +69,7 @@ export const constantRouterMap = [
       { path: 'class', name: '服务分类', component: _import('serviceManage/classify') },
       { path: 'project', name: '服务项目', component: _import('serviceManage/project') },
       { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') },
-      { path: 'station', name: '服务站', component: _import('base/site') }
+      { path: 'station', name: '服务站', component: _import('basic/station') }
     ]
   },
   {
