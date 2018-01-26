@@ -516,7 +516,6 @@ export default {
             this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
             this.tableData1=AllInfo.techList//技师信息表格
             this.payInfo=AllInfo.payInfo//支付信息
-            this.options2=AllInfo.orderTimeList;//服务时间下拉菜单值
           }else{
               this.$message({
                 type: "error",
@@ -558,6 +557,7 @@ export default {
                         message: "更换时间成功!"
                       });
                       this.$refs['formInline'].resetFields();
+                      this.timeObj=[];
                       this.tableData1=res.data.data.list;
                       this.otherInfo.serviceHour=res.data.data.serviceHour;
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb;
@@ -567,16 +567,21 @@ export default {
                     this.$message({
                       type: "error",
                       message: res.data.data
-                    });                     
+                    });
+                    this.timeObj=[];
+                    this.timeSaveFlag=false;                     
                   }          
                 }).catch(res=>{
-                  this.timeSaveFlag=false; 
+                  this.timeSaveFlag=false;
+                  this.timeObj=[]; 
                 });
             }).catch(() => { 
                		this.$message({
 										type: 'warning',
 										message: '已取消更换时间'
 									});
+                  this.timeSaveFlag=false;
+                  this.timeObj=[];                   
             });                         
                        
           }
@@ -777,7 +782,8 @@ export default {
               this.$message({
                 type: "error",
                 message: res.data.data
-              });             
+              });
+              this.techSaveFlag=false;             
           }          
         }).catch(res=>{
           this.techSaveFlag=false;
@@ -840,12 +846,28 @@ export default {
     //改变服务时间按钮
     changeTime(){
       this.timeObj=[];
-      //默认选择当前日期
-      if(this.options2 != undefined && this.options2[0] != undefined){
-        this.formInline.Date=this.options2[0].value
-        this.dateChange(this.formInline.Date) 
-      }      
-      this.dialogVisible=true;                 
+      this.dialogVisible=true; 
+      var obj={
+        id:this.orderId
+      }
+      //请求服务时间下拉菜单值
+      getOrderInf(obj).then(res => {      
+          if (res.data.code === 1) {                                   
+            this.options2=res.data.data.orderTimeList;//服务时间下拉菜单值
+            //默认选择当前日期
+            if(this.options2 != undefined && this.options2[0] != undefined){
+              this.formInline.Date=this.options2[0].value
+              this.dateChange(this.formInline.Date) 
+            }             
+          }else{
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });            
+          }          
+        }).catch(res=>{
+          
+        });                            
     }	
   },
   mounted() {
