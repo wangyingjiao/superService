@@ -147,7 +147,7 @@ var data = [];
 
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
-  name: "table_demo",
+  name: "role",
   directives: {
     waves
   },
