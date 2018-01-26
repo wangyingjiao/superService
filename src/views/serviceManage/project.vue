@@ -118,8 +118,8 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            <el-tooltip class="item" effect="dark" content="对接商品" placement="left">
-              <el-button v-if="scope.row.jointStatus!='yes'" class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.jointStatus!='yes'">
+              <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
             </el-tooltip>
         </template>
       </el-table-column>
@@ -566,13 +566,7 @@ import {
   getProject,
   addProject,
   delProject,
-  getInfoPic
-} from "@/api/serviceManage";
-import Cookies from "js-cookie";
-import { getSign } from "@/api/sign";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { parseTime } from "@/utils";
-import {
+  getInfoPic,
   Taxonomy,
   Orienteering,
   Whether,
@@ -584,7 +578,11 @@ import {
   serGasqSort,
   sendData,
   deleteGoodsData
-} from "@/api/project";
+} from "@/api/serviceManage";
+import Cookies from "js-cookie";
+import { getSign } from "@/api/sign";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -1515,7 +1513,6 @@ export default {
         pictureDetails: this.imgText
       };
       // console.log(obj,"obj-------")
-      if(this.imgText.length>0){
         sortList(obj).then(res => {
           console.log(res);
           if (res.data.code == 1) {
@@ -1538,13 +1535,6 @@ export default {
           console.log(error,"上传失败")
           return false
         });
-      }else{
-          this.$message({
-            type:'error',
-            message:'请上传图片'
-          })
-          return false
-      }
       console.log(obj);
     }, // 保存图文
     resImgText(a) {

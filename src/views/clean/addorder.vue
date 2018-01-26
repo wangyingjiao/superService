@@ -284,710 +284,853 @@
 </template>
 
 <script>
-  import {
-    orderServer
-  } from '@/api/skill'
-  import { 
-	saveCus     //保存客户（新增）
-	} from "@/api/customer";
+import { orderServer } from "@/api/serviceManage";
+import {
+  saveCus //保存客户（新增）
+} from "@/api/customer";
 export default {
   name: "",
   data() {
-	var checkPhone = (rule, value, callback) => {
-			if (!value) {
-			  return callback(new Error('电话号码不能为空'));
-			}else{
-				if (!(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value))) {
-				  callback(new Error('电话号码不正确！请重新填写'));
-				} else {
-				  callback();
-				}
-			}
-	};
-	var checkEmail = (rule, value, callback) => {
-			if (!value) {
-				callback();
-			}else{
-				if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
-					callback(new Error('请输入正确的邮箱'));
-				} else {
-					callback();
-				}
-			}			
-	};
-	var checkAddress = (rule, value, callback) => {			  
-			if (!value) {
-		        callback(new Error('请选取地点,并填写详细地址'));
-			}else{
-				if(value.length>=1 && value.length<=100){
-						callback()
-				}else{
-					callback(new Error('请输入1-100位详细地址'));
-				}
-			}			
-	};		  
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value)) {
+          callback(new Error("电话号码不正确！请重新填写"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var checkEmail = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (
+          !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)
+        ) {
+          callback(new Error("请输入正确的邮箱"));
+        } else {
+          callback();
+        }
+      }
+    };
+    var checkAddress = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请选取地点,并填写详细地址"));
+      } else {
+        if (value.length >= 1 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入1-100位详细地址"));
+        }
+      }
+    };
     return {
-		middleA:[],
-		techSaveFlag:false,
-		form2:{},
-		btnShow: JSON.parse(localStorage.getItem('btn')),
-		//服务站下拉选项
-		options:[],
-		techName:'',
-		techStationId:'',
-		promShow1:false, 
-        pickerOptions0: {
-          disabledDate(time) {
-			  if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
-                  return false;
-			  }else{
-				  return true;
-			  }
-           
+      middleA: [],
+      techSaveFlag: false,
+      form2: {},
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      //服务站下拉选项
+      options: [],
+      techName: "",
+      techStationId: "",
+      promShow1: false,
+      pickerOptions0: {
+        disabledDate(time) {
+          if (
+            time.getTime() > Date.now() - 8.64e7 &&
+            time.getTime() < Date.now() + 8.64e7 * 14
+          ) {
+            return false;
+          } else {
+            return true;
           }
-		},
-		//弹窗表格数据
-		listTech:[],
-		selectCommidty:[	
-			{
-			  id:'1',
-			  checkAll:false,
-			  name:'大型灯',
-			  type:'1',
-			  pirce:'26',
-			  payNum:'2',
-			  number:2
-			},
-			{
-			  id:'5',
-			  checkAll:false,
-			  name:'小型灯',
-			  type:'1',
-			  pirce:'13',
-			  payNum:'2',
-			  number:2
-			},			
-			{
-			  id:'4',
-			  checkAll:false,
-			  roomId:'1',
-			  testprice:[
-				  {pirce:26},
-				  {pirce:52},
-				  {pirce:78},
-			  ],
-			  roomType:[
-				{ key: "1", roomName: "一居室"},
-				{ key: "2", roomName: "二居室"},
-				{ key: "3", roomName: "三居室"}
-			  ],
-			  type:'3',
-			  pirce:'26',
-			  payNum:'2',
-			  number:1
-			},			
-			{
-			  id:'2',
-			  checkAll:false,
-			  name:'面积（平米)',
-			  type:'2',
-			  pirce:'26',
-			  payNum:'2',
-			  number:3
-			},
-			{
-			  id:'3',
-			  checkAll:false,
-			  roomId:'2',
-			  testprice:[
-				  {pirce:26},
-				  {pirce:52},
-				  {pirce:78},
-			  ],
-			  roomType:[
-				{ key: "1", roomName: "一居室"},
-				{ key: "2", roomName: "二居室"},
-				{ key: "3", roomName: "三居室"}
-			  ],
-			  type:'3',
-			  pirce:'26',
-			  payNum:'2',
-			  number:1
-			}						
-		],		
-		form: {
-		  custom:'',
-          phone: '13800138000',
-		  customName:"李四",
-		  serverAddress:'北京市朝阳区关东街11呼家楼',
-		  serverStation:'呼家楼服务站',		  
-		},
-		form1: {
-		  serverPro:'',
-          sumPrice:0,
-		},
-		form3:{
-			date:'',
-		},	
-		active: 1,
-        rules2: {
-          phone: [
-            { validator: checkPhone, trigger: 'blur' }
-          ]
+        }
+      },
+      //弹窗表格数据
+      listTech: [],
+      selectCommidty: [
+        {
+          id: "1",
+          checkAll: false,
+          name: "大型灯",
+          type: "1",
+          pirce: "26",
+          payNum: "2",
+          number: 2
         },
-        ruleForm: {
-			name:'',
-			phone:'',
-			address:'',
-			email:'',
-			sex:'',
-			provinceCode:'',
-			cityCode:'',
-			areaCode:'',
-			areaCodes:[],
-			addrLongitude:'',
-			addrLatitude:'',
-		},
-        rules: {
-          name: [
-            { required: true, message: '请输入客户姓名', trigger: 'blur' },
-            { min:2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
-          ],
-          phone: [
-            { required: true,validator: checkPhone, trigger: 'blur' }
-										
-          ],
-          address: [
-            { required: true,validator:checkAddress, trigger: 'blur' },
-			],
-			email:[
-				{ required: false, validator: checkEmail, trigger: 'blur' }
-			],
-			sex: [
-				{ required: true, message: '请选择性别', trigger: 'change' }
-			],
-			areaCodes:[
-					{type:'array', required: true, message: '请选择区域', trigger: 'change' }
-			]					
+        {
+          id: "5",
+          checkAll: false,
+          name: "小型灯",
+          type: "1",
+          pirce: "13",
+          payNum: "2",
+          number: 2
         },
-		dict:require("../../../static/dict.json"),
-		sex:'',
-		sexName:'',								
-		select:'date',
-		//tabName
-		tabOptions:[],
-		//服务类型下拉
-		serverOptions:[
-			{ key: "1", serverName: "平米保洁" },
-			{ key: "2", serverName: "灯具清洁" },
-			{ key: "3", serverName: "居室保洁" }
-		],		
-		//客户下拉选项
-		customOptions:[
-			{ key: "1", customName: "张三" },
-			{ key: "2", customName: "李四" }
-		],
-		//客户备注
-        textarea:'',				
-		//服务时间
-		severTime:'',
-		severTime1:'',		
-		//当前电话
-		customPhone:13821209999,
-		//当前客户姓名		
-		customName:"李四",
-		serverAddress:'北京市朝阳区关东街11呼家楼',
-		serverStation:'呼家楼服务站',
-		dialogTableVisible:false,//选择技师弹窗开关
-		dialogTableVisible1:false,//选择客户弹窗开关
-		serverType:2,//服务类型
-		technicianName:'',//技师姓名
-		//当前客户
-		custom:"",		
-		customKeyFlag:false,
-		sum1:null,		
+        {
+          id: "4",
+          checkAll: false,
+          roomId: "1",
+          testprice: [{ pirce: 26 }, { pirce: 52 }, { pirce: 78 }],
+          roomType: [
+            { key: "1", roomName: "一居室" },
+            { key: "2", roomName: "二居室" },
+            { key: "3", roomName: "三居室" }
+          ],
+          type: "3",
+          pirce: "26",
+          payNum: "2",
+          number: 1
+        },
+        {
+          id: "2",
+          checkAll: false,
+          name: "面积（平米)",
+          type: "2",
+          pirce: "26",
+          payNum: "2",
+          number: 3
+        },
+        {
+          id: "3",
+          checkAll: false,
+          roomId: "2",
+          testprice: [{ pirce: 26 }, { pirce: 52 }, { pirce: 78 }],
+          roomType: [
+            { key: "1", roomName: "一居室" },
+            { key: "2", roomName: "二居室" },
+            { key: "3", roomName: "三居室" }
+          ],
+          type: "3",
+          pirce: "26",
+          payNum: "2",
+          number: 1
+        }
+      ],
+      form: {
+        custom: "",
+        phone: "13800138000",
+        customName: "李四",
+        serverAddress: "北京市朝阳区关东街11呼家楼",
+        serverStation: "呼家楼服务站"
+      },
+      form1: {
+        serverPro: "",
+        sumPrice: 0
+      },
+      form3: {
+        date: ""
+      },
+      active: 1,
+      rules2: {
+        phone: [{ validator: checkPhone, trigger: "blur" }]
+      },
+      ruleForm: {
+        name: "",
+        phone: "",
+        address: "",
+        email: "",
+        sex: "",
+        provinceCode: "",
+        cityCode: "",
+        areaCode: "",
+        areaCodes: [],
+        addrLongitude: "",
+        addrLatitude: ""
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入客户姓名", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        email: [{ required: false, validator: checkEmail, trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        areaCodes: [
+          {
+            type: "array",
+            required: true,
+            message: "请选择区域",
+            trigger: "change"
+          }
+        ]
+      },
+      dict: require("../../../static/dict.json"),
+      sex: "",
+      sexName: "",
+      select: "date",
+      //tabName
+      tabOptions: [],
+      //服务类型下拉
+      serverOptions: [
+        { key: "1", serverName: "平米保洁" },
+        { key: "2", serverName: "灯具清洁" },
+        { key: "3", serverName: "居室保洁" }
+      ],
+      //客户下拉选项
+      customOptions: [
+        { key: "1", customName: "张三" },
+        { key: "2", customName: "李四" }
+      ],
+      //客户备注
+      textarea: "",
+      //服务时间
+      severTime: "",
+      severTime1: "",
+      //当前电话
+      customPhone: 13821209999,
+      //当前客户姓名
+      customName: "李四",
+      serverAddress: "北京市朝阳区关东街11呼家楼",
+      serverStation: "呼家楼服务站",
+      dialogTableVisible: false, //选择技师弹窗开关
+      dialogTableVisible1: false, //选择客户弹窗开关
+      serverType: 2, //服务类型
+      technicianName: "", //技师姓名
+      //当前客户
+      custom: "",
+      customKeyFlag: false,
+      sum1: null
     };
   },
   computed: {
-    areaOptions: function () {
-      return this.$store.state.user.area
+    areaOptions: function() {
+      return this.$store.state.user.area;
     }
   },
-  methods:{
-	//选中行改变
-	rowChange(item){
-       this.sum(item)
-	},
-	//计数器改变
-	numberChange(item){
-	  if(item.checkAll){
-        this.sum(item)
-	  }
-       
-	},
-	//居室改变
-	roomChange(item,roomId){
-		if(item.checkAll){
-			this.sum1=this.sum1+item.testprice[item.roomId].pirce
-			this.sum(item)
-			
-		}
-	},
-	//计算总价
-	sum(item){
-		if(item.pirce != undefined){
-             this.sum1=this.sum1+item.pirce*item.number;	
-		}	    		
-		console.log(this.sum1)
-		this.form1.sumPrice=this.sum1
-	},
-	//按面积数量变化
-	inputChange(item){
-      if(item.checkAll){
-        this.sum(item)
-	  }
-	},
-	//下一步
-	next(){
-		if (this.active++ >= 4) this.active = 1;
-		
-	},
-	//上一步
-	prev(){
-		if (this.active-- <= 1) this.active = 1;	   
-	},
-	//客户改变事件
-	changeCustom(value){
-		console.log(value)
-		if(value != ''){
-			this.customKeyFlag=true;
-		}else{
-			this.customKeyFlag=false;
-		}
-		if(value == '1'){
-			this.form.customName='张三'
-		}else{
-			this.form.customName='李四'
-		}
-		
-	},
-	//新增客户保存				
-	submitForm(formName) {
-		if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
-			this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
-			var str=this.$refs.pickerInput1.value;
-			str=str.split(',')
-			//经度
-			var lng=str[0];
-			this.ruleForm.addrLongitude=lng;
-			//纬度
-			var lat=str[1];
-			this.ruleForm.addrLatitude=lat;
-		}else{
-			this.$refs.pickerInput.value='';
-			this.ruleForm.address='';
-		}			   
-		this.$refs[formName].validate((valid) => {
-			if (valid) {
-				//省、市、区三级ID	
-				this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
-				this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
-				this.ruleForm.areaCode=this.ruleForm.areaCodes[2];
-				var obj = this.ruleForm;
-				saveCus(obj).then(res => {
-					if(res.data.code === 1){
-						this.$message({
-							type: 'success',
-							message: '新增成功!'
-						});
-						this.$refs['ruleForm'].resetFields();
-						this.$refs.pickerInput.value=''	
-						this.dialogTableVisible1 = false;
-					}else{
-						this.$message({
-							type: 'error',
-							message: res.data.data
-						});
-						this.$refs.pickerInput.value=''
-						this.ruleForm.address=''
-					}													
-				}).catch(res=>{
-					
-				});							
-			} else {
-				this.$refs.pickerInput.value='';
-				this.ruleForm.address='';            
-				return false;
-			}
-		});	
-								
-	},
-	//新增客户弹窗取消
-	resetForm(formName) {
-		this.$refs[formName].resetFields();
-		this.ruleForm.provinceCode='';
-		this.ruleForm.cityCode='';
-		this.ruleForm.areaCode='';
-		this.ruleForm.sex='';
-		this.$refs.pickerInput.value='';	
-		this.dialogTableVisible1 = false;
-	},								
-	//获取客户数据
-	getcustomerList(){
-		var obj = {
-			id:this.$route.query.coustomerId
-		}
-	}, 
+  methods: {
+    //选中行改变
+    rowChange(item) {
+      this.sum(item);
+    },
+    //计数器改变
+    numberChange(item) {
+      if (item.checkAll) {
+        this.sum(item);
+      }
+    },
+    //居室改变
+    roomChange(item, roomId) {
+      if (item.checkAll) {
+        this.sum1 = this.sum1 + item.testprice[item.roomId].pirce;
+        this.sum(item);
+      }
+    },
+    //计算总价
+    sum(item) {
+      if (item.pirce != undefined) {
+        this.sum1 = this.sum1 + item.pirce * item.number;
+      }
+      console.log(this.sum1);
+      this.form1.sumPrice = this.sum1;
+    },
+    //按面积数量变化
+    inputChange(item) {
+      if (item.checkAll) {
+        this.sum(item);
+      }
+    },
+    //下一步
+    next() {
+      if (this.active++ >= 4) this.active = 1;
+    },
+    //上一步
+    prev() {
+      if (this.active-- <= 1) this.active = 1;
+    },
+    //客户改变事件
+    changeCustom(value) {
+      console.log(value);
+      if (value != "") {
+        this.customKeyFlag = true;
+      } else {
+        this.customKeyFlag = false;
+      }
+      if (value == "1") {
+        this.form.customName = "张三";
+      } else {
+        this.form.customName = "李四";
+      }
+    },
+    //新增客户保存
+    submitForm(formName) {
+      if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
+        this.ruleForm.address =
+          this.$refs.pickerInput.value + this.ruleForm.address;
+        var str = this.$refs.pickerInput1.value;
+        str = str.split(",");
+        //经度
+        var lng = str[0];
+        this.ruleForm.addrLongitude = lng;
+        //纬度
+        var lat = str[1];
+        this.ruleForm.addrLatitude = lat;
+      } else {
+        this.$refs.pickerInput.value = "";
+        this.ruleForm.address = "";
+      }
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //省、市、区三级ID
+          this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
+          this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
+          this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
+          var obj = this.ruleForm;
+          saveCus(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功!"
+                });
+                this.$refs["ruleForm"].resetFields();
+                this.$refs.pickerInput.value = "";
+                this.dialogTableVisible1 = false;
+              } else {
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+                this.$refs.pickerInput.value = "";
+                this.ruleForm.address = "";
+              }
+            })
+            .catch(res => {});
+        } else {
+          this.$refs.pickerInput.value = "";
+          this.ruleForm.address = "";
+          return false;
+        }
+      });
+    },
+    //新增客户弹窗取消
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      this.ruleForm.provinceCode = "";
+      this.ruleForm.cityCode = "";
+      this.ruleForm.areaCode = "";
+      this.ruleForm.sex = "";
+      this.$refs.pickerInput.value = "";
+      this.dialogTableVisible1 = false;
+    },
+    //获取客户数据
+    getcustomerList() {
+      var obj = {
+        id: this.$route.query.coustomerId
+      };
+    },
     //新增按钮
     addcustomer() {
-		this.dialogTableVisible1=true;					
-		this.ruleForm.provinceCode='';
-		this.ruleForm.cityCode='';
-		this.ruleForm.areaCode='';
-		this.ruleForm.sex='';							
-	},
-	//地址变化时开始POI搜索
-	testFun(value){
-		this.$nextTick(() => {
-			this.test(value[1]);
-		})	
-	},	
-	//服务类型下拉改变
-	serverchange(value){
-	   //this.serverType=value;
-	},
-	//技师数据回显二级选中
-	selectionreturn1(){
-		if(this.tabOptions.length != 'undefined'){
-			for(let a=0;a<this.listTech.length;a++){
-				for(let b=0;b<this.tabOptions.length;b++){
-					if(this.tabOptions[b].techId == this.listTech[a].techId){
-					this.listTech[a].techChecked=true;
-					}
-				}
-			}
-		}                                        
-	}, 	
-	//技师选择按钮点击
-	technicianSel(){
-		var obj={};             
-		orderServer(obj).then(res => {      
-			if (res.data.code === 1) {                         
-				this.options=res.data.data.stations 
-				this.listTech=res.data.data.techs 
-				this.dialogTableVisible=true;
-				this.selectionreturn1();                                                          
-			}else{
-
-			}          
-		}).catch(res=>{
-			
-		});		
-	},
-	//选择技师弹出层保存
-	submitForm2() {
-		//先遍历数据中选中的再保存
-		var arr=[];
-		if(this.listTech.length){
-			for(let a=0;a<this.listTech.length;a++){
-				if(this.listTech[a].techChecked == true){
-					arr.push(this.listTech[a]);
-				}
-			}
-		}
-		this.tabOptions=arr
-		this.dialogTableVisible = false	
-	},
-	cancelForm2(){
-		this.dialogTableVisible = false	
-	},	
-    //叉号点击关闭TAB
-    errorClose(obj,index){
-		if(this.tabOptions.length){
-			for(let a=0 ;a<this.listTech.length;a++){
-				if(obj.techId ==this.listTech[a].techId ){
-					this.listTech[a].techChecked=false
-				}
-			}                                       
-			this.tabOptions.remove(obj);
-		}  
-	},
-	//确认下单按钮点击
-	confirmOrder(){
-	},
-	//POI搜索功能调起
-	test(area){
-		var that=this;
-		var inputname=this.$refs.pickerInput;
-		var inputname1=this.$refs.pickerInput1;
-		AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
-			var obj={
-				city:area,
-				input:inputname,
-			}							                        
-			var poiPicker = new PoiPicker(obj);	
-				poiPicker.onCityReady(function() {
-					poiPicker.searchByKeyword(inputname.value);
-					poiPicker.clearSearchResults()
-					poiPicker.clearSuggest()	
-				});						
-			//初始化poiPicker
-			poiPickerReady(poiPicker);
-		});
-
-		function poiPickerReady(poiPicker) {
-			window.poiPicker = poiPicker;
-			var marker = new AMap.Marker();
-			var infoWindow = new AMap.InfoWindow({
-					offset: new AMap.Pixel(0, -20)
-			});
-			//选取了某个POI
-			poiPicker.on('poiPicked', function(poiResult) {
-				var source = poiResult.source,
-				poi = poiResult.item,                          
-				info = {
-						source: source,
-						id: poi.id,
-						name: poi.name,
-						location: poi.location.toString(),
-						address: poi.address,
-						
-				};
-				inputname.value=info.name;
-				inputname1.value=info.location;									
-			});
-		}	
-							
-	},
-    //日期变化时改变时间对象
-    dateChange(value){
-      console.log(value)
-	},
-    //时间选项点击
-    timeChange(index){
-      console.log(index)
-      for(var a=0;a<this.$refs.TimeWrap.length;a++){
-          if(a==index){
-              this.$refs.TimeWrap[a].style.borderColor ="#4c70e8";
-              this.$refs.TimeWrap[a].style.color = "#4c70e8";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark'
-          }else{
-              this.$refs.TimeWrap[a].style.borderColor = "#fff";
-              this.$refs.TimeWrap[a].style.color = "#000";
-              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';                           
+      this.dialogTableVisible1 = true;
+      this.ruleForm.provinceCode = "";
+      this.ruleForm.cityCode = "";
+      this.ruleForm.areaCode = "";
+      this.ruleForm.sex = "";
+    },
+    //地址变化时开始POI搜索
+    testFun(value) {
+      this.$nextTick(() => {
+        this.test(value[1]);
+      });
+    },
+    //服务类型下拉改变
+    serverchange(value) {
+      //this.serverType=value;
+    },
+    //技师数据回显二级选中
+    selectionreturn1() {
+      if (this.tabOptions.length != "undefined") {
+        for (let a = 0; a < this.listTech.length; a++) {
+          for (let b = 0; b < this.tabOptions.length; b++) {
+            if (this.tabOptions[b].techId == this.listTech[a].techId) {
+              this.listTech[a].techChecked = true;
+            }
           }
-
+        }
       }
-    },			
-	//选择技师弹出层查询按钮
-	searchTeh(){        
-		this.$nextTick( () => {
-			//前端定位
-			var falg1=0;              
-			var len = this.listTech.length;
-			for(var i=0;i<len;i++){
-				if(this.listTech[i].techName == this.techName || this.listTech[i].techStationId== this.techStationId ){
-					falg1=1;
-						this.$refs.tableItem1[i].scrollIntoView()
-						this.$refs.tableItem1[i].style.background='#eee'                    
-				}else{
-					this.$refs.tableItem1[i].style.background='#fff' 
-				}                   
-			} 							
-			if(falg1 ==0){
-				var that=this
-				this.promShow1=true;
-				setTimeout(function(){
-				that.promShow1=false;                  
-				},2000);
-			}else{ 
-				this.promShow1=false;
-			}
-		})             
-    }	
-	
+    },
+    //技师选择按钮点击
+    technicianSel() {
+      var obj = {};
+      orderServer(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.options = res.data.data.stations;
+            this.listTech = res.data.data.techs;
+            this.dialogTableVisible = true;
+            this.selectionreturn1();
+          } else {
+          }
+        })
+        .catch(res => {});
+    },
+    //选择技师弹出层保存
+    submitForm2() {
+      //先遍历数据中选中的再保存
+      var arr = [];
+      if (this.listTech.length) {
+        for (let a = 0; a < this.listTech.length; a++) {
+          if (this.listTech[a].techChecked == true) {
+            arr.push(this.listTech[a]);
+          }
+        }
+      }
+      this.tabOptions = arr;
+      this.dialogTableVisible = false;
+    },
+    cancelForm2() {
+      this.dialogTableVisible = false;
+    },
+    //叉号点击关闭TAB
+    errorClose(obj, index) {
+      if (this.tabOptions.length) {
+        for (let a = 0; a < this.listTech.length; a++) {
+          if (obj.techId == this.listTech[a].techId) {
+            this.listTech[a].techChecked = false;
+          }
+        }
+        this.tabOptions.remove(obj);
+      }
+    },
+    //确认下单按钮点击
+    confirmOrder() {},
+    //POI搜索功能调起
+    test(area) {
+      var that = this;
+      var inputname = this.$refs.pickerInput;
+      var inputname1 = this.$refs.pickerInput1;
+      AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
+        var obj = {
+          city: area,
+          input: inputname
+        };
+        var poiPicker = new PoiPicker(obj);
+        poiPicker.onCityReady(function() {
+          poiPicker.searchByKeyword(inputname.value);
+          poiPicker.clearSearchResults();
+          poiPicker.clearSuggest();
+        });
+        //初始化poiPicker
+        poiPickerReady(poiPicker);
+      });
+
+      function poiPickerReady(poiPicker) {
+        window.poiPicker = poiPicker;
+        var marker = new AMap.Marker();
+        var infoWindow = new AMap.InfoWindow({
+          offset: new AMap.Pixel(0, -20)
+        });
+        //选取了某个POI
+        poiPicker.on("poiPicked", function(poiResult) {
+          var source = poiResult.source,
+            poi = poiResult.item,
+            info = {
+              source: source,
+              id: poi.id,
+              name: poi.name,
+              location: poi.location.toString(),
+              address: poi.address
+            };
+          inputname.value = info.name;
+          inputname1.value = info.location;
+        });
+      }
+    },
+    //日期变化时改变时间对象
+    dateChange(value) {
+      console.log(value);
+    },
+    //时间选项点击
+    timeChange(index) {
+      console.log(index);
+      for (var a = 0; a < this.$refs.TimeWrap.length; a++) {
+        if (a == index) {
+          this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+          this.$refs.TimeWrap[a].style.color = "#4c70e8";
+          this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
+        } else {
+          this.$refs.TimeWrap[a].style.borderColor = "#fff";
+          this.$refs.TimeWrap[a].style.color = "#000";
+          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+        }
+      }
+    },
+    //选择技师弹出层查询按钮
+    searchTeh() {
+      this.$nextTick(() => {
+        //前端定位
+        var falg1 = 0;
+        var len = this.listTech.length;
+        for (var i = 0; i < len; i++) {
+          if (
+            this.listTech[i].techName == this.techName ||
+            this.listTech[i].techStationId == this.techStationId
+          ) {
+            falg1 = 1;
+            this.$refs.tableItem1[i].scrollIntoView();
+            this.$refs.tableItem1[i].style.background = "#eee";
+          } else {
+            this.$refs.tableItem1[i].style.background = "#fff";
+          }
+        }
+        if (falg1 == 0) {
+          var that = this;
+          this.promShow1 = true;
+          setTimeout(function() {
+            that.promShow1 = false;
+          }, 2000);
+        } else {
+          this.promShow1 = false;
+        }
+      });
+    }
   },
   mounted() {
-		 this.getcustomerList();
-		 this.sex=this.dict.sex;		 
+    this.getcustomerList();
+    this.sex = this.dict.sex;
   }
 };
 </script>
 <style  lang="scss" scoped>
-.dispatchTechNameSearch{
-   width:180px;margin-left:15px;
+.dispatchTechNameSearch {
+  width: 180px;
+  margin-left: 15px;
 }
-.width120{
-	width:120px
+.width120 {
+  width: 120px;
 }
-.paddingTop60{
-   padding-top:60px;
+.paddingTop60 {
+  padding-top: 60px;
 }
-.marginRight15{
-   margin-right:15px;
+.marginRight15 {
+  margin-right: 15px;
 }
-.dispatchTechNameSearch{
-   width:180px;margin-left:15px;
+.dispatchTechNameSearch {
+  width: 180px;
+  margin-left: 15px;
 }
-.dispatchMangFooter{
-  margin-top:20px;padding-bottom:0px;
+.dispatchMangFooter {
+  margin-top: 20px;
+  padding-bottom: 0px;
 }
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
-.marginTopDec10{margin-top:-10px;max-width:400px;}
-.selfSeverTimeSt{
-    width: 80px;
-    height: 34px;
-    line-height: 34px;
-    border: 1px solid #bfcbd9;
-    display: inline-block;
-    text-align: center;
-    position: relative;
+.marginTopDec10 {
+  margin-top: -10px;
+  max-width: 400px;
+}
+.selfSeverTimeSt {
+  width: 80px;
+  height: 34px;
+  line-height: 34px;
+  border: 1px solid #bfcbd9;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.addorderStepWrap {
+  width: 100%;
+  height: 600px;
+  background: #fff;
+  padding-top: 20px;
+}
+.techNameStyle {
+  width: 80px;
+  height: 25px;
+  line-height: 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stepControl {
+  width: 100%;
+  padding-left: 30px;
+}
+.stepContentWrap {
+  width: 100%;
+  height: 400px;
+  padding-left: 30px;
+  margin-top: 50px;
+}
+.stepContent {
+  width: 100%;
+  height: 350px;
+}
+.customSelName {
+  width: 280px;
+  margin-right: 20px;
+}
+.fontSize12 {
+  font-size: 12px;
+}
+.width280 {
+  width: 280px;
+}
+.changeAddressBut {
+  margin-left: 30px;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid #4c70e8;
+  text-align: center;
+  font-size: 12px;
+  width: 80px;
+  color: #4c70e8;
+}
+.stepThreeBut {
+  width: 200px;
+  height: 34px;
+  line-height: 34px;
+  display: inline-block;
+}
+.stepThreeSelfTop {
+  margin-top: 20px;
+  margin-left: -46px;
+}
+.selfPromInfStyle {
+  display: inline-block;
+  heihgt: 30px;
+  line-height: 30px;
+  margin-left: 30px;
+  color: #8391a5;
+  font-size: 12px;
+}
+.severChangeStyle {
+  width: 400px;
+  margin-right: 20px;
+}
+.selectTechHL {
+  float: left;
+  width: 120px;
+}
+.selectTechHR {
+  float: left;
+  margin-left: 10px;
+}
+.width120 {
+  width: 120px;
+}
+.width400 {
+  width: 400px;
+}
+.selfAddressStyle {
+  margin-left: -5px;
+  width: 200px;
+}
+.marginLeft10 {
+  margin-left: 10px;
+}
+.marginLeft20 {
+  margin-left: 20px;
+}
+.NextPrevWrap {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.NextPrevStyle {
+  display: inline-block;
+  line-height: 30px;
+}
+.selfEmailStyle {
+  margin-left: -10px;
+  width: 400px;
+}
+.selfPromINF {
+  font-size: 12px;
+  margin-top: 10px;
+  color: red;
+}
+.FloatRight {
+  float: right;
+}
+.roomTypeStyle {
+  width: 120px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.selfINputNumStyle {
+  width: 120px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.NumberINputStyle {
+  width: 120px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.height30 {
+  height: 30px;
+}
+.height110 {
+  height: 110px;
+}
+.imgStyle {
+  display: block;
+}
+.userHeaderStyle {
+  width: 85px;
+  height: 90px;
+  line-height: 90px;
+  border: 1px solid #ccc;
+}
+
+.selftSerchBut {
+  width: 80px;
+  height: 34px;
+  line-height: 34px;
+  cursor: pointer;
+  border: 1px solid #4c70e8;
+  text-align: center;
+  display: inline-block;
+  color: #4c70e8;
+}
+.selfTable,
+.selfTable tr th,
+.selfTable tr td {
+  border: 1px solid #eee;
+}
+.selfTable {
+  min-height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
+}
+.tabWrap {
+  width: 100px;
+  margin-right: 20px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+}
+.closePic {
+  cursor: pointer;
+  color: #bfcbd9;
+  font-size: 12px;
+  position: absolute;
+  margin-left: 80px;
+  margin-top: -25px;
+}
+.addorder-container {
+  width: 100%;
+  float: left;
+  background: #eef1f6;
+  .fist-bar {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #fff;
     margin-left: 20px;
-    margin-top:10px;
-    font-size: 14px;
-    cursor: pointer;
+    margin-right: 20px;
+  }
 }
-.addorderStepWrap{width:100%;height:600px;background:#fff;padding-top:20px;}
-.techNameStyle{width:80px;height:25px;line-height:25px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.stepControl{width:100%;padding-left:30px;}
-.stepContentWrap{width:100%;height:400px;padding-left:30px;margin-top:50px;}
-.stepContent{width:100%;height:350px;}
-.customSelName{width:280px;margin-right:20px;}
-.fontSize12{font-size:12px;}
-.width280{width:280px;}
-.changeAddressBut{margin-left:30px;height:20px;line-height:20px;display:inline-block;cursor: pointer;border: 1px solid #4c70e8;text-align: center;font-size: 12px;width: 80px; color: #4c70e8;}
-.stepThreeBut{width:200px;height:34px;line-height:34px;display:inline-block;}
-.stepThreeSelfTop{margin-top:20px;margin-left:-46px;}
-.selfPromInfStyle{display:inline-block;heihgt:30px;line-height:30px;margin-left:30px;color:#8391a5;font-size:12px;}
-.severChangeStyle{width:400px;margin-right:20px;}
-.selectTechHL{float:left;width:120px}
-.selectTechHR{float:left;margin-left:10px;}
-.width120{width:120px;}
-.width400{width:400px;}
-.selfAddressStyle{margin-left:-5px;width:200px;}
-.marginLeft10{margin-left:10px;}
-.marginLeft20{margin-left:20px;}
-.NextPrevWrap{margin-bottom:20px;text-align:center;}
-.NextPrevStyle{display:inline-block;line-height:30px;}
-.selfEmailStyle{margin-left:-10px;width:400px;}
-.selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
-.FloatRight{float:right;}
-.roomTypeStyle{width:120px;margin-top:3px;margin-bottom:3px;}
-.selfINputNumStyle{width:120px;margin-top:3px;margin-bottom:3px;}
-.NumberINputStyle{width: 120px;margin-top:3px;margin-bottom:3px;}
-.height30{height:30px;}
-.height110{height:110px;}
-.imgStyle{display:block;}
-.userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
-
-
-.selftSerchBut{width:80px;height:34px;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8}
-.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
-.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;} 
-.tabWrap{width:100px;margin-right:20px;font-size:12px;display:inline-block;height:25px;text-align:center;line-height:25px;border-radius:12px;border:1px solid #bfcbd9;position:relative;}
-.closePic{cursor:pointer;color:#bfcbd9;font-size:12px;position:absolute;margin-left:80px;margin-top:-25px;}
-.addorder-container{
-    width:100%;
-	float:left;
-	background:#eef1f6;
-	.fist-bar{
-	  padding-top:20px;
-	  padding-bottom:20px;
-	  background:#fff;
-	  margin-left:20px;
-	  margin-right:20px;
-	}
-}
-.custom-action{
-	margin-left:30px;
-	margin-right:48px;
-	font-size:12px;
+.custom-action {
+  margin-left: 30px;
+  margin-right: 48px;
+  font-size: 12px;
 }
 
-.second-bar{
-  padding-top:20px;
-  padding-bottom:20px;
-  background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
-  
+.second-bar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: #eef1f6;
+  margin-left: 20px;
+  margin-right: 20px;
 }
-.thrid-bar{
-  padding-top:20px;
-  background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
-  height:500px;
-  margin-top:120px;
+.thrid-bar {
+  padding-top: 20px;
+  background: #eef1f6;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 500px;
+  margin-top: 120px;
 }
-.order-inf{
-    padding-top:20px;
-	background:#fff;
-	margin-top:20px;
+.order-inf {
+  padding-top: 20px;
+  background: #fff;
+  margin-top: 20px;
 }
-.custom-inf{
-	width:49%;
-	background:#fff;
-	float:left;
-	height:160px;
-	padding-top:20px;
-	padding-bottom:20px;
-    color:#000;	
+.custom-inf {
+  width: 49%;
+  background: #fff;
+  float: left;
+  height: 160px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #000;
 }
-.sever-inf{
-    margin-left:2%;
-	width:49%;
-	background:#fff;
-	float:left;
-	height:160px;
-	padding-top:20px;
-	padding-bottom:20px;	
+.sever-inf {
+  margin-left: 2%;
+  width: 49%;
+  background: #fff;
+  float: left;
+  height: 160px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
-.customNamevalue{
-	width:100%;
-	height:40px;
-	margin-left: -30px;
-	font-size:12px;	
+.customNamevalue {
+  width: 100%;
+  height: 40px;
+  margin-left: -30px;
+  font-size: 12px;
 }
-.changeserver{
-	width:100%;
-	height:110px;
-	margin-left:30px;
-	margin-top:10px;
+.changeserver {
+  width: 100%;
+  height: 110px;
+  margin-left: 30px;
+  margin-top: 10px;
 }
-.mapWrap{
-	width:0px;
-	height:0px;
-	display:block;
+.mapWrap {
+  width: 0px;
+  height: 0px;
+  display: block;
 }
-.pickerInput{
-	  width: 200px;
-		height: 36px;
-		font-size:12px;
-		padding:0 10px;
-    border: none;
-		border: 1px solid #bfcbd9;
-		outline:none;
+.pickerInput {
+  width: 200px;
+  height: 36px;
+  font-size: 12px;
+  padding: 0 10px;
+  border: none;
+  border: 1px solid #bfcbd9;
+  outline: none;
 }
-.pickerInput:hover{
-	border-color:#8391a5;
+.pickerInput:hover {
+  border-color: #8391a5;
 }
-.amap-ui-poi-picker-sugg{
-	width:180px;
-	overflow:hidden;
+.amap-ui-poi-picker-sugg {
+  width: 180px;
+  overflow: hidden;
 }
-.amap-ui-poi-picker-sugg-list{
-	width:180px;
+.amap-ui-poi-picker-sugg-list {
+  width: 180px;
 }
-.sugg-item{
-	width:180px !important;
+.sugg-item {
+  width: 180px !important;
 }
-.FloatRight{float:right;}
-.selfpromMessageTab{position:relative;width:100%;margin-top:20px;margin-left:10px;}
+.FloatRight {
+  float: right;
+}
+.selfpromMessageTab {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 10px;
+}
 .techNameStyle {
   width: 80px;
   height: 25px;
@@ -1000,7 +1143,7 @@ export default {
   width: 80px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top:5px;
+  margin-top: 5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -1010,26 +1153,44 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-.selfTableWrapONE{
-	margin-top: 20px;
-	overflow: hidden;
-	width: 660px;
-	height: 280px;
-	position:relative;
+.selfTableWrapONE {
+  margin-top: 20px;
+  overflow: hidden;
+  width: 660px;
+  height: 280px;
+  position: relative;
 }
-.table-d{
+.table-d {
   width: 677px;
   overflow-y: scroll;
   height: 276px;
   margin-left: 15px;
 }
-.table-d1{
+.table-d1 {
   width: 750px;
   height: 276px;
 }
-.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
-.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
-.height70{height:70px;}
-.imgStyle{display:block;}
-.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
+.selfTable,
+.selfTable tr th,
+.selfTable tr td {
+  border: 1px solid #eee;
+}
+.selfTable {
+  min-height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
+}
+.height70 {
+  height: 70px;
+}
+.imgStyle {
+  display: block;
+}
+.selfTableHEADTD {
+  background: #eef1f6;
+  height: 60px;
+  border: none !important;
+}
 </style>

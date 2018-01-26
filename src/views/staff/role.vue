@@ -147,7 +147,7 @@ var data = [];
 
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
-  name: "table_demo",
+  name: "role",
   directives: {
     waves
   },
@@ -650,7 +650,9 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {},
+    lvChange(value) {
+      
+    },
     offChange(val) {},
     //点击新增时
     handleCreate() {

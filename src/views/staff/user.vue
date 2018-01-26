@@ -273,7 +273,7 @@ import waves from "@/directive/waves/index.js"; // 水波纹指令
 // arr to obj
 
 export default {
-  name: "table_demo",
+  name: "staffList",
   directives: {
     waves
   },
@@ -601,9 +601,7 @@ export default {
       }else{
         var obj = {}
       }
-    
         this.listLoading = true;
-      
         getStaff(obj, this.pageNumber, this.pageSize).then(res => {
           if (res.data.code === 1) {
             this.total = res.data.data.count;
@@ -616,14 +614,12 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-
             this.listLoading = false;
             this.listQuery.page = 1;
           } else {
             this.listLoading = false;
           }
         });
-      
     },
     addRole() {
       this.dialogFormStation = true;
@@ -653,11 +649,9 @@ export default {
       }else{
         var obj = {}
       }
-  
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      // var obj = {};
       this.listLoading = true;
       this.list = [];
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
@@ -676,7 +670,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-
       this.pageNumber = val;
       if (this.search.type == "name") {
         var obj = {
@@ -894,7 +887,6 @@ export default {
         closeOnClickModal: false
       })
         .then(() => {
-         
           var obj = {
             id: row.id
           };
