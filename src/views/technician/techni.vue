@@ -2191,7 +2191,7 @@ export default {
   /* margin: 20px; */
   background: #fff;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
 }
 
 .tech-section-right {
@@ -2201,7 +2201,7 @@ export default {
 }
 
 .listTechni .tech-section-ul {
-  margin: 20px 0;
+  margin: 20px 0 0 0;
   display: flex;
   flex-wrap: wrap;
 }
