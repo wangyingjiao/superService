@@ -338,6 +338,7 @@
                       <el-form-item label="出生日期：" required>
                           <el-form-item prop="birtStr">
                               <el-date-picker
+                                  :default-value="new Date('1960-01-01')"
                                   :editable='false'
                                   type="date" placeholder="选择日期" 
                                   v-model="personal.birtStr" 
@@ -2589,6 +2590,7 @@ export default {
   flex-wrap: wrap;
   text-align: center;
   line-height: 26px;
+  cursor: pointer;
   padding: 0 7px;
   justify-content: center;
   overflow: hidden;

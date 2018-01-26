@@ -250,9 +250,9 @@ export default{
 </script>
 
 <style>
-*{
+/* *{
 	box-sizing: border-box;
-}
+} */
 .img-list{
 	overflow:hidden;
 	width:100%;
@@ -266,7 +266,7 @@ export default{
 	/* width:200px;
 	height:200px; */
 	padding:5px;
-	margin:5px 20px 20px 0;
+	margin:0px 20px 0px 0;
 	border:1px solid #d1dbe5;
 	border-radius:4px;
 	transition:all .3s;
@@ -283,7 +283,6 @@ export default{
   width: 112px;
   height: 112px;
   line-height: 112px;
-  margin-top: 5px;
 }
 .img-list .uploader{
 	width:100%;
