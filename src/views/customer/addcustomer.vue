@@ -212,7 +212,7 @@
 import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
 //import { parseTime } from "@/utils";
 export default {
-  name: "",
+  name: "addcustomer",
   data() {
 	var checkPhone = (rule, value, callback) => {
 			if (!value) {

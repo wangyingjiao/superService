@@ -289,7 +289,7 @@ import {
   saveCus //保存客户（新增）
 } from "@/api/customer";
 export default {
-  name: "",
+  name: "addorder",
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!value) {

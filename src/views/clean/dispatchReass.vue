@@ -35,7 +35,7 @@
 <script>
 import {reassId} from "@/api/order";
 export default {
-  name: "",
+  name: "dispatchReass",
   data() {
     return {
         reassList:[],

@@ -153,10 +153,10 @@ import {
 	} from "@/api/customer";
 import {getMech} from "@/api/basic";
 export default {
-  name: "",
+  name: "customermanage",
   data() {
 		//手机号验证规则
-		var checkPhone = (rule, value, callback) => {			  
+		var checkPhone = (rule, value, callback) => {
 				if (!value) {
 					return callback(new Error('请输入11位手机号码'));
 				}else{
