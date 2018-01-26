@@ -441,6 +441,7 @@
 import {
   getOrderInf,
   addTechData,
+  ChangeTimeData,
   dispatchTechData,
   addTechSave,
   dispatchTechSave,
@@ -555,7 +556,8 @@ export default {
                   serviceTime:this.changTime+' '+time+':00'
                 }
                 saveTime(obj).then(res => {
-                  this.timeSaveFlag=false;      
+                  this.timeSaveFlag=false;
+                  this.dialogVisible = false ;      
                   if (res.data.code === 1) {                         
                       this.$message({
                         type: "success",
@@ -566,8 +568,6 @@ export default {
                       this.tableData1=res.data.data.list;
                       this.otherInfo.serviceHour=res.data.data.serviceHour;
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb;
-                      this.dialogVisible = false 
-
                   }else{
                     this.$message({
                       type: "error",
@@ -586,7 +586,9 @@ export default {
 										message: '已取消更换时间'
 									});
                   this.timeSaveFlag=false;
-                  this.timeObj=[];                   
+                  this.timeObj=[];
+                  this.formInline.Date=this.options2[0].value
+                  this.dateChange(this.formInline.Date)                    
             });                         
                        
           }
@@ -843,15 +845,15 @@ export default {
     },
     //改变服务时间按钮
     changeTime(){
-      this.timeObj=[];
-      this.dialogVisible=true; 
+      this.timeObj=[]; 
       var obj={
         id:this.orderId
       }
       //请求服务时间下拉菜单值
-      getOrderInf(obj).then(res => {      
-          if (res.data.code === 1) {                                   
-            this.options2=res.data.data.orderTimeList;//服务时间下拉菜单值
+      ChangeTimeData(obj).then(res => {      
+          if (res.data.code === 1) {
+            this.dialogVisible=true;                                 
+            this.options2=res.data.data;//服务时间下拉菜单值
             //默认选择当前日期
             if(this.options2 != undefined && this.options2[0] != undefined){
               this.formInline.Date=this.options2[0].value
