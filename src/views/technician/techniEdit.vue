@@ -2322,6 +2322,7 @@ export default {
 }
 
 .tech-order-posis {
+  cursor: pointer;
   margin: 0 5px;
   display: flex;
   flex-wrap: wrap;

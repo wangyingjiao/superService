@@ -2325,7 +2325,7 @@ export default {
             // that.basicForm.id = this.editId
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             that.basicForm.customTags = this.customArr
-            that.basicForm.pictures = this.picFile
+            that.basicForm.pictures = this.picFile;
             console.log(that.basicForm, "that.basicForm----");
             serverEditPre(that.basicForm)
               .then(data => {
