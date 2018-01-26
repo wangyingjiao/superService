@@ -1,5 +1,4 @@
 {
-    
     "assess_grade": {
         "1": "一级",
         "2": "二级",
@@ -187,10 +186,6 @@
         "yes": "是",
         "no": "否"
     },
-
-    
-    
- 
     "order_type": {
         "common": "普通订单",
         "group_split_yes": "组合并拆单",

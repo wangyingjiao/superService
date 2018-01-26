@@ -4,20 +4,20 @@
   <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入" v-model="search.name">
       </el-input>
-      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search" @click="handleFilter">搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad" style="width:80px" @click="handleCreate" >新增</button>
     <!-- 表格 -->
     <el-table 
-    :key='tableKey' 
-    :data="list" 
-    v-loading="listLoading" 
-    fit
-    highlight-current-row
-    element-loading-text="正在加载" 
-    style="width: 100%" >
+        :key='tableKey' 
+        :data="list" 
+        v-loading="listLoading" 
+        fit
+        highlight-current-row
+        element-loading-text="正在加载" 
+        style="width: 100%" >
 
       <el-table-column align="center" label="编号" width="100">
         <template scope="scope">
@@ -61,47 +61,39 @@ export default {
       },
       pageNumber: 1,
       pageSize: 10,
-      total: 1,
+      total: 1
     };
   },
-  
+
   created() {
     this.getList();
-  
   },
   methods: {
     getList() {
       // 获取列表
       this.listLoading = true;
-      this.listLoading = false
+      this.listLoading = false;
     },
     handleFilter() {
       // 搜索
-      
     },
-//页数变化
-    handleSizeChange(val) {
-      
-    },
+    //页数变化
+    handleSizeChange(val) {},
     //页码变化
-    handleCurrentChange(val) {
-     
-    },
+    handleCurrentChange(val) {},
     //点击新增
-    handleCreate() {
-    },
-    
+    handleCreate() {},
+
     // 点击删除
     handleDelete(row) {
       //删除
-      
+
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
+        closeOnClickModal: false
       })
-        .then(() => {
-        })
+        .then(() => {})
         .catch(() => {
           this.$message({
             type: "warning",
@@ -121,7 +113,6 @@ export default {
 .btn_left {
   width: 100px;
 }
-
 .bgWhite {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
