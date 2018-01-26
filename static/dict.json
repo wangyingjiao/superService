@@ -95,6 +95,10 @@
         "area": "按面积",
         "num": "按数量"
     },
+    "order_majorSort": {
+        "clean": "保洁",
+        "repair": "家修"
+    },
     "order_source": {
         "score": "积分商城",
         "store": "门店",
@@ -111,7 +115,12 @@
         "finish": "已完成",
         "cancel": "已取消",
         "success": "已成功",
-        "stop": "已暂停"
+        "whole": "全部"
+    },
+    "order_type": {
+        "common": "普通订单",
+        "group_split_yes": "组合并拆单",
+        "group_split_no": "组合不拆单"
     },
     "pay_method": {
         "online": "在线",
@@ -151,6 +160,12 @@
         "self": "直营",
         "join": "加盟"
     },
+    "service_status": {
+        "wait_service": "待服务",
+        "started": "已上门",
+        "finish": "已完成",
+        "cancel": "已取消"
+    },
     "ser_sort": {
         "clean": "保洁",
         "repair": "家修",
@@ -159,6 +174,10 @@
     "sex": {
         "male": "男",
         "female": "女"
+    },
+    "source": {
+        "own": "本机构",
+        "other": "第三方"
     },
     "sys_log_type": {
         "visit": "接入日志",
@@ -185,24 +204,5 @@
     "yes_no": {
         "yes": "是",
         "no": "否"
-    },
-    "order_type": {
-        "common": "普通订单",
-        "group_split_yes": "组合并拆单",
-        "group_split_no": "组合不拆单"
-    },
-    "order_majorSort": {
-        "clean": "保洁",
-        "repair": "家修"
-    },
-    "service_status": {
-        "wait_service": "待服务",
-        "finish": "已完成",
-        "cancel": "已取消",
-        "started": "已上门"
-    },
-    "source": {
-        "own": "本机构",
-        "other": "第三方"
     }
 }
