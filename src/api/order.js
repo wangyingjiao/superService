@@ -9,10 +9,6 @@ export function getOrderInf(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/formData`, obj)
 }
 // 更改服务时间
-// export function ChangeTimeData(obj) {
-//   return instance.post(`/apiservice/a/service/order/orderInfo/timeData`, obj)
-// }
-// 更改服务时间
 export function ChangeTimeData(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/timeDataList`, obj)
 }

@@ -187,7 +187,8 @@
 
                 <el-form-item label="banner图：" prop="picture">
                   <div class="upload-demo upload_box form_item">
-                      <el-upload
+                    <imgService @imgclick = "imgClick" :piclist = "picList"></imgService>
+                      <!-- <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
                           :on-preview="handlePreview"
@@ -201,7 +202,7 @@
                       </el-upload>
                       <el-dialog v-model="dialogVisible" size="tiny">
                         <img width="100%" :src="dialogImageUrl" alt="" class="abc">
-                      </el-dialog>
+                      </el-dialog> -->
                   </div>
       
                     <div class="el-upload__tip">*请选择上传的图片，且不超过4张</div>
@@ -566,7 +567,13 @@ import {
   getProject,
   addProject,
   delProject,
-  getInfoPic,
+  getInfoPic
+} from "@/api/serviceManage";
+import Cookies from "js-cookie";
+import { getSign } from "@/api/sign";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
+import {
   Taxonomy,
   Orienteering,
   Whether,
@@ -579,33 +586,30 @@ import {
   sendData,
   deleteGoodsData
 } from "@/api/serviceManage";
-import Cookies from "js-cookie";
-import { getSign } from "@/api/sign";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { parseTime } from "@/utils";
+import imgService from '../clean/returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
 var arr = [];
 export default {
-  name: "project",
+  name: "table_demo",
   directives: {
     waves
   },
   data() {
     //价格
     var PRICE = (rule, value, callback) => {
-      var val = value + "";
+      var val = value+''
       var reg = /^\d+(\.\d{1,2})?$/;
       if (val) {
-        if (val * 1 <= 99999999) {
-          if (reg.test(val)) {
-            callback();
-          } else {
+        if(val*1<=99999999){
+          if(reg.test(val)){
+            callback()
+          }else{
             callback(new Error("不能为特殊字符，小数保留后两位"));
           }
-        } else {
-          callback(new Error("不能大于99999999元"));
+        }else{
+          callback(new Error('不能大于99999999元'))
         }
       } else {
         callback(new Error("请输入价格"));
@@ -615,34 +619,34 @@ export default {
     var CONVERTHOURS = (rule, value, callback) => {
       var reg = /^d*(?:.d{0,2})?$/;
       if (value) {
-        if (this.goods_info.type == "num") {
-          // console.log(value)
-          if (value >= 0.01 && value <= 1.5) {
-            var con = this.converFilter(value);
-            con ? callback() : callback(new Error("请精确到小数后两位"));
-          } else {
-            callback(new Error("请正确输入(0.01~1.5小时)"));
+          if(this.goods_info.type == 'num'){
+            // console.log(value)
+            if(value>=0.01 && value<=1.5){
+              var con = this.converFilter(value)
+              con ? callback() : callback(new Error('请精确到小数后两位'))
+            }else{
+              callback(new Error('请正确输入(0.01~1.5小时)'))
+            }
           }
-        }
 
-        if (this.goods_info.type == "area") {
-          if (value >= 0.01 && value <= 0.5) {
-            var con = this.converFilter(value);
-            con ? callback() : callback(new Error("请精确到小数后两位"));
-          } else {
-            callback(new Error("请正确输入(0.01~0.5小时)"));
+         if(this.goods_info.type == 'area'){
+            if(value>=0.01 && value<=0.5){
+              var con = this.converFilter(value)
+              con ? callback() : callback(new Error('请精确到小数后两位'))
+            }else{
+              callback(new Error('请正确输入(0.01~0.5小时)'))
+            }
           }
-        }
 
-        if (this.goods_info.type == "house") {
-          if (value >= 2 && value <= 12) {
-            var con = this.converFilter(value);
-            con ? callback() : callback(new Error("请精确到小数后两位"));
-          } else {
-            callback(new Error("请正确输入(2~12小时)"));
-          }
-        }
-      } else {
+        if(this.goods_info.type == 'house'){
+            if(value>=2 && value<=12){
+                var con = this.converFilter(value)
+                con ? callback() : callback(new Error('请精确到小数后两位'))
+            }else{
+              callback(new Error('请正确输入(2~12小时)'))
+            }
+      }
+     }else {
         callback(new Error("请输入折算时长"));
       }
     };
@@ -667,82 +671,82 @@ export default {
       }
     };
     //服务图片
-    var PICTURE = (rule, value, callback) => {
+    var PICTURE = (rule,value,callback)=>{
       // callback()
-      // console.log(this.picFile,"this.picFile-----------------[][][]")
-      if (this.picFile != undefined && this.picFile.length > 0) {
-        callback();
-      } else {
-        callback(new Error("请添加banner图"));
+      console.log(this.picFile,"this.picFile-----------------[][][]")
+      if(this.picFile!=undefined && this.picFile.length>0){
+        callback()
+      }else{
+        callback(new Error("请添加banner图"))
       }
-    };
+    }
     //系统标签
-    var SYSTAGS = (rule, value, callback) => {
-      var arr = this.labelClickArr.concat(this.alreadyArr);
-      console.log(arr, "arr------");
-      if (arr != undefined && arr.length > 0) {
-        callback();
-      } else {
-        callback(new Error("请选择系统标签"));
+    var SYSTAGS = (rule,value,callback)=>{
+      var arr = this.labelClickArr.concat(this.alreadyArr)
+      console.log(arr,"arr------")
+      if(arr!=undefined && arr.length>0){
+        callback()
+      }else{
+        callback(new Error('请选择系统标签'))
       }
-    };
-    //自定义标签
-    var LABELNAME = (rule, value, callback) => {
-      var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/;
-      if (value) {
-        if (value.length >= 1 && value.length <= 10) {
-          if (this.customArr.indexOf(value) != -1) {
-            callback(new Error("已有该自定义标签名称"));
-          } else {
-            if (reg.test(value)) {
-              callback();
-            } else {
-              callback(new Error("不能输入特殊字符"));
+    }
+    //自定义标签 
+    var LABELNAME = (rule,value,callback)=>{
+      var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
+      if(value){
+        if(value.length>=1 && value.length<=10){
+          if(this.customArr.indexOf(value) != -1){
+            callback(new Error('已有该自定义标签名称'))
+          }else{
+             if(reg.test(value)){
+              callback()
+            }else{
+              callback(new Error('不能输入特殊字符'))
             }
           }
-        } else {
-          callback(new Error("自定义标签长度1~10位"));
+        }else{
+          callback(new Error('自定义标签长度1~10位'))
         }
-      } else {
-        callback(new Error("请输入自定义标签"));
+      }else{
+        callback(new Error('请输入自定义标签'))
       }
-    };
+    }
     //封定人数
-    var CAPPINPERNUM = (rule, value, callback) => {
+    var CAPPINPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
-      if (value) {
-        if (value * 1 <= 30) {
-          if (reg.test(value)) {
-            if (value * 1 >= this.goods_info.startPerNum * 1) {
-              callback();
-            } else {
-              callback(new Error("起步人数不能大于封顶人数"));
+        if(value){
+          if(value*1<=30){
+            if(reg.test(value)){
+              if(value*1>=this.goods_info.startPerNum*1){
+                callback()
+              }else{
+                callback(new Error('起步人数不能大于封顶人数'))
+              }
+            }else{
+              callback(new Error('请输入数字'))
             }
-          } else {
-            callback(new Error("请输入数字"));
+          }else{
+            callback(new Error('封顶人数最高30人'))
           }
-        } else {
-          callback(new Error("封顶人数最高30人"));
+        }else{
+          callback()
         }
-      } else {
-        callback();
-      }
-    };
+    }
     //起步人数
-    var STARTPERNUM = (rule, value, callback) => {
+    var STARTPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
-      if (value) {
-        if (value * 1 <= 30) {
-          if (reg.test(value)) {
-            callback();
-          } else {
-            callback(new Error("请输入数字"));
+      if(value){
+        if(value*1<=30){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入数字'))
           }
-        } else {
-          callback(new Error("起步人数最高30人"));
+        }else{
+          callback(new Error('起步人数最高30人'))
         }
-      } else {
-        callback();
+      }else{
+         callback()
       }
       // console.log(value,"value-------------------")
       // if(this.goods_info.cappinPerNum){
@@ -754,92 +758,94 @@ export default {
       // }else{
       //   callback()
       // }
-    };
+     
+    }
     //起够数量
-    var MINPURCHASE = (rule, value, callback) => {
+    var MINPURCHASE = (rule,value,callback) =>{
       var reg = /^\d+$/;
-      if (value) {
-        if (value * 1 <= 999999) {
-          if (reg.test(value)) {
-            callback();
-          } else {
-            callback(new Error("请输入数字"));
+      if(value){
+        if(value*1<=999999){
+          if(reg.test(value)){
+            callback()
+          }else{
+            callback(new Error('请输入数字'))
           }
-        } else {
-          callback(new Error("起够数量应在999999以内"));
+        }else{
+          callback(new Error('起够数量应在999999以内'))
         }
-      } else {
-        callback();
+      }else{
+        callback()
       }
-    };
+    }
     //商品名称
-    var NAME = (rule, value, callback) => {
+    var NAME = (rule,value,callback) =>{
       var editName = this.editName;
       var arr = this.basicForm.commoditys;
-      if (value) {
-        if (value.length >= 1 && value.length <= 24) {
-          if (this.handleEditFlag) {
-            if (editName.name == value) {
-              callback();
-            } else {
-              var flag = this.filtersName(value);
-              if (flag) {
-                callback();
-              } else {
-                callback(new Error("商品名称重复"));
-              }
+      if(value){
+        if(value.length>=1 && value.length<=24){
+          if(this.handleEditFlag){
+            if(editName.name == value){
+              callback()
+            }else{
+               var flag = this.filtersName(value)
+               if(flag){
+                callback()
+               }else{
+                callback(new Error('商品名称重复'))
+               }
             }
-          } else {
-            if (arr != undefined && arr.length > 0) {
-              var flag = this.filtersName(value);
-              if (flag) {
-                callback();
-              } else {
-                callback(new Error("商品名称重复"));
+          }else{
+            if(arr!=undefined && arr.length>0){
+              var flag = this.filtersName(value)
+              if(flag){
+                callback()
+              }else{
+                callback(new Error("商品名称重复"))
               }
-            } else {
-              callback();
+              
+            }else{
+              callback()
             }
           }
-        } else {
-          callback(new Error("长度在 1 到 24 个字符"));
+        }else{
+          callback(new Error("长度在 1 到 24 个字符"))
         }
-      } else {
-        callback(new Error("请输入商品名称(1-24位)"));
+      }else{
+        callback(new Error('请输入商品名称(1-24位)'))
       }
-    };
+    }
     return {
-      editIndex: {
-        falge: false,
-        id: null
+      editIndex:{
+        falge:false,
+        id:null
       },
-      pageNumber: 1,
-      editName: {},
-      customArr: [],
-      jointCode: false,
-      alreadyArr: [],
-      labelClickCon: [],
-      labelClickArr: [],
-      systemClickId: null,
-      systemClick2Id: null,
-      imgWidth: "",
-      imgHeight: "",
-      imgFlag: true,
-      systemClick3Id: null,
-      systemOptions: [],
-      systemOptions2: [],
-      imgNumber: 0,
-      systemOptions3: [],
-      systemOptions4: [],
-      SystemLabel: false,
-      CustomLabelList: [],
-      labelObj: {
-        labelName: ""
+      pageNumber:1,
+      editName:{},
+      customArr:[],
+      jointCode:false,
+      alreadyArr:[],
+      labelClickCon:[],
+      labelClickArr:[],
+      systemClickId:null,
+      systemClick2Id:null,
+      imgWidth:'',
+      imgHeight:'',
+      imgFlag:true,
+      systemClick3Id:null,
+      systemOptions:[],
+      systemOptions2:[],
+      imgNumber:0,
+      systemOptions3:[],
+      systemOptions4:[],
+      SystemLabel:false,
+      CustomLabelList:[],
+      labelObj:{
+        labelName:'',
       },
-      formLabelWidth: "90px",
-      addLabel: false,
-      tableData: [],
-      btnState: false,
+      formLabelWidth: '90px',
+      addLabel:false,
+      tableData:[],
+      btnState:false,
       ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
       ImageText: false,
@@ -851,7 +857,7 @@ export default {
       serverCityArr: [],
       wholeTable: {},
       directional: [],
-      addDetailsImg: 0,
+      addDetailsImg:0,
       cityArr: [],
       personsTime: false,
       addComm: false,
@@ -861,58 +867,61 @@ export default {
       persons: [],
       commoditys: [],
       imageUrl: "",
-      dialogImageUrl: "",
-      handleEditFlag: false,
-      handleEditIndex: null,
+      dialogImageUrl:"",
+      handleEditFlag:false,
+      handleEditIndex:null,
       dialogVisible: false,
-      Imagestext: true,
-      measure: [],
+      Imagestext:true,
+      measure: [
+      ],
       listTable: [],
       listLoading: true,
       whether: true,
       sortList: [],
-      searchSortList: [],
-      goods_info: {
-        name: "",
-        unit: "",
-        type: "",
-        price: "",
-        convertHours: "",
-        startPerNum: "",
-        cappingPerNum: "",
-        minPurchase: ""
+      searchSortList:[],
+      goods_info:{
+        name:'',
+        unit:'',
+        type:'',  
+        price:'',
+        convertHours:'',
+        startPerNum:'',
+        cappingPerNum:'',
+        minPurchase:''
       },
       goods: {
         name: [
           // { required: true, message: "请输入商品名称(2-10位)", trigger: "blur" },
           // { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
-          { required: true, validator: NAME, trigger: "blur" }
+          {required:true,validator:NAME,trigger:'blur'}
         ],
         unit: [
-          { required: true, message: "请输入商品单位", trigger: "blur" },
+          { required: true, message:"请输入商品单位", trigger: "blur" },
           { min: 1, max: 6, message: "长度在 1 到 6 个字符", trigger: "blur" }
         ],
         type: [
           { required: true, message: "请选择计量方式", trigger: "change" }
         ],
         price: [
-          { required: true, validator: PRICE, trigger: "blur" }
+          { required: true, validator: PRICE, trigger: "blur" },
           // { min: 1, max: 8, message: "长度在 1 到 8 个字符", trigger: "blur" }
         ],
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        startPerNum: [{ validator: STARTPERNUM, trigger: "blur" }],
-        cappingPerNum: [{ validator: CAPPINPERNUM, trigger: "blur" }],
-        minPurchase: [{ validator: MINPURCHASE, trigger: "blur" }]
+        startPerNum:[
+          {validator:STARTPERNUM,trigger:'blur'}
+        ],
+        cappingPerNum:[
+          {validator:CAPPINPERNUM,trigger:'blur'}
+        ],
+        minPurchase:[{validator:MINPURCHASE,trigger:'blur'}]
         // persons: [{ require: true, validator: PERSONS, trigger: "change" }]
       },
-      labelRules: {
-        labelName: [
+      labelRules:{
+        labelName:[
           {
-            required: true,
-            validator: LABELNAME,
-            trigger: "blur"
+            required:true,validator:LABELNAME,trigger:'blur'
           }
           // { required: true, message: "请输入标签名称(2-10位)", trigger: "blur" },
           // { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
@@ -928,57 +937,44 @@ export default {
         commoditys: [],
         // cityCodes: [],
         // description: "",
-        sysTags: [],
-        customTags: []
+        sysTags:[],
+        customTags:[]
       },
       basicRles: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" },
-          {
-            min: 2,
-            max: 10,
-            message: "请输入2-10位的项目名称",
-            trigger: "blur"
-          }
+          { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
-        picture: [{ required: true, validator: PICTURE, trigger: "blur" }],
-        sortId: [
-          { required: true, message: "请选择所属分类", trigger: "blur" }
-        ],
-        info: [
-          { required: true, message: "请输入2-10位的项目名称", trigger: "blur" }
-        ],
+        picture: [
+           { required: true, validator:PICTURE, trigger:"blur"}
+          ],
+        sortId:[{required:true,message:'请选择所属分类',trigger:'blur'}],
+        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
         // description: [
         //     { required: true, message: "请输入服务描述", trigger: "blur" },
         //     { min: 0, max: 255, message: "服务描述长度介于0和255之间", trigger: "blur" }
         //   ],
-        sysTags: [
-          {
-            required: true,
-            validator: (rule, value, callback) => {
-              console.log(this.labelClickArr, "this.labelClickArr++++++");
-              console.log(this.alreadyArr, "this.alreadyArr+++++++");
-              var arr = this.labelClickArr.concat(this.alreadyArr);
-              if (arr != undefined && arr.length > 0) {
-                callback();
-              } else {
-                callback(new Error("请选择系统标签"));
-              }
-            },
-            trigger: "change"
-          }
-        ]
+        sysTags:[{required:true,validator:(rule,value,callback)=>{
+          console.log(this.labelClickArr,"this.labelClickArr++++++")
+          console.log(this.alreadyArr,"this.alreadyArr+++++++")
+             var arr = this.labelClickArr.concat(this.alreadyArr)
+             if(arr!=undefined && arr.length>0){
+               callback()
+             }else{
+               callback(new Error('请选择系统标签'))
+             }
+        },trigger:'change'}]
       },
 
-      //       var SYSTAGS = (rule,value,callback)=>{
-      //   var arr = this.labelClickArr.concat(this.alreadyArr)
-      //   console.log(arr,"arr------")
-      //   if(arr!=undefined && arr.length>0){
-      //     callback()
-      //   }else{
-      //     callback(new Error('请选择系统标签'))
-      //   }
-      // }
+    //       var SYSTAGS = (rule,value,callback)=>{
+    //   var arr = this.labelClickArr.concat(this.alreadyArr)
+    //   console.log(arr,"arr------")
+    //   if(arr!=undefined && arr.length>0){
+    //     callback()
+    //   }else{
+    //     callback(new Error('请选择系统标签'))
+    //   }
+    // }
       // goods_info: {
       //   name: "",
       //   unit: "",
@@ -1037,16 +1033,15 @@ export default {
   created() {
     //所属分类
     // this.tableProject({majorSort:"all"})
-    this.handleClick({ name: "all" });
+    this.handleClick({name:'all'})
     //系统标签
     serGasqSort()
-      .then(data => {
-        this.systemOptions = data.data.data;
-        console.log(data, "系统标签-----------");
+      .then(data=>{
+        this.systemOptions = data.data.data
+        console.log(data,"系统标签-----------")
+      }).catch(error=>{
+        console.log(error,"系统标签错误-------")
       })
-      .catch(error => {
-        console.log(error, "系统标签错误-------");
-      });
     //是否 计量方式 全部 保洁 家修
     Whether()
       .then(({ data }) => {
@@ -1060,483 +1055,469 @@ export default {
 
     // this.orient({}, 0); // 所属分类
     // this.getList(1, 10); //搜索 ，分页
-    this.sign; //获取签名
+    this.sign   //获取签名
   },
   computed: {
     sign: function() {
-      console.log("-------------------------------");
+      console.log("-------------------------------")
       return getSign();
     },
     btnShow() {
-      return JSON.parse(localStorage.getItem("btn"));
-    }
+      return JSON.parse(localStorage.getItem('btn'));
+    },
   },
   methods: {
+    imgClick(item){
+      var arr = []
+      console.log(item,"item-____))))))))")
+      for(var i = 0;i<item.length;i++){
+        arr.push(item[i].url)
+      }
+      this.picFile = arr
+      console.log(this.picFile,"--------------+++++++____________")
+    },
     //对接商品
-    handleSendData(row) {
-      console.log(row, "row--------");
-      var obj = { id: row.id };
-      sendData(obj)
-        .then(data => {
-          if (data.data.code) {
-            this.$message({
+    handleSendData(row){
+      console.log(row,"row--------")
+      var obj = {id:row.id}
+      sendData(obj).then(data=>{
+        if(data.data.code){
+          this.$message({
               type: "success",
               message: data.data.data
-            });
-            this.getList(this.pageNumber, this.pageSize);
-          } else {
-            this.$message({
-              type: "error",
-              message: data.data.data
-            });
-          }
-          console.log(data, "data=========");
-          return false;
-        })
-        .catch(error => {
+          });
+          this.getList(this.pageNumber, this.pageSize);
+        }else{
           this.$message({
             type: "error",
             message: data.data.data
           });
-          return false;
-          console.log(error, "error========");
+        }
+        console.log(data,"data=========")
+        return false
+      }).catch(error=>{
+        this.$message({
+              type: "error",
+              message: data.data.data
         });
+        return false
+        console.log(error,"error========")
+      })
     },
     //图文详情测试
-    handImgText(file, fileList) {
-      if (
-        file.raw.type == "image/gif" ||
-        file.raw.type == "image/jpg" ||
-        file.raw.type == "image/png" ||
-        file.raw.type == "image/jpeg"
-      ) {
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        if (fileList.length > 4) {
+    handImgText(file,fileList){
+      if (file.raw.type == 'image/gif' || file.raw.type=='image/jpg' || file.raw.type=='image/png' || file.raw.type=='image/jpeg') {
+          var date = new Date();
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          if(fileList.length>4){
           this.$message({
             type: "error",
             message: "最多上传4张图片"
-          });
-          fileList.splice(fileList.indexOf(file), 1);
+            });
+          fileList.splice(fileList.indexOf(file),1)
         }
-      } else {
-        fileList.splice(fileList.indexOf(file), 1);
-        this.$message.error("请上传正确的图片格式");
-        return false;
+      }else{
+        fileList.splice(fileList.indexOf(file),1)
+         this.$message.error('请上传正确的图片格式');
+         return false
       }
     },
-    handleRemoveImgText(file, fileList) {
-      fileList.splice(fileList.indexOf(file), 1);
+    handleRemoveImgText(file,fileList){
+      fileList.splice(fileList.indexOf(file),1)
     },
-    UploadImgText(file) {
-      console.log(file.file.uid);
-      // 图片上传
-      let pro = new Promise((resolve, rej) => {
+    UploadImgText(file){
+      console.log(file.file.uid)
+        // 图片上传 
+        let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         //console.log(timestamp)
-        if (res.expire - 3 > timestamp) {
-          console.log("签名没过期");
-          resolve(res);
-        } else {
-          this.$http.get("/apiservice/oss/getSign").then(res => {
-            console.log(res, "签名过期");
-            Cookies.set("sign", JSON.stringify(res.data));
-            resolve(res.data);
-          });
-        }
-      });
-      var that = this;
-      pro.then(success => {
-        var data = success;
-        var ossData = new FormData();
-        var date = new Date();
-        var s = date.getTime();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        ossData.append("name", file.file.name);
-        ossData.append(
-          "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid + ".jpg"
-        );
-        ossData.append("policy", data.policy);
-        ossData.append("OSSAccessKeyId", data.accessid);
-        ossData.append("success_action_status", 201);
-        ossData.append("signature", data.signature);
-        // 添加文件
-        ossData.append("file", file.file, file.file.name);
-        that.$http
-          .post(data.host, ossData, {
-            headers: {
+          if (res.expire - 3 > timestamp) {
+            console.log("签名没过期");
+            resolve(res);
+          } else {
+            this.$http.get("/apiservice/oss/getSign").then(res => {
+              console.log(res, "签名过期");
+              Cookies.set("sign", JSON.stringify(res.data));
+              resolve(res.data);
+            });
+          }
+        });
+        var that = this;
+        pro.then(success => {
+            var data = success;
+            var ossData = new FormData();
+            var date = new Date();
+            var s = date.getTime()
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            ossData.append("name", file.file.name);
+            ossData.append(
+              "key",
+              data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+            );
+            ossData.append("policy", data.policy);
+            ossData.append("OSSAccessKeyId", data.accessid);
+            ossData.append("success_action_status", 201);
+            ossData.append("signature", data.signature);
+            // 添加文件
+            ossData.append("file", file.file, file.file.name);
+            that.$http
+              .post(data.host, ossData, {
+              headers: {
               "Content-Type": "multipart/form-data; boundary={boundary}"
-            }
-          })
-          .then(res => {
-            this.testArr.push(ossData.get("key"));
-            console.log(this.testArr, "this.testArr------");
-            console.log("aaaaa");
-          })
-          .catch(error => {
-            console.log("错误-------------上传图片失败--");
+              }
+            })
+            .then(res => {
+              this.testArr.push(ossData.get("key"));
+              console.log(this.testArr,"this.testArr------") 
+              console.log('aaaaa')
+            })
+            .catch(error => {
+            console.log('错误-------------上传图片失败--')
             // this.picFile.push(ossData.get("key"));
             console.log(error, "错误");
-          });
-      });
+            });
+        });
     },
     //图文详情测试----------------------
     //添加商品
-    addCommodity() {
-      if (this.addComm) {
-        this.resetForm();
+    addCommodity(){
+      if(this.addComm){
+        this.resetForm()
       }
-      this.handleEditFlag = false;
-      this.addComm = !this.addComm;
+      this.handleEditFlag = false
+      this.addComm = !this.addComm
     },
-    converFilter(val) {
+    converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
-      var con = reg.test(val) ? true : false;
-      return con;
+      var con = reg.test(val)? true : false
+      return con
     },
-    filtersName(value) {
-      var flag = true;
-      var arr = this.basicForm.commoditys;
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i].name == value) {
-          flag = false;
-          break;
-        } else {
-          flag = true;
+    filtersName(value){
+      var flag = true
+      var arr = this.basicForm.commoditys
+      for(var i=0;i<arr.length; i++){
+        if(arr[i].name==value){
+          flag = false
+          break
+        }else{
+          flag = true
         }
       }
-      if (flag) {
-        return flag;
-      } else {
-        return flag;
+      if(flag){
+        return flag
+      }else{
+         return flag
       }
     },
     //保洁家修切换
-    tableProject(obj, id) {
+    tableProject(obj,id){
       Taxonomy(obj)
-        .then(data => {
-          console.log(data, "clean++++++++++===============");
-          this.sortList = data.data.data;
-          if (id) {
-            this.basicForm.sortId = id;
-          }
-        })
-        .catch(error => {
-          console.log(error, "error-----project");
-        });
+      .then(data => {
+        console.log(data,"clean++++++++++===============")
+        this.sortList = data.data.data;
+        if(id){
+          this.basicForm.sortId = id
+        }
+      })
+      .catch(error => {
+        console.log(error, "error-----project");
+      });
     },
     //系统标签已添加标签删除
-    AlreadyLabel(item) {
-      if (this.labelClickArr.indexOf(item) != -1) {
-        this.SelectedLabel(item);
-      } else {
-        this.remove(this.alreadyArr, item);
+    AlreadyLabel(item){
+      if(this.labelClickArr.indexOf(item)!=-1){
+        this.SelectedLabel(item)
+      }else{
+        this.remove(this.alreadyArr,item)
       }
     },
     //系统标签当前选择标签删除
-    SelectedLabel(item) {
+    SelectedLabel(item){
       this.remove(this.labelClickArr, item);
       // this.remove(this.labelClickCon, item);
     },
     //四级标签点击
-    labelClick(item) {
-      if (this.labelClickArr.indexOf(item.label) == -1) {
-        if (this.labelClickArr.length + this.alreadyArr.length > 2) {
-          this.$message({
-            message: "最多设置3个系统标签",
-            type: "error"
-          });
-          return false;
-        }
-        this.labelClickArr.push(item.label);
-      } else {
-        this.remove(this.labelClickArr, item.label);
-      }
+    labelClick(item){
+         if(this.labelClickArr.indexOf(item.label) == -1){
+           if(this.labelClickArr.length+this.alreadyArr.length>2){
+             this.$message({
+               message:'最多设置3个系统标签',
+               type:'error'
+             })
+             return false
+           }
+           this.labelClickArr.push(item.label)
+         }else{
+           this.remove(this.labelClickArr, item.label);
+         }
 
-      console.log(this.labelClickArr, "this.labelClickArr------------------");
+         console.log(this.labelClickArr,"this.labelClickArr------------------")
     },
     //系统列表一级列表事件
-    systemClick(item) {
-      this.systemClickId = item.value;
-      this.systemOptions2 = item.children;
+    systemClick(item){
+      this.systemClickId = item.value
+      this.systemOptions2 = item.children
       this.systemOptions3 = [];
       this.systemOptions4 = [];
-      console.log(item, "item-------");
+      console.log(item,"item-------")
     },
     //系统列表二级列表事件
-    systemClick2(item) {
-      this.systemClick2Id = item.value;
-      this.systemOptions3 = item.children;
-      this.systemOptions4 = [];
+    systemClick2(item){
+      this.systemClick2Id = item.value
+      this.systemOptions3 = item.children
+       this.systemOptions4 = [];
     },
-    systemClick3(item) {
-      this.systemClick3Id = item.value;
-      this.systemOptions4 = item.children;
+    systemClick3(item){
+      this.systemClick3Id = item.value
+      this.systemOptions4 = item.children
     },
     //自定义弹框关闭的回调
-    closeingLabel() {
-      this.labelObj.labelName = "";
+    closeingLabel(){
+      this.labelObj.labelName = ''
     },
     //自定义标签删除
-    deleteLabel(index) {
+    deleteLabel(index){
       // alert(index)
       // console.log(this.basicForm.customTags,"basicForm.customTags---------")
       // this.basicForm.customTags.splice(index,1)
-      this.customArr.splice(index, 1);
-      console.log(this.basicForm.customTags, "basicForm.customTags++++++++");
+      this.customArr.splice(index,1)
+      console.log(this.basicForm.customTags,"basicForm.customTags++++++++")
     },
     //自定义标签
-    CustomLabel(formName) {
+    CustomLabel(formName){
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          if (this.customArr.length > 2) {
+        if(valid){
+          if(this.customArr.length>2){
             this.$message({
-              message: "最多设置3个自定义标签",
-              type: "error"
+              message: '最多设置3个自定义标签',
+              type: 'error'
             });
-            return false;
-          } else {
+            return false
+          }else{
             // this.basicForm.customTags.push(this.labelObj.labelName)
-            this.customArr.push(this.labelObj.labelName);
-            this.labelObj.labelName = "";
-            console.log(this.customArr, "this.basicForm.customTags------");
+            this.customArr.push(this.labelObj.labelName)
+            this.labelObj.labelName = ''
+            console.log(this.customArr,"this.basicForm.customTags------")
           }
-          this.addLabel = false;
-        } else {
-          return false;
+          this.addLabel = false
+        }else{
+          return false
         }
-      });
+      })
     },
     //服务图片验证
     handPic(file) {
       //判断图片格式
-      if (
-        file.type == "image/gif" ||
-        file.type == "image/jpg" ||
-        file.type == "image/png" ||
-        file.type == "image/jpeg"
-      ) {
-        this.imgFlag = true;
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        console.log(this.picFile, "this.picFile------");
-        if (this.picFile.indexOf(src) > -1) {
-          this.$message({
-            type: "error",
-            message: "此图片已经上传"
-          });
-          return false;
+        if (file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg') {
+            this.imgFlag = true
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+            console.log(this.picFile,"this.picFile------")
+            if (this.picFile.indexOf(src) > -1) {
+              this.$message({
+                type: "error",
+                message: "此图片已经上传"
+              });
+              return false;
+            }
+            if (this.imgNumber >= 4) {
+              this.$message({
+                type: "error",
+                message: "最多上传4张图片"
+              });
+              return false;
+            }
+        }else{
+          this.imgFlag = false
+          this.$message.error('请上传正确的图片格式');
+          return false
         }
-        if (this.imgNumber >= 4) {
-          this.$message({
-            type: "error",
-            message: "最多上传4张图片"
-          });
-          return false;
-        }
-      } else {
-        this.imgFlag = false;
-        this.$message.error("请上传正确的图片格式");
-        return false;
-      }
 
       //判断图片大小-----------
-      var _this = this;
-      let imgCallback = new Promise((resolve, reject) => {
-        var img = new Image();
-        var reader = new FileReader();
-        var canvas = document.createElement("canvas");
-        reader.onload = function(e) {
-          img.src = e.target.result;
-        };
-        img.onload = function(e) {
-          var width = img.width;
-          var height = img.height;
-          if (width >= 750 && height / width >= 0.9 && height / width <= 1.1) {
-            resolve(true);
-          } else {
-            _this.$message.error(
-              "为了保证浏览效果，请上传大于750px*750px的正方形图片"
-            );
-            reject(false);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-      return imgCallback;
+        var _this = this
+        let imgCallback = new Promise((resolve,reject)=>{
+          var img = new Image()
+          var reader = new FileReader()
+          var canvas = document.createElement("canvas") 
+          reader.onload = function(e){
+            img.src = e.target.result
+          } 
+          img.onload = function (e){
+            var width = img.width
+            var height = img.height
+            if(width>=750 && height/width>=0.9 && height/width<=1.1){
+              resolve(true)
+            }else{
+              _this.$message.error('为了保证浏览效果，请上传大于750px*750px的正方形图片')
+              reject(false)
+            }
+          } 
+          reader.readAsDataURL(file)
+        })
+        return imgCallback
     },
     //删除图片
-    handleRemove(file, fileList) {
-      //删除图文
+    handleRemove(file, fileList) {//删除图文
       // console.log(file, "删除一张图片");
       // console.log(fileList,'文件')
       // console.log(this.imgText,'imgtext')
       // console.log(this.fileList,'filelist')
       // alert("123123")
-      console.log(file, "file+++++++");
-      if (this.Imagestext) {
-        var str = "";
-        var index = file.url.lastIndexOf("/");
-        if (file.raw) {
-          var type = file.raw.name.split(".");
-          str = file.raw.uid + "." + type[type.length - 1];
-        } else {
-          str = file.url.substring(index + 1, file.url.length);
-        }
+      console.log(file,"file+++++++")
+      if(this.Imagestext){
+          var str = "";
+          var index = file.url.lastIndexOf("/");
+          if(file.raw){
+            var type = file.raw.name.split('.')
+            str = file.raw.uid+'.'+type[type.length-1]
+          }else{
+             str = file.url.substring(index + 1, file.url.length);
+          }
+          
+          let newarr = []
+          for(var i = 0;i<this.imgText.length;i++){
+            var index = this.imgText[i].lastIndexOf("/");
+            var newstr = ''
+            newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
+            newarr.push(newstr)
+          }
+          console.log(str,"src----");
+          console.log(newarr,'截取')
+          var delIndex = newarr.indexOf(str)
+           console.log(delIndex,'delIndex')
+          if(delIndex==-1){
 
-        let newarr = [];
-        for (var i = 0; i < this.imgText.length; i++) {
-          var index = this.imgText[i].lastIndexOf("/");
-          var newstr = "";
-          newstr = this.imgText[i].substring(index + 1, this.imgText[i].length);
-          newarr.push(newstr);
-        }
-        console.log(str, "src----");
-        console.log(newarr, "截取");
-        var delIndex = newarr.indexOf(str);
-        console.log(delIndex, "delIndex");
-        if (delIndex == -1) {
-        } else {
-          this.imgText.del(delIndex);
-          this.addDetailsImg--;
-        }
-        //console.log(delIndex,'删除图片的下标')
-
-        //console.log(this.imgText);
-      } else {
-        return false;
+          }else{
+               this.imgText.del(delIndex);
+               this.addDetailsImg--
+          }
+          //console.log(delIndex,'删除图片的下标')
+         
+          //console.log(this.imgText);
+      }else{
+          return false
       }
     },
-    handleRemovePic(file, fileList) {
+    handleRemovePic(file,fileList) {
       // alert("dwadawd")
       //删除服务图片
       // console.log(fileList,'文件');
       console.log(file, "删除一张图片");
       // console.log(this.picFile,'imgtext')
       // console.log(this.picList,'filelist')
-      if (this.imgFlag) {
+      if(this.imgFlag){
         var str = "";
-        var index = "";
-        if (file.raw) {
-          var type = file.raw.name.split(".");
-          str = file.raw.uid + "." + type[type.length - 1];
-        } else {
+        var index = ''
+        if(file.raw){
+          var type = file.raw.name.split('.')
+          str = file.raw.uid+'.'+type[type.length-1]
+        }else{
           index = file.url.lastIndexOf("/");
           str = file.url.substring(index + 1, file.url.length);
         }
-        console.log(str, "str------");
-        var src = "";
+        console.log(str,"str------")
+        var src = ''
         if (file.name != undefined) {
           src = file.name;
         } else {
           src = str;
         }
-        console.log(src, "src");
-        let newarr = [];
-        for (var i = 0; i < this.picFile.length; i++) {
+        console.log(src,'src');
+        let newarr = []
+        for(var i = 0;i<this.picFile.length;i++){
           var index = this.picFile[i].lastIndexOf("/");
-          var newstr = "";
+          var newstr = ''
           newstr = this.picFile[i].substring(index + 1, this.picFile[i].length);
-          newarr.push(newstr);
+          newarr.push(newstr)
         }
-        var delIndex = null;
-        if (this.dialogStatus == "update") {
-          console.log(newarr, "newarrnewarrnewarr");
-          console.log(src, "srcsrc-------------");
-          delIndex = newarr.indexOf(str);
-        } else {
-          delIndex = newarr.indexOf(file.uid + ".jpg");
+        var delIndex = null
+        if(this.dialogStatus == "update"){
+          console.log(newarr,"newarrnewarrnewarr")
+          console.log(src,"srcsrc-------------")
+          delIndex = newarr.indexOf(str)
+        }else{
+          delIndex = newarr.indexOf(file.uid+'.jpg')
         }
-        if (delIndex == -1) {
-        } else {
-          this.picFile.del(delIndex);
-          this.imgNumber--;
-          console.log(this.imgNumber, "this.imgNumber-------");
+        if(delIndex == -1){
+
+        }else{
+          this.picFile.del(delIndex);         
+          this.imgNumber--
+          console.log(this.imgNumber,"this.imgNumber-------")
         }
-        console.log(delIndex, "delIndex------");
+        console.log(delIndex,"delIndex------")
         // console.log(newarr,src,"newarr---------------------------")
         // console.log(delIndex,'删除图片的下标')
-      } else {
-        return false;
+      }else{
+        return false
       }
       // console.log(this.picFile);
     },
     handleBefore(file) {
       //判断图文图片类型和个数
-      if (
-        file.type == "image/gif" ||
-        file.type == "image/jpg" ||
-        file.type == "image/png" ||
-        file.type == "image/jpeg"
-      ) {
-        this.Imagestext = true;
-        var date = new Date();
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
-        // if (this.imgText.indexOf(src) > -1) {
-        //   this.$message({
-        //     type: "error",
-        //     message: "此图片已经上传"
-        //   });
-        //   return false;
-        // }
-        console.log(
-          this.imgText.length,
-          "-------------------------------------------------------------------------------------"
-        );
-        if (this.addDetailsImg >= 4) {
-          this.$message({
-            type: "error",
-            message: "最多上传4张图片"
-          });
-          // this.Imagestext = false
-          // alert("true")
-          return false;
-        } else {
-          this.Imagestext = true;
-        }
-      } else {
-        this.Imagestext = false;
-        this.$message.error("请上传正确的图片格式");
-        return false;
-      }
-      //判断图片大小-----------
-      var _this = this;
-      let imgCallback = new Promise((resolve, reject) => {
-        var img = new Image();
-        var reader = new FileReader();
-        var canvas = document.createElement("canvas");
-        reader.onload = function(e) {
-          img.src = e.target.result;
-        };
-        img.onload = function(e) {
-          var width = img.width;
-          var height = img.height;
-          if (width >= 750 && height / width >= 0 && height / width <= 8) {
-            resolve(true);
-          } else {
-            _this.$message.error(
-              "为了保证浏览效果，请上传大于750px*10px且小于750px*6000px的图片"
-            );
-            reject(false);
+        if(file.type == 'image/gif' || file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
+          this.Imagestext = true
+          var date = new Date();
+          var y = date.getFullYear();
+          var m = date.getMonth() + 1;
+          var d = date.getDate();
+          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          // if (this.imgText.indexOf(src) > -1) {
+          //   this.$message({
+          //     type: "error",
+          //     message: "此图片已经上传"
+          //   });
+          //   return false;
+          // }
+          console.log(this.imgText.length,"-------------------------------------------------------------------------------------")
+          if(this.addDetailsImg>=4){
+            this.$message({
+              type:'error',
+              message:'最多上传4张图片'
+            })
+            // this.Imagestext = false
+            // alert("true")
+            return false
+          }else{
+            this.Imagestext = true
           }
-        };
-        reader.readAsDataURL(file);
-      });
-      return imgCallback;
+        }else{
+          this.Imagestext = false
+          this.$message.error('请上传正确的图片格式');
+          return false
+        }
+      //判断图片大小-----------
+       var _this = this
+        let imgCallback = new Promise((resolve,reject)=>{
+          var img = new Image()
+          var reader = new FileReader()
+          var canvas = document.createElement("canvas") 
+          reader.onload = function(e){
+            img.src = e.target.result
+          } 
+          img.onload = function (e){
+            var width = img.width
+            var height = img.height
+            if(width>=750 && height/width>=0 && height/width<=8){
+              resolve(true)
+            }else{
+              _this.$message.error('为了保证浏览效果，请上传大于750px*10px且小于750px*6000px的图片')
+              reject(false)
+            }
+          } 
+          reader.readAsDataURL(file)
+        })
+        return imgCallback
     },
     subImgText(a) {
       // console.log(this.imgText);
@@ -1545,8 +1526,7 @@ export default {
         pictureDetails: this.imgText
       };
       // console.log(obj,"obj-------")
-      sortList(obj)
-        .then(res => {
+        sortList(obj).then(res => {
           console.log(res);
           if (res.data.code == 1) {
             this.ImageText = false;
@@ -1554,20 +1534,19 @@ export default {
               type: "success",
               message: res.data.data
             });
-          } else {
+          }else{
             this.$message({
-              type: "error",
-              message: res.data.data
-            });
+              type:'error',
+              message:res.data.data
+            })
           }
-        })
-        .catch(error => {
-          this.$message({
-            type: "error",
-            message: res.data.data
-          });
-          console.log(error, "上传失败");
-          return false;
+        }).catch(error=>{
+            this.$message({
+              type:'error',
+              message:res.data.data
+            })
+          console.log(error,"上传失败")
+          return false
         });
       console.log(obj);
     }, // 保存图文
@@ -1578,10 +1557,10 @@ export default {
       this.ImageText = false;
     }, // 关闭图文
     upload(file) {
-      this.addDetailsImg++;
+      this.addDetailsImg ++
       // console.log(file,"file-----------")
       // 图文上传
-      var type = file.file.name.split(".");
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
@@ -1601,24 +1580,14 @@ export default {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
-        var s = date.getTime();
+        var s = date.getTime()
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir +
-            "/" +
-            y +
-            "/" +
-            m +
-            "/" +
-            d +
-            "/" +
-            file.file.uid +
-            "." +
-            type[type.length - 1]
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1638,20 +1607,20 @@ export default {
           .then(res => {
             // console.log(this.fileList);
             this.imgText.push(ossData.get("key"));
-            console.log(this.imgText, "this.imgText-------------");
+            console.log(this.imgText,"this.imgText-------------")
           })
           .catch(error => {
             this.imgText.push(ossData.get("key"));
-            console.log(this.imgText, "this.imgText-------------");
+            console.log(this.imgText,"this.imgText-------------")
             console.log(error, "错误");
           });
       });
     },
     picUpload(file) {
-      this.imgNumber++;
+      this.imgNumber++
       // 图片上传
-      console.log(file, "file------");
-      var type = file.file.name.split(".");
+      console.log(file,"file------")
+      var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
@@ -1672,24 +1641,14 @@ export default {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
-        var s = date.getTime();
+        var s = date.getTime()
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         var d = date.getDate();
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir +
-            "/" +
-            y +
-            "/" +
-            m +
-            "/" +
-            d +
-            "/" +
-            file.file.uid +
-            "." +
-            type[type.length - 1]
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1701,24 +1660,24 @@ export default {
         // console.log(ossData.get("name"));
         // console.log(ossData.get("key"));
         // console.log(that.$http,"that.$http")
-        that.$http
-          .post(data.host, ossData, {
-            headers: {
-              "Content-Type": "multipart/form-data; boundary={boundary}"
-            }
-          })
-          .then(res => {
-            console.log(this.picList);
-            this.picFile.push(ossData.get("key"));
-            // console.log(this.picFile,"this.picFile------------------")
-            console.log(this.picFile, "picfile----------------");
-          })
-          .catch(error => {
-            console.log("错误-------------上传图片失败--");
-            this.picFile.push(ossData.get("key"));
-            console.log(this.picFile, "picfile----------------");
-            console.log(error, "错误");
-          });
+          that.$http
+            .post(data.host, ossData, {
+              headers: {
+                "Content-Type": "multipart/form-data; boundary={boundary}"
+              }
+            })
+            .then(res => {
+              console.log(this.picList);
+              this.picFile.push(ossData.get("key"));
+              // console.log(this.picFile,"this.picFile------------------")
+              console.log(this.picFile, "picfile----------------");
+            })
+            .catch(error => {
+              console.log('错误-------------上传图片失败--')
+              this.picFile.push(ossData.get("key"));
+              console.log(this.picFile, "picfile----------------");
+              console.log(error, "错误");
+            });
       });
     },
     //编号失焦事件
@@ -1749,36 +1708,33 @@ export default {
       console.log(val, "------------------");
     },
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = Object.assign({}, this.goods_info);
-          obj.startPerNum = this.goods_info.startPerNum;
-          obj.minPurchase = this.goods_info.minPurchase;
-          obj.cappingPerNum = this.goods_info.cappingPerNum;
-          if (this.handleEditFlag) {
-            this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
-            this.resetForm("ser");
-            this.handleEditFlag = false;
-          } else {
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+           var obj = Object.assign({},this.goods_info)
+              obj.startPerNum = this.goods_info.startPerNum
+              obj.minPurchase = this.goods_info.minPurchase
+              obj.cappingPerNum = this.goods_info.cappingPerNum
+          if(this.handleEditFlag){
+            this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
+            this.resetForm('ser')
+            this.handleEditFlag = false
+          }else{
             // var obj = Object.assign({},this.goods_info)
             //   obj.startPerNum = this.goods_info.startPerNum || 1
             //   obj.minPurchase = this.goods_info.minPurchase ||1
-            if ("id" in obj) {
-              delete obj.id;
-            }
-            console.log(obj, "obj---------------");
-            this.basicForm.commoditys.push(obj);
-            this.resetForm("ser");
-            // this.addComm = false
+              if("id" in obj){
+                delete obj.id
+              }
+              console.log(obj,"obj---------------")
+              this.basicForm.commoditys.push(obj)
+              this.resetForm('ser')
+              // this.addComm = false
           }
-        } else {
-          return false;
+        }else{
+          return false
         }
-      });
-      console.log(
-        this.basicForm.commoditys,
-        "this.basicForm.commoditys-------"
-      );
+      })
+      console.log(this.basicForm.commoditys,"this.basicForm.commoditys-------")
       // this.$refs[formName].validate(valid => {
       //   if (valid) {
       //     if (this.goods_info.persons.length > 0) {
@@ -1818,71 +1774,63 @@ export default {
     },
     //表格编辑
     handleEdit(index, val) {
-      this.handleEditFlag = true;
-      this.handleEditIndex = index;
+      this.handleEditFlag = true
+      this.handleEditIndex = index
       // console.log(index,"index------------")
       // console.log(val,"val--------------")
-      this.editName = Object.assign({}, val);
-      this.goods_info = Object.assign({}, val);
-      this.goods_info.startPerNum = this.goods_info.startPerNum
-        ? this.goods_info.startPerNum
-        : "";
-      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum
-        ? this.goods_info.cappingPerNum
-        : "";
-      this.goods_info.minPurchase = this.goods_info.minPurchase
-        ? this.goods_info.minPurchase
-        : "";
+      this.editName = Object.assign({},val)
+      this.goods_info = Object.assign({},val)
+      this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
+      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
+      this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
       this.addComm = true;
-      console.log(this.goods_info, "this.goods_info----------");
+      console.log(this.goods_info,"this.goods_info----------")
     },
     //表格删除
     tableHandleDelete(index, item) {
-      if (this.basicForm.commoditys.length <= 1) {
-        this.$message.error("商品信息不能为空");
-        return false;
-      } else {
-        if (item.id) {
-          deleteGoodsData({ id: item.id })
-            .then(data => {
-              console.log(data, "data00000000");
-              if (data.data.code) {
+      if(this.basicForm.commoditys.length<=1){
+        this.$message.error('商品信息不能为空')
+        return false
+      }else{
+          if(item.id){
+            deleteGoodsData({id:item.id}).then(data=>{
+              console.log(data,"data00000000")
+              if(data.data.code){
                 this.$message({
-                  message: data.data.data,
-                  type: "success"
+                      message: data.data.data,
+                      type: "success"
                 });
-                this.handleEditFlag = false;
-                this.basicForm.commoditys.splice(index, 1);
-              } else {
+                this.handleEditFlag = false
+                this.basicForm.commoditys.splice(index,1)
+              }else{
                 this.$message({
-                  message: data.data.data,
-                  type: "error"
+                      message: data.data.data,
+                      type: "error"
                 });
-                return false;
+                return false
               }
-            })
-            .catch(error => {
+            }).catch(error=>{
               this.$message({
-                message: data.data.data,
-                type: "error"
+                      message: data.data.data,
+                      type: "error"
+                });
+              return false
+              console.log(error,"error--------")
+            })
+          }else{
+            this.$message({
+                message: '删除成功',
+                type: "success"
               });
-              return false;
-              console.log(error, "error--------");
-            });
-        } else {
-          this.$message({
-            message: "删除成功",
-            type: "success"
-          });
-          this.handleEditFlag = false;
-          this.basicForm.commoditys.splice(index, 1);
-        }
-      }
+            this.handleEditFlag = false
+            this.basicForm.commoditys.splice(index,1)
+          }
+       }
       // this.basicForm.commoditys.splice(index, 1);
     },
     houseClick(val) {
-      this.basicForm.sortId = "";
-      this.tableProject({ majorSort: val });
+      this.basicForm.sortId = ''
+      this.tableProject({majorSort:val})
       this.houseStr = val;
       console.log(val, "val----");
     },
@@ -1890,17 +1838,17 @@ export default {
       console.log(bl, "adawd");
     },
     //数组去重
-    remove(arr, val, key) {
-      console.log(arr, "arr--------------");
-      console.log(val, "val----------");
+    remove(arr, val,key) {
+      console.log(arr,"arr--------------")
+      console.log(val,"val----------")
       for (var i = 0; i < arr.length; i++) {
-        if (arr[i][key]) {
-          if (arr[i].value == val) {
+        if(arr[i][key]){
+          if(arr[i].value == val){
             arr.splice(i, 1);
             break;
           }
-        } else {
-          if (arr[i] == val) {
+        }else{
+          if(arr[i] == val){
             arr.splice(i, 1);
             break;
           }
@@ -1939,60 +1887,60 @@ export default {
       }
       this.personsTime = false;
     },
-    serGetList() {
+    serGetList(){
       this.pageNumber = 1;
       this.getList(this.pageNumber);
       this.listQuery.page = 1;
     },
-    getList(page, size, getObj) {
-      var _page = page || this.pageNumber;
-      var _size = size || this.pageSize;
+    getList(page, size,getObj) {
+      var _page = page || this.pageNumber
+      var _size = size || this.pageSize
       this.listLoading = true;
       // this.pageNumber = 1
       var obj = {};
-      if (getObj) {
-        obj = getObj;
-      } else {
-        var obj = {};
-        if (this.basicForm.majorSort) {
-          obj.majorSort = this.tabs;
-        }
-        if (this.search.sortId) {
-          obj.sortId = this.search.sortId;
-        }
-        if (this.search.name) {
-          obj.name = this.search.name;
-        }
+      if(getObj){
+        obj = getObj
+      }else{
+         var obj = {};
+          if (this.basicForm.majorSort) {
+            obj.majorSort = this.tabs;
+          }
+          if (this.search.sortId) {
+            obj.sortId = this.search.sortId;
+          }
+          if (this.search.name) {
+            obj.name = this.search.name;
+          }
       }
       // this.listQuery.page = 1
-      getProject(obj, _page, _size)
-        .then(res => {
-          console.log(res.data, "res.data-------");
-
-          this.total = res.data.data.count;
-          // console.log(res.data.data.pageNo,this.pageNumber,"this.pageNumberres.data.data.pageNo-----------")
-          // if(res.data.data.pageNo!=this.pageNumber){
-          //   console.log('project-------页码')
-          //   this.handleCurrentChange(res.data.data.pageNo)
-          // }
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo;
-          console.log(this.listQuery.page, "this.listQuery.page----------");
-          this.listTable = res.data.data.list;
-          if (this.listTable != undefined && this.listTable.length > 0) {
-            // var num = page == 1? page : page-1+'1';
-            for (var i = 0; i < this.listTable.length; i++) {
-              this.listTable[i].num = i + 1;
+        getProject(obj, _page, _size)
+          .then(res => {
+            console.log(res.data, "res.data-------");
+            
+            this.total = res.data.data.count;
+            // console.log(res.data.data.pageNo,this.pageNumber,"this.pageNumberres.data.data.pageNo-----------")
+            // if(res.data.data.pageNo!=this.pageNumber){
+            //   console.log('project-------页码')
+            //   this.handleCurrentChange(res.data.data.pageNo)
+            // }
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            console.log(this.listQuery.page,"this.listQuery.page----------")
+            this.listTable = res.data.data.list;
+            if(this.listTable!=undefined && this.listTable.length>0){
+              // var num = page == 1? page : page-1+'1';
+              for(var i = 0 ;i<this.listTable.length ; i++){
+                this.listTable[i].num = i+1
+              }
             }
-          }
-          console.log(this.listTable, "listTable");
-          this.listLoading = false;
-          //this.total = res.data.data.count;
-        })
-        .catch(res => {
-          this.listLoading = false;
-        });
+            console.log(this.listTable,"listTable")
+            this.listLoading = false;
+            //this.total = res.data.data.count;
+          })
+          .catch(res => {
+            this.listLoading = false;
+          });
     },
     // 搜索
     handleFilter() {
@@ -2010,9 +1958,9 @@ export default {
       // var obj = Object.assign({},this.search)
       // obj.majorSort = this.basicForm.majorSort
       // console.log(this.basicForm.majorSort,'this.basicForm.majorSort-----------')
-      this.getList(1, this.pageSize);
-      this.pageNumber = 1;
-      this.listQuery.page = 1;
+      this.getList(1, this.pageSize)
+      this.pageNumber = 1
+      this.listQuery.page = 1
       // getProject(obj, this.pageNumber, this.pageSize).then(res => {
       //   this.listTable = res.data.data.list;
       //   this.total = res.data.data.count;
@@ -2033,8 +1981,8 @@ export default {
       }
 
       this.listLoading = true;
-      console.log(obj, "_______");
-      this.getList(this.pageNumber, this.pageSize, obj);
+      console.log(obj,"_______")
+      this.getList(this.pageNumber, this.pageSize,obj)
       // getProject(obj, this.pageNumber, this.pageSize).then(res => {
       //   console.log(res.data.data.list,"res.data.data.list----------------------------res.data.data.list-------------------------")
       //   this.listTable = res.data.data.list;
@@ -2047,15 +1995,15 @@ export default {
       // this.$refs[formName].resetFields();
       // this.resetTemp();
       // this.picList = []
-      console.log(this.goods_info, "goods_info");
+      console.log(this.goods_info,"goods_info")
       // this.basicForm.sale = 'yes'
-      this.basicForm.sortId = "";
+      this.basicForm.sortId = ''
       this.imgNumber = 0;
-      this.tableProject({ majorSort: "clean" });
-      this.alreadyArr = [];
+      this.tableProject({majorSort:"clean"})
+      this.alreadyArr = []
       this.dialogFormVisible = true;
       // this.cancel()
-      this.basicForm.name = "";
+      this.basicForm.name = ''
       // this.basicForm.description = ''
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
@@ -2063,88 +2011,91 @@ export default {
     //编辑方法
     handleUpdate(row) {
       // console.log(row,"------row`````");
-      this.resetForm();
+      this.resetForm()
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
-      this.picList = [];
+      this.picList = []
       this.editId = row.id;
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(data => {
-          if (data.data.code) {
-            console.log(data, "dataopopopopo");
-            var dataUpdate = data.data.data;
-            if (dataUpdate.commoditys != undefined) {
-              for (var i = 0; i < dataUpdate.commoditys.length; i++) {
-                if (dataUpdate.commoditys[i].jointGoodsCode) {
-                  this.jointCode = true;
-                  break;
-                } else {
-                  this.jointCode = false;
+          if(data.data.code){
+              console.log(data,"dataopopopopo")
+              var dataUpdate = data.data.data
+              if(dataUpdate.commoditys!=undefined){
+                for(var i = 0;i<dataUpdate.commoditys.length;i++){
+                  if(dataUpdate.commoditys[i].jointGoodsCode){
+                    this.jointCode = true
+                    break;
+                  }else{
+                    this.jointCode = false
+                  }
+                }
+                console.log(this.jointCode,"---------this.jointCode--------")
+              }
+              this.listLoading = false;
+              this.dialogFormVisible = true;   
+              // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
+              // console.log(data, "data-----编辑");
+              // this.basicForm = data.data.data
+              var arr = data.data.data;
+              console.log(arr,"arr--------------")
+              // for (var i = 0; i < arr.commoditys.length; i++) {
+              //   if (arr.commoditys[i].id) {
+              //     delete arr.commoditys[i].id;
+              //   }
+                // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
+                //   if (arr.commoditys[i].persons[j].id) {
+                //     delete arr.commoditys[i].persons[j].id;
+                //   }
+                // }
+              // }
+              if (data.data.data.pictures != undefined) {
+                this.picFile = data.data.data.pictures;
+                this.imgNumber = data.data.data.pictures.length;
+                for (var i = 0; i < data.data.data.pictures.length; i++) {
+                  console.log(data.data.data.pictures, "tupian");
+                  // var obj = {
+                  //   url:
+                  //     "https://imgcdn.guoanshequ.com/" +
+                  //     data.data.data.pictures[i]
+                  // };
+                  var obj = {
+                    url:data.data.data.pictures[i]
+                  }
+                  this.picList.push(obj);
                 }
               }
-              console.log(this.jointCode, "---------this.jointCode--------");
-            }
-            this.listLoading = false;
-            this.dialogFormVisible = true;
-            // this. alreadyArr = [{ value:'1-1-1-1',label:'戴尔电脑a' },{value:'2-1-1-1', label:'1111'},{value:'1-1-2-1',label:'iP5'}]
-            // console.log(data, "data-----编辑");
-            // this.basicForm = data.data.data
-            var arr = data.data.data;
-            console.log(arr, "arr--------------");
-            // for (var i = 0; i < arr.commoditys.length; i++) {
-            //   if (arr.commoditys[i].id) {
-            //     delete arr.commoditys[i].id;
-            //   }
-            // for (var j = 0; j < arr.commoditys[i].persons.length; j++) {
-            //   if (arr.commoditys[i].persons[j].id) {
-            //     delete arr.commoditys[i].persons[j].id;
-            //   }
-            // }
-            // }
-            if (data.data.data.pictures != undefined) {
-              this.picFile = data.data.data.pictures;
-              this.imgNumber = data.data.data.pictures.length;
-              for (var i = 0; i < data.data.data.pictures.length; i++) {
-                console.log(data.data.data.pictures, "tupian");
-                var obj = {
-                  url:
-                    "https://imgcdn.guoanshequ.com/" +
-                    data.data.data.pictures[i]
-                };
-                this.picList.push(obj);
-              }
-            }
-            this.tableProject({ majorSort: arr.majorSort }, arr.sortId);
-            this.basicForm = arr;
-            // this.basicForm.customTags = arr.customTags || []
-            this.customArr = arr.customTags || [];
-            console.log(this.basicForm, "basicForm------");
-            this.alreadyArr = arr.sysTags || [];
-          } else {
+              this.tableProject({majorSort:arr.majorSort},arr.sortId)
+              this.basicForm = arr;
+              // this.basicForm.customTags = arr.customTags || []
+              this.customArr = arr.customTags || []
+              console.log(this.basicForm, "basicForm------");
+              this.alreadyArr = arr.sysTags || []
+          }else{
             this.listLoading = false;
             this.$message({
-              type: "error",
-              message: data.data.data
-            });
-            return false;
+              type:'error',
+              message:data.data.data
+            })
+            return false
           }
         })
         .catch(error => {
           this.$message({
-            type: "error",
-            message: data.data.data
-          });
+              type:'error',
+              message:data.data.data
+          })
           this.listLoading = false;
-          return false;
+          return false
           console.log(error);
         });
     },
     handleUplode(row) {
       this.addDetailsImg = 0;
-      this.basicForm.sortId = "";
-      this.imgText = [];
+      this.basicForm.sortId = ''
+      this.imgText = []
       // console.log("上传");
       this.editId = row.id;
       this.picList = [];
@@ -2153,7 +2104,7 @@ export default {
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(res => {
-          console.log(res, "res---------------");
+          console.log(res,"res---------------");
           if (res.data.code == 1) {
             var data = res.data.data;
             this.listLoading = false;
@@ -2163,7 +2114,9 @@ export default {
               this.addDetailsImg = data.pictureDetails.length;
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 var obj = {
-                  url: "https://imgcdn.guoanshequ.com/" + data.pictureDetails[i]
+                  url:
+                    "https://imgcdn.guoanshequ.com/" +
+                    data.pictureDetails[i]
                 };
                 this.fileList.push(obj);
               }
@@ -2171,7 +2124,7 @@ export default {
             this.ImageText = true;
             // console.log(this.fileList, "编辑图文");
             // console.log(this.imgText, "编辑图文");
-          } else {
+          }else{
             this.listLoading = false;
           }
           // console.log(res, "列表信息");
@@ -2190,7 +2143,7 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
+        closeOnClickModal:false,
         type: "warning"
       })
         .then(() => {
@@ -2206,24 +2159,24 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.handleCurrentChange(this.listQuery.page);
+                this.handleCurrentChange(this.listQuery.page)
                 // this.getList(this.pageNumber, this.pageSize);
               } else {
                 this.$message({
                   type: "error",
                   message: res.data.data
                 });
-                return false;
+                return false
               }
             })
-            .catch(error => {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-              console.log(error, "未知错误");
-              return false;
-            });
+            .catch((error) =>{
+                this.$message({
+                  type: "error",
+                  message: res.data.data
+                });
+                console.log(error,"未知错误");
+                 return false
+            })
         })
         .catch(() => {
           this.$message({
@@ -2298,23 +2251,23 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab.name, event, "-------tab");
-      this.search.sortId = "";
-      this.search.name = "";
+      this.search.sortId = ''
+      this.search.name = ''
       var size = this.pageSize;
       this.pageNumber = 1;
-      Taxonomy({ majorSort: tab.name })
+       Taxonomy({majorSort:tab.name})
         .then(data => {
-          console.log(data, "clean++++++++++===============");
+          console.log(data,"clean++++++++++===============")
           this.searchSortList = data.data.data;
         })
         .catch(error => {
-          console.log(error, "error-----project");
-        });
+        console.log(error, "error-----project");
+      });
       // this.tableProject({majorSort:tab.name})
       this.getList(1, size);
       this.listQuery.page = 1;
     },
-
+    
     handleAvatarSuccess1(res, file) {
       console.log(res, "触发事件");
       this.dialogImageUrl = URL.createObjectURL(file.raw);
@@ -2330,7 +2283,7 @@ export default {
     },
     //取消
     cancel(fromName) {
-      this.dialogFormVisible = false;
+       this.dialogFormVisible = false;
       // console.log(fromName,"-----")
       // this.dialogFormVisible = false;
       // this.resetEmpty()
@@ -2352,66 +2305,64 @@ export default {
       this.$refs[formName].validate(valid => {
         // console.log(this.basicForm, "basicForm------");
         if (valid) {
-          console.log(
-            this.basicForm.commoditys,
-            "this.basicForm.commoditys-------"
-          );
-          if (this.basicForm.commoditys.length <= 0) {
+          console.log(this.basicForm.commoditys,"this.basicForm.commoditys-------")
+          if(this.basicForm.commoditys.length<=0){
             this.$message({
-              message: "请添加商品",
+              message: '请添加商品',
               type: "error"
             });
-            return false;
+            return false
           }
-          this.btnState = true;
-          var arr = [];
-          var obj = Object.assign({}, that.basicForm);
-          obj.pictures = this.picFile; //服务图片缩略图.
-          obj.sysTags = this.labelClickArr; //添加 系统标签
-          obj.customTags = this.customArr;
+          this.btnState = true
+          var arr = []
+          var obj = Object.assign({},that.basicForm)
+              obj.pictures = this.picFile; //服务图片缩略图.
+              obj.sysTags = this.labelClickArr //添加 系统标签
+              obj.customTags = this.customArr
           console.log(obj, "-----------------------------------");
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             // that.basicForm.id = this.editId
-            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr);
-            that.basicForm.customTags = this.customArr;
+            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
+            that.basicForm.customTags = this.customArr
+            that.basicForm.pictures = this.picFile
             console.log(that.basicForm, "that.basicForm----");
             serverEditPre(that.basicForm)
               .then(data => {
-                this.btnState = false;
+                 this.btnState = false
                 if (data.data.code) {
                   this.$message({
                     message: data.data.data,
                     type: "success"
                   });
-                  this.resetForm();
+                  this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
                   this.picList = [];
-                  this.imgNumber = 0;
+                  this.imgNumber = 0
                 } else {
                   this.$message({
                     message: data.data.data,
                     type: "error"
                   });
-                  this.btnState = false;
-                  this.imgNumber = 0;
+                   this.btnState = false
+                   this.imgNumber = 0
                 }
               })
               .catch(error => {
-                this.btnState = false;
-                this.imgNumber = 0;
+                 this.btnState = false
+                 this.imgNumber = 0
                 console.log(error, "error---project---857");
               });
           } else {
-            console.log(obj, "OBJ---------------------------");
-            if ("id" in obj) {
-              delete obj.id;
+            console.log(obj,"OBJ---------------------------");
+            if("id" in obj){
+              delete obj.id
             }
             ServerAdd(obj)
               .then(data => {
-                this.btnState = false;
+                this.btnState = false
                 console.log(data, "添加成功");
                 if (data.data.code) {
                   this.$message({
@@ -2419,13 +2370,13 @@ export default {
                     type: "success"
                   });
                   this.cancel("basic");
-                  this.basicForm.majorSort = "all";
-                  this.search.sortId = "";
-                  this.search.name = "";
-                  this.tabs = "all";
+                  this.basicForm.majorSort = 'all';
+                  this.search.sortId = '';
+                  this.search.name ='';
+                  this.tabs = 'all';
                   // this.getList(1, 10);
                   // this.pageNumber = 1
-                  this.listQuery.page = 1;
+                  this.listQuery.page = 1
                   this.getList(1, this.pageSize);
                   this.picFile = [];
                 } else {
@@ -2433,11 +2384,11 @@ export default {
                     message: data.data.data,
                     type: "error"
                   });
-                  this.btnState = false;
+                  this.btnState = false
                 }
               })
               .catch(error => {
-                this.btnState = false;
+                this.btnState = false
                 console.log(error, "error--project--770");
               });
           }
@@ -2449,17 +2400,17 @@ export default {
     },
     resetForm(ser) {
       // this.resetEmpty(ser)
-      if (this.$refs["goods_info"]) {
-        this.$refs["goods_info"].resetFields();
+      if(this.$refs["goods_info"]){
+        this.$refs["goods_info"].resetFields()
       }
-      this.goods_info.name = "";
-      this.goods_info.unit = "";
-      this.goods_info.type = "";
-      this.goods_info.price = "";
-      this.goods_info.convertHours = "";
+      this.goods_info.name = ''
+      this.goods_info.unit = ''
+      this.goods_info.type = ''
+      this.goods_info.price = ''
+      this.goods_info.convertHours = ''
       this.goods_info.minPurchase = "";
-      this.goods_info.startPerNum = "";
-      this.goods_info.cappingPerNum = "";
+      this.goods_info.startPerNum = '';
+      this.goods_info.cappingPerNum = ''
       // this.addComm = false;
       // this.dialogFormVisible = false;
       // this.goods_info.persons = [];
@@ -2471,80 +2422,75 @@ export default {
       // this.goods_info.persons = [];
       // this.goods_info.minPurchase = "";
     },
-    emptyingForm() {
+    emptyingForm(){
       // this.$refs["goods_info"].resetFields()
-      if (this.$refs["goods_info"]) {
-        this.$refs["goods_info"].resetFields();
+      if( this.$refs["goods_info"]){
+        this.$refs["goods_info"].resetFields()
       }
-      this.$refs["basic"].resetFields();
-      this.jointCode = false;
-      this.addComm = false;
+      this.$refs["basic"].resetFields()
+      this.jointCode = false
+      this.addComm = false
       this.imgNumber = 0;
       // this.goods_info = {}
       this.basicForm.commoditys = [];
-      this.picFile = []; //清空图片
-      this.picList = []; //清空图片this.alreadyArr.concat(this.labelClickArr)
-      this.alreadyArr = [];
-      this.labelClickArr = [];
-      this.customArr = [];
+      this.picFile = [] //清空图片
+      this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
+      this.alreadyArr = []
+      this.labelClickArr = []
+      this.customArr = []
       this.systemOptions2 = [];
       this.systemOptions3 = [];
       this.systemOptions4 = [];
     },
-    resetEmpty(txt) {
-      if (txt == "ser") {
-        this.$refs["goods_info"].resetFields();
+    resetEmpty(txt){
+      if(txt == "ser"){
+        this.$refs["goods_info"].resetFields()
         this.goods_info.minPurchase = "";
-        this.goods_info.startPerNum = "";
-        this.goods_info.cappingPerNum = "";
-      } else {
-        this.$refs["goods_info"].resetFields();
-        this.$refs["basic"].resetFields();
+        this.goods_info.startPerNum = '';
+        this.goods_info.cappingPerNum = ''
+      }else{
+        this.$refs["goods_info"].resetFields()
+        this.$refs["basic"].resetFields()
         this.goods_info.minPurchase = "";
         this.basicForm.sortNum = ""; //排序号好清空
         this.basicForm.cityCodes = []; //定向城市
         this.goods_info.minPurchase = ""; //起够数量
         this.basicForm.commoditys = []; //商品信息表格
-        this.picFile = []; //清空图片
-        this.picList = []; //清空图片
+        this.picFile = [] //清空图片
+        this.picList = [] //清空图片
         this.dialogFormVisible = false;
       }
     }
+  },
+  components:{
+    imgService
   }
 };
 </script>
 <style>
-.selfTitle1 {
-  display: inline-block;
-  float: left;
+.selfTitle1{
+  display:inline-block;float:left;
 }
-.selfTabsaa {
-  display: inline-block;
-  margin-top: 10px;
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
-  border: 1px solid #e8e8e8;
-  margin-left: 10px;
-  cursor: pointer;
+.selfTabsaa{
+   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
 }
-.selfTabsaa .el-tooltip {
-  height: 30px;
-  padding: 0 5px;
+.selfTabsaa .el-tooltip{
+  height:30px;
+  padding:0 5px;
   /* padding:0 5px; */
 }
-.selfTabContent {
-  float: left;
-  width: 70px;
-  display: inline-block;
-  overflow: hidden;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border: none;
+.selfTabContent{
+  float:left;
+  width:70px;
+  display:inline-block;
+  overflow:hidden;
+  text-align:center;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  border:none;
 }
-.selfCloseSty {
-  border: none;
+.selfCloseSty{
+    border:none;
 }
 .el-radio-group {
   width: 100%;
@@ -2585,14 +2531,14 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.projectTableStyle th > .cell {
+.projectTableStyle  th > .cell {
   text-align: -webkit-center;
 }
 .projectTabel .el-table .cell,
 .projectTabel .el-table th > div {
   padding-left: 10px;
   padding-right: 10px;
-}
+} 
 .upload_box {
   /* text-align: center; */
   box-sizing: border-box;
@@ -2617,9 +2563,9 @@ export default {
 .content-rowspan div:last-child {
   border-bottom: 0;
 }
-.tabBox .codeClean .el-radio-button__inner {
-  background-color: #eef1f6 !important;
-  color: #bbb !important;
+.tabBox .codeClean .el-radio-button__inner{
+  background-color:#eef1f6 !important;
+  color: #bbb !important; 
 }
 .add_Btn {
   width: 100px;
@@ -2635,15 +2581,15 @@ export default {
   line-height: 30px;
   width: 30px;
   height: 30px;
-  background-color: #3a5fcd;
+  background-color: #3A5FCD;
   font-weight: bolder;
   text-align: center;
 }
-.doubt {
+.doubt{
   font-size: 25px;
   vertical-align: middle;
   cursor: pointer;
-  color: #bfcbd9;
+  color:#bfcbd9
 }
 .btn_Span2 {
   width: 70px;
@@ -2660,10 +2606,10 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis; */
 }
-.branch {
-  border-bottom: 1px solid #dfe6ec;
+.branch{
+  border-bottom: 1px solid #dfe6ec
 }
-.el-table__row .cell .branch:last-child {
+.el-table__row .cell .branch:last-child{
   border-bottom: none;
 }
 .branch:nth-of-type(even) {
@@ -2694,23 +2640,23 @@ export default {
   background-color: #6d8dfc;
   color: #ffffff;
 }
-.tabLeft .el-radio-button__inner {
+.tabLeft .el-radio-button__inner{
   text-align: left;
   padding-left: 25%;
-  background: #f9f9f9;
+  background: #f9f9f9
 }
 
-.systemClose {
-  transform: scale(0.7);
-  opacity: 0.75;
+.systemClose{
+  transform:scale(.7);
+  opacity: .75;
   cursor: pointer;
   float: right;
   line-height: 30px;
   display: inline-block;
-  height: 30px;
+  height:30px
 }
 
-.bgWhite .el-switch.is-checked .el-switch__core {
+.bgWhite .el-switch.is-checked .el-switch__core{
   background-color: #4c70e8;
   border: 1px solid #4c70e8;
 }
@@ -2740,8 +2686,8 @@ export default {
 .el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
 }
-.senddata {
-  margin-left: 10px;
+.senddata{
+  margin-left:10px;
 }
 .tit {
   font-size: 14px;
@@ -2764,14 +2710,14 @@ export default {
 /* .bgWhite .el-popover{
   text-align: center;
 } */
-.question {
+.question{
   border-radius: 50%;
   width: 30px;
   height: 30px;
   display: inline-block;
   background: url("../../../static/icon/问号.png") no-repeat;
-  background-size: 100%;
-  vertical-align: middle;
+  background-size:100%; 
+  vertical-align:middle;
   cursor: pointer;
 }
 .upload-back::before {
@@ -2814,11 +2760,11 @@ export default {
   margin-right: 8px;
   color: red;
 }
-.upload-demo .el-upload-list__item-thumbnail {
+.upload-demo .el-upload-list__item-thumbnail{
   width: 100px;
   height: 100px;
 }
-.upload-demo .el-upload-list--picture-card .el-upload-list__item {
+.upload-demo .el-upload-list--picture-card .el-upload-list__item{
   width: 100px;
   height: 100px;
 }
@@ -2839,7 +2785,7 @@ export default {
   font-size: 12px;
   cursor: pointer;
 }
-.proName {
+.proName{
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2864,7 +2810,7 @@ export default {
 }
 
 hr {
-  border: 0.5px solid #eee;
+  border: .5px solid #eee
 }
 /* .image-text .el-dialog__body,
 .image-text .el-dialog__header {
@@ -2873,7 +2819,7 @@ hr {
 .image-text .el-dialog__header{
   height: 0;
 } */
-.bgWhite .el-dialog__footer {
+.bgWhite .el-dialog__footer{
   margin-top: 0;
 }
 .image-text-header {
@@ -2960,62 +2906,62 @@ hr {
   height: 100%;
   width: 100%;
 }
-.imgList {
+.imgList{
   /* width: 60px;
   height: 60px; */
   margin-top: 5px;
 }
-.upload-demo .el-upload-list__item-preview {
+.upload-demo .el-upload-list__item-preview{
   display: none !important;
 }
-.el-icon-plus {
+.el-icon-plus{
   text-align: center;
   font-size: 20px;
 }
-.el-upload--picture {
+.el-upload--picture{
   width: 100%;
 }
-.el-upload-list {
+.el-upload-list{
   width: 100%;
   height: 100%;
 }
-.imgText .el-icon-plus {
+.imgText .el-icon-plus{
   position: absolute;
   top: 0;
   line-height: 44px;
   right: 15px;
   z-index: 1000;
 }
-.tableSer {
+.tableSer{
   padding: 5px 10px;
   cursor: pointer;
-  color: #6d8dfc;
+  color: #6d8dfc
 }
-.tableSer:nth-of-type(3) {
-  color: red;
+.tableSer:nth-of-type(3){
+  color: red
 }
-.details {
+.details{
   font-size: 18px;
   font-weight: 900;
   text-align: center;
   line-height: 80px;
   padding-top: 30px;
 }
-.tabRight .bottimPro .el-form-item__content {
+.tabRight .bottimPro .el-form-item__content{
   /* margin-left: 0; */
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content:center;
 }
-.tabRight .bottimPro .el-form-item__content input:nth-child(2) {
+.tabRight .bottimPro .el-form-item__content input:nth-child(2){
   margin-left: 30px;
 }
-.custom {
+.custom{
   width: 100%;
   height: 36px;
   border: 1px solid #bfcbd9;
 }
-.custom span {
+.custom span{
   line-height: 36px;
 }
 .tech-order-btn {
@@ -3026,48 +2972,45 @@ hr {
   cursor: pointer;
   margin-left: 10px;
 }
-.labelName .el-dialog--small {
+.labelName .el-dialog--small{
   width: 30%;
 }
-.labelName .el-dialog__header,
-.systemLabel .el-dialog__header {
+.labelName .el-dialog__header,.systemLabel .el-dialog__header{
   padding: 0 0 0 20px;
   height: 45px;
   background: #f3f7f9;
-  border-bottom: 1px solid #eee;
+  border-bottom:1px solid #eee;
   font-size: 16px;
   line-height: 45px;
 }
-.labelName .el-form-item__label {
+.labelName .el-form-item__label{
   width: 80px;
   text-align: center;
 }
-.labelName .el-form-item__content {
+.labelName .el-form-item__content{
   margin-left: 90px;
 }
-.labelName .dialog-footer,
-.systemLabel .dialog-footer {
+.labelName .dialog-footer,.systemLabel .dialog-footer{
   display: flex;
   justify-content: center;
 }
-.labelName .dialog-footer input:nth-child(2),
-.systemLabel .dialog-footer input:nth-child(2) {
+.labelName .dialog-footer input:nth-child(2),.systemLabel .dialog-footer input:nth-child(2){
   margin-left: 20px;
 }
-.labelName .el-dialog__body {
+.labelName .el-dialog__body{
   padding: 30px 20px 10px 20px;
 }
-.systemLabel .el-dialog__body {
-  padding-top: 0;
+.systemLabel .el-dialog__body{
+  padding-top:0; 
 }
-.labelList {
-  width: 100%;
+.labelList{
+  width:100%;
   box-sizing: border-box;
   padding: 10px;
   border: 1px solid #bfcbd9;
   border-top: 0;
 }
-.labelList span {
+.labelList span{
   display: inline-block;
   border: 1px solid #bfcbd9;
   /* padding: 0 10px; */
@@ -3075,53 +3018,53 @@ hr {
   line-height: 20px;
   margin-right: 10px;
 }
-.labelDav .labelList span {
-  padding: 0 5px;
-  line-height: 30px;
+.labelDav .labelList span{
+  padding:0 5px;
+  line-height:30px;
 }
-.labelList span i {
+.labelList span i{
   font-size: 12px;
   margin-left: 5px;
 }
-.systemLabel ul {
+.systemLabel ul{
   width: 23%;
   float: left;
   height: 300px;
   overflow-y: auto;
-  border: 1px solid #e8e8e8;
+  border: 1px solid  #E8E8E8;
 }
-.systemLabel ul:nth-of-type(2) {
-  border-left: 0;
+.systemLabel ul:nth-of-type(2){
+  border-left:0;
 }
-.top-start {
+.top-start{
   min-width: 100px;
   text-align: center;
 }
-.systemLabel ul:nth-of-type(3) {
-  border-left: 0;
+.systemLabel ul:nth-of-type(3){
+   border-left: 0;
 }
-.systemLabel ul li {
-  width: 100%;
+.systemLabel ul li{
+  width:100%;
   padding: 0 5px;
   height: 29px;
-  border-bottom: 1px dashed #e8e8e8;
+  border-bottom: 1px dashed  #E8E8E8;
   line-height: 29px;
-  list-style: none;
+  list-style: none
 }
-.systemLabel ul li i {
+.systemLabel ul li i{
   float: right;
   line-height: 29px;
   width: 10%;
-  color: #bebebe;
+  color: #BEBEBE
 }
-.labelSystem {
+.labelSystem{
   float: left;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #E8E8E8;
   width: 31%;
   height: 300px;
   border-left: 0;
 }
-.labelSystem input {
+.labelSystem input{
   background: #fff;
   padding: 0 10px 0 5px;
   float: left;
@@ -3136,43 +3079,42 @@ hr {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.activeSystem_1,
-.activeSystem_2,
-.activeSystem_3 {
+.activeSystem_1,.activeSystem_2,.activeSystem_3{
   background: #e0f1fb;
 }
-.already {
+.already{
   /* height: 50px; */
   line-height: 50px;
-  word-break: keep-all;
+  word-break:keep-all;
 }
-.alreadyUl {
-  width: 100%;
+.alreadyUl{ 
+  width: 100%
 }
-.already span {
-  border: 1px solid #e8e8e8;
+.already span{
+  border: 1px solid #E8E8E8;
   /* line-height:20px; */
   /* padding: 5px;
   margin-right: 5px; */
 }
-.already span i {
+.already span i{
   font-weight: bolder;
   margin-left: 5px;
 }
-.cursor {
-  cursor: pointer;
-  word-wrap: break-word;
-  color: #48576a;
+.cursor{
+    cursor: pointer;
+    word-wrap:break-word;
+    color: #48576a
 }
-.projectLabel {
+.projectLabel{
   cursor: pointer;
   width: 90%;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis
 }
-.labelDav .el-form-item__label {
+.labelDav .el-form-item__label{
   padding-right: 0;
 }
+
 </style>

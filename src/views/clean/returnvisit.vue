@@ -1,1250 +1,345 @@
 <template>
-    <div class="addorder-container">
-       <!--订单信息开始-->
-        <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">订单状态:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
-                          <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
-                          <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.orderStatus =='started'">已上门</span>
-                          <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
-                          <span v-if="otherInfo.orderStatus =='success'">已成功</span>
-                          <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">订单类型:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
-                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
-                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">服务机构:</span>
-                      <span class="lineContent">{{otherInfo.orgName}}</span>
-                   </p>                                                        
-                   <p class="contentLine">
-                      <span class="lineTitle">订单编号:</span>
-                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
-                   </p>                  
-                   <p class="contentLine">
-                      <span class="lineTitle">订单来源:</span>
-                      <span class="lineContent">
-                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
-                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
-                      </span>
-                   </p>                                                         
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">服务状态:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
-                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
-                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">订单分类:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.majorSort =='clean'">保洁</span>
-                          <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">服务站:</span>
-                      <span class="lineContent">{{otherInfo.stationName}}</span>
-                   </p>                                                          
-                   <p class="contentLine">
-                      <span class="lineTitle">下单时间:</span>
-                      <span class="lineContent">{{otherInfo.orderTime}}</span>
-                   </p>                                                          
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--订单信息结束-->
-        <!--支付信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">支付信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">交易单号:</span>
-                      <span class="lineContent">{{payInfo.payNumber}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
-                       <span class="lineTitle">支付状态:</span>
-                       <span>待支付</span> 
-                   </p>                   
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付方式:</span>
-                      <span class="lineContent">
-                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
-                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
-                      </span>
-                   </p>                                                         
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付总额:</span>
-                      <span class="lineContent">{{payInfo.payAccount}}元</span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付状态:</span>
-                      <span class="lineContent" >
-                        <span>已支付</span>                                                                        
-                      </span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付平台:</span>
-                      <span class="lineContent">
-                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
-                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
-                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
-                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
-                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
-                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
-                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
-                      </span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付时间:</span>
-                      <span class="lineContent">{{payInfo.payTime}}</span>
-                   </p>                                       
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--支付信息结束-->
-        <!--服务信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">服务信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">服务项目:</span>
-                      <span class="lineContent">{{goodsInfo.itemName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">建议服务时长:</span>
-                      <span class="lineContent">{{otherInfo.serviceHour}}小时</span>
-                   </p>                                                        
-                </div>
-                <div class="rightArea width390">
-                   <p class="contentLine">
-                      <span class="lineTitle">服务时间:</span>
-                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
-                      <span class="lineTitle">完成时间:</span>
-                      <span class="lineContent">{{otherInfo.finishTime}}</span>
-                   </p>                                     
-                </div> 
-            </div>
-            <div class="selfTableWrapStyle">
-                    <el-table
-                      :data="tableData"
-                      border
-                      class="self-table-style">
-                      <el-table-column
-                        align="center"
-                        label="商品名称"
-                        prop="goodsName"
-                        > 
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="服务数量"
-                        prop="goodsNum">                    
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="单价"
-                        prop="payPrice">                   
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="小计"
-                        prop="payPriceSum">                   
-                      </el-table-column>                      
-                    </el-table>
-            </div>                                     		
-		    </div>
-        <!--服务信息结束-->
-        <!--技师信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">技师信息</div>
-            <div class="hr-style"></div>
-            <div class="techTabWrap">
-                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
-                  <span class="plusComb">&#10010</span>
-                  <span class="plusComtent">增加技师</span>
-                </div>
-                <div class="selfTableWrapStyle1">                
-                    <el-table
-                      :data="tableData1"
-                      border                  
-                      class="orderInfoHeaderPic">
-                      <el-table-column
-                        align="center"
-                        label="头像"
-                        >
-                        <template scope="scope">
-                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="techName"
-                        align="center"
-                        label="姓名"
-                        >
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="性别">
-                          <template scope="scope">
-                              <span v-if="scope.row.techSex =='male'">男</span>
-                            <span v-if="scope.row.techSex =='female'">女</span>
-                          </template>	                    
-                      </el-table-column>
-                      <el-table-column
-                        prop="techPhone"
-                        align="center"
-                        label="手机号">
-                      </el-table-column>                  
-                      <el-table-column
-                        align="center"
-                        label="操作">
-                          <template scope="scope">
-                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
-                          </template>                    
-                      </el-table-column>                  
-                    </el-table>
-                </div>
-            </div>                     		
-		    </div>
-        <!--技师信息结束-->
-        <!--客户备注开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">客户备注</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea" style="width:100%;">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
-                   </p> 
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                                         
-                </div>
-                 
-            </div>                                     		
-		    </div>
-        <!--客户备注结束-->
-        <!--订单备注开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">订单备注</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea" style="width:100%;">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--订单备注结束-->               
-        <!--业务人员信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">业务人员信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">姓名:</span>
-                      <span class="lineContent">{{otherInfo.businessName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">{{otherInfo.businessRemark}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">电话:</span>
-                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
-                   </p>                    
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--业务人员信息结束-->
-        <!--门店信息开始-->
-        <div class="thrid-bar marginTop15 marginBOT20">
-            <div class="custom-action">门店信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">名称:</span>
-                      <span class="lineContent">{{otherInfo.shopName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">地址:</span>
-                      <span class="lineContent">{{otherInfo.shopAddr}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">{{otherInfo.shopRemark}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">电话:</span>
-                      <span class="lineContent">{{otherInfo.shopPhone}}</span>
-                   </p>                  
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--门店信息结束-->                                                
-        <!--技师选择弹窗开始-->
-        <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
-          <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
-          <el-collapse-transition>
-            <div class="selfpromMessageTab" v-if="middleA.length !=0">
-              <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                <div class="techNameStyle">{{item.techName}}</div>
-              </div>                         
-            </div>
-          </el-collapse-transition>                                              	
-          <div class="selfTableWrapONE">
-            <div class="table-d">
-              <table  class="selfTable">
-              <tr class="tableHeader">
-                <td  class="selfTableHEADTD" align="center" width="73px">选择</td>
-                <td  class="selfTableHEADTD" align="center" width="158px">头像</td>
-                <td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
-                <td  class="selfTableHEADTD" align="center" width="73px">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
-              </tr>
-              <div class="orderinfoTechTablePadding">
-                  <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                    <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-                    <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                    <td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
-                    <td  width="72px" class="fontSize12" align="center">
-                      <span class="fontSize12" v-if="item.techSex =='male'">男</span>
-                      <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
-                    </td>
-                    <td width="140px" class="fontSize12"  align="center">
-                          <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
-                          <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
-                    </td>							
-                  </tr>
-              </div>
-              </table>
-              <div v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
-              
-            </div>            
-          </div> 	  	  
-          <div slot="footer" class="dialog-footer" style="text-align:center">
-            <button class="button-large" :disabled="techSaveFlag" @click="submitForm2()">保存</button>
-            <button class="button-cancel" @click="cancelForm2()">取 消</button>
-          </div>
-        </el-dialog>
-        <!--技师选择弹窗结束-->        
-        <!--修改服务时间弹窗开始-->
-        <el-dialog
-          title="选择服务时间"
-          :visible.sync="dialogVisible"
-          :close-on-click-modal="false"
-          >
-            <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
-              <el-form-item label="选择日期" prop='Date' >
-                      <el-date-picker
-                        v-model="formInline.Date"                      
-                        placeholder="年-月-日"                     
-                        :type="select"
-                        :picker-options="pickerOptions0"
-                        class="selfDateStyle"
-                        popper-class="selfTestStyle1"
-                        @change='dateChange'                      
-                        >
-                      </el-date-picker>
-
-              </el-form-item>
-              <el-form-item label="选择时间" prop='Time'>
-                    <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
-                    <div class="marginTopDec46">
-                      <div v-if="timeObj.length == 0" class="promMessage">当前所选择日期没有可服务的技师,请更换日期!</div>                                            
-                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
-                    </div>                    
-              </el-form-item>              
-
-            </el-form>
-            <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large" :disabled="timeSaveFlag"  @click="submitTime('formInline')">保存</button>
-              <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
-            </div>
-        </el-dialog>
-        <!--修改服务时间弹窗结束-->        
-  </div>
+	<div class="img-list">
+		<div class="img-content" v-for="(item,key) in imagelist" :key="key">
+			<img :src="imgWhole.imgPath + item.url + imgWhole.imgSuffix">
+			<!-- 删除icon -->
+			<div class="layer">
+				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>
+			</div>
+		</div>
+		<div v-if="!pass && progress !== 0" class="img-content img-progress">
+			<el-progress type="circle" :percentage="progress" :status="proStatus"></el-progress>
+		</div>
+		<div class="img-upload" v-if="imgFlag">
+			<el-upload class="uploader" accept="image/*"
+			  ref="upload"
+			  list-type="picture-card"
+			  :show-file-list="false"
+			  :action="params.action"
+			  :data="params.data"
+			  :on-change="uploadOnChange"
+			  :http-request="uploadOnSuccess"
+        :before-upload="beforeUpload"
+			  :on-error="uploadOnError"
+			  :on-progress="uploadOnProgress">
+        <i class="el-icon-plus avatar-uploader-icon"></i>
+			</el-upload>
+		</div>
+	</div>
 </template>
 
 <script>
-import {
-  getOrderInf,
-  addTechData,
-  dispatchTechData,
-  addTechSave,
-  dispatchTechSave,
-  saveTime
-} from "@/api/order";
-import { orderServer } from "@/api/serviceManage";
-export default {
-  name: "returnvisit",
-  data() {
-    return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
-      timeSaveFlag: false,
-      techSaveFlag: false,
-      pickerOptions0: {
-        disabledDate(time) {
-          if (
-            time.getTime() > Date.now() - 8.64e7 &&
-            time.getTime() < Date.now() + 8.64e7 * 14
-          ) {
-            return false;
-          } else {
-            return true;
-          }
-        }
+import Cookies from "js-cookie";
+import { getSign } from "@/api/sign";
+export default{
+	name: 'upload-list',
+	data(){
+		return {
+			progress: 0,//上传进度
+			pass: null,//是否上传成功
+      isEnlargeImage: false,//放大图片
+      imgFlag:true,
+      enlargeImage: '',//放大图片地址
+      imagelist:[],
+			// imagelist: [{
+			// 	url: 'http://img.hb.aicdn.com/723f8754f412debce188626d09cc0a1b2be6b7a6751a3-ICEp1E_fw658',
+			// 	name: 'lemon'
+			// },{
+			// 	url: 'http://img.hb.aicdn.com/38ab9e558bcba041be979f03bfd31bd67bf1e6f35815a-8PD8Eo_fw658',
+			// 	name: 'lemon2'
+			// },{
+			// 	url: 'http://img.hb.aicdn.com/0cd0dcc93f5b918e191dd84791101435136c7f9811e31-LRzYAQ_fw658',
+			// 	name: 'lemon3'
+			// }],
+			params: {
+				action: 'http://jsonplaceholder.typicode.com/posts/',
+				data: {}
       },
-      formInline1rules: {
-        Date: [
-          {
-            required: true,
-            type: "date",
-            message: "请选择服务日期",
-            trigger: "change"
-          }
-        ],
-        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }]
-      },
-      timeObj: [], //时间对象
-      addressInfo: [], //服务地址信息
-      otherInfo: [],
-      payInfo: [], //支付信息
-      refundInfo: [], //退款信息
-      goodsInfo: [], //服务信息
-      options: [],
-      techName: "",
-      techStationId: "",
-      promShow1: false,
-      promInf1: "搜索内容不存在!",
-      listTech: [],
-      selectCommidty: [],
-      select: "date",
-      formInline: {
-        Date: "",
-        Time: ""
-      },
-      value1: "",
-      value2: "",
-      tabOptions: [],
-      dialogTableVisible: false,
-      tableData: [],
-      tableData1: [],
-      dialogVisible: false,
-      middleA: [],
-      changTime: "",
-      status: "add",
-      aa: "",
-      bb: "",
-      orderId: ""
-    };
+      imgWhole:{
+        imgPath:'https://imgcdn.guoanshequ.com/',
+        imgSuffix:'?x-oss-process=image/resize,m_fill,h_100,w_100'
+      }
+		}
+	},
+	computed: {
+		proStatus(){//上传状态
+			if(this.pass){
+				return 'success'
+			}else if(this.pass == false){
+				return 'exception'
+			}else{
+				return ''
+			}
+    },
+    sign() {
+      console.log("-------------------------------")
+      return getSign();
+    },
   },
-  methods: {
-    //用订单ID获取页面相关信息
-    getOrderAllInf(orderId) {
-      this.orderId = orderId;
-      var obj = {
-        id: orderId
-      };
-      getOrderInf(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            var AllInfo = res.data.data;
-            this.otherInfo = AllInfo; //所有其他信息变量
-            this.goodsInfo = AllInfo.goodsInfo; //服务信息
-            this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
-            this.tableData1 = AllInfo.techList; //技师信息表格
-            this.payInfo = AllInfo.payInfo; //支付信息
-          } else {
+  watch:{
+    piclist:{
+      immediate: true,
+       handler(val, oldval) {
+         this.imagelist = val
+         if(val.length>3){
+           this.imgFlag = false
+         }else{
+           this.imgFlag = true
+         }
+         console.log(val,"val++++++++")
+       },
+       deep: true
+    }
+  },
+  props:[
+    'piclist'
+  ],
+	methods: {
+    uploadOnProgress(e,file){//开始上传
+      console.log("------------------------------------")
+			console.log(e.percent,file)
+			this.progress = Math.floor(e.percent)
+		},
+    beforeUpload(file){
+      //判断图片格式
+        if(file.type == 'image/gif' || file.type == 'image/jpg' || file.type=='image/png' || file.type == 'image/jpeg'){
+          if(this.imagelist.length>=4){
+              this.$message({
+                type: "error",
+                message: "最多上传4张图片"
+              });
+              return false;
           }
+        }else{
+          this.$message.error('请上传正确的图片格式');
+          return false
+        }
+      // 判断图片大小
+        var _this = this
+        let imgCallback = new Promise((resolve,reject)=>{
+          var img = new Image()
+          var reader = new FileReader()
+          var canvas = document.createElement("canvas") 
+          reader.onload = function(e){
+            img.src = e.target.result
+          } 
+          img.onload = function (e){
+            var width = img.width
+            var height = img.height
+            if(width>=750 && height/width>=0.9 && height/width<=1.1){
+              resolve(true)
+            }else{
+              _this.$message.error('为了保证浏览效果，请上传大于750px*750px的正方形图片')
+              reject(false)
+            }
+          } 
+          reader.readAsDataURL(file)
         })
-        .catch(res => {});
+        return imgCallback
     },
-    //更换时间的保存
-    submitTime(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.timeSaveFlag = true;
-          var time = "";
-          for (var a = 0; a < this.timeObj.length; a++) {
-            if (this.timeObj[a].selected == true) {
-              time = this.timeObj[a].serviceTimeStr;
-              this.bb = this.timeObj[a].serviceTimeStr;
-            }
-          }
-          var that = this;
-          this.$confirm("此操作将更改技师, 是否继续?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            closeOnClickModal: false
+		uploadOnChange(file){
+			console.log("——————————change——————————")
+			// console.log(file)
+			if(file.status == 'ready'){
+				console.log("ready")
+				this.pass = null;
+				this.progress = 0;
+			}else if(file.status == 'fail'){
+				this.$message.error("图片上传出错，请刷新重试！")
+			}
+		},
+    uploadOnSuccess(file){//上传附件
+     var type = file.file.name.split('.')
+      let pro = new Promise((resolve,rej)=>{
+        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if(res.expire - 3 > timestamp){
+          resolve(res);
+        }else{
+          this.$http.get('/apiservice/oss/getSign').then(res=>{
+             Cookies.set("sign", JSON.stringify(res.data));
+             resolve(res.data);
           })
-            .then(() => {
-              //更换时间的保存
-              var obj = {
-                id: this.orderId,
-                serviceTime: this.changTime + " " + time + ":00"
-              };
-              saveTime(obj)
-                .then(res => {
-                  this.timeSaveFlag = false;
-                  if (res.data.code === 1) {
-                    this.$message({
-                      type: "success",
-                      message: "更换时间成功!"
-                    });
-                    this.$refs["formInline"].resetFields();
-                    this.tableData1 = res.data.data.list;
-                    this.otherInfo.serviceHour = res.data.data.serviceHour;
-                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
-                    this.dialogVisible = false;
-                  } else {
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });
-                  }
-                })
-                .catch(res => {
-                  this.timeSaveFlag = false;
-                });
-            })
-            .catch(() => {
-              this.$message({
-                type: "warning",
-                message: "已取消更换时间"
-              });
-            });
         }
-      });
-    },
-    //更换时间取消
-    cancelTime(formName) {
-      this.$refs[formName].resetFields();
-      //样式复位
-      for (var a = 0; a < this.timeObj.length; a++) {
-        this.$set(this.timeObj[a], "selected", false);
-        this.$refs.TimeWrap[a].style.borderColor = "#fff";
-        this.$refs.TimeWrap[a].style.color = "#000";
-        this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-        this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-      }
-      this.dialogVisible = false;
-    },
-    //选择技师弹出层取消
-    cancelForm2() {
-      this.middleA = [];
-      this.listTech = [];
-      this.dialogTableVisible = false;
-    },
-    //日期变化时改变时间对象
-    dateChange(value) {
-      if (value != undefined) {
-        this.changTime = value;
-        var obj = {
-          id: this.orderId,
-          serviceTime: value + " 00:00:00"
-        };
-        ChangeTimeData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.timeObj = res.data.data;
-              } else {
-                this.timeObj = [];
-              }
-              if (this.timeObj.length != 0) {
-                //样式复位
-                for (var a = 0; a < this.timeObj.length; a++) {
-                  this.$set(this.timeObj[a], "selected", false);
-                  this.$refs.TimeWrap[a].style.borderColor = "#fff";
-                  this.$refs.TimeWrap[a].style.color = "#000";
-                  this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-                  this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-                }
-              }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-              this.timeObj = [];
+      })
+      var that = this;
+      pro.then(success=>{
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var s = date.getTime()
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        ossData.append("name", file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+        );
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        ossData.append("file", file.file, file.file.name);
+        that.$http
+          .post(data.host, ossData,{
+            header:{
+              "Content-Type": "multipart/form-data; boundary={boundary}"
             }
           })
-          .catch(res => {});
-      } else {
-        this.timeObj = [];
-      }
-    },
-    //时间选项点击
-    timeChange(index, obj) {
-      for (var a = 0; a < this.timeObj.length; a++) {
-        this.$set(this.timeObj[a], "selected", false);
-        if (a == index) {
-          this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
-          this.$refs.TimeWrap[a].style.color = "#4c70e8";
-          this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
-          this.timeObj[a].selected = !this.timeObj[a].selected;
-          this.formInline.Time = this.timeObj[a].serviceTimeStr;
-        } else {
-          this.$refs.TimeWrap[a].style.borderColor = "#fff";
-          this.$refs.TimeWrap[a].style.color = "#000";
-          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-        }
-      }
-    },
-    //选择技师弹出层查询按钮
-    searchTeh() {
-      var obj = {
-        id: this.orderId,
-        techName: this.techName
-      };
-      //服务技师获取
-      if (this.status == "add") {
-        addTechData(obj)
-          .then(res => {
-            this.listTech = [];
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-                for (var b = 0; b < this.middleA.length; b++) {
-                  for (var a = 0; a < this.listTech.length; a++) {
-                    this.$set(this.listTech[a], "techChecked", false);
-                    if (this.listTech[a].techId == this.middleA[b].techId) {
-                      this.listTech[a].techChecked = true;
-                    }
-                  }
-                }
-              } else {
-                this.listTech = [];
-              }
-            }
+          .then(res=>{
+            var str = ossData.get("key")
+            this.imagelist.push({url:str})
+            this.$emit('imgclick',this.imagelist)
+            console.log(this.imagelist,"this.imagelist------------")
           })
-          .catch(res => {});
-      } else {
-        dispatchTechData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-                for (var c = 0; c < this.middleA.length; c++) {
-                  for (var d = 0; d < this.listTech.length; d++) {
-                    this.$set(this.listTech[d], "techChecked", false);
-                    if (this.listTech[d].techId == this.middleA[c].techId) {
-                      this.listTech[d].techChecked = true;
-                    }
-                  }
-                }
-              } else {
-                this.listTech = [];
-              }
+          .catch(error=>{
+            var str = ossData.get("key")
+            this.imagelist.push({url:str})
+            if(this.imagelist.length>3){
+               this.imgFlag = false
             }
+            this.$emit('imgclick',this.imagelist)
+            console.log(this.imagelist,"this.imagelist------------")
           })
-          .catch(res => {});
+      })
+		},
+		uploadOnError(e,file){
+			console.log("——————————error——————————")
+			console.log(e)
+			this.pass = false;
+		},
+		handleFileEnlarge(_url){//放大图片
+			console.log(_url)
+			if(_url){
+				this.enlargeImage = _url;
+				this.isEnlargeImage = !this.isEnlargeImage;
+			}
+		},
+		handleFileName(file,i){//修改名字
+			console.log(file,i)
+			let that = this;
+			this.$prompt("请输入新文件名：","提示：",{
+				confirmButtonText: '确定',
+				cancelButtonText: '取消'
+			}).then(({ value }) => {
+				console.log(value)
+				if(!value){
+					return false;
+				}
+				//可添加ajax
+				this.$message.success("操作成功")
+				that.imagelist[i].name = value
+			}).catch(() => {})
+		},
+		handleFileRemove(file,i){//删除图片
+			console.log(file,i)
+			if(!file.url){
+				return false;
       }
-    },
-    //存储选择技师对象
-    ChangeTech(obj) {
-      if (obj.techChecked) {
-        obj.techChecked = true;
-        this.middleA.push(obj);
-      } else {
-        obj.techChecked = false;
-        this.middleA.remove(obj);
+      this.imagelist.splice(i,1)
+      console.log(this.imagelist.length,"this.imagelist.length-----")
+      if(this.imagelist.length<4){
+        this.imgFlag = true
       }
-    },
-    //选择技师弹出层保存
-    submitForm2() {
-      this.techSaveFlag = true;
-      //先遍历数据中选中的再保存
-      var arr = [];
-      if (this.middleA != undefined && this.middleA.length != 0) {
-        for (let a = 0; a < this.middleA.length; a++) {
-          if (this.middleA[a].techChecked == true) {
-            arr.push(this.middleA[a].techId);
-          }
-        }
-      }
-      if (this.status == "add" && arr.length != 0) {
-        //保存技师接口调用
-        var obj = {
-          id: this.orderId,
-          techIdList: arr
-        };
-        addTechSave(obj)
-          .then(res => {
-            this.techSaveFlag = false;
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "新增成功!"
-              });
-              this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = res.data.data.serviceHour;
-              this.middleA = [];
-              this.listTech = [];
-              this.dialogTableVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          })
-          .catch(res => {
-            this.techSaveFlag = false;
-          });
-      }
-      if (this.status == "edit" && arr.length != 0) {
-        var obj1 = {
-          id: this.orderId,
-          dispatchTechId: this.aa,
-          techIdList: arr
-        };
-        dispatchTechSave(obj1)
-          .then(res => {
-            this.techSaveFlag = false;
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "改派成功!"
-              });
-              this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = res.data.data.serviceHour;
-              this.middleA = [];
-              this.listTech = [];
-              this.dialogTableVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          })
-          .catch(res => {
-            this.techSaveFlag = false;
-          });
-      }
-      if (arr.length == 0) {
-        this.techSaveFlag = false;
-        this.dialogTableVisible = false;
-      }
-    },
-    //改派或新增技师
-    gaiPai(status, obj) {
-      this.aa = obj.techId;
-      this.status = status;
-      this.techName = "";
-      if (status == "add") {
-        var obj = {
-          id: this.orderId
-        };
-        addTechData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogTableVisible = true;
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-                for (var a = 0; a < this.listTech.length; a++) {
-                  this.$set(this.listTech[a], "techChecked", false);
-                }
-              }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          })
-          .catch(res => {});
-      } else {
-        var obj1 = {
-          id: this.orderId
-        };
-        dispatchTechData(obj1)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogTableVisible = true;
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-              }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
-          })
-          .catch(res => {});
-      }
-    },
-    //改变服务时间按钮
-    changeTime() {
-      this.dialogVisible = true;
-      var date = new Date();
-      var y = date.getFullYear();
-      var m = date.getMonth() + 1;
-      var d = date.getDate();
-      var str = y + "-" + m + "-" + d;
-      this.formInline.Date = date;
-      this.dateChange(str);
-      this.$nextTick(() => {
-        //样式复位
-        for (var a = 0; a < this.timeObj.length; a++) {
-          this.$set(this.timeObj[a], "selected", false);
-          this.$refs.TimeWrap[a].style.borderColor = "#fff";
-          this.$refs.TimeWrap[a].style.color = "#000";
-          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-        }
-      });
-    }
+      this.$emit('imgclick',this.imagelist)
+		}
   },
-  mounted() {
-    var orderId = window.localStorage.getItem("orderId");
-    if (this.$route.query.id == undefined) {
-      this.getOrderAllInf(orderId);
-    } else {
-      this.getOrderAllInf(this.$route.query.id);
-    }
-  }
-};
+}
 </script>
-<style   scoped>
-.selftechNameStyle {
-  width: 185px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+<style>
+*{
+	box-sizing: border-box;
 }
-.tableHeader {
-  position: absolute;
-  top: 0px;
-  z-index: 9999;
+.img-list{
+	overflow:hidden;
+	width:100%;
 }
-.selfTdStyle1 {
-  vertical-align: middle;
-  height: 70px;
-  line-height: 70px;
+.img-list .img-content{
+  background-color: #fff;
+	float:left;
+	text-align:left;
+	position:relative;
+	display:inline-block;
+	/* width:200px;
+	height:200px; */
+	padding:5px;
+	margin:5px 20px 20px 0;
+	border:1px solid #d1dbe5;
+	border-radius:4px;
+	transition:all .3s;
+	box-shadow:0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);
 }
-.promMessage {
-  width: 90%;
-  height: 56px;
-  line-height: 56px;
-  margin-left: 22px;
-  color: #8391a5;
+.img-list .img-upload{
+	float:left;
+	/* width:200px;
+	height:270px; */
+	display:table;
+	text-align:center;
 }
-.mark {
-  background: url(../../../static/icon/Selected.png) right bottom no-repeat;
-  background-size: 20px 20px;
-}
-.selfTabProm {
-  width: 100%;
-  text-align: center;
-  height: 200px;
-  line-height: 200px;
-}
-.picHeader {
-  margin-top: 10px;
-}
-.selfDateStyle {
-  width: 200px;
-  margin-left: 20px;
-}
-.marginTopDec46 {
-  margin-top: -46px;
-}
-.selfSeverTimeSt {
-  width: 80px;
-  height: 34px;
-  line-height: 34px;
-  border: 1px solid #bfcbd9;
-  display: inline-block;
-  text-align: center;
-  position: relative;
-  margin-left: 20px;
-  margin-top: 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.selfMarTL {
-  margin-top: 0px;
-}
-.selfbeizhu {
-  min-width: 800px;
-  margin-left: 22px;
-  float: left;
-}
-.selfbeizhu1 {
-  min-width: 800px;
-  margin-left: 102px;
-  margin-top: -15px;
-  float: left;
-}
-.width120 {
-  width: 120px;
-}
-.selfPromINF {
-  font-size: 12px;
-  margin-top: 10px;
-  color: red;
-}
-.FloatRight {
-  float: right;
-}
-.FloatLeft {
-  float: left;
-}
-.selfTableWrapONE {
-  margin-top: 20px;
-  overflow: hidden;
-  width: 660px;
-  height: 280px;
-  position: relative;
-}
-.table-d {
-  width: 677px;
-  overflow-y: scroll;
-  height: 276px;
-  margin-left: 15px;
-}
-.selfpromMessageTab {
-  position: relative;
-  width: 100%;
-  margin-top: 20px;
-  margin-left: 10px;
-}
-.techNameStyle {
-  width: 80px;
-  height: 25px;
-  line-height: 25px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.tabWrap1 {
-  width: 80px;
-  margin-right: 10px;
-  margin-left: 10px;
+.img-upload .uploader .el-upload--picture-card{
+  width: 112px;
+  height: 112px;
+  line-height: 112px;
   margin-top: 5px;
-  font-size: 12px;
-  display: inline-block;
-  height: 25px;
-  text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
-  position: relative;
 }
-.height70 {
-  height: 70px;
+.img-list .uploader{
+	width:100%;
+	display:table-cell;
+	vertical-align:middle;
 }
-.imgStyle {
-  display: block;
+.img-list .img-progress{
+	text-align:center;
+	padding-top:50px;
 }
-.fontSize12 {
-  font-size: 12px;
+.img-list .img-content img{
+	display:block;
+	margin:0 auto;
+	border-radius:4px;
 }
-.techTabWrap {
-  width: 690px;
-  float: left;
-  padding-left: 30px;
-  padding-bottom: 20px;
+.img-list .img-content .name{
+	margin-top:10px;
 }
-.userHeaderStyle {
-  width: 85px;
-  height: 90px;
-  line-height: 90px;
-  border: 1px solid #ccc;
+.img-list .img-content .name>div{
+	width:90%;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	height:25px;
+	line-height:25px;
 }
-.selfTable,
-.selfTable tr th,
-.selfTable tr td {
-  border: 1px solid #eee;
+.img-list .img-content:hover .del,
+.img-list .img-content:hover .layer{
+	opacity:1;
 }
-.selfTable {
-  text-align: center;
-  border-collapse: collapse;
-  padding: 2px;
+.img-list .img-content .del,
+.img-list .img-content .layer{
+	opacity:0;
+	transition:all .3s;
 }
-.editServiceTabHeader {
-  background: #f8f8f9;
-  height: 30px;
+.img-list .img-content .del{
+	position:absolute;
+	bottom:10px;
+	right:10px;
+	color:#8492a6;
+	cursor:pointer;
+	font-size:1.1em;
 }
-.editServiceTabSel {
-  width: 120px;
-  margin-top: 3px;
-  margin-bottom: 3px;
+.img-list .img-content .layer{
+  line-height: 112px;
+	position:absolute;
+	left:0;
+	right:0;
+	top:0;
+	height:112px;
+	color:#fff;
+	text-align:center;
+	z-index:5;
+	background-color:rgba(0,0,0,.4);
 }
-.editServiceTabInputNum {
-  width: 120px;
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-.height30 {
-  height: 30px;
-}
-.width1000 {
-  min-width: 900px;
-}
-.picWrap {
-  width: 100%;
-  height: 120px;
-  line-height: 120px;
-  margin-left: 82px;
-}
-.marginLeft82 {
-  margin-left: 82px;
-  margin-top: -30px;
-}
-.marginBOT20 {
-  margin-bottom: 20px;
-}
-.picStyle {
-  float: left;
-  width: 120px;
-  height: 120px;
-  margin-right: 20px;
-  margin-top: 20px;
-}
-.addorder-container {
-  width: 100%;
-  font-size: 12px;
-  float: left;
-  background: #eef1f6;
-  /* padding: 20px 5px; */
-}
-.order-selfTd {
-  text-align: center;
-  width: 128%;
-  margin-left: -13.8%;
-  height: 49px;
-  line-height: 49px;
-  border-bottom: 1px solid #dfe6ec;
-}
-.order-selfTd:last-child {
-  border: none;
-}
-.orderOneBar {
-  width: 95%;
-  height: 34px;
-  line-height: 34px;
-}
-.selfMarLeft70 {
-  display: inline-block;
-  margin-top: -4px;
-  margin-left: -50px;
-  position: absolute;
-  cursor: pointer;
-}
-.selfTableWrapStyle {
-  width: 720px;
-  padding-left: 30px;
-  padding-bottom: 20px;
-  padding-top: 40px;
-}
-.selfTableWrapStyle1 {
-  width: 690px;
-  padding-bottom: 20px;
-  margin-top: 20px;
-}
-.servicerFont {
-  cursor: pointer;
-  color: #4c70e8;
-}
-.self-table-style {
-  width: 100%;
-  display: inline-block;
-  margin-top: 20px;
-}
-.selfWrap1 {
-  width: 100%;
-}
-.marginTop15 {
-  margin-top: 15px;
-}
-.addTechWrap {
-  width: 110px;
-  height: 32px;
-  line-height: 32px;
-  margin-top: 10px;
-  background: #ccc;
-  cursor: pointer;
-}
-.plusComb {
-  display: inline-block;
-  float: left;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  color: #fff;
-  background: #3a5fcd;
-  text-align: center;
-  font-size: 20px;
-}
-.plusComtent {
-  display: inline-block;
-  float: left;
-  width: 78px;
-  height: 32px;
-  line-height: 32px;
-  color: #fff;
-  background: #4c70e8;
-  text-align: center;
-  font-size: 14px;
-}
-.width390 {
-  width: 390px;
-}
-.height25 {
-  height: 25px;
-}
-.orderInf-cancel {
-  width: 80px;
-  float: right;
-  height: 34px;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 34px;
-  cursor: pointer;
-  border: 1px solid #4c70e8;
-  text-align: center;
-  display: inline-block;
-  color: #4c70e8;
-}
-.custom-action {
-  margin-left: 30px;
-  font-size: 14px;
-  font-weight: 600;
-}
-.thrid-bar {
-  padding-top: 20px;
-  width: 100%;
-  float: left;
-  background: #fff;
-}
-.leftArea {
-  width: 320px;
-  float: left;
-}
-.rightArea {
-  width: 320px;
-  float: left;
-  margin-left: 50px;
-}
-.contentLine {
-  margin: 20px 0 20px 30px;
-  font-size: 12px;
-}
-.lineTitle {
-  display: inline-block;
-  width: 80px;
-}
-.lineContent {
-  display: inline-block;
-  margin-left: 20px;
-  width: 170px;
-}
-.lineContent1 {
-  display: inline-block;
-}
-.lineContentWidth {
-  display: block;
-  width: 900px;
-  margin-left: 100px;
-  margin-top: -14px;
-}
-.selfTableHEADTD {
-  background: #eef1f6;
-  height: 60px;
-  border: none !important;
-}
-.orderInfoHeaderPic {
-  width: 100%;
-  display: inline-block;
-}
-.orderinfoTechNameStyle {
-  width: 180px;
-  margin-left: 15px;
-}
-.orderinfoTechSearchStyle {
-  margin-right: 15px;
-}
-.orderinfoTechTablePadding {
-  padding-top: 60px;
+.img-list .img-content .layer i{
+	font-size:1.6em;
+	/* margin-top:80px; */
 }
 </style>
