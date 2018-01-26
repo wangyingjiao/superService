@@ -441,291 +441,296 @@
 </template>
 
 <script>
-import {getOrderInf,ChangeTimeData,addTechData,dispatchTechData,addTechSave,dispatchTechSave,saveTime} from "@/api/order";
-  import {
-    orderServer
-  } from '@/api/skill'
+import {
+  getOrderInf,
+  ChangeTimeData,
+  addTechData,
+  dispatchTechData,
+  addTechSave,
+  dispatchTechSave,
+  saveTime
+} from "@/api/order";
+import { orderServer } from "@/api/serviceManage";
 export default {
   name: "",
   data() {
     return {
-          btnShow: JSON.parse(localStorage.getItem('btn')),
-          timeSaveFlag:false,
-          techSaveFlag:false,
-          pickerOptions0: {
-                disabledDate(time) {
-              if(time.getTime() >Date.now()-8.64e7  && time.getTime() <Date.now() +8.64e7*14){
-                        return false;
-              }else{
-                return true;
-              }
-                
-                }
-          },
-          formInline1rules: {
-            Date: [
-            { required: true,type: 'date',message:'请选择服务日期', trigger: 'change' },
-            ],
-            Time: [
-              { required: true,message:'请选择服务时间', trigger: 'change' },
-            ]          
-          },      
-          timeObj:[],//时间对象
-          addressInfo:[],//服务地址信息
-          otherInfo:[],
-          payInfo:[],//支付信息
-          refundInfo:[],//退款信息
-          goodsInfo:[],//服务信息
-          options:[],
-          techName:'',
-          techStationId:'',
-          promShow1:false, 
-          promInf1:'搜索内容不存在!',
-          listTech:[],          
-          selectCommidty:[],      
-          select:'date',
-          formInline:{
-            Date:'',
-            Time:''
-          },
-          value1:'',
-          value2:'',
-          tabOptions:[],
-          dialogTableVisible:false,				
-          tableData:[], 
-          tableData1:[],
-          dialogVisible:false, 
-          middleA:[],
-          changTime:'',
-          status:'add',
-          aa:'',
-          bb:'',
-          orderId:''               		
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      timeSaveFlag: false,
+      techSaveFlag: false,
+      pickerOptions0: {
+        disabledDate(time) {
+          if (
+            time.getTime() > Date.now() - 8.64e7 &&
+            time.getTime() < Date.now() + 8.64e7 * 14
+          ) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      },
+      formInline1rules: {
+        Date: [
+          {
+            required: true,
+            type: "date",
+            message: "请选择服务日期",
+            trigger: "change"
+          }
+        ],
+        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }]
+      },
+      timeObj: [], //时间对象
+      addressInfo: [], //服务地址信息
+      otherInfo: [],
+      payInfo: [], //支付信息
+      refundInfo: [], //退款信息
+      goodsInfo: [], //服务信息
+      options: [],
+      techName: "",
+      techStationId: "",
+      promShow1: false,
+      promInf1: "搜索内容不存在!",
+      listTech: [],
+      selectCommidty: [],
+      select: "date",
+      formInline: {
+        Date: "",
+        Time: ""
+      },
+      value1: "",
+      value2: "",
+      tabOptions: [],
+      dialogTableVisible: false,
+      tableData: [],
+      tableData1: [],
+      dialogVisible: false,
+      middleA: [],
+      changTime: "",
+      status: "add",
+      aa: "",
+      bb: "",
+      orderId: ""
     };
   },
-  methods:{
+  methods: {
     //用订单ID获取页面相关信息
-    getOrderAllInf(orderId){
-      this.orderId=orderId;
-      var obj={
-        id:orderId
-      }
-      getOrderInf(obj).then(res => {      
-          if (res.data.code === 1) {                                   
-            var AllInfo=res.data.data;
-            this.otherInfo=AllInfo;//所有其他信息变量
-            this.goodsInfo=AllInfo.goodsInfo//服务信息
-            this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
-            this.tableData1=AllInfo.techList//技师信息表格
-            this.payInfo=AllInfo.payInfo//支付信息
-          }else{
-          }          
-        }).catch(res=>{
-          
-        });
+    getOrderAllInf(orderId) {
+      this.orderId = orderId;
+      var obj = {
+        id: orderId
+      };
+      getOrderInf(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            var AllInfo = res.data.data;
+            this.otherInfo = AllInfo; //所有其他信息变量
+            this.goodsInfo = AllInfo.goodsInfo; //服务信息
+            this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
+            this.tableData1 = AllInfo.techList; //技师信息表格
+            this.payInfo = AllInfo.payInfo; //支付信息
+          } else {
+          }
+        })
+        .catch(res => {});
     },
     //更换时间的保存
-    submitTime(formName){ 
-      this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.timeSaveFlag=true; 
-            var time='';
-            for(var a=0;a<this.timeObj.length;a++){
-              if(this.timeObj[a].selected==true){
-                time=this.timeObj[a].serviceTimeStr;
-                this.bb=this.timeObj[a].serviceTimeStr;
-              }
+    submitTime(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.timeSaveFlag = true;
+          var time = "";
+          for (var a = 0; a < this.timeObj.length; a++) {
+            if (this.timeObj[a].selected == true) {
+              time = this.timeObj[a].serviceTimeStr;
+              this.bb = this.timeObj[a].serviceTimeStr;
             }
-            var that=this;
-            this.$confirm('此操作将更改技师, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              closeOnClickModal:false
-            }).then(() => {
-                //更换时间的保存
-                var obj={
-                  id:this.orderId,
-                  serviceTime:this.changTime+' '+time+':00'
-                }
-                saveTime(obj).then(res => {
-                  this.timeSaveFlag=false;      
-                  if (res.data.code === 1) {                         
-                      this.$message({
-                        type: "success",
-                        message: "更换时间成功!"
-                      });
-                      this.$refs['formInline'].resetFields();
-                      this.tableData1=res.data.data.list;
-                      this.otherInfo.serviceHour=res.data.data.serviceHour;
-                      this.otherInfo.serviceTime=that.changTime+' '+that.bb;
-                      this.dialogVisible = false 
-                  }else{
+          }
+          var that = this;
+          this.$confirm("此操作将更改技师, 是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnClickModal: false
+          })
+            .then(() => {
+              //更换时间的保存
+              var obj = {
+                id: this.orderId,
+                serviceTime: this.changTime + " " + time + ":00"
+              };
+              saveTime(obj)
+                .then(res => {
+                  this.timeSaveFlag = false;
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "更换时间成功!"
+                    });
+                    this.$refs["formInline"].resetFields();
+                    this.tableData1 = res.data.data.list;
+                    this.otherInfo.serviceHour = res.data.data.serviceHour;
+                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
+                    this.dialogVisible = false;
+                  } else {
                     this.$message({
                       type: "error",
                       message: res.data.data
-                    });                     
-                  }          
-                }).catch(res=>{
-                  this.timeSaveFlag=false; 
+                    });
+                  }
+                })
+                .catch(res => {
+                  this.timeSaveFlag = false;
                 });
-            }).catch(() => { 
-                 this.$message({
-										type: 'warning',
-										message: '已取消更换时间'
-									});
-            });                         
-                       
-          }
-      })
-
+            })
+            .catch(() => {
+              this.$message({
+                type: "warning",
+                message: "已取消更换时间"
+              });
+            });
+        }
+      });
     },
     //更换时间取消
-    cancelTime(formName){
+    cancelTime(formName) {
       this.$refs[formName].resetFields();
       //样式复位
-      for(var a=0;a<this.timeObj.length;a++){
-          this.$set(this.timeObj[a],'selected',false)
-          this.$refs.TimeWrap[a].style.borderColor = "#fff";
-          this.$refs.TimeWrap[a].style.color = "#000";
-          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-          this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-      }      
-      this.dialogVisible = false
+      for (var a = 0; a < this.timeObj.length; a++) {
+        this.$set(this.timeObj[a], "selected", false);
+        this.$refs.TimeWrap[a].style.borderColor = "#fff";
+        this.$refs.TimeWrap[a].style.color = "#000";
+        this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+        this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+      }
+      this.dialogVisible = false;
     },
     //选择技师弹出层取消
-    cancelForm2(){
-      this.middleA=[];
-      this.listTech=[];     
-      this.dialogTableVisible = false
+    cancelForm2() {
+      this.middleA = [];
+      this.listTech = [];
+      this.dialogTableVisible = false;
     },
     //日期变化时改变时间对象
-    dateChange(value){  
-      if(value != undefined){
-        this.changTime=value 
-        var obj={
-          id:this.orderId,
-          serviceTime:value+' 00:00:00'
-        } 
-        ChangeTimeData(obj).then(res => {                
-          if (res.data.code === 1) {
-              if(res.data.data != undefined){
-                  this.timeObj=res.data.data;
-              }else{
-                  this.timeObj=[];
-              }                                       
-              if(this.timeObj.length != 0){
-                //样式复位
-                for(var a=0;a<this.timeObj.length;a++){
-                    this.$set(this.timeObj[a],'selected',false)
-                    this.$refs.TimeWrap[a].style.borderColor = "#fff";
-                    this.$refs.TimeWrap[a].style.color = "#000";
-                    this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-                    this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-                } 
+    dateChange(value) {
+      if (value != undefined) {
+        this.changTime = value;
+        var obj = {
+          id: this.orderId,
+          serviceTime: value + " 00:00:00"
+        };
+        ChangeTimeData(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.timeObj = res.data.data;
+              } else {
+                this.timeObj = [];
               }
-             
-          }else{
-            this.$message({
-              type: "error",
-              message: res.data.data
-            });
-            this.timeObj=[];             
-          }          
-        }).catch(res=>{
-          
-        });        
-      }else{
-        this.timeObj=[];
+              if (this.timeObj.length != 0) {
+                //样式复位
+                for (var a = 0; a < this.timeObj.length; a++) {
+                  this.$set(this.timeObj[a], "selected", false);
+                  this.$refs.TimeWrap[a].style.borderColor = "#fff";
+                  this.$refs.TimeWrap[a].style.color = "#000";
+                  this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+                  this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+                }
+              }
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+              this.timeObj = [];
+            }
+          })
+          .catch(res => {});
+      } else {
+        this.timeObj = [];
       }
     },
     //时间选项点击
-    timeChange(index,obj){
-      for(var a=0;a<this.timeObj.length;a++){
-          this.$set(this.timeObj[a],'selected',false)
-          if(a==index){
-              this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
-              this.$refs.TimeWrap[a].style.color = "#4c70e8";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt mark';
-              this.timeObj[a].selected = !this.timeObj[a].selected;
-              this.formInline.Time=this.timeObj[a].serviceTimeStr       
-          }else{
-              this.$refs.TimeWrap[a].style.borderColor = "#fff";
-              this.$refs.TimeWrap[a].style.color = "#000";
-              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-                                        
-          }
+    timeChange(index, obj) {
+      for (var a = 0; a < this.timeObj.length; a++) {
+        this.$set(this.timeObj[a], "selected", false);
+        if (a == index) {
+          this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+          this.$refs.TimeWrap[a].style.color = "#4c70e8";
+          this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
+          this.timeObj[a].selected = !this.timeObj[a].selected;
+          this.formInline.Time = this.timeObj[a].serviceTimeStr;
+        } else {
+          this.$refs.TimeWrap[a].style.borderColor = "#fff";
+          this.$refs.TimeWrap[a].style.color = "#000";
+          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+        }
       }
-    },      
+    },
     //选择技师弹出层查询按钮
-    searchTeh(){  
-        var obj = {
-          id:this.orderId,
-          techName: this.techName
-        };
-        //服务技师获取
-        if(this.status == 'add'){
-            addTechData(obj).then(res => {
-                this.listTech=[];
-                if (res.data.code === 1) {                  
-                  if(res.data.data != undefined){
-                      this.listTech = res.data.data;
-                      for (var b = 0; b < this.middleA.length; b++) {
-                        for (var a = 0; a <this.listTech.length; a++) {
-                          this.$set(this.listTech[a],'techChecked',false)
-                          if (
-                            this.listTech[a].techId ==
-                            this.middleA[b].techId
-                          ) {
-                            this.listTech[a].techChecked = true;
-                          }
-                        }
-                      }                      
-                  }else{
-                    this.listTech=[];                     
-                  }
-                }
-              }).catch(res=>{
-                      
-              });
-        }else{
-            dispatchTechData(obj).then(res => {
-                if (res.data.code === 1) {
-                  if(res.data.data != undefined){
-                    this.listTech = res.data.data;
-                    for (var c = 0; c < this.middleA.length; c++) {
-                      for (var d = 0; d <this.listTech.length; d++) {
-                        this.$set(this.listTech[d],'techChecked',false)
-                        if (
-                          this.listTech[d].techId ==
-                          this.middleA[c].techId
-                        ) {
-                          this.listTech[d].techChecked = true;
-                        }
-                      }
+    searchTeh() {
+      var obj = {
+        id: this.orderId,
+        techName: this.techName
+      };
+      //服务技师获取
+      if (this.status == "add") {
+        addTechData(obj)
+          .then(res => {
+            this.listTech = [];
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.listTech = res.data.data;
+                for (var b = 0; b < this.middleA.length; b++) {
+                  for (var a = 0; a < this.listTech.length; a++) {
+                    this.$set(this.listTech[a], "techChecked", false);
+                    if (this.listTech[a].techId == this.middleA[b].techId) {
+                      this.listTech[a].techChecked = true;
                     }
-                  }else{
-                    this.listTech=[]                     
                   }
                 }
-              }).catch(res=>{
-                      
-              });          
-        }                         
+              } else {
+                this.listTech = [];
+              }
+            }
+          })
+          .catch(res => {});
+      } else {
+        dispatchTechData(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.listTech = res.data.data;
+                for (var c = 0; c < this.middleA.length; c++) {
+                  for (var d = 0; d < this.listTech.length; d++) {
+                    this.$set(this.listTech[d], "techChecked", false);
+                    if (this.listTech[d].techId == this.middleA[c].techId) {
+                      this.listTech[d].techChecked = true;
+                    }
+                  }
+                }
+              } else {
+                this.listTech = [];
+              }
+            }
+          })
+          .catch(res => {});
+      }
     },
     //存储选择技师对象
-    ChangeTech(obj){
-      if(obj.techChecked){
-          obj.techChecked = true;
-          this.middleA.push(obj)          
-      }else{
-          obj.techChecked = false;
-          this.middleA.remove(obj)          
+    ChangeTech(obj) {
+      if (obj.techChecked) {
+        obj.techChecked = true;
+        this.middleA.push(obj);
+      } else {
+        obj.techChecked = false;
+        this.middleA.remove(obj);
       }
-    },    
+    },
     //选择技师弹出层保存
     submitForm2() {
-      this.techSaveFlag=true;
+      this.techSaveFlag = true;
       //先遍历数据中选中的再保存
       var arr = [];
       if (this.middleA != undefined && this.middleA.length != 0) {
@@ -735,204 +740,254 @@ export default {
           }
         }
       }
-      if(this.status == 'add' && arr.length !=0 ){
-      //保存技师接口调用
-        var obj={
-          id:this.orderId,
-          techIdList:arr
-        }
-        addTechSave(obj).then(res => {
-          this.techSaveFlag=false;      
-          if (res.data.code === 1) {
+      if (this.status == "add" && arr.length != 0) {
+        //保存技师接口调用
+        var obj = {
+          id: this.orderId,
+          techIdList: arr
+        };
+        addTechSave(obj)
+          .then(res => {
+            this.techSaveFlag = false;
+            if (res.data.code === 1) {
               this.$message({
                 type: "success",
                 message: "新增成功!"
               });
-              this.tableData1=res.data.data.list;
-              this.otherInfo.serviceHour=res.data.data.serviceHour
-              this.middleA=[];
-              this.listTech=[];                         
-              this.dialogTableVisible = false
-          }else{
+              this.tableData1 = res.data.data.list;
+              this.otherInfo.serviceHour = res.data.data.serviceHour;
+              this.middleA = [];
+              this.listTech = [];
+              this.dialogTableVisible = false;
+            } else {
               this.$message({
                 type: "error",
                 message: res.data.data
-              });                         
-          }          
-        }).catch(res=>{
-          this.techSaveFlag=false;
-        });
+              });
+            }
+          })
+          .catch(res => {
+            this.techSaveFlag = false;
+          });
       }
-      if(this.status == 'edit' && arr.length !=0 ){
-        var obj1={
-          id:this.orderId,
-          dispatchTechId:this.aa,
-          techIdList:arr
-        }
-        dispatchTechSave(obj1).then(res => {
-          this.techSaveFlag=false;      
-          if (res.data.code === 1) {
+      if (this.status == "edit" && arr.length != 0) {
+        var obj1 = {
+          id: this.orderId,
+          dispatchTechId: this.aa,
+          techIdList: arr
+        };
+        dispatchTechSave(obj1)
+          .then(res => {
+            this.techSaveFlag = false;
+            if (res.data.code === 1) {
               this.$message({
                 type: "success",
                 message: "改派成功!"
               });
-              this.tableData1=res.data.data.list;
-              this.otherInfo.serviceHour=res.data.data.serviceHour
-              this.middleA=[];
-              this.listTech=[];                         
-              this.dialogTableVisible = false
-          }else{
+              this.tableData1 = res.data.data.list;
+              this.otherInfo.serviceHour = res.data.data.serviceHour;
+              this.middleA = [];
+              this.listTech = [];
+              this.dialogTableVisible = false;
+            } else {
               this.$message({
                 type: "error",
                 message: res.data.data
-              });             
-          }          
-        }).catch(res=>{
-          this.techSaveFlag=false;
-        });        
-      }
-      if(arr.length ==0){
-         this.techSaveFlag=false;
-         this.dialogTableVisible = false;
-      }             	
-    },         
-    //改派或新增技师
-    gaiPai(status,obj){
-        this.aa=obj.techId;
-        this.status=status;
-        this.techName='';         
-        if(status == 'add'){
-              var obj={
-                id:this.orderId
-              };            
-              addTechData(obj).then(res => {      
-                if (res.data.code === 1) { 
-                  this.dialogTableVisible=true;                                   
-                  if(res.data.data != undefined){
-                      this.listTech=res.data.data;                 
-                      for(var a=0;a<this.listTech.length;a++){
-                        this.$set(this.listTech[a],'techChecked',false)
-                      }                    
-                  }                                                                            
-                }else{
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });                  
-                }          
-              }).catch(res=>{
-                
               });
-        }else{
-              var obj1={
-                id:this.orderId
-              };            
-              dispatchTechData(obj1).then(res => {      
-                if (res.data.code === 1) {
-                  this.dialogTableVisible=true;                                          
-                  if(res.data.data != undefined){ 
-                    this.listTech=res.data.data; 
-                  }
-                }else{
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });                   
-                }          
-              }).catch(res=>{
-                
-              });          
-        }
-    
+            }
+          })
+          .catch(res => {
+            this.techSaveFlag = false;
+          });
+      }
+      if (arr.length == 0) {
+        this.techSaveFlag = false;
+        this.dialogTableVisible = false;
+      }
+    },
+    //改派或新增技师
+    gaiPai(status, obj) {
+      this.aa = obj.techId;
+      this.status = status;
+      this.techName = "";
+      if (status == "add") {
+        var obj = {
+          id: this.orderId
+        };
+        addTechData(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.dialogTableVisible = true;
+              if (res.data.data != undefined) {
+                this.listTech = res.data.data;
+                for (var a = 0; a < this.listTech.length; a++) {
+                  this.$set(this.listTech[a], "techChecked", false);
+                }
+              }
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+            }
+          })
+          .catch(res => {});
+      } else {
+        var obj1 = {
+          id: this.orderId
+        };
+        dispatchTechData(obj1)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.dialogTableVisible = true;
+              if (res.data.data != undefined) {
+                this.listTech = res.data.data;
+              }
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data
+              });
+            }
+          })
+          .catch(res => {});
+      }
     },
     //改变服务时间按钮
-    changeTime(){
-            this.dialogVisible=true;
-            var date = new Date();
-            var y = date.getFullYear();
-            var m = date.getMonth()+1;
-            var d = date.getDate(); 
-            var str=y+'-'+m+'-'+d;
-            this.formInline.Date=date;
-            this.dateChange(str)
-      this.$nextTick( () => {
-          //样式复位
-          for(var a=0;a<this.timeObj.length;a++){
-              this.$set(this.timeObj[a],'selected',false)
-              this.$refs.TimeWrap[a].style.borderColor = "#fff";
-              this.$refs.TimeWrap[a].style.color = "#000";
-              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-              this.$refs.TimeWrap[a].className ='selfSeverTimeSt';
-          }        
-      })
-
-            
-    }	
+    changeTime() {
+      this.dialogVisible = true;
+      var date = new Date();
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      var str = y + "-" + m + "-" + d;
+      this.formInline.Date = date;
+      this.dateChange(str);
+      this.$nextTick(() => {
+        //样式复位
+        for (var a = 0; a < this.timeObj.length; a++) {
+          this.$set(this.timeObj[a], "selected", false);
+          this.$refs.TimeWrap[a].style.borderColor = "#fff";
+          this.$refs.TimeWrap[a].style.color = "#000";
+          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+        }
+      });
+    }
   },
   mounted() {
-    var orderId=window.localStorage.getItem("orderId")
-    if(this.$route.query.id == undefined){
-      this.getOrderAllInf(orderId)
-    }else{
-      this.getOrderAllInf(this.$route.query.id)
-    }    
+    var orderId = window.localStorage.getItem("orderId");
+    if (this.$route.query.id == undefined) {
+      this.getOrderAllInf(orderId);
+    } else {
+      this.getOrderAllInf(this.$route.query.id);
+    }
   }
 };
 </script>
 <style   scoped>
-.selftechNameStyle{
-    width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+.selftechNameStyle {
+  width: 185px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.tableHeader{position:absolute;top:0px;z-index:9999}
+.tableHeader {
+  position: absolute;
+  top: 0px;
+  z-index: 9999;
+}
 .selfTdStyle1 {
-  vertical-align:middle;
+  vertical-align: middle;
   height: 70px;
-  line-height:70px;
+  line-height: 70px;
 }
-.promMessage{width:90%;height:56px;line-height:56px;margin-left:22px;color: #8391a5;}
+.promMessage {
+  width: 90%;
+  height: 56px;
+  line-height: 56px;
+  margin-left: 22px;
+  color: #8391a5;
+}
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
   background-size: 20px 20px;
 }
-.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
-.picHeader{margin-top:10px;}
-.selfDateStyle{width:200px;margin-left:20px;}
-.marginTopDec46{margin-top:-46px;}
-.selfSeverTimeSt{
-    width: 80px;
-    height: 34px;
-    line-height: 34px;
-    border: 1px solid #bfcbd9;
-    display: inline-block;
-    text-align: center;
-    position: relative;
-    margin-left: 20px;
-    margin-top:10px;
-    font-size: 14px;
-    cursor: pointer;
+.selfTabProm {
+  width: 100%;
+  text-align: center;
+  height: 200px;
+  line-height: 200px;
 }
-.selfMarTL{margin-top:0px;}
-.selfbeizhu{min-width:800px;margin-left:22px;float:left;}
-.selfbeizhu1{min-width:800px;margin-left: 102px;margin-top: -15px;float:left;}
-.width120{width:120px;}
-.selfPromINF{font-size: 12px; margin-top: 10px; color: red;}
-.FloatRight{float:right;}
-.FloatLeft{float:left;}
-.selfTableWrapONE{
+.picHeader {
+  margin-top: 10px;
+}
+.selfDateStyle {
+  width: 200px;
+  margin-left: 20px;
+}
+.marginTopDec46 {
+  margin-top: -46px;
+}
+.selfSeverTimeSt {
+  width: 80px;
+  height: 34px;
+  line-height: 34px;
+  border: 1px solid #bfcbd9;
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.selfMarTL {
+  margin-top: 0px;
+}
+.selfbeizhu {
+  min-width: 800px;
+  margin-left: 22px;
+  float: left;
+}
+.selfbeizhu1 {
+  min-width: 800px;
+  margin-left: 102px;
+  margin-top: -15px;
+  float: left;
+}
+.width120 {
+  width: 120px;
+}
+.selfPromINF {
+  font-size: 12px;
+  margin-top: 10px;
+  color: red;
+}
+.FloatRight {
+  float: right;
+}
+.FloatLeft {
+  float: left;
+}
+.selfTableWrapONE {
   margin-top: 20px;
   overflow: hidden;
   width: 660px;
   height: 280px;
-  position:relative;
-  }
-.table-d{
+  position: relative;
+}
+.table-d {
   width: 677px;
   overflow-y: scroll;
   height: 276px;
   margin-left: 15px;
 }
-.selfpromMessageTab{
-   position:relative;width:100%;margin-top:20px;margin-left:10px;
+.selfpromMessageTab {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 10px;
 }
 .techNameStyle {
   width: 80px;
@@ -946,7 +1001,7 @@ export default {
   width: 80px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top:5px;
+  margin-top: 5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -956,105 +1011,241 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-.height70{height:70px;}
-.imgStyle{display:block;}
-.fontSize12{font-size:12px;}
-.techTabWrap{width:690px;float:left;padding-left:30px;padding-bottom:20px;}
-.userHeaderStyle{width:85px;height:90px;line-height:90px;border:1px solid #ccc;}
-.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
-.selfTable {  text-align: center; border-collapse: collapse; padding:2px;}
-.editServiceTabHeader{background: #F8F8F9;height:30px;}
-.editServiceTabSel{width:120px;margin-top:3px;margin-bottom:3px;}
-.editServiceTabInputNum{width:120px;margin-top:3px;margin-bottom:3px;} 
-.height30{height:30px;}
-.width1000{min-width:900px;}
-.picWrap{width:100%;height:120px;line-height:120px;margin-left:82px;}
-.marginLeft82{margin-left:82px;margin-top:-30px;}
-.marginBOT20{margin-bottom:20px;}
-.picStyle{float:left;width:120px;height:120px;margin-right:20px;margin-top:20px;}
-.addorder-container{
-  width:100%;
-  font-size:12px;
-	float:left;
-	background:#eef1f6;
+.height70 {
+  height: 70px;
+}
+.imgStyle {
+  display: block;
+}
+.fontSize12 {
+  font-size: 12px;
+}
+.techTabWrap {
+  width: 690px;
+  float: left;
+  padding-left: 30px;
+  padding-bottom: 20px;
+}
+.userHeaderStyle {
+  width: 85px;
+  height: 90px;
+  line-height: 90px;
+  border: 1px solid #ccc;
+}
+.selfTable,
+.selfTable tr th,
+.selfTable tr td {
+  border: 1px solid #eee;
+}
+.selfTable {
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
+}
+.editServiceTabHeader {
+  background: #f8f8f9;
+  height: 30px;
+}
+.editServiceTabSel {
+  width: 120px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.editServiceTabInputNum {
+  width: 120px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.height30 {
+  height: 30px;
+}
+.width1000 {
+  min-width: 900px;
+}
+.picWrap {
+  width: 100%;
+  height: 120px;
+  line-height: 120px;
+  margin-left: 82px;
+}
+.marginLeft82 {
+  margin-left: 82px;
+  margin-top: -30px;
+}
+.marginBOT20 {
+  margin-bottom: 20px;
+}
+.picStyle {
+  float: left;
+  width: 120px;
+  height: 120px;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+.addorder-container {
+  width: 100%;
+  font-size: 12px;
+  float: left;
+  background: #eef1f6;
   /* padding: 20px 5px; */
 }
-.order-selfTd{
-text-align:center;width: 128%;margin-left: -13.8%;height:49px;line-height:49px;border-bottom:1px solid #dfe6ec
+.order-selfTd {
+  text-align: center;
+  width: 128%;
+  margin-left: -13.8%;
+  height: 49px;
+  line-height: 49px;
+  border-bottom: 1px solid #dfe6ec;
 }
-.order-selfTd:last-child{
-   border:none;
+.order-selfTd:last-child {
+  border: none;
 }
-.orderOneBar{
-   width:95%;height:34px;line-height:34px;
+.orderOneBar {
+  width: 95%;
+  height: 34px;
+  line-height: 34px;
 }
-.selfMarLeft70{
-    display: inline-block;
-    margin-top: -4px;
-    margin-left:-50px;
-    position: absolute;
-    cursor: pointer;
+.selfMarLeft70 {
+  display: inline-block;
+  margin-top: -4px;
+  margin-left: -50px;
+  position: absolute;
+  cursor: pointer;
 }
-.selfTableWrapStyle{
-  width:720px;padding-left:30px;padding-bottom:20px;padding-top:40px;
+.selfTableWrapStyle {
+  width: 720px;
+  padding-left: 30px;
+  padding-bottom: 20px;
+  padding-top: 40px;
 }
-.selfTableWrapStyle1{
-  width:690px;padding-bottom:20px;margin-top:20px;
+.selfTableWrapStyle1 {
+  width: 690px;
+  padding-bottom: 20px;
+  margin-top: 20px;
 }
-.servicerFont{cursor:pointer;color:#4c70e8}
-.self-table-style{width:100%;display:inline-block;margin-top:20px;}
-.selfWrap1{
-  width:100%;
+.servicerFont {
+  cursor: pointer;
+  color: #4c70e8;
 }
-.marginTop15{
-  margin-top:15px;
+.self-table-style {
+  width: 100%;
+  display: inline-block;
+  margin-top: 20px;
 }
-.addTechWrap{width:110px;height:32px;line-height:32px;margin-top: 10px;background:#ccc;cursor:pointer;}
-.plusComb{display:inline-block;float:left;width:32px;height:32px;line-height:32px;color:#fff;background:#3a5fcd;text-align:center;font-size:20px;}
-.plusComtent{display:inline-block;float:left;width:78px;height:32px;line-height:32px;color:#fff;background:#4c70e8;text-align:center;font-size:14px;}
-.width390{
-  width:390px;
+.selfWrap1 {
+  width: 100%;
 }
-.height25{
-  height:25px;
+.marginTop15 {
+  margin-top: 15px;
 }
-.orderInf-cancel{
-   width:80px; float:right;height:34px;font-size:14px;font-weight:500;line-height:34px;cursor: pointer; border: 1px solid #4c70e8;text-align:center;display:inline-block;color:#4c70e8
+.addTechWrap {
+  width: 110px;
+  height: 32px;
+  line-height: 32px;
+  margin-top: 10px;
+  background: #ccc;
+  cursor: pointer;
 }
-.custom-action{
-	margin-left:30px;
-  font-size:14px;
-  font-weight:600;
+.plusComb {
+  display: inline-block;
+  float: left;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  color: #fff;
+  background: #3a5fcd;
+  text-align: center;
+  font-size: 20px;
 }
-.thrid-bar{
-  padding-top:20px;
-  width:100%;
-  float:left;
-  background:#fff;
+.plusComtent {
+  display: inline-block;
+  float: left;
+  width: 78px;
+  height: 32px;
+  line-height: 32px;
+  color: #fff;
+  background: #4c70e8;
+  text-align: center;
+  font-size: 14px;
 }
-.leftArea{width:320px;float:left;}
-.rightArea{width:320px;float:left;margin-left:50px;}
-.contentLine{margin: 20px 0 20px 30px;;font-size:12px;}
-.lineTitle{display:inline-block;width:80px;}
-.lineContent{display:inline-block;margin-left:20px;width:170px;}
-.lineContent1{display:inline-block;}
-.lineContentWidth{
-    display: block;
-    width: 900px;
-    margin-left: 100px;
-    margin-top: -14px;
+.width390 {
+  width: 390px;
 }
-.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
-.orderInfoHeaderPic{
-   width: 100%;display:inline-block;
+.height25 {
+  height: 25px;
 }
-.orderinfoTechNameStyle{
-   width:180px;margin-left:15px;
+.orderInf-cancel {
+  width: 80px;
+  float: right;
+  height: 34px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 34px;
+  cursor: pointer;
+  border: 1px solid #4c70e8;
+  text-align: center;
+  display: inline-block;
+  color: #4c70e8;
 }
-.orderinfoTechSearchStyle{
-   margin-right:15px;
+.custom-action {
+  margin-left: 30px;
+  font-size: 14px;
+  font-weight: 600;
 }
-.orderinfoTechTablePadding{
-   padding-top:60px;
+.thrid-bar {
+  padding-top: 20px;
+  width: 100%;
+  float: left;
+  background: #fff;
+}
+.leftArea {
+  width: 320px;
+  float: left;
+}
+.rightArea {
+  width: 320px;
+  float: left;
+  margin-left: 50px;
+}
+.contentLine {
+  margin: 20px 0 20px 30px;
+  font-size: 12px;
+}
+.lineTitle {
+  display: inline-block;
+  width: 80px;
+}
+.lineContent {
+  display: inline-block;
+  margin-left: 20px;
+  width: 170px;
+}
+.lineContent1 {
+  display: inline-block;
+}
+.lineContentWidth {
+  display: block;
+  width: 900px;
+  margin-left: 100px;
+  margin-top: -14px;
+}
+.selfTableHEADTD {
+  background: #eef1f6;
+  height: 60px;
+  border: none !important;
+}
+.orderInfoHeaderPic {
+  width: 100%;
+  display: inline-block;
+}
+.orderinfoTechNameStyle {
+  width: 180px;
+  margin-left: 15px;
+}
+.orderinfoTechSearchStyle {
+  margin-right: 15px;
+}
+.orderinfoTechTablePadding {
+  padding-top: 60px;
 }
 </style>

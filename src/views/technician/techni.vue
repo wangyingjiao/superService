@@ -586,7 +586,7 @@ import {
 } from "@/api/tech";
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
-import { Whether } from "@/api/project";
+import { Whether } from "@/api/serviceManage";
 import Cookies from "js-cookie";
 // import timePicker from './timePicker.vue'
 

@@ -566,13 +566,7 @@ import {
   getProject,
   addProject,
   delProject,
-  getInfoPic
-} from "@/api/serviceManage";
-import Cookies from "js-cookie";
-import { getSign } from "@/api/sign";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { parseTime } from "@/utils";
-import {
+  getInfoPic,
   Taxonomy,
   Orienteering,
   Whether,
@@ -584,7 +578,11 @@ import {
   serGasqSort,
   sendData,
   deleteGoodsData
-} from "@/api/project";
+} from "@/api/serviceManage";
+import Cookies from "js-cookie";
+import { getSign } from "@/api/sign";
+import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { parseTime } from "@/utils";
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
