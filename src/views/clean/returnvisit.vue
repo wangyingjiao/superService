@@ -1,7 +1,7 @@
 <template>
 	<div class="img-list">
 		<div class="img-content" v-for="(item,key) in imagelist" :key="key">
-			<img :src="imgWhole.imgPath + item.url + imgWhole.imgSuffix">
+			<img :src="type=='picture'?imgWhole.imgPath + item.url : imgWhole.imgPath + item.url + imgWhole.imgSuffix">
 			<!-- 删除icon -->
 			<div class="layer">
 				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>
@@ -13,7 +13,7 @@
 		<div class="img-upload" v-if="imgFlag">
 			<el-upload class="uploader" accept="image/*"
 			  ref="upload"
-			  list-type="picture-card"
+			  :list-type="type"
 			  :show-file-list="false"
 			  :action="params.action"
 			  :data="params.data"
@@ -92,7 +92,10 @@ export default{
     }
   },
   props:[
-    'piclist'
+    'piclist',
+    'type',
+    'min',
+    'max'
   ],
 	methods: {
     uploadOnProgress(e,file){//开始上传
@@ -126,10 +129,13 @@ export default{
           img.onload = function (e){
             var width = img.width
             var height = img.height
-            if(width>=750 && height/width>=0.9 && height/width<=1.1){
+            var {min,max} = _this
+            console.log(min,"min")
+            console.log(max,"max")
+            if(width >= 750 && height/width >= min && height/width <= max){
               resolve(true)
             }else{
-              _this.$message.error('为了保证浏览效果，请上传大于750px*750px的正方形图片')
+              _this.$message.error('上传图片不符合要求')
               reject(false)
             }
           } 
@@ -148,7 +154,11 @@ export default{
 				this.$message.error("图片上传出错，请刷新重试！")
 			}
 		},
-    uploadOnSuccess(file){//上传附件
+    uploadOnSuccess(file,fileList,a,b){//上传附件
+    console.log(file,"file-------")
+    console.log(fileList,"fileList--------")
+    console.log(a,"a--------")
+    console.log(b,"b---------")
      var type = file.file.name.split('.')
       let pro = new Promise((resolve,rej)=>{
         console.log(JSON.parse(Cookies.get("sign")), "测试1111");
@@ -249,7 +259,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 /* *{
 	box-sizing: border-box;
 } */

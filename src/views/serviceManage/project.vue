@@ -187,7 +187,7 @@
 
                 <el-form-item label="banner图：" prop="picture">
                   <div class="upload-demo upload_box form_item">
-                    <imgService @imgclick = "imgClick" :piclist = "picList"></imgService>
+                    <imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
                       <!-- <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
@@ -205,7 +205,7 @@
                       </el-dialog> -->
                   </div>
       
-                    <div class="el-upload__tip">*请选择上传的图片，且不超过4张</div>
+                    <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
                 </el-form-item>
 
                 <!-- <el-form-item label="服务描述：" prop="description">
@@ -514,7 +514,8 @@
                 <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
                 <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
                 <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
-                   <el-upload
+                  <imgService @imgclick = "imgTextClick" :piclist = "fileList" :type="'picture'" :min='0' :max='8'></imgService>
+                   <!-- <el-upload
                           action="https://openservice.oss-cn-beijing.aliyuncs.com"
                           class="imgText"
                           list-type="picture"
@@ -527,7 +528,7 @@
                           :http-request="upload"
                           >
                           <i class="el-icon-plus"></i>
-                      </el-upload>
+                      </el-upload> -->
                       <!-- <el-upload
                           action="http://openservice.oss-cn-beijing.aliyuncs.com"
                           list-type="picture-card"
@@ -1067,14 +1068,19 @@ export default {
     },
   },
   methods: {
-    imgClick(item){
+    returnImg(item){
       var arr = []
       console.log(item,"item-____))))))))")
       for(var i = 0;i<item.length;i++){
         arr.push(item[i].url)
       }
-      this.picFile = arr
-      console.log(this.picFile,"--------------+++++++____________")
+      return arr
+    },
+    imgClick(item){
+      this.picFile = this.returnImg(item)
+    },
+    imgTextClick(item){
+      this.imgText = this.returnImg(item)
     },
     //对接商品
     handleSendData(row){
@@ -1543,7 +1549,7 @@ export default {
         }).catch(error=>{
             this.$message({
               type:'error',
-              message:res.data.data
+              message:"上传失败"
             })
           console.log(error,"上传失败")
           return false
@@ -2113,11 +2119,14 @@ export default {
               this.imgText = data.pictureDetails;
               this.addDetailsImg = data.pictureDetails.length;
               for (var i = 0; i < data.pictureDetails.length; i++) {
+                // var obj = {
+                //   url:
+                //     "https://imgcdn.guoanshequ.com/" +
+                //     data.pictureDetails[i]
+                // };
                 var obj = {
-                  url:
-                    "https://imgcdn.guoanshequ.com/" +
-                    data.pictureDetails[i]
-                };
+                  url:data.pictureDetails[i]
+                }
                 this.fileList.push(obj);
               }
             }
@@ -2534,6 +2543,9 @@ export default {
 .projectTableStyle  th > .cell {
   text-align: -webkit-center;
 }
+.projectTabel .el-table .cell{
+  display: flex;
+}
 .projectTabel .el-table .cell,
 .projectTabel .el-table th > div {
   padding-left: 10px;
@@ -2850,6 +2862,13 @@ hr {
   height: 100%;
   box-sizing: border-box;
   padding: 20px;
+}
+.image-text-body .img-upload .avatar-uploader-icon{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  line-height: 45px;
+  z-index: 100;
 }
 .image-border {
   width: 100%;
