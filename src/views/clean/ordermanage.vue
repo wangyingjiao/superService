@@ -30,13 +30,15 @@
 			  <div class="second-input">					
 					<el-date-picker
 						v-model="startTime"
+						:editable="false"
 						type="datetime"
 						class="search"
 						style="width:20%"
-						placeholder="选择开始时间">
+						placeholder="选择下单开始时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="endTime"
+						:editable="false"
 						type="datetime"
 						style="width:20%"
 						class="search"
@@ -44,13 +46,22 @@
 					</el-date-picker>
 					<el-date-picker
 						v-model="severTime"
+						:editable="false"
 						style="width:20%"
 						type="datetime"
 						@change="TimeChange"
 						class="search"
-						placeholder="选择服务时间">
+						placeholder="选择服务开始时间">
 					</el-date-picker>
-							  
+					<el-date-picker
+						v-model="severEndTime"
+						:editable="false"
+						style="width:20%"
+						type="datetime"
+						@change="TimeChange1"
+						class="search"
+						placeholder="选择服务结束时间">
+					</el-date-picker>							  
 		    	</div>
 			  </div>
 				<!--搜索条件选择结束-->				
@@ -140,6 +151,7 @@ export default {
     return {
 		btnShow:JSON.parse(localStorage.getItem('btn')),
 		severTime:'',
+		severEndTime:'',
 		dict:require("../../../static/dict.json"),
 		payTypeOptions:[],
 		orderTest:[],
@@ -185,6 +197,23 @@ export default {
 			}
 		}			
 	},
+	//服务时间格式化只有整点与半点
+	TimeChange1(value){
+		if(value != undefined){ 
+			var str=value.substring(14,16)						
+            if(Number(str) >= 30){
+				this.severEndTime=util.formatDate.format(
+				new Date(this.severEndTime),
+				"yyyy-MM-dd hh:30:00"
+				);
+			}else{
+				this.severEndTime=util.formatDate.format(
+					new Date(this.severEndTime),
+					"yyyy-MM-dd hh:00:00"
+				);
+			}
+		}			
+	},	
 	//机构变化事件
 	orgChange(val){
 		if(val != ''){
@@ -242,6 +271,7 @@ export default {
 		this.startTime='';
 		this.endTime='';
 		this.severTime='';
+		this.severEndTime='';
 		var obj={
 			orderStatus:this.active1
 		};
@@ -256,7 +286,13 @@ export default {
           
 		}else{
 			  this.severTime=null
-		}	
+		}
+		if(this.severEndTime !=''){
+          
+		}else{
+			this.severEndTime=null
+		}		
+			
 		//开始时间格式化	
 		if(this.startTime !=''){
     		var startTime = util.formatDate.format(
@@ -290,6 +326,7 @@ export default {
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
 			serviceTime:this.severTime,
+			//serviceEndTime:this.severEndTime
 		};
 		this.pageNumber=1;
 		this.jumpPage=1;		
@@ -313,7 +350,12 @@ export default {
           
 		}else{
 			  this.severTime=null
-		}	
+		}
+		if(this.severEndTime !=''){
+          
+		}else{
+			  this.severEndTime=null
+		}				
 		//开始时间格式化	
 		if(this.startTime !=''){
     		var startTime = util.formatDate.format(
@@ -346,7 +388,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTime:this.severTime,			
+			serviceTime:this.severTime,
+			//serviceEndTime:this.severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
@@ -358,7 +401,12 @@ export default {
           
 		}else{
 			  this.severTime=null
-		}	
+		}
+		if(this.severEndTime !=''){
+          
+		}else{
+			  this.severEndTime=null
+		}				
 		//开始时间格式化	
 		if(this.startTime !=''){
     		var startTime = util.formatDate.format(
@@ -391,7 +439,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTime:this.severTime,			
+			serviceTime:this.severTime,
+			//serivceEndTime:this.severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
