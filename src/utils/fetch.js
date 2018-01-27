@@ -45,7 +45,7 @@ instance.interceptors.response.use(res => {
 
   return res
 }, error => {
-  //console.log(error, '错误')
+  // console.log(error, '错误')
   // const errorStatus = error.response.status
   // console.log(errorStatus, '响应错误')
   // switch (errorStatus) {
