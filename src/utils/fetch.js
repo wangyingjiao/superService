@@ -27,19 +27,23 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
   console.log(res.status, '响应')
   console.log(res.data, '响应code')
-  if (res.data.code === 2) {
-    arr.push(res.data.code)
-    if (arr.length === 1) {
-      store.dispatch('LogOut').then(() => {
-        Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
-        setTimeout(() => {
-          arr = []
-          store.state.app.visitedViews = []
-          router.push({ path: '/login' })
-        }, 2500)
-      })
+  if (res.data.code != undefined) {
+    if (res.data.code === 2) {
+      arr.push(res.data.code)
+      if (arr.length === 1) {
+        store.dispatch('LogOut').then(() => {
+          Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
+          setTimeout(() => {
+            arr = []
+            store.state.app.visitedViews = []
+            router.push({ path: '/login' })
+          }, 2500)
+        })
+      }
     }
+
   }
+
   return res
 }, error => {
   console.log(error, '错误')

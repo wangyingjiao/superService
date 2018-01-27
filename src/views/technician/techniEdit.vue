@@ -1384,7 +1384,7 @@ export default {
         ossData.append("name",file.file.name);
         ossData.append(
           "key",
-          "openservice" + "/" + y + "/" + m + "/" + d + "/" + s + '.'+type[type.length-1]
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + '.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
