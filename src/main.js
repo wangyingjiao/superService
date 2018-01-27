@@ -16,6 +16,8 @@ Vue.prototype.$http = axios
 Vue.prototype.imgSrc = 'https://imgcdn.guoanshequ.com/'
 Vue.prototype.picWidth120 = '?x-oss-process=image/resize,m_fill,h_120,w_120'
 Vue.prototype.picWidth60 = '?x-oss-process=image/resize,m_fill,h_60,w_60'
+Vue.prototype.picWidth100 = '?x-oss-process=image/resize,m_fill,h_100,w_100'
+Vue.prototype.picWidth300 = '?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'
 // 按下标删除数组的对应元素
 Array.prototype.del = function(dx) {
   if (isNaN(dx) || dx > this.length) { return false }
