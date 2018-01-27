@@ -23,6 +23,7 @@ var arr = []
 
 // 拦截响应
 instance.interceptors.response.use(res => {
+  console.log(res.data.code,'22222222222222222')
   if (res.data.code === 2) {
     arr.push(res.data.code)
     if (arr.length === 1) {

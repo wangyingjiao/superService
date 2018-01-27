@@ -38,7 +38,7 @@
         <li v-for="(item,$index) of techniList" v-on:mouseover="mouser(item,$index)" v-on:mouseout="mousout(item,$index)" :key="$index">
           <div class="tech-xiu-div">
             <div class="tech-xiu-div-one">
-              <div class="headImag"><img  :src="'https://imgcdn.guoanshequ.com/'+item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" alt=""></div>
+              <div class="headImag"><img  :src="imgSrc+item.headPic+picWidth100" alt=""></div>
               <div class="tech-mouse-div">
                 <span class="tech-mouse">{{item.jobName}}</span>
                 <span class="tech-mouse">{{item.jobStateName}}</span>
@@ -315,7 +315,7 @@
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"
                             >
-                            <img v-if="personal.headPic" :src="'https://imgcdn.guoanshequ.com/'+personal.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'">
+                            <img v-if="personal.headPic" :src=" imgSrc +personal.headPic+picWidth120">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                         <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
@@ -397,7 +397,7 @@
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicBefor" :src="imgSrc + personal.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
@@ -411,7 +411,7 @@
                               :before-upload="beforeAvatarUpload"
                               >
                               <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personal.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                              <img v-if="personal.idCardPicAfter" :src="imgSrc+personal.idCardPicAfter+picWidth300" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
