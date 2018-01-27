@@ -143,10 +143,10 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
+                      <span class="selfMarLeft70" v-if="otherInfo.serviceStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
-                      <span class="lineTitle">完成时间:</span>
+                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
+                      <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>                                     
                 </div> 
