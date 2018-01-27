@@ -146,7 +146,7 @@
                       <span class="selfMarLeft70" v-if="otherInfo.orderStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
                    <p class="contentLine" v-if="otherInfo.orderStatus =='finish'">
-                      <span class="lineTitle">完成时间:</span>
+                      <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>                                     
                 </div> 
