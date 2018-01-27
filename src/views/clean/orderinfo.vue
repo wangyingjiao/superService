@@ -28,7 +28,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务机构:</span>
-                      <span class="lineContent">{{otherInfo.orgName}}</span>
+                      <span class="lineContent width180">{{otherInfo.orgName}}</span>
                    </p>                                                        
                    <p class="contentLine">
                       <span class="lineTitle">订单编号:</span>
@@ -136,7 +136,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">建议服务时长:</span>
-                      <span class="lineContent">{{otherInfo.serviceHour}}小时</span>
+                      <span  class="lineContent">{{otherInfo.serviceHour}}</span>
                    </p>                                                        
                 </div>
                 <div class="rightArea width390">
@@ -527,6 +527,7 @@ export default {
           if (res.data.code === 1) {                                   
             var AllInfo=res.data.data;
             this.otherInfo=AllInfo;//所有其他信息变量
+            this.otherInfo.serviceHour=this.formatDuring(AllInfo.serviceHour*3600000)            
             this.goodsInfo=AllInfo.goodsInfo//服务信息
             this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
             this.tableData1=AllInfo.techList//技师信息表格
@@ -540,6 +541,21 @@ export default {
         }).catch(res=>{
           
         });
+    },
+    formatDuring(mss){
+        var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = (mss % (1000 * 60)) / 1000;
+        if(hours==0 && seconds ==0){
+            return  minutes + " 分钟 ";
+        }else if(hours==0 && seconds !=0){
+            return  minutes+1 + " 分钟 "
+        }else if(seconds ==0 && minutes==0){
+           return  hours+'小时'
+        }else{
+           return  hours+'小时'+minutes + " 分钟 "
+        }               
+
     },
     //更换时间的保存
     submitTime(formName) {
@@ -565,8 +581,7 @@ export default {
                   serviceTime:this.changTime+' '+time+':00'
                 }
                 saveTime(obj).then(res => {
-                  this.timeSaveFlag=false;
-                  this.dialogVisible = false ;      
+                  this.timeSaveFlag=false;     
                   if (res.data.code === 1) {                         
                       this.$message({
                         type: "success",
@@ -575,15 +590,18 @@ export default {
                       this.$refs['formInline'].resetFields();
                       this.timeObj=[];
                       this.tableData1=res.data.data.list;
-                      this.otherInfo.serviceHour=res.data.data.serviceHour;
+                      // this.otherInfo.serviceHour=res.data.data.serviceHour;
+                      this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb;
+                      this.dialogVisible = false ; 
                   }else{
                     this.$message({
                       type: "error",
                       message: res.data.data
                     });
                     this.timeObj=[];
-                    this.timeSaveFlag=false;                     
+                    this.timeSaveFlag=false;
+                    this.dateChange(this.formInline.Date)                                          
                   }          
                 }).catch(res=>{
                   this.timeSaveFlag=false;
@@ -596,7 +614,6 @@ export default {
 									});
                   this.timeSaveFlag=false;
                   this.timeObj=[];
-                  this.formInline.Date=this.options2[0].value
                   this.dateChange(this.formInline.Date)                    
             });                         
                        
@@ -754,7 +771,9 @@ export default {
                 message: "新增成功!"
               });
               this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = res.data.data.serviceHour;
+              // this.otherInfo.serviceHour = res.data.data.serviceHour;
+              this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
+              res.data.data.serviceHour
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
@@ -784,7 +803,8 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = res.data.data.serviceHour;
+              // this.otherInfo.serviceHour = res.data.data.serviceHour;
+              this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
@@ -890,6 +910,7 @@ export default {
 };
 </script>
 <style   scoped>
+.width180{width:180px !important;}
 .selftechNameStyle {
   width: 185px;
   overflow: hidden;

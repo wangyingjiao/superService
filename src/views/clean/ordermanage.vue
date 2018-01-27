@@ -80,7 +80,7 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="150"   label="服务机构" prop="orgName">
+					<el-table-column  align="center" width="220"   label="服务机构" prop="orgName">
 					</el-table-column>
 					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
 					</el-table-column>							
@@ -91,7 +91,10 @@
 							</el-tooltip>
 						</template>	
 					</el-table-column>
-					<el-table-column   align="center" width="150" label="付款价格"    prop="payPrice">
+					<el-table-column   align="center" width="150" label="付款价格">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPrice}}</span>
+                          </template>							
 					</el-table-column>
 					<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
 					</el-table-column>
@@ -114,7 +117,12 @@
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 						</template>									
 					</el-table-column>
-                    <el-table-column   align="center" width="150" label="对接订单ID"  prop="jointOrderId">	
+                    <el-table-column   align="center" width="150" label="对接订单ID">
+						<template scope="scope">
+							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length< 10 " :content="scope.row.jointOrderId">
+								<div class="selfToolTip">{{scope.row.jointOrderId}}</div>
+							</el-tooltip>
+						</template>						
 					</el-table-column>					
 					<!-- <el-table-column   align="center" width="150" label="支付状态"  >
 					<template scope="scope">
