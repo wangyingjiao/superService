@@ -109,12 +109,12 @@
         "web": "PC"
     },
     "order_status": {
-        "waitdispatch": "待派单",
-        "started": "已上门",
         "dispatched": "已派单",
+        "started": "已上门",
         "finish": "已完成",
-        "cancel": "已取消",
         "success": "已成功",
+        "waitdispatch": "待派单",
+        "cancel": "已取消",
         "whole": "全部"
     },
     "order_type": {

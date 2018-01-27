@@ -64,7 +64,7 @@
       <el-table-column  label="E店编码" align="center"  prop="jointEshopCode">
           <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.jointEshopCode">
-             <div class="tool" >{{scope.row.jointEshopCode}}</div>
+             <div class="tool">{{scope.row.jointEshopCode}}</div>
            </el-tooltip>
          </template>
       </el-table-column>
