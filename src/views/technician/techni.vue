@@ -1171,7 +1171,7 @@ export default {
       teachArr: [],
       listQuery: {
         page: 1,
-        limit: 6,
+        limit: 12,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -2086,7 +2086,7 @@ export default {
       "-------------------mouned 加载页面-----------------------------"
     );
     this.sign; //获取签名
-    this.getList(1, 6, {});
+    this.getList(1, 12, {});
     //性别,工作年限,岗位性质，岗位状态
     Whether()
       .then(({ data }) => {
