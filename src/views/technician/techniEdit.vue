@@ -29,11 +29,7 @@
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-<<<<<<< HEAD
-                            <img v-if="personalEDit.headPic" :src="imgSrc+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
-=======
                             <img v-if="personalEDit.headPic" :src="imgSrc+personalEDit.headPic+picWidth120" class="header-img">
->>>>>>> f201d3852c3b68acc1b64f1986081e218c7cb87c
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
