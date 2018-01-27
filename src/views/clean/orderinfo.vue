@@ -169,13 +169,22 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        label="单价"
-                        prop="payPrice">                   
+                        label="单位"
+                        prop="goodsUnit">                    
+                      </el-table-column>                      
+                      <el-table-column
+                        align="center"
+                        label="单价">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPrice}}</span>
+                          </template>	                                           
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        label="小计"
-                        prop="payPriceSum">                   
+                        label="小计">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPriceSum}}</span>
+                          </template>	                                           
                       </el-table-column>                      
                     </el-table>
             </div>                                     		
