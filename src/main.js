@@ -13,7 +13,7 @@ import 'animate.css'
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-Vue.prototype.imgSrc = 'https://openservice.guoanshequ.com/'
+Vue.prototype.imgSrc = 'https://imgcdn.guoanshequ.com/'
 Vue.prototype.picWidth120 = '?x-oss-process=image/resize,m_fill,h_120,w_120'
 Vue.prototype.picWidth60 = '?x-oss-process=image/resize,m_fill,h_60,w_60'
 // 按下标删除数组的对应元素

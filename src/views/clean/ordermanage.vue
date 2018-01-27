@@ -3,7 +3,6 @@
 		<div class="fist-bar">
 			  <!--选项卡开始-->
 			  <el-tabs class="orderTab" v-model="activeName" @tab-click="handleClick">
-					<!-- <el-tab-pane label="全部" name="whole"></el-tab-pane> -->
 					<el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
 			  </el-tabs>
 				<!--选项卡结束-->
@@ -42,7 +41,7 @@
 						type="datetime"
 						style="width:20%"
 						class="search"
-						placeholder="选择结束时间">
+						placeholder="选择下单结束时间">
 					</el-date-picker>
 					<el-date-picker
 						v-model="severTime"
