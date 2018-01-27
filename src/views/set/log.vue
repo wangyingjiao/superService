@@ -4,10 +4,17 @@
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
-          <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="val">
+          <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
         </el-select>
       </el-input>
+
+      <el-date-picker
+      v-model="search.createDate"
+      style="width:20%"
+      type="date"
+      placeholder="选择日期时间">
+    </el-date-picker>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -76,7 +83,6 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
   </div>
   </div>
 </div>
@@ -106,16 +112,16 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
-      seOptions:{
-        type:"分类",
-        title:"title",
-        createdate:"创建时间"
+      seOptions: {
+        type: "分类",
+        title: "title"
       },
       search: {
         type: "",
-        val: ""
+        val: "",
+        createDate: ""
       },
-      
+
       tableKey: 0,
       isIndeterminate: true
     };
@@ -125,92 +131,180 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
-      var obj = {};
-     
-      
-      getLog(obj, this.pageNumber, this.pageSize).then(res => { 
-        if(res.data.code == 1){
-          this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      this.listLoading = true;
+      var time = util.formatDate.format(
+        new Date(this.search.createDate),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      if (this.search.type == "type") {
+        var obj = {
+          type: this.search.val,
+          createDate: time
+        };
+      } else if (this.search.type == "title") {
+        var obj = {
+          title: this.search.val,
+          createDate: time
+        };
+      } else {
+        var obj = {
+          createDate: time
+        };
+      }
+      getLog(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
           }
-        }
-        this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-        
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //搜索
     handleFilter() {
-     
+      this.listQuery.page = 1;
+      this.pageNumber = 1;
+      if (this.search.createDate) {
+        var time = util.formatDate.format(
+          new Date(this.search.createDate),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      }
+
+      if (this.search.type == "type") {
+        var obj = {
+          type: this.search.val,
+          createDate: time
+        };
+      } else if (this.search.type == "title") {
+        var obj = {
+          title: this.search.val,
+          createDate: time
+        };
+      } else {
+        var obj = {
+          createDate: time
+        };
+      }
+      console.log(obj);
+      getLog(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+          }
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       this.pageSize = val;
-      this.listLoading = true
-      var obj = {};
-     
-      
-      getLog(obj, this.pageNumber, this.pageSize).then(res => { 
-        if(res.data.code == 1){
-          this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      this.listLoading = true;
+      if (this.search.type == "type") {
+        var obj = {
+          type: this.search.val
+        };
+      } else if (this.search.type == "title") {
+        var obj = {
+          title: this.search.val
+        };
+      } else if (this.search.type == "createdate") {
+        var obj = {
+          createDate: this.search.val
+        };
+      } else {
+        var obj = {};
+      }
+      getLog(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
           }
-        }
-        this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-        
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-     this.listLoading = true
-      var obj = {};
-     
-      
-      getLog(obj, this.pageNumber, this.pageSize).then(res => { 
-        if(res.data.code == 1){
-          this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      this.listLoading = true;
+      if (this.search.type == "type") {
+        var obj = {
+          type: this.search.val
+        };
+      } else if (this.search.type == "title") {
+        var obj = {
+          title: this.search.val
+        };
+      } else if (this.search.type == "createdate") {
+        var obj = {
+          createDate: this.search.val
+        };
+      } else {
+        var obj = {};
+      }
+      getLog(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
           }
-        }
-        this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-        
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //删除
     handleDelete(row) {
@@ -223,9 +317,7 @@ export default {
           var obj = {
             id: row.id
           };
-          return
-          
-            
+          return;
         })
         .catch(() => {
           this.$message({
