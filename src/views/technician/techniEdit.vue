@@ -29,7 +29,7 @@
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
-                            <img v-if="personalEDit.headPic" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
+                            <img v-if="personalEDit.headPic" :src="imgSrc+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
@@ -550,7 +550,7 @@
                       <p>
                           <el-upload
                             class="avatar-uploader"
-                            action="https://imgcdn.guoanshequ.com/"
+                            :action=imgSrc
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'cert')"
@@ -1384,7 +1384,7 @@ export default {
         ossData.append("name",file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + '.'+type[type.length-1]
+          "openservice" + "/" + y + "/" + m + "/" + d + "/" + s + '.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);

@@ -1117,7 +1117,7 @@ export default {
           var y = date.getFullYear();
           var m = date.getMonth() + 1;
           var d = date.getDate();
-          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          var src = "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.name;
           if(fileList.length>4){
           this.$message({
             type: "error",
@@ -1165,7 +1165,7 @@ export default {
             ossData.append("name", file.file.name);
             ossData.append(
               "key",
-              data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+              "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
             );
             ossData.append("policy", data.policy);
             ossData.append("OSSAccessKeyId", data.accessid);
@@ -1327,7 +1327,7 @@ export default {
             var y = date.getFullYear();
             var m = date.getMonth() + 1;
             var d = date.getDate();
-            var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+            var src = "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.name;
             console.log(this.picFile,"this.picFile------")
             if (this.picFile.indexOf(src) > -1) {
               this.$message({
@@ -1477,7 +1477,7 @@ export default {
           var y = date.getFullYear();
           var m = date.getMonth() + 1;
           var d = date.getDate();
-          var src = this.sign.dir + "/" + y + "/" + m + "/" + d + "/" + file.name;
+          var src = "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.name;
           // if (this.imgText.indexOf(src) > -1) {
           //   this.$message({
           //     type: "error",
@@ -1593,7 +1593,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+          "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1654,7 +1654,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+          "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -2189,7 +2189,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: "info",
+            type: "warning",
             message: "已取消删除"
           });
         });

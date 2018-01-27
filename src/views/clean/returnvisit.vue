@@ -72,7 +72,6 @@ export default{
 			}
     },
     sign() {
-      console.log("-------------------------------")
       return getSign();
     },
   },
@@ -185,7 +184,7 @@ export default{
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+          "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
