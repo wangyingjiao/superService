@@ -96,6 +96,15 @@ export const constantRouterMap = [
       { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') }
     ]
   },
+  {
+    path: '/set',
+    component: Layout,
+    redirect: 'set',
+    name: '系统管理',
+    children: [
+      { path: 'log', name: ' 日志管理', component: _import('set/log') }
+    ]
+  },
 
   { path: '*', redirect: '/404', hidden: true }
 ]

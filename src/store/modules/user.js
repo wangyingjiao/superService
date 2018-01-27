@@ -57,7 +57,7 @@ const user = {
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
             setToken(data.token)
-            resolve()
+            resolve(response)
           } else {
             Message.error('用户名不存在或者密码错误')
             resolve()
