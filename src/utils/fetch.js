@@ -10,20 +10,22 @@ const instance = axios.create({
 })
 var arr = []
 // 拦截请求
-// instance.interceptors.request.use(config => {
-//   for (var i in config.data) {
-//     console.log(config.data[i], '拦截之前----------------')
-//     // config.data[i] = encodeURI(config.data[i])
-//     console.log(config.data[i], '拦截之后----------------')
-//   }
-//   return config
-// }, error => {
-//   return Promise.reject(error)
-// })
+instance.interceptors.request.use(config => {
+  // console.log(config,'请求')
+  // for (var i in config.data) {
+  //   console.log(config.data[i], '拦截之前----------------')
+  //   // config.data[i] = encodeURI(config.data[i])
+  //   console.log(config.data[i], '拦截之后----------------')
+  // }
+  return config
+}, error => {
+  console.log(error)
+  return Promise.reject(error)
+})
 
 // 拦截响应
 instance.interceptors.response.use(res => {
-  console.log(res.data.code,'22222222222222222')
+  console.log(res.status, '响应')
   if (res.data.code === 2) {
     arr.push(res.data.code)
     if (arr.length === 1) {
@@ -39,7 +41,7 @@ instance.interceptors.response.use(res => {
   }
   return res
 }, error => {
-  // console.log(error, '请求错误')
+  console.log(error, '错误')
   // const errorStatus = error.response.status
   // console.log(errorStatus, '响应错误')
   // switch (errorStatus) {
