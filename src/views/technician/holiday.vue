@@ -65,7 +65,7 @@
       
       <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
         <template scope="scope">
-           <el-tooltip placement="top" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
+           <el-tooltip placement="left" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
              <div class="tool" >{{scope.row.remark}}</div>
            </el-tooltip>
         </template>

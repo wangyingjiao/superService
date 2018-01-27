@@ -2,8 +2,11 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" class="search"  placeholder="请输入搜索内容" v-model="search.val">
-
+      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+        <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
+          <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="val">
+          </el-option>
+        </el-select>
       </el-input>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
@@ -51,8 +54,12 @@
       <el-table-column align="center" label="exceptions" prop="exceptions">      
       </el-table-column>
 
-      <el-table-column align="center" label="params" prop="params">    
-          
+      <el-table-column align="center" width="150px" label="params" prop="params">    
+          <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.params.length < 10" :content="scope.row.params">
+             <div class="tool" >{{scope.row.params}}</div>
+           </el-tooltip>
+        </template>
       </el-table-column>
       
       <!-- <el-table-column align="center" label="操作">
@@ -99,9 +106,14 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      seOptions:{
+        type:"分类",
+        title:"title",
+        createdate:"创建时间"
+      },
       search: {
         type: "",
-        val: "",
+        val: ""
       },
       
       tableKey: 0,
