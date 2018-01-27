@@ -23,16 +23,16 @@ var arr = []
 
 // 拦截响应
 instance.interceptors.response.use(res => {
-  if (res.data.code === 3) {
+  if (res.data.code === 2) {
     arr.push(res.data.code)
     if (arr.length === 1) {
       store.dispatch('LogOut').then(() => {
-        Message.error('登录过期,请重新登录,3秒后回到登录页面')
+        Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
         setTimeout(() => {
           arr = []
           store.state.app.visitedViews = []
           router.push({ path: '/login' })
-        }, 3000)
+        }, 2500)
       })
     }
   }
