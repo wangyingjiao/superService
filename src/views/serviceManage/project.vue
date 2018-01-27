@@ -1165,7 +1165,7 @@ export default {
             ossData.append("name", file.file.name);
             ossData.append(
               "key",
-              "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
+              data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.jpg'
             );
             ossData.append("policy", data.policy);
             ossData.append("OSSAccessKeyId", data.accessid);
@@ -1593,7 +1593,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1654,7 +1654,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          "openservice" + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + file.file.uid +'.'+type[type.length-1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
