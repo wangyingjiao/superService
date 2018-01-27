@@ -24,12 +24,16 @@
                       <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-header"
-                            action="https://imgcdn.guoanshequ.com/"
+                            :action=imgSrc
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
                             >
+<<<<<<< HEAD
                             <img v-if="personalEDit.headPic" :src="imgSrc+personalEDit.headPic+'?x-oss-process=image/resize,m_fill,h_120,w_120'" class="header-img">
+=======
+                            <img v-if="personalEDit.headPic" :src="imgSrc+personalEDit.headPic+picWidth120" class="header-img">
+>>>>>>> f201d3852c3b68acc1b64f1986081e218c7cb87c
                           </el-upload>
                           <p style="width:100%; color:rgb(131,145,165); font-size:12px; line-height:35px">*为了浏览效果,建议上传大于240*240的正方形图片</p>
                       </el-form-item>
@@ -93,13 +97,13 @@
                     <el-form-item label="身份证正面：">
                         <el-upload
                                 class="avatar-uploader"
-                                action="https://imgcdn.guoanshequ.com/"
+                                :action=imgSrc
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'id')"
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicBefor" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicBefor+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicBefor" :src="imgSrc+personalEDit.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -107,13 +111,13 @@
                     <el-form-item label="身份证反面：">
                         <el-upload
                                 class="avatar-uploader"
-                                action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                                :action=imgSrc
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'after')"
                                 :before-upload="beforeAvatarUpload"
                                 >
                                 <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicAfter" :src="'https://imgcdn.guoanshequ.com/'+personalEDit.idCardPicAfter+'?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'" class="avatar">
+                                <img v-if="personalEDit.idCardPicAfter" :src="imgSrc+personalEDit.idCardPicAfter+picWidth300" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
@@ -557,11 +561,11 @@
                             >
                             <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                             <div class="upload-head"><span>上传证件照</span></div>
-                            <img v-if="otherInfo.jobPic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.jobPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.jobPic" :src="imgSrc+otherInfo.jobPic+picWidth100" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
-                            action="https://imgcdn.guoanshequ.com/"
+                            :action=imgSrc
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'life')"
@@ -569,7 +573,7 @@
                             >
                             <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                             <div class="upload-id"><span>上传生活照</span></div>
-                            <img v-if="otherInfo.lifePic" :src="'https://imgcdn.guoanshequ.com/'+otherInfo.lifePic+'?x-oss-process=image/resize,m_fill,h_100,w_100'" class="remarkImg">
+                            <img v-if="otherInfo.lifePic" :src="imgSrc+otherInfo.lifePic+picWidth100" class="remarkImg">
                           </el-upload>
                       </p>
                   </div>

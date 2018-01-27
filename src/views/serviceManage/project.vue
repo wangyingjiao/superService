@@ -47,7 +47,7 @@
 
       <el-table-column align="center" label="图片">
         <template scope="scope" >
-          <span v-if="scope.row.pictures != undefined"><img :src="'https://imgcdn.guoanshequ.com/' + scope.row.pictures[0]+'?x-oss-process=image/resize,m_fill,h_60,w_60'" class="imgList"/></span>
+          <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+picWidth60" class="imgList"/></span>
         </template>
       </el-table-column>
 
