@@ -26,6 +26,7 @@ instance.interceptors.request.use(config => {
 // 拦截响应
 instance.interceptors.response.use(res => {
   console.log(res.status, '响应')
+  console.log(res.data, '响应code')
   if (res.data.code === 2) {
     arr.push(res.data.code)
     if (arr.length === 1) {
