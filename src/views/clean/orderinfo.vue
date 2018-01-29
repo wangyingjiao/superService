@@ -532,12 +532,7 @@ export default {
             this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
             this.tableData1=AllInfo.techList//技师信息表格
             this.payInfo=AllInfo.payInfo//支付信息
-          }else{
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });            
-          }          
+          }  
         }).catch(res=>{
           
         });
@@ -595,10 +590,7 @@ export default {
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb;
                       this.dialogVisible = false ; 
                   }else{
-                    this.$message({
-                      type: "error",
-                      message: res.data.data
-                    });
+                    
                     this.timeObj=[];
                     this.timeSaveFlag=false;
                     this.dateChange(this.formInline.Date)                                          
@@ -777,12 +769,7 @@ export default {
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
+            } 
           })
           .catch(res => {
             this.techSaveFlag = false;
@@ -809,10 +796,7 @@ export default {
               this.listTech = [];
               this.dialogTableVisible = false;
             } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
+              
               this.techSaveFlag=false;             
           }          
         }).catch(res=>{
@@ -843,12 +827,7 @@ export default {
                   this.$set(this.listTech[a], "techChecked", false);
                 }
               }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
+            } 
           })
           .catch(res => {});
       } else {
@@ -862,12 +841,7 @@ export default {
               if (res.data.data != undefined) {
                 this.listTech = res.data.data;
               }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
+            } 
           })
           .catch(res => {});
       }
@@ -888,12 +862,7 @@ export default {
               this.formInline.Date=this.options2[0].value
               this.dateChange(this.formInline.Date) 
             }             
-          }else{
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });            
-          }          
+          }    
         }).catch(res=>{
           
         });                            

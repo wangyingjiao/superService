@@ -834,10 +834,7 @@ export default {
                 this.handleFilter();
                 this.dialogFormVisible = false;
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                
               }
             })
             .catch(err => {
@@ -898,10 +895,7 @@ export default {
 
                 this.getList();
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                
               }
             })
             .catch(() => {

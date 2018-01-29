@@ -335,10 +335,7 @@ export default {
             }, 500);
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "error",
-              message: "岗位名不存在"
-            });
+            
           }
         });
       } else {
@@ -781,10 +778,7 @@ export default {
           });
         } else {
           this.listLoading = false;
-          this.$message({
-            type: "error",
-            message: "获取数据失败"
-          });
+          
         }
       });
     },
@@ -807,12 +801,7 @@ export default {
                   message: "删除成功!"
                 });
                 this.getList();
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              }
+              } 
             })
             .catch(() => {
               this.listLoading = false;
@@ -883,21 +872,7 @@ export default {
                   officeId: ""
                 };
                 this.handleFilter();
-              } else {
-                //this.$refs.domTree.setCheckedKeys([]);
-                // this.resetTemp();
-                if (typeof res.data.data == "string") {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data
-                  });
-                } else {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data[0]
-                  });
-                }
-              }
+              } 
             })
             .catch(err => {
               this.btnState = false;
@@ -942,19 +917,7 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
-              } else {
-                if (typeof res.data.data == "string") {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data
-                  });
-                } else {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data[0]
-                  });
-                }
-              }
+              } 
             })
             .catch(err => {
               this.btnState = false;

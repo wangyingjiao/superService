@@ -281,10 +281,7 @@ export default {
             } else {
               this.listLoading = false;
               this.dialogVisible = false;
-              this.$message({
-                type: "error",
-                message: "请求错误！"
-              });
+              
             }
           })
           .catch(res => {
@@ -316,10 +313,7 @@ export default {
             } else {
               this.listLoading = false;
               this.dialogVisible = false;
-              this.$message({
-                type: "error",
-                message: "请求错误！"
-              });
+              
             }
           })
           .catch(res => {
@@ -377,10 +371,7 @@ export default {
                 } else {
                   this.middleB = [];
                   this.middleD = [];
-                  this.$message({
-                    type: "error",
-                    message: res.data.data
-                  });
+                  
                 }
               })
               .catch(res => {
@@ -410,12 +401,7 @@ export default {
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
-                } else {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data
-                  });
-                }
+                } 
               })
               .catch(res => {
                 this.listLoading = false;
@@ -584,12 +570,7 @@ export default {
                   name: this.localSearch
                 };
                 this.getList(obj, this.pageNumber, this.pageSize);
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              }
+              } 
             })
             .catch(() => console.log("错误"));
         })
