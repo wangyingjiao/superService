@@ -1,7 +1,7 @@
 <template>
 	<div class="img-list">
 		<div class="img-content" v-for="(item,key) in imagelist" :key="key">
-			<img :src="type=='picture'?imgSrc + item.url : imgSrc + item.url + picWidth100">
+			<img :src="type=='picture'?imgSrc + item.url + picWidth600 : imgSrc + item.url + picWidth100">
 			<!-- 删除icon -->
 			<div class="layer">
 				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>

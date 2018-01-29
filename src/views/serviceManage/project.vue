@@ -95,7 +95,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="200px" class-name="operation">
+      <el-table-column align="center" label="操作" min-width="200px" class-name="operationTab">
         <template scope="scope">
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
@@ -212,7 +212,7 @@
                   </el-table-column>
                   <el-table-column prop="convertHours" align="center" label="折算时长">
                     <template scope="scope">
-                      <span>{{scope.row.convertHours+'小时/'+scope.row.unit}}</span>
+                      <span>{{scope.row.convertHours+'小时 / 每人 / '+scope.row.unit}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column align="center" label="起步人数">
@@ -280,7 +280,7 @@
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
                   <el-input v-model="goods_info.convertHours" style="width:70%">
-                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
+                    <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
                   <el-popover
                       ref="popover1"
@@ -1722,10 +1722,10 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
 } 
-.projectTabel .el-table__row .operation{
+.projectTabel .el-table__row .operationTab{
   text-align: left
 }
-.projectTabel .operation .cell button:nth-child(1){
+.projectTabel .operationTab .cell button:nth-child(1){
   margin-left: 20px;
 }
 .upload_box {
@@ -1885,10 +1885,10 @@ export default {
   font-weight: bold;
   padding: 10px 0 8px 0;
 }
-.el-upload--picture-card {
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
+.upload-demo .el-upload--picture-card {
+  width: 112px;
+  height: 112px;
+  line-height: 112px;
 }
 .upload-back {
   display: inline-block;
@@ -2262,15 +2262,18 @@ hr {
   height: 300px;
   border-left: 0;
 }
-.image-text-body .img-content,.image-text-body .img-content img{
+.image-text-body .img-content{
   width: 100%;
 }
 .image-text-body .image-border .img-list .img-content{
   margin-top: 20px;
 }
 .image-text-body .img-list .img-content .layer{
-  height: 200px !important;
-  line-height: 200px !important;
+  height: 150px !important;
+  line-height: 150px !important;
+  margin: 5px auto;
+  width: 600px;
+  border-radius: 2px;
 }
 .labelSystem input{
   background: #fff;
