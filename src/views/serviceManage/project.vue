@@ -470,7 +470,8 @@ import {
   sendData,
   deleteGoodsData
 } from "@/api/serviceManage";
-import imgService from './returnvisit.vue'
+import imgService from '../../components/upload/upload.vue'
+// import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
 const option1 = ["北京", "北京"];
@@ -909,7 +910,7 @@ export default {
       sendData(obj).then(data=>{
         if(data.data.code){
           this.$message({
-              type: "warning",
+              type: "success",
               message: data.data.data
           });
           this.getList(this.pageNumber, this.pageSize);
@@ -1394,28 +1395,31 @@ export default {
           ServerDelete(obj)
             .then(res => {
               console.log(res);
-              if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: res.data.data
-                });
-                this.handleCurrentChange(this.listQuery.page)
+              if (res.data.code) {
+                if(res.data.code==1){
+                  this.$message({
+                    type: "success",
+                    message: res.data.data
+                  });
+                }
+                if(res.data.code==3){
+                  this.$message({
+                    type: "warning",
+                    message: res.data.data
+                  });
+                }
+              this.handleCurrentChange(this.listQuery.page)
               } else {
-                this.$message({
-                  type: "warning",
-                  message: res.data.data
-                });
-                this.handleCurrentChange(this.listQuery.page)
-                return false
+                // this.$message({
+                //   type: "error",
+                //   message: res.data.data
+                // });
+                // return false
               }
             })
             .catch((error) =>{
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
                 console.log(error,"未知错误");
-                 return false
+                return false
             })
         })
         .catch(() => {
@@ -1568,10 +1572,18 @@ export default {
               .then(data => {
                 this.btnState = false
                 if (data.data.code) {
-                  this.$message({
-                    message: data.data.data,
-                    type: "success"
-                  });
+                  if(data.data.code == 1){
+                    this.$message({
+                      message: data.data.data,
+                      type: "success"
+                    });
+                  }
+                  if(data.data.code == 3){
+                    this.$message({
+                      message: data.data.data,
+                      type: "warning"
+                    });
+                  }
                   this.cancel("basic");
                   this.basicForm.majorSort = 'all';
                   this.search.sortId = '';
@@ -1725,8 +1737,9 @@ export default {
 .projectTabel .el-table__row .operationTab{
   text-align: left
 }
-.projectTabel .operationTab .cell button:nth-child(1){
-  margin-left: 20px;
+.projectTabel .operationTab .cell{
+ width: 225px;
+ margin: 0 auto;
 }
 .upload_box {
   /* text-align: center; */
@@ -2269,8 +2282,8 @@ hr {
   margin-top: 20px;
 }
 .image-text-body .img-list .img-content .layer{
-  height: 150px !important;
-  line-height: 150px !important;
+  height: 50px !important;
+  line-height: 50px !important;
   margin: 5px auto;
   width: 600px;
   border-radius: 2px;
