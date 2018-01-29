@@ -59,17 +59,12 @@ instance.interceptors.response.use(res => {
       console.log(arr.length)
       if (arr.length === 1) {
         Message.error('服务器断开！')
-        // setTimeout(() => {
-        //   arr = []
-        //   store.state.app.visitedViews = []
-        //   router.push({ path: '/login' })
-        // }, 2500)
       }
     }
   } else {
     arr.push(error)
-    console.log(arr)
-    console.log(error.code)
+    // console.log(arr)
+    // console.log(error.code)
     if (error.code === 'ECONNABORTED') {
       if (arr.length === 1) {
         Message.error('请求超时')
