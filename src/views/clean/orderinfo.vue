@@ -971,12 +971,12 @@ export default {
   margin-top: 0px;
 }
 .selfbeizhu {
-  min-width: 800px;
+  max-width: 800px;
   margin-left: 22px;
   float: left;
 }
 .selfbeizhu1 {
-  min-width: 800px;
+  max-width: 800px;
   margin-left: 102px;
   margin-top: -15px;
   float: left;
