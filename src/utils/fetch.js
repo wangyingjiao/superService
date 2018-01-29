@@ -10,18 +10,18 @@ const instance = axios.create({
 })
 var arr = []
 // 拦截请求
-instance.interceptors.request.use(config => {
-  // console.log(config,'请求')
-  // for (var i in config.data) {
-  //   console.log(config.data[i], '拦截之前----------------')
-  //   // config.data[i] = encodeURI(config.data[i])
-  //   console.log(config.data[i], '拦截之后----------------')
-  // }
-  return config
-}, error => {
-  console.log(error)
-  return Promise.reject(error)
-})
+// instance.interceptors.request.use(config => {
+//   // console.log(config,'请求')
+//   // for (var i in config.data) {
+//   //   console.log(config.data[i], '拦截之前----------------')
+//   //   // config.data[i] = encodeURI(config.data[i])
+//   //   console.log(config.data[i], '拦截之后----------------')
+//   // }
+//   return config
+// }, error => {
+//   console.log(error)
+//   return Promise.reject(error)
+// })
 
 // 拦截响应
 instance.interceptors.response.use(res => {
@@ -52,28 +52,43 @@ instance.interceptors.response.use(res => {
 
   return res
 }, error => {
-  // console.log(error, '错误')
-  // const errorStatus = error.response.status
-  // console.log(errorStatus, '响应错误')
-  // switch (errorStatus) {
-  //   case 404:
-  //     console.log('请求路径找不到', '接口404')
-  //     break
-  //   case 400:
-  //     console.log('请求参数错误', '接口400')
-  //     break
-  //   case 500:
-  //     console.log('服务器未响应', '接口500')
-  //     break
-  //   case 502:
-  //     console.log('502', '接口502')
-  //     break
-  //   case 504:
-  //     console.log('服务器断开', '接口504')
-  //     break
-  //   default:
-  //     console.log(errorStatus, '其他错误')
-  // }
+  console.log(error, '错误')
+  if (error.response) {
+    const num = error.response.status
+    if ([502, 503, 504].indexOf(num) > -1) {
+      arr.push(error.response.status)
+      if (arr.length === 1) {
+        store.dispatch('LogOut').then(() => {
+          Message.error('服务器断开,请重新登录,3秒后回到登录页面')
+          setTimeout(() => {
+            arr = []
+            store.state.app.visitedViews = []
+            router.push({ path: '/login' })
+          }, 2500)
+        })
+      }
+    }
+  } else {
+    arr.push(error)
+    console.log(arr)
+    console.log(error.code)
+    if (error.code === 'ECONNABORTED') {
+      if (arr.length === 1) {
+        Message.error('请求超时')
+      }
+    } else {
+      if (arr.length === 1) {
+        store.dispatch('LogOut').then(() => {
+          Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
+          setTimeout(() => {
+            arr = []
+            store.state.app.visitedViews = []
+            router.push({ path: '/login' })
+          }, 2500)
+        })
+      }
+    }
+  }
   return Promise.reject(error)
 })
 
