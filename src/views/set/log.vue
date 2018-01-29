@@ -139,7 +139,6 @@ export default {
         startTime: "",
         endTime: ""
       },
-
       tableKey: 0,
       isIndeterminate: true
     };
