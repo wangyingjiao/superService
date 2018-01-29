@@ -52,20 +52,18 @@ instance.interceptors.response.use(res => {
 
   return res
 }, error => {
-  console.log(error, '错误')
   if (error.response) {
     const num = error.response.status
     if ([502, 503, 504].indexOf(num) > -1) {
       arr.push(error.response.status)
+      console.log(arr.length)
       if (arr.length === 1) {
-        store.dispatch('LogOut').then(() => {
-          Message.error('服务器断开,请重新登录,3秒后回到登录页面')
-          setTimeout(() => {
-            arr = []
-            store.state.app.visitedViews = []
-            router.push({ path: '/login' })
-          }, 2500)
-        })
+        Message.error('服务器断开！')
+        // setTimeout(() => {
+        //   arr = []
+        //   store.state.app.visitedViews = []
+        //   router.push({ path: '/login' })
+        // }, 2500)
       }
     }
   } else {
