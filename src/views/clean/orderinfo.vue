@@ -143,7 +143,7 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70" v-if="otherInfo.serviceStatus !='finish'" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
+                      <span class="selfMarLeft70"  @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
                    </p>
                    <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
                       <span class="lineTitle">实际完成时间:</span>
@@ -849,23 +849,33 @@ export default {
     //改变服务时间按钮
     changeTime(){
       this.timeObj=[]; 
-      var obj={
-        id:this.orderId
-      }
-      //请求服务时间下拉菜单值
-      ChangeTimeData(obj).then(res => {      
-          if (res.data.code === 1) {
-            this.dialogVisible=true;                                 
-            this.options2=res.data.data;//服务时间下拉菜单值
-            //默认选择当前日期
-            if(this.options2 != undefined && this.options2[0] != undefined){
-              this.formInline.Date=this.options2[0].value
-              this.dateChange(this.formInline.Date) 
-            }             
-          }    
-        }).catch(res=>{
-          
-        });                            
+      if(this.otherInfo.serviceStatus !='finish' ){
+          var obj={
+            id:this.orderId
+          }
+          //请求服务时间下拉菜单值
+          ChangeTimeData(obj).then(res => {      
+              if (res.data.code === 1) {
+                this.dialogVisible=true;                                 
+                this.options2=res.data.data;//服务时间下拉菜单值
+                //默认选择当前日期
+                if(this.options2 != undefined && this.options2[0] != undefined){
+                  this.formInline.Date=this.options2[0].value
+                  this.dateChange(this.formInline.Date) 
+                }             
+              }    
+            }).catch(res=>{
+              
+            });         
+
+      }else{
+        this.$message({
+          type: 'error',
+          message: '不能更换时间!'
+        });
+      }     
+
+                           
     }	
   },
   mounted() {
