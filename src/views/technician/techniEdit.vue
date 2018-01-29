@@ -419,76 +419,78 @@
 
             </el-table>
           </div>
-          <div style="padding:0px 25px 0 25px">
-            <div class="add_Btn" @click="showTabl">
-                <span v-if="!flagso" class="fl btn_Span1">+</span>
-                <span v-else class="fl btn_Span1">-</span>
-                <span class="fl btn_Span2">家庭成员</span>
-              </div>
+          <div class="perTech">
+            <div style="padding:0 25px 10px 25px">
+              <div class="add_Btn" @click="showTabl">
+                  <span v-if="!flagso" class="fl btn_Span1">+</span>
+                  <span v-else class="fl btn_Span1">-</span>
+                  <span class="fl btn_Span2">家庭成员</span>
+                </div>
+            </div>
+            <el-form :model="perFamily"  ref="perFamily"  label-width="100px" :rules="rulesFamily">
+              <el-collapse-transition>
+                <ul class="ferFamilyClass tech-ul" v-show="flagso" style="padding-left:50px">
+                    <li>
+                        <div>
+                            <p>
+                                <el-form-item label="关系:" prop="relation">
+                                    <el-select v-model="perFamily.relation" clearable placeholder="请选择" style="width:250px">
+                                        <el-option v-for="(item,key,index) in relation" :key="index" :label="item" :value="key">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                        <p>
+                            <el-form-item label="名字:" prop="memberName">
+                  <el-input placeholder="请输入2~15位姓名" style="width:250px" v-model="perFamily.memberName"></el-input>
+                </el-form-item>
+                        </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <p>
+                                <el-form-item label="手机号:" prop="memberPhone">
+                                    <el-input placeholder="请输入11位手机号" style="width:250px" v-model="perFamily.memberPhone"></el-input>
+                                </el-form-item>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                        <p>
+                            <el-form-item label="单位:" prop= "memberCompany">
+                                <el-input placeholder="请输入工作单位名称" style="width:250px" v-model="perFamily.memberCompany"></el-input>
+                            </el-form-item>
+                        </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                        <p>
+                            <el-form-item label="职务:" prop="memberJob">
+                                <el-input placeholder="请输入职务" style="width:250px" v-model="perFamily.memberJob"></el-input>
+                            </el-form-item>
+                        </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                        <p></p>
+                        <p>
+                            <input type="button" class="button-large" @click="savrTable('perFamily')" value="保存">
+                            <input type="button" class="button-cancel" @click="familyTable('perFamily')" style="margin-left:20px" value="取消">
+                        </p>
+                        </div>
+                    </li>
+                </ul>
+              </el-collapse-transition>
+            </el-form>
           </div>
-          <el-form :model="perFamily"  ref="perFamily"  label-width="100px" :rules="rulesFamily">
-            <el-collapse-transition>
-              <ul class="tech-ul ferFamilyClass" v-show="flagso" style="padding-left:50px">
-                  <li>
-                      <div>
-                          <p>
-                              <el-form-item label="关系:" prop="relation">
-                                  <el-select v-model="perFamily.relation" clearable placeholder="请选择" style="width:200px">
-                                      <el-option v-for="(item,key,index) in relation" :key="index" :label="item" :value="key">
-                                      </el-option>
-                                  </el-select>
-                              </el-form-item>
-                          </p>
-                      </div>
-                  </li>
-                  <li>
-                      <div>
-                      <p>
-                          <el-form-item label="名字:" prop="memberName">
-                <el-input placeholder="请输入2~15位姓名" style="width:200px" v-model="perFamily.memberName"></el-input>
-              </el-form-item>
-                      </p>
-                      </div>
-                  </li>
-                  <li>
-                      <div>
-                          <p>
-                              <el-form-item label="手机号:" prop="memberPhone">
-                                  <el-input placeholder="请输入11位手机号" style="width:200px" v-model="perFamily.memberPhone"></el-input>
-                              </el-form-item>
-                          </p>
-                      </div>
-                  </li>
-                  <li>
-                      <div>
-                      <p>
-                          <el-form-item label="单位:" prop= "memberCompany">
-                              <el-input placeholder="请输入工作单位名称" style="width:200px" v-model="perFamily.memberCompany"></el-input>
-                          </el-form-item>
-                      </p>
-                      </div>
-                  </li>
-                  <li>
-                      <div>
-                      <p>
-                          <el-form-item label="职务:" prop="memberJob">
-                              <el-input placeholder="请输入职务" style="width:200px" v-model="perFamily.memberJob"></el-input>
-                          </el-form-item>
-                      </p>
-                      </div>
-                  </li>
-                  <li>
-                      <div>
-                      <p></p>
-                      <p>
-                          <input type="button" class="button-large" @click="savrTable('perFamily')" value="保存">
-                          <input type="button" class="button-cancel" @click="familyTable('perFamily')" style="margin-left:20px" value="取消">
-                      </p>
-                      </div>
-                  </li>
-              </ul>
-            </el-collapse-transition>
-          </el-form>
         <!--家庭成员（选填） 完成-->
 
         <!--其他信息 -->
@@ -1661,6 +1663,10 @@ export default {
   margin: 0px;
   padding: 0px;
 }
+.perTech{
+  border-bottom: 20px solid #f3f1f1;
+}
+.perTech .tech-ul{border-bottom: none;}
 
 .tech-section-lage > div:nth-of-type(1) {
   padding: 0px 20px 0 20px;
