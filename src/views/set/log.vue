@@ -9,18 +9,28 @@
         </el-select>
       </el-input>
 
-      <!-- <el-date-picker
-      v-model="search.createDate"
+      <el-date-picker
+      v-model="search.startTime"
       style="width:20%"
-      type="datetime"
-      placeholder="选择日期时间">
-    </el-date-picker> -->
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+    至
+
+      <el-date-picker
+      v-model="search.endTime"
+      style="width:20%"
+      class="search"
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
+      <!-- 表格 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -40,7 +50,7 @@
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求方式" prop="method">      
+      <el-table-column align="center" label="请求方式" width="100" prop="method">      
       </el-table-column>
 
       <el-table-column align="center" label="请求地址" prop="requestUri">      
@@ -58,7 +68,12 @@
       <el-table-column align="center" label="日志类型" prop="type">      
       </el-table-column>
 
-      <el-table-column align="center" label="异常信息" prop="exceptions">      
+      <el-table-column align="center" label="异常信息" prop="exceptions">     
+        <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
+             <div class="tool" >{{scope.row.exceptions}}</div>
+           </el-tooltip>
+        </template> 
       </el-table-column>
 
       <el-table-column align="center" width="150px" label="提交数据" prop="params">    
@@ -113,15 +128,17 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "分类",
-        title: "title"
+        type: "日志类型",
+        title: "日志标题",
+        requestUri: "请求地址",
+        params: "提交数据"
       },
       search: {
         type: "",
         val: "",
-        createDate: ""
+        startTime: "",
+        endTime: ""
       },
-
       tableKey: 0,
       isIndeterminate: true
     };
@@ -132,26 +149,35 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
       }
-      
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      }
+
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
-          createDate: time
+          startTime: startTime,
+          endTime: endTime
         };
       } else if (this.search.type == "title") {
         var obj = {
           title: this.search.val,
-          createDate: time
+          startTime: startTime,
+          endTime: endTime
         };
       } else {
         var obj = {
-          createDate: time
+          startTime: startTime,
+          endTime: endTime
         };
       }
       getLog(obj, this.pageNumber, this.pageSize)
@@ -180,27 +206,48 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      var obj = {};
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
       }
-      
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd 23:59:59"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+      }
+
       if (this.search.type == "type") {
-        var obj = {
-          type: this.search.val,
-          createDate: time
+        var type = {
+          type: this.search.val
         };
+        obj = Object.assign(obj, type);
       } else if (this.search.type == "title") {
-        var obj = {
-          title: this.search.val,
-          createDate: time
+        var title = {
+          title: this.search.val
         };
-      } else {
-        var obj = {
-          createDate: time
+        obj = Object.assign(obj, title);
+      } else if (this.search.type == "requestUri") {
+        var requestUri = {
+          requestUri: this.search.val
         };
+        obj = Object.assign(obj, requestUri);
+      } else if (this.search.type == "params") {
+        var params = {
+          params: this.search.val
+        };
+        obj = Object.assign(obj, params);
       }
       console.log(obj);
       getLog(obj, this.pageNumber, this.pageSize)
@@ -231,27 +278,48 @@ export default {
       this.pageNumber = 1;
       this.pageSize = val;
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      var obj = {};
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
       }
-      
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd 23:59:59"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+      }
+
       if (this.search.type == "type") {
-        var obj = {
-          type: this.search.val,
-          createDate: time
+        var type = {
+          type: this.search.val
         };
+        obj = Object.assign(obj, type);
       } else if (this.search.type == "title") {
-        var obj = {
-          title: this.search.val,
-          createDate: time
+        var title = {
+          title: this.search.val
         };
-      } else {
-        var obj = {
-          createDate: time
+        obj = Object.assign(obj, title);
+      } else if (this.search.type == "requestUri") {
+        var requestUri = {
+          requestUri: this.search.val
         };
+        obj = Object.assign(obj, requestUri);
+      } else if (this.search.type == "params") {
+        var params = {
+          params: this.search.val
+        };
+        obj = Object.assign(obj, params);
       }
       getLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
@@ -279,27 +347,48 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      var obj = {};
+      if (this.search.startTime) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.startTime),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
       }
-      
+      if (this.search.endTime) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.endTime),
+          "yyyy-MM-dd 23:59:59"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+      }
+
       if (this.search.type == "type") {
-        var obj = {
-          type: this.search.val,
-          createDate: time
+        var type = {
+          type: this.search.val
         };
+        obj = Object.assign(obj, type);
       } else if (this.search.type == "title") {
-        var obj = {
-          title: this.search.val,
-          createDate: time
+        var title = {
+          title: this.search.val
         };
-      } else {
-        var obj = {
-          createDate: time
+        obj = Object.assign(obj, title);
+      } else if (this.search.type == "requestUri") {
+        var requestUri = {
+          requestUri: this.search.val
         };
+        obj = Object.assign(obj, requestUri);
+      } else if (this.search.type == "params") {
+        var params = {
+          params: this.search.val
+        };
+        obj = Object.assign(obj, params);
       }
       getLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
