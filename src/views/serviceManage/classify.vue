@@ -386,17 +386,7 @@ export default {
                 message: "新增成功"
               });
             } else {
-              if (typeof res.data.data == "string") {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
-              }
+              
             }
           }).catch(err=>{
             this.btnState = false;

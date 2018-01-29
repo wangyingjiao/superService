@@ -9,12 +9,12 @@
         </el-select>
       </el-input>
 
-      <el-date-picker
+      <!-- <el-date-picker
       v-model="search.createDate"
       style="width:20%"
       type="datetime"
       placeholder="选择日期时间">
-    </el-date-picker>
+    </el-date-picker> -->
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -49,19 +49,19 @@
       <el-table-column align="center" label="创建时间" prop="createDate">      
       </el-table-column>
 
-      <el-table-column align="center" label="IP" prop="remoteAddr">      
+      <el-table-column align="center" label="操作IP地址" prop="remoteAddr">      
       </el-table-column>
 
-      <el-table-column align="center" label="title" prop="title">      
+      <el-table-column align="center" label="日志标题" prop="title">      
       </el-table-column>
 
-      <el-table-column align="center" label="分类" prop="type">      
+      <el-table-column align="center" label="日志类型" prop="type">      
       </el-table-column>
 
-      <el-table-column align="center" label="exceptions" prop="exceptions">      
+      <el-table-column align="center" label="异常信息" prop="exceptions">      
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="params" prop="params">    
+      <el-table-column align="center" width="150px" label="提交数据" prop="params">    
           <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.params.length < 10" :content="scope.row.params">
              <div class="tool" >{{scope.row.params}}</div>
