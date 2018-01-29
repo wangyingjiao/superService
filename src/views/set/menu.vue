@@ -99,8 +99,7 @@ export default {
   methods: {
     getList() {
       var obj = {};
-     
-      
+    
       getLog(obj, this.pageNumber, this.pageSize).then(res => { 
         if(res.data.code == 1){
           this.total = res.data.data.count;

@@ -30,6 +30,7 @@
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
+      <!-- 表格 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -238,14 +239,14 @@ export default {
           title: this.search.val
         };
         obj = Object.assign(obj, title);
-      } else if(this.search.type == "requestUri"){
+      } else if (this.search.type == "requestUri") {
         var requestUri = {
           requestUri: this.search.val
         };
         obj = Object.assign(obj, requestUri);
-      }else if(this.search.type == "params"){
+      } else if (this.search.type == "params") {
         var params = {
-         params: this.search.val
+          params: this.search.val
         };
         obj = Object.assign(obj, params);
       }
@@ -310,14 +311,14 @@ export default {
           title: this.search.val
         };
         obj = Object.assign(obj, title);
-      } else if(this.search.type == "requestUri"){
+      } else if (this.search.type == "requestUri") {
         var requestUri = {
           requestUri: this.search.val
         };
         obj = Object.assign(obj, requestUri);
-      }else if(this.search.type == "params"){
+      } else if (this.search.type == "params") {
         var params = {
-         params: this.search.val
+          params: this.search.val
         };
         obj = Object.assign(obj, params);
       }
@@ -379,14 +380,14 @@ export default {
           title: this.search.val
         };
         obj = Object.assign(obj, title);
-      } else if(this.search.type == "requestUri"){
+      } else if (this.search.type == "requestUri") {
         var requestUri = {
           requestUri: this.search.val
         };
         obj = Object.assign(obj, requestUri);
-      }else if(this.search.type == "params"){
+      } else if (this.search.type == "params") {
         var params = {
-         params: this.search.val
+          params: this.search.val
         };
         obj = Object.assign(obj, params);
       }
