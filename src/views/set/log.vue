@@ -9,12 +9,21 @@
         </el-select>
       </el-input>
 
-      <!-- <el-date-picker
-      v-model="search.createDate"
+      <el-date-picker
+      v-model="search.startTime"
       style="width:20%"
-      type="datetime"
-      placeholder="选择日期时间">
-    </el-date-picker> -->
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+    至
+
+      <el-date-picker
+      v-model="search.endTime"
+      style="width:20%"
+      class="search"
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -40,7 +49,7 @@
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求方式" prop="method">      
+      <el-table-column align="center" label="请求方式" width="100" prop="method">      
       </el-table-column>
 
       <el-table-column align="center" label="请求地址" prop="requestUri">      
@@ -58,7 +67,12 @@
       <el-table-column align="center" label="日志类型" prop="type">      
       </el-table-column>
 
-      <el-table-column align="center" label="异常信息" prop="exceptions">      
+      <el-table-column align="center" label="异常信息" prop="exceptions">     
+        <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
+             <div class="tool" >{{scope.row.exceptions}}</div>
+           </el-tooltip>
+        </template> 
       </el-table-column>
 
       <el-table-column align="center" width="150px" label="提交数据" prop="params">    
@@ -113,13 +127,16 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "分类",
-        title: "title"
+        type: "日志类型",
+        title: "日志标题",
+        requestUri: "请求地址",
+        params: "提交数据"
       },
       search: {
         type: "",
         val: "",
-        createDate: ""
+        startTime: "",
+        endTime: ""
       },
 
       tableKey: 0,
@@ -132,13 +149,13 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      if (this.search.createDate) {
+        var time = util.formatDate.format(
+          new Date(this.search.createDate),
+          "yyyy-MM-dd hh:mm:ss"
+        );
       }
-      
+
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
@@ -180,13 +197,13 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      if (this.search.createDate) {
+        var time = util.formatDate.format(
+          new Date(this.search.createDate),
+          "yyyy-MM-dd hh:mm:ss"
+        );
       }
-      
+
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
@@ -231,13 +248,13 @@ export default {
       this.pageNumber = 1;
       this.pageSize = val;
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      if (this.search.createDate) {
+        var time = util.formatDate.format(
+          new Date(this.search.createDate),
+          "yyyy-MM-dd hh:mm:ss"
+        );
       }
-      
+
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
@@ -279,13 +296,13 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.listLoading = true;
-      if(this.search.createDate){
-         var time = util.formatDate.format(
-        new Date(this.search.createDate),
-        "yyyy-MM-dd hh:mm:ss"
-      );
+      if (this.search.createDate) {
+        var time = util.formatDate.format(
+          new Date(this.search.createDate),
+          "yyyy-MM-dd hh:mm:ss"
+        );
       }
-      
+
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
