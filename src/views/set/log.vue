@@ -9,12 +9,12 @@
         </el-select>
       </el-input>
 
-      <el-date-picker
+      <!-- <el-date-picker
       v-model="search.createDate"
       style="width:20%"
       type="datetime"
       placeholder="选择日期时间">
-    </el-date-picker>
+    </el-date-picker> -->
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
