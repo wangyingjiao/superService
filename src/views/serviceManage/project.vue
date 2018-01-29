@@ -914,10 +914,7 @@ export default {
           });
           this.getList(this.pageNumber, this.pageSize);
         }else{
-          this.$message({
-            type: "error",
-            message: data.data.data
-          });
+         
         }
         return false
       }).catch(error=>{
@@ -1058,10 +1055,7 @@ export default {
               message: res.data.data
             });
           }else{
-            this.$message({
-              type:'error',
-              message:res.data.data
-            })
+           
           }
         }).catch(error=>{
             this.$message({
@@ -1136,11 +1130,7 @@ export default {
                 this.handleEditFlag = false
                 this.basicForm.commoditys.splice(index,1)
               }else{
-                this.$message({
-                      message: data.data.data,
-                      type: "error"
-                });
-                return false
+               
               }
             }).catch(error=>{
               this.$message({
@@ -1328,10 +1318,6 @@ export default {
               this.alreadyArr = arr.sysTags || []
           }else{
             this.listLoading = false;
-            this.$message({
-              type:'error',
-              message:data.data.data
-            })
             return false
           }
         })
@@ -1419,7 +1405,7 @@ export default {
                   type: "warning",
                   message: res.data.data
                 });
-                 this.handleCurrentChange(this.listQuery.page)
+                this.handleCurrentChange(this.listQuery.page)
                 return false
               }
             })
@@ -1566,10 +1552,6 @@ export default {
                   this.picList = [];
                   this.imgNumber = 0
                 } else {
-                  this.$message({
-                    message: data.data.data,
-                    type: "error"
-                  });
                    this.btnState = false
                    this.imgNumber = 0
                 }
@@ -1599,10 +1581,6 @@ export default {
                   this.getList(1, this.pageSize);
                   this.picFile = [];
                 } else {
-                  this.$message({
-                    message: data.data.data,
-                    type: "error"
-                  });
                   this.btnState = false
                 }
               })
