@@ -59,11 +59,10 @@ const user = {
             setToken(data.token)
             resolve(response)
           } else {
-            Message.error('用户名不存在或者密码错误')
+            //Message.error('用户名不存在或者密码错误')
             resolve()
           }
         }).catch(error => {
-          Message.error('用户名不存在或者密码错误')
           reject(error)
         })
       })
