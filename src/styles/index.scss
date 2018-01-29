@@ -661,3 +661,11 @@ body {
 .hideSidebar .sidebar .slde-bcak-log{
   display: none;
 }
+.el-tooltip__popper{
+  max-width: 300px;
+  // max-height: 500px;
+  word-break: break-all; 
+  word-wrap:break-word;
+  // overflow-y: scroll;
+  // overflow-x: hidden;
+}
