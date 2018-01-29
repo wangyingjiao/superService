@@ -36,6 +36,7 @@ module.exports = {
           '^/apiservice': '/apiservice'
         }
       },
+<<<<<<< HEAD
      // '/api': {
        // target: 'http://www.localhost.8800/',
        // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
@@ -49,6 +50,22 @@ module.exports = {
       //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
       //   pathRewrite: {
       //     '^/apiservice': ''
+=======
+    //  'apiservice': {
+    //    target: 'https://apiservice.guoanshqu.top/',
+    //    'secure': false, 
+    //    changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
+    //    pathRewrite: {
+    //      '^apiservice': 'apiservice'
+    //    }
+    //  }
+
+      // '/apiservice': {
+      //   target: 'http://10.16.70.65:8080/',
+      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/apiservice': '/apiservice'
+>>>>>>> 8a3c7b87800f5e12f9b03800f1b6b5a8bc48ec1c
       //   }
       // }
      },

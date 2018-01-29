@@ -24,7 +24,7 @@
                       <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-header"
-                            :action=imgSrc
+                            :action="imgSrc"
                             :show-file-list="false"
                             :http-request="(val)=>picUpload(val,'head')"
                             :before-upload="beforeAvatarUpload"
@@ -93,7 +93,7 @@
                     <el-form-item label="身份证正面：">
                         <el-upload
                                 class="avatar-uploader"
-                                :action=imgSrc
+                                :action="imgSrc"
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'id')"
                                 :before-upload="beforeAvatarUpload"
@@ -107,7 +107,7 @@
                     <el-form-item label="身份证反面：">
                         <el-upload
                                 class="avatar-uploader"
-                                :action=imgSrc
+                                :action="imgSrc"
                                 :show-file-list="false"
                                 :http-request="(val)=>picUpload(val,'after')"
                                 :before-upload="beforeAvatarUpload"
@@ -120,8 +120,6 @@
                 </el-row>
                 <el-row>
                   <el-col :span="24">
-                      <!-- <span class="button-large-fourth" style="margin-left:100px;" @click="perSubmitForm('personalEDit')">保存信息</span> -->
-                      <!-- <span class="button-large-fourth perServer" @click="perSubmitForm('personalEDit')">保存信息</span> -->
                        <li>
                           <div>
                             <p></p>
@@ -149,12 +147,6 @@
                             </el-option>
                           </el-select>
                         </el-form-item>
-                        <!-- <el-form-item label="选择城市:" prop="stationCityCode">
-                          <el-select v-model="perServer.stationCityCode" clearable placeholder="请选择" style="width:100%" @change="chooseChange">
-                            <el-option v-for="item in choose" :key="item.cityCode" :label="item.cityName" :value="item.cityCode">
-                            </el-option>
-                          </el-select>
-                        </el-form-item> -->
                       </el-col>
                       <el-col :span="12">
                         <el-form-item label="岗位性质:" prop="jobNature">
@@ -173,12 +165,6 @@
                               </el-option>
                           </el-select>
                         </el-form-item>
-                        <!-- <el-form-item label="所属服务站:" prop="stationId">
-                          <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                            </el-option>
-                          </el-select>
-                        </el-form-item> -->
                       </el-col>  
                       <el-col :span="12">
                         <el-form-item label="岗位状态:" prop="jobStatus">
@@ -191,12 +177,6 @@
                     </el-row>
                     <el-row :gutter="60">
                       <el-col :span="12">
-                        <!-- <el-form-item label="工作年限:" prop="workTime">
-                          <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
-                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                              </el-option>
-                          </el-select>
-                        </el-form-item> -->
                       </el-col>
                     </el-row>
                     <el-row :gutter="60">
@@ -215,7 +195,6 @@
                     </el-row>
                     <el-row class="workHours-time" :gutter="60" v-if="perServer.jobNature!='part_time'">
                       <el-col :span="17" class="workHours">
-                        <!-- <p style="width:100px; line-height:36px;"><span class="tech-span">*</span>工作时间:</p> -->
                         <el-form-item label="工作时间：" class="workHours-input" prop="workTimes">
                             <div class="tech-order-jn">
                                 <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
@@ -227,10 +206,6 @@
                                     <div>
                                       <div style="display:flex;">
                                           <div class="selfCheckBoxsday">日期</div>
-                                          <!-- <button class="selfCheckBoxs tech-order-posis" ref="sexOption" @click="roomSel1(item)" v-for="(item,$index) in sexDay" :key="$index" 
-                                          :class="{'techTime-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}" :disabled="disbArr.indexOf(item.id)!=-1">
-                                          {{item.name}}
-                                        </button> -->
                                           <input type="button" class="selfCheckBoxs tech-order-posis"
                                               ref="sexOption" @click="roomSel1(item)"
                                               v-for="(item,$index) in sexDay" :key="$index"
@@ -267,7 +242,6 @@
                                 <div style="margin:10px">
                                     <span class="button-large btn-styl" @click="techClick">确认</span>
                                     <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
-                                    <!-- <span class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno">取消</span> -->
                                 </div>
                               </div>
                             </el-collapse-transition>
@@ -371,7 +345,6 @@
                       placeholder="选择日期"
                       @change="eneryDate"
                      >
-                      <!-- :picker-options="pickerOptions0" -->
                     </el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -413,10 +386,8 @@
         <!--家庭成员（选填） -->
           <h3 class="tech-tc-prson">家庭成员（选填）</h3>
           <div class="tech-table" v-show="familyList.length>0">
-            <!-- v-show="techTable" -->
             <el-table :key='tableKey' border v-show="familyList.length>0" :data="familyList" stripe v-loading="listLoading" element-loading-text="正在加载" fit highlight-current-row
               style="width: 100%">
-              <!-- v-show="isTab" -->
 
               <el-table-column align="center" label="关系" prop="relation">
                 <template scope="scope">
@@ -443,17 +414,12 @@
                 <template scope="scope">
                   <span class="operation"  @click="handleModifyStatus(scope.row,scope,'deleted')">编辑</span>
                   <span class="operation" @click="handleModifyDelete(scope.row,scope,'deleted')">删除</span>
-                  <!-- <el-button size="small" @click="handleModifyStatus(scope.row,scope,'deleted')">编辑
-                  </el-button>
-                  <el-button size="small" type="danger" @click="handleModifyDelete(scope.row,scope,'deleted')">删除
-                  </el-button> -->
                 </template>
               </el-table-column>
 
             </el-table>
           </div>
           <div style="padding:0px 25px 0 25px">
-            <!-- <el-button type="primary" icon="plus" @click="showTabl" class="tech-family-btn">家庭成员</el-button> -->
             <div class="add_Btn" @click="showTabl">
                 <span v-if="!flagso" class="fl btn_Span1">+</span>
                 <span v-else class="fl btn_Span1">-</span>
@@ -465,7 +431,6 @@
               <ul class="tech-ul ferFamilyClass" v-show="flagso" style="padding-left:50px">
                   <li>
                       <div>
-                          <!-- <p><span class="tech-span">*</span>关系:</p> -->
                           <p>
                               <el-form-item label="关系:" prop="relation">
                                   <el-select v-model="perFamily.relation" clearable placeholder="请选择" style="width:200px">
@@ -478,7 +443,6 @@
                   </li>
                   <li>
                       <div>
-                      <!-- <p><span class="tech-span">*</span>名字:</p> -->
                       <p>
                           <el-form-item label="名字:" prop="memberName">
                 <el-input placeholder="请输入2~15位姓名" style="width:200px" v-model="perFamily.memberName"></el-input>
@@ -488,7 +452,6 @@
                   </li>
                   <li>
                       <div>
-                      <!-- <p><span class="tech-span"></span>手机号:</p> -->
                           <p>
                               <el-form-item label="手机号:" prop="memberPhone">
                                   <el-input placeholder="请输入11位手机号" style="width:200px" v-model="perFamily.memberPhone"></el-input>
@@ -498,7 +461,6 @@
                   </li>
                   <li>
                       <div>
-                      <!-- <p><span class="tech-span"></span>单位:</p> -->
                       <p>
                           <el-form-item label="单位:" prop= "memberCompany">
                               <el-input placeholder="请输入工作单位名称" style="width:200px" v-model="perFamily.memberCompany"></el-input>
@@ -550,24 +512,22 @@
                       <p>
                           <el-upload
                             class="avatar-uploader"
-                            :action=imgSrc
+                            :action="imgSrc"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'cert')"
                             >
-                            <!-- <el-button class="tech-fourth"><span></span>上传证件照</el-button> -->
                             <div class="upload-head"><span>上传证件照</span></div>
                             <img v-if="otherInfo.jobPic" :src="imgSrc+otherInfo.jobPic+picWidth100" class="remarkImg">
                           </el-upload>
                           <el-upload
                             class="avatar-uploader"
-                            :action=imgSrc
+                            :action="imgSrc"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'life')"
                             style="margin-left:20px;" 
                             >
-                            <!-- <el-button class="tech-fourth-rigth"><span></span>上传生活照</el-button> -->
                             <div class="upload-id"><span>上传生活照</span></div>
                             <img v-if="otherInfo.lifePic" :src="imgSrc+otherInfo.lifePic+picWidth100" class="remarkImg">
                           </el-upload>
@@ -584,13 +544,6 @@
               </li>
           </ul>
         <!--其他信息完成 -->
-
-        <!--关闭按钮-->
-          <!-- <div class="techniFooter"> -->
-              <!-- <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-                <button class="button-large-fourth closeThe" @click="closeThe('perServer')">关 闭</button>
-              </div> -->
-          <!-- </div> -->
       </div>
 </template>
 <script>
@@ -644,13 +597,7 @@ export default {
 
     //现住地址
     var AREA = (rule, value, callback) => {
-      console.log(rule, value, "value----现住地址");
       callback();
-      // if(value.length>0){
-      //   callback()
-      // }else{
-      //   callback(new Error("请选择现住地址"))
-      // }
     };
 
     //出生日期
@@ -664,7 +611,6 @@ export default {
 
     //现住地址
     var SKILLIDS = (rule, value, callback) => {
-      console.log(value, "value------");
       if (value!=undefined && value.length) {
         callback();
       } else {
@@ -814,8 +760,6 @@ export default {
         ],
         area: [{ required: true, validator: AREA, trigger: "change" }],
         address:[
-          // {required:true,message:"请输入详细地址",trigger:'blur'},
-          // { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
           {required:true,validator:ADDRESS,trigger:'blur'}
         ],
         headPic:[
@@ -843,189 +787,12 @@ export default {
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
         workTimes:[{required:true,validator:WORKTIMES, trigger: "change"}]
       },
-      server: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-
-      infoname: [
-        {
-          value: "选项1",
-          name: "李阿姨",
-          addres: "国安社区",
-          year: "3年",
-          phone: "17188996644",
-          ismouse: false
-        },
-        {
-          value: "选项1",
-          name: "王阿姨",
-          addres: "国安社区",
-          year: "3年",
-          phone: "17188996644",
-          ismouse: false
-        },
-        {
-          value: "选项1",
-          name: "赵阿姨",
-          addres: "国安社区",
-          year: "3年",
-          phone: "17188996644",
-          ismouse: false
-        }
-      ],
-
-      card: [
-        {
-          value: "选项1",
-          label: "中国建行"
-        },
-        {
-          value: "选项2",
-          label: "中国银行"
-        }
-      ],
       ethnics: [],
       areas: [],
       strong: {},
       height: [],
       place: [],
       caty: [],
-
-      bind: [
-        {
-          value: "选项1",
-          label: "夫妻"
-        },
-        {
-          value: "选项2",
-          label: "父母"
-        },
-        {
-          value: "选项3",
-          label: "母女"
-        },
-        {
-          value: "选项4",
-          label: "母子"
-        },
-        {
-          value: "选项5",
-          label: "兄弟姐妹"
-        },
-        {
-          value: "选项6",
-          label: "亲戚"
-        }
-      ],
-      sexType: [
-        {
-          sexName: "技能一",
-          show: false
-        },
-        {
-          sexName: "技能二",
-          show: false
-        },
-        {
-          sexName: "技能三",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能一",
-          show: false
-        },
-        {
-          sexName: "技能二",
-          show: false
-        },
-        {
-          sexName: "技能三",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        }
-      ],
       sexTypeo: [
         {
           sexName: "技能一",
@@ -1085,7 +852,6 @@ export default {
       isB: false,
       isTab: false,
       sexLen: "",
-      binds: "",
       flagso: false,
       flags: false,
       password: false,
@@ -1152,10 +918,6 @@ export default {
     technicianData: {
       immediate: true,
       handler(val, oldval) {
-        console.log(
-          val,
-          "------------------------w-a-t-c-h--------------------------------"
-        );
         //获取技师id
         this.techniEditId = val.id;
         this.disbArr = [];
@@ -1164,17 +926,6 @@ export default {
         **个人资料
         **
         */
-        // this.personalEDit = Object.assign({}, val);
-        // this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
-        // this.personalEDit.birthDate = val.birthDate
-        // if("nation" in val){
-          
-        // }else{
-        //   this.personalEDit.nation = ''
-        // }
-        // console.log(this.personalEDit,"this.personalEDit---")
-        // this.personalEDit.techBirthDate = val.birthDate;
-        // console.log( this.personalEDit," this.personalEDit-----")
 
 
         this.personalEDit.name = val.name
@@ -1206,11 +957,6 @@ export default {
         ** 服务信息
         ** 
         **/
-        
-        // this.perServer = Object.assign({}, val);
-        // this.servery = val.stations;
-        // this.perServer.workTime = val.workTime+''
-        // this.perServer.skillIds = val.skillIds || [];
 
 
         this.perServer.stationId = val.stationId
@@ -1219,15 +965,11 @@ export default {
         this.perServer.skillIds = val.skillIds || []
         this.perServer.workTime = val.workTime+''
         this.perServer.workTimes = val.workTimes
-        // this.perServer.serviceCityName = val.stationCityCode;
-        console.log(this.perServer,"this.perServer----------------------____________++++++++++++===")
-        // this.perServer.stationId = val.stationId
         // //工作时间默认选中
         var work = this.perServer.workTimes || [],
             i,j,weeks_i,num;
         if(work.length>0){
           for(i = 0 ; i<work.length;i++){
-            console.log(work[i],"work----------")
             if(work[i].endTimeStr == "23:59"){
               work[i].endTimeStr = "24:00"
             }
@@ -1253,8 +995,6 @@ export default {
             } 
           }
         }
-        // this.perServer.workTimes = work
-        console.log(this.perServer.workTimes,"this.perServer.workTimes-------")
 
 
         /*
@@ -1310,9 +1050,7 @@ export default {
     //图片格式限制
     beforeAvatarUpload(file){
        if(file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
-        console.log(file.type,"file.type-----------")
         }else{
-         console.log(file.type,"file.type-----------+++++++++")
         this.$message.error('请上传正确的图片格式');
         return false
       }
@@ -1333,7 +1071,6 @@ export default {
       this.$refs[formName].validate(valid=>{
         if(valid){
           this.otherInfo.id = this.techniEditId;
-          // this.technicianEdit(this.otherInfo)
           technicianOther(this.otherInfo).then(data=>{
            if(data.data.code){
                 this.$message({
@@ -1341,8 +1078,7 @@ export default {
                   type: "success"
                 });
               }else{
-                this.$message.error(data.data.data)
-                return false
+               
               }
           }).catch(error=>{
             this.$message.error('保存失败')
@@ -1358,7 +1094,7 @@ export default {
     picUpload(file,flag){
       var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
-        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
+        // console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
@@ -1366,7 +1102,7 @@ export default {
           resolve(res);
         } else {
           this.$http.get("/apiservice/oss/getSign").then(res => {
-            console.log(res, "签名过期");
+            // console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
           });
@@ -1392,9 +1128,6 @@ export default {
         ossData.append("signature", data.signature);
         // 添加文件
         ossData.append("file", file.file, file.file.name);
-        //this.ossData = ossData;
-        // console.log(ossData.get("name"),"ossData-----");
-        // console.log(ossData.get("key"),"ossData------");
 		
 		that.$http
 			.post(data.host,ossData,{
@@ -1430,8 +1163,6 @@ export default {
         console.log(error,"上传失败")
         return false
       })
-        
-        // console.log(this.headerBack,"this.headerBack")
       })
     },
     familyTable(formName) {
@@ -1456,7 +1187,6 @@ export default {
             obj.inJobTime = _supplement.inJobTime || null;
             obj.jobLevel = _supplement.jobLevel;
             obj.description = _supplement.description;
-            console.log(obj, "objobjobj-------");
             technicianPlus(obj).then(data=>{
               if(data.data.code){
                 this.$message({
@@ -1464,15 +1194,13 @@ export default {
                   type: "success"
                 });
               }else{
-                this.$message.error(data.data.data)
-                return false
+               
               }
             }).catch(error=>{
               this.$message.error('保存失败')
               return false
               console.log(error)
             })
-            // this.technicianEdit(obj)
         }else{
           return false
         }
@@ -1487,13 +1215,9 @@ export default {
               message: "保存成功",
               type: "success"
 			});
-			// this.$emit("dialogvisibleedit")
-            // this.$emit("getlist",this.listquer.page)
           } else {
-             this.$message.error(data.data.data);
-            return false;
+            
           }
-          // console.log(data,"-----------datathis.supplement----")
         })
         .catch(error => {
           console.log(error, "error------techniEdit");
@@ -1504,7 +1228,6 @@ export default {
       this.perServer.stationId = "";
       serviceStation({ cityCode: value })
         .then(data => {
-          console.log(data,"data-------")
           this.servery = data.data.data;
         })
         .catch(error => {
@@ -1512,7 +1235,6 @@ export default {
         });
     },
 
-    handlePreview(file) {},
     //工作时间删除
     deletes(item,index) {
       this.disbArr = []
@@ -1521,30 +1243,11 @@ export default {
       arr.splice(index,1)
       this.perServer.workTimes = arr
 
-      // for(var i = 0; i<item.weeks.length; i++){
-      //   this.remove(this.roomSelNum,this.disbArr,item.weeks[i].id)
-      // }
-
       for(var i =0 ; i<arr.length ; i++){
         for(var j =0 ; j<arr[i].weeks.length ; j++){
           this.disbArr.push(arr[i].weeks[j].id*1)
-          // this.roomSelNum.push(arr[i].weeks[j].id*1)
         }
       }
-
-      // disbArr
-      // console.log(this.disbArr,"this.disbArr-----")
-      // for(var i = 0; i<item.weeks.length; i++){
-      //   if(this.disbArr.indexOf(item.weeks[i].id*1)!=-1){
-      //     this.disbArr.splice(i+1,1)
-      //   }
-      //   // this.remove(this.disbArr,item.weeks[i].id*1)
-      //   // this.remove(this.disbArr,item.weeks[i].id)
-      //   // if(this.disbArr.indexOf(item.weeks[i].id*1)>-1){
-      //   //   this.disbArr.splice(index,1)
-      //   // }
-      // }
-      console.log(this.disbArr,"this.disbArr222222-----------")
     },
     //个人资料保存
     perSubmitForm(formName) {
@@ -1568,10 +1271,8 @@ export default {
           obj.idCardPicAfter = _personalEDit.idCardPicAfter;
           obj.headPic = _personalEDit.headPic;
           obj.status = _personalEDit.status;
-          console.log(obj, "obj-----");
           this.technicianEdit(obj)
         } else {
-          // this.$message.error("保存失败");
           return false;
         }
       });
@@ -1595,14 +1296,11 @@ export default {
                 if( _perServer.workTimes[i].endTime=='24:00'){
                   _perServer.workTimes[i].endTime = '23:59'
                 }
-                // delete _perServer.workTimes[i].endTimeStr
-                // delete  _perServer.workTimes[i].startTimeStr
               }
             }
           }
           obj.workTimes = _perServer.workTimes
           obj.skillIds = _perServer.skillIds
-          console.log(obj,"this.perServer--------")
           technicianServer(obj).then(data=>{
             if(data.data.code){
               this.$message({
@@ -1610,8 +1308,7 @@ export default {
                 type: "success"
               })
             }else{
-              this.$message.error(data.data.data)
-              return false
+             
             }
           }).catch(error=>{
             this.$message.error('保存失败')
@@ -1626,11 +1323,9 @@ export default {
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      // this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      // this.getList();
     },
     //家庭表格删除
     handleModifyDelete(row, scope, name) {
@@ -1644,8 +1339,7 @@ export default {
             });
             this.familyFlag = false
           } else {
-            this.$message.error(data.data.data);
-            return false;
+           
           }
         })
         .catch(error => {
@@ -1657,16 +1351,9 @@ export default {
     //家庭表格编辑
     handleModifyStatus(row, scope, status) {
       this.scopeId = scope.$index;
-      // alert(this.scopeId)
       this.flagso = true;
       this.perFamily = Object.assign({}, row);
-      console.log(this.perFamily, "row-------");
       this.familyFlag = true;
-      // this.$message({
-      //   message: "操作成功",
-      //   type: "success"
-      // });
-      // row.status = status;
     },
     showTabl() {
       this.flagso = !this.flagso;
@@ -1695,11 +1382,6 @@ export default {
       }else{
         this.remove(this.roomSelNum,this.roomSel1Arr,item.id)
       }
-      // this.roomSel1Arr.push(item);
-      // console.log(this.roomSel1Arr, "this.roomSel1Arr-------");
-      // console.log(this.teachArr, "this.arr-----");
-      // item.show = !item.show;
-      //  console.log(item)
     },
     //排序
     by(property){
@@ -1755,7 +1437,6 @@ export default {
     },
     roomSel2(index, key) {
       this.supplement.jobLevel = key;
-      console.log(index, key);
       this.isA = key;
     },
     // 添加技能
@@ -1793,7 +1474,6 @@ export default {
     savrTable(formName) {
       var arr = [];
       var obj = Object.assign({}, this.perFamily);
-      // arr.push(obj);
       if(!this.familyFlag){
         if(obj.id){
           delete obj.id
@@ -1810,21 +1490,10 @@ export default {
                   type: "success"
                 });
                 this.familyList = data.data.data
-                console.log(data,"-------------------------------------------____________________________________++++++++++++++++++")
-                // if (this.familyFlag) {
-                //   console.log(obj,"obj----------------")
-                //   alert("编辑")
-                //   this.$set(this.familyList, this.scopeId, obj);
-                // } else {
-                //   console.log(obj,"obj----------------")
-                //   alert("添加")
-                //   this.familyList.push(obj);
-                // }
                 this.familyFlag = false;
                 this.$refs[formName].resetFields();
               } else {
-                this.$message.error(data.data.data);
-                return false;
+               
               }
             })
             .catch(error => {
@@ -1836,42 +1505,10 @@ export default {
           return false;
         }
       });
-      // this.isTab = true;
     },
     dateChange(val) {
-      // console.log(val,"------------")
       this.personalEDit.birthDate = val;
     },
-    create() {
-      // var time = String(this.value1);
-      // var obj = {
-      //   techName: this.techName,
-      //   techldCard: this.techldCard,
-      //   techPhone: this.techPhone,
-      //   techSex: this.sexs,
-      //   techNation: this.ethnic,
-      //   addrDetailInfo: this.addrDetailInfo,
-      //   techBirthDate: this.value1,
-      //   images: [
-      //     {
-      //       id: "",
-      //       imgType: "",
-      //       imgUrl: ""
-      //     }
-      //   ]
-      // };
-      // addTech(obj).then(res => {
-      //   console.log(res)
-      // })
-      (this.techName = ""), console.log(obj), console.log(time);
-      // console.log(d)
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    }
   },
   mounted() {
     this.startTime = this.startend.start

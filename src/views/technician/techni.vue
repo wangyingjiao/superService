@@ -28,9 +28,6 @@
       <div class="tech-section-right">
         <button class="button-small  btn_pad" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
-       <!-- <el-table 
-          v-loading="listLoadingTech" 
-          style="width: 100%" > -->
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech"
     element-loading-text="正在加载"  class="projectTabel listTechni">
@@ -45,9 +42,6 @@
               </div>
             </div>
             <div class="tech-xiu-div-two">
-              <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top-start">
-                  <h4 class="header-h4">{{item.name}}</h4>
-              </el-tooltip> -->
               <h4 class="header-h4">{{item.name}}</h4>
               <div>
                   <img src="../../../static/icon/性别年龄.png" alt="" >              
@@ -70,13 +64,6 @@
           <!-- 鼠标移入 --> 
           <div class="tech-section-ul-posi" v-show="item.ismouse">
             <div class="mousehover" v-on:mouseover.prevent="dataDetails1" v-on:mouseout.prevent="hiddenDetail1"  @click="appPassword(item)" v-if="btnShow.indexOf('techni_app') > -1">
-            <!-- <transition leave-active-class="animated flipOutX" >
-             <img ref="img1" src="../../../static/icon/密码.png" alt="" style='position:absolute;' >
-             </transition> -->
-             <!-- <img src="../../../static/icon/密码.png" alt="" > -->
-            <!-- <transition enter-active-class="animated flipInX">
-             <img v-if="!hoverState1" src="../../../static/icon/密码hov.png" alt="" style='position:absolute;'>
-             </transition> -->
              <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
@@ -91,12 +78,6 @@
              
             </div>
             <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
-              <!-- <transition leave-active-class="animated flipOutX">
-                <img ref="img2" v-if="hoverState2" src="../../../static/icon/休假.png" alt="" style='position:absolute;' >
-              </transition>
-              <transition enter-active-class="animated flipInX">
-                <img v-if="!hoverState2" src="../../../static/icon/休假hov.png" alt="" style='position:absolute;'>
-              </transition> -->
               <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
@@ -164,7 +145,6 @@
       </el-dialog>
     <!-- 休息弹出层 -->
       <el-dialog title="休假" :visible.sync="flags" :close-on-click-modal="false" custom-class="tech-section-lages tech-vacation" style="top:10%;">
-        <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"> -->
         <ul class="tech-section-xiu">
           <li class="mobel">
             <p>姓名:</p>
@@ -183,7 +163,6 @@
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
                 <el-col :span="11">
-                  <!-- <timePicker></timePicker> -->
                   <el-form-item prop="startTime">
                     	<el-time-select
                           :editable='false'
@@ -254,7 +233,6 @@
                 <span>{{item.name}}</span>
               </el-tooltip>
               <div :class="{'triangle-bottomright':item.show===true}"></div>
-              <!-- <div class="tally">&#10004;</div> -->
             </div>
           </div>
           <div class="tech-pos-btn">
@@ -391,7 +369,7 @@
                       <el-form-item label="身份证正面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="https://imgcdn.guoanshequ.com/"
+                              :action="imgSrc"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'id')"
                               :before-upload="beforeAvatarUpload"
@@ -405,7 +383,7 @@
                       <el-form-item  label="身份证反面：">
                           <el-upload
                               class="avatar-uploader"
-                              action="https://imgcdn.guoanshequ.com/"
+                              :action="imgSrc"
                               :show-file-list="false"
                               :http-request="(val)=>picUpload(val,'at')"
                               :before-upload="beforeAvatarUpload"
@@ -490,9 +468,6 @@
 
                                 <div style="display:flex;">
                                   <div class="selfCheckBoxsday">日期</div>
-                                  <!-- <button class="selfCheckBoxs tech-order-posis" :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" :class="{'tech-green':roomSelNum.indexOf(item.id)!=-1 || disbArr.indexOf(item.id)!=-1}">
-                                    {{item.name}}
-                                  </button> -->
                                   <input type="button" class="selfCheckBoxs tech-order-posis"
                                     :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
                                     @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
@@ -561,9 +536,6 @@
         <div slot="footer" class="dialog-footer selfFooter" style="text-align:center; padding:30px 0">
             <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
             <button class="button-cancel" @click="handleClose('personal')">取消</button>
-            <!-- <input type="button" class="button-large" @click="submitFormPer('personal')" :disabled="btnState" value="保存信息"> -->
-            <!-- <span class="button-large-fourth" @click="submitFormPer('personal')">保存信息</span> -->
-            <!-- <input class="button-cancel" value="取消" @click="handleClose('personal')"/>  -->
         </div>
       </el-dialog>
   </div>
@@ -589,7 +561,6 @@ import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
 import { Whether } from "@/api/serviceManage";
 import Cookies from "js-cookie";
-// import timePicker from './timePicker.vue'
 
 export default {
   data() {
@@ -648,11 +619,6 @@ export default {
       } else {
         callback(new Error("请选择现住地址"));
       }
-      // if(value.length>0){
-      //   callback()
-      // }else{
-      //   callback(new Error("请选择现住地址"))
-      // }
     };
     //选择技能
     var SKILLIDS = (rule, value, callback) => {
@@ -664,10 +630,6 @@ export default {
     };
     //工作时间
     var WORKTIMES = (rule, value, callback) => {
-      console.log(
-        this.teachArr,
-        "this.teachArr-----------------________________"
-      );
       if (this.teachArr.length > 0 && this.teachArr != undefined) {
         callback();
       } else {
@@ -675,16 +637,7 @@ export default {
       }
     };
     //头像图片
-    var HEADPIC = (rule, value, callback) => {
-      // personal.headPic
-      console.log(
-        value,
-        "_____________________________value_____________________________"
-      );
-      console.log(
-        this.personal.headPic,
-        "_____________________________this.personal.headPic____________________________"
-      );
+    var HEADPIC = (rule, value, callback) => { 
       if (
         this.personal.headPic.length > 0 &&
         this.personal.headPic != undefined
@@ -718,20 +671,6 @@ export default {
       } else {
         callback(new Error("请选择结束日期"));
       }
-      // if(t2>=t1){
-      //   callback()
-      // }else{
-      //   callback(new Error('不太通'))
-      // }
-      //  var t1 = this.ruleForm.startTime
-      // var t2 = this.ruleForm.endTime
-      // console.log(t1,"t1-----")
-      // console.log(t2,"t2-----")
-      // var c1 = Date.parse('2008-08-08 '+t1);
-      // var c2 = Date.parse('2008-08-08 '+t2);
-      // console.log(c1,"ca-----")
-      // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
-      // if(c1<=c2){
     };
 
     return {
@@ -764,7 +703,6 @@ export default {
           { required: true, message: "请选择时间", trigger: "change" }
         ],
         endDate: [
-          // { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
           { required: true, validator: ENDDATE, trigger: "change" }
         ],
         startDate: [
@@ -832,7 +770,6 @@ export default {
         ],
         // 身份证
         idCard: [
-          // { required: true, trigger: "blur" }
           { required: true, validator: TECHIDCARD, trigger: "blur" }
         ],
         //手机号
@@ -925,159 +862,7 @@ export default {
       education: {},
       height: [],
       place: [],
-      caty: [
-        {
-          value: "选项1",
-          label: "北京"
-        },
-        {
-          value: "选项2",
-          label: "天津"
-        },
-        {
-          value: "选项3",
-          label: "上海"
-        },
-        {
-          value: "选项4",
-          label: "重庆"
-        },
-        {
-          value: "选项5",
-          label: "河北"
-        },
-        {
-          value: "选项6",
-          label: "山西"
-        },
-        {
-          value: "选项7",
-          label: "辽宁"
-        },
-        {
-          value: "选项8",
-          label: "河南"
-        }
-      ],
-
       workyear: {},
-
-      bind: [
-        {
-          value: "选项1",
-          label: "夫妻"
-        },
-        {
-          value: "选项2",
-          label: "父母"
-        },
-        {
-          value: "选项3",
-          label: "母女"
-        },
-        {
-          value: "选项4",
-          label: "母子"
-        },
-        {
-          value: "选项5",
-          label: "兄弟姐妹"
-        },
-        {
-          value: "选项6",
-          label: "亲戚"
-        }
-      ],
-      sexType: [
-        {
-          sexName: "技能一",
-          show: false
-        },
-        {
-          sexName: "技能二",
-          show: false
-        },
-        {
-          sexName: "技能三",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能一",
-          show: false
-        },
-        {
-          sexName: "技能二",
-          show: false
-        },
-        {
-          sexName: "技能三",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        },
-        {
-          sexName: "技能六",
-          show: false
-        },
-        {
-          sexName: "技能七",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        },
-        {
-          sexName: "技能八",
-          show: false
-        }
-      ],
       technicianData: [],
       sexTypes: {},
       sexTypeo: [],
@@ -1118,7 +903,6 @@ export default {
       isB: false,
       isTab: false,
       sexLen: "",
-      binds: "",
       flagso: false,
       flags: false,
       password: false,
@@ -1131,7 +915,6 @@ export default {
       status: "",
       servers1: "",
       stationes: "",
-      catys: "",
       area: [],
       techniList: [],
       places: "",
@@ -1220,7 +1003,6 @@ export default {
       dt.setMonth(dt.getMonth() - 3);
       var dtstr = dt.toLocaleString();
       var dtarr = dtstr.split(" ")[0].split("/");
-      // var time1 = Date.parse(new Date("1950,1,1"));
       var time2 = Date.parse(new Date(dtarr[0], dtarr[1], dtarr[2]));
       return {
         disabledDate(time) {
@@ -1233,7 +1015,6 @@ export default {
       return JSON.parse(localStorage.getItem("btn"));
     },
     areaOptions() {
-      console.log(this.$store.state.user.area, "this.$store.state.user.area");
       return this.$store.state.user.area;
     },
     sign: function() {
@@ -1241,7 +1022,6 @@ export default {
     },
     //开始时间
     startEndTime() {
-      // startEnd.start startEnd.end
       var t1 = Date.parse("2008-08-08 " + "09:00");
       var tt = t1 - 1800000;
       var str = new Date(tt);
@@ -1255,7 +1035,6 @@ export default {
     },
     //结束时间
     suspendEndTime() {
-      // startEnd.start startEnd.end
       var t1 = Date.parse("2008-08-08 " + "12:00");
       var tt = t1 + 1800000;
       var str = new Date(tt);
@@ -1265,7 +1044,6 @@ export default {
       } else {
         var startTime = start.substring(start.length - 5, start.length);
       }
-      console.log(startTime, "startTime---------------");
       return startTime;
     }
   },
@@ -1319,12 +1097,8 @@ export default {
         file.type == "image/png" ||
         file.type == "image/jpeg"
       ) {
-        console.log(file.type, "file.type-----------");
-
           
-                             
       } else {       
-        console.log(file.type, "file.type-----------+++++++++");
         this.$message.error("请上传正确的图片格式");
         return false;
       }
@@ -1345,7 +1119,6 @@ export default {
           var obj = data.data.data;
           this.servery = stationObj.id != 0 ? obj : obj.slice(1);
           this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
-          console.log(data, "服务站++++++++++++++");
         })
         .catch(error => {
           console.log(error, "服务站错误+++++++");
@@ -1354,15 +1127,12 @@ export default {
     picUpload(file, flag) {
       var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
-        console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
-          console.log("签名没过期");
           resolve(res);
         } else {
           this.$http.get("/apiservice/oss/getSign").then(res => {
-            console.log(res, "签名过期-----------------");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
           });
@@ -1389,10 +1159,6 @@ export default {
         ossData.append("signature", data.signature);
         // 添加文件
         ossData.append("file", file.file, file.file.name);
-        //this.ossData = ossData;
-        // console.log(ossData.get("name"),"ossData-----");
-        // console.log(ossData.get("key"),"ossData------");
-        console.log(22222222222);
         that.$http
           .post(data.host1, ossData, {
             headers: {
@@ -1400,7 +1166,6 @@ export default {
             }
           })
           .then(res => {
-            console.log(11111111111111111);
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
             } else if (flag == "at") {
@@ -1421,7 +1186,6 @@ export default {
             return false;
           });
 
-        // console.log(this.headerBack,"this.headerBack")
       });
     },
     //搜索
@@ -1429,10 +1193,6 @@ export default {
       var _page = typeof page == "string" ? page : this.listQuery.page;
       var _size = size || this.listQuery.limit;
       this.listQuery.sync = 1;
-      console.log(
-        this.techniSearch,
-        "techniSearch-----------------------------"
-      );
       var obj = {};
       if (this.techniSearch.stationId) {
         obj.stationId = this.techniSearch.stationId;
@@ -1446,9 +1206,6 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
-      console.log(obj, "------------------");
-      console.log(page, "_____page---");
-      console.log(this.listQuery.page, "_____size---");
       this.getList(_page, _size, obj);
     },
     startDateChange(val) {
@@ -1464,37 +1221,21 @@ export default {
     },
     //休假保存
     vacationPreser(formName) {
-      // ruleForm.startDate ruleForm.startTime  ruleForm.endDate  ruleForm.endTime
       var t1 = this.ruleForm.startTime;
       var t2 = this.ruleForm.endTime;
-      console.log(t1, "t1-----");
-      console.log(t2, "t2-----");
       var c1 = Date.parse("2008-08-08 " + t1);
       var c2 = Date.parse("2008-08-08 " + t2);
-      console.log(c1, "ca-----");
-      // if(Date.parse(this.ruleForm.startDate)<=Date.parse(this.ruleForm.endDate)){
-      // if(c1<=c2){
       this.$refs[formName].validate(val => {
         if (val) {
           var obj = {};
           obj.techId = this.passwordId;
-          // if(this.ruleForm.endTime == "24:00"){
-          //     this.ruleForm.endTime = "23:59"
-          //     obj.endTime =
-          //       this.storeEnd.endDate + " " + this.ruleForm.endTime + ":59";
-          // }else{
-          //   obj.endTime =
-          //       this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
-          // }
           obj.endTime =
             this.storeEnd.endDate + " " + this.ruleForm.endTime + ":00";
           obj.startTime =
             this.storeEnd.storeDate + " " + this.ruleForm.startTime + ":00";
           obj.remark = this.ruleForm.desc;
-          console.log(obj);
           addVacation(obj)
             .then(data => {
-              console.log(data, "data---休假");
               if (data.data.code) {
                 this.$message({
                   message: "保存成功",
@@ -1502,8 +1243,7 @@ export default {
                 });
                 this.vacationCancel("ruleForm");
               } else {
-                this.$message.error(data.data.data);
-                return false;
+                
               }
             })
             .catch(error => {
@@ -1514,24 +1254,12 @@ export default {
           return false;
         }
       });
-      // }else{
-      //   this.$message.error("保存失败")
-      //   return false
-      // }
-      // }else{
-      //   this.$message.error("保存失败")
-      //   return false
-      // }
-      // console.log(this.ruleForm.endDate,"startTime-------------")
-      //  console.log(this.ruleForm,"this.ruleForm")
-      //  console.log(this.storeEnd,"storeEnd----")
     },
     //休假
     vacation(item) {
       serviceTechnicianInfo()
         .then(data => {
           this.startEnd = data.data.data;
-          console.log(this.startEnd, "this.startEnd------");
           if (this.startEnd.end == "23:59") {
             this.startEnd.end = "24:00";
           }
@@ -1580,8 +1308,7 @@ export default {
                 this.passwordCancel("ruleForm2");
                 this.password = false;
               } else {
-                this.$message.error(data.data.data);
-                return false;
+                
               }
             })
             .catch(error => {
@@ -1596,11 +1323,9 @@ export default {
     },
     //修改app密码
     appPassword(item) {
-      // console.log(item,"---------------")
       this.passwordModule = item.phone;
       this.password = true;
       this.passwordId = item.id;
-      // console.log(item,"item-----")
     },
 
     // 服务机构时间
@@ -1633,22 +1358,15 @@ export default {
 
     //技师编辑获取ID
     technician(item) {
-      // console.log(item,"item-------")
       this.listLoadingTech = true;
       technicianEditId({ id: item.id })
         .then(data => {
           if (data.data.code) {
-            console.log(data, "bienji---------++++");
             this.listLoadingTech = false;
             this.technicianData = data.data.data;
             this.dialogVisibleEdit = true;
           } else {
-            this.$message({
-              message: data.data.data,
-              type: "error"
-            });
             this.listLoadingTech = false;
-            return false;
           }
         })
         .catch(error => {
@@ -1670,7 +1388,6 @@ export default {
           var stationObj = JSON.parse(stationLocal);
           var obj = data.data.data;
           this.servery = stationObj.id != 0 ? obj : obj.slice(1);
-          console.log(data, "服务站++++++++++++++");
         })
         .catch(error => {
           console.log(error, "服务站错误+++++++");
@@ -1682,7 +1399,6 @@ export default {
       this.personal.cityCode = val[1]; //市
       this.personal.areaCode = val[2]; //区
     },
-    handlePreview(file) {},
     handleClose(formName) {
       this.$refs[formName].resetFields();
       this.personal.address = "";
@@ -1733,7 +1449,6 @@ export default {
         obj.skillIds = this.roomSel2Arr;
       }
 
-      console.log(this.listQuery.page, "this.listQuery.page------");
       if (
         this.techniSearch.skillIds === undefined ||
         this.techniSearch.skillIds.length == 0
@@ -1741,7 +1456,6 @@ export default {
         delete this.techniSearch.skillIds;
       }
       this.getList(val, this.listQuery.limit, obj);
-      console.log(val);
     },
     handleSizeChange(val) {
       this.listQuery.sync = 1;
@@ -1794,10 +1508,7 @@ export default {
       } else {
         this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
       }
-      console.log(this.roomSel1Arr, "this.roomSel1Arr-------");
-      // console.log(this.roomSelNum,"this.roomSelNum-----")
       item.show = !item.show;
-      //  console.log(item)
     },
     //排序
     by(name) {
@@ -1870,12 +1581,8 @@ export default {
                 this.handleCurrentChange(this.listQuery.page);
                 this.dialogVisibleEditClick();
               } else {
-                this.$message.error(data.data.data);
-                return false;
+               
               }
-              //  this.getList(this.listQuery.page,this.listQuery.limit,)
-              // this.techniSearchs(this.listQuery.page, this.listQuery.limit);
-              // this.handleCurrentChange(this.listQuer.page)
             })
             .catch(error => {
               this.$message.error("删除失败!");
@@ -1943,16 +1650,6 @@ export default {
       this.$refs[formName].validate(val => {
         if (val) {
           this.btnState = true;
-          // if(this.personal.headPic){
-
-          // }else{
-          //    this.$message({
-          //       message:'头像不能为空',
-          //       type:"warning"
-          //     })
-          //     return false
-          // }
-          // this.personal.workTimes.workTime = this.disbAr
           for (var i = 0; i < this.teachArr.length; i++) {
             if (this.teachArr[i].endTime == "24:00") {
               this.teachArr[i].endTime = "23:59:59";
@@ -1982,7 +1679,6 @@ export default {
                 this.techniSearch.chooses = "";
                 this.chooContent = "";
                 this.roomSel2Arr = [];
-                // this.techniList = [];
               } else {
                 var str = data.data.data;
                 if (typeof str == "string") {
@@ -2027,7 +1723,6 @@ export default {
 
             this.Choose = data.data.data.cityCodes;
             this.sexTypeo = data.data.data.skillInfos;
-            // this.listQuery.sync = data.data.data.page.pageNo
             this.infoname = data.data.data.page.list || [];
             this.server = data.data.data.stations;
             this.total = data.data.data.page.count;
@@ -2042,8 +1737,6 @@ export default {
               _infoname[i].ismouse = false;
               // 性别
               _infoname[i].sexname = _infoname[i].sex == "male" ? "男" : "女";
-              // 年龄
-              // _infoname[i].birthDate?_infoname[i].birthDateName = year - _infoname[i].birthDate.slice(0,4)*1+1:''
               // 岗位性质
               _infoname[i].jobName =
                 _infoname[i].jobNature == "full_time" ? "全职" : "兼职";
@@ -2058,13 +1751,10 @@ export default {
               } else {
                 _infoname[i].workTimeName = _infoname[i].workTime + "年";
               }
-              console.log(birth, "birth----");
             }
             this.techniList = this.infoname;
-            console.log(this.techniList, "this.techniList----------");
           } else {
             this.listLoadingTech = false;
-            this.$message.error(data.data.data);
             return false;
           }
         })
@@ -2074,23 +1764,13 @@ export default {
           console.log(error, "error-----thechni.vue-----1211");
         });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    }
   },
   mounted() {
-    console.log(
-      "-------------------mouned 加载页面-----------------------------"
-    );
     this.sign; //获取签名
     this.getList(1, 12, {});
     //性别,工作年限,岗位性质，岗位状态
     Whether()
       .then(({ data }) => {
-        console.log(data, "xxxxxxx");
         this.sex = data.sex;
         this.workyear = data.work_time;
         this.station = data.job_natrue;
@@ -2115,15 +1795,6 @@ export default {
       this.height = res.data;
       this.heights = res.data[18].value;
     });
-    // getMatrimony().then(res =>{
-    //   if(res.status==200){
-    //     // this.marriage=res.data
-    //     // this.marriages=res.data[0].label
-    //     // console.log(this.marriage)
-    //   }else{
-    //     console.log("错误")
-    //   }
-    // })
   },
   filters: {
     trim(value) {
