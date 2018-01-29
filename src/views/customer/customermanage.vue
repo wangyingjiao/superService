@@ -323,10 +323,7 @@ export default {
 											this.jumpPage=1;
 											this.getData(obj,this.pageNumber,this.pageSize1);
 									}else{
-										this.$message({
-												type: 'error',
-												message: res.data.data
-										});
+										
 										this.$refs.pickerInput.value=''
 										this.ruleForm.address=''
 									}													
@@ -418,11 +415,6 @@ export default {
 														// orgId:this.organizationName,
 												}
 												this.getData(obj1,this.pageNumber,this.pageSize1);
-										}else{
-											this.$message({
-													type: 'error',
-													message: '删除失败'
-												});
 										}
 									}).catch(()=>{
 										this.getData(obj1,this.pageNumber,this.pageSize1);

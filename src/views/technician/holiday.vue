@@ -407,10 +407,7 @@ export default {
                 });
                 this.getList();
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                
               }
             })
             .catch(() => {
