@@ -85,7 +85,7 @@
 					</el-table-column>							
 					<el-table-column  align="center"  width="150" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 15" :content="scope.row.orderContent">
+							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
 								<div class="selfToolTip">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
@@ -187,7 +187,7 @@ export default {
     };
   },
   methods: {
-	//服务时间格式化只有整点与半点
+	//服务开始时间格式化只有整点与半点
 	TimeChange(value){
 		if(value != undefined){ 
 			var str=value.substring(14,16)						
@@ -204,7 +204,7 @@ export default {
 			}
 		}			
 	},
-	//服务时间格式化只有整点与半点
+	//服务结束时间格式化只有整点与半点
 	TimeChange1(value){
 		if(value != undefined){ 
 			var str=value.substring(14,16)						
@@ -332,8 +332,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTime:this.severTime,
-			//serviceEndTime:this.severEndTime
+			serviceTimeStart:this.severTime,
+			serviceTimeEnd:this.severEndTime
 		};
 		this.pageNumber=1;
 		this.jumpPage=1;		
@@ -395,8 +395,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTime:this.severTime,
-			//serviceEndTime:this.severEndTime,			
+			serviceTimeStart:this.severTime,
+			serviceTimeEnd:this.severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
@@ -446,8 +446,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTime:this.severTime,
-			//serivceEndTime:this.severEndTime,			
+			serviceTimeStart:this.severTime,
+			serivceTimeEnd:this.severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
