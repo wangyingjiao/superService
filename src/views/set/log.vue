@@ -12,7 +12,7 @@
       <el-date-picker
       v-model="search.createDate"
       style="width:20%"
-      type="date"
+      type="datetime"
       placeholder="选择日期时间">
     </el-date-picker>
 
@@ -31,11 +31,11 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="编号"  width="100">
+      <!-- <el-table-column align="center" label="编号"  width="100">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
@@ -132,10 +132,13 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      var time = util.formatDate.format(
+      if(this.search.createDate){
+         var time = util.formatDate.format(
         new Date(this.search.createDate),
         "yyyy-MM-dd hh:mm:ss"
       );
+      }
+      
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
@@ -177,13 +180,13 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      if (this.search.createDate) {
-        var time = util.formatDate.format(
-          new Date(this.search.createDate),
-          "yyyy-MM-dd hh:mm:ss"
-        );
+      if(this.search.createDate){
+         var time = util.formatDate.format(
+        new Date(this.search.createDate),
+        "yyyy-MM-dd hh:mm:ss"
+      );
       }
-
+      
       if (this.search.type == "type") {
         var obj = {
           type: this.search.val,
@@ -228,20 +231,27 @@ export default {
       this.pageNumber = 1;
       this.pageSize = val;
       this.listLoading = true;
+      if(this.search.createDate){
+         var time = util.formatDate.format(
+        new Date(this.search.createDate),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      }
+      
       if (this.search.type == "type") {
         var obj = {
-          type: this.search.val
+          type: this.search.val,
+          createDate: time
         };
       } else if (this.search.type == "title") {
         var obj = {
-          title: this.search.val
-        };
-      } else if (this.search.type == "createdate") {
-        var obj = {
-          createDate: this.search.val
+          title: this.search.val,
+          createDate: time
         };
       } else {
-        var obj = {};
+        var obj = {
+          createDate: time
+        };
       }
       getLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
@@ -269,20 +279,27 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.listLoading = true;
+      if(this.search.createDate){
+         var time = util.formatDate.format(
+        new Date(this.search.createDate),
+        "yyyy-MM-dd hh:mm:ss"
+      );
+      }
+      
       if (this.search.type == "type") {
         var obj = {
-          type: this.search.val
+          type: this.search.val,
+          createDate: time
         };
       } else if (this.search.type == "title") {
         var obj = {
-          title: this.search.val
-        };
-      } else if (this.search.type == "createdate") {
-        var obj = {
-          createDate: this.search.val
+          title: this.search.val,
+          createDate: time
         };
       } else {
-        var obj = {};
+        var obj = {
+          createDate: time
+        };
       }
       getLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
