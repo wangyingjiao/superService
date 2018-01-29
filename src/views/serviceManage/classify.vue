@@ -313,10 +313,7 @@ export default {
           this.dialogFormVisible = true;
         } else {
           this.listLoading = false;
-          this.$message({
-            type: "error",
-            message: "请求错误"
-          });
+          
         }
       });
     },
@@ -344,10 +341,7 @@ export default {
                 });
                 this.getList();
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                
               }
             })
             .catch(() =>{
@@ -386,17 +380,7 @@ export default {
                 message: "新增成功"
               });
             } else {
-              if (typeof res.data.data == "string") {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data[0]
-                });
-              }
+              
             }
           }).catch(err=>{
             this.btnState = false;
@@ -446,10 +430,7 @@ export default {
             } else {
               //this.dialogFormVisible = false;
               //this.selectState = false;
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
+              
             }
           }).catch(err=>{
             this.btnState = false;

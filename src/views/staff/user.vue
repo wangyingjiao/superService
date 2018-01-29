@@ -893,11 +893,6 @@ export default {
                   message: "删除成功!"
                 });
                 this.getList();
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
               }
             })
             .catch(() => {
@@ -1025,11 +1020,6 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
               }
             })
             .catch(err => {
@@ -1079,19 +1069,7 @@ export default {
                   type: "success",
                   message: "添加成功"
                 });
-              } else {
-                if (typeof res.data.data == "string") {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data
-                  });
-                } else {
-                  this.$message({
-                    type: "error",
-                    message: res.data.data[0]
-                  });
-                }
-              }
+              } 
             })
             .catch(err => {
               this.btnState = false;
@@ -1167,11 +1145,6 @@ export default {
                   });
                 }
                 // 判断结束
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
               }
             })
             .catch(err => {

@@ -523,12 +523,7 @@ export default {
               }
               this.dialogMasterVisible = true;
               this.listLoading = false;
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
+            } 
           })
           .catch(err => {
             this.listLoading = false;
@@ -553,12 +548,7 @@ export default {
               this.$nextTick(() => {
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
               });
-            } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
-            }
+            } 
           });
         } else {
           this.severSelectdialogVisible = true;
@@ -690,12 +680,7 @@ export default {
                   message: "删除成功!"
                 });
                 this.getList();
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              }
+              } 
             })
             .catch(() => {
               this.$message({
@@ -741,12 +726,7 @@ export default {
                 this.search.cityCode = "";
                 this.handleFilter();
                 this.dialogFormVisible = false;
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              }
+              } 
             })
             .catch(() => {
               this.btnState = false;
@@ -792,11 +772,6 @@ export default {
               this.total = res.data.data.count;
               this.listLoading = false;
             });
-          } else {
-            this.$message({
-              type: "error",
-              message: res.data.data
-            });
           }
         })
         .catch(err => {
@@ -827,11 +802,8 @@ export default {
                 this.getList();
                 this.dialogMasterVisible = false;
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-                this.dialogMasterVisible = false;
+                
+                // this.dialogMasterVisible = false;
               }
             })
             .catch(() => {
@@ -872,13 +844,7 @@ export default {
                 });
                 this.getList();
                 this.dialogFormVisible = false;
-              } else {
-                //this.rowInfo.id = "";
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
-              }
+              } 
             })
             .catch(err => {
               this.btnState = false;
@@ -1096,10 +1062,7 @@ export default {
               this.$refs.pickerInput.value = "";
               this.severSelectdialogVisible = false;
             } else {
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });
+              
               this.severSelectdialogVisible = false;
               this.inputvalue = [];
               this.$refs.pickerInput.value = "";

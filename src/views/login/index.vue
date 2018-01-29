@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item class="loginitem">
         <el-button type="primary"  class="loginbtn"  :loading="loading" @click.native.prevent="handleLogin">
-          登录
+          登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录
         </el-button>
       </el-form-item>
       <div class='tips'>
@@ -133,6 +133,12 @@ $light_gray: #eee;
     width: 85%;
   }
   // 用户名与密码的hover效果
+  .username input{
+    margin-left:5px;
+  }
+  .password input{
+    margin-left:5px;
+  }  
   .username input:hover{
     cursor: pointer;
   }
@@ -179,6 +185,8 @@ $light_gray: #eee;
   }
   .loginbtn {
     color: #ffffff;
+    font-size:14px;
+    font-weight: 600;
     width: 100%;
     border: 0px solid #cde19e;
     background-image: linear-gradient(-163deg, #cde19e 0%, #00a8e1 100%);

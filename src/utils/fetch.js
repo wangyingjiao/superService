@@ -41,6 +41,13 @@ instance.interceptors.response.use(res => {
         })
       }
     }
+    if (res.data.code === 0) {
+      if (typeof res.data.data === 'string') {
+        Message.error(res.data.data)
+      } else {
+        Message.error(res.data.data[0])
+      }
+    }
   }
 
   return res

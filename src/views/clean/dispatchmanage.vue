@@ -250,12 +250,7 @@ export default {
 							this.middleA=[]; 
 							this.listTech=[];                          
               this.dialogTableVisible = false
-          }else{
-              this.$message({
-                type: "error",
-                message: res.data.data
-              });             
-          }          
+          }   
         }).catch(res=>{
           this.techSaveFlag=false;
         });        
@@ -287,12 +282,7 @@ export default {
 						}else{
               this.listTech=[];
 						}
-					}else{						  
-							this.$message({
-								type: "error",
-								message: res.data.data
-							});                   
-					}          
+					}     
 				}).catch(res=>{
 					
 				});

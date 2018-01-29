@@ -590,10 +590,7 @@ export default {
                 this.$refs.pickerInput.value = "";
                 this.dialogTableVisible1 = false;
               } else {
-                this.$message({
-                  type: "error",
-                  message: res.data.data
-                });
+                
                 this.$refs.pickerInput.value = "";
                 this.ruleForm.address = "";
               }

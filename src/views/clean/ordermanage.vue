@@ -85,7 +85,7 @@
 					</el-table-column>							
 					<el-table-column  align="center"  width="150" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 15" :content="scope.row.orderContent">
+							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
 								<div class="selfToolTip">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
