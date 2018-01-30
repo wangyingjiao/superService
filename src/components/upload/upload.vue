@@ -132,7 +132,6 @@ export default{
 			}
 		},
 		uploadOnSuccess(file,fileList,a,b){//上传附件
-			console.log(file,"file+++++++")
      var type = file.file.name.split('.')
       let pro = new Promise((resolve,rej)=>{
         var res = JSON.parse(Cookies.get("sign"));

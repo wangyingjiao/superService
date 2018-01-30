@@ -1085,7 +1085,6 @@ export default {
           }).catch(error=>{
             this.$message.error('保存失败')
             return false
-            console.log(error)
           })
         }else{
           return false
@@ -1096,15 +1095,12 @@ export default {
     picUpload(file,flag){
       var type = file.file.name.split('.')
       let pro = new Promise((resolve, rej) => {
-        // console.log(JSON.parse(Cookies.get("sign")), "测试1111");
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
         if (res.expire - 3 > timestamp) {
-          console.log("签名没过期");
           resolve(res);
         } else {
           this.$http.get("/apiservice/oss/getSign").then(res => {
-            // console.log(res, "签名过期");
             Cookies.set("sign", JSON.stringify(res.data));
             resolve(res.data);
           });
@@ -1162,7 +1158,6 @@ export default {
         }else{
 					this.personalEDit.idCardPicBefor = ossData.get("key")
         }
-        console.log(error,"上传失败")
         return false
       })
       })
@@ -1201,7 +1196,6 @@ export default {
             }).catch(error=>{
               this.$message.error('保存失败')
               return false
-              console.log(error)
             })
         }else{
           return false
@@ -1222,7 +1216,6 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error, "error------techniEdit");
           return false
         });
     },
@@ -1233,7 +1226,6 @@ export default {
           this.servery = data.data.data;
         })
         .catch(error => {
-          console.log(error, "error---techni.vue-----1071");
         });
     },
 
@@ -1253,7 +1245,6 @@ export default {
     },
     //个人资料保存
     perSubmitForm(formName) {
-      // console.log(this.personalEDit,"personalEDit-------")
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = {},
@@ -1315,7 +1306,6 @@ export default {
           }).catch(error=>{
             this.$message.error('保存失败')
             return false
-            console.log(error,"error-----------")
           })
           // this.technicianEdit(obj)
         }else{
@@ -1345,7 +1335,6 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error, "error----家庭表格删除");
           this.$message.error("删除失败");
           return false;
         });
@@ -1377,7 +1366,6 @@ export default {
       }
     },
     roomSel1(item) {
-      // console.log(item,"item----")
       if(this.roomSelNum.indexOf(item.id) == -1){
         this.roomSelNum.push(item.id)
         this.roomSel1Arr.push(item)
@@ -1501,7 +1489,6 @@ export default {
             .catch(error => {
               this.$message.error("保存失败");
               return false;
-              console.log(error, "error-----techniEdit");
             });
         } else {
           return false;
