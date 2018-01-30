@@ -64,10 +64,11 @@
       
       
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" width="150" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
-        </template>
+            <el-button class="el-icon-edit ceshi3"   @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3"   @click="handleDelete(scope.row)"></el-button>
+          </template>
       </el-table-column>
 
     </el-table>
@@ -94,7 +95,36 @@
             label-position="left" 
             label-width="100px"
             >
-          
+          <el-form-item label="版本号:" prop="versionNumber">
+            <el-input        
+           class="form_item"
+            placeholder="请输入2-10位的版本号" v-model.trim="temp.versionNumber"></el-input>
+          </el-form-item>
+
+          <el-form-item label="build号:" prop="build">
+            <el-input        
+           class="form_item"
+           
+            placeholder="请输入build号" v-model.trim="temp.build"></el-input>
+          </el-form-item>
+
+          <el-form-item label="强更状态:" prop="forcedUpdate">
+             <el-radio v-model="temp.forcedUpdate" label="yes">是</el-radio>
+             <el-radio v-model="temp.forcedUpdate" label="no">否</el-radio>
+          </el-form-item>
+            
+          <el-form-item label="更新提示语:" prop="upgradeContent">
+            <el-input     
+            type="textarea"   
+           class="form_item"
+            placeholder="请输入不超过200位的提示语" v-model.trim="temp.upgradeContent"></el-input>
+          </el-form-item>
+
+          <el-form-item label="更新地址:" prop="refreshAddress">
+            <el-input        
+           class="form_item"
+            placeholder="请输入更新地址" v-model.trim="temp.refreshAddress"></el-input>
+          </el-form-item>
           
 
            
@@ -102,8 +132,8 @@
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
-        <button class="button-large" v-else  @click="create('temp')">保 存</button>    
+        <button class="button-large" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -114,7 +144,7 @@
 </template>
 
 <script>
-import { getApp } from "@/api/set";
+import { getApp, addApp, handleUpApp, upApp, delApp } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -124,7 +154,19 @@ export default {
     waves
   },
   data() {
+    var validateBuild = (rule, value, callback) => {
+      if(value){
+           if (!/^[0-9]*$/.test(value)) {
+          callback(new Error("build号只能为数字类型"));
+        } else {
+          callback();
+        }
+      }else{
+         callback(new Error("build号不能为空"));
+      }
+    };
     return {
+      btnState: false,
       list: [],
       total: null,
       listLoading: true,
@@ -151,12 +193,37 @@ export default {
         update: "编辑",
         create: "新增"
       },
+      rowId:"",
       dialogFormVisible: false,
       dialogStatus: "",
-      temp:{
-
+      temp: {
+        versionNumber: "",
+        build: "",
+        forcedUpdate: "",
+        upgradeContent: "",
+        refreshAddress: ""
       },
-      rules:{},
+      rules: {
+        versionNumber: [
+          { required: true, message: "版本号不能为空", trigger: "blur" },
+           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+        ],
+        build: [
+               { required: true, validator: validateBuild,trigger: "blur"},
+               {min:1,max:15, message: "build号为1 - 15位数字",trigger: "blur" }
+           ],
+        forcedUpdate: [
+          { required: true, message: "强更状态不能为空", trigger: "change" }
+        ],
+        upgradeContent: [
+          { required: true, message: "更新提示语不能为空", trigger: "blur" },
+          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+        ],
+        refreshAddress: [
+          { required: true, message: "更新地址不能为空", trigger: "blur" },
+          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+        ]
+      },
       tableKey: 0,
       isIndeterminate: true
     };
@@ -310,7 +377,32 @@ export default {
       this.pageNumber = val;
       this.getList();
     },
-    handleCreate() {},
+    handleCreate() {
+      this.dialogFormVisible = true;
+      this.dialogStatus = "create";
+    },
+    handleUpdate(row){
+      this.listLoading = true;
+      this.dialogStatus = "update";
+       var obj = {
+        id: row.id
+      };
+      // 请求回显的数据
+      handleUpApp(obj).then(res => {
+        this.listLoading = true;
+        if (res.data.code == 1) {
+          var data = res.data.data;
+          data.build = String(data.build)
+          this.listLoading = false;
+          this.rowId = row.id;
+          this.temp = Object.assign({}, data);
+          this.dialogFormVisible = true;
+        } else {
+          this.listLoading = false;         
+        }
+      });
+
+    },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -321,7 +413,19 @@ export default {
           var obj = {
             id: row.id
           };
-          return;
+          delApp(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.getList();
+              }
+            })
+            .catch(() => {
+              this.listLoading = false;
+            });
         })
         .catch(() => {
           this.$message({
@@ -330,11 +434,98 @@ export default {
           });
         });
     },
-    create(){
+    create(formName) {
+      var obj = {
+        versionNumber: this.temp.versionNumber,
+        build: this.temp.build,
+        forcedUpdate: this.temp.forcedUpdate,
+        upgradeContent: this.temp.upgradeContent,
+        refreshAddress: this.temp.refreshAddress
+      };
+      console.log(obj);
 
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true;
+          addApp(obj)
+            .then(res => {
+              this.btnState = false;
+
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.resetSearch();
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.handleFilter();
+                this.$message({
+                  type: "success",
+                  message: "新增成功"
+                });
+              } else {
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
+        } else {
+          return false;
+        }
+      });
     },
-    update(){
-
+    update(formName) {
+      var obj = {
+        id: this.rowId,
+        versionNumber: this.temp.versionNumber,
+        build: this.temp.build,
+        forcedUpdate: this.temp.forcedUpdate,
+        upgradeContent: this.temp.upgradeContent,
+        refreshAddress: this.temp.refreshAddress
+      };
+      console.log(obj)
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true;
+          upApp(obj).then(res => {
+            this.btnState = false;
+            if (res.data.code === 1) {
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.dialogFormVisible = false;
+              this.getList();
+              this.$message({
+                type: "success",
+                message: "编辑成功"
+              });
+            }
+          }).catch(err=>{
+            this.btnState = false;
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.resetTemp();
+      this.$refs[formName].resetFields();
+      this.dialogFormVisible = false;
+    },
+    resetSearch() {
+      this.search = {
+        type: "",
+        val: "",
+        startTime: "",
+        endTime: ""
+      };
+    },
+    resetTemp() {
+      this.temp = {
+        versionNumber: "",
+        build: "",
+        forcedUpdate: "",
+        upgradeContent: "",
+        refreshAddress: ""
+      };
     }
   }
 };
