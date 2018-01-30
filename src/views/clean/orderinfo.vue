@@ -530,8 +530,7 @@ export default {
             var AllInfo=res.data.data;
             var nowtime=new Date()
             var severtime=new Date(AllInfo.serviceTime)
-            this.nowTime=severtime.getTime()-nowtime.getTime()
-            console.log(this.nowTime)            
+            this.nowTime=severtime.getTime()-nowtime.getTime()           
             this.otherInfo=AllInfo;//所有其他信息变量
             this.otherInfo.serviceHour=this.formatDuring(AllInfo.serviceHour*3600000)            
             this.goodsInfo=AllInfo.goodsInfo//服务信息
@@ -591,9 +590,11 @@ export default {
                       this.$refs['formInline'].resetFields();
                       this.timeObj=[];
                       this.tableData1=res.data.data.list;
-                      // this.otherInfo.serviceHour=res.data.data.serviceHour;
                       this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
                       this.otherInfo.serviceTime=that.changTime+' '+that.bb;
+                      var nowtime=new Date()
+                      var severtime=new Date(this.otherInfo.serviceTime)
+                      this.nowTime=severtime.getTime()-nowtime.getTime()                      
                       this.dialogVisible = false ; 
                   }else{
                     
@@ -769,9 +770,7 @@ export default {
                 message: "新增成功!"
               });
               this.tableData1 = res.data.data.list;
-              // this.otherInfo.serviceHour = res.data.data.serviceHour;
               this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
-              res.data.data.serviceHour
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
@@ -796,7 +795,6 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1 = res.data.data.list;
-              // this.otherInfo.serviceHour = res.data.data.serviceHour;
               this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
               this.middleA = [];
               this.listTech = [];
