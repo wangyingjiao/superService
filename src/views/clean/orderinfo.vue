@@ -12,7 +12,7 @@
                           <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
                           <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
                           <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.orderStatus =='started'">已上门</span>
+                          <!-- <span v-if="otherInfo.orderStatus =='started'">已上门</span> -->
                           <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
                           <span v-if="otherInfo.orderStatus =='success'">已成功</span>
                           <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
