@@ -60,6 +60,16 @@ module.exports = {
       //     '^/apiservice': ''
       //   }
       // }
+<<<<<<< HEAD
+=======
+      // '/apiservice': {
+      //   target: 'http://10.16.70.63:8800/',
+      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/apiservice': ''
+      //   }
+      // }
+>>>>>>> d9d068bde37799dff6cb9ffa54145f2e33deb7ee
      },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
