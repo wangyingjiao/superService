@@ -100,7 +100,7 @@
             <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.jointStatus!='yes'">
+            <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
               <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
             </el-tooltip>
         </template>
