@@ -189,36 +189,20 @@ export default {
   methods: {
 	//服务开始时间格式化只有整点与半点
 	TimeChange(value){
-		if(value != undefined){ 
-			var str=value.substring(14,16)						
-            if(Number(str) >= 30){
-				this.severTime=util.formatDate.format(
+		if(value != undefined){ 						
+			this.severTime=util.formatDate.format(
 				new Date(this.severTime),
-				"yyyy-MM-dd hh:30:00"
-				);
-			}else{
-				this.severTime=util.formatDate.format(
-					new Date(this.severTime),
-					"yyyy-MM-dd hh:00:00"
-				);
-			}
+				"yyyy-MM-dd hh:mm:ss"
+			);
 		}			
 	},
 	//服务结束时间格式化只有整点与半点
 	TimeChange1(value){
 		if(value != undefined){ 
-			var str=value.substring(14,16)						
-            if(Number(str) >= 30){
-				this.severEndTime=util.formatDate.format(
+			this.severEndTime=util.formatDate.format(
 				new Date(this.severEndTime),
-				"yyyy-MM-dd hh:30:00"
-				);
-			}else{
-				this.severEndTime=util.formatDate.format(
-					new Date(this.severEndTime),
-					"yyyy-MM-dd hh:00:00"
-				);
-			}
+				"yyyy-MM-dd hh:mm:ss"
+			);
 		}			
 	},	
 	//机构变化事件
