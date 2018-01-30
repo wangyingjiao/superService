@@ -572,7 +572,9 @@ export default {
                 this.getList(obj, this.pageNumber, this.pageSize);
               } 
             })
-            .catch(() => console.log("错误"));
+            .catch(() =>{
+
+            });
         })
         .catch(() => {
           this.$message({
