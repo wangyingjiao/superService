@@ -153,10 +153,8 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: "",
-      temp:{
-
-      },
-      rules:{},
+      temp: {},
+      rules: {},
       tableKey: 0,
       isIndeterminate: true
     };
@@ -330,12 +328,8 @@ export default {
           });
         });
     },
-    create(){
-
-    },
-    update(){
-
-    }
+    create() {},
+    update() {}
   }
 };
 </script>
