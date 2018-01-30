@@ -110,7 +110,7 @@
 							<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
 							<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
 							<span v-if="scope.row.orderStatus =='finish'">已完成</span>
-							<span v-if="scope.row.orderStatus =='started'">已上门</span>
+							<!-- <span v-if="scope.row.orderStatus =='started'">已上门</span> -->
 							<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
 							<span v-if="scope.row.orderStatus =='success'">已成功</span>
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													

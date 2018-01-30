@@ -25,47 +25,33 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="ID" prop="id">
-      </el-table-column>
-
-      <el-table-column align="center" label="版本号" prop="versionNumber">
-      </el-table-column>
-
-      <el-table-column align="center" label="build号" prop="build">      
-      </el-table-column>
-
-      <el-table-column align="center" label="强更状态" prop="forcedUpdate">      
-      </el-table-column>
-
-      <el-table-column align="center"  width="150px" label="更新提示语" prop="upgradeContent">     
-        <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.upgradeContent.length < 5" :content="scope.row.upgradeContent">
-             <div class="tool" >{{scope.row.upgradeContent}}</div>
-           </el-tooltip>
-        </template> 
-      </el-table-column>
-
-      <el-table-column align="center"  width="150px" label="更新地址" prop="refreshAddress">   
-        <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.refreshAddress.length < 5" :content="scope.row.refreshAddress">
-             <div class="tool" >{{scope.row.refreshAddress}}</div>
-           </el-tooltip>
-        </template>    
-      </el-table-column>
-
+     
     
-      <el-table-column align="center" label="创建时间" prop="createDate">      
+     
+      <el-table-column align="center" label="菜单等级">
+          <template scope="scope">
+            <span>1</span>
+          </template>
       </el-table-column>
-      
      
 
-      <el-table-column align="center" label="更新时间" prop="updateDate">      
+      <el-table-column align="center" label="name" prop="name">
+
+      </el-table-column>
+
+      <el-table-column label="id" prop="id">
+
+      </el-table-column>
+
+      <el-table-column label="href" prop="href">
+
       </el-table-column>
       
       
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
+          <el-button class="el-icon-delete ceshi3"  @click="handle(scope.row)"></el-button>
           <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
         </template>
       </el-table-column>
@@ -114,7 +100,7 @@
 </template>
 
 <script>
-import { getApp } from "@/api/set";
+import { getMenu } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -125,6 +111,7 @@ export default {
   },
   data() {
     return {
+      
       list: [],
       total: null,
       listLoading: true,
@@ -153,10 +140,8 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: "",
-      temp:{
-
-      },
-      rules:{},
+      temp: {},
+      rules: {},
       tableKey: 0,
       isIndeterminate: true
     };
@@ -211,19 +196,15 @@ export default {
         obj = Object.assign(obj, params);
       }
 
-      getApp(obj, this.pageNumber, this.pageSize)
+      getMenu(obj)
         .then(res => {
           if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
+            //this.total = res.data.data.count;
+            this.list = res.data.data;
+            // this.pageNumber = res.data.data.pageNo;
+            // this.pageSize = res.data.data.pageSize;
+            // this.listQuery.page = res.data.data.pageNo;
+
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -278,7 +259,7 @@ export default {
         obj = Object.assign(obj, params);
       }
       console.log(obj, "搜索条件");
-      getApp(obj, this.pageNumber, this.pageSize)
+      getMenu(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
             this.total = res.data.data.count;
@@ -330,12 +311,8 @@ export default {
           });
         });
     },
-    create(){
-
-    },
-    update(){
-
-    }
+    create() {},
+    update() {}
   }
 };
 </script>

@@ -110,7 +110,6 @@
     },
     "order_status": {
         "dispatched": "已派单",
-        "started": "已上门",
         "finish": "已完成",
         "success": "已成功",
         "waitdispatch": "待派单",
