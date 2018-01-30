@@ -48,6 +48,7 @@ const user = {
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
             commit('SET_NAME', response.data.data.user.name)
+            setToken(data.token)
             if (response.data.data.user.name) {
               localStorage.setItem('name', response.data.data.user.name)
             }
@@ -68,7 +69,7 @@ const user = {
             }
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
-            setToken(data.token)
+            
             resolve(response)
           } else {
             // Message.error('用户名不存在或者密码错误')
