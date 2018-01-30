@@ -1090,7 +1090,6 @@ export default {
     },
     beforeAvatarUpload(file) {        
       // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
-      // console.log(isPIC,"isPIC--------------------")         
       if (
         file.type == "image/jpg" ||
         file.type == "image/png" ||
@@ -1120,7 +1119,6 @@ export default {
           this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
         })
         .catch(error => {
-          console.log(error, "服务站错误+++++++");
         });
     },
     picUpload(file, flag) {
@@ -1181,7 +1179,6 @@ export default {
             } else {
               this.personal.idCardPicBefor = ossData.get("key");
             }
-            console.log(error, "上传图片失败");
             return false;
           });
 
@@ -1246,7 +1243,6 @@ export default {
               }
             })
             .catch(error => {
-              console.log(error, "error-----");
               return false;
             });
         } else {
@@ -1279,7 +1275,6 @@ export default {
           this.ruleForm.endTime = data.data.data.end;
         })
         .catch(error => {
-          console.log(error, "新增按钮");
         });
       this.flags = true;
       this.passwordId = item.id;
@@ -1313,7 +1308,6 @@ export default {
             .catch(error => {
               this.$message.error(data.data.data);
               return false;
-              console.log(error, "error---app密码错误");
             });
         } else {
           return false;
@@ -1351,7 +1345,6 @@ export default {
           this.endTime = data.data.data.end;
         })
         .catch(error => {
-          console.log(error, "新增按钮");
         });
     },
 
@@ -1375,7 +1368,6 @@ export default {
           });
           this.listLoadingTech = false;
           return false;
-          console.log(error, "error---技师编辑");
         });
 
       this.serviceTech();
@@ -1389,7 +1381,6 @@ export default {
           this.servery = stationObj.id != 0 ? obj : obj.slice(1);
         })
         .catch(error => {
-          console.log(error, "服务站错误+++++++");
         });
     },
     //现住地址
@@ -1761,7 +1752,6 @@ export default {
         .catch(error => {
           this.listLoadingTech = false;
           return false;
-          console.log(error, "error-----thechni.vue-----1211");
         });
     },
   },
@@ -1781,7 +1771,6 @@ export default {
         this.relation = data.relation;
       })
       .catch(error => {
-        console.log(error, "error-----techni.vue--1255");
       });
     getTech().then(res => {
       this.ethnics = res.data;

@@ -868,7 +868,6 @@ export default {
       .then(data=>{
         this.systemOptions = data.data.data
       }).catch(error=>{
-        console.log(error,"系统标签错误-------")
       })
     //是否 计量方式 全部 保洁 家修
     Whether()
@@ -877,7 +876,6 @@ export default {
         this.whole = data.ser_sort;
       })
       .catch(error => {
-        console.log(error, "error-----project");
       });
 
     this.sign   //获取签名
@@ -966,7 +964,6 @@ export default {
         }
       })
       .catch(error => {
-        console.log(error, "error-----project");
         return false
       });
     },
@@ -1063,7 +1060,6 @@ export default {
               type:'error',
               message:"上传失败"
             })
-          console.log(error,"上传失败")
           return false
         });
     }, // 保存图文
@@ -1078,7 +1074,6 @@ export default {
           this.getList(1, 10);
         })
         .catch(error => {
-          console.log(error, "更新排序错误----");
         });
     },
     submitForm(formName) {
@@ -1329,14 +1324,12 @@ export default {
           })
           this.listLoading = false;
           return false
-          console.log(error);
         });
     },
     handleUplode(row) {
       this.addDetailsImg = 0;
       this.basicForm.sortId = ''
       this.imgText = []
-      // console.log("上传");
       this.editId = row.id;
       this.picList = [];
       this.fileList = [];
@@ -1344,7 +1337,6 @@ export default {
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(res => {
-          console.log(res,"res---------------");
           if (res.data.code == 1) {
             var data = res.data.data;
             this.listLoading = false;
@@ -1365,15 +1357,11 @@ export default {
               }
             }
             this.ImageText = true;
-            // console.log(this.fileList, "编辑图文");
-            // console.log(this.imgText, "编辑图文");
           }else{
             this.listLoading = false;
           }
-          // console.log(res, "列表信息");
         })
         .catch(err => {
-          console.log(err);
           this.listLoading = false;
           this.$message({
             type: "error",
@@ -1394,7 +1382,6 @@ export default {
           };
           ServerDelete(obj)
             .then(res => {
-              console.log(res);
               if (res.data.code) {
                 if(res.data.code==1){
                   this.$message({
@@ -1418,7 +1405,6 @@ export default {
               }
             })
             .catch((error) =>{
-                console.log(error,"未知错误");
                 return false
             })
         })
@@ -1473,7 +1459,6 @@ export default {
         sortNum: 1 //排序号
       };
       addProject(obj).then(res => {
-        console.log(res);
       });
     },
     update() {
@@ -1503,7 +1488,6 @@ export default {
           this.searchSortList = data.data.data;
         })
         .catch(error => {
-        console.log(error, "error-----project");
       });
       this.getList(1, size);
       this.listQuery.page = 1;
@@ -1598,7 +1582,6 @@ export default {
               })
               .catch(error => {
                 this.btnState = false
-                console.log(error, "error--project--770");
               });
           }
         } else {

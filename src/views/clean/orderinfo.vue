@@ -258,7 +258,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -283,7 +283,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -313,7 +313,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
                             <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -339,7 +339,7 @@
                       <span class="lineContent">{{otherInfo.shopName}}</span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">地址:</span>
+                      <span class="lineTitle FloatLeft">地址:</span>
                       <span class="lineContent">
                         <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
                           <div class="selfToolTip">{{otherInfo.shopAddr}}</div>
@@ -357,7 +357,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
                             <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -555,13 +555,13 @@ export default {
         var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = (mss % (1000 * 60)) / 1000;
         if(hours==0 && seconds ==0){
-            return  minutes + " 分钟 ";
+            return  minutes + "分钟";
         }else if(hours==0 && seconds !=0){
-            return  minutes+1 + " 分钟 "
+            return  minutes+1 + "分钟"
         }else if(seconds ==0 && minutes==0){
            return  hours+'小时'
         }else{
-           return  hours+'小时'+minutes + " 分钟 "
+           return  hours+'小时'+minutes + "分钟"
         }               
 
     },
@@ -1101,8 +1101,7 @@ export default {
 }
 .picStyle {
   float: left;
-  width: 120px;
-  height: 120px;
+  width: 250px;
   margin-right: 20px;
   margin-top: 20px;
 }
