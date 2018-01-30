@@ -339,7 +339,7 @@
                       <span class="lineContent">{{otherInfo.shopName}}</span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">地址:</span>
+                      <span class="lineTitle FloatLeft">地址:</span>
                       <span class="lineContent">
                         <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
                           <div class="selfToolTip">{{otherInfo.shopAddr}}</div>
@@ -555,13 +555,13 @@ export default {
         var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = (mss % (1000 * 60)) / 1000;
         if(hours==0 && seconds ==0){
-            return  minutes + " 分钟 ";
+            return  minutes + "分钟";
         }else if(hours==0 && seconds !=0){
-            return  minutes+1 + " 分钟 "
+            return  minutes+1 + "分钟"
         }else if(seconds ==0 && minutes==0){
            return  hours+'小时'
         }else{
-           return  hours+'小时'+minutes + " 分钟 "
+           return  hours+'小时'+minutes + "分钟"
         }               
 
     },

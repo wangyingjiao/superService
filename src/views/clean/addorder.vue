@@ -524,7 +524,6 @@ export default {
       if (item.pirce != undefined) {
         this.sum1 = this.sum1 + item.pirce * item.number;
       }
-      console.log(this.sum1);
       this.form1.sumPrice = this.sum1;
     },
     //按面积数量变化
@@ -543,7 +542,6 @@ export default {
     },
     //客户改变事件
     changeCustom(value) {
-      console.log(value);
       if (value != "") {
         this.customKeyFlag = true;
       } else {
@@ -738,11 +736,9 @@ export default {
     },
     //日期变化时改变时间对象
     dateChange(value) {
-      console.log(value);
     },
     //时间选项点击
     timeChange(index) {
-      console.log(index);
       for (var a = 0; a < this.$refs.TimeWrap.length; a++) {
         if (a == index) {
           this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
