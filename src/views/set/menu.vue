@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { getApp } from "@/api/set";
+import { getMenu } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -153,10 +153,8 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: "",
-      temp:{
-
-      },
-      rules:{},
+      temp: {},
+      rules: {},
       tableKey: 0,
       isIndeterminate: true
     };
@@ -211,7 +209,7 @@ export default {
         obj = Object.assign(obj, params);
       }
 
-      getApp(obj, this.pageNumber, this.pageSize)
+      getMenu(obj)
         .then(res => {
           if (res.data.code == 1) {
             this.total = res.data.data.count;
@@ -278,7 +276,7 @@ export default {
         obj = Object.assign(obj, params);
       }
       console.log(obj, "搜索条件");
-      getApp(obj, this.pageNumber, this.pageSize)
+      getMenu(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
             this.total = res.data.data.count;
@@ -330,12 +328,8 @@ export default {
           });
         });
     },
-    create(){
-
-    },
-    update(){
-
-    }
+    create() {},
+    update() {}
   }
 };
 </script>
