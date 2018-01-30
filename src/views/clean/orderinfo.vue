@@ -303,8 +303,10 @@
                       <span class="lineContent">{{otherInfo.businessName}}</span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">{{otherInfo.businessRemark}}</span>
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">
+                        {{otherInfo.businessRemark}}
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
@@ -338,11 +340,17 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">地址:</span>
-                      <span class="lineContent">{{otherInfo.shopAddr}}</span>
+                      <span class="lineContent">
+                        <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
+                          <div class="selfToolTip">{{otherInfo.shopAddr}}</div>
+                        </el-tooltip>                                                
+                      </span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle">备注:</span>
-                      <span class="lineContent1 selfbeizhu1">{{otherInfo.shopRemark}}</span>
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">
+                        {{otherInfo.shopRemark}}
+                      </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
@@ -893,6 +901,9 @@ export default {
 };
 </script>
 <style   scoped>
+.selfToolTip{
+   width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .width180{width:180px !important;}
 .selftechNameStyle {
   width: 185px;
@@ -957,12 +968,17 @@ export default {
   max-width: 800px;
   margin-left: 22px;
   float: left;
+  word-break: break-all; 
+  word-wrap:break-word; 
 }
 .selfbeizhu1 {
-  max-width: 800px;
+  width: 800px;
+  display:inline-block;
+  float:left;
   margin-left: 102px;
   margin-top: -15px;
-  float: left;
+  word-break: break-all; 
+  word-wrap:break-word; 
 }
 .width120 {
   width: 120px;
