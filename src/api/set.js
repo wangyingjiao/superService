@@ -25,3 +25,7 @@ export function upApp(obj) {
 export function delApp(obj) {
   return instance.post(`/apiservice/a/service/appVersion/appVersion/deleteAppVersion`, obj)
 }
+// 获取菜单列表
+export function getMenu(obj) {
+  return instance.post(`/apiservice/a/sys/menu/getMenuList`, obj)
+}
