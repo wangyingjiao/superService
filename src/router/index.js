@@ -102,7 +102,10 @@ export const constantRouterMap = [
     redirect: 'set',
     name: '系统管理',
     children: [
-      { path: 'log', name: ' 日志管理', component: _import('set/log') }
+      { path: 'log', name: ' 日志管理', component: _import('set/log') },
+      { path: 'appVer', name: ' APP发版', component: _import('set/appVer') },
+      { path: 'menu', name: ' 菜单管理', component: _import('set/menu') },
+      { path: 'pushMes', name: ' 推送消息', component: _import('set/pushMes') }
     ]
   },
 
