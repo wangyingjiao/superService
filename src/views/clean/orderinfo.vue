@@ -258,7 +258,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -283,7 +283,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -313,7 +313,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
                             <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -357,7 +357,7 @@
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
                             <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth120"/>
+                              <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
                       </span>
@@ -1101,8 +1101,7 @@ export default {
 }
 .picStyle {
   float: left;
-  width: 120px;
-  height: 120px;
+  width: 250px;
   margin-right: 20px;
   margin-top: 20px;
 }

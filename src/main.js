@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 Vue.prototype.imgSrc = 'https://imgcdn.guoanshequ.com/'
 Vue.prototype.picWidth120 = '?x-oss-process=image/resize,m_fill,h_120,w_120'
+Vue.prototype.picWidth250 = '?x-oss-process=image/resize,m_fill,w_250'
 Vue.prototype.picWidth600 = '?x-oss-process=image/resize,w_600'
 Vue.prototype.picWidth60 = '?x-oss-process=image/resize,m_fill,h_60,w_60'
 Vue.prototype.picWidth100 = '?x-oss-process=image/resize,m_fill,h_100,w_100'
