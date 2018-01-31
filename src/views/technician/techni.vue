@@ -250,7 +250,7 @@
         </el-pagination>
       </div>
     <!-- 编辑技师 -->
-      <el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false" @close="closeDialog">
+      <el-dialog title="编辑技师" :visible.sync="dialogVisibleEdit" custom-class="tech-section-lage" class="tech-edit" :close-on-click-modal="false">
         <techni-edit :areaOptions="areaOptions" :technicianData="technicianData" ref="techniEditDlog"
                       :sex="sex" :choose="Choose" :workyear="workyear" @dialogvisibleedit="dialogVisibleEditClick"
                       :station="station" :statu="statu" :sextypeo="sexTypeo" :sexTypes = "sexTypes"
@@ -675,14 +675,9 @@ export default {
     return {
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
-      jobFlag: false,
       timeFlag: true,
       addtimeFlag: true,
-      kaishi: "",
       pageNumber: "",
-      jiehsu: "",
-      backId: "", //身份证头像
-      headerBack: "", //头像
       //搜索
       techniSearch: {
         stationId: "",
@@ -803,28 +798,7 @@ export default {
           { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
         ]
       },
-      server: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
+      server: [],
       infoname: [],
       chooContent: "",
       servery: [],
@@ -840,21 +814,8 @@ export default {
           label: "手机"
         }
       ],
-
-      card: [
-        {
-          value: "选项1",
-          label: "中国建行"
-        },
-        {
-          value: "选项2",
-          label: "中国银行"
-        }
-      ],
-
       sex: {},
       ethnics: [],
-      areas: [],
       passwordModule: "",
       strong: {},
       statu: {},
@@ -907,37 +868,22 @@ export default {
       password: false,
       flage: false,
       tableKey: "",
-      cards: "",
       textarea3: "",
       radio8: "1",
       workyears: "",
       status: "",
-      servers1: "",
-      stationes: "",
       area: [],
       techniList: [],
-      places: "",
-      marriages: "",
       vacationName: "",
       strongs: "",
       roomSel2Arr: [],
       heights: "",
-      educations: "",
-      sexs: "",
       ethnic: "",
-      servers: "",
-      stations: "",
       chooses: "",
-      input: "",
-      value1: "",
-      value2: "",
-      value3: "",
-      value4: "",
       startTime: "09:00",
       endTime: "05:00",
       startTimes: "",
       endTimes: "",
-      fileList2: [],
       position: false,
       listLoading: false,
       picFile: [],
@@ -948,8 +894,6 @@ export default {
       roomSel1Arr: [],
       disbArr: [],
       roomSelNum: [],
-      yesNo: {},
-      Duplicate: null,
       teachArr: [],
       listQuery: {
         page: 1,
@@ -1089,7 +1033,6 @@ export default {
       }
     },
     beforeAvatarUpload(file) {        
-      // const isPIC = file.type === 'image/gif' || 'image/jpg' || 'image/png';
       if (
         file.type == "image/jpg" ||
         file.type == "image/png" ||
@@ -1101,8 +1044,6 @@ export default {
         return false;
       }
     },
-    //编辑弹框关闭
-    closeDialog() {},
     //新增按钮
     handleCreate() {
       this.dialogVisible = true;
@@ -1465,16 +1406,6 @@ export default {
       }
       this.getList(this.listQuery.page, val, obj);
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: "操作成功",
-        type: "success"
-      });
-      row.status = status;
-    },
-    showTabl() {
-      this.flagso = !this.flagso;
-    },
     order() {
       this.position = true;
     },
@@ -1600,13 +1531,6 @@ export default {
     orderson() {
       this.flage = true;
     },
-    skill() {
-      this.flage = false;
-      this.flagso = true;
-    },
-    skillq() {
-      this.flage = false;
-    },
     // 添加时间
     addtime() {
       this.isB = true;
@@ -1629,9 +1553,6 @@ export default {
         item.ismouse = false;
         this.$set(this.techniList, index, item);
       }
-    },
-    savrTable() {
-      this.isTab = true;
     },
     dateChange(val) {
       this.personal.birthDate = val;

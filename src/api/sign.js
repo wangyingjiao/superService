@@ -9,7 +9,7 @@ export function getSign() {
     sign = JSON.parse(Cookies.get('sign'))
   } else {
     instance.get(`/apiservice/oss/getSign`).then(res => {
-      console.log(res.data, '签名')
+      // console.log(res.data, '签名')
       var obj = res.data
       Cookies.set('sign', JSON.stringify(obj))
       sign = JSON.parse(Cookies.get('sign'))
