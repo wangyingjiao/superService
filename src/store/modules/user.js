@@ -48,18 +48,30 @@ const user = {
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
             commit('SET_NAME', response.data.data.user.name)
-            localStorage.setItem('name', response.data.data.user.name)
-            localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
-            localStorage.setItem('orgId', response.data.data.user.organization.id)
-            localStorage.setItem('userId', response.data.data.user.id)
-            localStorage.setItem('roleId', response.data.data.user.role.id)
-            localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
+            if (response.data.data.user.name) {
+              localStorage.setItem('name', response.data.data.user.name)
+            }
+            if (response.data.data.user.role.dataScope) {
+              localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
+            }
+            if (response.data.data.user.organization.id) {
+              localStorage.setItem('orgId', response.data.data.user.organization.id)
+            }
+            if (response.data.data.user.id) {
+              localStorage.setItem('userId', response.data.data.user.id)
+            }
+            if (response.data.data.user.role.id) {
+              localStorage.setItem('roleId', response.data.data.user.role.id)
+            }
+            if (response.data.data.user.station) {
+              localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
+            }
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
             setToken(data.token)
             resolve(response)
           } else {
-            //Message.error('用户名不存在或者密码错误')
+            // Message.error('用户名不存在或者密码错误')
             resolve()
           }
         }).catch(error => {
