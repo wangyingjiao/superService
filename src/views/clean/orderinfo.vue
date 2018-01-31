@@ -1099,9 +1099,8 @@ export default {
   margin-bottom: 20px;
 }
 .picStyle {
-  float: left;
+  display:inline-block;
   width: 250px;
-  min-height:510px;
   margin-right: 20px;
   margin-top: 20px;
 }
