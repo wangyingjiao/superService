@@ -890,9 +890,7 @@ export default {
     },
     //添加商品
     addCommodity(){
-      if(this.addComm){
-        this.resetForm()
-      }
+      this.resetForm()
       this.handleEditFlag = false
       this.addComm = !this.addComm
     },
