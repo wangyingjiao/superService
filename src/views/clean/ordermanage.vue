@@ -439,8 +439,7 @@ export default {
 	
   },
   mounted() {
-
-		this.getTableData({orderStatus:'dispatched'});
+		this.getTableData({orderStatus:'dispatched'},1,10);
 		this.payStusOptions=this.dict.pay_status;
 		this.orderTest=this.dict.order_status;
 		this.sevicerStustasOptions=this.dict.service_status;

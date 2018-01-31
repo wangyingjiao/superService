@@ -671,7 +671,7 @@ export default {
     }
   },
   mounted() {
-    this.getList();
+    this.getList({},1,10);
   }
 };
 </script>

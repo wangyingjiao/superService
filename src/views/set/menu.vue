@@ -25,34 +25,101 @@
       highlight-current-row 
       style="width: 100%">
 
-     
+      <el-table-column type="expand">
+        <template scope="scope" >
+          <el-table 
+            v-if="scope.row.subMenus" 
+            :data="scope.row.subMenus" 
+            class="demo-table-expand">
+
+
+             <el-table-column type="expand">
+                <template scope="scope" >
+                  <el-table v-if="scope.row.subMenus" :data="scope.row.subMenus" class="demo-table-expand">
+                    <el-table-column align="center" width="100" label="菜单等级">
+                        <template scope="scope">
+                          <span>3</span>
+                        </template>
+                    </el-table-column>
+                    
+                    <el-table-column align="center" label="名称" prop="name">
+
+                    </el-table-column>
+
+                    <el-table-column align="center" label="ID" prop="id">
+
+                    </el-table-column>
+
+                    <el-table-column align="center" label="permission" prop="permission">
+
+                    </el-table-column>
+                    <el-table-column align="center" width="240" label="操作">
+                      <template scope="scope">
+                        <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+                        <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+                      </template>
+                    </el-table-column>
+                    
+                  </el-table>
+              </template>
+            </el-table-column> 
+            <el-table-column align="center" width="100" label="菜单等级">
+                <template scope="scope">
+                  <span>2</span>
+                </template>
+            </el-table-column>
+            
+            <el-table-column align="center" label="名称" prop="name">
+
+            </el-table-column>
+
+            <el-table-column align="center" label="ID" prop="id">
+
+            </el-table-column>
+
+            <el-table-column align="center" label="permission" prop="permission">
+
+            </el-table-column>
+            <el-table-column align="center" width="240" label="操作">
+              <template scope="scope">
+                <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+                <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+                <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            
+          </el-table>
+      </template>
+    </el-table-column> 
     
      
-      <el-table-column align="center" label="菜单等级">
+      <el-table-column align="center" width="100" label="菜单等级">
           <template scope="scope">
             <span>1</span>
           </template>
       </el-table-column>
      
 
-      <el-table-column align="center" label="name" prop="name">
+      <el-table-column align="center" label="名称" prop="name">
 
       </el-table-column>
 
-      <el-table-column label="id" prop="id">
+      <el-table-column align="center" label="ID" prop="id">
 
       </el-table-column>
 
-      <el-table-column label="href" prop="href">
+      <el-table-column align="center" label="permission" prop="permission">
 
       </el-table-column>
       
       
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" width="240" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handle(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+          <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -81,8 +148,6 @@
             label-width="100px"
             >
           
-          
-
            
 
           </el-form>
@@ -111,7 +176,6 @@ export default {
   },
   data() {
     return {
-      
       list: [],
       total: null,
       listLoading: true,
@@ -291,7 +355,33 @@ export default {
       this.pageNumber = val;
       this.getList();
     },
-    handleCreate() {},
+    handleCreate() {
+      this.dialogFormVisible = true;
+      this.dialogStatus = "create";
+    },
+    handleUpdate(row) {
+      return
+      this.listLoading = true;
+      this.dialogStatus = "update";
+      this.selectState = true;
+      var obj = {
+        id: row.id
+      };
+      // 请求回显的数据
+      // setClass(obj).then(res => {
+      //   this.listLoading = true;
+      //   if (res.data.code == 1) {
+      //     var data = res.data.data;
+      //     this.listLoading = false;
+      //     this.rowId = row.id;
+      //     this.temp = Object.assign({}, row);
+      //     this.dialogFormVisible = true;
+      //    } else {
+      //      this.listLoading = false;
+          
+      //    }
+      // });
+    },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -312,7 +402,21 @@ export default {
         });
     },
     create() {},
-    update() {}
+    update() {},
+      //清空列表
+    resetForm(formName) {
+        this.selectState = false;
+        this.resetTemp();
+        this.$refs[formName].resetFields();
+        this.dialogFormVisible = false;
+    },
+    //清空绑定
+    resetTemp() {
+      this.temp = {
+        name: "",
+        majorSort: ""
+      };
+    },
   }
 };
 </script>
