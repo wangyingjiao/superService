@@ -17,7 +17,7 @@
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><img  src="../../../static/icon/scan.png" alt=""></el-dropdown-item>
+              <el-dropdown-item><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
@@ -122,6 +122,7 @@ export default {
 }
 .nav-ul li .scan{font-size:24px;float:left;}
 .scanText{height:30px;line-height:30px;display:block;float:left;margin-left:5px;}
+.Scandown{text-align:center}
 .nav-ul li .el-dropdown-link {
   display: block;
   height: 50px;
