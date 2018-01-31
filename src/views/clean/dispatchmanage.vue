@@ -2,7 +2,7 @@
     <div class="addorder-container">
 		<!-- 搜索开始 -->
 		<div class="filter-container bgWhite">
-			<el-input  style="width:30%" placeholder="请输入搜索内容" v-model="techName">
+			<el-input  style="width:30%" placeholder="请输入搜索内容" v-model.trim="techName">
         <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
@@ -243,9 +243,28 @@ export default {
                 type: "success",
                 message: "改派成功!"
               });
-							var obj={
-
+							if(this.technicianName =='1'){
+									this.techName1=this.techName;
+									this.techPhone1='';
+									this.orderNumber1='';
+							}else if(this.technicianName =='2'){
+									this.techPhone1=this.techName;
+									this.orderNumber1='';
+									this.techName1='';
+							}else if(this.technicianName =='3'){
+									this.orderNumber1=this.techName;
+									this.techName1='';
+									this.techPhone1='';
+							}else{
+									this.techName1='';
+									this.techPhone1='';
+									this.orderNumber1='';
 							}
+							var obj={
+								techName:this.techName1,
+								techPhone:this.techPhone1, 
+								orderNumber:this.orderNumber1,
+							};
 							this.reassList(obj,this.pageNumber,this.pageSize1);	
 							this.middleA=[]; 
 							this.listTech=[];                          
