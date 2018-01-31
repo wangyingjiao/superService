@@ -1048,6 +1048,9 @@ export default {
               if("id" in obj){
                 delete obj.id
               }
+              if('jointGoodsCode' in obj){
+                delete obj.jointGoodsCode
+              }
               this.basicForm.commoditys.push(obj)
               this.resetForm('ser')
           }
@@ -1411,6 +1414,12 @@ export default {
           } else {
             if("id" in obj){
               delete obj.id
+            }
+            if("pictureDetail" in obj){
+              delete obj.pictureDetail
+            }
+            if("pictureDetails" in obj){
+              delete obj.pictureDetails
             }
             ServerAdd(obj)
               .then(data => {
