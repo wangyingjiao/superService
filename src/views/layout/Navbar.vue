@@ -16,8 +16,8 @@
             <span>
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
+            <el-dropdown-menu slot="dropdown" class="hoverStyle">
+              <el-dropdown-item ><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
@@ -68,6 +68,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
+.hoverStyle .el-dropdown-menu__item:not(.is-disabled):hover{background:#fff;color:#000;}
 * {
   margin: 0px;
   padding: 0px;
