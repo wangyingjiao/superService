@@ -254,12 +254,11 @@
                       <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
                    </p> 
                    <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
+                      <span class="lineContent2 width900">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
                               <img :src="imgSrc+item+picWidth250"/>
-                            </div>
+                            </div>                           
                         </div>
                       </span>
                    </p>                                                                         
@@ -279,8 +278,7 @@
                       <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
                    </p>
                    <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
+                      <span class="lineContent2 width900">
                         <div class="picWrap selfMarTL">
                             <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
                               <img :src="imgSrc+item+picWidth250"/>
@@ -966,8 +964,6 @@ export default {
 }
 .selfbeizhu {
   max-width: 800px;
-  margin-left: 22px;
-  float: left;
   word-break: break-all; 
   word-wrap:break-word; 
 }
@@ -1086,6 +1082,9 @@ export default {
 .width1000 {
   min-width: 900px;
 }
+.width900 {
+  max-width: 900px;
+}
 .picWrap {
   width: 100%;
   height: 120px;
@@ -1100,10 +1099,10 @@ export default {
   margin-bottom: 20px;
 }
 .picStyle {
-  float: left;
+  display:inline-block;
   width: 250px;
   margin-right: 20px;
-  margin-top: 35px;
+  margin-top: 20px;
 }
 .addorder-container {
   width: 100%;
@@ -1245,6 +1244,10 @@ export default {
 }
 .lineContent1 {
   display: inline-block;
+}
+.lineContent2 {
+  display: inline-block;
+  margin-left: 20px;
 }
 .lineContentWidth {
   display: block;
