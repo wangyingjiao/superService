@@ -3,16 +3,8 @@
     <div style="width:100%;float:left;background:#fff;position:relative">
       <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
       <ul class="nav-ul">
-        <li class="liBtn liUser">
-          <div ref="username"><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{name}}</div>
-        </li>
-        <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
-          
-          <div class="out"><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
-          
-        </li>
         <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;">                    
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" menu-align='start'>
             <span>
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
@@ -21,7 +13,14 @@
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
-        
+        <li class="liBtn liUser">
+          <div ref="username"><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{name}}</div>
+        </li>
+        <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;"  @click="logout">
+          
+          <div class="out"><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
+          
+        </li>        
       </ul>
       
     </div>
