@@ -1180,7 +1180,7 @@ export default {
     //工作时间删除
     deletes(item,index) {
       this.disbArr = []
-      this.roomSelNum = []
+      // this.roomSelNum = []
       var arr = [].concat(this.perServer.workTimes)
       arr.splice(index,1)
       this.perServer.workTimes = arr

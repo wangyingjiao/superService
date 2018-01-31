@@ -1347,15 +1347,14 @@ export default {
     // 工作时间删除
     deletes(item, index) {
       this.disbArr = [];
-      this.roomSelNum = [];
+      // this.roomSelNum = [];
       var arr = [].concat(this.teachArr);
       arr.splice(index, 1);
       this.teachArr = arr;
-
       for (var i = 0; i < arr.length; i++) {
         for (var j = 0; j < arr[i].weeks.length; j++) {
           this.disbArr.push(arr[i].weeks[j].id * 1);
-          this.roomSelNum.push(arr[i].weeks[j].id * 1);
+          // this.roomSelNum.push(arr[i].weeks[j].id * 1);
         }
       }
       // this.teachArr.splice(index, 1);
@@ -1763,7 +1762,7 @@ export default {
 }
 
 .wirkTimes .tech-dir {
-  border: 1px solid #a7a7a7;
+  border: 1px solid #a7a7a7 !important;
   background: url("../../../static/icon/eee.png") no-repeat;
   background-size: 15px 15px;
   background-position: bottom right;
