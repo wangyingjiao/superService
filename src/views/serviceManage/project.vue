@@ -683,22 +683,14 @@ export default {
       }
     }
     return {
-      editIndex:{
-        falge:false,
-        id:null
-      },
       pageNumber:1,
       editName:{},
       customArr:[],
       jointCode:false,
       alreadyArr:[],
-      labelClickCon:[],
       labelClickArr:[],
       systemClickId:null,
       systemClick2Id:null,
-      imgWidth:'',
-      imgHeight:'',
-      imgFlag:true,
       systemClick3Id:null,
       systemOptions:[],
       systemOptions2:[],
@@ -706,15 +698,12 @@ export default {
       systemOptions3:[],
       systemOptions4:[],
       SystemLabel:false,
-      CustomLabelList:[],
       labelObj:{
         labelName:'',
       },
       formLabelWidth: '90px',
       addLabel:false,
-      tableData:[],
       btnState:false,
-      ossData: new FormData(),
       ImageTextArr: [{ imageUrl: "" }],
       ImageText: false,
       tabs: "all",
@@ -722,29 +711,19 @@ export default {
       total: null,
       houseStr: "",
       whole: {},
-      serverCityArr: [],
-      wholeTable: {},
-      directional: [],
       addDetailsImg:0,
-      cityArr: [],
       personsTime: false,
       addComm: false,
       critical: "",
       quantity: "",
-      commoditysObj: {},
       persons: [],
       commoditys: [],
-      imageUrl: "",
-      dialogImageUrl:"",
       handleEditFlag:false,
       handleEditIndex:null,
-      dialogVisible: false,
-      Imagestext:true,
       measure: [
       ],
       listTable: [],
       listLoading: true,
-      whether: true,
       sortList: [],
       searchSortList:[],
       goods_info:{
@@ -826,10 +805,6 @@ export default {
       },
       pageSize: 10,
       fileList: [
-        // {
-        //   url:
-        //     "http://openservice.oss-cn-beijing.aliyuncs.com//openservice/2017/11/22/qwe.jpg?x-oss-process=image/resize,h_1200"
-        // }
       ],
       picFile: [],
       imgText: [],
@@ -838,7 +813,6 @@ export default {
         option1: "",
         val: true
       },
-      importanceOptions: [1, 2, 3],
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -849,16 +823,6 @@ export default {
       city: ["1", "2", "3"],
       option1: []
     };
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger"
-      };
-      return statusMap[status];
-    }
   },
   created() {
     //所属分类
@@ -1039,7 +1003,7 @@ export default {
         }
       })
     },
-    //删除图片
+    //保存图片
     subImgText(a) {
       var obj = {
         id: this.editId,
@@ -1062,20 +1026,13 @@ export default {
             })
           return false
         });
-    }, // 保存图文
+    }, 
+    // 取消图文
     resImgText(a) {
       this.fileList = [];
       this.ImageText = false;
     }, // 关闭图文
     //编号失焦事件
-    indexBlur(item) {
-      sortList({ id: item.id, sortNum: item.sortNum })
-        .then(data => {
-          this.getList(1, 10);
-        })
-        .catch(error => {
-        });
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid=>{
         if(valid){
@@ -1166,30 +1123,6 @@ export default {
         }
       }
     },
-    clickClick(item) {
-      var arr = this.basicForm.cityCodes;
-      if (arr.indexOf(item.cityCode) == -1) {
-        arr.push(item.cityCode);
-      } else {
-        this.remove(arr, item.cityCode);
-      }
-      item.haveItem = !item.haveItem;
-    },
-    tableDelete(id) {
-      this.goods_info.persons.splice(id, 1);
-    },
-    addTable() {
-      if (this.goods_info.persons.length >= 4) {
-        this.$notify({
-          title: "警告",
-          message: "派人数量最多4个",
-          type: "warning"
-        });
-      } else {
-        this.goods_info.persons.push({ critical: "", quantity: "" });
-      }
-      this.personsTime = false;
-    },
     serGetList(){
       this.pageNumber = 1;
       this.getList(this.pageNumber);
@@ -1233,13 +1166,6 @@ export default {
           });
     },
     // 搜索
-    handleFilter() {
-      var obj = {};
-      obj.majorSort = this.basicForm.majorSort;
-      obj.sortId = this.search.sortId;
-      obj.cityCode = this.search.cityCode;
-      obj.name = this.search.name;
-    },
     handleSizeChange(val) {
       this.pageSize = val;
       this.getList(1, this.pageSize)
@@ -1415,69 +1341,6 @@ export default {
           });
         });
     },
-    create() {
-      var obj = {
-        citys: [
-          {
-            cityId: "1",
-            cityName: "北京"
-          },
-          {
-            cityId: "2",
-            cityName: "山东"
-          }
-        ],
-        commoditys: [
-          {
-            name: "日常保洁",
-            unit: "小时",
-            meterage: "按居室", //计量方式
-            price: "19",
-            convertHours: "10", //折算时长
-            minPurchase: 1, //起购数量
-            persons: [
-              //派人
-              {
-                critical: ">10",
-                quantity: 1
-              },
-              {
-                critical: ">20",
-                quantity: 2
-              }
-            ]
-          }
-        ],
-        majorSort: "1",
-        sortId: "00ea9c6db7f242c49eb40b43b38ad7b7",
-        sortName: "日常保洁", //所属分类
-        name: "保洁家修1", //项目名称（验重）
-        pictures:
-          "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=989127825,4177828898&fm=58&s=E152CC32C521590358D4D5DE020050B0&bpow=121&bpoh=75",
-        description: "服务描述测试",
-        // sale: "1", //是否上架
-        sortNum: 1 //排序号
-      };
-      addProject(obj).then(res => {
-      });
-    },
-    update() {
-      this.temp.timestamp = +this.temp.timestamp;
-      for (const v of this.list) {
-        if (v.id === this.temp.id) {
-          const index = this.list.indexOf(v);
-          this.list.splice(index, 1, this.temp);
-          break;
-        }
-      }
-      this.dialogFormVisible = false;
-      this.$notify({
-        title: "成功",
-        message: "编辑成功",
-        type: "success",
-        duration: 2000
-      });
-    },
     handleClick(tab, event) {
       this.search.sortId = ''
       this.search.name = ''
@@ -1491,9 +1354,6 @@ export default {
       });
       this.getList(1, size);
       this.listQuery.page = 1;
-    },
-    resetTemp() {
-      this.temp = {};
     },
     //取消
     cancel(fromName) {

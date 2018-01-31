@@ -673,7 +673,6 @@ export default {
       roomSelNum:[],
       techniEditId: "",
       roomSel1Arr: [],
-      teachArr: [],
       //其他信息
       otherInfo:{
         jobPic:'',
@@ -790,33 +789,10 @@ export default {
         workTimes:[{required:true,validator:WORKTIMES, trigger: "change"}]
       },
       ethnics: [],
-      areas: [],
       strong: {},
       height: [],
       place: [],
       caty: [],
-      sexTypeo: [
-        {
-          sexName: "技能一",
-          show: false
-        },
-        {
-          sexName: "技能二",
-          show: false
-        },
-        {
-          sexName: "技能三我我",
-          show: false
-        },
-        {
-          sexName: "技能四",
-          show: false
-        },
-        {
-          sexName: "技能五",
-          show: false
-        }
-      ],
       sexDay: [
          {
           name: "星期一",
@@ -848,39 +824,19 @@ export default {
         }
       ],
       scopeId: null,
-      scopeItem: {},
       key: false,
       isA: null,
       isB: false,
-      isTab: false,
-      sexLen: "",
       flagso: false,
       flags: false,
-      password: false,
       flage: false,
       tableKey: "",
       familyFlag: false,
-      cards: "",
-      textarea3: "",
-      radio8: "1",
-      workyears: "",
       status: "",
-      servers1: "",
-      stationes: "",
-      catys: "",
       area: [],
-      places: "",
-      marriages: "",
       strongs: "",
       heights: "",
-      educations: "",
-      sexs: "",
       ethnic: "",
-      servers: "",
-      stations: "",
-      chooses: "",
-      addrDetailInfo: "",
-      input: "",
       value1: "",
       value2: "",
       value3: "",
@@ -893,17 +849,9 @@ export default {
       techName: "",
       techldCard: "",
       techPhone: "",
-      fileList2: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ],
       position: false,
       listLoading: false,
       familyList: [],
-      total: null,
       listLoading: false,
       listQuery: {
         page: 1,
@@ -1352,9 +1300,6 @@ export default {
     order() {
       this.position = true;
     },
-    hiddenDiv() {
-      this.position = false;
-    },
     //数组去重
     remove(num, arr, val) {
       for (var i = 0; i < num.length; i++) {
@@ -1429,16 +1374,9 @@ export default {
       this.supplement.jobLevel = key;
       this.isA = key;
     },
-    // 添加技能
-    orderson() {
-      this.flage = true;
-    },
     skill() {
       this.flage = false;
       this.flagso = true;
-    },
-    skillq() {
-      this.flage = false;
     },
     // 添加时间
     addtime() {
@@ -1453,12 +1391,6 @@ export default {
       this.roomSel1Arr = []
       this.roomSelNum = []
       this.isB = false;
-    },
-    mouser(item) {
-      item.ismouse = true;
-    },
-    mousout(item) {
-      item.ismouse = false;
     },
     //家庭成员
     savrTable(formName) {
