@@ -56,7 +56,7 @@ instance.interceptors.response.use(res => {
     const num = error.response.status
     if ([502, 503, 504].indexOf(num) > -1) {
       arr.push(error.response.status)
-      //console.log(arr.length)
+      // console.log(arr.length)
       if (arr.length === 1) {
         Message.error('服务器断开！')
       }
@@ -66,9 +66,9 @@ instance.interceptors.response.use(res => {
     // console.log(arr)
     // console.log(error.code)
     if (error.code === 'ECONNABORTED') {
-      if (arr.length === 1) {
-        Message.error('请求超时')
-      }
+      // if (arr.length === 1) {
+      //   // Message.error('请求超时')
+      // }
     } else {
       if (arr.length === 1) {
         store.dispatch('LogOut').then(() => {
