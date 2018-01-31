@@ -503,7 +503,7 @@ export default {
   },
   mounted() {
 		 this.initMap1();
-		 this.getData();
+		 this.getData({},1,10);
 		 this.sex=this.dict.sex;		 
   }
 };

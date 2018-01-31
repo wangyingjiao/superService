@@ -1101,9 +1101,9 @@ export default {
 .picStyle {
   float: left;
   width: 250px;
-  min-height:500px;
+  min-height:510px;
   margin-right: 20px;
-  margin-top: 35px;
+  margin-top: 20px;
 }
 .addorder-container {
   width: 100%;

@@ -418,7 +418,7 @@ export default {
 	}	
   },
   mounted() {
-    this.reassList();
+    this.reassList({},1,10);
   }
 };
 </script>
