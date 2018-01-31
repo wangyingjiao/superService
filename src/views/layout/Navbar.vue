@@ -3,6 +3,16 @@
     <div style="width:100%;float:left;background:#fff;position:relative">
       <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
       <ul class="nav-ul">
+        <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;">                    
+          <el-dropdown trigger="click" menu-align='start'>
+            <span>
+              <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="hoverStyle">
+              <el-dropdown-item ><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>                    
+        </li>        
         <li class="liBtn liUser">
           <div ref="username"><i class="iconfont color" >&#xe669;</i>&nbsp;&nbsp;{{name}}</div>
         </li>
@@ -10,18 +20,7 @@
           
           <div class="out"><i class="iconfont color">&#xe639;</i>&nbsp;&nbsp;退出</div>
           
-        </li>
-        <li class="liBtn" style="cursor: pointer; margin-right:20px;padding:10px;">                    
-          <el-dropdown trigger="click">
-            <span>
-              <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>                    
         </li>        
-        
       </ul>
       
     </div>
@@ -68,6 +67,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
+.hoverStyle .el-dropdown-menu__item:not(.is-disabled):hover{background:#fff;color:#000;}
 * {
   margin: 0px;
   padding: 0px;
