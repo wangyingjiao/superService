@@ -25,34 +25,101 @@
       highlight-current-row 
       style="width: 100%">
 
-     
+      <el-table-column type="expand">
+        <template scope="scope" >
+          <el-table 
+            v-if="scope.row.subMenus" 
+            :data="scope.row.subMenus" 
+            class="demo-table-expand">
+
+
+             <el-table-column type="expand">
+                <template scope="scope" >
+                  <el-table v-if="scope.row.subMenus" :data="scope.row.subMenus" class="demo-table-expand">
+                    <el-table-column align="center" width="100" label="菜单等级">
+                        <template scope="scope">
+                          <span>3</span>
+                        </template>
+                    </el-table-column>
+                    
+                    <el-table-column align="center" label="名称" prop="name">
+
+                    </el-table-column>
+
+                    <el-table-column align="center" label="ID" prop="id">
+
+                    </el-table-column>
+
+                    <el-table-column align="center" label="permission" prop="permission">
+
+                    </el-table-column>
+                    <el-table-column align="center" width="240" label="操作">
+                      <template scope="scope">
+                        <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+                        <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+                      </template>
+                    </el-table-column>
+                    
+                  </el-table>
+              </template>
+            </el-table-column> 
+            <el-table-column align="center" width="100" label="菜单等级">
+                <template scope="scope">
+                  <span>2</span>
+                </template>
+            </el-table-column>
+            
+            <el-table-column align="center" label="名称" prop="name">
+
+            </el-table-column>
+
+            <el-table-column align="center" label="ID" prop="id">
+
+            </el-table-column>
+
+            <el-table-column align="center" label="permission" prop="permission">
+
+            </el-table-column>
+            <el-table-column align="center" width="240" label="操作">
+              <template scope="scope">
+                <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+                <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+                <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            
+          </el-table>
+      </template>
+    </el-table-column> 
     
      
-      <el-table-column align="center" label="菜单等级">
+      <el-table-column align="center" width="100" label="菜单等级">
           <template scope="scope">
             <span>1</span>
           </template>
       </el-table-column>
      
 
-      <el-table-column align="center" label="name" prop="name">
+      <el-table-column align="center" label="名称" prop="name">
 
       </el-table-column>
 
-      <el-table-column label="id" prop="id">
+      <el-table-column align="center" label="ID" prop="id">
 
       </el-table-column>
 
-      <el-table-column label="href" prop="href">
+      <el-table-column align="center" label="permission" prop="permission">
 
       </el-table-column>
       
       
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" width="240" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handle(scope.row)"></el-button>
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
+          <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
