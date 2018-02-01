@@ -51,7 +51,7 @@
         </template> 
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="responseContent" prop="responseContent">    
+      <el-table-column align="center" width="150px" label="响应内容" prop="responseContent">    
           <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.responseContent.length < 10" :content="scope.row.responseContent">
              <div class="tool" >{{scope.row.responseContent}}</div>
@@ -179,35 +179,12 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.listLoading = true;
       this.getList()
     },
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.listLoading = true;
-      var obj = {};
       this.getList();
-    },
-    //删除
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          return;
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
     }
   }
 };
