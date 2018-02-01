@@ -5,6 +5,11 @@ export function getLog(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/log/serviceLog/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 
+// 获取对接日志列表
+export function getsysLog(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/service/log/SysJointLogger/listSysJointLogger?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
+
 // 获取app发版列表
 export function getApp(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/appVersion/appVersion/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)

@@ -152,7 +152,7 @@
         <el-form-item label="服务范围类型:" prop="scopeType">
           <el-select
           class="form_item"
-            :disabled = "typeState"
+            disabled
             v-model="temp.scopeType" 
             placeholder="请选择">
             <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
@@ -353,7 +353,7 @@ export default {
         jointEshopCode: "",
         remark: "",
         areaCodes: [],
-        scopeType: "",
+        scopeType: "store",
         visable: "1"
       },
       province: "",
@@ -728,6 +728,7 @@ export default {
               { workStartTime: "", workEndTime: "", jointEshopCode: "" },
               res.data.data
             );
+            this.temp.scopeType = "store"
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -919,7 +920,7 @@ export default {
         workStartTime: "",
         workEndTime: "",
         jointEshopCode: "",
-        scopeType: "",
+        scopeType: "store",
         remark: ""
       };
     }
