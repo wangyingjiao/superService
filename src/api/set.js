@@ -34,3 +34,19 @@ export function delApp(obj) {
 export function getMenu(obj) {
   return instance.post(`/apiservice/a/sys/menu/getMenuList`, obj)
 }
+// 新增保存菜单
+export function addMenu(obj) {
+  return instance.post(`/apiservice/a/sys/menu/save`, obj)
+}
+// 编辑菜单
+export function handleUpMenu(obj) {
+  return instance.post(`/apiservice/a/sys/menu/formData`, obj)
+}
+// 编辑保存菜单
+export function upMenu(obj) {
+  return instance.post(`/apiservice/a/sys/menu/upData`, obj)
+}
+// 删除菜单
+export function delMenu(obj) {
+  return instance.post(`/apiservice/a/sys/menu/delete`, obj)
+}
