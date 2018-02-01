@@ -310,7 +310,7 @@
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item">
+                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -347,7 +347,7 @@
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
                       <span class="selfbeizhu1">
-                        {{otherInfo.shopRemark}}
+                        {{otherInfo.shopRemark}}                        
                       </span>
                    </p>
                    <p class="contentLine">
@@ -1093,7 +1093,6 @@ export default {
 }
 .marginLeft82 {
   margin-left: 82px;
-  margin-top: -30px;
 }
 .marginBOT20 {
   margin-bottom: 20px;
