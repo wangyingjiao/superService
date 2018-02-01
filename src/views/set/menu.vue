@@ -161,16 +161,21 @@
             placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
           </el-form-item>
            
-          <el-form-item label="链接:" prop="permission" >
+          <el-form-item label="链接:" prop="permission">
             <el-input
            class="form_item"
             placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
           </el-form-item>
 
-          <el-form-item label="图标:" prop="icon" >
+          <el-form-item label="图标:">
             <el-input
            class="form_item"
             placeholder="请输入2-15位的权限标识" v-model.trim="temp.icon"></el-input>
+          </el-form-item>
+
+           <el-form-item label="是否显示:">
+             <el-radio v-model="temp.isShow" label="yes">是</el-radio>
+             <el-radio v-model="temp.isShow" label="no">否</el-radio>
           </el-form-item>
 
           </el-form>
