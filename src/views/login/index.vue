@@ -1,5 +1,9 @@
 <template>
   <div class="login-container">
+    <div  >
+     <a style="display:block;width:100px;height:100px;line-height:100px;bachground-color:red;color:#fff" href="https://download.guoanshequ.com/android/servicepersonnel.apk">下载APP</a>
+      
+    </div>
     <div class="formBox">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="login-form">
