@@ -1,4 +1,4 @@
 module.exports = {
   NODE_ENV: '"production"',
-  BASE_API: '"https://apiservice.guoanshequ.wang/"'
+  BASE_API: '"https://superservice.guoanshequ.wang/"'
 }

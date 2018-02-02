@@ -4,7 +4,7 @@ import store from '../store'
 import { Message } from 'element-ui'
 // 创建axios实例
 const instance = axios.create({
-  // baseURL: process.env.BASE_API, // api的base_url
+    // baseURL: 'http://10.16.70.65:8080/', // api的base_url
   // timeout: 15000,                 // 请求超时时间
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 })
@@ -25,8 +25,6 @@ var arr = []
 
 // 拦截响应
 instance.interceptors.response.use(res => {
-  // console.log(res.status, '响应')
-  // console.log(res.data, '响应code')
   if (res.data.code !== undefined) {
     if (res.data.code === 2) {
       arr.push(res.data.code)
@@ -35,8 +33,8 @@ instance.interceptors.response.use(res => {
           Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
           setTimeout(() => {
             arr = []
-            store.state.app.visitedViews = []
             router.push({ path: '/login' })
+            location.reload()
           }, 2500)
         })
       }
@@ -62,25 +60,17 @@ instance.interceptors.response.use(res => {
       }
     }
   } else {
-    arr.push(error)
-    // console.log(arr)
-    // console.log(error.code)
-    if (error.code === 'ECONNABORTED') {
-      // if (arr.length === 1) {
-      //   // Message.error('请求超时')
-      // }
-    } else {
-      if (arr.length === 1) {
-        store.dispatch('LogOut').then(() => {
-          Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
-          setTimeout(() => {
-            arr = []
-            store.state.app.visitedViews = []
-            router.push({ path: '/login' })
-          }, 2500)
-        })
-      }
-    }
+    // arr.push(error)
+    // if (arr.length === 1) {
+    //   store.dispatch('LogOut').then(() => {
+    //     Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
+    //     setTimeout(() => {
+    //       arr = []
+    //       store.state.app.visitedViews = []
+    //       router.push({ path: '/login' })
+    //     }, 2500)
+    //   })
+    // }
   }
   return Promise.reject(error)
 })

@@ -30,14 +30,29 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" prop="techName">      
+      <el-table-column align="center" label="消息标题" prop="title">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="消息内容" prop="message">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="接收方手机号" prop="receivePhone">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="读取状态" prop="isRead">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="发送成功状态" prop="isSuccess">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="appKey" prop="appKey">      
       </el-table-column>
       
       
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="btn_menu"  @click="handleSend(scope.row)">重新发送</el-button>
         </template>
       </el-table-column>
 
@@ -56,7 +71,7 @@
 </template>
 
 <script>
-import { getLog } from "@/api/set";
+import { getPushMes,sendPushMes } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -101,9 +116,9 @@ export default {
       var obj = {};
      
       
-      getLog(obj, this.pageNumber, this.pageSize).then(res => { 
+      getPushMes(obj, this.pageNumber, this.pageSize).then(res => { 
         if(res.data.code == 1){
-          this.total = res.data.data.count;
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
         this.pageNumber = res.data.data.pageNo;
         this.pageSize = res.data.data.pageSize;
@@ -137,26 +152,8 @@ export default {
       this.listLoading = true;
      
     },
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          return
-          
-            
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
+    handleSend(row) {
+      
     }
   }
 };
@@ -185,5 +182,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.btn_menu {
+  font-size: 12px;
+  color: #1d85fe;
+  border: 1px solid #1d85fe;
+  background-color: #ffffff;
 }
 </style>

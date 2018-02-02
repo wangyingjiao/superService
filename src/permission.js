@@ -16,9 +16,10 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetUserInfo').then(res => { // 拉取用户信息
           next()
         }).catch(() => {
-          store.dispatch('FedLogOut').then(() => {
-            Message.error('验证失败,请重新登录')
+          Message.error('验证失败,请重新登录')
+          store.dispatch('LogOut').then(() => {
             next({ path: '/login' })
+            location.reload()
           })
         })
         store.dispatch('Getarea').then(res => {  // 获取省市区

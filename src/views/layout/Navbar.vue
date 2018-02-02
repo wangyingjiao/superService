@@ -49,16 +49,21 @@ export default {
     ...mapGetters(["sidebar", "name", "avatar"])
   },
   methods: {
-    handleCommand(command) {
-      if (command == "logout") {
-        this.logout();
-      }
-    },
+    // handleCommand(command) {
+    //   if (command == "logout") {
+    //     this.logout();
+    //   }
+    // },
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
+      this.$message({
+                type: "success",
+                message: "主动退出"
+              });
       this.$store.dispatch("LogOut").then(() => {
+        this.$router.push({ path: "/login" });
         location.reload(); // 为了重新实例化vue-router对象 避免bug
       });
     }
@@ -67,7 +72,10 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.hoverStyle .el-dropdown-menu__item:not(.is-disabled):hover{background:#fff;color:#000;}
+.hoverStyle .el-dropdown-menu__item:not(.is-disabled):hover {
+  background: #fff;
+  color: #000;
+}
 * {
   margin: 0px;
   padding: 0px;
@@ -108,21 +116,30 @@ export default {
   padding: 0 5px;
   border-radius: 3px;
   float: left;
-  .color{
-    color: #4C70E8
+  .color {
+    color: #4c70e8;
   }
-  
 }
 .nav-ul li img {
   margin-top: 7px;
   display: block;
   height: 14px;
   float: left;
-
 }
-.nav-ul li .scan{font-size:24px;float:left;}
-.scanText{height:30px;line-height:30px;display:block;float:left;margin-left:5px;}
-.Scandown{text-align:center}
+.nav-ul li .scan {
+  font-size: 24px;
+  float: left;
+}
+.scanText {
+  height: 30px;
+  line-height: 30px;
+  display: block;
+  float: left;
+  margin-left: 5px;
+}
+.Scandown {
+  text-align: center;
+}
 .nav-ul li .el-dropdown-link {
   display: block;
   height: 50px;
@@ -189,10 +206,10 @@ export default {
 .el-dropdown-menu {
   border-radius: 2px;
 }
-.out{
-  background-color: #4C70E8;
+.out {
+  background-color: #4c70e8;
   color: #fff;
-  .color{
+  .color {
     color: #fff !important;
   }
 }

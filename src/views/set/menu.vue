@@ -241,7 +241,12 @@ export default {
         isShow: "",
         icon: ""
       },
-      rules: {},
+      rules: {
+        name: [
+          { required: true, message: "请输入 2 到 6 位的菜单名称", trigger: "blur" },
+          { min: 2, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
+        ]
+      },
       tableKey: 0,
       isIndeterminate: true
     };
