@@ -12,12 +12,12 @@
       </el-select>
 
       <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
-      </el-input>
-      <button class="button-large el-icon-search btn_search" @click="serGetList"> 搜索</button>
+      </el-input> 
+      <button class="button-large el-icon-search btn_search btn-color" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
 
     <el-table 
     :key='tableKey' 
@@ -315,17 +315,17 @@
                 </el-form-item>
 
                 <el-form-item class="seize bottimPro" style="width:70%">
-                  <input v-if="handleEditFlag" type="button" class="button-large" @click="submitForm('goods_info')" value="保 存">
-                  <input v-else type="button" class="button-large" @click="submitForm('goods_info')" value="添 加">
-                  <input type="button" class="button-cancel" @click="resetForm('ser')" value="取 消">
+                  <input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
+                  <input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
               </el-collapse-transition>
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
-                <input type="button" class="button-large" :disabled="btnState" @click="subForm('basic')" value="保 存">
-                <input type="button" class="button-cancel" @click="cancel('basic')" value="取 消">
+                <input type="button" class="button-large btn-color" :disabled="btnState" @click="subForm('basic')" value="保 存">
+                <input type="button" class="button-cancel btn-color-cancel" @click="cancel('basic')" value="取 消">
               </div>
             </el-dialog>
     <!-- 商品信息 完成 -->

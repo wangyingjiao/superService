@@ -124,7 +124,7 @@
                           <div>
                             <p></p>
                             <p>
-                                  <span class="button-large-fourth" @click="perSubmitForm('personalEDit')">保存信息</span>
+                                  <span class="button-large-fourth btn-color" @click="perSubmitForm('personalEDit')">保存信息</span>
                             </p>
                           </div>
                         </li>
@@ -271,7 +271,7 @@
                       <div>
                       <p></p>
                       <p>
-                          <span class="button-large-fourth perServer" @click="submitForm('perServer')">保存信息</span>
+                          <span class="button-large-fourth perServer btn-color" @click="submitForm('perServer')">保存信息</span>
                       </p>
                       </div>
                   </li>
@@ -374,7 +374,7 @@
                 <div>
                   <p></p>
                   <p>
-                        <span class="button-large-fourth" @click="supplSub('supplement')">保存信息</span>
+                        <span class="button-large-fourth btn-color" @click="supplSub('supplement')">保存信息</span>
                   </p>
                 </div>
               </li>
@@ -540,7 +540,7 @@
                   <div>
                       <p></p>
                       <p>
-                          <span class="button-large-fourth" @click="sumitFormSub('otherInfo')">保存信息</span>
+                          <span class="button-large-fourth btn-color" @click="sumitFormSub('otherInfo')">保存信息</span>
                       </p>
                   </div>
               </li>

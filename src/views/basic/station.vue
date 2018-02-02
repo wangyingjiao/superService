@@ -19,14 +19,14 @@
             </el-option-group>
 
           </el-select>
-      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <div class="app-container calendar-list-container">
      <div class="bgWhite">
        <!-- 按钮组 -->
-      <button class="button-small btn_pad"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
-      <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
-      <button class="button-small-fourth btn_pad"  style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
+      <button class="button-small btn_pad btn-color"   v-if="btnShow.indexOf('station_insert') >= 0" @click="handleCreate">新增</button>
+      <button class="button-small-fourth btn_pad btn-color"  style="width:80px" v-if="btnShow.indexOf('station_scope') >= 0" @click="handleSetRange">设置范围</button>
+      <button class="button-small-fourth btn_pad btn-color"  style="width:80px" v-if="btnShow.indexOf('station_manager') >= 0" @click="handleSetMaster">设置站长</button>
       <!-- 列表 -->
       <el-table 
       id="tableColor"
@@ -151,9 +151,9 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-          <button class="button-large" :disabled='btnState' v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
-          <button class="button-large"  :disabled="btnState" v-else @click="create('temp')">保 存</button>    
-          <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+          <button class="button-large btn-color" :disabled='btnState' v-if="dialogStatus == 'update'" @click="update('temp')">保 存</button>    
+          <button class="button-large btn-color"  :disabled="btnState" v-else @click="create('temp')">保 存</button>    
+          <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
         </div>
       </el-dialog>
 <!-- 设置站长 -->
@@ -179,8 +179,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large" :disabled='btnState' @click="createMaster('tempMaster')">保 存</button>    
-           <button class="button-cancel" @click="resetMaster('tempMaster')">取 消</button>
+           <button class="button-large btn-color" :disabled='btnState' @click="createMaster('tempMaster')">保 存</button>    
+           <button class="button-cancel btn-color-cancel" @click="resetMaster('tempMaster')">取 消</button>
         </div>
       </el-dialog>
 <!-- 设置范围地图 -->
@@ -274,8 +274,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align:center">
-           <button class="button-large" :disabled='btnState'  @click="createStore('temp')">保 存</button>    
-           <button class="button-cancel" @click="resetStore('temp')">取 消</button>
+           <button class="button-large btn-color" :disabled='btnState'  @click="createStore('temp')">保 存</button>    
+           <button class="button-cancel btn-color-cancel" @click="resetStore('temp')">取 消</button>
         </div>
       </el-dialog>
     </div>

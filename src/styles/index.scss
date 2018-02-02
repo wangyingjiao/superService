@@ -693,3 +693,12 @@ body {
 .el-select-dropdown__item.selected{
   @include seleteColor($seleteColor,$seleteBack)
 }
+.btn-color{
+  @include backColor($buttonBack,$buttonBack);
+  color: $buttonColor; 
+}
+.btn-color-cancel{
+  border: 1px solid $buttonColorCancal;
+  color: $buttonColorCancal;
+  background: $buttonBackCancal
+}

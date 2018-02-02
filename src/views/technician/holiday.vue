@@ -26,7 +26,7 @@
     </el-date-picker>
       
     </el-date-picker>
-       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
+       <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">

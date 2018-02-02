@@ -8,13 +8,13 @@
         <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
+      <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
     
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad"  v-if="btnShow.indexOf('role_insert') != -1" @click="handleCreate">新增</button>
+    <button class="button-small btn_pad btn-color"  v-if="btnShow.indexOf('role_insert') != -1" @click="handleCreate">新增</button>
     <!-- 列表开始 -->
     <el-table
       :key="tableKey"
@@ -118,9 +118,9 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
-        <button class="button-large" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
-        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
+        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
+        <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
 <!-- 弹框结束-->

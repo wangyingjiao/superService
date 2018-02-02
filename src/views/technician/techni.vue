@@ -21,12 +21,12 @@
       </div>
 
       <div>
-        <button class="search-button el-icon-search btn_search" @click="techniSearchs"> 搜索</button>
+        <button class="search-button el-icon-search btn_search btn-color" @click="techniSearchs"> 搜索</button>
       </div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
-        <button class="button-small  btn_pad" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
+        <button class="button-small  btn_pad btn-color" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech"
@@ -237,7 +237,7 @@
           </div>
           <div class="tech-pos-btn">
             <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
-            <button @click="hiddenDiv" class="button-cancel">关闭</button>
+            <button @click="hiddenDiv" class="button-cancel btn-color-cancel">关闭</button>
           </div>
         </div>
       </el-collapse-transition>
@@ -258,7 +258,7 @@
                       :listquer="listQuery" :servery="servery" :startend="startEnd"
                       ></techni-edit>
         <div slot="footer" class="dialog-footer selfFooter" style="text-align:center">
-              <button class="button-cancel closeThe" @click="closeThef">关 闭</button>
+              <button class="button-cancel closeThe btn-color-cancel" @click="closeThef">关 闭</button>
           </div>
       </el-dialog>
     <!-- 弹出层 新增技师-->
@@ -534,8 +534,8 @@
       </el-form>
         </div>
         <div slot="footer" class="dialog-footer selfFooter" style="text-align:center; padding:30px 0">
-            <button  class="button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
-            <button class="button-cancel" @click="handleClose('personal')">取消</button>
+            <button  class="btn-color button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+            <button class="button-cancel btn-color-cancel" @click="handleClose('personal')">取消</button>
         </div>
       </el-dialog>
   </div>
