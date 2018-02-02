@@ -11,7 +11,6 @@ const user = {
     buttonshow: [],
     area: []
   },
-
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
@@ -68,7 +67,7 @@ const user = {
             }
             const data = response.data
             // setSession(response.data.data.JSESSIONID)
-            setToken(data.token)
+            setToken('user')
             resolve(response)
           } else {
             // Message.error('用户名不存在或者密码错误')
@@ -117,7 +116,6 @@ const user = {
     Getbutton({ commit }) {
       return new Promise((resolve, reject) => {
         getButton().then(res => {
-          // console.log(res, '按钮权限')
           commit('SET_BUTTONSHOW', res.data.data)
           localStorage.setItem('btn', JSON.stringify(res.data.data))
           resolve(res)
@@ -150,13 +148,13 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
-      return new Promise(resolve => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resolve()
-      })
-    }
+    // FedLogOut({ commit }) {
+    //   return new Promise(resolve => {
+    //     commit('SET_TOKEN', '')
+    //     removeToken()
+    //     resolve()
+    //   })
+    // }
   }
 }
 

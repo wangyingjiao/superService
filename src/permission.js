@@ -16,7 +16,7 @@ router.beforeEach((to, from, next) => {
         store.dispatch('GetUserInfo').then(res => { // 拉取用户信息
           next()
         }).catch(() => {
-          store.dispatch('FedLogOut').then(() => {
+          store.dispatch('LogOut').then(() => {
             Message.error('验证失败,请重新登录')
             next({ path: '/login' })
           })
