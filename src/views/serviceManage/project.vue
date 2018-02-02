@@ -870,7 +870,7 @@ export default {
     handleSendData(row){
       var obj = {id:row.id}
       sendData(obj).then(data=>{
-        if(data.data.code){
+        if(data.data.code==1){
           this.$message({
               type: "success",
               message: data.data.data
@@ -1076,7 +1076,7 @@ export default {
       }else{
           if(item.id){
             deleteGoodsData({id:item.id}).then(data=>{
-              if(data.data.code){
+              if(data.data.code==1){
                 this.$message({
                       message: data.data.data,
                       type: "success"
@@ -1210,7 +1210,7 @@ export default {
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(data => {
-          if(data.data.code){
+          if(data.data.code==1){
               var dataUpdate = data.data.data
               if(dataUpdate.commoditys!=undefined){
                 for(var i = 0;i<dataUpdate.commoditys.length;i++){
@@ -1389,7 +1389,7 @@ export default {
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
-                if (data.data.code) {
+                if (data.data.code==1) {
                   this.$message({
                     message: data.data.data,
                     type: "success"
