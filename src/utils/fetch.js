@@ -4,7 +4,7 @@ import store from '../store'
 import { Message } from 'element-ui'
 // 创建axios实例
 const instance = axios.create({
-  // baseURL: process.env.BASE_API, // api的base_url
+    // baseURL: 'http://10.16.70.65:8080/', // api的base_url
   // timeout: 15000,                 // 请求超时时间
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 })
