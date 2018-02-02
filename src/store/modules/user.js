@@ -65,7 +65,7 @@ const user = {
             if (response.data.data.user.station) {
               localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
             }
-            const data = response.data
+            // const data = response.data
             // setSession(response.data.data.JSESSIONID)
             setToken('user')
             resolve(response)
@@ -145,7 +145,7 @@ const user = {
           reject(error)
         })
       })
-    },
+    }
 
     // 前端 登出
     // FedLogOut({ commit }) {

@@ -70,7 +70,9 @@ export default {
         password: ""
       },
       loginRules: {
-        username: [{ required: true, message: "登录账号不能为空", trigger: "blur" }],
+        username: [
+          { required: true, message: "登录账号不能为空", trigger: "blur" }
+        ],
         password: [{ required: true, message: "密码不能为空", trigger: "blur" }]
       },
       loading: false
@@ -85,7 +87,10 @@ export default {
       localStorage.removeItem("orgId");
       localStorage.removeItem("userId");
       localStorage.removeItem("menu");
-
+      localStorage.removeItem("station");
+      localStorage.removeItem("btn");
+      localStorage.removeItem("roleId");
+      localStorage.removeItem("roleId");
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
@@ -137,16 +142,16 @@ $light_gray: #eee;
     width: 85%;
   }
   // 用户名与密码的hover效果
-  .username input{
-    margin-left:5px;
+  .username input {
+    margin-left: 5px;
   }
-  .password input{
-    margin-left:5px;
-  }  
-  .username input:hover{
+  .password input {
+    margin-left: 5px;
+  }
+  .username input:hover {
     cursor: pointer;
   }
-  .password input:hover{
+  .password input:hover {
     cursor: pointer;
   }
   .tips {
@@ -189,7 +194,7 @@ $light_gray: #eee;
   }
   .loginbtn {
     color: #ffffff;
-    font-size:14px;
+    font-size: 14px;
     font-weight: 600;
     width: 100%;
     border: 0px solid #cde19e;

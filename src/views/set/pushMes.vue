@@ -30,14 +30,29 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="姓名" prop="techName">      
+      <el-table-column align="center" label="消息标题" prop="title">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="消息内容" prop="message">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="接收方手机号" prop="receivePhone">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="读取状态" prop="isRead">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="发送成功状态" prop="isSuccess">      
+      </el-table-column>
+      
+      <el-table-column align="center" label="appKey" prop="appKey">      
       </el-table-column>
       
       
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="btn_menu"  @click="handleDelete(scope.row)">重新发送</el-button>
+          <el-button class="btn_menu"  @click="handleSend(scope.row)">重新发送</el-button>
         </template>
       </el-table-column>
 
@@ -137,26 +152,8 @@ export default {
       this.listLoading = true;
      
     },
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          return
-          
-            
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
+    handleSend(row) {
+      
     }
   }
 };

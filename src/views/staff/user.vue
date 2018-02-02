@@ -1128,6 +1128,7 @@ export default {
                       setTimeout(() => {
                         this.$store.state.app.visitedViews = []; //清空顶部导航tab对象
                         that.$router.push({ path: "/login" });
+                        location.reload()
                       }, 2000);
                     })
                     .catch(() => {
