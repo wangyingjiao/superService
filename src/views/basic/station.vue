@@ -791,7 +791,7 @@ export default {
           setMaster(obj)
             .then(res => {
               this.btnState = false;
-              if (res.data.code == "1") {
+              if (res.data.code == 1) {
                 this.$message({
                   type: "success",
                   message: "设置成功"
@@ -1049,7 +1049,7 @@ export default {
         setScope(obj)
           .then(res => {
             this.btnState = false;
-            if (res.data.code == "1") {
+            if (res.data.code == 1) {
               this.$message({
                 type: "success",
                 message: "设置成功"

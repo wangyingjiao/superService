@@ -50,3 +50,12 @@ export function upMenu(obj) {
 export function delMenu(obj) {
   return instance.post(`/apiservice/a/sys/menu/delete`, obj)
 }
+
+// 推送失败消息列表
+export function getPushMes(obj) {
+  return instance.post(`/apiservice/a/sys/pushMessage/listFailData`, obj)
+}
+// 重新推送
+export function sendPushMes(obj) {
+  return instance.post(`/apiservice/a/sys/pushMessage/pushFailMessage`, obj)
+}
