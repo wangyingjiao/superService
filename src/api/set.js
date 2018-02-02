@@ -52,8 +52,8 @@ export function delMenu(obj) {
 }
 
 // 推送失败消息列表
-export function getPushMes(obj) {
-  return instance.post(`/apiservice/a/sys/pushMessage/listFailData`, obj)
+export function getPushMes(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/sys/pushMessage/listFailData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
 // 重新推送
 export function sendPushMes(obj) {
