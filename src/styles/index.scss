@@ -687,6 +687,9 @@ body {
   border:1px solid $operationColor;
   color: $operationColor;
 }
+#app .ceshi3:hover{
+  color: #fff;
+}
 #app .el-table{
   @include tableWhole($tableSize,$tableColor,$tableTrHeight,$tableBackGround)
 }
