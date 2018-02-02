@@ -3,11 +3,10 @@
 		<div class="addorderStepWrap">
 			<!--步骤条开始-->
 			<div class="stepControl">				
-				<el-steps :space="300" :active="active"  align-center >
+				<el-steps :space="400" :active="active"  align-center >
 					<el-step title="选择客户"></el-step>
 					<el-step title="服务信息"></el-step>
-					<el-step title="选择技师"></el-step>
-					<el-step title="服务时间"></el-step>
+					<el-step title="选择技师与服务时间"></el-step>
 				</el-steps>
 			</div>
 			<!--步骤条结束-->
@@ -61,7 +60,7 @@
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
 											<span v-if="item.type=='3'">
-												<el-select  class="roomTypeStyle"   @change="roomChange(item)" v-model="item.roomId" placeholder="请选择">
+												<el-select  class="roomTypeStyle"   @change="roomChange(item,item.id)" v-model="item.roomId" placeholder="请选择">
 													<el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
 													</el-option>
 												</el-select>
@@ -69,15 +68,15 @@
 										</td>
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
-											<span v-if="item.type=='3'">
-                        <span v-if="item.roomId =='1'">{{item.roomType[item.roomId-1].pirce}}</span>
-												<span v-if="item.roomId =='2'">{{item.roomType[item.roomId-1].pirce}}</span>
-												<span v-if="item.roomId =='3'">{{item.roomType[item.roomId-1].pirce}}</span>                        
+											<span v-if="item.type=='3'" :ref='item.id'>
+                        <span v-if="item.roomId =='0'">{{item.roomType[item.roomId].pirce}}</span>
+												<span v-if="item.roomId =='1'">{{item.roomType[item.roomId].pirce}}</span>
+												<span v-if="item.roomId =='2'">{{item.roomType[item.roomId].pirce}}</span>                        
 											</span>
 										</td>
 										<td  align="center">{{item.payNum}}</td>
 										<td class="height30" align="center">
-											<span v-if="item.type=='1' || item.type=='2'"><el-input-number class="selfINputNumStyle" ref="aa" @change="numberChange(item,item.id)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
+											<span v-if="item.type=='1' || item.type=='2'"><el-input-number class="selfINputNumStyle" :ref="item.id" @change="numberChange(item,item.id)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
 											<span v-if="item.type=='3'">{{item.number}}</span>											
 										</td>							
 									</tr>
@@ -85,7 +84,7 @@
 							</div>   																																
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice" required>
-							<span>{{form1.sumPrice}}元</span>
+							<span>￥{{form1.sumPrice}}元</span>
 						</el-form-item>																																														
 					</el-form>
 				</div>
@@ -104,11 +103,7 @@
 								</div>
 							</div>																	
 						</el-form-item>																																													
-					</el-form>
-				</div>
-				<!--步骤3显示区域结束-->
-				<!--步骤4显示区域开始-->
-				<div class="stepContent" v-if="active == 4">
+					</el-form>          
 					<el-form ref="form3" :model="form3" label-width="100px" label-position="left">
 						<el-form-item label="选择日期:" prop="severTime" required>
 							<el-date-picker
@@ -139,16 +134,17 @@
 						</el-form-item>	
 					</el-form>
 				</div>
-				<!--步骤4显示区域结束-->
+				<!--步骤3显示区域结束-->
+        <!--上、下步按钮开始-->
+        <div class="NextPrevWrap">
+          <span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3" @click="prev">上一步</span>
+          <span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2"  @click="next">下一步</span>					
+          <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder">保存</span>		
+        </div>
+        <!--上、下步按钮结束-->        
 			</div>
 			<!--步骤显示区域结束-->
-			<!--上、下步按钮开始-->
-			<div class="NextPrevWrap">
-				<span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3 || active == 4" @click="prev">上一步</span>
-				<span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2|| active == 3"  @click="next">下一步</span>					
-				<span class="button-large NextPrevStyle"  v-if="active == 4" @click="confirmOrder">保存</span>		
-			</div>
-			<!--上、下步按钮结束-->
+
 	</div>
 	<!--新增客户弹窗开始-->
 	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">	
@@ -309,7 +305,7 @@ export default {
       listTech: [],
       selectCommidty: [
         {
-          id: "0",
+          id: "aa",
           checkAll: false,
           name: "大型灯",
           type: "1",
@@ -318,7 +314,7 @@ export default {
           number: 2
         },
         {
-          id: "1",
+          id: "ab",
           checkAll: false,
           name: "面积（平米)",
           type: "2",
@@ -327,37 +323,39 @@ export default {
           number: 3
         },        
         {
-          id: "2",
+          id: "ff",
+          checkAll: false,
+          roomId: "1",
+          roomType: [
+            { key: "0", roomName: "一居室",pirce: 26},
+            { key: "1", roomName: "二居室",pirce: 52},
+            { key: "2", roomName: "三居室",pirce: 78}
+          ],
+          type: "3",
+          pirce:'52',
+          payNum: "2",
+          number: 1
+        },
+        {
+          id: "cd",
           checkAll: false,
           name: "小型灯",
           type: "1",
           pirce: "13",
           payNum: "2",
           number: 2
-        },
+        },        
         {
-          id: "3",
-          checkAll: false,
-          roomId: "1",
-          roomType: [
-            { key: "1", roomName: "一居室",pirce: 26},
-            { key: "2", roomName: "二居室",pirce: 52},
-            { key: "3", roomName: "三居室",pirce: 78}
-          ],
-          type: "3",
-          payNum: "2",
-          number: 1
-        },
-        {
-          id: "4",
+          id: "dd",
           checkAll: false,
           roomId: "2",
           roomType: [
-            { key: "1", roomName: "一居室",pirce: 26},
-            { key: "2", roomName: "二居室",pirce: 52},
-            { key: "3", roomName: "三居室",pirce: 78}
+            { key: "0", roomName: "一居室",pirce: 80},
+            { key: "1", roomName: "二居室",pirce: 100},
+            { key: "2", roomName: "三居室",pirce: 200}
           ],
           type: "3",
+          pirce:'200',
           payNum: "2",
           number: 1
         }        
@@ -449,7 +447,7 @@ export default {
       customKeyFlag: false,
       sum1: null,
       numberA:null,
-      priceA:null
+      priceA:[]
     };
   },
   computed: {
@@ -469,17 +467,18 @@ export default {
     //选中行改变
     rowChange(item) {
       if(item.checkAll){
-          this.sumPlus(item);
+         this.sumPlus(item); 
       }else{
-          this.sumDec(item);
-      }      
+         this.sumDec(item);
+      } 
+           
     },
     //计数器改变
     numberChange(item,index) {
       this.numberA=0;      
-      if (item.checkAll) {
-         this.numberA=this.$refs.aa[index].$children[0].$options.propsData.value    
+      if (item.checkAll) {            
           this.$nextTick(() => {
+             this.numberA=this.$refs[index][0].$children[0].$options.propsData.value 
               if(this.numberA > item.number){
                   this.dec(item)
               }else{
@@ -491,25 +490,18 @@ export default {
       }
     },
     //居室改变
-    roomChange(item) {
-      // this.$nextTick(() => {
-      //   console.log(name)
-      //   console.log(document.getElementById(name))
-      // })
-      this.priceA=0;
+    roomChange(item,name) {
+      item.pirce=this.$refs[name][0].innerText;
       if (item.checkAll) {
-        console.log(item.roomId)
-        console.log(item.roomType[item.roomId-1].pirce)
-        this.priceA=item.roomType[item.roomId-1].pirce
-        this.sumRoom(this.priceA)
+            this.sum1 = this.sum1 + item.pirce*1;           
+            this.priceA.push(item.pirce)
+            console.log(this.priceA)            
+            // this.sum1 = this.sum1 -this.priceA[this.priceA.length-2]*1;                     
+           console.log(this.sum1)
+           this.form1.sumPrice = this.sum1;
+      }else{
       }
     },
-    //居室改变总价变化
-    sumRoom(pirce){
-        console.log(pirce)
-        this.sum1 = this.sum1 + pirce;
-        this.form1.sumPrice = this.sum1;
-    },  
     //计数器改变总价加计算
     sum(item) {
       if (item.pirce != undefined) {
@@ -540,7 +532,7 @@ export default {
     },
     //下一步
     next() {
-      if (this.active++ >= 4) this.active = 1;
+      if (this.active++ >= 3) this.active = 1;
     },
     //上一步
     prev() {
@@ -594,8 +586,7 @@ export default {
                 this.$refs["ruleForm"].resetFields();
                 this.$refs.pickerInput.value = "";
                 this.dialogTableVisible1 = false;
-              } else {
-                
+              } else {                
                 this.$refs.pickerInput.value = "";
                 this.ruleForm.address = "";
               }
@@ -716,18 +707,22 @@ export default {
       var inputname = this.$refs.pickerInput;
       var inputname1 = this.$refs.pickerInput1;
       AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
-        var obj = {
-          city: area,
-          input: inputname
-        };
-        var poiPicker = new PoiPicker(obj);
-        poiPicker.onCityReady(function() {
-          poiPicker.searchByKeyword(inputname.value);
-          poiPicker.clearSearchResults();
-          poiPicker.clearSuggest();
-        });
-        //初始化poiPicker
-        poiPickerReady(poiPicker);
+        let areaCodeChange = new Promise((resolve,reject)=>{
+            var obj = {
+              city: area,
+              input: inputname
+            };
+            var poiPicker = new PoiPicker(obj);
+            poiPicker.onCityReady(function() {
+              poiPicker.searchByKeyword(inputname.value);
+              poiPicker.clearSearchResults();
+              poiPicker.clearSuggest();
+            });
+            //初始化poiPicker
+            poiPickerReady(poiPicker);        
+        })
+        return areaCodeChange
+
       });
 
       function poiPickerReady(poiPicker) {
@@ -851,9 +846,9 @@ export default {
 }
 .addorderStepWrap {
   width: 100%;
-  height: 600px;
   background: #fff;
   padding-top: 20px;
+  padding-bottom:20px;
 }
 .techNameStyle {
   width: 80px;
@@ -869,13 +864,12 @@ export default {
 }
 .stepContentWrap {
   width: 100%;
-  height: 400px;
   padding-left: 30px;
   margin-top: 50px;
+  padding-bottom:50px;
 }
 .stepContent {
   width: 100%;
-  height: 350px;
 }
 .customSelName {
   width: 280px;
@@ -946,8 +940,9 @@ export default {
   margin-left: 20px;
 }
 .NextPrevWrap {
-  margin-bottom: 20px;
-  text-align: center;
+  position: absolute;
+  left:55%;
+  bottom:20px;
 }
 .NextPrevStyle {
   display: inline-block;
@@ -1038,14 +1033,9 @@ export default {
 .addorder-container {
   width: 100%;
   float: left;
-  background: #eef1f6;
-  .fist-bar {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background: #fff;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
+  // background: #eef1f6;
+  background:#fff;
+  min-height:500px;
 }
 .custom-action {
   margin-left: 30px;
@@ -1093,8 +1083,7 @@ export default {
 }
 .customNamevalue {
   width: 100%;
-  height: 40px;
-  margin-left: -30px;
+  margin-left: -12px;
   font-size: 12px;
 }
 .changeserver {

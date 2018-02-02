@@ -558,7 +558,7 @@ export default {
       }
       this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.code == "1") {
+        if (res.data.code == 1) {
           this.total = res.data.data.count;
           this.list = res.data.data.list;
           this.pageNumber = res.data.data.pageNo;
@@ -1128,6 +1128,7 @@ export default {
                       setTimeout(() => {
                         this.$store.state.app.visitedViews = []; //清空顶部导航tab对象
                         that.$router.push({ path: "/login" });
+                        location.reload()
                       }, 2000);
                     })
                     .catch(() => {
