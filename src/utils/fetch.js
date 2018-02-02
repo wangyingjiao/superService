@@ -4,7 +4,7 @@ import store from '../store'
 import { Message } from 'element-ui'
 // 创建axios实例
 const instance = axios.create({
-    // baseURL: 'http://10.16.70.65:8080/', // api的base_url
+  baseURL: 'https://superservice.guoanshequ.wang/', // api的base_url
   // timeout: 15000,                 // 请求超时时间
   headers: { 'content-type': 'application/json;charset=UTF-8' }
 })
@@ -50,16 +50,16 @@ instance.interceptors.response.use(res => {
 
   return res
 }, error => {
-  if (error.response) {
-    const num = error.response.status
-    if ([502, 503, 504].indexOf(num) > -1) {
-      arr.push(error.response.status)
-      // console.log(arr.length)
-      if (arr.length === 1) {
-        Message.error('服务器断开！')
-      }
-    }
-  } else {
+  // if (error.response) {
+  //   const num = error.response.status
+  //   if ([502, 503, 504].indexOf(num) > -1) {
+  //     arr.push(error.response.status)
+  //     // console.log(arr.length)
+  //     if (arr.length === 1) {
+  //       Message.error('服务器断开！')
+  //     }
+  //   }
+  // } else {
     // arr.push(error)
     // if (arr.length === 1) {
     //   store.dispatch('LogOut').then(() => {
@@ -71,7 +71,7 @@ instance.interceptors.response.use(res => {
     //     }, 2500)
     //   })
     // }
-  }
+  // }
   return Promise.reject(error)
 })
 
