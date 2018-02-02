@@ -15,6 +15,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
       <button class="button-small btn_pad" @click="handleCreate">新增</button>
+    <!-- 表格开始 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -24,7 +25,7 @@
       tooltip-effect='light'
       highlight-current-row 
       style="width: 100%">
-
+     <!-- 第二层表格开始 -->
       <el-table-column type="expand">
         <template scope="scope" >
           <el-table 
@@ -32,7 +33,7 @@
             :data="scope.row.subMenus" 
             class="demo-table-expand">
 
-
+            <!-- 第三层表格开始 -->
              <el-table-column type="expand">
                 <template scope="scope" >
                   <el-table v-if="scope.row.subMenus" :data="scope.row.subMenus" class="demo-table-expand">
@@ -55,13 +56,13 @@
                     </el-table-column>
                     <el-table-column align="center" width="240" label="操作">
                       <template scope="scope">
-                        <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
-                        <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
-                        <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+                        <el-button class="btn_menu"  @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button class="btn_menu"  @click="handleDelete(scope.row)">删除</el-button>
                       </template>
                     </el-table-column>
                     
                   </el-table>
+                  <!-- 第三层表格结束 -->
               </template>
             </el-table-column> 
             <el-table-column align="center" width="100" label="菜单等级">
@@ -83,13 +84,14 @@
             </el-table-column>
             <el-table-column align="center" width="240" label="操作">
               <template scope="scope">
-                <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
-                <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
-                <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+                <el-button class="btn_menu"  @click="handleCreate(scope.row)">新增</el-button>
+                <el-button class="btn_menu"  @click="handleUpdate(scope.row)">编辑</el-button>
+                <el-button class="btn_menu"  @click="handleDelete(scope.row)">删除</el-button>
               </template>
             </el-table-column>
             
           </el-table>
+          <!-- 第二层表格结束 -->
       </template>
     </el-table-column> 
     
@@ -117,14 +119,14 @@
 
       <el-table-column align="center" width="240" label="操作">
         <template scope="scope">
-          <el-button class="ceshi3"  @click="handleCreate(scope.row)">新增</el-button>
-          <el-button class="ceshi3"  @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button class="ceshi3"  @click="handleDelete(scope.row)">删除</el-button>
+          <el-button class="btn_menu"  @click="handleCreate(scope.row)">新增</el-button>
+          <el-button class="btn_menu"  @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button class="btn_menu"  @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
     </el-table>
-
+<!-- 表格结束 -->
     <!-- 分页器 -->
     <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
@@ -147,8 +149,34 @@
             label-position="left" 
             label-width="100px"
             >
-          
+          <el-form-item label="菜单名称:" prop="name" >
+            <el-input        
+           class="form_item"
+            placeholder="请输入2-6位的菜单名称" v-model.trim="temp.name"></el-input>
+          </el-form-item>
            
+          <el-form-item label="权限标识:" prop="permission" >
+            <el-input        
+           class="form_item"
+            placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
+          </el-form-item>
+           
+          <el-form-item label="链接:" prop="permission">
+            <el-input
+           class="form_item"
+            placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
+          </el-form-item>
+
+          <el-form-item label="图标:">
+            <el-input
+           class="form_item"
+            placeholder="请输入2-15位的权限标识" v-model.trim="temp.icon"></el-input>
+          </el-form-item>
+
+           <el-form-item label="是否显示:">
+             <el-radio v-model="temp.isShow" label="yes">是</el-radio>
+             <el-radio v-model="temp.isShow" label="no">否</el-radio>
+          </el-form-item>
 
           </el-form>
       
@@ -165,7 +193,7 @@
 </template>
 
 <script>
-import { getMenu } from "@/api/set";
+import { getMenu, addMenu, handleUpMenu, upMenu, delMenu } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -204,7 +232,15 @@ export default {
       },
       dialogFormVisible: false,
       dialogStatus: "",
-      temp: {},
+      temp: {
+        parent: "",
+        parentIds: "",
+        name: "",
+        href: "",
+        permission: "",
+        isShow: "",
+        icon: ""
+      },
       rules: {},
       tableKey: 0,
       isIndeterminate: true
@@ -360,7 +396,7 @@ export default {
       this.dialogStatus = "create";
     },
     handleUpdate(row) {
-      return
+      return;
       this.listLoading = true;
       this.dialogStatus = "update";
       this.selectState = true;
@@ -378,7 +414,7 @@ export default {
       //     this.dialogFormVisible = true;
       //    } else {
       //      this.listLoading = false;
-          
+
       //    }
       // });
     },
@@ -403,12 +439,12 @@ export default {
     },
     create() {},
     update() {},
-      //清空列表
+    //清空列表
     resetForm(formName) {
-        this.selectState = false;
-        this.resetTemp();
-        this.$refs[formName].resetFields();
-        this.dialogFormVisible = false;
+      this.selectState = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
+      this.dialogFormVisible = false;
     },
     //清空绑定
     resetTemp() {
@@ -416,7 +452,7 @@ export default {
         name: "",
         majorSort: ""
       };
-    },
+    }
   }
 };
 </script>
@@ -444,5 +480,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.btn_menu {
+  font-size: 12px;
+  color: #1d85fe;
+  border: 1px solid #1d85fe;
+  background-color: #ffffff;
 }
 </style>

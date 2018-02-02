@@ -2,28 +2,12 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+      <el-input @keyup.enter.native="handleFilter" style="width:40%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
         </el-select>
       </el-input>
-
-      <el-date-picker
-      v-model="search.startTime"
-      style="width:20%"
-      type="date"
-      placeholder="选择日期">
-    </el-date-picker>
-    至
-
-      <el-date-picker
-      v-model="search.endTime"
-      style="width:20%"
-      class="search"
-      type="date"
-      placeholder="选择日期">
-    </el-date-picker>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -50,16 +34,16 @@
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="isSuccess" prop="isSuccess">      
+      <el-table-column align="center" label="请求结果" prop="isSuccess">      
       </el-table-column>
 
-      <el-table-column align="center" label="url" prop="url">      
+      <el-table-column align="center" label="请求地址" prop="url">      
       </el-table-column>
 
-      <el-table-column align="center" label="createDate" prop="createDate">      
+      <el-table-column align="center" label="创建时间" prop="createDate">      
       </el-table-column>
 
-      <el-table-column align="center"  width="150px" label="requestContent" prop="requestContent">     
+      <el-table-column align="center"  width="150px" label="请求内容" prop="requestContent">     
         <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.requestContent.length < 10" :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
@@ -67,7 +51,7 @@
         </template> 
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="responseContent" prop="responseContent">    
+      <el-table-column align="center" width="150px" label="响应内容" prop="responseContent">    
           <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.responseContent.length < 10" :content="scope.row.responseContent">
              <div class="tool" >{{scope.row.responseContent}}</div>
@@ -100,7 +84,7 @@ import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "log",
+  name: "sysLog",
   directives: {
     waves
   },
@@ -119,16 +103,14 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "日志类型",
-        title: "日志标题",
-        requestUri: "请求地址",
-        params: "提交数据"
+        url: "请求地址",
+        requestContent: "请求内容",
+        responseContent: "响应内容",
+        isSuccess: "请求结果"
       },
       search: {
         type: "",
-        val: "",
-        startTime: "",
-        endTime: ""
+        val: ""
       },
       tableKey: 0,
       isIndeterminate: true
@@ -140,37 +122,30 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
+      var obj = {};
+
+      if (this.search.type == "url") {
+        var url = {
+          url: this.search.val
+        };
+        obj = Object.assign(obj, url);
+      } else if (this.search.type == "requestContent") {
+        var requestContent = {
+          requestContent: this.search.val
+        };
+        obj = Object.assign(obj, requestContent);
+      } else if (this.search.type == "responseContent") {
+        var responseContent = {
+          responseContent: this.search.val
+        };
+        obj = Object.assign(obj, responseContent);
+      } else if (this.search.type == "isSuccess") {
+        var isSuccess = {
+          isSuccess: this.search.val
+        };
+        obj = Object.assign(obj, isSuccess);
       }
 
-      if (this.search.type == "type") {
-        var obj = {
-          type: this.search.val,
-          startTime: startTime,
-          endTime: endTime
-        };
-      } else if (this.search.type == "title") {
-        var obj = {
-          title: this.search.val,
-          startTime: startTime,
-          endTime: endTime
-        };
-      } else {
-        var obj = {
-          startTime: startTime,
-          endTime: endTime
-        };
-      }
       getsysLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -197,231 +172,19 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      console.log(obj);
-      getsysLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList()
     },
     //切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.listLoading = true;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      getsysLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList()
     },
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.listLoading = true;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      getsysLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
-    },
-    //删除
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          return;
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
+      this.getList();
     }
   }
 };

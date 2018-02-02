@@ -16,19 +16,16 @@
 				<!--步骤1显示区域开始-->
 				<div class="stepContent"  v-if="active == 1">
 					<el-form ref="form" :model="form" label-width="100px" label-position="left">
-						<el-form-item label="选择客户:" prop="custom">
-							<el-select  clearable class="customSelName"  v-model="custom" placeholder="请选择" @change="changeCustom">
-								<el-option v-for="item in customOptions" :key="item.key" :label="item.customName" :value="item.key">
-								</el-option>
-							</el-select>
+						<el-form-item label="联系电话:" prop="customPhone">
+              <el-input  class="search"   placeholder="请输入客户手机号" v-model="form.customPhone"></el-input>
 							<div  class="selftSerchBut"  @click="addcustomer">新增</div>
 						</el-form-item>
+						<el-form-item label="获取信息:">
+							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
+						</el-form-item>            
 						<div v-if="customKeyFlag">
 							<el-form-item label="客户姓名:" prop="customName">
 								<span class="fontSize12">{{form.customName}}</span>
-							</el-form-item>
-							<el-form-item label="客户电话:"    prop="phone">
-								{{form.phone}}
 							</el-form-item>
 							<el-form-item label="服务地址:" prop="serverAddress">
 								{{form.serverAddress}}
@@ -44,12 +41,12 @@
 				<div class="stepContent"  v-if="active == 2">
 					<el-form ref="form1" :model="form1" label-width="100px" label-position="left">
 						<el-form-item label="服务项目:" prop="serverPro" required>
-							<el-select clearable  class="severChangeStyle" v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
+							<el-select clearable  class="severChangeStyle" filterable v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
 								<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="选择商品:" prop="serverPro" required>
+						<el-form-item label="选择商品:"  required>
 							<div class="table-d1">
 								<table width="80%" class="selfTable">
 									<tr>
@@ -59,12 +56,12 @@
 										<td  class="selfTableHEADTD" align="center" width="10%">起购数</td>
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>							
 									</tr>
-									<tr v-for="item in selectCommidty" :key="item.id" >
+									<tr v-for="(item,index) in selectCommidty" :key="item.id" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.checkAll"></el-checkbox></td>
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.name}}</span>
 											<span v-if="item.type=='3'">
-												<el-select  class="roomTypeStyle"  @change="roomChange(item,item.roomId)" v-model="item.roomId" placeholder="请选择">
+												<el-select  class="roomTypeStyle"   @change="roomChange(item)" v-model="item.roomId" placeholder="请选择">
 													<el-option v-for="room in item.roomType" :key="room.key" :label="room.roomName" :value="room.key">
 													</el-option>
 												</el-select>
@@ -73,15 +70,14 @@
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
 											<span v-if="item.type=='3'">
-												<span v-if="item.roomId =='1'">{{item.testprice[item.roomId-1].pirce}}</span>
-												<span v-if="item.roomId =='2'">{{item.testprice[item.roomId-1].pirce}}</span>
-												<span v-if="item.roomId =='3'">{{item.testprice[item.roomId-1].pirce}}</span>
+                        <span v-if="item.roomId =='1'">{{item.roomType[item.roomId-1].pirce}}</span>
+												<span v-if="item.roomId =='2'">{{item.roomType[item.roomId-1].pirce}}</span>
+												<span v-if="item.roomId =='3'">{{item.roomType[item.roomId-1].pirce}}</span>                        
 											</span>
 										</td>
 										<td  align="center">{{item.payNum}}</td>
 										<td class="height30" align="center">
-											<span v-if="item.type=='1'"><el-input-number class="selfINputNumStyle" @change="numberChange(item)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
-											<span v-if="item.type=='2'"><el-input  class="NumberINputStyle"  @change="inputChange(item)" placeholder="" v-model="item.number"></el-input></span>
+											<span v-if="item.type=='1' || item.type=='2'"><el-input-number class="selfINputNumStyle" ref="aa" @change="numberChange(item,item.id)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
 											<span v-if="item.type=='3'">{{item.number}}</span>											
 										</td>							
 									</tr>
@@ -195,45 +191,6 @@
 	</el-dialog>
 	<!--新增客户弹窗结束-->		
 	<!--技师选择弹窗开始-->
-	<!-- <el-dialog title="选择技师" :visible.sync="dialogTableVisible">
-		<div class="selectTechHL">
-		<el-input placeholder="输入要搜索的姓名" v-model="techName" class="width120"></el-input>                
-		</div>
-		<div  class="selectTechHR">
-		<el-select clearable placeholder="请选择服务站" v-model="techStationId">
-			<el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
-			</el-option>
-		</el-select>
-		</div>
-		<div class="FloatRight"><button class="button-large" @click="searchTeh">查询</button></div> 	
-		<div class="selfTableWrapONE">
-			<div class="table-d">
-				<table width="100%" class="selfTable">
-				<tr>
-					<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
-					<td  class="selfTableHEADTD" align="center" width="28%">头像</td>
-					<td  class="selfTableHEADTD" align="center" width="28%">姓名</td>
-					<td  class="selfTableHEADTD" align="center" width="10%">性别</td>
-					<td  class="selfTableHEADTD" align="center" width="26%">服务站</td>							
-				</tr>
-				<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1">
-					<td  align="center"><el-checkbox  v-model="item.techChecked"></el-checkbox></td>
-					<td  class="height110" align="center"><img class="imgStyle" :src="item.headPic+'?x-oss-process=image/resize,m_fill,h_100,w_100'"/></td>
-					<td  align="center">{{item.techName}}</td>
-					<td  align="center">
-					<span v-if="item.techSex =='male'">男</span>
-					<span v-if="item.techSex =='female'">女</span>									
-					</td>
-					<td  align="center">{{item.techStationName}}</td>							
-				</tr>
-				</table>
-			</div>            
-		</div> 	  	  
-		<div slot="footer" class="dialog-footer" style="text-align:center">
-			<button class="button-large" @click="submitForm2()">确 定</button>
-			<button class="button-cancel" @click="dialogTableVisible = false">取 消</button>
-		</div>
-	</el-dialog> -->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
@@ -258,12 +215,12 @@
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
 								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+								<td width="182px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
 								</td>
-								<td width="140px" class="fontSize12"  align="center">
+								<td width="141px" class="fontSize12"  align="center">
 											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
 											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
 								</td>							
@@ -352,7 +309,7 @@ export default {
       listTech: [],
       selectCommidty: [
         {
-          id: "1",
+          id: "0",
           checkAll: false,
           name: "大型灯",
           type: "1",
@@ -361,7 +318,16 @@ export default {
           number: 2
         },
         {
-          id: "5",
+          id: "1",
+          checkAll: false,
+          name: "面积（平米)",
+          type: "2",
+          pirce: "26",
+          payNum: "2",
+          number: 3
+        },        
+        {
+          id: "2",
           checkAll: false,
           name: "小型灯",
           type: "1",
@@ -370,48 +336,36 @@ export default {
           number: 2
         },
         {
-          id: "4",
-          checkAll: false,
-          roomId: "1",
-          testprice: [{ pirce: 26 }, { pirce: 52 }, { pirce: 78 }],
-          roomType: [
-            { key: "1", roomName: "一居室" },
-            { key: "2", roomName: "二居室" },
-            { key: "3", roomName: "三居室" }
-          ],
-          type: "3",
-          pirce: "26",
-          payNum: "2",
-          number: 1
-        },
-        {
-          id: "2",
-          checkAll: false,
-          name: "面积（平米)",
-          type: "2",
-          pirce: "26",
-          payNum: "2",
-          number: 3
-        },
-        {
           id: "3",
           checkAll: false,
-          roomId: "2",
-          testprice: [{ pirce: 26 }, { pirce: 52 }, { pirce: 78 }],
+          roomId: "1",
           roomType: [
-            { key: "1", roomName: "一居室" },
-            { key: "2", roomName: "二居室" },
-            { key: "3", roomName: "三居室" }
+            { key: "1", roomName: "一居室",pirce: 26},
+            { key: "2", roomName: "二居室",pirce: 52},
+            { key: "3", roomName: "三居室",pirce: 78}
           ],
           type: "3",
-          pirce: "26",
           payNum: "2",
           number: 1
-        }
+        },
+        {
+          id: "4",
+          checkAll: false,
+          roomId: "2",
+          roomType: [
+            { key: "1", roomName: "一居室",pirce: 26},
+            { key: "2", roomName: "二居室",pirce: 52},
+            { key: "3", roomName: "三居室",pirce: 78}
+          ],
+          type: "3",
+          payNum: "2",
+          number: 1
+        }        
+
       ],
       form: {
         custom: "",
-        phone: "13800138000",
+        customPhone: "",
         customName: "李四",
         serverAddress: "北京市朝阳区关东街11呼家楼",
         serverStation: "呼家楼服务站"
@@ -493,7 +447,9 @@ export default {
       //当前客户
       custom: "",
       customKeyFlag: false,
-      sum1: null
+      sum1: null,
+      numberA:null,
+      priceA:null
     };
   },
   computed: {
@@ -502,35 +458,85 @@ export default {
     }
   },
   methods: {
+    //存储选择技师对象
+    ChangeTech(obj){
+      if(obj.techChecked){
+          this.middleA.push(obj)          
+      }else{
+          this.middleA.remove(obj)          
+      }
+    },     
     //选中行改变
     rowChange(item) {
-      this.sum(item);
+      if(item.checkAll){
+          this.sumPlus(item);
+      }else{
+          this.sumDec(item);
+      }      
     },
     //计数器改变
-    numberChange(item) {
+    numberChange(item,index) {
+      this.numberA=0;      
       if (item.checkAll) {
-        this.sum(item);
+         this.numberA=this.$refs.aa[index].$children[0].$options.propsData.value    
+          this.$nextTick(() => {
+              if(this.numberA > item.number){
+                  this.dec(item)
+              }else{
+                  this.sum(item);
+              }  
+          })                
+      }else{
+         this.numberA=0;
       }
     },
     //居室改变
-    roomChange(item, roomId) {
+    roomChange(item) {
+      // this.$nextTick(() => {
+      //   console.log(name)
+      //   console.log(document.getElementById(name))
+      // })
+      this.priceA=0;
       if (item.checkAll) {
-        this.sum1 = this.sum1 + item.testprice[item.roomId].pirce;
-        this.sum(item);
+        console.log(item.roomId)
+        console.log(item.roomType[item.roomId-1].pirce)
+        this.priceA=item.roomType[item.roomId-1].pirce
+        this.sumRoom(this.priceA)
       }
     },
-    //计算总价
+    //居室改变总价变化
+    sumRoom(pirce){
+        console.log(pirce)
+        this.sum1 = this.sum1 + pirce;
+        this.form1.sumPrice = this.sum1;
+    },  
+    //计数器改变总价加计算
     sum(item) {
+      if (item.pirce != undefined) {
+        this.sum1 = this.sum1 + item.pirce*1;
+      }
+      this.form1.sumPrice = this.sum1;
+    },
+    //行选中总价加计算
+    sumPlus(item) {
       if (item.pirce != undefined) {
         this.sum1 = this.sum1 + item.pirce * item.number;
       }
       this.form1.sumPrice = this.sum1;
     },
-    //按面积数量变化
-    inputChange(item) {
-      if (item.checkAll) {
-        this.sum(item);
+    //行选中总价减计算    
+    sumDec(item) {
+      if (item.pirce != undefined) {
+        this.sum1 = this.sum1 - item.pirce * item.number;
       }
+      this.form1.sumPrice = this.sum1;
+    },    
+    //计数器改变总价减计算
+    dec(item){
+      if (item.pirce != undefined) {
+        this.sum1 = this.sum1 -item.pirce*1;
+      }
+      this.form1.sumPrice = this.sum1;       
     },
     //下一步
     next() {
@@ -540,8 +546,9 @@ export default {
     prev() {
       if (this.active-- <= 1) this.active = 1;
     },
-    //客户改变事件
+    //客户查询事件
     changeCustom(value) {
+      //根据手机号查询
       if (value != "") {
         this.customKeyFlag = true;
       } else {
@@ -676,15 +683,26 @@ export default {
       this.tabOptions = arr;
       this.dialogTableVisible = false;
     },
+    //选择技师弹窗取消
     cancelForm2() {
+      this.techName = "";
+      this.middleA = Object.assign([], this.tabOptions);
+      for (var a = 0; a < this.listTech.length; a++) {
+        this.listTech[a].techChecked = false;
+      }     
       this.dialogTableVisible = false;
     },
     //叉号点击关闭TAB
-    errorClose(obj, index) {
-      if (this.tabOptions.length) {
-        for (let a = 0; a < this.listTech.length; a++) {
+    errorClose(obj) {
+      if (this.tabOptions != undefined && this.tabOptions.length != 0) {
+        for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
             this.listTech[a].techChecked = false;
+          }
+        }
+        for (var b = 0; b < this.middleA.length; b++) {
+          if (obj.techId == this.middleA[b].techId) {
+            this.middleA.remove(this.middleA[b]);
           }
         }
         this.tabOptions.remove(obj);
@@ -968,9 +986,6 @@ export default {
 .height110 {
   height: 110px;
 }
-.imgStyle {
-  display: block;
-}
 .userHeaderStyle {
   width: 85px;
   height: 90px;
@@ -1147,11 +1162,11 @@ export default {
   position: relative;
 }
 .selfTableWrapONE {
-  margin-top: 20px;
+	margin-top: 20px;
   overflow: hidden;
   width: 660px;
   height: 280px;
-  position: relative;
+	position:relative;
 }
 .table-d {
   width: 677px;
@@ -1185,5 +1200,11 @@ export default {
   background: #eef1f6;
   height: 60px;
   border: none !important;
+}
+.tableHeader{position:absolute;z-index:99999;top:0px;}
+.selfTdStyle1 {
+  vertical-align:middle;
+  height: 70px;
+  line-height:70px;
 }
 </style>
