@@ -1173,7 +1173,7 @@ export default {
           obj.remark = this.ruleForm.desc;
           addVacation(obj)
             .then(data => {
-              if (data.data.code) {
+              if (data.data.code==1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1235,7 +1235,7 @@ export default {
             appLoginPassword: this.ruleForm2.checkPass
           })
             .then(data => {
-              if (data.data.code) {
+              if (data.data.code==1) {
                 this.$message({
                   message: data.data.data,
                   type: "success"
@@ -1294,7 +1294,7 @@ export default {
       this.listLoadingTech = true;
       technicianEditId({ id: item.id })
         .then(data => {
-          if (data.data.code) {
+          if (data.data.code==1) {
             this.listLoadingTech = false;
             this.technicianData = data.data.data;
             this.dialogVisibleEdit = true;
@@ -1494,7 +1494,7 @@ export default {
         .then(() => {
           technicianDelete({ id: item.id })
             .then(data => {
-              if (data.data.code) {
+              if (data.data.code==1) {
                 this.$message({
                   type: "success",
                   message: "删除成功!"
@@ -1573,7 +1573,7 @@ export default {
           this.personal.workTimes = this.teachArr;
           Technician(this.personal)
             .then(data => {
-              if (data.data.code) {
+              if (data.data.code==1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1629,7 +1629,7 @@ export default {
       this.listLoadingTech = true;
       ChooseTheCity(num, size, obj)
         .then(data => {
-          if (data.data.code) {
+          if (data.data.code==1) {
             this.listLoadingTech = false;
 
             this.Choose = data.data.data.cityCodes;

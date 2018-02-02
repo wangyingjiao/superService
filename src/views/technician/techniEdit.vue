@@ -1022,7 +1022,7 @@ export default {
         if(valid){
           this.otherInfo.id = this.techniEditId;
           technicianOther(this.otherInfo).then(data=>{
-           if(data.data.code){
+           if(data.data.code==1){
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1133,7 +1133,7 @@ export default {
             obj.jobLevel = _supplement.jobLevel;
             obj.description = _supplement.description;
             technicianPlus(obj).then(data=>{
-              if(data.data.code){
+              if(data.data.code==1){
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1154,11 +1154,11 @@ export default {
     technicianEdit(obj){
       technicianEdit(obj)
         .then(data => {
-          if (data.data.code) {
+          if (data.data.code==1) {
             this.$message({
               message: "保存成功",
               type: "success"
-			});
+			      });
           } else {
             
           }
@@ -1243,7 +1243,7 @@ export default {
           obj.workTimes = _perServer.workTimes
           obj.skillIds = _perServer.skillIds
           technicianServer(obj).then(data=>{
-            if(data.data.code){
+            if(data.data.code==1){
               this.$message({
                 message: "保存成功",
                 type: "success"
@@ -1406,7 +1406,7 @@ export default {
         if (valid) {
           familyAdd({ id: this.techniEditId, familyMembers: arr })
             .then(data => {
-              if (data.data.code) {
+              if (data.data.code==1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
