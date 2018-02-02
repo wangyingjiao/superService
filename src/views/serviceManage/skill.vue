@@ -23,8 +23,8 @@
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
                         <template scope="scope">
-                            <el-button class="el-icon-edit"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
-                            <el-button class="el-icon-delete" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
+                            <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
+                            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
                         </template>
                       </el-table-column>
               </el-table>

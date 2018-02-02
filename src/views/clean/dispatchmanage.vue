@@ -70,14 +70,14 @@
 							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn">
 									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
-											<el-button type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
+											<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
 										</div>						
 									</template>
 							</el-table-column>		
 							<el-table-column align="center">
 								<template scope="scope">
 									<div>
-										<el-button type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
+										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
 											改派记录
 										</el-button>
 									</div>

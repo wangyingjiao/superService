@@ -1,5 +1,6 @@
 @import './element-ui.scss';
 @import './mixin.scss';
+
 body {
   min-width: 960px;
   -moz-osx-font-smoothing: grayscale;
@@ -675,4 +676,20 @@ body {
   padding: 10px 0 10px 50px;
   background-color: #fbfdff;
   box-shadow: inset 0 2px 0 #f4f4f4;
+}
+.el-pager li.active{
+  @include backColor($pageBack,$pageBack)
+}
+#app .seize .el-switch.is-checked .el-switch__core{
+  @include backColor($switchBtn,$switchBtn)
+}
+#app .ceshi3{
+  border:1px solid $operationColor;
+  color: $operationColor;
+}
+#app .el-table{
+  @include tableWhole($tableSize,$tableColor,$tableTrHeight,$tableBackGround)
+}
+.el-select-dropdown__item.selected{
+  @include seleteColor($seleteColor,$seleteBack)
 }
