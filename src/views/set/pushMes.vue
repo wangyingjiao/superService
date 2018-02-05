@@ -165,6 +165,7 @@ export default {
      
     },
     handleSend(row) {
+      
       var obj = {
         id:row.id
       }
@@ -176,8 +177,6 @@ export default {
                   message: "发送成功!"
                 });
                 this.getList();
-              } else {
-                
               }
             })
             .catch(() =>{
