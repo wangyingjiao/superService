@@ -169,7 +169,6 @@ export default {
       var obj = {
         id:row.id
       }
-      console.log(obj)
       sendPushMes(obj).then(res=>{
               if (res.data.code === 1) {
                 this.$message({
