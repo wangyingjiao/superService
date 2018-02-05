@@ -58,10 +58,6 @@ export default {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
-      this.$message({
-                type: "success",
-                message: "主动退出"
-              });
       this.$store.dispatch("LogOut").then(() => {
         this.$router.push({ path: "/login" });
         location.reload(); // 为了重新实例化vue-router对象 避免bug
