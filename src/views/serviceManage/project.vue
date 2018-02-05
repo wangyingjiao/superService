@@ -195,7 +195,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
     <!-- 商品信息表格 -->
-                <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
+                <!-- <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
                   <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
@@ -236,14 +236,15 @@
                       <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
                     </template>
                   </el-table-column>
-                </el-table>
+                </el-table> -->
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addCommodity">
                 <span v-if="!addComm" class="fl btn_Span1">+</span>
                 <span v-if="addComm" class="fl btn_Span1">-</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
-              <el-collapse-transition>
+              <!-- <el-collapse-transition> -->
+			<!-- <el-dialog title="添加商品" :visible.sync="addCommodityFlag">
               <el-form 
                 v-if="addComm"
                 :model="goods_info"
@@ -320,7 +321,8 @@
                   <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消">
                 </el-form-item>
               </el-form>
-              </el-collapse-transition>
+			</el-dialog> -->
+              <!-- </el-collapse-transition> -->
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -436,6 +438,137 @@
       <!-- </div> -->
     <!-- 图文详情 完成 -->
 
+    <!-- 商品添加 -->
+	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" class="addCommidtyClass">
+		<el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
+                  <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
+                  <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
+                  <el-table-column prop="type" align="center" label="计量方式"> 
+                    <template scope="scope">
+                      <span v-show="scope.row.type=='num'">按数量</span>
+                      <span v-show="scope.row.type=='area'">按面积</span>
+                      <span v-show="scope.row.type=='house'">按居室</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="price" align="center" label="价格"> 
+                    <template scope="scope">
+                      <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
+                    </template>  
+                  </el-table-column>
+                  <el-table-column prop="convertHours" align="center" label="折算时长">
+                    <template scope="scope">
+                      <span>{{scope.row.convertHours+'小时 / 每人 / '+scope.row.unit}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column align="center" label="起步人数">
+                    <template scope="scope">
+                      <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> 
+                    <template scope="scope">
+                      <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="minPurchase" align="center" label="起购数量"> 
+                    <template scope="scope">
+                      <span>{{scope.row.minPurchase!=0? scope.row.minPurchase : 1}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="150" align="center"> 
+                    <template scope="scope">
+                      <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
+                      <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              <el-form 
+                :model="goods_info"
+                ref="goods_info"
+                label-position="left"
+                label-width="90px" 
+                style='padding:20px 0 0 20px'
+                :rules = "goods"
+                 >
+                <el-form-item label="商品名称:" prop="name">
+                  <el-input
+                    placeholder="请输入商品名称（1-24位）"
+                    style="width:70%"
+                    v-model="goods_info.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="商品单位:" prop="unit">
+                  <el-input 
+                    style="width:70%"
+                    placeholder="请输入单位名称（1-6位）"
+                    v-model="goods_info.unit"></el-input>
+                </el-form-item>
+
+                <el-form-item label="计量方式:" prop="type">
+                  <el-select class="filter-item" v-model="goods_info.type" placeholder="请选择" style="width:70%">
+                     <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
+                  </el-select>
+                </el-form-item>
+                
+                <el-form-item label="价格:" prop="price">
+                  <el-input v-model="goods_info.price" style="width:70%">
+                     <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
+                  </el-input>
+                </el-form-item>
+                <el-form-item label="折算时长:" prop="convertHours">
+                  <el-input v-model="goods_info.convertHours" style="width:70%">
+                    <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
+                  </el-input>
+                  <el-popover
+                      ref="popover1"
+                      placement="top-start"
+                      width="200"
+                      trigger="hover"
+                      content="请录入1单位所需服务时长（以小时为单位）
+例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
+                    </el-popover>
+                   <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
+                </el-form-item>
+             
+                <el-form-item label="起步人数:" class="seize" prop="startPerNum">
+                  <el-input
+                    placeholder="请输入起步人数(默认为1)"
+                    style="width:70%"
+                    v-model="goods_info.startPerNum"></el-input>
+                </el-form-item>
+
+                <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
+                  <el-input
+                    placeholder="请输入封顶人数"
+                    style="width:70%"
+                    v-model="goods_info.cappingPerNum"></el-input>
+                </el-form-item>
+
+                <el-form-item label="起购数量:" class="seize" prop="minPurchase">
+                  <el-input
+                    placeholder="请输入起购数量（默认为1）"
+                    style="width:70%"
+                    v-model="goods_info.minPurchase"></el-input>
+                </el-form-item>
+
+                <!-- <el-form-item class="seize bottimPro" style="width:70%">
+                  <input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
+                  <input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
+                  <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消">
+                </el-form-item> -->
+              </el-form>
+			   <div slot="footer" class="dialog-footer" style="text-align:center">
+				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
+                  	<input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
+                  	<!-- <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消"> -->
+					<input type="button" class="button-cancel btn-color-cancel" @click="resetForm()" value="取 消">
+				</div>
+			</el-dialog>
+        <!-- <el-dialog title="添加商品" :visible.sync="addCommodityFlag">
+			<addCommodity :measure="measure"></addCommodity>
+        </el-dialog> -->
+    <!-- 商品添加完成 -->
+
   </div>
 </div>
 </div>
@@ -471,6 +604,7 @@ import {
   deleteGoodsData
 } from "@/api/serviceManage";
 import imgService from '../../components/upload/upload.vue'
+import addCommodity from './addCommodity.vue'
 // import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
@@ -684,6 +818,7 @@ export default {
     }
     return {
       pageNumber:1,
+      addCommodityFlag:false,
       editName:{},
       customArr:[],
       jointCode:false,
@@ -889,9 +1024,10 @@ export default {
     },
     //添加商品
     addCommodity(){
-      this.resetForm()
-      this.handleEditFlag = false
-      this.addComm = !this.addComm
+		this.addCommodityFlag = true
+		this.resetForm('ser')
+		this.handleEditFlag = false
+		this.addComm = !this.addComm
     },
     converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
@@ -1029,7 +1165,7 @@ export default {
       this.fileList = [];
       this.ImageText = false;
     }, // 关闭图文
-    //编号失焦事件
+    //商品添加/编辑
     submitForm(formName) {
       this.$refs[formName].validate(valid=>{
         if(valid){
@@ -1040,7 +1176,8 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
-            this.handleEditFlag = false
+			this.handleEditFlag = false
+			// this.addCommodityFlag = false
           }else{
               if("id" in obj){
                 delete obj.id
@@ -1049,7 +1186,8 @@ export default {
                 delete obj.jointGoodsCode
               }
               this.basicForm.commoditys.push(obj)
-              this.resetForm('ser')
+			  this.resetForm('ser')
+			//   this.addCommodityFlag = false
           }
         }else{
           return false
@@ -1065,7 +1203,7 @@ export default {
       this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
       this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
       this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
-      this.addComm = true;
+    //   this.addComm = true;
     },
     //表格删除
     tableHandleDelete(index, item) {
@@ -1458,7 +1596,13 @@ export default {
     resetForm(ser) {
       if(this.$refs["goods_info"]){
         this.$refs["goods_info"].resetFields()
-      }
+	  }
+	  if(ser=='ser'){
+		this.addCommodityFlag = true
+	  }else{
+		this.addCommodityFlag = false
+		this.addComm = false
+	  }
       this.goods_info.name = ''
       this.goods_info.unit = ''
       this.goods_info.type = ''
@@ -1466,7 +1610,7 @@ export default {
       this.goods_info.convertHours = ''
       this.goods_info.minPurchase = "";
       this.goods_info.startPerNum = '';
-      this.goods_info.cappingPerNum = ''
+	  this.goods_info.cappingPerNum = ''
     },
     emptyingForm(){
       if( this.$refs["goods_info"]){
@@ -1474,7 +1618,7 @@ export default {
       }
       this.$refs["basic"].resetFields()
       this.jointCode = false
-      this.addComm = false
+    //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
       this.picFile = [] //清空图片
@@ -1507,7 +1651,7 @@ export default {
     }
   },
   components:{
-    imgService
+    imgService,addCommodity
   }
 };
 </script>
@@ -2189,5 +2333,8 @@ hr {
 .labelDav .el-form-item__label{
   padding-right: 0;
 }
-
+.addCommidtyClass .el-dialog__body .el-table{
+	margin-top: 0;
+	margin-bottom: 20px;
+}
 </style>

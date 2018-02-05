@@ -1027,8 +1027,10 @@ export default {
     //全职兼职切换
     jobNatureTable() {
       if (this.personal.jobNature == "part_time") {
-        this.teachArr = [];
         this.roomSelNum = [];
+        this.roomSel1Arr = [];
+        this.teachArr = [];
+        // this.roomSelNum = [];
         this.disbArr = [];
       }
     },
