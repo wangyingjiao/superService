@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
       
-      <el-table-column align="center" label="接收方手机号" prop="receivePhone">      
+      <el-table-column align="center" label="手机号" prop="receivePhone">      
       </el-table-column>
       
       <el-table-column align="center" label="读取状态" prop="isRead">      
