@@ -3,14 +3,14 @@
     <!-- 技能搜索开始 -->
     <div class="filter-container bgWhite padBot20">
       <el-input  class="search" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
-      <button @click="search" class="search-button btn_search el-icon-search"> 搜索</button>
+      <button @click="search" class="search-button btn_search el-icon-search btn-color"> 搜索</button>
     </div>
     <!-- 技能搜索结束-->
     <!-- 技能列表展示开始 -->
     <div class="app-container calendar-list-container">
       <div class="">
         <div class="bgWhite bgbot70" >
-          <button class="button-small btn_pad" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
+          <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('skill_insert') != -1" @click="add('add')">新增</button>
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading"  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
@@ -23,8 +23,8 @@
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
                         <template scope="scope">
-                            <el-button class="el-icon-edit"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
-                            <el-button class="el-icon-delete" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
+                            <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
+                            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
                         </template>
                       </el-table-column>
               </el-table>
@@ -75,8 +75,8 @@
             </el-form-item>           
           </el-form>    
           <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button  class="button-large"  :disabled="submitFlag"  @click="submitForm('ruleForm2')">保存</button>
-              <button class="button-cancel"  @click="resetForm('ruleForm2')">取消</button>
+              <button  class="button-large btn-color"  :disabled="submitFlag"  @click="submitForm('ruleForm2')">保存</button>
+              <button class="button-cancel btn-color-cancel"  @click="resetForm('ruleForm2')">取消</button>
           </div>          
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
@@ -129,8 +129,8 @@
                     </div>            
               </div>             
               <div slot="footer" class="dialog-footer selfFooter">
-                  <button class="button-large"   @click="submitForm2()">保存</button>
-                  <button  class="button-cancel"  @click="resetForm2()">取消</button>
+                  <button class="button-large btn-color"   @click="submitForm2()">保存</button>
+                  <button  class="button-cancel btn-color-cancel"  @click="resetForm2()">取消</button>
               </div>           
         </el-dialog>
         <!-- 选择技师弹出层结束 -->

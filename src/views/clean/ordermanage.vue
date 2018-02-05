@@ -25,7 +25,7 @@
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>						  
-			  <button type="button" class="search-button floatRight btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+			  <button type="button" class="search-button floatRight btn_search btn-color"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">					
 					<el-date-picker
 						v-model="startTime"
@@ -133,7 +133,7 @@
 					</el-table-column>	  
 					<el-table-column align="center" label="操作" width="150" fixed="right">
 					<template scope="scope">
-							<el-button type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
+							<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
 					</template>
 					</el-table-column>
 				</el-table>

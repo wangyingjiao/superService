@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- 搜索开始 -->
-    <div class="filter-container bgWhite">
+    <!-- <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
           <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
@@ -10,7 +10,7 @@
       </el-input>
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
-    </div>
+    </div> -->
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
@@ -30,10 +30,20 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="消息标题" prop="title">      
+      <el-table-column align="center" width="150px" label="消息标题" prop="title">   
+        <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.title.length < 5" :content="scope.row.title">
+             <div class="tool" >{{scope.row.title}}</div>
+           </el-tooltip>
+        </template>      
       </el-table-column>
       
-      <el-table-column align="center" label="消息内容" prop="message">      
+      <el-table-column align="center" width="150px" label="消息内容" prop="message"> 
+        <template scope="scope">
+           <el-tooltip placement="left" :disabled="scope.row.message.length < 5" :content="scope.row.message">
+             <div class="tool" >{{scope.row.message}}</div>
+           </el-tooltip>
+        </template>
       </el-table-column>
       
       <el-table-column align="center" label="接收方手机号" prop="receivePhone">      
@@ -145,15 +155,34 @@ export default {
       this.pageNumber = 1;
       this.pageSize = val;
       this.listLoading = true;
+      this.getList()
       
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.listLoading = true;
+      this.getList()
      
     },
     handleSend(row) {
-      
+      var obj = {
+        id:row.id
+      }
+      console.log(obj)
+      sendPushMes(obj).then(res=>{
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "发送成功!"
+                });
+                this.getList();
+              } else {
+                
+              }
+            })
+            .catch(() =>{
+              this.listLoading = false
+            });  
     }
   }
 };
