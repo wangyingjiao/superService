@@ -51,9 +51,11 @@
 									<tr>
 										<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
 										<td  class="selfTableHEADTD" align="center" width="28%">商品名称</td>
-										<td  class="selfTableHEADTD" align="center" width="28%">单价</td>
+                    <td  class="selfTableHEADTD" align="center" width="10%">单位</td>
+										<td  class="selfTableHEADTD" align="center" width="18%">单价</td>
 										<td  class="selfTableHEADTD" align="center" width="10%">起购数</td>
-										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>							
+										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>
+                    <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
 									</tr>
 									<tr v-for="(item,index) in selectCommidty" :key="item.id" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.checkAll"></el-checkbox></td>
@@ -66,9 +68,10 @@
 												</el-select>
 											</span>
 										</td>
+                    <td  align="center">{{item.unit}}</td>
 										<td  align="center">
 											<span v-if="item.type=='1' || item.type=='2'">{{item.pirce}}</span>
-											<span v-if="item.type=='3'" :ref='item.id'>
+											<span v-if="item.type=='3'">
                         <span v-if="item.roomId =='0'">{{item.roomType[item.roomId].pirce}}</span>
 												<span v-if="item.roomId =='1'">{{item.roomType[item.roomId].pirce}}</span>
 												<span v-if="item.roomId =='2'">{{item.roomType[item.roomId].pirce}}</span>                        
@@ -76,15 +79,18 @@
 										</td>
 										<td  align="center">{{item.payNum}}</td>
 										<td class="height30" align="center">
-											<span v-if="item.type=='1' || item.type=='2'"><el-input-number class="selfINputNumStyle" :ref="item.id" @change="numberChange(item,item.id)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number></span>
+                      <el-input-number class="selfINputNumStyle" v-if="item.type=='1' || item.type=='2'"  @change="numberChange(item,item.id)" v-model="item.number" :min="parseInt(item.payNum)"></el-input-number>
 											<span v-if="item.type=='3'">{{item.number}}</span>											
-										</td>							
+										</td>
+                    <td width="50px" class="fontSize12"  align="center" :ref="item.id" style="display:none;">
+                        {{item.subtotal}}
+                    </td>                     							
 									</tr>
 								</table>
 							</div>   																																
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice" required>
-							<span>￥{{form1.sumPrice}}元</span>
+							<span>￥{{form1.sumPrice.toFixed(2)}}</span>
 						</el-form-item>																																														
 					</el-form>
 				</div>
@@ -219,7 +225,7 @@
 								<td width="141px" class="fontSize12"  align="center">
 											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
 											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
-								</td>							
+								</td>               							
 							</tr>
 					</div>
 					</table>
@@ -309,18 +315,22 @@ export default {
           checkAll: false,
           name: "大型灯",
           type: "1",
+          unit:'个',
           pirce: "26",
           payNum: "2",
-          number: 2
+          number: 2,
+          subtotal:52
         },
         {
           id: "ab",
           checkAll: false,
           name: "面积（平米)",
           type: "2",
+          unit:'平米',
           pirce: "26",
-          payNum: "2",
-          number: 3
+          payNum: "20",
+          number: 20,
+          subtotal:520
         },        
         {
           id: "ff",
@@ -332,34 +342,23 @@ export default {
             { key: "2", roomName: "三居室",pirce: 78}
           ],
           type: "3",
+          unit:'间',
           pirce:'52',
           payNum: "2",
-          number: 1
+          number: 1,
+          subtotal:52
         },
         {
           id: "cd",
           checkAll: false,
           name: "小型灯",
           type: "1",
+          unit:'个',
           pirce: "13",
           payNum: "2",
-          number: 2
-        },        
-        {
-          id: "dd",
-          checkAll: false,
-          roomId: "2",
-          roomType: [
-            { key: "0", roomName: "一居室",pirce: 80},
-            { key: "1", roomName: "二居室",pirce: 100},
-            { key: "2", roomName: "三居室",pirce: 200}
-          ],
-          type: "3",
-          pirce:'200',
-          payNum: "2",
-          number: 1
+          number: 2,
+          subtotal:26
         }        
-
       ],
       form: {
         custom: "",
@@ -447,7 +446,7 @@ export default {
       customKeyFlag: false,
       sum1: null,
       numberA:null,
-      priceA:[]
+      priceA:null
     };
   },
   computed: {
@@ -467,68 +466,41 @@ export default {
     //选中行改变
     rowChange(item) {
       if(item.checkAll){
-         this.sumPlus(item); 
+        this.form1.sumPrice=this.form1.sumPrice+item.subtotal; 
       }else{
-         this.sumDec(item);
-      } 
-           
+        this.form1.sumPrice=this.form1.sumPrice-item.subtotal;
+      }
+               
     },
     //计数器改变
     numberChange(item,index) {
-      this.numberA=0;      
-      if (item.checkAll) {            
-          this.$nextTick(() => {
-             this.numberA=this.$refs[index][0].$children[0].$options.propsData.value 
-              if(this.numberA > item.number){
-                  this.dec(item)
-              }else{
-                  this.sum(item);
-              }  
-          })                
+      this.$nextTick( () => {
+          item.subtotal=item.number*item.pirce;
+      })            
+      if(item.checkAll){
+        this.$nextTick( () => {            
+            this.form1.sumPrice=this.form1.sumPrice+item.subtotal-this.$refs[index][0].innerText
+        })
       }else{
-         this.numberA=0;
+        this.form1.sumPrice=this.form1.sumPrice+0;
       }
+     
     },
     //居室改变
     roomChange(item,name) {
-      item.pirce=this.$refs[name][0].innerText;
-      if (item.checkAll) {
-            this.sum1 = this.sum1 + item.pirce*1;           
-            this.priceA.push(item.pirce)
-            console.log(this.priceA)            
-            // this.sum1 = this.sum1 -this.priceA[this.priceA.length-2]*1;                     
-           console.log(this.sum1)
-           this.form1.sumPrice = this.sum1;
+      this.$nextTick( () => {
+        item.subtotal=item.roomType[item.roomId].pirce
+      })      
+      if(item.checkAll){
+        this.$nextTick( () => {
+          this.form1.sumPrice=this.form1.sumPrice+item.subtotal-this.$refs[name][0].innerText
+        })
       }else{
+         this.form1.sumPrice=this.form1.sumPrice+0;
       }
-    },
-    //计数器改变总价加计算
-    sum(item) {
-      if (item.pirce != undefined) {
-        this.sum1 = this.sum1 + item.pirce*1;
-      }
-      this.form1.sumPrice = this.sum1;
-    },
-    //行选中总价加计算
-    sumPlus(item) {
-      if (item.pirce != undefined) {
-        this.sum1 = this.sum1 + item.pirce * item.number;
-      }
-      this.form1.sumPrice = this.sum1;
-    },
-    //行选中总价减计算    
-    sumDec(item) {
-      if (item.pirce != undefined) {
-        this.sum1 = this.sum1 - item.pirce * item.number;
-      }
-      this.form1.sumPrice = this.sum1;
-    },    
-    //计数器改变总价减计算
-    dec(item){
-      if (item.pirce != undefined) {
-        this.sum1 = this.sum1 -item.pirce*1;
-      }
-      this.form1.sumPrice = this.sum1;       
+      // item.pirce=this.$refs[name][0].innerText;
+      // console.log(item.)
+      // console.log(item)
     },
     //下一步
     next() {
