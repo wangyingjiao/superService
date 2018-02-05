@@ -993,6 +993,7 @@ export default {
     jobStatusTable(){
       if(this.perServer.jobNature == 'part_time'){
         this.perServer.workTimes = []
+        this.roomSel1Arr = []
         this.roomSelNum = []
         this.disbArr = []
       }
