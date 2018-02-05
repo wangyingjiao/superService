@@ -875,16 +875,15 @@ export default {
               type: "success",
               message: data.data.data
           });
-          this.getList(this.pageNumber, this.pageSize);
-        }else{
-         
         }
-        return false
-      }).catch(error=>{
-        this.$message({
-              type: "error",
+        if(data.data.code==3){
+           this.$message({
+              type: "warning",
               message: data.data.data
-        });
+          });
+        }
+        this.getList(this.pageNumber, this.pageSize);
+      }).catch(error=>{
         return false
       })
     },
