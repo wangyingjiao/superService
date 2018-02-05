@@ -16,7 +16,7 @@
 				<div class="stepContent"  v-if="active == 1">
 					<el-form ref="form" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:" prop="customPhone">
-              <el-input  class="search"   placeholder="请输入客户手机号" v-model="form.customPhone"></el-input>
+              <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="form.customPhone"></el-input>
 							<div  class="selftSerchBut"  @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
@@ -29,8 +29,11 @@
 							<el-form-item label="服务地址:" prop="serverAddress">
 								{{form.serverAddress}}
 							</el-form-item>
-							<el-form-item label="所属服务站:" prop="serverStation">
-								<span class="fontSize12">{{form.serverStation}}</span>
+							<el-form-item label="所属服务站:" prop="serverStation1">
+                <el-select clearable  class="severChangeStyle" filterable v-model="form.serverStation1" placeholder="请选择">
+                  <el-option v-for="item in form.serverStation" :key="item.id" :label="item.name" :value="item.id">
+                  </el-option>
+                </el-select>                
 							</el-form-item>	
 						</div>																										
 					</el-form>						
@@ -38,14 +41,18 @@
 				<!--步骤1显示区域结束-->
 				<!--步骤2显示区域开始-->
 				<div class="stepContent"  v-if="active == 2">
-					<el-form ref="form1" :model="form1" label-width="100px" label-position="left">
-						<el-form-item label="服务项目:" prop="serverPro" required>
+					<el-form ref="form1" :rules="rules3" :model="form1" label-width="100px" label-position="left">
+						<el-form-item label="服务项目:" prop="serverPro">
 							<el-select clearable  class="severChangeStyle" filterable v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
 								<el-option v-for="item in serverOptions" :key="item.key" :label="item.serverName" :value="item.key">
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="选择商品:"  required>
+						<el-form-item label="选择商品:"  prop="commidty">
+							<el-select style="display:none" class="severChangeStyle" multiple v-model="form1.commidty" placeholder="请选择">
+								<el-option v-for="item in selectCommidty" :key="item.id" :label="item.name" :value="item.id">
+								</el-option>
+							</el-select>              
 							<div class="table-d1">
 								<table width="80%" class="selfTable">
 									<tr>
@@ -89,16 +96,21 @@
 								</table>
 							</div>   																																
 						</el-form-item>
-						<el-form-item label="总价:" prop="sumPrice" required>
-							<span>￥{{form1.sumPrice.toFixed(2)}}</span>
+						<el-form-item label="总价:" prop="sumPrice">
+              <!-- <span class="selfLabelStyle">*</span> -->	
+							<span>￥{{form1.sumPrice}}.00</span>
 						</el-form-item>																																														
 					</el-form>
 				</div>
 				<!--步骤2显示区域结束-->
 				<!--步骤3显示区域开始-->
 				<div class="stepContent" v-if="active == 3">
-					<el-form ref="form2" :model="form2" label-width="100px" label-position="left">
-						<el-form-item label="技师:" prop="" required>
+					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
+						<el-form-item label="技师:" prop="selectTech">
+							<el-select style="display:none" class="severChangeStyle" multiple v-model="form2.selectTech" placeholder="请选择">
+								<el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
+								</el-option>
+							</el-select>               
 							<span  class="button-cancel stepThreeBut" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
@@ -109,32 +121,29 @@
 								</div>
 							</div>																	
 						</el-form-item>																																													
-					</el-form>          
-					<el-form ref="form3" :model="form3" label-width="100px" label-position="left">
-						<el-form-item label="选择日期:" prop="severTime" required>
-							<el-date-picker
-								v-model="severTime"                      
-								placeholder="年-月-日"                     
-								:type="select"
-								 class="width400 marginLeft20"
-								 @change='dateChange'
-								 popper-class="selfTestStyle1"
-								:picker-options="pickerOptions0"
-								>
-							</el-date-picker>							
-						</el-form-item>
-						<el-form-item label="选择时间:" prop="severTime1" required>
+            <el-form-item label="选择日期:" prop='severTime' >
+                <el-select v-model="form2.severTime" class="width200"  @change='dateChange' placeholder="请选择">
+                  <el-option
+                    v-for="item in options2"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>                      
+            </el-form-item>            
+						<el-form-item label="选择时间:" prop="severTime1">
+              <el-input type="hidden" value='' v-model='form2.severTime1'></el-input> 
 							<div class="marginTopDec10">
-							   <div class="selfSeverTimeSt" ref="TimeWrap" v-for="(value,index,key) in 20" :key="index" @click="timeChange(index)">08:30</div>
+                 <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
 							</div>														
 						</el-form-item>									
-						<el-form-item label="客户备注:" prop="textarea" class="marginLeft10 fontSize12">
+						<el-form-item label="客户备注:" prop="textarea" class="fontSize12">
 							<el-input
 								type="textarea"
 								:rows="3"
 								placeholder="请输入内容"
 								v-model="textarea"
-								class="width400  marginLeft10"
+								class="width400"
 								>
 							</el-input>						
 						</el-form-item>	
@@ -145,7 +154,7 @@
         <div class="NextPrevWrap">
           <span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3" @click="prev">上一步</span>
           <span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2"  @click="next">下一步</span>					
-          <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder">保存</span>		
+          <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder('form2')">保存</span>		
         </div>
         <!--上、下步按钮结束-->        
 			</div>
@@ -248,7 +257,6 @@ import {
   saveCus //保存客户（新增）
 } from "@/api/customer";
 export default {
-  name: "addorder",
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!value) {
@@ -285,10 +293,30 @@ export default {
         }
       }
     };
+    var checksum = (rule, value, callback) => {
+      if (value == 0) {
+        callback(new Error("请选择商品"));
+      } else {
+      }
+    };
+    var checkDate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请选择日期"));
+      } else {
+      }
+    };     
     return {
+      changTime: "",
+      options2:[],
+      timeObj:[],
       middleA: [],
       techSaveFlag: false,
-      form2: {},
+      form2: {
+         selectTech:[],
+         severTime:'',
+         severTime1:'',
+         
+      },
       btnShow: JSON.parse(localStorage.getItem("btn")),
       //服务站下拉选项
       options: [],
@@ -365,18 +393,46 @@ export default {
         customPhone: "",
         customName: "李四",
         serverAddress: "北京市朝阳区关东街11呼家楼",
-        serverStation: "呼家楼服务站"
-      },
+        serverStation1: "1",
+        serverStation: [
+          {
+            id:"1",
+            name:"呼家楼服务站1"
+          },
+          {
+            id:"2",
+            name:"呼家楼服务站2"
+          },
+          {
+            id:"3",
+            name:"呼家楼服务站3"
+          },
+          {
+            id:"4",
+            name:"呼家楼服务站4"
+          }                        
+          ],        
+      },      
+
       form1: {
         serverPro: "",
-        sumPrice: 0
+        commidty: [],
+        sumPrice: 0,
       },
       form3: {
         date: ""
       },
       active: 1,
       rules2: {
-        phone: [{ validator: checkPhone, trigger: "blur" }]
+        selectTech: [
+          { required: true,type: "array", message: "请选择技师", trigger: "change" }
+        ],
+        severTime:[
+          { required: true,validator: checkDate, message: "请选择服务日期", trigger: "change" }
+        ],
+        severTime1:[
+          { required: true, message: "请选择服务时间", trigger: "change" }
+        ]
       },
       ruleForm: {
         name: "",
@@ -390,6 +446,17 @@ export default {
         areaCodes: [],
         addrLongitude: "",
         addrLatitude: ""
+      },
+      rules3:{
+        serverPro: [
+          { required: true, message: "请选择服务项目", trigger: "change" }
+        ],
+        commidty: [
+          { required: true,type: "array", message: "请选择商品", trigger: "change" }
+        ],
+        sumPrice:[
+          { required: true,type:'number',validator: checksum, message: "请选择商品", trigger: "change" }
+        ]        
       },
       rules: {
         name: [
@@ -428,9 +495,6 @@ export default {
       ],
       //客户备注
       textarea: "",
-      //服务时间
-      severTime: "",
-      severTime1: "",
       //当前电话
       customPhone: 13821209999,
       //当前客户姓名
@@ -498,17 +562,33 @@ export default {
       }else{
          this.form1.sumPrice=this.form1.sumPrice+0;
       }
-      // item.pirce=this.$refs[name][0].innerText;
-      // console.log(item.)
-      // console.log(item)
     },
     //下一步
     next() {
       if (this.active++ >= 3) this.active = 1;
+      if(this.active == 3){
+        var arr=[];
+        for(var a=0;a<this.selectCommidty.length;a++){
+          if(this.selectCommidty[a].checkAll){
+             arr.push(this.selectCommidty[a])
+          }
+        }
+        this.form1.commidty=arr;
+        this.$refs['form1'].validate(valid => {
+          if (valid) {
+          }else{
+            this.active=2            
+            this.form1.commidty=[];
+          }
+        })
+      }else{
+           this.form1.commidty=[];
+      }
+      
     },
     //上一步
     prev() {
-      if (this.active-- <= 1) this.active = 1;
+      if (this.active-- <= 1) this.active = 1;      
     },
     //客户查询事件
     changeCustom(value) {
@@ -672,29 +752,40 @@ export default {
       }
     },
     //确认下单按钮点击
-    confirmOrder() {},
+    confirmOrder(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            console.log('aaa')
+          }else{
+            console.log('bbb')
+          }
+        })
+
+    },
     //POI搜索功能调起
     test(area) {
       var that = this;
       var inputname = this.$refs.pickerInput;
       var inputname1 = this.$refs.pickerInput1;
-      AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {
-        let areaCodeChange = new Promise((resolve,reject)=>{
+      
+      AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {       
             var obj = {
               city: area,
               input: inputname
             };
             var poiPicker = new PoiPicker(obj);
-            poiPicker.onCityReady(function() {
-              poiPicker.searchByKeyword(inputname.value);
-              poiPicker.clearSearchResults();
-              poiPicker.clearSuggest();
-            });
+            
+            let areaCodeChange = new Promise((resolve,reject)=>{
+                poiPicker.onCityReady(function() {
+                  poiPicker.searchByKeyword(inputname.value);
+                  poiPicker.clearSearchResults();
+                  poiPicker.clearSuggest();
+                });
+                resolve(obj.city)
+            })
+           
             //初始化poiPicker
             poiPickerReady(poiPicker);        
-        })
-        return areaCodeChange
-
       });
 
       function poiPickerReady(poiPicker) {
@@ -721,14 +812,56 @@ export default {
     },
     //日期变化时改变时间对象
     dateChange(value) {
+      this.form2.severTime=value;
+      var that = this;
+      for (var b = 0; b < this.options2.length; b++) {
+        if (val == this.options2[b].value) {
+          if (this.options2[b].serviceTime != undefined) {
+            this.timeObj = this.options2[b].serviceTime;
+          }
+          if (this.options2[b].label != undefined) {
+            this.changTime = this.options2[b].label;
+          }
+        }
+      }
+      if (this.timeObj != undefined && this.timeObj.length != 0) {
+        //样式复位
+        this.$nextTick(() => {
+          for (var a = 0; a < this.timeObj.length; a++) {
+            that.$set(this.timeObj[a], "selected", false);
+            that.$refs.TimeWrap[a].style.borderColor = "#fff";
+            that.$refs.TimeWrap[a].style.color = "#000";
+            that.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+            that.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+          }
+        });
+      }      
     },
     //时间选项点击
-    timeChange(index) {
-      for (var a = 0; a < this.$refs.TimeWrap.length; a++) {
+    // timeChange(index) {
+    //   for (var a = 0; a < this.$refs.TimeWrap.length; a++) {
+    //     this.$set(this.timeObj[a], "selected", false);
+    //     if (a == index) {
+    //       this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+    //       this.$refs.TimeWrap[a].style.color = "#4c70e8";
+    //       this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
+    //     } else {
+    //       this.$refs.TimeWrap[a].style.borderColor = "#fff";
+    //       this.$refs.TimeWrap[a].style.color = "#000";
+    //       this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+    //       this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+    //     }
+    //   }
+    // },
+    timeChange(index, obj) {
+      for (var a = 0; a < this.timeObj.length; a++) {
+        this.$set(this.timeObj[a], "selected", false);
         if (a == index) {
           this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
           this.$refs.TimeWrap[a].style.color = "#4c70e8";
           this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
+          this.timeObj[a].selected = !this.timeObj[a].selected;
+          this.form2.severTime1 = this.timeObj[a].serviceTimeStr;
         } else {
           this.$refs.TimeWrap[a].style.borderColor = "#fff";
           this.$refs.TimeWrap[a].style.color = "#000";
@@ -736,35 +869,27 @@ export default {
           this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
         }
       }
-    },
+    },    
     //选择技师弹出层查询按钮
     searchTeh() {
-      this.$nextTick(() => {
-        //前端定位
-        var falg1 = 0;
-        var len = this.listTech.length;
-        for (var i = 0; i < len; i++) {
-          if (
-            this.listTech[i].techName == this.techName ||
-            this.listTech[i].techStationId == this.techStationId
-          ) {
-            falg1 = 1;
-            this.$refs.tableItem1[i].scrollIntoView();
-            this.$refs.tableItem1[i].style.background = "#eee";
-          } else {
-            this.$refs.tableItem1[i].style.background = "#fff";
+      var obj = {
+        techName: this.techName,
+        techStationId: this.techStationId
+      };
+      //服务技师获取
+      orderServer(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+              for (var b = 0; b < this.middleA.length; b++) {
+                for (var a = 0; a < this.listTech.length; a++) {
+                  if (this.listTech[a].techId == this.middleA[b].techId) {
+                    this.listTech[a].techChecked = true;
+                  }
+                }
+              }
           }
-        }
-        if (falg1 == 0) {
-          var that = this;
-          this.promShow1 = true;
-          setTimeout(function() {
-            that.promShow1 = false;
-          }, 2000);
-        } else {
-          this.promShow1 = false;
-        }
-      });
+        })
+        .catch(res => {});
     }
   },
   mounted() {
@@ -774,6 +899,7 @@ export default {
 };
 </script>
 <style  lang="scss" scoped>
+.selfLabelStyle{display:inline-block;position:absolute;left:-100px;color:red;}
 .dispatchTechNameSearch {
   width: 180px;
   margin-left: 15px;
@@ -869,6 +995,7 @@ export default {
   width: 200px;
   height: 34px;
   line-height: 34px;
+  margin-left:0px;
   display: inline-block;
 }
 .stepThreeSelfTop {
@@ -901,6 +1028,9 @@ export default {
 .width400 {
   width: 400px;
 }
+.width200 {
+  width: 200px;
+}
 .selfAddressStyle {
   margin-left: -5px;
   width: 200px;
@@ -908,8 +1038,8 @@ export default {
 .marginLeft10 {
   margin-left: 10px;
 }
-.marginLeft20 {
-  margin-left: 20px;
+.marginLeft16 {
+  margin-left: 16px;
 }
 .NextPrevWrap {
   position: absolute;
