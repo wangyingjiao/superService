@@ -83,12 +83,6 @@
            </el-tooltip>
         </template>
       </el-table-column>
-      
-      <!-- <el-table-column align="center" label="操作">
-        <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
-        </template>
-      </el-table-column> -->
 
     </el-table>
 
@@ -133,6 +127,7 @@ export default {
         requestUri: "请求地址",
         params: "提交数据"
       },
+      //搜索数据
       search: {
         type: "",
         val: "",
@@ -147,38 +142,52 @@ export default {
     this.getList();
   },
   methods: {
+    // 获取列表
     getList() {
       this.listLoading = true;
+      // 事件类型转换
+       var obj = {};
       if (this.search.startTime) {
         var startTime = util.formatDate.format(
           new Date(this.search.startTime),
           "yyyy-MM-dd hh:mm:ss"
         );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
       }
       if (this.search.endTime) {
         var endTime = util.formatDate.format(
           new Date(this.search.endTime),
-          "yyyy-MM-dd hh:mm:ss"
+          "yyyy-MM-dd 23:59:59"
         );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
       }
 
       if (this.search.type == "type") {
-        var obj = {
-          type: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+        var type = {
+          type: this.search.val
         };
+        obj = Object.assign(obj, type);
       } else if (this.search.type == "title") {
-        var obj = {
-          title: this.search.val,
-          startTime: startTime,
-          endTime: endTime
+        var title = {
+          title: this.search.val
         };
-      } else {
-        var obj = {
-          startTime: startTime,
-          endTime: endTime
+        obj = Object.assign(obj, title);
+      } else if (this.search.type == "requestUri") {
+        var requestUri = {
+          requestUri: this.search.val
         };
+        obj = Object.assign(obj, requestUri);
+      } else if (this.search.type == "params") {
+        var params = {
+          params: this.search.val
+        };
+        obj = Object.assign(obj, params);
       }
       getLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
@@ -206,211 +215,19 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      console.log(obj);
-      getLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+     this.getList()
     },
     //切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.listLoading = true;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      getLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+     this.getList()
     },
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.listLoading = true;
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      getLog(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList()
     },
     //删除
     handleDelete(row) {

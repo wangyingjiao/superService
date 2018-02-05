@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
       
-      <el-table-column align="center" label="接收方手机号" prop="receivePhone">      
+      <el-table-column align="center" label="手机号" prop="receivePhone">      
       </el-table-column>
       
       <el-table-column align="center" label="读取状态" prop="isRead">      
@@ -165,10 +165,10 @@ export default {
      
     },
     handleSend(row) {
+      
       var obj = {
         id:row.id
       }
-      console.log(obj)
       sendPushMes(obj).then(res=>{
               if (res.data.code === 1) {
                 this.$message({
@@ -176,8 +176,6 @@ export default {
                   message: "发送成功!"
                 });
                 this.getList();
-              } else {
-                
               }
             })
             .catch(() =>{

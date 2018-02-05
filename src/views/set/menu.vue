@@ -1,17 +1,6 @@
 <template>
 <div>
-  <!-- 搜索开始 -->
-    <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
-        <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
-          <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
-          </el-option>
-        </el-select>
-      </el-input>
 
-       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
-    </div>
-    <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
       <button class="button-small btn_pad" @click="handleCreate">新增</button>
@@ -128,11 +117,11 @@
     </el-table>
 <!-- 表格结束 -->
     <!-- 分页器 -->
-    <div v-if="!listLoading" class="pagination-container">
+    <!-- <div v-if="!listLoading" class="pagination-container">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div>
+    </div> -->
     <!-- 弹窗 -->
     <el-dialog 
       :title="textMap[dialogStatus]"
@@ -161,10 +150,10 @@
             placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
           </el-form-item>
            
-          <el-form-item label="链接:" prop="permission">
+          <el-form-item label="链接:">
             <el-input
            class="form_item"
-            placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
+            placeholder="请输入2-15位的权限标识" v-model.trim="temp.href"></el-input>
           </el-form-item>
 
           <el-form-item label="图标:">
@@ -174,8 +163,8 @@
           </el-form-item>
 
            <el-form-item label="是否显示:">
-             <el-radio v-model="temp.isShow" label="yes">是</el-radio>
-             <el-radio v-model="temp.isShow" label="no">否</el-radio>
+             <el-radio v-model="temp.isShow" label="1">是</el-radio>
+             <el-radio v-model="temp.isShow" label="0">否</el-radio>
           </el-form-item>
 
           </el-form>
@@ -227,13 +216,14 @@ export default {
         { label: "build号", value: "build" }
       ],
       textMap: {
-        update: "编辑",
-        create: "新增"
+        update: "编辑菜单",
+        create: "新增子菜单"
       },
       dialogFormVisible: false,
       dialogStatus: "",
       temp: {
-        parent: "",
+        id:"",
+        parentId: "",
         parentIds: "",
         name: "",
         href: "",
@@ -243,8 +233,12 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: "请输入 2 到 6 位的菜单名称", trigger: "blur" },
-          { min: 2, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
+          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+        ],
+        permission:[
+          {required:true, message:"请输入2-15位的权限标识",trigger:"blur"},
+          {min:2,max:15, message:"请输入2-15位的权限标识"}
         ]
       },
       tableKey: 0,
@@ -255,52 +249,10 @@ export default {
     this.getList();
   },
   methods: {
+    // 获取列表
     getList() {
       this.listLoading = true;
       var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "versionNumber") {
-        var versionNumber = {
-          versionNumber: this.search.val
-        };
-        obj = Object.assign(obj, versionNumber);
-      } else if (this.search.type == "build") {
-        var build = {
-          build: this.search.val
-        };
-        obj = Object.assign(obj, build);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-
       getMenu(obj)
         .then(res => {
           if (res.data.code == 1) {
@@ -319,73 +271,7 @@ export default {
           this.listLoading = false;
         });
     },
-    handleFilter() {
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "versionNumber") {
-        var versionNumber = {
-          versionNumber: this.search.val
-        };
-        obj = Object.assign(obj, versionNumber);
-      } else if (this.search.type == "build") {
-        var build = {
-          build: this.search.val
-        };
-        obj = Object.assign(obj, build);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      console.log(obj, "搜索条件");
-      getMenu(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
-    },
+    
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
@@ -396,12 +282,22 @@ export default {
       this.pageNumber = val;
       this.getList();
     },
-    handleCreate() {
+    handleCreate(row) {
+      this.temp.isShow = '1'
+      if(row.parentId){
+        this.temp.parentId = row.id
+      }else{
+        this.temp.parentId = "1"
+      }
+      if(row.parentIds){
+        this.temp.parentIds = row.parentIds + row.id
+      }else{
+        this.temp.parentIds = "0,1,"
+      }
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
     },
     handleUpdate(row) {
-      return;
       this.listLoading = true;
       this.dialogStatus = "update";
       this.selectState = true;
@@ -409,19 +305,19 @@ export default {
         id: row.id
       };
       // 请求回显的数据
-      // setClass(obj).then(res => {
-      //   this.listLoading = true;
-      //   if (res.data.code == 1) {
-      //     var data = res.data.data;
-      //     this.listLoading = false;
-      //     this.rowId = row.id;
-      //     this.temp = Object.assign({}, row);
-      //     this.dialogFormVisible = true;
-      //    } else {
-      //      this.listLoading = false;
+      handleUpMenu(obj).then(res => {
+        this.listLoading = true;
+        if (res.data.code == 1) {
+          var data = res.data.data;
+          this.listLoading = false;
+          this.rowId = row.id;
+          this.temp = Object.assign({parent:row.parentId}, row);
+          this.dialogFormVisible = true;
+         } else {
+           this.listLoading = false;
 
-      //    }
-      // });
+         }
+      });
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -433,7 +329,22 @@ export default {
           var obj = {
             id: row.id
           };
-          return;
+          delMenu(obj)
+            .then(res => {
+             
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除菜单成功!"
+                });
+                this.getList();
+              } else {
+                
+              }
+            })
+            .catch(() =>{
+              this.listLoading = false
+            });
         })
         .catch(() => {
           this.$message({
@@ -442,8 +353,76 @@ export default {
           });
         });
     },
-    create() {},
-    update() {},
+    create(formName) {
+      var obj = {
+        parent: this.temp.parentId,
+        parentIds: this.temp.parentIds,
+        name:this.temp.name,
+        permission:this.temp.permission,
+        href:this.temp.href,
+        icon:this.temp.icon,
+        isShow:this.temp.isShow
+      };
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true
+          addMenu(obj).then(res => {
+            this.btnState = false;
+            if (res.data.code === 1) {
+              this.dialogFormVisible = false;
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.getList()
+              this.$message({
+                type: "success",
+                message: "新增成功"
+              });
+            } else {
+              
+              
+            }
+          }).catch(err=>{
+            this.btnState = false;
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    update(formName) {
+      var obj = {
+        id:this.temp.id,
+        parent: this.temp.parent,
+        parentIds: this.temp.parentIds,
+        name:this.temp.name,
+        permission:this.temp.permission,
+        href:this.temp.href,
+        icon:this.temp.icon,
+        isShow:this.temp.isShow
+      };
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true
+          upMenu(obj).then(res => {
+            this.btnState = false;
+            if (res.data.code === 1) {
+              this.dialogFormVisible = false;
+              this.resetTemp();
+              this.$refs[formName].resetFields();
+              this.getList()
+              this.$message({
+                type: "success",
+                message: "编辑成功"
+              });
+            }
+          }).catch(err=>{
+            this.btnState = false;
+          });
+        } else {
+          return false;
+        }
+      });
+    },
     //清空列表
     resetForm(formName) {
       this.selectState = false;
@@ -454,9 +433,15 @@ export default {
     //清空绑定
     resetTemp() {
       this.temp = {
+        id:"",
+        parentId: "",
+        parentIds: "",
         name: "",
-        majorSort: ""
-      };
+        href: "",
+        permission: "",
+        isShow: "",
+        icon: ""
+      }
     }
   }
 };

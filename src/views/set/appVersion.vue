@@ -15,6 +15,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
       <button class="button-small btn_pad" @click="handleCreate">新增</button>
+    <!-- 表格 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -132,8 +133,8 @@
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
-        <button class="button-large" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
+        <button class="button-large" :loading="true" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" :loading="true" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -154,15 +155,16 @@ export default {
     waves
   },
   data() {
+    // 数字验证
     var validateBuild = (rule, value, callback) => {
-      if(value){
-           if (!/^[0-9]*$/.test(value)) {
+      if (value) {
+        if (!/^[0-9]*$/.test(value)) {
           callback(new Error("build号只能为数字类型"));
         } else {
           callback();
         }
-      }else{
-         callback(new Error("build号不能为空"));
+      } else {
+        callback(new Error("build号不能为空"));
       }
     };
     return {
@@ -179,6 +181,7 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      // 搜索数据
       search: {
         type: "",
         val: "",
@@ -193,7 +196,7 @@ export default {
         update: "编辑",
         create: "新增"
       },
-      rowId:"",
+      rowId: "",
       dialogFormVisible: false,
       dialogStatus: "",
       temp: {
@@ -206,22 +209,32 @@ export default {
       rules: {
         versionNumber: [
           { required: true, message: "版本号不能为空", trigger: "blur" },
-           { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
+          { min: 1, max: 15, message: "长度在 1 到 15 个字符", trigger: "blur" }
         ],
         build: [
-               { required: true, validator: validateBuild,trigger: "blur"},
-               {min:1,max:15, message: "build号为1 - 15位数字",trigger: "blur" }
-           ],
+          { required: true, validator: validateBuild, trigger: "blur" },
+          { min: 1, max: 15, message: "build号为1 - 15位数字", trigger: "blur" }
+        ],
         forcedUpdate: [
           { required: true, message: "强更状态不能为空", trigger: "change" }
         ],
         upgradeContent: [
           { required: true, message: "更新提示语不能为空", trigger: "blur" },
-          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+          {
+            min: 1,
+            max: 200,
+            message: "长度在 1 到 200 个字符",
+            trigger: "blur"
+          }
         ],
         refreshAddress: [
           { required: true, message: "更新地址不能为空", trigger: "blur" },
-          { min: 1, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+          {
+            min: 1,
+            max: 200,
+            message: "长度在 1 到 200 个字符",
+            trigger: "blur"
+          }
         ]
       },
       tableKey: 0,
@@ -232,30 +245,10 @@ export default {
     this.getList();
   },
   methods: {
+    // 获取列表
     getList() {
       this.listLoading = true;
       var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
       if (this.search.type == "versionNumber") {
         var versionNumber = {
           versionNumber: this.search.val
@@ -300,91 +293,34 @@ export default {
           this.listLoading = false;
         });
     },
+    // 搜索
     handleFilter() {
-      var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
-
-      if (this.search.type == "versionNumber") {
-        var versionNumber = {
-          versionNumber: this.search.val
-        };
-        obj = Object.assign(obj, versionNumber);
-      } else if (this.search.type == "build") {
-        var build = {
-          build: this.search.val
-        };
-        obj = Object.assign(obj, build);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
-      }
-      console.log(obj, "搜索条件");
-      getApp(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.listQuery.page = 1;
+      this.pageNumber = 1;
+      this.getList()
     },
+    // 条数改变
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
       this.getList();
     },
+    // 页数改变
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.getList();
     },
+    // 点击新增
     handleCreate() {
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
     },
-    handleUpdate(row){
+    // 点击编辑时
+    handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
-       var obj = {
+      var obj = {
         id: row.id
       };
       // 请求回显的数据
@@ -392,17 +328,18 @@ export default {
         this.listLoading = true;
         if (res.data.code == 1) {
           var data = res.data.data;
-          data.build = String(data.build)
+          // 强制类型转换
+          data.build = String(data.build);
           this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({}, data);
           this.dialogFormVisible = true;
         } else {
-          this.listLoading = false;         
+          this.listLoading = false;
         }
       });
-
     },
+    // 点击删除时
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -434,6 +371,7 @@ export default {
           });
         });
     },
+    // 新增保存
     create(formName) {
       var obj = {
         versionNumber: this.temp.versionNumber,
@@ -442,7 +380,6 @@ export default {
         upgradeContent: this.temp.upgradeContent,
         refreshAddress: this.temp.refreshAddress
       };
-      console.log(obj);
 
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -472,6 +409,7 @@ export default {
         }
       });
     },
+    // 编辑保存
     update(formName) {
       var obj = {
         id: this.rowId,
@@ -481,35 +419,38 @@ export default {
         upgradeContent: this.temp.upgradeContent,
         refreshAddress: this.temp.refreshAddress
       };
-      console.log(obj)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-          upApp(obj).then(res => {
-            this.btnState = false;
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.dialogFormVisible = false;
-              this.getList();
-              this.$message({
-                type: "success",
-                message: "编辑成功"
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+          upApp(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.dialogFormVisible = false;
+                this.getList();
+                this.$message({
+                  type: "success",
+                  message: "编辑成功"
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
       });
     },
+    // 清空表单
     resetForm(formName) {
       this.resetTemp();
       this.$refs[formName].resetFields();
       this.dialogFormVisible = false;
     },
+    // 清空搜索数据
     resetSearch() {
       this.search = {
         type: "",
@@ -518,6 +459,7 @@ export default {
         endTime: ""
       };
     },
+    // 清空v-modal
     resetTemp() {
       this.temp = {
         versionNumber: "",
