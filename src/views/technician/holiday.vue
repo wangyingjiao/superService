@@ -13,7 +13,6 @@
       v-model="search.time"
       style="width:20%"
       type="daterange"
-      @change="aaa"
       placeholder="选择日期">
     </el-date-picker>
       
@@ -124,10 +123,6 @@ export default {
     this.getList();
   },
   methods: {
-    aaa() {
-      console.log(this.search.startTime, "11111111111");
-      console.log(this.search.endTime, "11111111111");
-    },
     getList() {
       var obj = {};
 
