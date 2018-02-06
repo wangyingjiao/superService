@@ -67,3 +67,7 @@ export function getDict(obj, pageNumber, pageSize) {
 export function readDict(obj) {
   return instance.post(`/apiservice/a/sys/dict/dictListDataByType`, obj)
 }
+// 新增字典
+export function addDict(obj) {
+  return instance.post(`/apiservice/a/sys/dict/saveData`, obj)
+}

@@ -32,7 +32,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="字典名" prop="description">
+      <el-table-column align="center" label="字典描述" prop="description">
       </el-table-column>
 
       <el-table-column align="center" label="字典类型" prop="type">
@@ -71,39 +71,29 @@
             label-position="left" 
             label-width="100px"
             >
-          <el-form-item label="版本号:" prop="versionNumber">
+          <el-form-item label="字典名:" prop="label">
             <el-input        
            class="form_item"
-            placeholder="请输入2-10位的版本号" v-model.trim="temp.versionNumber"></el-input>
+            placeholder="请输入1-6位的字典名" v-model.trim="temp.label"></el-input>
           </el-form-item>
 
-          <el-form-item label="build号:" prop="build">
+          <el-form-item label="数据值:" prop="value">
             <el-input        
            class="form_item"
-           
-            placeholder="请输入build号" v-model.trim="temp.build"></el-input>
+            placeholder="请输入2-15位的数据值" v-model.trim="temp.value"></el-input>
           </el-form-item>
 
-          <el-form-item label="强更状态:" prop="forcedUpdate">
-             <el-radio v-model="temp.forcedUpdate" label="yes">是</el-radio>
-             <el-radio v-model="temp.forcedUpdate" label="no">否</el-radio>
-          </el-form-item>
-            
-          <el-form-item label="更新提示语:" prop="upgradeContent">
-            <el-input     
-            type="textarea"   
+          <el-form-item label="字典类型:" prop="type">
+            <el-input
            class="form_item"
-            placeholder="请输入不超过200位的提示语" v-model.trim="temp.upgradeContent"></el-input>
+            placeholder="请输入2-15位的字典类型" v-model.trim="temp.type"></el-input>
           </el-form-item>
 
-          <el-form-item label="更新地址:" prop="refreshAddress">
-            <el-input        
+          <el-form-item label="描述:" prop="description">
+            <el-input
            class="form_item"
-            placeholder="请输入更新地址" v-model.trim="temp.refreshAddress"></el-input>
+            placeholder="请输入2-15位的描述" v-model.trim="temp.description"></el-input>
           </el-form-item>
-          
-
-           
 
           </el-form>
       
@@ -113,20 +103,31 @@
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
+     <!-- 查看弹框 -->
     <el-dialog 
       title="子菜单列表"
       :visible.sync="dialogTable" 
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
-       class="diatable">
+       class="diatable1">
+          <el-button @click="handleCreate">新增</el-button>
           <el-table :data="tableData">
-              <el-table-column label=""></el-table-column>
+              <el-table-column align="center" width="80" label="编号" type="index"></el-table-column>
+              <el-table-column align="center" label="字典名" prop="description"></el-table-column>
+              <el-table-column align="center" label="字典类型" prop="type"></el-table-column>
+              <el-table-column align="center" label="变量名" prop="label"></el-table-column>
+              <el-table-column align="center" label="变量值" prop="value"></el-table-column>
+              <el-table-column align="center" width="200" label="操作">
+                <template scope="scope">
+                    <el-button class="el-icon-edit"   @click="handleUpdate(scope.row)"></el-button>
+                    <el-button class="el-icon-delete"   @click="handleDelete(scope.row)"></el-button>
+                </template>
+               </el-table-column>
           </el-table>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large" :loading="true" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
-        <button class="button-large" :loading="true" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
+        <button class="button-large"  @click="create('temp')">保 存</button>    
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -137,7 +138,14 @@
 </template>
 
 <script>
-import { getDict, addApp, handleUpApp, upApp, delApp } from "@/api/set";
+import {
+  getDict,
+  readDict,
+  addDict,
+  handleUpApp,
+  upApp,
+  delApp
+} from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -150,7 +158,7 @@ export default {
     return {
       btnState: false,
       list: [],
-      tableData:{},
+      tableData: [],
       total: null,
       listLoading: true,
       listQuery: {
@@ -178,18 +186,32 @@ export default {
         create: "新增"
       },
       rowId: "",
-      dialogTable:false,
+      dialogTable: false,
       dialogFormVisible: false,
       dialogStatus: "",
       temp: {
-        versionNumber: "",
-        build: "",
-        forcedUpdate: "",
-        upgradeContent: "",
-        refreshAddress: ""
+        value:"",
+        label:"",
+        type:"",
+        directives:""
       },
-      rules:{
-
+      rules: {
+         label: [
+          { required: true, message: "请输入 1到 6 位的字典名", trigger: "blur" },
+          { min: 1, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
+        ],
+         value: [
+          { required: true, message: "请输入 2 到 15 位的数据值", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        type: [
+          { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        description: [
+          { required: true, message: "请输入 2 到 15 位的描述", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ]
       },
       tableKey: 0,
       isIndeterminate: true
@@ -251,7 +273,7 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.getList()
+      this.getList();
     },
     // 条数改变
     handleSizeChange(val) {
@@ -266,8 +288,15 @@ export default {
       this.getList();
     },
     // 点击查看
-    handleRead(row){
-       this.dialogTable = true
+    handleRead(row) {
+      console.log(row, "1111111111");
+
+      readDict({ type: row.type })
+        .then(res => {
+          this.tableData = res.data.data.list;
+          this.dialogTable = true;
+        })
+        .catch(err => {});
     },
     // 点击新增
     handleCreate() {
@@ -331,6 +360,11 @@ export default {
     },
     // 新增保存
     create(formName) {
+      if (this.dialogTable) {
+        this.dialogTable = false;
+      }else{
+
+   
       var obj = {
         versionNumber: this.temp.versionNumber,
         build: this.temp.build,
@@ -342,7 +376,7 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-          addApp(obj)
+          addDict(obj)
             .then(res => {
               this.btnState = false;
 
@@ -366,6 +400,7 @@ export default {
           return false;
         }
       });
+    }
     },
     // 编辑保存
     update(formName) {
@@ -404,9 +439,13 @@ export default {
     },
     // 清空表单
     resetForm(formName) {
-      this.resetTemp();
-      this.$refs[formName].resetFields();
-      this.dialogFormVisible = false;
+      if (this.dialogTable) {
+        this.dialogTable = false;
+      } else {
+        this.resetTemp();
+        this.$refs[formName].resetFields();
+        this.dialogFormVisible = false;
+      }
     },
     // 清空搜索数据
     resetSearch() {
@@ -454,5 +493,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.diatable1>.el-dialog--small {
+  width: 80% !important;
 }
 </style>

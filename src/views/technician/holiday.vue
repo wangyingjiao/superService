@@ -12,7 +12,8 @@
     <el-date-picker
       v-model="search.startTime"
       style="width:20%"
-      type="date"
+      type="daterange"
+      @change="aaa"
       placeholder="选择日期">
     </el-date-picker>
     至
@@ -133,6 +134,9 @@ export default {
     this.getList();
   },
   methods: {
+    aaa(){
+      console.log(this.search.startTime,'11111111111')
+    },
     getList() {
       var obj = {};
      
