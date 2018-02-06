@@ -1,7 +1,7 @@
 <template>
   <div class="tech">
     <div class="tech-index">
-      <div style="width:85%">
+      <div style="width:100%">
         <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
           </el-option>
@@ -17,7 +17,36 @@
               </el-option>
             </el-select>
         </el-input>
-        <button class="tech-btn" @click="order">选择技能</button>
+        <!-- <el-form-item label="选择技能：" prop="skillIds"> -->
+          <el-select v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+            <el-option
+            v-for="(item,index) in sexTypeo"
+            :key="index"
+            :label="item.name"
+            :value="item.id">
+            </el-option>
+          </el-select>
+                <!-- </el-form-item> -->
+        <!-- <button class="tech-btn" @click="order">选择技能</button> -->
+
+          <!-- <el-collapse-transition>
+        <div class="tech-psoition" v-if="position">
+          <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
+            <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
+              <el-tooltip placement="top" :disabled="item.name.length <= 5" :content="item.name">
+                <span>{{item.name}}</span>
+              </el-tooltip>
+              <div :class="{'triangle-bottomright':item.show===true}"></div>
+            </div>
+          </div>
+          <div class="tech-pos-btn">
+            <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
+            <button @click="hiddenDiv" class="button-cancel btn-color-cancel">关闭</button>
+          </div>
+        </div>
+      </el-collapse-transition> -->
+
+
       </div>
 
       <div>
@@ -131,7 +160,7 @@
         <div class="passBox">
           <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
             <el-form-item label="设置密码：" prop="pass">
-              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="至少8个字符,同时包含字母与数字"></el-input>
+              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="密码长度为6-10位,同时包含字母与数字"></el-input>
             </el-form-item>
             <el-form-item label="重复密码：" prop="checkPass">
               <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
@@ -225,7 +254,7 @@
         <!-- </el-form> -->
       </el-dialog>
     <!-- 选择技能 -->
-      <el-collapse-transition>
+      <!-- <el-collapse-transition>
         <div class="tech-psoition" v-if="position">
           <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
             <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
@@ -240,7 +269,7 @@
             <button @click="hiddenDiv" class="button-cancel btn-color-cancel">关闭</button>
           </div>
         </div>
-      </el-collapse-transition>
+      </el-collapse-transition> -->
 
     </div>
     <!-- 分页 -->
@@ -333,7 +362,7 @@
               <el-row :gutter="60">
                   <el-col :span="12">
                       <el-form-item prop="address">
-                        <el-input placeholder="请输入6-20位详细地址" v-model="personal.address"></el-input>
+                        <el-input placeholder="请输入6-100位详细地址" v-model="personal.address"></el-input>
                       </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -365,8 +394,8 @@
                   </el-col>
               </el-row>
               <el-row :gutter="60">
-                  <el-col :span="12">
-                      <el-form-item label="身份证正面：">
+                  <el-col :span="5">
+                      <el-form-item label="身份证：">
                           <el-upload
                               class="avatar-uploader"
                               :action="imgSrc"
@@ -374,13 +403,13 @@
                               :http-request="(val)=>picUpload(val,'id')"
                               :before-upload="beforeAvatarUpload"
                               >
-                              <div class="upload-head"><span>点击上传</span></div>
+                              <div class="upload-head"><span>上传正面</span></div>
                               <img v-if="personal.idCardPicBefor" :src="imgSrc + personal.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                       </el-form-item>
                   </el-col>
-                  <el-col :span="12">
-                      <el-form-item  label="身份证反面：">
+                  <el-col :span="5">
+                      <!-- <el-form-item  label="身份证反面："> -->
                           <el-upload
                               class="avatar-uploader"
                               :action="imgSrc"
@@ -388,10 +417,10 @@
                               :http-request="(val)=>picUpload(val,'at')"
                               :before-upload="beforeAvatarUpload"
                               >
-                              <div class="upload-head"><span>点击上传</span></div>
-                              <img v-if="personal.idCardPicAfter" :src="imgSrc+personal.idCardPicAfter+picWidth300" class="avatar">
+                              <div class="upload-head"><span>上传反面</span></div>
+                              <img v-if="personal.idCardPicAfter" :src="imgSrc+personal.idCardPicAfter+picWidth300" class="avatar avatarBack">
                           </el-upload>
-                      </el-form-item>
+                      <!-- </el-form-item> -->
                   </el-col>
               </el-row>
           <!-- 新的结束  -->
@@ -410,13 +439,21 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                    <el-form-item label="岗位状态：" prop="jobStatus">
+                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                          </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <!-- <el-col :span="12">
                     <el-form-item label="岗位性质：" prop="jobNature">
                         <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
                             <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                </el-col>
+                </el-col> -->
             </el-row>
             <el-row :gutter="60">
                 <el-col :span="12">
@@ -427,19 +464,19 @@
                       </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <!-- <el-col :span="12">
                     <el-form-item label="岗位状态：" prop="jobStatus">
                         <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
                           <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
                           </el-option>
                         </el-select>
                     </el-form-item>
-                </el-col>
+                </el-col> -->
             </el-row>
-            <el-row :gutter="60">
+            <!-- <el-row :gutter="60">
                 <el-col :span="12">
                 </el-col>
-            </el-row>
+            </el-row> -->
             <el-row>
               <el-col :span="17">
                   <el-form-item label="选择技能：" prop="skillIds">
@@ -452,6 +489,16 @@
                       </el-option>
                     </el-select>
                 </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="17">
+                  <el-form-item label="岗位性质：" prop="jobNature">
+                        <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
+                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+                            </el-option>
+                        </el-select>
+                  </el-form-item>
               </el-col>
             </el-row>
             <el-row v-if="personal.jobNature!='part_time'">
@@ -565,12 +612,12 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/;
       if (value) {
         if (reg.test(value)) {
           callback();
         } else {
-          callback(new Error("至少8个字符，同时包含字母与数字"));
+          callback(new Error("密码长度为6-10位，同时包含字母与数字"));
         }
       } else {
         callback(new Error("请输入密码"));
@@ -795,7 +842,7 @@ export default {
         headPic: [{ required: true, validator: HEADPIC, trigger: "blur" }],
         address: [
           { required: true, message: "请输入详细地址", trigger: "blur" },
-          { min: 6, max: 20, message: "请输入6~20位详细地址", trigger: "blur" }
+          { min: 6, max: 100, message: "请输入6~100位详细地址", trigger: "blur" }
         ]
       },
       server: [],
@@ -2034,11 +2081,11 @@ export default {
   margin: 20px 0;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {
-  width: 100px;
+  width: 75px;
   text-align: center;
 }
 .searchHeader .el-input__inner {
-  width: 250px;
+  /* width: 250px; */
 }
 
 .tech-green {
@@ -2312,6 +2359,11 @@ export default {
      justify-content: center; */
 }
 
+.avatarBack{
+  position: absolute;
+  left: 450px;
+}
+
 .tech-xiu-div-two {
   margin: 10px 0;
   width: 50%;
@@ -2339,6 +2391,9 @@ export default {
   display: inline-block;
   display: flex;
   justify-content: center;
+}
+.tech-index .el-select .el-tag{
+  line-height: 23px;
 }
 .tech-mouse-div > span:nth-of-type(1) {
   /* border: 1px solid #707cd2; */

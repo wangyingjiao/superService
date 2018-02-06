@@ -13,6 +13,10 @@
 
       <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input> 
+	  <el-input class="search" placeholder="请输入搜索的商品名称" v-model="search.goodsName">
+      </el-input> 
+	  <el-input class="search" placeholder="请输入搜索的对接编码" v-model="search.sortIdandGoodsId">
+      </el-input> 
       <button class="button-large el-icon-search btn_search btn-color" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
@@ -156,12 +160,24 @@
                 </el-form-item>
 
                 <el-form-item label="banner图：" prop="picture">
-                  <div class="upload-demo upload_box form_item">
-                    <imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
-                  </div>
-      
+					<div class="upload-demo upload_box form_item">
+						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+					</div>
                     <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
                 </el-form-item>
+
+				<el-form-item label="图文详情：" prop="picture">
+					<div class="upload-demo upload_box form_item">
+						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+					</div>
+                    <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
+                </el-form-item>
+
+				 <!-- <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
+                <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
+                <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
+                  <imgService @imgclick = "imgTextClick" :piclist = "fileList" :type="'picture'" :min='0' :max='8'></imgService>
+                </div> -->
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
@@ -195,7 +211,7 @@
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
     <!-- 商品信息表格 -->
-                <!-- <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
+                <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
                   <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
@@ -236,11 +252,11 @@
                       <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
                     </template>
                   </el-table-column>
-                </el-table> -->
+                </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addCommodity">
-                <span v-if="!addComm" class="fl btn_Span1">+</span>
-                <span v-if="addComm" class="fl btn_Span1">-</span>
+                <span class="fl btn_Span1">+</span>
+                <!-- <span v-if="addComm" class="fl btn_Span1">-</span> -->
                 <span class="fl btn_Span2">添加商品</span>
               </div>
               <!-- <el-collapse-transition> -->
@@ -439,49 +455,7 @@
     <!-- 图文详情 完成 -->
 
     <!-- 商品添加 -->
-	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" class="addCommidtyClass">
-		<el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
-                  <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
-                  <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
-                  <el-table-column prop="type" align="center" label="计量方式"> 
-                    <template scope="scope">
-                      <span v-show="scope.row.type=='num'">按数量</span>
-                      <span v-show="scope.row.type=='area'">按面积</span>
-                      <span v-show="scope.row.type=='house'">按居室</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="price" align="center" label="价格"> 
-                    <template scope="scope">
-                      <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
-                    </template>  
-                  </el-table-column>
-                  <el-table-column prop="convertHours" align="center" label="折算时长">
-                    <template scope="scope">
-                      <span>{{scope.row.convertHours+'小时 / 每人 / '+scope.row.unit}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column align="center" label="起步人数">
-                    <template scope="scope">
-                      <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> 
-                    <template scope="scope">
-                      <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="minPurchase" align="center" label="起购数量"> 
-                    <template scope="scope">
-                      <span>{{scope.row.minPurchase!=0? scope.row.minPurchase : 1}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作" width="150" align="center"> 
-                    <template scope="scope">
-                      <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
-                      <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
+	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -577,8 +551,7 @@
 
 
 <script>
-// 有一个就不能修改
-// ---------------------------------------------
+// ----------------
 
 import {
   getProject,
@@ -848,7 +821,7 @@ export default {
       whole: {},
       addDetailsImg:0,
       personsTime: false,
-      addComm: false,
+    //   addComm: false,
       critical: "",
       quantity: "",
       persons: [],
@@ -936,14 +909,18 @@ export default {
       },
       search: {
         sortId: "",
-        name: ""
+		name: "",
+		sortIdandGoodsId:'',
+		goodsName:''
       },
       pageSize: 10,
       fileList: [
       ],
       picFile: [],
       imgText: [],
-      picList: [],
+	  picList: [],
+	  pictureDetails:[],
+	  
       temp: {
         option1: "",
         val: true
@@ -992,14 +969,16 @@ export default {
       var arr = []
       for(var i = 0;i<item.length;i++){
         arr.push(item[i].url)
-      }
+	  }
       return arr
     },
     imgClick(item){
-      this.picFile = this.returnImg(item)
+		this.picFile = item
+    //   this.picFile = this.returnImg(item)
     },
     imgTextClick(item){
-      this.imgText = this.returnImg(item)
+	  this.imgText = item
+	  console.log(this.imgText,"this.imgText")
     },
     //对接商品
     handleSendData(row){
@@ -1027,7 +1006,7 @@ export default {
 		this.addCommodityFlag = true
 		this.resetForm('ser')
 		this.handleEditFlag = false
-		this.addComm = !this.addComm
+		// this.addComm = !this.addComm
     },
     converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
@@ -1177,7 +1156,7 @@ export default {
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
 			this.handleEditFlag = false
-			// this.addCommodityFlag = false
+			this.addCommodityFlag = false
           }else{
               if("id" in obj){
                 delete obj.id
@@ -1187,7 +1166,7 @@ export default {
               }
               this.basicForm.commoditys.push(obj)
 			  this.resetForm('ser')
-			//   this.addCommodityFlag = false
+			  this.addCommodityFlag = false
           }
         }else{
           return false
@@ -1196,13 +1175,14 @@ export default {
     },
     //表格编辑
     handleEdit(index, val) {
-      this.handleEditFlag = true
-      this.handleEditIndex = index
-      this.editName = Object.assign({},val)
-      this.goods_info = Object.assign({},val)
-      this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
-      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
-      this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
+		this.addCommodityFlag = true
+		this.handleEditFlag = true
+		this.handleEditIndex = index
+		this.editName = Object.assign({},val)
+		this.goods_info = Object.assign({},val)
+		this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
+		this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
+		this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
     //   this.addComm = true;
     },
     //表格删除
@@ -1283,7 +1263,13 @@ export default {
           }
           if (this.search.name) {
             obj.name = this.search.name;
-          }
+		  }
+		  if(this.search.goodsName){
+			  obj.goodsName = this.search.goodsName
+		  }
+		  if(this.search.sortIdandGoodsId){
+			  obj.sortIdandGoodsId = this.search.sortIdandGoodsId
+		  }
       }
         getProject(obj, _page, _size)
           .then(res => {
@@ -1311,17 +1297,23 @@ export default {
       this.listQuery.page = 1
     },
     handleCurrentChange(val) {
-      this.pageNumber = val;
-      var obj = {};
-      if (this.basicForm.majorSort) {
-        obj.majorSort = this.tabs;
-      }
-      if (this.search.sortId) {
-        obj.sortId = this.search.sortId;
-      }
-      if (this.search.name) {
-        obj.name = this.search.name;
-      }
+		this.pageNumber = val;
+		var obj = {};
+		if (this.basicForm.majorSort) {
+			obj.majorSort = this.tabs;
+		}
+		if (this.search.sortId) {
+			obj.sortId = this.search.sortId;
+		}
+		if (this.search.name) {
+			obj.name = this.search.name;
+		}
+	   	if(this.search.goodsName){
+			  obj.goodsName = this.search.goodsName
+		}
+		if(this.search.sortIdandGoodsId){
+			obj.sortIdandGoodsId = this.search.sortIdandGoodsId
+		}
 
       this.listLoading = true;
       this.getList(this.pageNumber, this.pageSize,obj)
@@ -1370,8 +1362,16 @@ export default {
                     url:data.data.data.pictures[i]
                   }
                   this.picList.push(obj);
-                }
-              }
+				}
+			  }
+			  if(data.data.data.pictureDetails != undefined){
+				  	for(var i = 0;i<data.data.data.pictureDetails.length; i++){
+					var obj = {
+						url:data.data.data.pictureDetails[i]
+					}
+					this.pictureDetails.push(obj)
+				}
+			  }
               this.tableProject({majorSort:arr.majorSort},arr.sortId)
               this.basicForm = arr;
               this.customArr = arr.customTags || []
@@ -1382,10 +1382,7 @@ export default {
           }
         })
         .catch(error => {
-          this.$message({
-              type:'error',
-              message:data.data.data
-          })
+			console.log(error)
           this.listLoading = false;
           return false
         });
@@ -1481,7 +1478,9 @@ export default {
     },
     handleClick(tab, event) {
       this.search.sortId = ''
-      this.search.name = ''
+	  this.search.name = ''
+	  this.search.goodsName = ''
+	  this.search.sortIdandGoodsId = ''
       var size = this.pageSize;
       this.pageNumber = 1;
        Taxonomy({majorSort:tab.name})
@@ -1513,16 +1512,19 @@ export default {
             return false
           }
           this.btnState = true
-          var arr = []
+		  var arr = []
+		//   console.log(this.imgText,"this.imgText-----")
           var obj = Object.assign({},that.basicForm)
-              obj.pictures = this.picFile; //服务图片缩略图.
+			  obj.pictures = this.picFile; //服务图片缩略图.
+			  obj.pictureDetails = this.imgText;
               obj.sysTags = this.labelClickArr //添加 系统标签
               obj.customTags = this.customArr
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             that.basicForm.customTags = this.customArr
-            that.basicForm.pictures = this.picFile;
+			that.basicForm.pictures = this.picFile;
+			that.basicForm.pictureDetails =  this.imgText;
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -1534,7 +1536,8 @@ export default {
                   this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
-                  this.picFile = [];
+				  this.picFile = [];
+				  this.pictureDetails = []
                   this.picList = [];
                   this.imgNumber = 0
                 } else {
@@ -1553,9 +1556,10 @@ export default {
             if("pictureDetail" in obj){
               delete obj.pictureDetail
             }
-            if("pictureDetails" in obj){
-              delete obj.pictureDetails
-            }
+            // if("pictureDetails" in obj){
+            //   delete obj.pictureDetails
+			// }
+			console.log(obj)
             ServerAdd(obj)
               .then(data => {
                 this.btnState = false
@@ -1575,11 +1579,14 @@ export default {
                   this.cancel("basic");
                   this.basicForm.majorSort = 'all';
                   this.search.sortId = '';
-                  this.search.name ='';
+				  this.search.name ='';
+				  this.search.goodsName = ''
+	  			  this.search.sortIdandGoodsId = ''
                   this.tabs = 'all';
                   this.listQuery.page = 1
                   this.getList(1, this.pageSize);
-                  this.picFile = [];
+				  this.picFile = [];
+				  this.pictureDetails = [];
                 } else {
                   this.btnState = false
                 }
@@ -1601,7 +1608,7 @@ export default {
 		this.addCommodityFlag = true
 	  }else{
 		this.addCommodityFlag = false
-		this.addComm = false
+		// this.addComm = false
 	  }
       this.goods_info.name = ''
       this.goods_info.unit = ''
@@ -1621,7 +1628,8 @@ export default {
     //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-      this.picFile = [] //清空图片
+	  this.picFile = [] //清空图片
+	  this.pictureDetails = []
       this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
       this.alreadyArr = []
       this.labelClickArr = []
@@ -1644,7 +1652,8 @@ export default {
         this.basicForm.cityCodes = []; //定向城市
         this.goods_info.minPurchase = ""; //起够数量
         this.basicForm.commoditys = []; //商品信息表格
-        this.picFile = [] //清空图片
+		this.picFile = [] //清空图片
+		this.pictureDetails = []
         this.picList = [] //清空图片
         this.dialogFormVisible = false;
       }
@@ -1852,6 +1861,9 @@ export default {
   display: inline-block;
   height:30px
 }
+#diatable .el-upload__tip{
+	margin-top: 20px;
+}
 
 .bgWhite .el-switch.is-checked .el-switch__core{
   background-color: #4c70e8;
@@ -1969,6 +1981,16 @@ export default {
   margin: 0px 20px 10px 0;
   display: flex;
   justify-content: center;
+}
+.tabStyle .search{
+	/* width: 15%; */
+	margin-right: 0;
+}
+.tabStyle .el-select{
+	margin-left:1%;
+}
+.tabStyle .el-input{
+	margin-left: 1%;
 }
 .selfCheckBoxsday {
   width: 30px;

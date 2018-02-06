@@ -1,8 +1,19 @@
 <template>
 	<div class="img-list">
-		<div class="img-content" v-for="(item,key) in imagelist" :key="key">
+		<div class="img-upload" v-for="(item,index) in imgSrcUpload" :key="index">
+		 <el-upload
+					class="avatar-headPic"
+					action="https://imgcdn.guoanshequ.com/"
+					:show-file-list="false"
+					:before-upload="beforeUpload"
+					:http-request="(file)=>uploadOnSuccess(file,index)"
+					>
+					<img v-if="item!=''" :src="imgSrc+item+picWidth100">
+					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+			</el-upload>
+		</div>
+		<!-- <div class="img-content" v-for="(item,key) in imagelist" :key="key">
 			<img :src="type=='picture'?imgSrc + item.url + picWidth600 : imgSrc + item.url + picWidth100">
-			<!-- 删除icon -->
 			<div class="layer">
 				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>
 			</div>
@@ -24,7 +35,7 @@
 			  :on-progress="uploadOnProgress">
         <i class="el-icon-plus avatar-uploader-icon"></i>
 			</el-upload>
-		</div>
+		</div> -->
 	</div>
 </template>
 
@@ -35,6 +46,10 @@ export default{
 	name: 'upload-list',
 	data(){
 		return {
+			imgSrcUpload:['','','',''],
+			imgSrcUpload1:'',
+			imgSrcUpload2:'',
+			imgSrcUpload3:'',
 			progress: 0,//上传进度
 			pass: null,//是否上传成功
       isEnlargeImage: false,//放大图片
@@ -65,6 +80,11 @@ export default{
     piclist:{
       immediate: true,
        handler(val, oldval) {
+				 console.log(val,"val")
+				 val.map((item,index)=>{
+					//  this.imgSrcUpload[index] = item.url || ""
+					 this.$set(this.imgSrcUpload,index,item.url || "")
+				 })
          this.imagelist = val
          if(val.length>3){
            this.imgFlag = false
@@ -131,7 +151,9 @@ export default{
 				this.$message.error("图片上传出错，请刷新重试！")
 			}
 		},
-		uploadOnSuccess(file,fileList,a,b){//上传附件
+		uploadOnSuccess(file,index){//上传附件
+			console.log(file,"file+++++++")
+			console.log(index,"index------")
      var type = file.file.name.split('.')
       let pro = new Promise((resolve,rej)=>{
         var res = JSON.parse(Cookies.get("sign"));
@@ -171,17 +193,21 @@ export default{
             }
           })
           .then(res=>{
-            var str = ossData.get("key")
-            this.imagelist.push({url:str})
-            this.$emit('imgclick',this.imagelist)
+						 var str = ossData.get("key")
+						 
+						//  that.imgSrcUpload[index] = str
+						 that.$set(that.imgSrcUpload,index,str)
+						 console.log(that.imgSrcUpload,"this.imgSrcUpload---")
+            that.$emit('imgclick',that.imgSrcUpload)
           })
           .catch(error=>{
-            var str = ossData.get("key")
-            this.imagelist.push({url:str})
-            if(this.imagelist.length>3){
-               this.imgFlag = false
-            }
-            this.$emit('imgclick',this.imagelist)
+						return false
+            // var str = ossData.get("key")
+            // this.imagelist.push({url:str})
+            // if(this.imagelist.length>3){
+            //    this.imgFlag = false
+            // }
+            // this.$emit('imgclick',this.imagelist)
           })
       })
 		},
@@ -222,7 +248,26 @@ export default{
 }
 </script>
 
-<style scoped>
+<style>
+.img-upload .avatar-headPic .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+		overflow: hidden;
+		margin-right: 10px;
+	}
+.img-upload .avatar-headPic .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+		text-align: center;
+	}
+#diatable	.el-form-item__content{
+	line-height: 0;
+}
 /* *{
 	box-sizing: border-box;
 } */

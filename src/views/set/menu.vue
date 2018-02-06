@@ -116,12 +116,7 @@
 
     </el-table>
 <!-- 表格结束 -->
-    <!-- 分页器 -->
-    <!-- <div v-if="!listLoading" class="pagination-container">
-      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div> -->
+    
     <!-- 弹窗 -->
     <el-dialog 
       :title="textMap[dialogStatus]"
@@ -271,17 +266,7 @@ export default {
           this.listLoading = false;
         });
     },
-    
-    handleSizeChange(val) {
-      this.listQuery.page = 1;
-      this.pageNumber = 1;
-      this.pageSize = val;
-      this.getList();
-    },
-    handleCurrentChange(val) {
-      this.pageNumber = val;
-      this.getList();
-    },
+    // 新增子菜单
     handleCreate(row) {
       this.temp.isShow = '1'
       if(row.parentId){
@@ -297,6 +282,7 @@ export default {
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
     },
+    // 编辑菜单
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
@@ -319,6 +305,7 @@ export default {
          }
       });
     },
+    // 点击删除
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -353,6 +340,7 @@ export default {
           });
         });
     },
+    // 新增保存
     create(formName) {
       var obj = {
         parent: this.temp.parentId,
