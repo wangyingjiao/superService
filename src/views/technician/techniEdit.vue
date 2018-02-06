@@ -57,7 +57,7 @@
                 <el-row :gutter="60">
                     <el-col :span="12">
                         <el-form-item prop="address">
-                          <el-input placeholder="请输入6-20位详细地址"  v-model="personalEDit.address"></el-input>
+                          <el-input placeholder="请输入6-100位详细地址"  v-model="personalEDit.address"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -89,8 +89,8 @@
                   </el-col>
                 </el-row>
                 <el-row :gutter="60">
-                  <el-col :span="12">
-                    <el-form-item label="身份证正面：">
+                  <el-col :span="5">
+                    <el-form-item label="身份证：">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="imgSrc"
@@ -98,13 +98,13 @@
                                 :http-request="(val)=>picUpload(val,'id')"
                                 :before-upload="beforeAvatarUpload"
                                 >
-                                <div class="upload-head"><span>点击上传</span></div>
+                                <div class="upload-head"><span>上传正面</span></div>
                                 <img v-if="personalEDit.idCardPicBefor" :src="imgSrc+personalEDit.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="身份证反面：">
+                  <el-col :span="5">
+                    <!-- <el-form-item label="身份证反面："> -->
                         <el-upload
                                 class="avatar-uploader"
                                 :action="imgSrc"
@@ -112,10 +112,10 @@
                                 :http-request="(val)=>picUpload(val,'after')"
                                 :before-upload="beforeAvatarUpload"
                                 >
-                                <div class="upload-head"><span>点击上传</span></div>
-                                <img v-if="personalEDit.idCardPicAfter" :src="imgSrc+personalEDit.idCardPicAfter+picWidth300" class="avatar">
+                                <div class="upload-head"><span>上传反面</span></div> 
+                                <img v-if="personalEDit.idCardPicAfter" :src="imgSrc+personalEDit.idCardPicAfter+picWidth300" class="avatar avatarBack">
                           </el-upload>
-                    </el-form-item>
+                    <!-- </el-form-item> -->
                   </el-col>
                 </el-row>
                 <el-row>
@@ -149,13 +149,21 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="12">
+                        <el-form-item label="岗位状态:" prop="jobStatus">
+                            <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
+                                <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                      </el-col>
+                      <!-- <el-col :span="12">
                         <el-form-item label="岗位性质:" prop="jobNature">
                           <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
                             <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                           </el-select>
                         </el-form-item>
-                      </el-col>
+                      </el-col> -->
                   </el-row>
                   <el-row :gutter="60">
                       <el-col :span="12">
@@ -166,14 +174,14 @@
                           </el-select>
                         </el-form-item>
                       </el-col>  
-                      <el-col :span="12">
+                      <!-- <el-col :span="12">
                         <el-form-item label="岗位状态:" prop="jobStatus">
                             <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
                                 <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                      </el-col>
+                      </el-col> -->
                     </el-row>
                     <el-row :gutter="60">
                       <el-col :span="12">
@@ -188,6 +196,16 @@
                             :key="item.id"
                             :label="item.name"
                             :value="item.id">
+                            </el-option>
+                          </el-select>
+                        </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row :gutter="60">
+                      <el-col :span="17">
+                        <el-form-item label="岗位性质:" prop="jobNature">
+                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
+                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                           </el-select>
                         </el-form-item>
@@ -659,10 +677,10 @@ export default {
     //详细地址
     var ADDRESS = (rule,value,callback) =>{
       if(value){
-        if(value.length>=6 && value.length<=20){
+        if(value.length>=6 && value.length<=100){
           callback()
         }else{
-          callback(new Error('请输入6到20位的详细地址'))
+          callback(new Error('请输入6到100位的详细地址'))
         }
       }else{
         callback(new Error('请输入详细地址'))
@@ -1666,6 +1684,11 @@ export default {
 }
 .tech-service{
   border-bottom: 0;
+}
+
+.avatarBack{
+  position: absolute;
+  left: 450px;
 }
 
 .tech-edit .tech-fourth {
