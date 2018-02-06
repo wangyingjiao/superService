@@ -178,8 +178,8 @@ export default {
         endTime: ""
       },
       seOptions: [
-        { label: "版本号", value: "versionNumber" },
-        { label: "build号", value: "build" }
+        { label: "字典类型", value: "type" },
+        { label: "描述", value: "description" }
       ],
       textMap: {
         update: "编辑",
@@ -225,26 +225,16 @@ export default {
     getList() {
       this.listLoading = true;
       var obj = {};
-      if (this.search.type == "versionNumber") {
-        var versionNumber = {
-          versionNumber: this.search.val
+      if (this.search.type == "type") {
+        var type = {
+          type: this.search.val
         };
-        obj = Object.assign(obj, versionNumber);
-      } else if (this.search.type == "build") {
-        var build = {
-          build: this.search.val
+        obj = Object.assign(obj, type);
+      } else if (this.search.type == "description") {
+        var description = {
+          description: this.search.val
         };
-        obj = Object.assign(obj, build);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
+        obj = Object.assign(obj, description);
       }
 
       getDict(obj, this.pageNumber, this.pageSize)
