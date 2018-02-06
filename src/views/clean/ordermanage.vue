@@ -8,11 +8,7 @@
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
 				<div class="searchs">
-			  <!-- <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
-						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
-						</el-option>
-			  </el-select> -->
-			  				<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
+			  	<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>

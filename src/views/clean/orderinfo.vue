@@ -131,23 +131,19 @@
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">服务项目:</span>
-                      <span class="lineContent">{{goodsInfo.itemName}}</span>
-                   </p>
-                   <p class="contentLine">
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
-                   </p>                                                        
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
+                      <span class="lineTitle">实际完成时间:</span>
+                      <span class="lineContent">{{otherInfo.finishTime}}</span>
+                   </p>                                                                           
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
                       <span class="lineTitle">服务时间:</span>
                       <span class="lineContent">{{otherInfo.serviceTime}}</span>
                       <span class="selfMarLeft70"  v-if="nowTime >= 5400000" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
-                      <span class="lineTitle">实际完成时间:</span>
-                      <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>                                     
                 </div> 
             </div>
@@ -156,6 +152,12 @@
                       :data="tableData"
                       border
                       class="self-table-style">
+                      <el-table-column
+                        align="center"
+                        label="服务项目"
+                        prop="itemName"
+                        > 
+                      </el-table-column>                      
                       <el-table-column
                         align="center"
                         label="商品名称"
