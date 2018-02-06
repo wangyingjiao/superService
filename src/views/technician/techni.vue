@@ -160,7 +160,7 @@
         <div class="passBox">
           <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
             <el-form-item label="设置密码：" prop="pass">
-              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="至少8个字符,同时包含字母与数字"></el-input>
+              <el-input type="password" v-model="ruleForm2.pass" auto-complete="off" placeholder="密码长度为6-10位,同时包含字母与数字"></el-input>
             </el-form-item>
             <el-form-item label="重复密码：" prop="checkPass">
               <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="请再次输入密码"></el-input>
@@ -612,12 +612,12 @@ import Cookies from "js-cookie";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,}$/;
+      var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,10}$/;
       if (value) {
         if (reg.test(value)) {
           callback();
         } else {
-          callback(new Error("至少8个字符，同时包含字母与数字"));
+          callback(new Error("密码长度为6-10位，同时包含字母与数字"));
         }
       } else {
         callback(new Error("请输入密码"));
@@ -2081,7 +2081,7 @@ export default {
   margin: 20px 0;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {
-  width: 100px;
+  width: 75px;
   text-align: center;
 }
 .searchHeader .el-input__inner {

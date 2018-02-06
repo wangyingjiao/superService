@@ -160,12 +160,24 @@
                 </el-form-item>
 
                 <el-form-item label="banner图：" prop="picture">
-                  <div class="upload-demo upload_box form_item">
-                    <imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
-                  </div>
-      
+					<div class="upload-demo upload_box form_item">
+						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+					</div>
                     <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
                 </el-form-item>
+
+				<el-form-item label="图文详情：" prop="picture">
+					<div class="upload-demo upload_box form_item">
+						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+					</div>
+                    <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
+                </el-form-item>
+
+				 <!-- <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
+                <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
+                <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
+                  <imgService @imgclick = "imgTextClick" :piclist = "fileList" :type="'picture'" :min='0' :max='8'></imgService>
+                </div> -->
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
@@ -443,7 +455,7 @@
     <!-- 图文详情 完成 -->
 
     <!-- 商品添加 -->
-	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" class="addCommidtyClass">
+	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -539,8 +551,7 @@
 
 
 <script>
-// 有一个就不能修改
-// ---------------------------------------------
+// ----------------
 
 import {
   getProject,
@@ -907,7 +918,9 @@ export default {
       ],
       picFile: [],
       imgText: [],
-      picList: [],
+	  picList: [],
+	  pictureDetails:[],
+	  
       temp: {
         option1: "",
         val: true
@@ -956,14 +969,16 @@ export default {
       var arr = []
       for(var i = 0;i<item.length;i++){
         arr.push(item[i].url)
-      }
+	  }
       return arr
     },
     imgClick(item){
-      this.picFile = this.returnImg(item)
+		this.picFile = item
+    //   this.picFile = this.returnImg(item)
     },
     imgTextClick(item){
-      this.imgText = this.returnImg(item)
+	  this.imgText = item
+	  console.log(this.imgText,"this.imgText")
     },
     //对接商品
     handleSendData(row){
@@ -1347,8 +1362,16 @@ export default {
                     url:data.data.data.pictures[i]
                   }
                   this.picList.push(obj);
-                }
-              }
+				}
+			  }
+			  if(data.data.data.pictureDetails != undefined){
+				  	for(var i = 0;i<data.data.data.pictureDetails.length; i++){
+					var obj = {
+						url:data.data.data.pictureDetails[i]
+					}
+					this.pictureDetails.push(obj)
+				}
+			  }
               this.tableProject({majorSort:arr.majorSort},arr.sortId)
               this.basicForm = arr;
               this.customArr = arr.customTags || []
@@ -1359,10 +1382,7 @@ export default {
           }
         })
         .catch(error => {
-          this.$message({
-              type:'error',
-              message:data.data.data
-          })
+			console.log(error)
           this.listLoading = false;
           return false
         });
@@ -1492,16 +1512,19 @@ export default {
             return false
           }
           this.btnState = true
-          var arr = []
+		  var arr = []
+		//   console.log(this.imgText,"this.imgText-----")
           var obj = Object.assign({},that.basicForm)
-              obj.pictures = this.picFile; //服务图片缩略图.
+			  obj.pictures = this.picFile; //服务图片缩略图.
+			  obj.pictureDetails = this.imgText;
               obj.sysTags = this.labelClickArr //添加 系统标签
               obj.customTags = this.customArr
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             that.basicForm.customTags = this.customArr
-            that.basicForm.pictures = this.picFile;
+			that.basicForm.pictures = this.picFile;
+			that.basicForm.pictureDetails =  this.imgText;
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -1513,7 +1536,8 @@ export default {
                   this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
-                  this.picFile = [];
+				  this.picFile = [];
+				  this.pictureDetails = []
                   this.picList = [];
                   this.imgNumber = 0
                 } else {
@@ -1532,9 +1556,10 @@ export default {
             if("pictureDetail" in obj){
               delete obj.pictureDetail
             }
-            if("pictureDetails" in obj){
-              delete obj.pictureDetails
-            }
+            // if("pictureDetails" in obj){
+            //   delete obj.pictureDetails
+			// }
+			console.log(obj)
             ServerAdd(obj)
               .then(data => {
                 this.btnState = false
@@ -1560,7 +1585,8 @@ export default {
                   this.tabs = 'all';
                   this.listQuery.page = 1
                   this.getList(1, this.pageSize);
-                  this.picFile = [];
+				  this.picFile = [];
+				  this.pictureDetails = [];
                 } else {
                   this.btnState = false
                 }
@@ -1602,7 +1628,8 @@ export default {
     //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-      this.picFile = [] //清空图片
+	  this.picFile = [] //清空图片
+	  this.pictureDetails = []
       this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
       this.alreadyArr = []
       this.labelClickArr = []
@@ -1625,7 +1652,8 @@ export default {
         this.basicForm.cityCodes = []; //定向城市
         this.goods_info.minPurchase = ""; //起够数量
         this.basicForm.commoditys = []; //商品信息表格
-        this.picFile = [] //清空图片
+		this.picFile = [] //清空图片
+		this.pictureDetails = []
         this.picList = [] //清空图片
         this.dialogFormVisible = false;
       }
@@ -1832,6 +1860,9 @@ export default {
   line-height: 30px;
   display: inline-block;
   height:30px
+}
+#diatable .el-upload__tip{
+	margin-top: 20px;
 }
 
 .bgWhite .el-switch.is-checked .el-switch__core{
