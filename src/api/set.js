@@ -59,3 +59,15 @@ export function getPushMes(obj, pageNumber, pageSize) {
 export function sendPushMes(obj) {
   return instance.post(`/apiservice/a/sys/pushMessage/pushFailMessage`, obj)
 }
+// 获取字典列表
+export function getDict(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/sys/dict/dictListData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
+// 查看字典详情
+export function readDict(obj) {
+  return instance.post(`/apiservice/a/sys/dict/dictListDataByType`, obj)
+}
+// 新增字典
+export function addDict(obj) {
+  return instance.post(`/apiservice/a/sys/dict/saveData`, obj)
+}

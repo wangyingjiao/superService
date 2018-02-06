@@ -360,7 +360,8 @@ export default {
       importanceOptions: [
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
-        { id: "masterPhone", value: "负责人手机号" }
+        { id: "masterPhone", value: "负责人手机号" },
+        { id: "jointEshopCode", value: "E店编码" },
       ],
       scopeType: [],
       workTime: [],
@@ -546,8 +547,13 @@ export default {
         var obj = {
           masterPhone: value
         };
-      } else {
-        var obj = {};
+      }else if(this.search.key =="jointEshopCode"){
+        var obj = {
+          jointEshopCode: value
+        }
+
+      } else {      
+          var obj = {};
       }
       this.listLoading = true;
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -572,122 +578,19 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      var value = this.search.value;
-      if (this.search.key == "name") {
-        var obj = {
-          name: value
-        };
-      } else if (this.search.key == "masterName") {
-        var obj = {
-          masterName: value
-        };
-      } else if (this.search.key == "masterPhone") {
-        var obj = {
-          masterPhone: value
-        };
-      } else {
-        if (this.search.value != "") {
-          this.$message({
-            type: "error",
-            message: "搜索条件不足,不能搜索"
-          });
-          return;
-        } else {
-          var obj = {};
-        }
-      }
-      this.listLoading = true;
-      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
-          }
-        }
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 500);
-      }).catch(()=>{
-        this.listLoading = false
-      });
-
-      // this.getList();
+      this.getList();
     },
     //切换tiao数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      var value = this.search.value;
-      if (this.search.key == "name") {
-        var obj = {
-          name: value
-        };
-      } else if (this.search.key == "masterName") {
-        var obj = {
-          masterName: value
-        };
-      } else {
-        var obj = {
-          masterPhone: value
-        };
-      }
-      this.listLoading = true;
-      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
-          }
-        }
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 500);
-      }).catch(()=>{
-        this.listLoading = false
-      });
+      this.getList()
     },
     //切换页数
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var value = this.search.value;
-      if (this.search.key == "name") {
-        var obj = {
-          name: value
-        };
-      } else if (this.search.key == "masterName") {
-        var obj = {
-          masterName: value
-        };
-      } else {
-        var obj = {
-          masterPhone: value
-        };
-      }
-      this.listLoading = true;
-      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
-          }
-        }
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 500);
-      }).catch(()=>{
-        this.listLoading = false
-      });
+      this.getList()
     },
     //开始时间change事件
     startTimeChange(val) {
