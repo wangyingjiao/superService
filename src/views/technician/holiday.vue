@@ -10,19 +10,10 @@
       </el-input>
 
     <el-date-picker
-      v-model="search.startTime"
+      v-model="search.time"
       style="width:20%"
       type="daterange"
       @change="aaa"
-      placeholder="选择日期">
-    </el-date-picker>
-    至
-
-      <el-date-picker
-      v-model="search.endTime"
-      style="width:20%"
-      class="search"
-      type="date"
       placeholder="选择日期">
     </el-date-picker>
       
@@ -119,8 +110,7 @@ export default {
       search: {
         type: "techName",
         val: "",
-        startTime: "",
-        endTime: ""
+        time: ""
       },
       seOptions: [
         { label: "姓名", value: "techName" },
@@ -136,13 +126,14 @@ export default {
   methods: {
     aaa(){
       console.log(this.search.startTime,'11111111111')
+      console.log(this.search.endTime,'11111111111')
     },
     getList() {
       var obj = {};
      
-      if (this.search.startTime) {
+      if (this.search.time[0]) {
         var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
+          new Date(this.search.time[0]),
           "yyyy-MM-dd hh:mm:ss"
         );
         var start = {
@@ -151,9 +142,9 @@ export default {
         obj = Object.assign(obj, start);
       
       }
-      if (this.search.endTime) {
+      if (this.search.time[1]) {
         var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
+          new Date(this.search.time[1]),
           "yyyy-MM-dd 23:59:59"
         );
         var end = {
@@ -198,198 +189,21 @@ export default {
       });
     },
     handleFilter() {
-      var obj = {};
-     
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
       
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-    
-      }
-      if (this.search.type == "techName") {
-        var name = {
-          techName: this.search.val
-        };
-        obj = Object.assign(obj, name);
-      } else if (this.search.type == "techPhone") {
-        var phone = {
-          techPhone: this.search.val
-        };
-        obj = Object.assign(obj, phone);
-      } else {
-        var newobj = {};
-        obj = Object.assign(obj, newobj);
-      }
-
-     
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
-        
-        if (res.data.code == 1) {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo;
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-
-          this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-      }).catch(()=>{
-        this.listLoading = false
-      });
+      this.getList()
     },
     handleSizeChange(val) {
-      this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      var obj = {};
-      
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      
-      }
-      if (this.search.type == "techName") {
-        var name = {
-          techName: this.search.val
-        };
-        obj = Object.assign(obj, name);
-      } else if (this.search.type == "techPhone") {
-        var phone = {
-          techPhone: this.search.val
-        };
-        obj = Object.assign(obj, phone);
-      } else {
-        var newobj = {};
-        obj = Object.assign(obj, newobj);
-      }
-
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.code == 1) {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 500);
-        }else{
-          this.listLoading = false
-        }
-      }).catch(()=>{
-        this.listLoading = false;
-      });
+      this.getList()
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {};
-      this.listLoading = true;
-     
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-       
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-       
-      }
-      if (this.search.type == "techName") {
-        var name = {
-          techName: this.search.val
-        };
-        obj = Object.assign(obj, name);
-      } else if (this.search.type == "techPhone") {
-        var phone = {
-          techPhone: this.search.val
-        };
-        obj = Object.assign(obj, phone);
-      } else {
-        var newobj = {};
-        obj = Object.assign(obj, newobj);
-      }
-      this.listLoading = true;
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.code == 1) {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          setTimeout(() => {
-            this.listLoading = false;
-          }, 500);
-        }else{
-          this.listLoading = false
-        }
-      }).catch(()=>{
-        this.listLoading = false
-      });
+      this.getList()
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
