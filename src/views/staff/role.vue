@@ -118,7 +118,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate" @click="update('temp')">保 存</button>    
+        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate"  @click="update('temp')">保 存</button>    
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
         <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
       </div>
