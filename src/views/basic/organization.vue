@@ -360,7 +360,8 @@ export default {
       importanceOptions: [
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
-        { id: "masterPhone", value: "负责人手机号" }
+        { id: "masterPhone", value: "负责人手机号" },
+        { id: "jointEshopCode", value: "E店编码" },
       ],
       scopeType: [],
       workTime: [],
@@ -585,6 +586,11 @@ export default {
         var obj = {
           masterPhone: value
         };
+      }else if(this.search.key =="jointEshopCode"){
+        var obj = {
+          jointEshopCode: value
+        }
+
       } else {
         if (this.search.value != "") {
           this.$message({
