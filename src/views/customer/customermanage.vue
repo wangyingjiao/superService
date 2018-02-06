@@ -52,14 +52,14 @@
 						prop="orgName"
 						label="服务机构">
 					  </el-table-column> -->
-					  <el-table-column
+					  <!-- <el-table-column
 						align="center"
 						label="来源">
 						    <template scope="scope">
 						    		<span v-if="scope.row.source =='own'">本机构</span>
 										<span v-if="scope.row.source =='other'">第三方</span>
 								</template>							
-					  </el-table-column>											 
+					  </el-table-column>											  -->
 						<el-table-column
 						align="center"				
 						width="130"
@@ -459,37 +459,56 @@ export default {
 							var that=this;							
 							var inputname=this.$refs.pickerInput;
 							var inputname1=this.$refs.pickerInput1;
-							AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
-								  that.showDis=false;
-									var obj={
-										city:area,
-										input:inputname,
-									}							                        
-									var poiPicker = new PoiPicker(obj);						
-									//初始化poiPicker								  
-									poiPickerReady(poiPicker);
-									poiPicker.clearSearchResults()
-									poiPicker.onCityReady(function() {																							  
-											poiPicker.searchByKeyword(that.$refs.pickerInput.value);	
-									});									
-							});
-							function poiPickerReady(poiPicker) {
-									//选取了某个POI									
-									poiPicker.on('poiPicked', function(poiResult) {
-											var source = poiResult.source,
-													poi = poiResult.item,                          
-													info = {
-															source: source,
-															id: poi.id,
-															name: poi.name,
-															location: poi.location.toString(),
-															address: poi.address,															
-													};
-													inputname.value=info.name;
-													that.kkkk=info.name
-													inputname1.value=info.location;									
+							this.mymap
+							function placeSearch() {  //POI搜索，关键字查询
+									key_1 = document.getElementById("key_1").value;
+									document.getElementById('result').innerHTML = "您输入的是：" + key_1;
+									mapObj.plugin(["AMap.PlaceSearch"], function() {    //构造地点查询类  
+											MSearch = new AMap.PlaceSearch({ 
+													pageSize:10,
+													pageIndex:1,
+													city:"021" //城市
+											});
+											AMap.event.addListener(MSearch, "complete", function(data){
+													var poiArr = data.poiList.pois;
+													var lngX = poiArr[0].location.getLng();
+													var latY = poiArr[0].location.getLat();
+													mapObj.setCenter(new AMap.LngLat(lngX, latY));
+											});//返回地点查询结果        
+											MSearch.search(key_1); //关键字查询
 									});
-							}	
+							}							
+							// AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
+							// 	  that.showDis=false;
+							// 		var obj={
+							// 			city:area,
+							// 			input:inputname,
+							// 		}							                        
+							// 		var poiPicker = new PoiPicker(obj);						
+							// 		//初始化poiPicker								  
+							// 		poiPickerReady(poiPicker);
+							// 		poiPicker.clearSearchResults()
+							// 		poiPicker.onCityReady(function() {																							  
+							// 				poiPicker.searchByKeyword(that.$refs.pickerInput.value);	
+							// 		});									
+							// });
+							// function poiPickerReady(poiPicker) {
+							// 		//选取了某个POI									
+							// 		poiPicker.on('poiPicked', function(poiResult) {
+							// 				var source = poiResult.source,
+							// 						poi = poiResult.item,                          
+							// 						info = {
+							// 								source: source,
+							// 								id: poi.id,
+							// 								name: poi.name,
+							// 								location: poi.location.toString(),
+							// 								address: poi.address,															
+							// 						};
+							// 						inputname.value=info.name;
+							// 						that.kkkk=info.name
+							// 						inputname1.value=info.location;									
+							// 		});
+							// }	
 										
 					},
 					//地图初始化

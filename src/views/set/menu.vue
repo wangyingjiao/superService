@@ -116,12 +116,7 @@
 
     </el-table>
 <!-- 表格结束 -->
-    <!-- 分页器 -->
-    <div v-if="!listLoading" class="pagination-container">
-      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
-        :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
-    </div>
+    
     <!-- 弹窗 -->
     <el-dialog 
       :title="textMap[dialogStatus]"
@@ -249,10 +244,10 @@ export default {
     this.getList();
   },
   methods: {
+    // 获取列表
     getList() {
       this.listLoading = true;
       var obj = {};
-
       getMenu(obj)
         .then(res => {
           if (res.data.code == 1) {
@@ -271,19 +266,8 @@ export default {
           this.listLoading = false;
         });
     },
-    
-    handleSizeChange(val) {
-      this.listQuery.page = 1;
-      this.pageNumber = 1;
-      this.pageSize = val;
-      this.getList();
-    },
-    handleCurrentChange(val) {
-      this.pageNumber = val;
-      this.getList();
-    },
+    // 新增子菜单
     handleCreate(row) {
-      console.log(row)
       this.temp.isShow = '1'
       if(row.parentId){
         this.temp.parentId = row.id
@@ -298,6 +282,7 @@ export default {
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
     },
+    // 编辑菜单
     handleUpdate(row) {
       this.listLoading = true;
       this.dialogStatus = "update";
@@ -309,12 +294,10 @@ export default {
       handleUpMenu(obj).then(res => {
         this.listLoading = true;
         if (res.data.code == 1) {
-          console.log(res)
           var data = res.data.data;
           this.listLoading = false;
           this.rowId = row.id;
           this.temp = Object.assign({parent:row.parentId}, row);
-          console.log(this.temp)
           this.dialogFormVisible = true;
          } else {
            this.listLoading = false;
@@ -322,6 +305,7 @@ export default {
          }
       });
     },
+    // 点击删除
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
@@ -356,6 +340,7 @@ export default {
           });
         });
     },
+    // 新增保存
     create(formName) {
       var obj = {
         parent: this.temp.parentId,
@@ -366,13 +351,10 @@ export default {
         icon:this.temp.icon,
         isShow:this.temp.isShow
       };
-      console.log(obj)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true
-          console.log(11111111111111)
           addMenu(obj).then(res => {
-            console.log(res)
             this.btnState = false;
             if (res.data.code === 1) {
               this.dialogFormVisible = false;
@@ -406,7 +388,6 @@ export default {
         icon:this.temp.icon,
         isShow:this.temp.isShow
       };
-      console.log(obj)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true
