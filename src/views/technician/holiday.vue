@@ -124,13 +124,13 @@ export default {
     this.getList();
   },
   methods: {
-    aaa(){
-      console.log(this.search.startTime,'11111111111')
-      console.log(this.search.endTime,'11111111111')
+    aaa() {
+      console.log(this.search.startTime, "11111111111");
+      console.log(this.search.endTime, "11111111111");
     },
     getList() {
       var obj = {};
-     
+
       if (this.search.time[0]) {
         var startTime = util.formatDate.format(
           new Date(this.search.time[0]),
@@ -140,7 +140,6 @@ export default {
           startTime: startTime
         };
         obj = Object.assign(obj, start);
-      
       }
       if (this.search.time[1]) {
         var endTime = util.formatDate.format(
@@ -151,7 +150,6 @@ export default {
           endTime: endTime
         };
         obj = Object.assign(obj, end);
-       
       }
       if (this.search.type == "techName") {
         var name = {
@@ -167,43 +165,43 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
-      getHoliday(obj, this.pageNumber, this.pageSize).then(res => { 
-        if(res.data.code == 1){
-          this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getHoliday(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
           }
-        }
-        this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-        
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     handleFilter() {
-      
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.getList()
+      this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.getList()
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.getList()
+      this.getList();
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -217,7 +215,6 @@ export default {
           };
           delHoliday(obj)
             .then(res => {
-        
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -225,7 +222,6 @@ export default {
                 });
                 this.getList();
               } else {
-                
               }
             })
             .catch(() => {
