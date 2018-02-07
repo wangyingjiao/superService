@@ -101,7 +101,7 @@
 
       <el-table-column align="center" label="操作" min-width="200px" class-name="operationTab">
         <template scope="scope">
-            <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button>
+            <!-- <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button> -->
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
             <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
@@ -163,15 +163,17 @@
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
 					</div>
-                    <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
+                    <!-- <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div> -->
                 </el-form-item>
+				<div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
 
-				<el-form-item label="图文详情：" prop="picture">
+				<el-form-item label="图文详情：">
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
 					</div>
-                    <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
+                   
                 </el-form-item>
+				 <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
 
 				 <!-- <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
                 <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
@@ -193,8 +195,9 @@
                           </el-tooltip>
                         </div>                        
                     </div>
-                    <div class="el-upload__tip">* 最多设置3个系统标签</div>
+                    
                 </el-form-item>
+				<div class="el-upload__tip">* 最多设置3个系统标签</div>
 
                 <el-form-item label="自定义标签：" class="labelDav">
                     <div class="custom">
@@ -205,8 +208,9 @@
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
-                     <div class="el-upload__tip">* 最多设置3个自定义标签</div>
+                     
                 </el-form-item> 
+				<div class="el-upload__tip">* 最多设置3个自定义标签</div>
             
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
@@ -662,7 +666,11 @@ export default {
     //服务图片
     var PICTURE = (rule,value,callback)=>{
       if(this.picFile!=undefined && this.picFile.length>0){
-        callback()
+		if(this.picFile[0]==''){
+			callback(new Error('第一张商品banner图还没上传'))
+		}else{
+			callback()
+		}
       }else{
         callback(new Error("请添加banner图"))
       }
@@ -1354,23 +1362,28 @@ export default {
               this.listLoading = false;
               this.dialogFormVisible = true;   
               var arr = data.data.data;
-              if (data.data.data.pictures != undefined) {
-                this.picFile = data.data.data.pictures;
-                this.imgNumber = data.data.data.pictures.length;
-                for (var i = 0; i < data.data.data.pictures.length; i++) {
-                  var obj = {
-                    url:data.data.data.pictures[i]
-                  }
-                  this.picList.push(obj);
-				}
+              if (arr.pictures != undefined) {
+				this.picFile = arr.pictures;
+				this.picList = this.picFile
+                // this.imgNumber = arr.pictures.length;
+                // for (var i = 0; i < arr.pictures.length; i++) {
+                //   var obj = {
+                //     url:arr.pictures[i]
+                //   }
+                //   this.picList.push(arr.pictures[i]);
+				// }
 			  }
-			  if(data.data.data.pictureDetails != undefined){
-				  	for(var i = 0;i<data.data.data.pictureDetails.length; i++){
-					var obj = {
-						url:data.data.data.pictureDetails[i]
-					}
-					this.pictureDetails.push(obj)
-				}
+			  if(arr.pictureDetails != undefined){
+				  this.imgText = arr.pictureDetails
+				  this.pictureDetails = this.imgText
+				  	// for(var i = 0;i<arr.pictureDetails.length; i++){
+					// var obj = {
+					// 	url:arr.pictureDetails[i]
+					// }
+				// 	this.pictureDetails.push(arr.pictureDetails[i])
+				// }
+			  }else{
+				  this.pictureDetails = ['','','','']
 			  }
               this.tableProject({majorSort:arr.majorSort},arr.sortId)
               this.basicForm = arr;
@@ -1525,6 +1538,8 @@ export default {
             that.basicForm.customTags = this.customArr
 			that.basicForm.pictures = this.picFile;
 			that.basicForm.pictureDetails =  this.imgText;
+			console.log(this.pictureDetails,"this.pictureDetails---")
+			console.log(that.basicForm,"that.basicForm---")
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -1628,9 +1643,10 @@ export default {
     //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-	  this.picFile = [] //清空图片
-	  this.pictureDetails = []
-      this.picList = [] //清空图片this.alreadyArr.concat(this.labelClickArr)
+	  this.picFile = ['','','',''] //清空图片
+	  this.pictureDetails = ['','','','']
+	  this.imgText =['','','','']
+      this.picList = ['','','',''] //清空图片this.alreadyArr.concat(this.labelClickArr)
       this.alreadyArr = []
       this.labelClickArr = []
       this.customArr = []
@@ -1740,7 +1756,7 @@ export default {
   text-align: left
 }
 .projectTabel .operationTab .cell{
- width: 225px;
+ width: 165px;
  margin: 0 auto;
 }
 .upload_box {
@@ -1862,7 +1878,7 @@ export default {
   height:30px
 }
 #diatable .el-upload__tip{
-	margin-top: 20px;
+	margin:0 0 10px 90px;
 }
 
 .bgWhite .el-switch.is-checked .el-switch__core{

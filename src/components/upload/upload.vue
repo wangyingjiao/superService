@@ -86,7 +86,7 @@ export default{
 				 console.log(val,"val")
 				 val.map((item,index)=>{
 					//  this.imgSrcUpload[index] = item.url || ""
-					 this.$set(this.imgSrcUpload,index,item.url || "")
+					 this.$set(this.imgSrcUpload,index,item)
 				 })
          this.imagelist = val
          if(val.length>3){
@@ -111,13 +111,13 @@ export default{
     beforeUpload(file){
       //判断图片格式
         if(file.type == 'image/gif' || file.type == 'image/jpg' || file.type=='image/png' || file.type == 'image/jpeg'){
-          if(this.imagelist.length>=4){
-              this.$message({
-                type: "error",
-                message: "最多上传4张图片"
-              });
-              return false;
-          }
+          // if(this.imagelist.length>=4){
+          //     this.$message({
+          //       type: "error",
+          //       message: "最多上传4张图片"
+          //     });
+          //     return false;
+          // }
         }else{
           this.$message.error('请上传正确的图片格式');
           return false
@@ -247,22 +247,18 @@ export default{
 </script>
 
 <style>
-.img-upload .avatar-headPic .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-		overflow: hidden;
-		margin-right: 10px;
-	}
-.img-upload .avatar-headPic .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-		text-align: center;
-	}
+.upload-demo .avatar-headPic .el-upload--text{
+	width: 100%;
+	height: 100%;
+}
+.upload-demo .avatar-headPic .avatar-uploader-icon{
+	line-height: 1;
+	border: none;
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+	color: #8c939d;
+}
 #diatable	.el-form-item__content{
 	line-height: 0;
 }
