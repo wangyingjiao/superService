@@ -17,7 +17,7 @@
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
-							<div  class="selftSerchBut"  @click="addcustomer">新增</div>
+							<div  class="selftSerchBut"  v-if="btnShow.indexOf('order_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
 							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
