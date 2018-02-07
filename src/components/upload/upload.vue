@@ -3,7 +3,7 @@
 		<div v-for="(item,index) in imgSrcUpload" :key="index">
 		 <el-upload
 					class="avatar-headPic img-content"
-					action="https://imgcdn.guoanshequ.com/"
+					:action="imgSrc"
 					:show-file-list="false"
 					:before-upload="beforeUpload"
 					:http-request="(file)=>uploadOnSuccess(file,index)"
@@ -15,30 +15,6 @@
 					</div>
 			</el-upload>
 		</div>
-		<!-- <div class="img-content" v-for="(item,key) in imagelist" :key="key">
-			<img :src="type=='picture'?imgSrc + item.url + picWidth600 : imgSrc + item.url + picWidth100">
-			<div class="layer">
-				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>
-			</div>
-		</div>
-		<div v-if="!pass && progress !== 0" class="img-content img-progress">
-			<el-progress type="circle" :percentage="progress" :status="proStatus"></el-progress>
-		</div>
-		<div class="img-upload" v-if="imgFlag">
-			<el-upload class="uploader" accept="image/*"
-			  ref="upload"
-			  :list-type="type"
-			  :show-file-list="false"
-			  :action="params.action"
-			  :data="params.data"
-			  :on-change="uploadOnChange"
-			  :http-request="uploadOnSuccess"
-        :before-upload="beforeUpload"
-			  :on-error="uploadOnError"
-			  :on-progress="uploadOnProgress">
-        <i class="el-icon-plus avatar-uploader-icon"></i>
-			</el-upload>
-		</div> -->
 	</div>
 </template>
 

@@ -175,12 +175,6 @@
                 </el-form-item>
 				 <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
 
-				 <!-- <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
-                <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
-                <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
-                  <imgService @imgclick = "imgTextClick" :piclist = "fileList" :type="'picture'" :min='0' :max='8'></imgService>
-                </div> -->
-
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
@@ -260,89 +254,8 @@
           <!-- 商品信息表格 。。。。。。。。完成 -->
               <div class="add_Btn" @click="addCommodity">
                 <span class="fl btn_Span1">+</span>
-                <!-- <span v-if="addComm" class="fl btn_Span1">-</span> -->
                 <span class="fl btn_Span2">添加商品</span>
               </div>
-              <!-- <el-collapse-transition> -->
-			<!-- <el-dialog title="添加商品" :visible.sync="addCommodityFlag">
-              <el-form 
-                v-if="addComm"
-                :model="goods_info"
-                ref="goods_info"
-                label-position="left"
-                label-width="90px" 
-                style='padding:20px 0 0 20px'
-                :rules = "goods"
-                 >
-                <el-form-item label="商品名称:" prop="name">
-                  <el-input
-                    placeholder="请输入商品名称（1-24位）"
-                    style="width:70%"
-                    v-model="goods_info.name"></el-input>
-                </el-form-item>
-
-                <el-form-item label="商品单位:" prop="unit">
-                  <el-input 
-                    style="width:70%"
-                    placeholder="请输入单位名称（1-6位）"
-                    v-model="goods_info.unit"></el-input>
-                </el-form-item>
-
-                <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="请选择" style="width:70%">
-                     <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
-                  </el-select>
-                </el-form-item>
-                
-                <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price" style="width:70%">
-                     <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours" style="width:70%">
-                    <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
-                  </el-input>
-                  <el-popover
-                      ref="popover1"
-                      placement="top-start"
-                      width="200"
-                      trigger="hover"
-                      content="请录入1单位所需服务时长（以小时为单位）
-例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
-                    </el-popover>
-                   <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
-                </el-form-item>
-             
-                <el-form-item label="起步人数:" class="seize" prop="startPerNum">
-                  <el-input
-                    placeholder="请输入起步人数(默认为1)"
-                    style="width:70%"
-                    v-model="goods_info.startPerNum"></el-input>
-                </el-form-item>
-
-                <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
-                  <el-input
-                    placeholder="请输入封顶人数"
-                    style="width:70%"
-                    v-model="goods_info.cappingPerNum"></el-input>
-                </el-form-item>
-
-                <el-form-item label="起购数量:" class="seize" prop="minPurchase">
-                  <el-input
-                    placeholder="请输入起购数量（默认为1）"
-                    style="width:70%"
-                    v-model="goods_info.minPurchase"></el-input>
-                </el-form-item>
-
-                <el-form-item class="seize bottimPro" style="width:70%">
-                  <input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
-                  <input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
-                  <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消">
-                </el-form-item>
-              </el-form>
-			</el-dialog> -->
-              <!-- </el-collapse-transition> -->
           </div>
           </div>
               <div slot="footer" class="dialog-footer" style="text-align:center">
@@ -440,24 +353,6 @@
       </el-dialog>
     <!-- 系统标签结束 -->
 
-    <!-- 图文详情 -->
-      <!-- <div class="image-text"> -->
-          <el-dialog title="添加详情" :visible.sync="ImageText" :close-on-click-modal="false">
-            <div class="image-text-body">
-                <p style="color:rgb(131, 145, 165); font-size:12px;">最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</p>
-                <div v-if="imgText.length==0" class="details">点击右上角加号按钮,添加图文详情</div>
-                <div class="image-border" v-for="(item,index) in ImageTextArr" :key="index">
-                  <imgService @imgclick = "imgTextClick" :piclist = "fileList" :type="'picture'" :min='0' :max='8'></imgService>
-                </div>
-            </div>
-            <div slot="footer" class="dialog-footer" style="text-align:center">
-              <input type="button" class="button-large" @click="subImgText('a')" value="保 存">
-              <input type="button" class="button-cancel" @click="resImgText('a')" value="取 消">
-            </div>
-        </el-dialog>
-      <!-- </div> -->
-    <!-- 图文详情 完成 -->
-
     <!-- 商品添加 -->
 	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
@@ -528,12 +423,6 @@
                     style="width:70%"
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
-
-                <!-- <el-form-item class="seize bottimPro" style="width:70%">
-                  <input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
-                  <input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
-                  <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消">
-                </el-form-item> -->
               </el-form>
 			   <div slot="footer" class="dialog-footer" style="text-align:center">
 				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
@@ -832,8 +721,6 @@ export default {
       formLabelWidth: '90px',
       addLabel:false,
       btnState:false,
-      ImageTextArr: [{ imageUrl: "" }],
-      ImageText: false,
       tabs: "all",
       editId: "",
       total: null,
@@ -1133,35 +1020,6 @@ export default {
         }
       })
     },
-    //保存图片
-    subImgText(a) {
-      var obj = {
-        id: this.editId,
-        pictureDetails: this.imgText
-      };
-        sortList(obj).then(res => {
-          if (res.data.code == 1) {
-            this.ImageText = false;
-            this.$message({
-              type: "success",
-              message: res.data.data
-            });
-          }else{
-           
-          }
-        }).catch(error=>{
-            this.$message({
-              type:'error',
-              message:"上传失败"
-            })
-          return false
-        });
-    }, 
-    // 取消图文
-    resImgText(a) {
-      this.fileList = [];
-      this.ImageText = false;
-    }, // 关闭图文
     //商品添加/编辑
     submitForm(formName) {
       this.$refs[formName].validate(valid=>{
@@ -1407,49 +1265,6 @@ export default {
         .catch(error => {
           this.listLoading = false;
           return false
-        });
-    },
-    handleUplode(row) {
-      this.addDetailsImg = 0;
-      this.basicForm.sortId = ''
-      this.imgText = []
-      this.editId = row.id;
-      this.picList = [];
-      this.fileList = [];
-      this.editId = row.id;
-      this.listLoading = true;
-      ServerEdit({ id: this.editId })
-        .then(res => {
-          if (res.data.code == 1) {
-            var data = res.data.data;
-            this.listLoading = false;
-
-            if (data.pictureDetails != undefined) {
-              this.imgText = data.pictureDetails;
-              this.addDetailsImg = data.pictureDetails.length;
-              for (var i = 0; i < data.pictureDetails.length; i++) {
-                // var obj = {
-                //   url:
-                //     imgSrc +
-                //     data.pictureDetails[i]
-                // };
-                var obj = {
-                  url:data.pictureDetails[i]
-                }
-                this.fileList.push(obj);
-              }
-            }
-            this.ImageText = true;
-          }else{
-            this.listLoading = false;
-          }
-        })
-        .catch(err => {
-          this.listLoading = false;
-          this.$message({
-            type: "error",
-            message: "获取数据失败"
-          });
         });
     },
     handleDelete(row) {
