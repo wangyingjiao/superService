@@ -88,8 +88,8 @@
                         </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row :gutter="60">
-                  <el-col :span="5">
+                <div class="idBoxEdit">
+                  <!-- <el-col :span="5"> -->
                     <el-form-item label="身份证：">
                         <el-upload
                                 class="avatar-uploader"
@@ -102,8 +102,8 @@
                                 <img v-if="personalEDit.idCardPicBefor" :src="imgSrc+personalEDit.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                     </el-form-item>
-                  </el-col>
-                  <el-col :span="5">
+                  <!-- </el-col> -->
+                  <!-- <el-col :span="5"> -->
                     <!-- <el-form-item label="身份证反面："> -->
                         <el-upload
                                 class="avatar-uploader"
@@ -116,8 +116,8 @@
                                 <img v-if="personalEDit.idCardPicAfter" :src="imgSrc+personalEDit.idCardPicAfter+picWidth300" class="avatar avatarBack">
                           </el-upload>
                     <!-- </el-form-item> -->
-                  </el-col>
-                </el-row>
+                  <!-- </el-col> -->
+                </div>
                 <el-row>
                   <el-col :span="24">
                        <li>
@@ -1601,6 +1601,9 @@ export default {
   margin: 0px;
   padding: 0px;
 }
+.tech-section-lage .el-dialog__footer{
+  padding: 20px 0;
+}
 .perTech{
   border-bottom: 20px solid #f3f1f1;
 }
@@ -1687,8 +1690,9 @@ export default {
 }
 
 .avatarBack{
-  position: absolute;
-  left: 450px;
+  /* position: absolute;
+  left: 450px; */
+  margin-left: 200px;
 }
 
 .tech-edit .tech-fourth {
@@ -1791,6 +1795,17 @@ export default {
 
 .positionbox {
   margin: 20px;
+}
+
+.idBoxEdit{
+  overflow: hidden;
+}
+.idBoxEdit .el-form-item{
+  float: left;
+}
+.idBoxEdit>.avatar-uploader{
+  margin-left: 20px;
+  float: left;
 }
 
 .tech-positon-odvi {
@@ -2115,9 +2130,9 @@ export default {
   line-height: 34px;
 }
 .closeThe{
-  margin: 20px 0;
+  /* margin: 20px 0;
   height: 30px;
-  line-height: 30px;
+  line-height: 30px; */
 }
 .level {
   flex: 1;
