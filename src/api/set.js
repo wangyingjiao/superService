@@ -32,7 +32,7 @@ export function delApp(obj) {
 }
 // 获取菜单列表
 export function getMenu(obj) {
-  return instance.post(`/apiservice/a/sys/menu/getMenuList`, obj)
+  return instance.post(`/apiservice/a/sys/menu/getAllMenuList`, obj)
 }
 // 新增保存菜单
 export function addMenu(obj) {
@@ -70,4 +70,8 @@ export function readDict(obj) {
 // 新增字典
 export function addDict(obj) {
   return instance.post(`/apiservice/a/sys/dict/saveData`, obj)
+}
+// 删除字典
+export function delDict(obj) {
+  return instance.post(`/apiservice/a/sys/dict/deleteDict`, obj)
 }

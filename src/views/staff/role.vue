@@ -71,7 +71,7 @@
         label-width="160px" 
         >
 
-        <el-form-item label=" 所属机构:"  prop="officeId">
+        <el-form-item label="所属机构:"  prop="officeId">
           <el-select :disabled="selsctState" class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -335,7 +335,6 @@ export default {
             }, 500);
           } else {
             this.listLoading = false;
-            
           }
         });
       } else {
@@ -647,9 +646,7 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {
-      
-    },
+    lvChange(value) {},
     offChange(val) {},
     //点击新增时
     handleCreate() {
@@ -778,7 +775,6 @@ export default {
           });
         } else {
           this.listLoading = false;
-          
         }
       });
     },
@@ -801,7 +797,7 @@ export default {
                   message: "删除成功!"
                 });
                 this.getList();
-              } 
+              }
             })
             .catch(() => {
               this.listLoading = false;
@@ -872,7 +868,7 @@ export default {
                   officeId: ""
                 };
                 this.handleFilter();
-              } 
+              }
             })
             .catch(err => {
               this.btnState = false;
@@ -917,7 +913,7 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
-              } 
+              }
             })
             .catch(err => {
               this.btnState = false;

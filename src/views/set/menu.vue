@@ -217,7 +217,7 @@ export default {
       dialogFormVisible: false,
       dialogStatus: "",
       temp: {
-        id:"",
+        id: "",
         parentId: "",
         parentIds: "",
         name: "",
@@ -228,12 +228,20 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 10 位的分类名称",
+            trigger: "blur"
+          },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ],
-        permission:[
-          {required:true, message:"请输入2-15位的权限标识",trigger:"blur"},
-          {min:2,max:15, message:"请输入2-15位的权限标识"}
+        permission: [
+          {
+            required: true,
+            message: "请输入2-15位的权限标识",
+            trigger: "blur"
+          },
+          { min: 2, max: 15, message: "请输入2-15位的权限标识" }
         ]
       },
       tableKey: 0,
@@ -268,16 +276,16 @@ export default {
     },
     // 新增子菜单
     handleCreate(row) {
-      this.temp.isShow = '1'
-      if(row.parentId){
-        this.temp.parentId = row.id
-      }else{
-        this.temp.parentId = "1"
+      this.temp.isShow = "1";
+      if (row.parentId) {
+        this.temp.parentId = row.id;
+      } else {
+        this.temp.parentId = "1";
       }
-      if(row.parentIds){
-        this.temp.parentIds = row.parentIds + row.id
-      }else{
-        this.temp.parentIds = "0,1,"
+      if (row.parentIds) {
+        this.temp.parentIds = row.parentIds + row.id;
+      } else {
+        this.temp.parentIds = "0,1,";
       }
       this.dialogFormVisible = true;
       this.dialogStatus = "create";
@@ -297,12 +305,11 @@ export default {
           var data = res.data.data;
           this.listLoading = false;
           this.rowId = row.id;
-          this.temp = Object.assign({parent:row.parentId}, row);
+          this.temp = Object.assign({ parent: row.parentId }, row);
           this.dialogFormVisible = true;
-         } else {
-           this.listLoading = false;
-
-         }
+        } else {
+          this.listLoading = false;
+        }
       });
     },
     // 点击删除
@@ -318,7 +325,6 @@ export default {
           };
           delMenu(obj)
             .then(res => {
-             
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -326,11 +332,10 @@ export default {
                 });
                 this.getList();
               } else {
-                
               }
             })
-            .catch(() =>{
-              this.listLoading = false
+            .catch(() => {
+              this.listLoading = false;
             });
         })
         .catch(() => {
@@ -345,33 +350,33 @@ export default {
       var obj = {
         parent: this.temp.parentId,
         parentIds: this.temp.parentIds,
-        name:this.temp.name,
-        permission:this.temp.permission,
-        href:this.temp.href,
-        icon:this.temp.icon,
-        isShow:this.temp.isShow
+        name: this.temp.name,
+        permission: this.temp.permission,
+        href: this.temp.href,
+        icon: this.temp.icon,
+        isShow: this.temp.isShow
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          addMenu(obj).then(res => {
-            this.btnState = false;
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.getList()
-              this.$message({
-                type: "success",
-                message: "新增成功"
-              });
-            } else {
-              
-              
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+          this.btnState = true;
+          addMenu(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.getList();
+                this.$message({
+                  type: "success",
+                  message: "新增成功"
+                });
+              } else {
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -379,33 +384,35 @@ export default {
     },
     update(formName) {
       var obj = {
-        id:this.temp.id,
+        id: this.temp.id,
         parent: this.temp.parent,
         parentIds: this.temp.parentIds,
-        name:this.temp.name,
-        permission:this.temp.permission,
-        href:this.temp.href,
-        icon:this.temp.icon,
-        isShow:this.temp.isShow
+        name: this.temp.name,
+        permission: this.temp.permission,
+        href: this.temp.href,
+        icon: this.temp.icon,
+        isShow: this.temp.isShow
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.btnState = true
-          upMenu(obj).then(res => {
-            this.btnState = false;
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.getList()
-              this.$message({
-                type: "success",
-                message: "编辑成功"
-              });
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
+          this.btnState = true;
+          upMenu(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.getList();
+                this.$message({
+                  type: "success",
+                  message: "编辑成功"
+                });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
         } else {
           return false;
         }
@@ -421,7 +428,7 @@ export default {
     //清空绑定
     resetTemp() {
       this.temp = {
-        id:"",
+        id: "",
         parentId: "",
         parentIds: "",
         name: "",
@@ -429,7 +436,7 @@ export default {
         permission: "",
         isShow: "",
         icon: ""
-      }
+      };
     }
   }
 };
