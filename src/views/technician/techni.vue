@@ -1,56 +1,44 @@
 <template>
   <div class="tech">
     <div class="tech-index">
-      <div style="width:100%">
-        <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
-          <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
-        <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
-						<el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-						</el-option>
-        </el-select>
-
-         <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search searchHeader">
-            <el-select v-model="techniSearch.chooses" clearable placeholder="请选择"  slot="prepend">
-              <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
-              </el-option>
-            </el-select>
-        </el-input>
-        <!-- <el-form-item label="选择技能：" prop="skillIds"> -->
-          <el-select v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
-            <el-option
-            v-for="(item,index) in sexTypeo"
-            :key="index"
-            :label="item.name"
-            :value="item.id">
+      <div class="serch-box">
+        <div class="serch-input">
+          <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+            <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-                <!-- </el-form-item> -->
-        <!-- <button class="tech-btn" @click="order">选择技能</button> -->
+          <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
+              <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+              </el-option>
+          </el-select>
 
-          <!-- <el-collapse-transition>
-        <div class="tech-psoition" v-if="position">
-          <div style="display:inline-block;margin-left:28px;" class="tech-positon-odvi">
-            <div class="selfCheckBox positionbox" ref="sexOption" @click="roomSel2(item)" v-for="(item,$index) in sexTypeo" :class="{'tech-green':roomSel2Arr.indexOf(item.id)!=-1}" :key="$index">
-              <el-tooltip placement="top" :disabled="item.name.length <= 5" :content="item.name">
-                <span>{{item.name}}</span>
-              </el-tooltip>
-              <div :class="{'triangle-bottomright':item.show===true}"></div>
-            </div>
-          </div>
-          <div class="tech-pos-btn">
-            <button @click="hiddenDiv" class="button-large" style="margin-right:40px;">确定</button>
-            <button @click="hiddenDiv" class="button-cancel btn-color-cancel">关闭</button>
-          </div>
-        </div>
-      </el-collapse-transition> -->
+          <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search searchHeader">
+              <el-select  v-model="techniSearch.chooses" clearable placeholder="请选择"  slot="prepend">
+                <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+          </el-input>
 
-
+           <button class="search-button el-icon-search btn_search btn-color serch-btn" @click="techniSearchs"> 搜索</button>
       </div>
-
-      <div>
+      <!-- <div class="serch-btn">
         <button class="search-button el-icon-search btn_search btn-color" @click="techniSearchs"> 搜索</button>
+      </div> -->
+      </div>
+      <div class="serch-ski">
+        <!-- <el-form-item label="选择技能：" prop="skillIds"> -->
+          <el-row>
+            <el-col :span="10">
+              <el-select v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                <el-option
+                v-for="(item,index) in sexTypeo"
+                :key="index"
+                :label="item.name"
+                :value="item.id">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
       </div>
     </div>
     <div class="tech-section">
@@ -317,7 +305,7 @@
                     <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-headPic"
-                            action="https://imgcdn.guoanshequ.com/"
+                            :action="imgSrc"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"
@@ -393,8 +381,8 @@
                       </el-form-item>
                   </el-col>
               </el-row>
-              <el-row :gutter="60">
-                  <el-col :span="5">
+              <div class="idBox">
+                  <!-- <el-col :span="6"> -->
                       <el-form-item label="身份证：">
                           <el-upload
                               class="avatar-uploader"
@@ -407,8 +395,8 @@
                               <img v-if="personal.idCardPicBefor" :src="imgSrc + personal.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                       </el-form-item>
-                  </el-col>
-                  <el-col :span="5">
+                  <!-- </el-col> -->
+                  <!-- <el-col :span="5"> -->
                       <!-- <el-form-item  label="身份证反面："> -->
                           <el-upload
                               class="avatar-uploader"
@@ -421,8 +409,8 @@
                               <img v-if="personal.idCardPicAfter" :src="imgSrc+personal.idCardPicAfter+picWidth300" class="avatar avatarBack">
                           </el-upload>
                       <!-- </el-form-item> -->
-                  </el-col>
-              </el-row>
+                  <!-- </el-col> -->
+              </div>
           <!-- 新的结束  -->
         
           
@@ -580,8 +568,8 @@
       </ul>
       </el-form>
         </div>
-        <div slot="footer" class="dialog-footer selfFooter" style="text-align:center; padding:30px 0">
-            <button  class="btn-color button-large" @click="submitFormPer('personal')" :disabled="btnState">保存信息</button>
+        <div slot="footer" class="dialog-footer selfFooter" style="text-align:center;">
+            <button  class="btn-color button-large" @click="submitFormPer('personal')" :disabled="btnState">保存</button>
             <button class="button-cancel btn-color-cancel" @click="handleClose('personal')">取消</button>
         </div>
       </el-dialog>
@@ -1778,9 +1766,33 @@ export default {
   background: #fff;
   padding: 20px;
   margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  overflow: hidden;
+  /* display: flex; */
+  /* justify-content: space-between;
+  align-items: center; */
+}
+.tech-index .serch-box{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.tech-index .serch-input{
+  width: 100%;
+  float: left;
+}
+.tech-index .serch-btn{
+  float: right;
+  /* width: 8%; */
+}
+
+.tech-index .serch-ski{
+  margin-top: 10px;
+}
+.tech-index .serch-ski .search{
+  width: 102%;
+}
+.tech-index .serch-ski .search .el-input{
+  /* width: 42%; */
 }
 
 .tech {
@@ -1929,6 +1941,17 @@ export default {
   justify-content: center;
 }
 
+.idBox{
+  overflow: hidden;
+}
+.idBox .el-form-item{
+  float: left;
+}
+.idBox>.avatar-uploader{
+  margin-left: 20px;
+  float: left;
+}
+
 .tech-ul li div > p {
   display: flex;
 }
@@ -1995,7 +2018,7 @@ export default {
 }
 
 .tech-section-lage {
-  width: 70%;
+  width: 80%;
 }
 
 /* .el-upload-list {
@@ -2081,8 +2104,11 @@ export default {
   margin: 20px 0;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {
-  width: 75px;
+  width: 100px;
   text-align: center;
+}
+.searchHeader{
+  width: 30%;
 }
 .searchHeader .el-input__inner {
   /* width: 250px; */
@@ -2360,8 +2386,9 @@ export default {
 }
 
 .avatarBack{
-  position: absolute;
-  left: 450px;
+  /* position: absolute;
+  left: 450px; */
+  margin-left: 200px;
 }
 
 .tech-xiu-div-two {

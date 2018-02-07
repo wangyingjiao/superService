@@ -71,17 +71,6 @@
             label-position="left" 
             label-width="100px"
             >
-          <el-form-item label="字典名:" prop="label">
-            <el-input        
-           class="form_item"
-            placeholder="请输入1-6位的字典名" v-model.trim="temp.label"></el-input>
-          </el-form-item>
-
-          <el-form-item label="数据值:" prop="value">
-            <el-input        
-           class="form_item"
-            placeholder="请输入2-15位的数据值" v-model.trim="temp.value"></el-input>
-          </el-form-item>
 
           <el-form-item label="字典类型:" prop="type">
             <el-input
@@ -91,8 +80,20 @@
 
           <el-form-item label="描述:" prop="description">
             <el-input
+              class="form_item"
+                placeholder="请输入2-15位的描述" v-model.trim="temp.description"></el-input>
+          </el-form-item>
+          <el-form-item label="变量名:" v-if="this.dialogStatus == 'create'" prop="label">
+
+          <el-input        
            class="form_item"
-            placeholder="请输入2-15位的描述" v-model.trim="temp.description"></el-input>
+            placeholder="请输入1-6位的变量名" v-model.trim="temp.label"></el-input>
+          </el-form-item>
+
+          <el-form-item label="变量值:" v-if="this.dialogStatus == 'create'" prop="value">
+            <el-input        
+           class="form_item"
+            placeholder="请输入2-15位的变量值" v-model.trim="temp.value"></el-input>
           </el-form-item>
 
           </el-form>
@@ -103,6 +104,44 @@
         <button class="button-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
+    <!-- 1层弹框结束 -->
+    <!-- 2层弹框开始 -->
+    <el-dialog 
+      :title="textMap2[dialogStatus]"
+      :visible.sync="dialogFormVisible2" 
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+       class="diatable">
+          <el-form
+            class="small-space dia_form" 
+            ref="temp" 
+            :rules="rules" 
+            :model="temp" 
+            label-position="left" 
+            label-width="100px"
+            >
+         <el-form-item label="变量名:" prop="label">
+          <el-input
+           class="form_item"
+            placeholder="请输入1-6位的变量名" v-model.trim="temp.label"></el-input>
+          </el-form-item>
+
+          <el-form-item label="变量值:"  prop="value">
+            <el-input        
+           class="form_item"
+            placeholder="请输入2-15位的变量值" v-model.trim="temp.value"></el-input>
+          </el-form-item>
+
+          </el-form>
+      
+      <div slot="footer" class="dialog-footer" style="text-align: center;">   
+        <button class="button-large" :loading="true" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
+        <button class="button-large" :loading="true" v-else :disabled="btnState" @click="create('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+      </div>
+    </el-dialog>
+
      <!-- 查看弹框 -->
     <el-dialog 
       title="子菜单列表"
@@ -111,7 +150,7 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
        class="diatable1">
-          <el-button @click="handleCreate">新增</el-button>
+          <button class="button-small btn_pad" @click="handleCreate">新增</button>
           <el-table :data="tableData">
               <el-table-column align="center" width="80" label="编号" type="index"></el-table-column>
               <el-table-column align="center" label="字典名" prop="description"></el-table-column>
@@ -127,8 +166,7 @@
           </el-table>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
-        <button class="button-large"  @click="create('temp')">保 存</button>    
-        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+        <button class="button-large"  @click="close('temp')">关 闭</button>
       </div>
     </el-dialog>
 
@@ -144,7 +182,7 @@ import {
   addDict,
   handleUpApp,
   upApp,
-  delApp
+  delDict
 } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
@@ -185,31 +223,52 @@ export default {
         update: "编辑",
         create: "新增"
       },
+      textMap2: {
+        update: "编辑",
+        create: "新增"
+      },
       rowId: "",
       dialogTable: false,
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       dialogStatus: "",
       temp: {
-        value:"",
-        label:"",
-        type:"",
-        directives:""
+        value: "",
+        label: "",
+        type: "",
+        directives: ""
       },
       rules: {
-         label: [
-          { required: true, message: "请输入 1到 6 位的字典名", trigger: "blur" },
+        label: [
+          {
+            required: true,
+            message: "请输入 1到 6 位的字典名",
+            trigger: "blur"
+          },
           { min: 1, max: 6, message: "长度在 2 到 6 个字符", trigger: "blur" }
         ],
-         value: [
-          { required: true, message: "请输入 2 到 15 位的数据值", trigger: "blur" },
+        value: [
+          {
+            required: true,
+            message: "请输入 2 到 15 位的数据值",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         type: [
-          { required: true, message: "请输入 2 到 15 位的分类名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的分类名称",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         description: [
-          { required: true, message: "请输入 2 到 15 位的描述", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 15 位的描述",
+            trigger: "blur"
+          },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ]
       },
@@ -284,62 +343,80 @@ export default {
       readDict({ type: row.type })
         .then(res => {
           this.tableData = res.data.data.list;
+          this.temp.type = row.type;
+          this.temp.description = row.description;
           this.dialogTable = true;
         })
         .catch(err => {});
     },
     // 点击新增
     handleCreate() {
-      this.dialogFormVisible = true;
+      if (this.dialogTable) {
+        this.dialogFormVisible2 = true;
+      } else {
+        this.dialogFormVisible = true;
+      }
       this.dialogStatus = "create";
     },
     // 点击编辑时
     handleUpdate(row) {
-      this.listLoading = true;
+      if (this.dialogTable) {
+        this.dialogFormVisible2 = true;
+        this.temp.type = row.type;
+        this.temp.description = row.description;
+        this.temp.label = row.label;
+        this.temp.value = row.value;
+      } else {
+        this.dialogFormVisible = true;
+        this.temp.type = row.type;
+        this.temp.description = row.description;
+      }
       this.dialogStatus = "update";
-      var obj = {
-        id: row.id
-      };
-      // 请求回显的数据
-      handleUpApp(obj).then(res => {
-        this.listLoading = true;
-        if (res.data.code == 1) {
-          var data = res.data.data;
-          // 强制类型转换
-          data.build = String(data.build);
-          this.listLoading = false;
-          this.rowId = row.id;
-          this.temp = Object.assign({}, data);
-          this.dialogFormVisible = true;
-        } else {
-          this.listLoading = false;
-        }
-      });
     },
     // 点击删除时
     handleDelete(row) {
+      console.log(row);
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false
       })
         .then(() => {
-          var obj = {
-            id: row.id
-          };
-          delApp(obj)
-            .then(res => {
+          if (this.dialogTable) {
+            var obj = {
+              id: row.id
+            };
+            delDict(obj).then(res => {
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList();
+                readDict({ type: row.type })
+                  .then(res => {
+                    this.tableData = res.data.data.list;
+                  })
+                  .catch(err => {});
               }
-            })
-            .catch(() => {
-              this.listLoading = false;
             });
+          } else {
+            var obj = {
+              type: row.type
+            };
+            delDict(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "删除成功!"
+                  });
+                  this.getList();
+                }
+              })
+              .catch(() => {
+                this.listLoading = false;
+              });
+          }
         })
         .catch(() => {
           this.$message({
@@ -351,46 +428,85 @@ export default {
     // 新增保存
     create(formName) {
       if (this.dialogTable) {
-        this.dialogTable = false;
-      }else{
+        if (this.dialogFormVisible2) {
+          var obj = {
+            value: this.temp.value,
+            label: this.temp.label,
+            type: this.temp.type,
+            description: this.temp.description,
+            sort: 0
+          };
 
-   
-      var obj = {
-        versionNumber: this.temp.versionNumber,
-        build: this.temp.build,
-        forcedUpdate: this.temp.forcedUpdate,
-        upgradeContent: this.temp.upgradeContent,
-        refreshAddress: this.temp.refreshAddress
-      };
+          this.$refs[formName].validate(valid => {
+            if (valid) {
+              this.btnState = true;
+              addDict(obj)
+                .then(res => {
+                  this.btnState = false;
 
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.btnState = true;
-          addDict(obj)
-            .then(res => {
-              this.btnState = false;
-
-              if (res.data.code === 1) {
-                this.dialogFormVisible = false;
-                this.resetSearch();
-                this.resetTemp();
-                this.$refs[formName].resetFields();
-                this.handleFilter();
-                this.$message({
-                  type: "success",
-                  message: "新增成功"
+                  if (res.data.code === 1) {
+                    this.dialogFormVisible2 = false;
+                    this.resetSearch();
+                    this.resetTemp();
+                    this.$refs[formName].resetFields();
+                    this.$message({
+                      type: "success",
+                      message: "新增成功"
+                    });
+                    console.log({ type: obj.type })
+                    readDict({ type: obj.type })
+                      .then(res => {
+                        this.tableData = res.data.data.list;
+                      })
+                      .catch(err => {});
+                  } else {
+                  }
+                })
+                .catch(err => {
+                  this.btnState = false;
                 });
-              } else {
-              }
-            })
-            .catch(err => {
-              this.btnState = false;
-            });
-        } else {
-          return false;
+            } else {
+              return false;
+            }
+          });
         }
-      });
-    }
+      } else {
+        var obj = {
+          value: this.temp.value,
+          label: this.temp.label,
+          type: this.temp.type,
+          description: this.temp.description,
+          sort: 0
+        };
+
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            this.btnState = true;
+            addDict(obj)
+              .then(res => {
+                this.btnState = false;
+
+                if (res.data.code === 1) {
+                  this.dialogFormVisible = false;
+                  this.resetSearch();
+                  this.resetTemp();
+                  this.$refs[formName].resetFields();
+                  this.handleFilter();
+                  this.$message({
+                    type: "success",
+                    message: "新增成功"
+                  });
+                } else {
+                }
+              })
+              .catch(err => {
+                this.btnState = false;
+              });
+          } else {
+            return false;
+          }
+        });
+      }
     },
     // 编辑保存
     update(formName) {
@@ -427,10 +543,18 @@ export default {
         }
       });
     },
+    close(formName) {
+      this.resetTemp()
+      this.dialogTable = false;
+    },
     // 清空表单
     resetForm(formName) {
       if (this.dialogTable) {
-        this.dialogTable = false;
+        if (this.dialogFormVisible2) {
+          this.dialogFormVisible2 = false;
+        } else {
+          this.dialogTable = false;
+        }
       } else {
         this.resetTemp();
         this.$refs[formName].resetFields();
@@ -484,7 +608,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.diatable1>.el-dialog--small {
+.diatable1 > .el-dialog--small {
   width: 80% !important;
 }
 </style>

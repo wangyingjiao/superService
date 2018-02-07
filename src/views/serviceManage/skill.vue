@@ -37,7 +37,7 @@
         </div>
         <!-- 技能列表展示结束 -->
         <!-- 弹出层新增技能开始 -->
-        <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false" :close-on-click-modal="false">
+        <el-dialog :title="title" :visible.sync="dialogVisible" :modal-append-to-body="false"  id="diatable"  :close-on-click-modal="false">
           <el-form :model="ruleForm2" 
              :rules="rules" 
              ref="ruleForm2" 
@@ -80,7 +80,7 @@
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
-        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false" class="selfDialogWidth">
+        <el-dialog title="选择服务人员":visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
               <div class="selfFLOLeft width120">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:180px;"></el-input>                
               </div>

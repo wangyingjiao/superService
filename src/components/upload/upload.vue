@@ -3,7 +3,7 @@
 		<div v-for="(item,index) in imgSrcUpload" :key="index">
 		 <el-upload
 					class="avatar-headPic img-content"
-					action="https://imgcdn.guoanshequ.com/"
+					:action="imgSrc"
 					:show-file-list="false"
 					:before-upload="beforeUpload"
 					:http-request="(file)=>uploadOnSuccess(file,index)"
@@ -15,30 +15,6 @@
 					</div>
 			</el-upload>
 		</div>
-		<!-- <div class="img-content" v-for="(item,key) in imagelist" :key="key">
-			<img :src="type=='picture'?imgSrc + item.url + picWidth600 : imgSrc + item.url + picWidth100">
-			<div class="layer">
-				<i @click="handleFileRemove(item,key)" class="el-icon-delete"></i>
-			</div>
-		</div>
-		<div v-if="!pass && progress !== 0" class="img-content img-progress">
-			<el-progress type="circle" :percentage="progress" :status="proStatus"></el-progress>
-		</div>
-		<div class="img-upload" v-if="imgFlag">
-			<el-upload class="uploader" accept="image/*"
-			  ref="upload"
-			  :list-type="type"
-			  :show-file-list="false"
-			  :action="params.action"
-			  :data="params.data"
-			  :on-change="uploadOnChange"
-			  :http-request="uploadOnSuccess"
-        :before-upload="beforeUpload"
-			  :on-error="uploadOnError"
-			  :on-progress="uploadOnProgress">
-        <i class="el-icon-plus avatar-uploader-icon"></i>
-			</el-upload>
-		</div> -->
 	</div>
 </template>
 
@@ -83,10 +59,8 @@ export default{
     piclist:{
       immediate: true,
        handler(val, oldval) {
-				 console.log(val,"val")
 				 val.map((item,index)=>{
-					//  this.imgSrcUpload[index] = item.url || ""
-					 this.$set(this.imgSrcUpload,index,item.url || "")
+					 this.$set(this.imgSrcUpload,index,item)
 				 })
          this.imagelist = val
          if(val.length>3){
@@ -111,13 +85,13 @@ export default{
     beforeUpload(file){
       //判断图片格式
         if(file.type == 'image/gif' || file.type == 'image/jpg' || file.type=='image/png' || file.type == 'image/jpeg'){
-          if(this.imagelist.length>=4){
-              this.$message({
-                type: "error",
-                message: "最多上传4张图片"
-              });
-              return false;
-          }
+          // if(this.imagelist.length>=4){
+          //     this.$message({
+          //       type: "error",
+          //       message: "最多上传4张图片"
+          //     });
+          //     return false;
+          // }
         }else{
           this.$message.error('请上传正确的图片格式');
           return false
@@ -155,8 +129,6 @@ export default{
 			}
 		},
 		uploadOnSuccess(file,index){//上传附件
-			console.log(file,"file+++++++")
-			console.log(index,"index------")
      var type = file.file.name.split('.')
       let pro = new Promise((resolve,rej)=>{
         var res = JSON.parse(Cookies.get("sign"));
@@ -196,21 +168,13 @@ export default{
             }
           })
           .then(res=>{
-						 var str = ossData.get("key")
-						 
-						//  that.imgSrcUpload[index] = str
-						 that.$set(that.imgSrcUpload,index,str)
-						 console.log(that.imgSrcUpload,"this.imgSrcUpload---")
+						var str = ossData.get("key")
+						that.$set(that.imgSrcUpload,index,str)
             that.$emit('imgclick',that.imgSrcUpload)
           })
           .catch(error=>{
+						this.$message.error('上传失败')
 						return false
-            // var str = ossData.get("key")
-            // this.imagelist.push({url:str})
-            // if(this.imagelist.length>3){
-            //    this.imgFlag = false
-            // }
-            // this.$emit('imgclick',this.imagelist)
           })
       })
 		},
@@ -247,22 +211,18 @@ export default{
 </script>
 
 <style>
-.img-upload .avatar-headPic .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-		overflow: hidden;
-		margin-right: 10px;
-	}
-.img-upload .avatar-headPic .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-		text-align: center;
-	}
+.upload-demo .avatar-headPic .el-upload--text{
+	width: 100%;
+	height: 100%;
+}
+.upload-demo .avatar-headPic .avatar-uploader-icon{
+	line-height: 1;
+	border: none;
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+	color: #8c939d;
+}
 #diatable	.el-form-item__content{
 	line-height: 0;
 }

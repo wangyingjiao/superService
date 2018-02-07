@@ -88,8 +88,8 @@
                         </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row :gutter="60">
-                  <el-col :span="5">
+                <div class="idBoxEdit">
+                  <!-- <el-col :span="5"> -->
                     <el-form-item label="身份证：">
                         <el-upload
                                 class="avatar-uploader"
@@ -102,8 +102,8 @@
                                 <img v-if="personalEDit.idCardPicBefor" :src="imgSrc+personalEDit.idCardPicBefor+picWidth300" class="avatar">
                           </el-upload>
                     </el-form-item>
-                  </el-col>
-                  <el-col :span="5">
+                  <!-- </el-col> -->
+                  <!-- <el-col :span="5"> -->
                     <!-- <el-form-item label="身份证反面："> -->
                         <el-upload
                                 class="avatar-uploader"
@@ -116,8 +116,8 @@
                                 <img v-if="personalEDit.idCardPicAfter" :src="imgSrc+personalEDit.idCardPicAfter+picWidth300" class="avatar avatarBack">
                           </el-upload>
                     <!-- </el-form-item> -->
-                  </el-col>
-                </el-row>
+                  <!-- </el-col> -->
+                </div>
                 <el-row>
                   <el-col :span="24">
                        <li>
@@ -156,14 +156,6 @@
                             </el-select>
                         </el-form-item>
                       </el-col>
-                      <!-- <el-col :span="12">
-                        <el-form-item label="岗位性质:" prop="jobNature">
-                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
-                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-                            </el-option>
-                          </el-select>
-                        </el-form-item>
-                      </el-col> -->
                   </el-row>
                   <el-row :gutter="60">
                       <el-col :span="12">
@@ -174,14 +166,6 @@
                           </el-select>
                         </el-form-item>
                       </el-col>  
-                      <!-- <el-col :span="12">
-                        <el-form-item label="岗位状态:" prop="jobStatus">
-                            <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
-                                <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                      </el-col> -->
                     </el-row>
                     <el-row :gutter="60">
                       <el-col :span="12">
@@ -1595,11 +1579,14 @@ export default {
   /* margin: 0px; */
   padding: 0px;
   /* left: 40px; */
-  width: 70%;
+  width: 80%;
 }
 .tech-section-lage > div {
   margin: 0px;
   padding: 0px;
+}
+.tech-section-lage .el-dialog__footer{
+  padding: 20px 0;
 }
 .perTech{
   border-bottom: 20px solid #f3f1f1;
@@ -1687,8 +1674,9 @@ export default {
 }
 
 .avatarBack{
-  position: absolute;
-  left: 450px;
+  /* position: absolute;
+  left: 450px; */
+  margin-left: 200px;
 }
 
 .tech-edit .tech-fourth {
@@ -1791,6 +1779,17 @@ export default {
 
 .positionbox {
   margin: 20px;
+}
+
+.idBoxEdit{
+  overflow: hidden;
+}
+.idBoxEdit .el-form-item{
+  float: left;
+}
+.idBoxEdit>.avatar-uploader{
+  margin-left: 20px;
+  float: left;
 }
 
 .tech-positon-odvi {
@@ -2115,9 +2114,9 @@ export default {
   line-height: 34px;
 }
 .closeThe{
-  margin: 20px 0;
+  /* margin: 20px 0;
   height: 30px;
-  line-height: 30px;
+  line-height: 30px; */
 }
 .level {
   flex: 1;
