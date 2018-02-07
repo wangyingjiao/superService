@@ -2018,7 +2018,7 @@ export default {
 }
 
 .tech-section-lage {
-  width: 70%;
+  width: 80%;
 }
 
 /* .el-upload-list {

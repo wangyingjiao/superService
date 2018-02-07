@@ -1595,7 +1595,7 @@ export default {
   /* margin: 0px; */
   padding: 0px;
   /* left: 40px; */
-  width: 70%;
+  width: 80%;
 }
 .tech-section-lage > div {
   margin: 0px;

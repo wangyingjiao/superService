@@ -61,6 +61,7 @@
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
+       id="diatable"
        class="diatable diasize">
       <el-form 
         class="small-space dia_form"
