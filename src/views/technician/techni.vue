@@ -305,7 +305,7 @@
                     <el-form-item label="头像：" prop="headPic">
                         <el-upload
                             class="avatar-headPic"
-                            action="https://imgcdn.guoanshequ.com/"
+                            :action="imgSrc"
                             :show-file-list="false"
                             :before-upload="beforeAvatarUpload"
                             :http-request="(val)=>picUpload(val,'head')"

@@ -156,14 +156,6 @@
                             </el-select>
                         </el-form-item>
                       </el-col>
-                      <!-- <el-col :span="12">
-                        <el-form-item label="岗位性质:" prop="jobNature">
-                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
-                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
-                            </el-option>
-                          </el-select>
-                        </el-form-item>
-                      </el-col> -->
                   </el-row>
                   <el-row :gutter="60">
                       <el-col :span="12">
@@ -174,14 +166,6 @@
                           </el-select>
                         </el-form-item>
                       </el-col>  
-                      <!-- <el-col :span="12">
-                        <el-form-item label="岗位状态:" prop="jobStatus">
-                            <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
-                                <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                      </el-col> -->
                     </el-row>
                     <el-row :gutter="60">
                       <el-col :span="12">
