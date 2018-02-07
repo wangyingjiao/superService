@@ -1,8 +1,8 @@
 <template>
 	<div class="img-list">
-		<div class="img-upload" v-for="(item,index) in imgSrcUpload" :key="index">
+		<div v-for="(item,index) in imgSrcUpload" :key="index">
 		 <el-upload
-					class="avatar-headPic"
+					class="avatar-headPic img-content"
 					action="https://imgcdn.guoanshequ.com/"
 					:show-file-list="false"
 					:before-upload="beforeUpload"
@@ -10,6 +10,9 @@
 					>
 					<img v-if="item!=''" :src="imgSrc+item+picWidth100">
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					<div v-if="item" class="layer">
+						<i @click="handleFileRemove($event,item,index)" class="el-icon-delete"></i>
+					</div>
 			</el-upload>
 		</div>
 		<!-- <div class="img-content" v-for="(item,key) in imagelist" :key="key">
@@ -234,15 +237,10 @@ export default{
 				that.imagelist[i].name = value
 			}).catch(() => {})
 		},
-		handleFileRemove(file,i){//删除图片
-			if(!file.url){
-				return false;
-      }
-      this.imagelist.splice(i,1)
-      if(this.imagelist.length<4){
-        this.imgFlag = true
-      }
-      this.$emit('imgclick',this.imagelist)
+		handleFileRemove(e,file,index){//删除图片
+			e.stopPropagation()
+			this.$set(this.imgSrcUpload,index,'')
+      this.$emit('imgclick',this.imgSrcUpload)
 		}
   },
 }
@@ -284,8 +282,10 @@ export default{
 	text-align:left;
 	position:relative;
 	display:inline-block;
-	/* width:200px;
-	height:200px; */
+	width:110px;
+	height:112px;
+	line-height:110px;
+	text-align: center;
 	padding:5px;
 	margin:0px 20px 0px 0;
 	border:1px solid #d1dbe5;
@@ -353,6 +353,7 @@ export default{
 	right:0;
 	top:0;
 	height:112px;
+	width: 110px;
 	color:#fff;
 	text-align:center;
 	z-index:5;
