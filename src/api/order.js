@@ -48,3 +48,31 @@ export function dispatchTechData1(obj) {
 export function dispatchTechSave1(obj) {
   return instance.post(`/apiservice/a/service/order/orderDispatch/dispatchTechSave`, obj)
 }
+// 根据手机号查找客户
+export function findCustomerByPhone(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findCustomerByPhone`, obj)
+}
+//根据ID查找客户
+export function findCustomerById(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findCustomerById`, obj)
+}
+//获取服务项目列表
+export function findItemList(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findItemList`, obj)
+}
+//获取服务项目下的商品列表
+export function findGoodsListByItem(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findGoodsListByItem`, obj)
+}
+//获取商品的技师列表
+export function findTechListByGoods(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findTechListByGoods`, obj)
+}
+//获取技师的时间列表
+export function findTimeListByTech(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findTimeListByTech`, obj)
+}
+//新增订单保存
+export function createOrder(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/createOrder`, obj)
+}
