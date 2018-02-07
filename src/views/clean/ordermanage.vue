@@ -8,11 +8,7 @@
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
 				<div class="searchs">
-			  <!-- <el-select clearable class="search"   v-model="payStus" placeholder="选择支付状态">
-						<el-option v-for="(value,key,index) in payStusOptions" :key="index" :label="value" :value="key">
-						</el-option>
-			  </el-select> -->
-			  				<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
+			  	<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
@@ -26,41 +22,19 @@
 						</el-option>
 			  </el-select>						  
 			  <button type="button" class="search-button floatRight btn_search btn-color"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
-			  <div class="second-input">					
-					<el-date-picker
+			  <div class="second-input">
+				        <el-date-picker
 						v-model="startTime"
-						:editable="false"
-						type="datetime"
-						class="search"
 						style="width:20%"
-						placeholder="选择下单开始时间">
-					</el-date-picker>
-					<el-date-picker
-						v-model="endTime"
-						:editable="false"
-						type="datetime"
-						style="width:20%"
-						class="search"
-						placeholder="选择下单结束时间">
-					</el-date-picker>
-					<el-date-picker
+						type="daterange"
+						placeholder="选择下单时间">
+						</el-date-picker>					
+				        <el-date-picker
 						v-model="severTime"
-						:editable="false"
-						style="width:20%"
-						type="datetime"
-						@change="TimeChange"
-						class="search"
-						placeholder="选择服务开始时间">
-					</el-date-picker>
-					<el-date-picker
-						v-model="severEndTime"
-						:editable="false"
-						style="width:20%"
-						type="datetime"
-						@change="TimeChange1"
-						class="search"
-						placeholder="选择服务结束时间">
-					</el-date-picker>							  
+						style="width:20%;margin-left:20px;"
+						type="daterange"
+						placeholder="选择服务时间">
+						</el-date-picker>					
 		    	</div>
 			  </div>
 				<!--搜索条件选择结束-->				
@@ -186,25 +160,7 @@ export default {
 		active1:''
     };
   },
-  methods: {
-	//服务开始时间格式化只有整点与半点
-	TimeChange(value){
-		if(value != undefined){ 						
-			this.severTime=util.formatDate.format(
-				new Date(this.severTime),
-				"yyyy-MM-dd hh:mm:ss"
-			);
-		}			
-	},
-	//服务结束时间格式化只有整点与半点
-	TimeChange1(value){
-		if(value != undefined){ 
-			this.severEndTime=util.formatDate.format(
-				new Date(this.severEndTime),
-				"yyyy-MM-dd hh:mm:ss"
-			);
-		}			
-	},	
+  methods: {	
 	//机构变化事件
 	orgChange(val){
 		if(val != ''){
@@ -273,30 +229,36 @@ export default {
 	//全局search按钮
 	localSearch(){
 		//服务时间格式化		
-		if(this.severTime !=''){
-          
+		if(this.severTime[0]){
+    		var severstartTime = util.formatDate.format(
+					new Date(this.severTime[0]),
+					"yyyy-MM-dd hh:mm:ss"
+			);          
 		}else{
-			  this.severTime=null
+			  severstartTime=null
 		}
-		if(this.severEndTime !=''){
-          
+		if(this.severTime[1]){
+    		var severEndTime = util.formatDate.format(
+					new Date(this.severTime[1]),
+					"yyyy-MM-dd hh:mm:ss"
+			);           
 		}else{
-			this.severEndTime=null
+			severEndTime=null
 		}		
 			
 		//开始时间格式化	
-		if(this.startTime !=''){
+		if(this.startTime[0]){
     		var startTime = util.formatDate.format(
-					new Date(this.startTime),
+					new Date(this.startTime[0]),
 					"yyyy-MM-dd hh:mm:ss"
-				);
+			);
 		}else{
 			  startTime=null
 		}
 		//结束时间格式化 
-        if(this.endTime != ''){
+        if(this.startTime[1]){
 			var endTime = util.formatDate.format(
-				new Date(this.endTime),
+				new Date(this.startTime[1]),
 				"yyyy-MM-dd hh:mm:ss"
 			);
 		}else{
@@ -316,8 +278,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTimeStart:this.severTime,
-			serviceTimeEnd:this.severEndTime
+			serviceTimeStart:severstartTime,
+			serviceTimeEnd:severEndTime
 		};
 		this.pageNumber=1;
 		this.jumpPage=1;		
@@ -336,30 +298,36 @@ export default {
 		this.pageNumber=1;
 		this.jumpPage=1;
 		this.size=val;
-		//服务时间格式化		
-		if(this.severTime !=''){
-          
+		//服务时间格式化				
+		if(this.severTime[0]){
+    		var severstartTime = util.formatDate.format(
+					new Date(this.severTime[0]),
+					"yyyy-MM-dd hh:mm:ss"
+			);          
 		}else{
-			  this.severTime=null
+			  severstartTime=null
 		}
-		if(this.severEndTime !=''){
-          
+		if(this.severTime[1]){
+    		var severEndTime = util.formatDate.format(
+					new Date(this.severTime[1]),
+					"yyyy-MM-dd hh:mm:ss"
+			);           
 		}else{
-			  this.severEndTime=null
+			severEndTime=null
 		}				
 		//开始时间格式化	
-		if(this.startTime !=''){
+		if(this.startTime[0]){
     		var startTime = util.formatDate.format(
-					new Date(this.startTime),
+					new Date(this.startTime[0]),
 					"yyyy-MM-dd hh:mm:ss"
 				);
 		}else{
 			  startTime=null
 		}
 		//结束时间格式化 
-        if(this.endTime != ''){
+        if(this.startTime[1]){
 			var endTime = util.formatDate.format(
-				new Date(this.endTime),
+				new Date(this.startTime[1]),
 				"yyyy-MM-dd hh:mm:ss"
 			);
 		}else{
@@ -379,8 +347,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTimeStart:this.severTime,
-			serviceTimeEnd:this.severEndTime,			
+			serviceTimeStart:severstartTime,
+			serviceTimeEnd:severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
@@ -388,29 +356,35 @@ export default {
 	handleCurrentChange(val){
 		this.pageNumber=val;
 		//服务时间格式化		
-		if(this.severTime !=''){
-          
+		if(this.severTime[0]){
+    		var severstartTime = util.formatDate.format(
+					new Date(this.severTime[0]),
+					"yyyy-MM-dd hh:mm:ss"
+			);          
 		}else{
-			  this.severTime=null
+			  severstartTime=null
 		}
-		if(this.severEndTime !=''){
-          
+		if(this.severTime[1]){
+    		var severEndTime = util.formatDate.format(
+					new Date(this.severTime[1]),
+					"yyyy-MM-dd hh:mm:ss"
+			);           
 		}else{
-			  this.severEndTime=null
+			severEndTime=null
 		}				
 		//开始时间格式化	
-		if(this.startTime !=''){
+		if(this.startTime[0]){
     		var startTime = util.formatDate.format(
-					new Date(this.startTime),
+					new Date(this.startTime[0]),
 					"yyyy-MM-dd hh:mm:ss"
 				);
 		}else{
 			  startTime=null
 		}
 		//结束时间格式化 
-        if(this.endTime != ''){
+        if(this.startTime[1]){
 			var endTime = util.formatDate.format(
-				new Date(this.endTime),
+				new Date(this.startTime[1]),
 				"yyyy-MM-dd hh:mm:ss"
 			);
 		}else{
@@ -430,8 +404,8 @@ export default {
 			orderNumber:this.orderNumber,
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
-			serviceTimeStart:this.severTime,
-			serivceTimeEnd:this.severEndTime,			
+			serviceTimeStart:severstartTime,
+			serivceTimeEnd:severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},
