@@ -712,7 +712,11 @@ export default {
           if(value*1<=30){
             if(reg.test(value)){
               if(value*1>=this.goods_info.startPerNum*1){
-                callback()
+				  if(value == 0){
+					   callback(new Error('封定人数最小值为1'))
+				  }else{
+					  callback()
+				  }
               }else{
                 callback(new Error('起步人数不能大于封顶人数'))
               }
@@ -732,7 +736,11 @@ export default {
       if(value){
         if(value*1<=30){
           if(reg.test(value)){
-            callback()
+			  if(value == 0){
+				  callback(new Error('起步人数最小值为1'))
+			  }else{
+				   callback()
+			  }
           }else{
             callback(new Error('请输入数字'))
           }
@@ -749,7 +757,11 @@ export default {
       if(value){
         if(value*1<=999999){
           if(reg.test(value)){
-            callback()
+			  if(value == 0){
+				  callback(new Error('起够数量最小值为1'))
+			  }else{
+				  callback()
+			  }
           }else{
             callback(new Error('请输入数字'))
           }
@@ -982,11 +994,9 @@ export default {
     },
     imgClick(item){
 		this.picFile = item
-    //   this.picFile = this.returnImg(item)
     },
     imgTextClick(item){
 	  this.imgText = item
-	  console.log(this.imgText,"this.imgText")
     },
     //对接商品
     handleSendData(row){
@@ -1395,7 +1405,6 @@ export default {
           }
         })
         .catch(error => {
-			console.log(error)
           this.listLoading = false;
           return false
         });
@@ -1421,7 +1430,7 @@ export default {
               for (var i = 0; i < data.pictureDetails.length; i++) {
                 // var obj = {
                 //   url:
-                //     "https://imgcdn.guoanshequ.com/" +
+                //     imgSrc +
                 //     data.pictureDetails[i]
                 // };
                 var obj = {
@@ -1526,7 +1535,6 @@ export default {
           }
           this.btnState = true
 		  var arr = []
-		//   console.log(this.imgText,"this.imgText-----")
           var obj = Object.assign({},that.basicForm)
 			  obj.pictures = this.picFile; //服务图片缩略图.
 			  obj.pictureDetails = this.imgText;
@@ -1538,8 +1546,6 @@ export default {
             that.basicForm.customTags = this.customArr
 			that.basicForm.pictures = this.picFile;
 			that.basicForm.pictureDetails =  this.imgText;
-			console.log(this.pictureDetails,"this.pictureDetails---")
-			console.log(that.basicForm,"that.basicForm---")
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -1574,7 +1580,6 @@ export default {
             // if("pictureDetails" in obj){
             //   delete obj.pictureDetails
 			// }
-			console.log(obj)
             ServerAdd(obj)
               .then(data => {
                 this.btnState = false

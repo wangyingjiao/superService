@@ -83,9 +83,7 @@ export default{
     piclist:{
       immediate: true,
        handler(val, oldval) {
-				 console.log(val,"val")
 				 val.map((item,index)=>{
-					//  this.imgSrcUpload[index] = item.url || ""
 					 this.$set(this.imgSrcUpload,index,item)
 				 })
          this.imagelist = val
@@ -155,8 +153,6 @@ export default{
 			}
 		},
 		uploadOnSuccess(file,index){//上传附件
-			console.log(file,"file+++++++")
-			console.log(index,"index------")
      var type = file.file.name.split('.')
       let pro = new Promise((resolve,rej)=>{
         var res = JSON.parse(Cookies.get("sign"));
@@ -196,21 +192,13 @@ export default{
             }
           })
           .then(res=>{
-						 var str = ossData.get("key")
-						 
-						//  that.imgSrcUpload[index] = str
-						 that.$set(that.imgSrcUpload,index,str)
-						 console.log(that.imgSrcUpload,"this.imgSrcUpload---")
+						var str = ossData.get("key")
+						that.$set(that.imgSrcUpload,index,str)
             that.$emit('imgclick',that.imgSrcUpload)
           })
           .catch(error=>{
+						this.$message.error('上传失败')
 						return false
-            // var str = ossData.get("key")
-            // this.imagelist.push({url:str})
-            // if(this.imagelist.length>3){
-            //    this.imgFlag = false
-            // }
-            // this.$emit('imgclick',this.imagelist)
           })
       })
 		},
