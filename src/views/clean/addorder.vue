@@ -435,6 +435,7 @@ export default {
       customKeyFlag: false,//客户信息展示标志
       customId:'',//客户ID
       areaCode:'',
+      middleB:[],
     };
   },
   computed: {
@@ -505,21 +506,21 @@ export default {
           }
         }
         this.form1.commidty=arr;
+        this.middleB=Object.assign([], arr);
         this.$refs['form1'].validate(valid => {
           if (valid) {
           }else{
             this.active=2            
-            this.form1.commidty=[];
           }
         })
       }else{
-           this.form1.commidty=[];
       }
       
     },
     //上一步
     prev() {
-      if (this.active-- <= 1) this.active = 1;      
+      if (this.active-- <= 1) this.active = 1;
+      console.log(this.middleB);      
     },
     //获取时间列表
     findTimeListByTechFun(){

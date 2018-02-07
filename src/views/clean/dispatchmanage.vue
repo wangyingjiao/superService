@@ -185,7 +185,7 @@ export default {
     searchTeh(){  
         var obj = {
           id:this.orderId,
-          techName: this.techName
+          techName: this.techName2
         };
 				dispatchTechData1(obj).then(res => {
 						if (res.data.code === 1) {
