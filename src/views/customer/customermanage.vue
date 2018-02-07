@@ -76,7 +76,7 @@
 						label="操作"
 						width='230'>
 										<template scope="scope">
-												<el-button type="button" v-if="false" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" v-if="btnShow.indexOf('customer_delete') != -1" @click="lookInf(scope.row)">下单</el-button>
 												<el-button type="button"  v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
