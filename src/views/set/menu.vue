@@ -414,6 +414,7 @@ export default {
         parentIds: this.temp.parentIds,
         name: this.temp.name,
         permission: this.temp.permission,
+        sort:this.temp.sort,
         href: this.temp.href,
         icon: this.temp.icon,
         isShow: this.temp.isShow,
