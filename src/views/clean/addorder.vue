@@ -186,7 +186,8 @@
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle"  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
-		</el-form>					
+		</el-form>
+    <div id="panel"></div>					
 		<div slot="footer" class="dialog-footer" style="text-align:center;">
 				<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
 				<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
@@ -443,7 +444,9 @@ export default {
          this.form.serverStation1=val;
       },
       inputFocus(){
-        this.$refs.pickerInput.value='';
+        if(this.$refs.pickerInput != undefined){
+             this.$refs.pickerInput.value='';
+        }       
       },
     //存储选择技师对象
     ChangeTech(obj){
@@ -891,16 +894,20 @@ export default {
               input:inputname,
               city:value,
               citylimit:true
-            };
-            var auto = new AMap.Autocomplete(autoOptions);
+            };           
+            var auto = new AMap.Autocomplete(autoOptions);            
             var placeSearch = new AMap.PlaceSearch({
-              map: this.mymap
-            });  //构造地点查询类
+              map: this.mymap,
+              //panel:"panel",              
+            });  //构造地点查询类 
+            // AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
+            //           //获取当前选中的结果数据
+            //           console.log(results.selected.data);
+            // });                       
             AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
-            function select(e) {             
+            function select(e) {
               placeSearch.setCity(e.poi.adcode);
-              placeSearch.search(e.poi.name);  //关键字查询查询              
-              console.log(e)
+              placeSearch.search(e.poi.name);  //关键字查询查询             
               var poi =e.poi,
                 info = {
                   id: poi.id,
@@ -910,7 +917,7 @@ export default {
                 };
                 inputname.value = info.name;
                 inputname1.value = info.location;              
-            }                           
+            }                                       
     },
     //日期变化时改变时间对象
     dateChange(val) {
