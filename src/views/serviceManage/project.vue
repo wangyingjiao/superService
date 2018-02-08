@@ -256,6 +256,7 @@
               </div>
           </div>
           </div>
+		  <!-- </div> -->
               <div slot="footer" class="dialog-footer" style="text-align:center">
                 <input type="button" class="button-large btn-color" :disabled="btnState" @click="subForm('basic')" value="保 存">
                 <input type="button" class="button-cancel btn-color-cancel" @click="cancel('basic')" value="取 消">
@@ -729,7 +730,7 @@ export default {
     //   addComm: false,
       critical: "",
       quantity: "",
-      persons: [],
+	  persons: [],
       commoditys: [],
       handleEditFlag:false,
       handleEditIndex:null,
@@ -1339,6 +1340,12 @@ export default {
       var that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          var loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           if(this.basicForm.commoditys.length<=0){
             this.$message({
               message: '请添加商品',
@@ -1347,18 +1354,18 @@ export default {
             return false
           }
           this.btnState = true
-		  var arr = []
+          var arr = []
           var obj = Object.assign({},that.basicForm)
-			  obj.pictures = this.picFile; //服务图片缩略图.
-			  obj.pictureDetails = this.imgText;
+              obj.pictures = this.picFile; //服务图片缩略图.
+              obj.pictureDetails = this.imgText;
               obj.sysTags = this.labelClickArr //添加 系统标签
-              obj.customTags = this.customArr
+			        obj.customTags = this.customArr
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
             that.basicForm.customTags = this.customArr
-			that.basicForm.pictures = this.picFile;
-			that.basicForm.pictureDetails =  this.imgText;
+            that.basicForm.pictures = this.picFile;
+            that.basicForm.pictureDetails =  this.imgText;
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
@@ -1367,21 +1374,24 @@ export default {
                     message: data.data.data,
                     type: "success"
                   });
+                  loading.close();
                   this.resetForm()
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
-				  this.picFile = [];
-				  this.pictureDetails = []
+                  this.picFile = [];
+                  this.pictureDetails = []
                   this.picList = [];
                   this.imgNumber = 0
                 } else {
-                   this.btnState = false
-                   this.imgNumber = 0
+                    loading.close();
+                    this.btnState = false
+                    this.imgNumber = 0
                 }
               })
               .catch(error => {
-                 this.btnState = false
-                 this.imgNumber = 0
+                loading.close();
+                this.btnState = false
+                this.imgNumber = 0
               });
           } else {
             if("id" in obj){
@@ -1409,22 +1419,25 @@ export default {
                       type: "warning"
                     });
                   }
+                  loading.close();
                   this.cancel("basic");
                   this.basicForm.majorSort = 'all';
                   this.search.sortId = '';
-				  this.search.name ='';
-				  this.search.goodsName = ''
-	  			  this.search.sortIdandGoodsId = ''
+                  this.search.name ='';
+                  this.search.goodsName = ''
+                  this.search.sortIdandGoodsId = ''
                   this.tabs = 'all';
                   this.listQuery.page = 1
                   this.getList(1, this.pageSize);
-				  this.picFile = [];
-				  this.pictureDetails = [];
+                  this.picFile = [];
+                  this.pictureDetails = [];
                 } else {
+                  loading.close();
                   this.btnState = false
                 }
               })
               .catch(error => {
+                loading.close();
                 this.btnState = false
               });
           }

@@ -529,7 +529,8 @@ export default {
 								var autoOptions = {
 									input:inputname,
 									city:area,
-									citylimit:true
+									citylimit:true,
+									// type:'120302｜120201'
 								};
 								var auto = new AMap.Autocomplete(autoOptions);
 								var placeSearch = new AMap.PlaceSearch({
@@ -539,7 +540,6 @@ export default {
 								function select(e) {             
 									placeSearch.setCity(e.poi.adcode);
 									placeSearch.search(e.poi.name);  //关键字查询查询              
-									console.log(e)
 									var poi =e.poi,
 										info = {
 											id: poi.id,
@@ -549,7 +549,8 @@ export default {
 										};
 										inputname.value = info.name;
 										inputname1.value = info.location;              
-								}												  										
+								}	
+										  										
 					},
 					//地图初始化
 					initMap1(){
