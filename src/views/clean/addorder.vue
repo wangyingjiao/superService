@@ -450,7 +450,11 @@ export default {
       if(obj.techChecked){
           this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)          
+        for (var a1 = 0; a1 < this.middleA.length; a1++) {
+          if (this.middleA[a1].techId == obj.techId) {
+              this.middleA.remove(this.middleA[a1]);
+          }
+        }         
       }
     },     
     //选中行改变

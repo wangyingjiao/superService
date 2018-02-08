@@ -164,6 +164,7 @@ export default {
 	//机构变化事件
 	orgChange(val){
 		this.payType='';
+		this.payTypeOptions=[];
 		if(val != ''){		
 			var obj={
 				orgId:val,
