@@ -1,0 +1,36 @@
+<html>
+   <head>
+      <title></title>
+      <style type="text/css">
+          #newsList{ font-size:14px;}
+          #newsList ul,#newsList ul li{ list-style:none}
+          #newsList ul{width:380px;}
+          #newsList ul li{ width:300px; margin-bottom:5px; height:16px;}
+          #newsList ul li span{display:block; float:right;}
+          #newsList ul li a {
+            border: 1px solid #333;
+              text-decoration:none; 
+              display:block; 
+              float:left; 
+              max-width:170px; 
+              overflow:hidden;          /*超出部分隐藏*/
+              white-space:nowrap;
+              /*文本溢出用"..."表示*/
+              text-overflow:ellipsis;                    /*适用IE*/
+              -o-text-overflow:ellipsis;                 /*适用opera*/
+              -moz-binding: url('ellipsis.xml#ellipsis');/*适用火狐(firefox通过XUL实现效果)*/
+          }
+     </style>
+  </head>
+  <body>
+     <div id="newsList">
+         <ul>
+             <li><a href="#" >使用Css隐藏超出字</a><span>[2010-12-01]</span></li>
+             <li><a href="#">使用Css隐藏超出容器宽度的文字</a><span>[2010-12-01]</span></li>
+             <li><a href="#">使用Css隐藏超出容器宽度的文字</a><span>[2010-12-01]</span></li>
+         </ul>
+         <div>
+         </div>
+     </div>
+ </body>
+ <script>
