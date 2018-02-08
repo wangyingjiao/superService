@@ -15,7 +15,7 @@
       highlight-current-row 
       style="width: 100%">
      <!-- 第二层表格开始 -->
-      <el-table-column type="expand">
+      <el-table-column  type="expand">
         <template scope="scope" >
           <el-table 
             v-if="scope.row.subMenus" 
@@ -23,7 +23,7 @@
             class="demo-table-expand">
 
             <!-- 第三层表格开始 -->
-             <el-table-column type="expand">
+             <el-table-column type="expand" >
                 <template scope="scope" >
                   <el-table v-if="scope.row.subMenus" :data="scope.row.subMenus" class="demo-table-expand">
                     <el-table-column align="center" width="100" label="菜单等级">
@@ -162,6 +162,10 @@
              <el-radio v-model="temp.isShow" label="0">否</el-radio>
           </el-form-item>
 
+           <el-form-item v-if="!typeShow" label="菜单类型:">
+             <el-radio v-model="temp.type" label="business">业务菜单</el-radio>
+             <el-radio v-model="temp.type" label="sys">系统菜单</el-radio>
+          </el-form-item>
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
@@ -190,6 +194,7 @@ export default {
     return {
       list: [],
       total: null,
+      typeShow: false,
       listLoading: true,
       listQuery: {
         page: 1,
@@ -224,6 +229,7 @@ export default {
         href: "",
         permission: "",
         isShow: "",
+        type: "",
         icon: ""
       },
       rules: {
@@ -259,12 +265,7 @@ export default {
       getMenu(obj)
         .then(res => {
           if (res.data.code == 1) {
-            //this.total = res.data.data.count;
             this.list = res.data.data;
-            // this.pageNumber = res.data.data.pageNo;
-            // this.pageSize = res.data.data.pageSize;
-            // this.listQuery.page = res.data.data.pageNo;
-
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -276,10 +277,19 @@ export default {
     },
     // 新增子菜单
     handleCreate(row) {
+      console.log(row.type);
       this.temp.isShow = "1";
+
+      if (row.type != 'click') {
+        this.typeShow = true;
+        this.temp.type = row.type;
+      } else {
+        this.temp.type = "business";
+      }
       if (row.parentId) {
         this.temp.parentId = row.id;
       } else {
+        console.log(2222222);
         this.temp.parentId = "1";
       }
       if (row.parentIds) {
@@ -295,6 +305,7 @@ export default {
       this.listLoading = true;
       this.dialogStatus = "update";
       this.selectState = true;
+      this.typeShow = true;
       var obj = {
         id: row.id
       };
@@ -354,7 +365,8 @@ export default {
         permission: this.temp.permission,
         href: this.temp.href,
         icon: this.temp.icon,
-        isShow: this.temp.isShow
+        isShow: this.temp.isShow,
+        type: this.temp.type
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -367,6 +379,7 @@ export default {
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.getList();
+                this.typeShow = false;
                 this.$message({
                   type: "success",
                   message: "新增成功"
@@ -376,6 +389,7 @@ export default {
             })
             .catch(err => {
               this.btnState = false;
+              this.typeShow = false;
             });
         } else {
           return false;
@@ -391,7 +405,8 @@ export default {
         permission: this.temp.permission,
         href: this.temp.href,
         icon: this.temp.icon,
-        isShow: this.temp.isShow
+        isShow: this.temp.isShow,
+        type: this.temp.type
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -404,6 +419,7 @@ export default {
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.getList();
+                this.typeShow = false;
                 this.$message({
                   type: "success",
                   message: "编辑成功"
@@ -412,6 +428,7 @@ export default {
             })
             .catch(err => {
               this.btnState = false;
+              this.typeShow = false;
             });
         } else {
           return false;
@@ -421,6 +438,7 @@ export default {
     //清空列表
     resetForm(formName) {
       this.selectState = false;
+      this.typeShow = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
       this.dialogFormVisible = false;
@@ -435,6 +453,7 @@ export default {
         href: "",
         permission: "",
         isShow: "",
+        type:"",
         icon: ""
       };
     }
