@@ -104,7 +104,7 @@
         :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false" 
-        class="diatable">
+        id="diatable">
         <el-form 
            class="small-space dia_form" 
            :model="temp" 

@@ -12,7 +12,7 @@
 		</div>
 		<!--搜索结束-->
 		<div class="second-bar">
-		  <button type="button" class="add-button selfPosi3 marginTop20"  v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut">新增</button>
+		  <button type="button" class="add-button selfPosi3 marginTop20"  v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut('')">新增</button>
 			<!--客户数据表格开始-->
 			<div class="tableWarp">			      
 				    <el-table
@@ -76,7 +76,8 @@
 						label="操作"
 						width='230'>
 										<template scope="scope">
-												<el-button type="button" v-if="btnShow.indexOf('customer_delete') != -1" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
 												<el-button type="button"  v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
@@ -132,7 +133,8 @@
 					</el-form-item>					
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-						<button class="button-large"  :disabled="submitFlag"  @click="submitForm('ruleForm')">确 定</button>
+					  <button class="button-large" v-if="testFlag == undefined" :disabled="submitFlag"  @click="submitForm('ruleForm','add')">确 定</button>
+						<button class="button-large" v-if="testFlag != undefined" :disabled="submitFlag"  @click="submitForm('ruleForm','up')">确 定</button>
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
 		</el-dialog>
@@ -149,7 +151,9 @@
 import { 
 	getCusTable,// 获取客户表格信息
 	deleteCus,  //删除客户
-	saveCus     //保存客户（新增）
+	saveCus,     //保存客户（新增）
+	getCus,//客户（编辑）
+	upCus//保存客户（编辑）
 	} from "@/api/customer";
 import {getMech} from "@/api/basic";
 export default {
@@ -263,6 +267,7 @@ export default {
 		pageNumber:1,
 		kkkk:'',
 		mymap:{},
+		testFlag:undefined,
     };
   },
   methods:{
@@ -279,7 +284,7 @@ export default {
 					})	
 			},
 			//新增保存
-			submitForm(formName) {
+			submitForm(formName,status) {
 				    var that=this
 						this.submitFlag=true;
 						setTimeout(function() {
@@ -288,7 +293,7 @@ export default {
 						this.$refs[formName].validate((valid) => {							
 							if (valid) {								
 									if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
-											this.ruleForm.address=this.$refs.pickerInput.value+this.ruleForm.address;
+											this.ruleForm.address=this.$refs.pickerInput.value+'-'+this.ruleForm.address;
 											var str=this.$refs.pickerInput1.value;
 													str=str.split(',')
 													//经度
@@ -305,31 +310,58 @@ export default {
 								this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
 								this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
 								this.ruleForm.areaCode=this.ruleForm.areaCodes[2];
-								var obj = this.ruleForm;
-								saveCus(obj).then(res => {
-									if(res.data.code === 1){
-											this.$message({
-												type: 'success',
-												message: '新增成功!'
-											});
-											this.$refs['ruleForm'].resetFields();
-										  this.customName='';
-							        this.customPhone='';
-							        // this.organizationName='';
-											this.$refs.pickerInput.value=''	
-											this.dialogTableVisible = false
-											var obj={};
-											this.pageNumber=1;
-											this.jumpPage=1;
-											this.getData(obj,this.pageNumber,this.pageSize1);
-									}else{
-										
-										this.$refs.pickerInput.value=''
-										this.ruleForm.address=''
-									}													
-								}).catch(res=>{
-									
-								});							
+								//保存upCus
+								if(status =='add'){
+											var obj = this.ruleForm;
+											saveCus(obj).then(res => {
+												if(res.data.code === 1){
+														this.$message({
+															type: 'success',
+															message: '新增成功!'
+														});
+														this.$refs['ruleForm'].resetFields();
+														this.customName='';
+														this.customPhone='';
+														// this.organizationName='';
+														this.$refs.pickerInput.value=''	
+														this.dialogTableVisible = false
+														var obj={};
+														this.pageNumber=1;
+														this.jumpPage=1;
+														this.getData(obj,this.pageNumber,this.pageSize1);
+												}else{
+													
+													this.$refs.pickerInput.value=''
+													this.ruleForm.address=''
+												}													
+											}).catch(res=>{												
+											});			
+								}else{
+										var obj1 = this.ruleForm;
+										upCus(obj1).then(res => {
+											if(res.data.code === 1){
+													this.$message({
+														type: 'success',
+														message: '编辑成功!'
+													});
+													this.$refs['ruleForm'].resetFields();
+													this.customName='';
+													this.customPhone='';
+													this.$refs.pickerInput.value=''	
+													this.dialogTableVisible = false
+													var obj2={};
+													this.pageNumber=1;
+													this.jumpPage=1;
+													this.getData(obj2,this.pageNumber,this.pageSize1);
+											}else{												
+												this.$refs.pickerInput.value=''
+												this.ruleForm.address=''
+											}													
+										}).catch(res=>{
+											
+										});			
+								}
+				
 							} else {         
 								return false;
 							}
@@ -379,14 +411,44 @@ export default {
 							this.getData(obj,this.pageNumber,this.pageSize1);
 					},	
 				//新增按钮点击
-					selectBut(){
+					selectBut(row){
+						  this.testFlag=row.id;
 							this.dialogTableVisible=true;
-							this.showDis=true;					
-							this.ruleForm.provinceCode='';
-							this.ruleForm.cityCode='';
-							this.ruleForm.areaCode='';
-							this.ruleForm.sex='';
-						  this.areaOptions=this.$store.state.user.area;		
+							this.areaOptions=this.$store.state.user.area;
+							if(row.id ==undefined){
+									this.showDis=true;					
+									this.ruleForm.provinceCode='';
+									this.ruleForm.cityCode='';
+									this.ruleForm.areaCode='';
+									this.ruleForm.sex='';
+							}else{
+									var obj={
+										id:row.id
+									}
+									getCus(obj).then(res => {
+										if(res.data.code === 1){
+											 var b=res.data.data.address;
+											 var indexa=b.indexOf('-')
+											 var a=b.substring(0,indexa)
+											 var c=b.substring(indexa+1)
+											 this.ruleForm=res.data.data;
+											 this.$refs.pickerInput.value=a;
+											 this.ruleForm.address=c;
+											 var arr=[]
+											 arr.push(res.data.data.provinceCode)
+											 arr.push(res.data.data.cityCode)
+											 arr.push(res.data.data.areaCode)
+											 this.ruleForm.areaCodes=arr
+										}else{
+
+										}													
+									}).catch(res=>{
+										
+									});																
+							}
+							
+
+						  		
 					},
 					//表格下单操作按钮
 					lookInf(obj){

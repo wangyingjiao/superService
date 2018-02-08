@@ -125,7 +125,7 @@
        :close-on-click-modal="false"
        :close-on-press-escape="false"
        @close="emptyingForm"
-      id="diatable">
+      class="diatable">
       <div class="tabBox">
           <div class="tabLeft fl" ref="refTab">
           <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
@@ -2202,5 +2202,8 @@ hr {
 .addCommidtyClass .el-dialog__body .el-table{
 	margin-top: 0;
 	margin-bottom: 20px;
+}
+.diatable > .el-dialog--small{
+  width: 75%;
 }
 </style>

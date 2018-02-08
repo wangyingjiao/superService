@@ -12,4 +12,11 @@ export function deleteCus(obj) {
 export function saveCus(obj) {
   return instance.post(`/apiservice/a/service/order/orderCustomInfo/saveData`, obj)
 }
-
+// 客户（编辑）
+export function getCus(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/formData`, obj)
+}
+// 客户保侟（编辑）
+export function upCus(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/upData`, obj)
+}

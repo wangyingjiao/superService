@@ -14,10 +14,10 @@
 			<div class="stepContentWrap">
 				<!--步骤1显示区域开始-->
 				<div class="stepContent"  v-if="active == 1">
-					<el-form ref="form" :model="form" label-width="100px" label-position="left">
+					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
-							<div  class="selftSerchBut"  @click="addcustomer">新增</div>
+							<div  class="selftSerchBut"  v-if="btnShow.indexOf('order_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
 							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
@@ -29,8 +29,9 @@
 							<el-form-item label="服务地址:" prop="address">
 								{{form.address}}
 							</el-form-item>
-							<el-form-item label="所属服务站:">
-                <el-select clearable  class="severChangeStyle" filterable v-model="serverStation1" placeholder="请选择">
+							<el-form-item label="所属服务站:" prop='serverStation1'>
+                <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
+                <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                   <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>                
@@ -48,11 +49,8 @@
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="选择商品:"  prop="commidty">
-							<el-select style="display:none" class="severChangeStyle" multiple v-model="form1.commidty" placeholder="请选择">
-								<el-option v-for="item in selectCommidty" :key="item.id" :label="item.name" :value="item.id">
-								</el-option>
-							</el-select>              
+						<el-form-item label="选择商品:">
+              <span class="selfLabelStyle">*</span>
 							<div class="table-d1" v-if="selectCommidty.length != 0">
 								<table width="80%" class="selfTable">
 									<tr>
@@ -84,7 +82,7 @@
 										</td>
 										<td  align="center">{{item.minPurchase}}</td>
 										<td class="height30" align="center">
-                      <el-input-number class="selfINputNumStyle" v-if="item.goodsType=='num' || item.goodsType=='area'"  @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)"></el-input-number>
+                      <span v-if="item.goodsType=='num' || item.goodsType=='area'"> <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)"></el-input-number></span>
 											<span v-if="item.goodsType=='house'">{{item.goodsNum}}</span>											
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
@@ -95,7 +93,6 @@
 							</div>   																																
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice">
-              <!-- <span class="selfLabelStyle">*</span> -->	
 							<span>￥{{form1.sumPrice}}.00</span>
 						</el-form-item>																																														
 					</el-form>
@@ -105,10 +102,7 @@
 				<div class="stepContent" v-if="active == 3">
 					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
 						<el-form-item label="技师:" prop="selectTech">
-							<el-select style="display:none" class="severChangeStyle" multiple v-model="form2.selectTech" placeholder="请选择">
-								<el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
-								</el-option>
-							</el-select>               
+              <el-input type="hidden" style="display:none" value='' v-model='form2.selectTech'></el-input>               
 							<span  class="button-cancel stepThreeBut" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
@@ -245,7 +239,6 @@
 			</div>
 		</el-dialog>	
 	<!--技师选择弹窗结束-->
-	<!-- <div ref="gdMap" class="mapWrap"></div> -->
 		<!--地图开始-->
 			<div ref="gdMap" class="mapWrap"></div>              	
 		<!--地图结束-->   
@@ -322,10 +315,9 @@ export default {
       middleA: [],
       techSaveFlag: false,
       form2: {
-         selectTech:[],
+         selectTech:'',
          severTime:'',
-         severTime1:'',
-         
+         severTime1:''         
       },
       btnShow: JSON.parse(localStorage.getItem("btn")),
       //服务站下拉选项
@@ -351,22 +343,27 @@ export default {
       form: {
         name:"",       
         address: "",
-        stationList: [],        
+        stationList:[],
+        serverStation1:''        
       }, 
       customPhone: "",     
       serverStation1:'',
       form1: {
         serverPro: "",
-        commidty: [],
         sumPrice: 0,
       },
       form3: {
         date: ""
       },
       active: 1,
+      forma:{
+        serverStation1: [
+          { required: true, message: "请选择服务站", trigger: "change" }
+        ], 
+      },
       rules2: {
         selectTech: [
-          { required: true,type: "array", message: "请选择技师", trigger: "change" }
+          { required: true,message: "请选择技师",trigger: "change"}
         ],
         severTime:[
           { required: true,validator: checkDate, message: "请选择服务日期", trigger: "change" }
@@ -392,11 +389,8 @@ export default {
         serverPro: [
           { required: true, message: "请选择服务项目", trigger: "change" }
         ],
-        commidty: [
-          { required: true,type: "array", message: "请选择商品", trigger: "change" }
-        ],
         sumPrice:[
-          { required: true,type:'number',validator: checksum, message: "请选择商品", trigger: "change" }
+          { required: true,type:'number',validator:checksum, message: "请选择商品"}
         ]        
       },
       rules: {
@@ -444,6 +438,9 @@ export default {
     }
   },
   methods: {
+      seerchange(val){
+         this.form.serverStation1=val;
+      },
       inputFocus(){
         this.areaCode='010';
         this.$refs.pickerInput.value='';
@@ -453,7 +450,11 @@ export default {
       if(obj.techChecked){
           this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)          
+        for (var a1 = 0; a1 < this.middleA.length; a1++) {
+          if (this.middleA[a1].techId == obj.techId) {
+              this.middleA.remove(this.middleA[a1]);
+          }
+        }         
       }
     },     
     //选中行改变
@@ -495,9 +496,6 @@ export default {
     //下一步
     next() {
       if (this.active++ >= 3) this.active = 1;
-      if(this.active == 2){
-        this.findItemListFun();        
-      }
       if(this.active == 3){        
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
@@ -505,7 +503,6 @@ export default {
              arr.push(this.selectCommidty[a])
           }
         }
-        this.form1.commidty=arr;
         this.middleB=Object.assign([], arr);
         this.$refs['form1'].validate(valid => {
           if (valid) {
@@ -515,18 +512,26 @@ export default {
         })
       }else{
       }
-      
+      if(this.active == 2){
+        this.$refs['form'].validate(valid => {
+          if (valid && this.serverStation1 != '') {           
+            this.findItemListFun();
+          }else{
+            this.active=1           
+          }
+        })
+                
+      }
     },
     //上一步
     prev() {
-      if (this.active-- <= 1) this.active = 1;
-      console.log(this.middleB);      
+      if (this.active-- <= 1) this.active = 1;          
     },
     //获取时间列表
     findTimeListByTechFun(){
           var obj = {
             stationId:this.serverStation1,
-            goodsInfoList:this.form1.commidty,
+            goodsInfoList:this.middleB,
             techList:this.tabOptions
           };
           findTimeListByTech(obj)
@@ -534,6 +539,11 @@ export default {
               if (res.data.code === 1) {
                   if(res.data.data != undefined){
                      this.options2=res.data.data
+                //默认选择当前日期
+                    if(this.options2 != undefined && this.options2[0] != undefined){
+                      this.form2.severTime=this.options2[0].value
+                      this.dateChange(this.form2.severTime) 
+                    }                      
                   }
 
               }else if(res.data.code === 3){
@@ -557,7 +567,6 @@ export default {
             .then(res => {
               if (res.data.code === 1) {
                   if(res.data.data != undefined){
-                    console.log(res.data.data)
                     this.customId=res.data.data.id
                     this.form=res.data.data
                     this.customKeyFlag = true;                    
@@ -598,7 +607,7 @@ export default {
     submitForm(formName) {
       if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
         this.ruleForm.address =
-          this.$refs.pickerInput.value + this.ruleForm.address;
+          this.$refs.pickerInput.value +'-'+this.ruleForm.address;
         var str = this.$refs.pickerInput1.value;
         str = str.split(",");
         //经度
@@ -654,7 +663,6 @@ export default {
     //获取按客户ID客户数据
     getcustomerList() {
       var coustomerId=this.$route.query.coustomerId
-      //'7b7879f2405341ca80709169b791eeac'
       if(coustomerId != undefined){
          this.customId=coustomerId
           var obj = {
@@ -705,6 +713,16 @@ export default {
           if (res.data.code === 1) {
               if(res.data.data != undefined){
                    this.selectCommidty=res.data.data
+                  if(this.middleB.length !=0){
+                      for(var d=0;d<this.selectCommidty.length;d++) {
+                          for(var a=0;a<this.middleB.length;a++){
+                            if(this.middleB[a].goodsId == this.selectCommidty[d].goodsId){                        
+                                   this.selectCommidty[d]=this.middleB[a]
+                            }
+                          }                   
+                      }
+                  }
+                  
               }else{
                 this.selectCommidty=[];
                 this.form1.sumPrice=0
@@ -740,7 +758,7 @@ export default {
     technicianSel() {
       var obj = {
             stationId:this.serverStation1,
-            goodsInfoList:this.form1.commidty
+            goodsInfoList:this.middleB
       };      
       findTechListByGoods(obj)
         .then(res => {
@@ -789,6 +807,7 @@ export default {
     },
     //叉号点击关闭TAB
     errorClose(obj) {
+      
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -802,12 +821,27 @@ export default {
         }
         this.tabOptions.remove(obj);
       }
+      if(this.tabOptions.length == 0){
+        this.form2.severTime1=''
+      }
     },
     //确认下单按钮点击
     confirmOrder(formName) {
+        if(this.tabOptions.length == 0){
+          this.form2.severTime1=''
+          this.rules2.severTime1[0].message='请选择技师'
+        }
+        var kkk=''
+        for (var a = 0; a < this.timeObj.length; a++) {
+          if (this.timeObj[a].selected == true) {
+            kkk = this.timeObj[a].serviceTimeStr;
+          }
+        }
+        if(kkk==''){
+          this.form2.severTime1=''
+        }        
         this.$refs[formName].validate(valid => {
           if (valid) {
-            console.log('aaa')
             var time = "";
               for (var a = 0; a < this.timeObj.length; a++) {
                 if (this.timeObj[a].selected == true) {
@@ -819,7 +853,8 @@ export default {
               serviceTime:this.changTime+' '+time+':00',//服务时间
               customerRemark:this.textarea,             //备注
               techList:this.tabOptions,                 //技师对象
-              goodsInfoList:this.form1.commidty         //商品对象
+              goodsInfoList:this.middleB,               //商品对象
+             stationId:this.serverStation1        
             };
             createOrder(obj)
               .then(res => {
@@ -829,18 +864,18 @@ export default {
                     message: "新增成功!"
                   });
                    this.$refs['form2'].resetFields();
-                   this.middleA = [];                    
+                   this.middleA = [];
+                   this.$router.push({path:'/clean/ordermanage'}) //跳转到订单管理                    
                 }else if(res.data.code ===3){
                     this.$message({
                       type: 'warning',
                       message: res.data.data
                     });
                 }
-
+                
               })
               .catch(res => {});             
           }else{
-            console.log('bbb')
           }
         })
 
@@ -892,8 +927,8 @@ export default {
 
     },
     //日期变化时改变时间对象
-    dateChange(value) {
-      this.form2.severTime=value;
+    dateChange(val) {
+      this.form2.severTime=val;
       var that = this;
       for (var b = 0; b < this.options2.length; b++) {
         if (val == this.options2[b].value) {
@@ -940,7 +975,7 @@ export default {
       var obj = {
         techName: this.techName,
         stationId:this.serverStation1,
-        goodsInfoList:this.form1.commidty        
+        goodsInfoList:this.middleB        
       };
       //服务技师获取
       findTechListByGoods(obj)
