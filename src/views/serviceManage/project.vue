@@ -163,9 +163,8 @@
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
 					</div>
-                    <!-- <div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div> -->
                 </el-form-item>
-				<div class="el-upload__tip">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
+				<div class="el-upload__tip prompt-img">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
 
 				<el-form-item label="图文详情：">
 					<div class="upload-demo upload_box form_item">
@@ -173,14 +172,14 @@
 					</div>
                    
                 </el-form-item>
-				 <div class="el-upload__tip">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
+				 <div class="el-upload__tip prompt-img">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
                     <div class="labelList form_item" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
-                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa" style="border-radius:20px;">
+                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa system-label" style="border-radius:20px;">
                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
                               <div>
                                   <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;margin-right:0px">{{item}}</span>
@@ -191,7 +190,7 @@
                     </div>
                     
                 </el-form-item>
-				<div class="el-upload__tip">* 最多设置3个系统标签</div>
+				<div class="el-upload__tip prompt-img">* 最多设置3个系统标签</div>
 
                 <el-form-item label="自定义标签：" class="labelDav">
                     <div class="custom">
@@ -202,9 +201,8 @@
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
-                     
+					<div style="margin-top:20px" class="el-upload__tip">* 最多设置3个自定义标签</div>
                 </el-form-item> 
-				<div class="el-upload__tip">* 最多设置3个自定义标签</div>
             
               </el-form>
               <h3 class="tit"> 商品信息</h3><hr/>
@@ -594,7 +592,7 @@ export default {
         callback(new Error('请输入自定义标签'))
       }
     }
-    //封定人数
+    //封顶人数
     var CAPPINPERNUM = (rule,value,callback)=>{
       var reg = /^\d+$/;
         if(value){
@@ -602,7 +600,7 @@ export default {
             if(reg.test(value)){
               if(value*1>=this.goods_info.startPerNum*1){
 				  if(value == 0){
-					   callback(new Error('封定人数最小值为1'))
+					   callback(new Error('封顶人数最小值为1'))
 				  }else{
 					  callback()
 				  }
@@ -640,14 +638,14 @@ export default {
          callback()
       }
     }
-    //起够数量
+    //起购数量
     var MINPURCHASE = (rule,value,callback) =>{
       var reg = /^\d+$/;
       if(value){
         if(value*1<=999999){
           if(reg.test(value)){
 			  if(value == 0){
-				  callback(new Error('起够数量最小值为1'))
+				  callback(new Error('起购数量最小值为1'))
 			  }else{
 				  callback()
 			  }
@@ -655,7 +653,7 @@ export default {
             callback(new Error('请输入数字'))
           }
         }else{
-          callback(new Error('起够数量应在999999以内'))
+          callback(new Error('起购数量应在999999以内'))
         }
       }else{
         callback()
@@ -1505,12 +1503,15 @@ export default {
   display:inline-block;float:left;
 }
 .selfTabsaa{
-   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #e8e8e8;margin-left:10px;cursor:pointer;
+   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #4c70e8;margin-left:10px;cursor:pointer;
 }
 .selfTabsaa .el-tooltip{
   height:30px;
   padding:0 5px;
   /* padding:0 5px; */
+}
+.system-label{
+	border: 1px solid #bfcbd9;
 }
 .selfTabContent{
   float:left;
@@ -1697,7 +1698,14 @@ export default {
   display: inline-block;
   height:30px
 }
-#diatable .el-upload__tip{
+/* #diatable .el-upload__tip{
+	margin:0 0 10px 90px;
+} */
+/* .el-upload__tip{
+	margin: 10px;
+	margin-left: 0;
+} */
+.prompt-img{
 	margin:0 0 10px 90px;
 }
 
@@ -2147,7 +2155,7 @@ hr {
   height: 30px;
   line-height: 30px;
   text-align: center;
-  border: 1px solid rgb(190, 187, 187);
+  border: 1px solid #4c70e8;
   margin: 5px;
   /* width: 95%; */
   overflow: hidden;
