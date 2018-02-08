@@ -422,16 +422,21 @@ export default {
 									this.ruleForm.areaCode='';
 									this.ruleForm.sex='';
 							}else{
+								  this.showDis=true;
 									var obj={
 										id:row.id
 									}
 									getCus(obj).then(res => {
-										if(res.data.code === 1){
+										if(res.data.code === 1){											 
 											 var b=res.data.data.address;
 											 var indexa=b.indexOf('-')
 											 var a=b.substring(0,indexa)
 											 var c=b.substring(indexa+1)
 											 this.ruleForm=res.data.data;
+											 var aar=[];
+											 aar.push(res.data.data.addrLongitude)
+											 aar.push(res.data.data.addrLatitude)
+                       this.$refs.pickerInput1.value=aar;
 											 this.$refs.pickerInput.value=a;
 											 this.ruleForm.address=c;
 											 var arr=[]

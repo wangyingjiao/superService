@@ -1048,7 +1048,7 @@ export default {
   background-size: 20px 20px;
 }
 .marginTopDec10 {
-  margin-top: -10px;
+  margin-top: -40px;
   max-width: 400px;
 }
 .selfSeverTimeSt {
@@ -1059,7 +1059,7 @@ export default {
   display: inline-block;
   text-align: center;
   position: relative;
-  margin-left: 20px;
+  margin-right: 20px;
   margin-top: 10px;
   font-size: 14px;
   cursor: pointer;
