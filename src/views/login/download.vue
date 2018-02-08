@@ -1,6 +1,5 @@
 <template>
   <div class="appBox">
-      <button @click="aaa">111111111111111111111111</button>
       <div class="marginAuto">
         <div class="header">
             <img class="logo" src="../../../static/icon/app_logo.png" alt="">
@@ -11,7 +10,7 @@
             <p>用心服务 洁净万家</p>
         </div>
         <div class="footer">
-            <a href="#">
+            <a href="https://imgcdn.guoanshequ.com/openservice/2018/2/8/1518073284027.apk">
                 <img src="../../../static/icon/app_btn.png" alt="">
             </a>
         </div>
@@ -28,9 +27,7 @@ export default {
     return {};
   },
   methods: {
-      aaa(){
-        console.log(window.location.href)
-      }
+      
   }
 };
 </script>
@@ -44,28 +41,29 @@ export default {
   height: 100vh;
   .marginAuto {
     width: 80%;
+    height: 100vh;
     margin: 0 auto;
     .header {
-      width: 76%;
+      width: 80%;
       margin: 0 auto;
       margin-top: 12%;
       padding: 0 4%;
       .logo {
-        width: 16%;
+        height: 6rem;
       }
       .word {
-        width: 76%;
+        height: 6rem;
       }
     }
     .main {
       width: 90%;
       margin: 0 auto;
-      margin-top: 10%;
+      margin-top: 20%;
       img {
         width: 100%;
       }
       p {
-        margin-top: 5%;
+        margin-top: 6rem;
         width: 100%;
         text-align: center;
         font-family: SourceHanSansCN-Normal;
@@ -77,11 +75,18 @@ export default {
     .footer{
         width: 75%;
         margin: 0 auto;
+        margin-bottom: 10%;
         a{
             display: block;
-            width: 100%;
-            margin-top: 10%;
-            background-color: aqua;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 15%;
+            background-color: #fff;
+            img{
+              display: block;
+              width: 100%;
+              
+            }
         }
     }
   }
