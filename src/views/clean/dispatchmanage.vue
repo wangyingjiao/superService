@@ -38,7 +38,13 @@
 
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">
-										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">{{item.techName}}</div>						
+										
+										         <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
+															  <el-tooltip  placement="left" :disabled="item.techName.length< 8 " :content="item.techName">
+															      <div class="techNameStyle1">{{item.techName}}</div>
+															  </el-tooltip>
+														 </div>										
+																
 								</template>
 					  </el-table-column>
 
@@ -193,7 +199,7 @@ export default {
 								this.listTech = res.data.data;
 								for (var c = 0; c < this.middleA.length; c++) {
 									for (var d = 0; d <this.listTech.length; d++) {
-										this.$set(this.listTech[d],'techChecked',false)
+										 this.$set(this.listTech[d],'techChecked',false)
 										if (
 											this.listTech[d].techId ==
 											this.middleA[c].techId
@@ -212,10 +218,14 @@ export default {
     },
     //存储选择技师对象
     ChangeTech(obj){
-      if(obj.techChecked){
+      if(obj.techChecked){				  
           this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)          
+          for (var a1 = 0; a1 < this.middleA.length; a1++) {
+            if (this.middleA[a1].techId == obj.techId) {
+                this.middleA.remove(this.middleA[a1]);
+            }
+          }       
       }
     },    
     //选择技师弹出层保存
@@ -226,7 +236,7 @@ export default {
       if (this.middleA != undefined && this.middleA.length != 0) {
         for (let a = 0; a < this.middleA.length; a++) {
           if (this.middleA[a].techChecked == true) {
-            arr.push(this.middleA[a].techId);
+             arr.push(this.middleA[a].techId);
           }
         }
       }
@@ -298,6 +308,9 @@ export default {
 						this.dialogTableVisible=true;                                        
 						if(res.data.data != undefined){ 
 							this.listTech=res.data.data;
+							// for (var d = 0; d <this.listTech.length; d++) {
+							// 		this.$set(this.listTech[d],'techChecked',false)
+							// }						
 						}else{
               this.listTech=[];
 						}
@@ -510,6 +523,12 @@ export default {
 	height:60px;
 	line-height:60px;
 	border-bottom:1px solid #dfe6ec
+}
+.techNameStyle1{
+		height:60px;
+	  line-height:60px;
+    width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
+		margin:0 auto;
 }
 .selfTd:last-child{
    border:none;

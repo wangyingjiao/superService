@@ -744,11 +744,13 @@ export default {
     //存储选择技师对象
     ChangeTech(obj) {
       if (obj.techChecked) {
-        obj.techChecked = true;
         this.middleA.push(obj);
       } else {
-        obj.techChecked = false;
-        this.middleA.remove(obj);
+        for (var a1 = 0; a1 < this.middleA.length; a1++) {
+          if (this.middleA[a1].techId == obj.techId) {
+              this.middleA.remove(this.middleA[a1]);
+          }
+        } 
       }
     },
     //选择技师弹出层保存

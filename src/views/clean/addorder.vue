@@ -450,7 +450,11 @@ export default {
       if(obj.techChecked){
           this.middleA.push(obj)          
       }else{
-          this.middleA.remove(obj)          
+        for (var a1 = 0; a1 < this.middleA.length; a1++) {
+          if (this.middleA[a1].techId == obj.techId) {
+              this.middleA.remove(this.middleA[a1]);
+          }
+        }         
       }
     },     
     //选中行改变
@@ -1044,7 +1048,7 @@ export default {
   background-size: 20px 20px;
 }
 .marginTopDec10 {
-  margin-top: -10px;
+  margin-top: -40px;
   max-width: 400px;
 }
 .selfSeverTimeSt {
@@ -1055,7 +1059,7 @@ export default {
   display: inline-block;
   text-align: center;
   position: relative;
-  margin-left: 20px;
+  margin-right: 20px;
   margin-top: 10px;
   font-size: 14px;
   cursor: pointer;
