@@ -140,9 +140,7 @@
 		</el-dialog>
 		<!--新增客户弹窗结束-->
 		<!--地图开始-->
-		<div class="mapDiv">
-			<div ref="gdMap" class="mapWrap"></div>              	
-		</div>
+		<div ref="gdMap" class="mapWrap"></div>              	
 		<!--地图结束-->
   </div>
 </template>
@@ -265,7 +263,6 @@ export default {
 		pagetotal1:0,//表格总页数
 		pageSize1:10,//表格每页条数
 		pageNumber:1,
-		kkkk:'',
 		mymap:{},
 		testFlag:undefined,
     };
@@ -273,14 +270,12 @@ export default {
   methods:{
 		  //清空地址POI选择框值
 		  inputBlur(){
-				if(this.kkkk == ''){
-					this.$refs.pickerInput.value='';
-				}				
+				this.$refs.pickerInput.value='';			
 			},
 			//地址POI选择初始城市值
 		  testFun(value){				  
 					this.$nextTick(() => {
-							this.test(value[1]);
+							this.test(value[2]);
 					})	
 			},
 			//新增保存
@@ -422,18 +417,26 @@ export default {
 									this.ruleForm.areaCode='';
 									this.ruleForm.sex='';
 							}else{
+								  this.showDis=true;
 									var obj={
 										id:row.id
 									}
 									getCus(obj).then(res => {
-										if(res.data.code === 1){
+										if(res.data.code === 1){											 
 											 var b=res.data.data.address;
 											 var indexa=b.indexOf('-')
 											 var a=b.substring(0,indexa)
 											 var c=b.substring(indexa+1)
 											 this.ruleForm=res.data.data;
+											 //经纬度回显
+											 var aar=[];
+											 aar.push(res.data.data.addrLongitude)
+											 aar.push(res.data.data.addrLatitude)
+											 this.$refs.pickerInput1.value=aar;
+											 //详细地址回显
 											 this.$refs.pickerInput.value=a;
 											 this.ruleForm.address=c;
+											 //区域代码回显
 											 var arr=[]
 											 arr.push(res.data.data.provinceCode)
 											 arr.push(res.data.data.cityCode)
@@ -517,42 +520,36 @@ export default {
 
 					},
 					//按区域POI搜索
-					test(area){						  
-							var that=this;							
-							var inputname=this.$refs.pickerInput;
-							var inputname1=this.$refs.pickerInput1;						
-							AMapUI.loadUI(['misc/PoiPicker'], function(PoiPicker) {
-								  that.showDis=false;
-									var obj={
-										city:area,
-										input:inputname,
-									}							                        
-									var poiPicker = new PoiPicker(obj);						
-									//初始化poiPicker								  
-									poiPickerReady(poiPicker);
-									poiPicker.clearSearchResults()
-									poiPicker.onCityReady(function() {																							  
-											poiPicker.searchByKeyword(that.$refs.pickerInput.value);	
-									});									
-							});
-							function poiPickerReady(poiPicker) {
-									//选取了某个POI									
-									poiPicker.on('poiPicked', function(poiResult) {
-											var source = poiResult.source,
-													poi = poiResult.item,                          
-													info = {
-															source: source,
-															id: poi.id,
-															name: poi.name,
-															location: poi.location.toString(),
-															address: poi.address,															
-													};
-													inputname.value=info.name;
-													that.kkkk=info.name
-													inputname1.value=info.location;									
-									});
-							}	
-										
+					test(area){
+						  this.showDis=false;
+							var that = this;
+							let inputname = this.$refs.pickerInput;
+							let inputname1 = this.$refs.pickerInput1;
+								//输入提示
+								var autoOptions = {
+									input:inputname,
+									city:area,
+									citylimit:true
+								};
+								var auto = new AMap.Autocomplete(autoOptions);
+								var placeSearch = new AMap.PlaceSearch({
+									map: this.mymap
+								});  //构造地点查询类
+								AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+								function select(e) {             
+									placeSearch.setCity(e.poi.adcode);
+									placeSearch.search(e.poi.name);  //关键字查询查询              
+									console.log(e)
+									var poi =e.poi,
+										info = {
+											id: poi.id,
+											name: poi.name,
+											location: poi.location.toString(),
+											address: poi.address
+										};
+										inputname.value = info.name;
+										inputname1.value = info.location;              
+								}												  										
 					},
 					//地图初始化
 					initMap1(){

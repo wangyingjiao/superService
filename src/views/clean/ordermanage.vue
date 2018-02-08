@@ -25,13 +25,15 @@
 			  <div class="second-input">
 				        <el-date-picker
 						v-model="startTime"
+						class="search"
 						style="width:20%"
 						type="daterange"
 						placeholder="选择下单时间">
 						</el-date-picker>					
 				        <el-date-picker
+						class="search"
 						v-model="severTime"
-						style="width:20%;margin-left:20px;"
+						style="width:20%;"
 						type="daterange"
 						placeholder="选择服务时间">
 						</el-date-picker>					
@@ -242,7 +244,7 @@ export default {
 		if(this.severTime[1]){
     		var severEndTime = util.formatDate.format(
 					new Date(this.severTime[1]),
-					"yyyy-MM-dd hh:mm:ss"
+					"yyyy-MM-dd 23:59:59"
 			);           
 		}else{
 			severEndTime=null
@@ -261,7 +263,7 @@ export default {
         if(this.startTime[1]){
 			var endTime = util.formatDate.format(
 				new Date(this.startTime[1]),
-				"yyyy-MM-dd hh:mm:ss"
+				"yyyy-MM-dd 23:59:59"
 			);
 		}else{
 			endTime=null
@@ -312,7 +314,7 @@ export default {
 		if(this.severTime[1]){
     		var severEndTime = util.formatDate.format(
 					new Date(this.severTime[1]),
-					"yyyy-MM-dd hh:mm:ss"
+					"yyyy-MM-dd 23:59:59"
 			);           
 		}else{
 			severEndTime=null
@@ -330,7 +332,7 @@ export default {
         if(this.startTime[1]){
 			var endTime = util.formatDate.format(
 				new Date(this.startTime[1]),
-				"yyyy-MM-dd hh:mm:ss"
+				"yyyy-MM-dd 23:59:59"
 			);
 		}else{
 			endTime=null
@@ -369,7 +371,7 @@ export default {
 		if(this.severTime[1]){
     		var severEndTime = util.formatDate.format(
 					new Date(this.severTime[1]),
-					"yyyy-MM-dd hh:mm:ss"
+					"yyyy-MM-dd 23:59:59"
 			);           
 		}else{
 			severEndTime=null
@@ -387,7 +389,7 @@ export default {
         if(this.startTime[1]){
 			var endTime = util.formatDate.format(
 				new Date(this.startTime[1]),
-				"yyyy-MM-dd hh:mm:ss"
+				"yyyy-MM-dd 23:59:59"
 			);
 		}else{
 			endTime=null

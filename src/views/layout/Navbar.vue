@@ -9,7 +9,7 @@
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
             <el-dropdown-menu slot="dropdown" class="hoverStyle">
-              <el-dropdown-item ><img  src="../../../static/icon/scan.png" alt=""><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
+              <el-dropdown-item ><vue-qr bgSrc='../../../static/icon/bgw.png'  :text="appSrc" height="200" width="200"></vue-qr><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
@@ -33,14 +33,17 @@
 import { mapGetters } from "vuex";
 import TabsView from "./TabsView";
 import Hamburger from "@/components/Hamburger";
+import VueQr from 'vue-qr';
 
 export default {
   components: {
     TabsView,
-    Hamburger
+    Hamburger,
+    VueQr
   },
   data() {
     return {
+      appSrc:"",
       flag: false,
       username: ""
     };
@@ -48,12 +51,16 @@ export default {
   computed: {
     ...mapGetters(["sidebar", "name", "avatar"])
   },
+  created(){
+    var src1 = window.location.href
+    var src2 = this.$route.path
+    var src3 = src1.replace(src2,'/download')
+    this.appSrc = src3
+  },
   methods: {
-    // handleCommand(command) {
-    //   if (command == "logout") {
-    //     this.logout();
-    //   }
-    // },
+    dropClick() {
+      console.log(1111111)
+    },
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");
     },

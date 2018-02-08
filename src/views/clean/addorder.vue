@@ -154,7 +154,7 @@
 
 	</div>
 	<!--新增客户弹窗开始-->
-	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">	
+	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 			<el-form-item label="姓名:" prop="name" >
 				<el-input class="width400" v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
@@ -179,7 +179,7 @@
 				></el-cascader>								
 			</el-form-item>
 			<el-form-item label="详细地址:" prop="address">
-				<input class="pickerInput" ref="pickerInput"  @focus="inputFocus" value='' placeholder="输入关键字选取地点">
+				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputFocus" value='' placeholder="输入关键字选取地点">
 				<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
 				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 			</el-form-item>
@@ -309,6 +309,7 @@ export default {
       }
     };     
     return {
+      showDis:true,
       changTime: "",
       options2:[],
       timeObj:[],
@@ -442,7 +443,6 @@ export default {
          this.form.serverStation1=val;
       },
       inputFocus(){
-        this.areaCode='010';
         this.$refs.pickerInput.value='';
       },
     //存储选择技师对象
@@ -692,6 +692,7 @@ export default {
     },
     //新增按钮
     addcustomer() {
+      this.showDis=true;
       this.dialogTableVisible1 = true;
       this.ruleForm.provinceCode = "";
       this.ruleForm.cityCode = "";
@@ -700,7 +701,6 @@ export default {
     },
     //地址变化时开始POI搜索
     testFun(value) {
-      this.areaCode=value[2]
       this.$nextTick(() => {
         this.test(value[2]);
       });
@@ -882,49 +882,35 @@ export default {
     },
     //POI搜索功能调起
     test(value) {
+          this.showDis=false;
           var that = this;
           let inputname = this.$refs.pickerInput;
-          let inputname1 = this.$refs.pickerInput1;                 
-          AMapUI.loadUI(["misc/PoiPicker"], function(PoiPicker) {       
-                var obj = {
-                  city: that.areaCode,
-                  input: inputname
+          let inputname1 = this.$refs.pickerInput1;
+            //输入提示
+            var autoOptions = {
+              input:inputname,
+              city:value,
+              citylimit:true
+            };
+            var auto = new AMap.Autocomplete(autoOptions);
+            var placeSearch = new AMap.PlaceSearch({
+              map: this.mymap
+            });  //构造地点查询类
+            AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+            function select(e) {             
+              placeSearch.setCity(e.poi.adcode);
+              placeSearch.search(e.poi.name);  //关键字查询查询              
+              console.log(e)
+              var poi =e.poi,
+                info = {
+                  id: poi.id,
+                  name: poi.name,
+                  location: poi.location.toString(),
+                  address: poi.address
                 };
-                var poiPicker = new PoiPicker(obj);
-                that.$nextTick( () => {                   
-                    //初始化poiPicker                 
-                    poiPicker.onCityReady(function() {
-                      poiPicker.searchByKeyword(that.$refs.pickerInput.value);                  
-                    });                                     
-                   poiPickerReady(poiPicker);
-                }) 
-              function poiPickerReady(poiPicker) { 
-                that.$nextTick( ( ) => {      
-                  poiPicker.clearSearchResults(); 
-                  poiPicker.clearSuggest();
-                })
-                window.poiPicker = poiPicker;
-                var marker = new AMap.Marker();
-                var infoWindow = new AMap.InfoWindow({
-                  offset: new AMap.Pixel(0, -20)
-                });        
-                //选取了某个POI
-                poiPicker.on("poiPicked", function(poiResult) {
-                  var source = poiResult.source,
-                    poi = poiResult.item,
-                    info = {
-                      source: source,
-                      id: poi.id,
-                      name: poi.name,
-                      location: poi.location.toString(),
-                      address: poi.address
-                    };
-                  inputname.value = info.name;
-                  inputname1.value = info.location;
-                });
-              }                               
-          });
-
+                inputname.value = info.name;
+                inputname1.value = info.location;              
+            }                           
     },
     //日期变化时改变时间对象
     dateChange(val) {
@@ -1048,7 +1034,7 @@ export default {
   background-size: 20px 20px;
 }
 .marginTopDec10 {
-  margin-top: -10px;
+  margin-top: -40px;
   max-width: 400px;
 }
 .selfSeverTimeSt {
@@ -1059,7 +1045,7 @@ export default {
   display: inline-block;
   text-align: center;
   position: relative;
-  margin-left: 20px;
+  margin-right: 20px;
   margin-top: 10px;
   font-size: 14px;
   cursor: pointer;
