@@ -708,3 +708,9 @@ body {
   color: $buttonColorCancal;
   background: $buttonBackCancal
 }
+.amap-sug-result{
+  position:absolute;
+  z-index:9999;
+  width:350px;
+  margin-top:90px;
+}
