@@ -168,7 +168,7 @@
 
 				<el-form-item label="图文详情：">
 					<div class="upload-demo upload_box form_item">
-						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture'" :min='0' :max='8'></imgService>
 					</div>
                    
                 </el-form-item>

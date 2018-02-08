@@ -8,7 +8,7 @@
 					:before-upload="beforeUpload"
 					:http-request="(file)=>uploadOnSuccess(file,index)"
 					>
-					<img v-if="item!=''" :src="imgSrc+item+picWidth100">
+					<img class="imgWidth" v-if="item!=''" :src="type=='picture'?imgSrc+item+picWidth400Auto:imgSrc+item+picWidth400">
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					<div v-if="item" class="layer">
 						<i @click="handleFileRemove($event,item,index)" class="el-icon-delete"></i>
@@ -224,7 +224,11 @@ export default{
 	color: #8c939d;
 }
 #diatable	.el-form-item__content{
-	line-height: 0;
+	line-height: 0px;
+}
+
+.img-content .el-form-item__content{
+	line-height: 0px;
 }
 /* *{
 	box-sizing: border-box;
@@ -242,9 +246,9 @@ export default{
 	text-align:left;
 	position:relative;
 	display:inline-block;
-	width:110px;
-	height:112px;
-	line-height:110px;
+	width:152px;
+	height:152px;
+	line-height:152px;
 	text-align: center;
 	padding:5px;
 	margin:0px 20px 0px 0;
@@ -259,6 +263,10 @@ export default{
 	height:270px; */
 	display:table;
 	text-align:center;
+}
+.imgWidth{
+	width: 140px;
+	height: 140px;
 }
 .img-upload .uploader .el-upload--picture-card{
   width: 112px;
@@ -307,13 +315,13 @@ export default{
 	font-size:1.1em;
 }
 .img-list .img-content .layer{
-  line-height: 112px;
+  line-height: 140px;
 	position:absolute;
-	left:0;
+	left:5px;
 	right:0;
-	top:0;
-	height:112px;
-	width: 110px;
+	top:5px;
+	height:140px;
+	width: 140px;
 	color:#fff;
 	text-align:center;
 	z-index:5;
