@@ -1,6 +1,7 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { Message } from 'element-ui'
+import store from '../../store'
 const user = {
   state: {
     token: getToken(),
@@ -127,7 +128,8 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
+          store.state.app.visitedViews = []
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           commit('SET_MENU', [])
