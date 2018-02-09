@@ -1210,6 +1210,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1272,6 +1283,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1580,10 +1602,10 @@ export default {
         if (val) {
           var loading = this.$loading({
             lock: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            target: document.querySelector('.tabBox ')
-          })
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+            target: document.querySelector(".tabBox ")
+          });
           this.btnState = true;
           for (var i = 0; i < this.teachArr.length; i++) {
             if (this.teachArr[i].endTime == "24:00") {
@@ -1639,6 +1661,17 @@ export default {
             });
         } else {
           this.btnState = false;
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
