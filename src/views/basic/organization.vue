@@ -173,7 +173,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col class="line" :span="2" style="text-align:center;">-</el-col>
+          <el-col class="line" :span="2" style="text-align:center; height:36px">-</el-col>
           <el-col :span="11">
             <el-form-item prop="workEndTime">
               <el-select
