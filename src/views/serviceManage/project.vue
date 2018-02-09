@@ -1340,12 +1340,6 @@ export default {
       var that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var loading = this.$loading({
-            lock: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            target: document.querySelector('.tabBox ')
-          })
           if(this.basicForm.commoditys.length<=0){
             this.$message({
               message: '请添加商品',
@@ -1359,7 +1353,13 @@ export default {
               obj.pictures = this.picFile; //服务图片缩略图.
               obj.pictureDetails = this.imgText;
               obj.sysTags = this.labelClickArr //添加 系统标签
-			        obj.customTags = this.customArr
+              obj.customTags = this.customArr
+          var loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
