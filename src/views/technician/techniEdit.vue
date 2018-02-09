@@ -1,5 +1,5 @@
 <template>
-      <div class="techniEdit">
+      <div class="techniEdit tabBox">
         <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personalEDit"  ref="personalEDit"  label-width="100px" :rules="rulesPerEdit">
@@ -570,6 +570,8 @@ import {
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
 
+
+var loading;
 export default {
   data() {
     //身份证
@@ -1023,6 +1025,12 @@ export default {
     sumitFormSub(formName){
       this.$refs[formName].validate(valid=>{
         if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           this.otherInfo.id = this.techniEditId;
           technicianOther(this.otherInfo).then(data=>{
            if(data.data.code==1){
@@ -1030,10 +1038,12 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
+                loading.close();
               }else{
-               
+               loading.close();
               }
           }).catch(error=>{
+            loading.close();
             this.$message.error('保存失败')
             return false
           })
@@ -1123,6 +1133,12 @@ export default {
     supplSub(formName) {
       this.$refs[formName].validate(valid=>{
         if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
            var obj = {},
               _supplement = this.supplement;
             obj.id = this.techniEditId;
@@ -1141,10 +1157,12 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
+                loading.close();
               }else{
-               
+               loading.close();
               }
             }).catch(error=>{
+              loading.close();
               this.$message.error('保存失败')
               return false
             })
@@ -1162,10 +1180,13 @@ export default {
               message: data.data.data,
               type: "success"
             });
+            loading.close();
           } else {
+            loading.close();
           }
         })
         .catch(error => {
+          loading.close();
           return false
         });
     },
@@ -1197,6 +1218,12 @@ export default {
     perSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           var obj = {},
             _personalEDit = this.personalEDit;
           obj.id = this.techniEditId;
@@ -1224,6 +1251,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid=>{
         if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
             var obj = {},
           _perServer = this.perServer;
           obj.id = this.techniEditId
@@ -1247,13 +1280,15 @@ export default {
           technicianServer(obj).then(data=>{
             if(data.data.code==1){
               this.$message({
-                message: "保存成功",
+                message: data.data.data,
                 type: "success"
               })
+              loading.close();
             }else{
-             
+             loading.close();
             }
           }).catch(error=>{
+            loading.close();
             this.$message.error('保存失败')
             return false
           })
@@ -1406,6 +1441,12 @@ export default {
       arr.push(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+           loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           familyAdd({ id: this.techniEditId, familyMembers: arr })
             .then(data => {
               if (data.data.code==1) {
@@ -1413,14 +1454,16 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
+                loading.close();
                 this.familyList = data.data.data
                 this.familyFlag = false;
                 this.$refs[formName].resetFields();
               } else {
-               
+               loading.close();
               }
             })
             .catch(error => {
+              loading.close();
               this.$message.error("保存失败");
               return false;
             });
