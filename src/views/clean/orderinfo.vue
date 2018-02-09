@@ -724,7 +724,7 @@ export default {
                 this.listTech = res.data.data;
                 for (var b = 0; b < this.middleA.length; b++) {
                   for (var a = 0; a < this.listTech.length; a++) {
-                    this.$set(this.listTech[a], "techChecked", false);
+                    // this.$set(this.listTech[a], "techChecked", false);
                     if (this.listTech[a].techId == this.middleA[b].techId) {
                       this.listTech[a].techChecked = true;
                     }
@@ -744,7 +744,7 @@ export default {
                 this.listTech = res.data.data;
                 for (var c = 0; c < this.middleA.length; c++) {
                   for (var d = 0; d < this.listTech.length; d++) {
-                    this.$set(this.listTech[d], "techChecked", false);
+                    // this.$set(this.listTech[d], "techChecked", false);
                     if (this.listTech[d].techId == this.middleA[c].techId) {
                       this.listTech[d].techChecked = true;
                     }
@@ -858,9 +858,9 @@ export default {
               this.dialogTableVisible = true;
               if (res.data.data != undefined) {
                 this.listTech = res.data.data;
-                for (var a = 0; a < this.listTech.length; a++) {
-                  this.$set(this.listTech[a], "techChecked", false);
-                }
+                // for (var a = 0; a < this.listTech.length; a++) {
+                //   this.$set(this.listTech[a], "techChecked", false);
+                // }
               }
             }
           })

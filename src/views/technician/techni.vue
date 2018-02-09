@@ -280,7 +280,7 @@
       </el-dialog>
     <!-- 弹出层 新增技师-->
       <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-        <div class="techniAdd tabBox">
+        <div class="techniAdd techtabBox">
           <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">

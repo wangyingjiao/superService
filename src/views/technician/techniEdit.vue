@@ -1,5 +1,5 @@
 <template>
-      <div class="techniEdit tabBox">
+      <div class="techniEdit techtabBox">
         <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personalEDit"  ref="personalEDit"  label-width="100px" :rules="rulesPerEdit">
