@@ -42,7 +42,7 @@
 				<!--步骤1显示区域结束-->
 				<!--步骤2显示区域开始-->
 				<div class="stepContent"  v-if="active == 2">
-					<el-form ref="form1" :rules="rules3" :model="form1" label-width="100px" label-position="left">
+					<el-form ref="form1" :rules="rulesTest" :model="form1" label-width="100px" label-position="left">
 						<el-form-item label="服务项目:" prop="serverPro">
 							<el-select clearable  class="severChangeStyle" filterable v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
 								<el-option v-for="item in serverOptions" :key="item.id" :label="item.name" :value="item.id">
@@ -145,7 +145,8 @@
         <!--上、下步按钮开始-->
         <div class="NextPrevWrap">
           <span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3" @click="prev">上一步</span>
-          <span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2"  @click="next">下一步</span>					
+          <span class="button-large NextPrevStyle"  v-if="active == 1"  @click="next('form')">下一步</span>	
+          <span class="button-large NextPrevStyle"  v-if="active == 2"  @click="next('form1')">下一步</span>					
           <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder('form2')">保存</span>		
         </div>
         <!--上、下步按钮结束-->        
@@ -355,7 +356,7 @@ export default {
       customPhone: "",     
       serverStation1:'',
       form1: {
-        serverPro: "",
+        serverPro: '',
         sumPrice: 0,
       },
       form3: {
@@ -391,13 +392,14 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
-      rules3:{
-        serverPro: [
-          { required: true, message: "请选择服务项目", trigger: "change" }
-        ],
+      rulesTest:{
         sumPrice:[
           { required: true,type:'number',validator:checksum, message: "请选择商品",trigger: "change"}
-        ]        
+        ],        
+        serverPro: [
+          { required: true,message: "请选择服务项目", trigger: "change"}
+        ],
+       
       },
       rules: {
         name: [
@@ -501,38 +503,35 @@ export default {
       }
     },
     //下一步
-    next() {
+    next(formName) {
       if (this.active++ >= 3) this.active = 1;
-      if(this.active == 3){        
+      if(formName == 'form'){
+        this.$refs[formName].validate(valid => {
+          if (valid) { 
+             if(this.serverStation1 != ''){
+                this.findItemListFun();                
+             }                     
+          }else{
+            this.active=1
+            return false           
+          }
+        })
+      }
+      if(formName == 'form1'){
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
           if(this.selectCommidty[a].goodsChecked){
              arr.push(this.selectCommidty[a])
           }
         }
-        this.middleB=Object.assign([], arr);
-        this.$refs['form1'].validate(valid => {
+        this.middleB=Object.assign([], arr); 
+        this.$refs[formName].validate(valid => {
           if (valid) {
           }else{
             this.active=2 
             return false            
           }
-        })
-      }else{
-      }
-      if(this.active == 2){
-        this.$refs['form'].validate(valid => {
-          if (valid) { 
-             if(this.serverStation1 != ''){
-                this.findItemListFun();
-             }         
-            
-          }else{
-            this.active=1
-            return false           
-          }
-        })
-                
+        })               
       }
     },
     //上一步
