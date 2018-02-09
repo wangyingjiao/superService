@@ -523,47 +523,48 @@ export default {
       aa: "",
       bb: "",
       orderId: "",
-      nowTime:''
+      nowTime: ""
     };
   },
   methods: {
     //用订单ID获取页面相关信息
-    getOrderAllInf(orderId){
-      this.orderId=orderId;
-      var obj={
-        id:orderId
-      }
-      getOrderInf(obj).then(res => {      
-          if (res.data.code === 1) {                                   
-            var AllInfo=res.data.data;
-            var nowtime=new Date()
-            var severtime=new Date(AllInfo.serviceTime)
-            this.nowTime=severtime.getTime()-nowtime.getTime()           
-            this.otherInfo=AllInfo;//所有其他信息变量
-            this.otherInfo.serviceHour=this.formatDuring(AllInfo.serviceHour*3600000)            
-            this.goodsInfo=AllInfo.goodsInfo//服务信息
-            this.tableData=AllInfo.goodsInfo.goods//服务商品信息表格
-            this.tableData1=AllInfo.techList//技师信息表格
-            this.payInfo=AllInfo.payInfo//支付信息
-          }  
-        }).catch(res=>{
-          
-        });
+    getOrderAllInf(orderId) {
+      this.orderId = orderId;
+      var obj = {
+        id: orderId
+      };
+      getOrderInf(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            var AllInfo = res.data.data;
+            var nowtime = new Date();
+            var severtime = new Date(AllInfo.serviceTime);
+            this.nowTime = severtime.getTime() - nowtime.getTime();
+            this.otherInfo = AllInfo; //所有其他信息变量
+            this.otherInfo.serviceHour = this.formatDuring(
+              AllInfo.serviceHour * 3600000
+            );
+            this.goodsInfo = AllInfo.goodsInfo; //服务信息
+            this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
+            this.tableData1 = AllInfo.techList; //技师信息表格
+            this.payInfo = AllInfo.payInfo; //支付信息
+          }
+        })
+        .catch(res => {});
     },
-    formatDuring(mss){
-        var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = (mss % (1000 * 60)) / 1000;
-        if(hours==0 && seconds ==0){
-            return  minutes + "分钟";
-        }else if(hours==0 && seconds !=0){
-            return  minutes+1 + "分钟"
-        }else if(seconds ==0 && minutes==0){
-           return  hours+'小时'
-        }else{
-           return  hours+'小时'+minutes + "分钟"
-        }               
-
+    formatDuring(mss) {
+      var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = (mss % (1000 * 60)) / 1000;
+      if (hours == 0 && seconds == 0) {
+        return minutes + "分钟";
+      } else if (hours == 0 && seconds != 0) {
+        return minutes + 1 + "分钟";
+      } else if (seconds == 0 && minutes == 0) {
+        return hours + "小时";
+      } else {
+        return hours + "小时" + minutes + "分钟";
+      }
     },
     //更换时间的保存
     submitTime(formName) {
@@ -571,62 +572,71 @@ export default {
         if (valid) {
           this.timeSaveFlag = true;
           var time = "";
-            for (var a = 0; a < this.timeObj.length; a++) {
-              if (this.timeObj[a].selected == true) {
-                time = this.timeObj[a].serviceTimeStr;
-                this.bb = this.timeObj[a].serviceTimeStr;
-              }
+          for (var a = 0; a < this.timeObj.length; a++) {
+            if (this.timeObj[a].selected == true) {
+              time = this.timeObj[a].serviceTimeStr;
+              this.bb = this.timeObj[a].serviceTimeStr;
             }
-            var that=this;
-            this.$confirm('此操作将更改技师, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              closeOnClickModal:false,
-            }).then(() => {
-                //更换时间的保存
-                var obj={
-                  id:this.orderId,
-                  serviceTime:this.changTime+' '+time+':00'
-                }
-                saveTime(obj).then(res => {
-                  this.timeSaveFlag=false;     
-                  if (res.data.code === 1) {                         
-                      this.$message({
-                        type: "success",
-                        message: "更换时间成功!"
-                      });
-                      this.$refs['formInline'].resetFields();
-                      this.timeObj=[];
-                      this.tableData1=res.data.data.list;
-                      this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
-                      this.otherInfo.serviceTime=that.changTime+' '+that.bb;
-                      var nowtime=new Date()
-                      var severtime=new Date(this.otherInfo.serviceTime)
-                      this.nowTime=severtime.getTime()-nowtime.getTime()                      
-                      this.dialogVisible = false ; 
-                  }else{
-                    
-                    this.timeObj=[];
-                    this.timeSaveFlag=false;
-                    this.dateChange(this.formInline.Date)                                          
-                  }          
-                }).catch(res=>{
-                  this.timeSaveFlag=false;
-                  this.timeObj=[]; 
-                });
-            }).catch(() => { 
-               		this.$message({
-										type: 'warning',
-										message: '已取消更换时间'
-									});
-                  this.timeSaveFlag=false;
-                  this.timeObj=[];
-                  this.dateChange(this.formInline.Date)                    
-            });                         
-                       
           }
-      })
-
+          var that = this;
+          this.$confirm("此操作将更改技师, 是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnClickModal: false
+          })
+            .then(() => {
+              //更换时间的保存
+              var obj = {
+                id: this.orderId,
+                serviceTime: this.changTime + " " + time + ":00"
+              };
+              saveTime(obj)
+                .then(res => {
+                  this.timeSaveFlag = false;
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "更换时间成功!"
+                    });
+                    this.$refs["formInline"].resetFields();
+                    this.timeObj = [];
+                    this.tableData1 = res.data.data.list;
+                    this.otherInfo.serviceHour = this.formatDuring(
+                      res.data.data.serviceHour * 3600000
+                    );
+                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
+                    var nowtime = new Date();
+                    var severtime = new Date(this.otherInfo.serviceTime);
+                    this.nowTime = severtime.getTime() - nowtime.getTime();
+                    this.dialogVisible = false;
+                  } else {
+                    this.timeObj = [];
+                    this.timeSaveFlag = false;
+                    this.dateChange(this.formInline.Date);
+                  }
+                })
+                .catch(res => {
+                  this.timeSaveFlag = false;
+                  this.timeObj = [];
+                });
+            })
+            .catch(() => {
+              this.$message({
+                type: "warning",
+                message: "已取消更换时间"
+              });
+              this.timeSaveFlag = false;
+              this.timeObj = [];
+              this.dateChange(this.formInline.Date);
+            });
+        }else{
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
+        }
+      });
     },
     //更换时间取消
     cancelTime(formName) {
@@ -748,9 +758,9 @@ export default {
       } else {
         for (var a1 = 0; a1 < this.middleA.length; a1++) {
           if (this.middleA[a1].techId == obj.techId) {
-              this.middleA.remove(this.middleA[a1]);
+            this.middleA.remove(this.middleA[a1]);
           }
-        } 
+        }
       }
     },
     //选择技师弹出层保存
@@ -780,11 +790,13 @@ export default {
                 message: "新增成功!"
               });
               this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
+              this.otherInfo.serviceHour = this.formatDuring(
+                res.data.data.serviceHour * 3600000
+              );
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
-            } 
+            }
           })
           .catch(res => {
             this.techSaveFlag = false;
@@ -805,17 +817,19 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour=this.formatDuring(res.data.data.serviceHour*3600000) 
+              this.otherInfo.serviceHour = this.formatDuring(
+                res.data.data.serviceHour * 3600000
+              );
               this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
             } else {
-              
-              this.techSaveFlag=false;             
-          }          
-        }).catch(res=>{
-          this.techSaveFlag=false;
-        });        
+              this.techSaveFlag = false;
+            }
+          })
+          .catch(res => {
+            this.techSaveFlag = false;
+          });
       }
       if (arr.length == 0) {
         this.techSaveFlag = false;
@@ -841,7 +855,7 @@ export default {
                   this.$set(this.listTech[a], "techChecked", false);
                 }
               }
-            } 
+            }
           })
           .catch(res => {});
       } else {
@@ -855,42 +869,39 @@ export default {
               if (res.data.data != undefined) {
                 this.listTech = res.data.data;
               }
-            } 
+            }
           })
           .catch(res => {});
       }
     },
     //改变服务时间按钮
-    changeTime(){
-      this.timeObj=[]; 
-      if(this.otherInfo.serviceStatus !='finish' ){
-          var obj={
-            id:this.orderId
-          }
-          //请求服务时间下拉菜单值
-          ChangeTimeData(obj).then(res => {      
-              if (res.data.code === 1) {
-                this.dialogVisible=true;                                 
-                this.options2=res.data.data;//服务时间下拉菜单值
-                //默认选择当前日期
-                if(this.options2 != undefined && this.options2[0] != undefined){
-                  this.formInline.Date=this.options2[0].value
-                  this.dateChange(this.formInline.Date) 
-                }             
-              }    
-            }).catch(res=>{
-              
-            });         
-
-      }else{
+    changeTime() {
+      this.timeObj = [];
+      if (this.otherInfo.serviceStatus != "finish") {
+        var obj = {
+          id: this.orderId
+        };
+        //请求服务时间下拉菜单值
+        ChangeTimeData(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.dialogVisible = true;
+              this.options2 = res.data.data; //服务时间下拉菜单值
+              //默认选择当前日期
+              if (this.options2 != undefined && this.options2[0] != undefined) {
+                this.formInline.Date = this.options2[0].value;
+                this.dateChange(this.formInline.Date);
+              }
+            }
+          })
+          .catch(res => {});
+      } else {
         this.$message({
-          type: 'error',
-          message: '不能更换时间!'
+          type: "error",
+          message: "不能更换时间!"
         });
-      }     
-
-                           
-    }	
+      }
+    }
   },
   mounted() {
     var orderId = window.localStorage.getItem("orderId");
@@ -903,10 +914,15 @@ export default {
 };
 </script>
 <style   scoped>
-.selfToolTip{
-   width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+.selfToolTip {
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.width180{width:180px !important;}
+.width180 {
+  width: 180px !important;
+}
 .selftechNameStyle {
   width: 185px;
   overflow: hidden;
@@ -968,17 +984,17 @@ export default {
 }
 .selfbeizhu {
   max-width: 800px;
-  word-break: break-all; 
-  word-wrap:break-word; 
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .selfbeizhu1 {
   width: 800px;
-  display:inline-block;
-  float:left;
+  display: inline-block;
+  float: left;
   margin-left: 102px;
   margin-top: -15px;
-  word-break: break-all; 
-  word-wrap:break-word; 
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .width120 {
   width: 120px;
@@ -1102,7 +1118,7 @@ export default {
   margin-bottom: 20px;
 }
 .picStyle {
-  display:inline-block;
+  display: inline-block;
   width: 250px;
   margin-right: 20px;
   margin-top: 20px;

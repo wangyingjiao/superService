@@ -745,6 +745,10 @@ export default {
               this.btnState = false;
             });
         } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
           return false;
         }
       });
@@ -805,6 +809,12 @@ export default {
             .catch(() => {
               this.btnState = false;
             });
+        }else{
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
       });
     },

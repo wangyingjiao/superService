@@ -532,7 +532,7 @@ export default {
               }
               this.dialogMasterVisible = true;
               this.listLoading = false;
-            } 
+            }
           })
           .catch(err => {
             this.listLoading = false;
@@ -557,7 +557,7 @@ export default {
               this.$nextTick(() => {
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
               });
-            } 
+            }
           });
         } else {
           this.severSelectdialogVisible = true;
@@ -689,7 +689,7 @@ export default {
                   message: "删除成功!"
                 });
                 this.getList();
-              } 
+              }
             })
             .catch(() => {
               this.$message({
@@ -746,6 +746,10 @@ export default {
               this.btnState = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -832,6 +836,10 @@ export default {
               this.btnState = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -878,6 +886,10 @@ export default {
               this.btnState = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -1090,7 +1102,6 @@ export default {
               this.$refs.pickerInput.value = "";
               this.severSelectdialogVisible = false;
             } else {
-              
               this.severSelectdialogVisible = false;
               this.inputvalue = [];
               this.$refs.pickerInput.value = "";

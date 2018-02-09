@@ -453,7 +453,7 @@ export default {
                       type: "success",
                       message: "新增成功"
                     });
-                    console.log({ type: obj.type })
+                    console.log({ type: obj.type });
                     readDict({ type: obj.type })
                       .then(res => {
                         this.tableData = res.data.data.list;
@@ -466,6 +466,10 @@ export default {
                   this.btnState = false;
                 });
             } else {
+              this.$message({
+                type: "error",
+                message: "填写的信息不符合要求"
+              });
               return false;
             }
           });
@@ -503,6 +507,10 @@ export default {
                 this.btnState = false;
               });
           } else {
+            this.$message({
+              type: "error",
+              message: "填写的信息不符合要求"
+            });
             return false;
           }
         });
@@ -539,12 +547,16 @@ export default {
               this.btnState = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
     },
     close(formName) {
-      this.resetTemp()
+      this.resetTemp();
       this.dialogTable = false;
     },
     // 清空表单

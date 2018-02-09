@@ -468,8 +468,8 @@ import {
   sendData,
   deleteGoodsData
 } from "@/api/serviceManage";
-import imgService from '../../components/upload/upload.vue'
-import addCommodity from './addCommodity.vue'
+import imgService from "../../components/upload/upload.vue";
+import addCommodity from "./addCommodity.vue";
 // import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
@@ -483,17 +483,17 @@ export default {
   data() {
     //价格
     var PRICE = (rule, value, callback) => {
-      var val = value+''
+      var val = value + "";
       var reg = /^\d+(\.\d{1,2})?$/;
       if (val) {
-        if(val*1<=99999999){
-          if(reg.test(val)){
-            callback()
-          }else{
+        if (val * 1 <= 99999999) {
+          if (reg.test(val)) {
+            callback();
+          } else {
             callback(new Error("不能为特殊字符，小数保留后两位"));
           }
-        }else{
-          callback(new Error('不能大于99999999元'))
+        } else {
+          callback(new Error("不能大于99999999元"));
         }
       } else {
         callback(new Error("请输入价格"));
@@ -503,33 +503,33 @@ export default {
     var CONVERTHOURS = (rule, value, callback) => {
       var reg = /^d*(?:.d{0,2})?$/;
       if (value) {
-          if(this.goods_info.type == 'num'){
-            if(value>=0.01 && value<=1.5){
-              var con = this.converFilter(value)
-              con ? callback() : callback(new Error('请精确到小数后两位'))
-            }else{
-              callback(new Error('请正确输入(0.01~1.5小时)'))
-            }
+        if (this.goods_info.type == "num") {
+          if (value >= 0.01 && value <= 1.5) {
+            var con = this.converFilter(value);
+            con ? callback() : callback(new Error("请精确到小数后两位"));
+          } else {
+            callback(new Error("请正确输入(0.01~1.5小时)"));
           }
+        }
 
-         if(this.goods_info.type == 'area'){
-            if(value>=0.01 && value<=0.5){
-              var con = this.converFilter(value)
-              con ? callback() : callback(new Error('请精确到小数后两位'))
-            }else{
-              callback(new Error('请正确输入(0.01~0.5小时)'))
-            }
+        if (this.goods_info.type == "area") {
+          if (value >= 0.01 && value <= 0.5) {
+            var con = this.converFilter(value);
+            con ? callback() : callback(new Error("请精确到小数后两位"));
+          } else {
+            callback(new Error("请正确输入(0.01~0.5小时)"));
           }
+        }
 
-        if(this.goods_info.type == 'house'){
-            if(value>=2 && value<=12){
-                var con = this.converFilter(value)
-                con ? callback() : callback(new Error('请精确到小数后两位'))
-            }else{
-              callback(new Error('请正确输入(2~12小时)'))
-            }
-      }
-     }else {
+        if (this.goods_info.type == "house") {
+          if (value >= 2 && value <= 12) {
+            var con = this.converFilter(value);
+            con ? callback() : callback(new Error("请精确到小数后两位"));
+          } else {
+            callback(new Error("请正确输入(2~12小时)"));
+          }
+        }
+      } else {
         callback(new Error("请输入折算时长"));
       }
     };
@@ -552,233 +552,225 @@ export default {
       }
     };
     //服务图片
-    var PICTURE = (rule,value,callback)=>{
-      if(this.picFile!=undefined && this.picFile.length>0){
-		if(this.picFile[0]==''){
-			callback(new Error('第一张商品banner图还没上传'))
-		}else{
-			callback()
-		}
-      }else{
-        callback(new Error("请添加banner图"))
+    var PICTURE = (rule, value, callback) => {
+      if (this.picFile != undefined && this.picFile.length > 0) {
+        if (this.picFile[0] == "") {
+          callback(new Error("第一张商品banner图还没上传"));
+        } else {
+          callback();
+        }
+      } else {
+        callback(new Error("请添加banner图"));
       }
-    }
+    };
     //系统标签
-    var SYSTAGS = (rule,value,callback)=>{
-      var arr = this.labelClickArr.concat(this.alreadyArr)
-      if(arr!=undefined && arr.length>0){
-        callback()
-      }else{
-        callback(new Error('请选择系统标签'))
+    var SYSTAGS = (rule, value, callback) => {
+      var arr = this.labelClickArr.concat(this.alreadyArr);
+      if (arr != undefined && arr.length > 0) {
+        callback();
+      } else {
+        callback(new Error("请选择系统标签"));
       }
-    }
-    //自定义标签 
-    var LABELNAME = (rule,value,callback)=>{
-      var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
-      if(value){
-        if(value.length>=1 && value.length<=10){
-          if(this.customArr.indexOf(value) != -1){
-            callback(new Error('已有该自定义标签名称'))
-          }else{
-             if(reg.test(value)){
-              callback()
-            }else{
-              callback(new Error('不能输入特殊字符'))
+    };
+    //自定义标签
+    var LABELNAME = (rule, value, callback) => {
+      var reg = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/;
+      if (value) {
+        if (value.length >= 1 && value.length <= 10) {
+          if (this.customArr.indexOf(value) != -1) {
+            callback(new Error("已有该自定义标签名称"));
+          } else {
+            if (reg.test(value)) {
+              callback();
+            } else {
+              callback(new Error("不能输入特殊字符"));
             }
           }
-        }else{
-          callback(new Error('自定义标签长度1~10位'))
+        } else {
+          callback(new Error("自定义标签长度1~10位"));
         }
-      }else{
-        callback(new Error('请输入自定义标签'))
+      } else {
+        callback(new Error("请输入自定义标签"));
       }
-    }
+    };
     //封顶人数
-    var CAPPINPERNUM = (rule,value,callback)=>{
+    var CAPPINPERNUM = (rule, value, callback) => {
       var reg = /^\d+$/;
-        if(value){
-          if(value*1<=30){
-            if(reg.test(value)){
-              if(value*1>=this.goods_info.startPerNum*1){
-				  if(value == 0){
-					   callback(new Error('封顶人数最小值为1'))
-				  }else{
-					  callback()
-				  }
-              }else{
-                callback(new Error('起步人数不能大于封顶人数'))
+      if (value) {
+        if (value * 1 <= 30) {
+          if (reg.test(value)) {
+            if (value * 1 >= this.goods_info.startPerNum * 1) {
+              if (value == 0) {
+                callback(new Error("封顶人数最小值为1"));
+              } else {
+                callback();
               }
-            }else{
-              callback(new Error('请输入数字'))
+            } else {
+              callback(new Error("起步人数不能大于封顶人数"));
             }
-          }else{
-            callback(new Error('封顶人数最高30人'))
+          } else {
+            callback(new Error("请输入数字"));
           }
-        }else{
-          callback()
+        } else {
+          callback(new Error("封顶人数最高30人"));
         }
-    }
+      } else {
+        callback();
+      }
+    };
     //起步人数
-    var STARTPERNUM = (rule,value,callback)=>{
+    var STARTPERNUM = (rule, value, callback) => {
       var reg = /^\d+$/;
-      if(value){
-        if(value*1<=30){
-          if(reg.test(value)){
-			  if(value == 0){
-				  callback(new Error('起步人数最小值为1'))
-			  }else{
-				   callback()
-			  }
-          }else{
-            callback(new Error('请输入数字'))
+      if (value) {
+        if (value * 1 <= 30) {
+          if (reg.test(value)) {
+            if (value == 0) {
+              callback(new Error("起步人数最小值为1"));
+            } else {
+              callback();
+            }
+          } else {
+            callback(new Error("请输入数字"));
           }
-        }else{
-          callback(new Error('起步人数最高30人'))
+        } else {
+          callback(new Error("起步人数最高30人"));
         }
-      }else{
-         callback()
+      } else {
+        callback();
       }
-    }
+    };
     //起购数量
-    var MINPURCHASE = (rule,value,callback) =>{
+    var MINPURCHASE = (rule, value, callback) => {
       var reg = /^\d+$/;
-      if(value){
-        if(value*1<=999999){
-          if(reg.test(value)){
-			  if(value == 0){
-				  callback(new Error('起购数量最小值为1'))
-			  }else{
-				  callback()
-			  }
-          }else{
-            callback(new Error('请输入数字'))
+      if (value) {
+        if (value * 1 <= 999999) {
+          if (reg.test(value)) {
+            if (value == 0) {
+              callback(new Error("起购数量最小值为1"));
+            } else {
+              callback();
+            }
+          } else {
+            callback(new Error("请输入数字"));
           }
-        }else{
-          callback(new Error('起购数量应在999999以内'))
+        } else {
+          callback(new Error("起购数量应在999999以内"));
         }
-      }else{
-        callback()
+      } else {
+        callback();
       }
-    }
+    };
     //商品名称
-    var NAME = (rule,value,callback) =>{
+    var NAME = (rule, value, callback) => {
       var editName = this.editName;
       var arr = this.basicForm.commoditys;
-      if(value){
-        if(value.length>=1 && value.length<=24){
-          if(this.handleEditFlag){
-            if(editName.name == value){
-              callback()
-            }else{
-               var flag = this.filtersName(value)
-               if(flag){
-                callback()
-               }else{
-                callback(new Error('商品名称重复'))
-               }
-            }
-          }else{
-            if(arr!=undefined && arr.length>0){
-              var flag = this.filtersName(value)
-              if(flag){
-                callback()
-              }else{
-                callback(new Error("商品名称重复"))
+      if (value) {
+        if (value.length >= 1 && value.length <= 24) {
+          if (this.handleEditFlag) {
+            if (editName.name == value) {
+              callback();
+            } else {
+              var flag = this.filtersName(value);
+              if (flag) {
+                callback();
+              } else {
+                callback(new Error("商品名称重复"));
               }
-              
-            }else{
-              callback()
+            }
+          } else {
+            if (arr != undefined && arr.length > 0) {
+              var flag = this.filtersName(value);
+              if (flag) {
+                callback();
+              } else {
+                callback(new Error("商品名称重复"));
+              }
+            } else {
+              callback();
             }
           }
-        }else{
-          callback(new Error("长度在 1 到 24 个字符"))
+        } else {
+          callback(new Error("长度在 1 到 24 个字符"));
         }
-      }else{
-        callback(new Error('请输入商品名称(1-24位)'))
+      } else {
+        callback(new Error("请输入商品名称(1-24位)"));
       }
-    }
+    };
     return {
-      pageNumber:1,
-      addCommodityFlag:false,
-      editName:{},
-      customArr:[],
-      jointCode:false,
-      alreadyArr:[],
-      labelClickArr:[],
-      systemClickId:null,
-      systemClick2Id:null,
-      systemClick3Id:null,
-      systemOptions:[],
-      systemOptions2:[],
-      imgNumber:0,
-      systemOptions3:[],
-      systemOptions4:[],
-      SystemLabel:false,
-      labelObj:{
-        labelName:'',
+      pageNumber: 1,
+      addCommodityFlag: false,
+      editName: {},
+      customArr: [],
+      jointCode: false,
+      alreadyArr: [],
+      labelClickArr: [],
+      systemClickId: null,
+      systemClick2Id: null,
+      systemClick3Id: null,
+      systemOptions: [],
+      systemOptions2: [],
+      imgNumber: 0,
+      systemOptions3: [],
+      systemOptions4: [],
+      SystemLabel: false,
+      labelObj: {
+        labelName: ""
       },
-      formLabelWidth: '90px',
-      addLabel:false,
-      btnState:false,
+      formLabelWidth: "90px",
+      addLabel: false,
+      btnState: false,
       tabs: "all",
       editId: "",
       total: null,
       houseStr: "",
       whole: {},
-      addDetailsImg:0,
+      addDetailsImg: 0,
       personsTime: false,
-    //   addComm: false,
+      //   addComm: false,
       critical: "",
       quantity: "",
-	  persons: [],
+      persons: [],
       commoditys: [],
-      handleEditFlag:false,
-      handleEditIndex:null,
-      measure: [
-      ],
+      handleEditFlag: false,
+      handleEditIndex: null,
+      measure: [],
       listTable: [],
       listLoading: true,
       sortList: [],
-      searchSortList:[],
-      goods_info:{
-        name:'',
-        unit:'',
-        type:'',  
-        price:'',
-        convertHours:'',
-        startPerNum:'',
-        cappingPerNum:'',
-        minPurchase:''
+      searchSortList: [],
+      goods_info: {
+        name: "",
+        unit: "",
+        type: "",
+        price: "",
+        convertHours: "",
+        startPerNum: "",
+        cappingPerNum: "",
+        minPurchase: ""
       },
       goods: {
-        name: [
-          {required:true,validator:NAME,trigger:'blur'}
-        ],
+        name: [{ required: true, validator: NAME, trigger: "blur" }],
         unit: [
-          { required: true, message:"请输入商品单位", trigger: "blur" },
+          { required: true, message: "请输入商品单位", trigger: "blur" },
           { min: 1, max: 6, message: "长度在 1 到 6 个字符", trigger: "blur" }
         ],
         type: [
           { required: true, message: "请选择计量方式", trigger: "change" }
         ],
-        price: [
-          { required: true, validator: PRICE, trigger: "blur" },
-        ],
+        price: [{ required: true, validator: PRICE, trigger: "blur" }],
         convertHours: [
           { required: true, validator: CONVERTHOURS, trigger: "blur" }
         ],
-        startPerNum:[
-          {validator:STARTPERNUM,trigger:'blur'}
-        ],
-        cappingPerNum:[
-          {validator:CAPPINPERNUM,trigger:'blur'}
-        ],
-        minPurchase:[{validator:MINPURCHASE,trigger:'blur'}]
+        startPerNum: [{ validator: STARTPERNUM, trigger: "blur" }],
+        cappingPerNum: [{ validator: CAPPINPERNUM, trigger: "blur" }],
+        minPurchase: [{ validator: MINPURCHASE, trigger: "blur" }]
       },
-      labelRules:{
-        labelName:[
+      labelRules: {
+        labelName: [
           {
-            required:true,validator:LABELNAME,trigger:'blur'
+            required: true,
+            validator: LABELNAME,
+            trigger: "blur"
           }
         ]
       },
@@ -787,27 +779,40 @@ export default {
         sortId: "",
         majorSort: "all",
         commoditys: [],
-        sysTags:[],
-        customTags:[]
+        sysTags: [],
+        customTags: []
       },
       basicRles: {
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" },
-          { min: 2, max: 10, message: "请输入2-10位的项目名称", trigger: "blur" }
+          {
+            min: 2,
+            max: 10,
+            message: "请输入2-10位的项目名称",
+            trigger: "blur"
+          }
         ],
-        picture: [
-           { required: true, validator:PICTURE, trigger:"blur"}
-          ],
-        sortId:[{required:true,message:'请选择所属分类',trigger:'blur'}],
-        info: [{ required: true, message: "请输入2-10位的项目名称", trigger: "blur" }],
-        sysTags:[{required:true,validator:(rule,value,callback)=>{
-             var arr = this.labelClickArr.concat(this.alreadyArr)
-             if(arr!=undefined && arr.length>0){
-               callback()
-             }else{
-               callback(new Error('请选择系统标签'))
-             }
-        },trigger:'change'}]
+        picture: [{ required: true, validator: PICTURE, trigger: "blur" }],
+        sortId: [
+          { required: true, message: "请选择所属分类", trigger: "blur" }
+        ],
+        info: [
+          { required: true, message: "请输入2-10位的项目名称", trigger: "blur" }
+        ],
+        sysTags: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              var arr = this.labelClickArr.concat(this.alreadyArr);
+              if (arr != undefined && arr.length > 0) {
+                callback();
+              } else {
+                callback(new Error("请选择系统标签"));
+              }
+            },
+            trigger: "change"
+          }
+        ]
       },
       listQuery: {
         sort: "+id",
@@ -815,18 +820,17 @@ export default {
       },
       search: {
         sortId: "",
-		name: "",
-		sortIdandGoodsId:'',
-		goodsName:''
+        name: "",
+        sortIdandGoodsId: "",
+        goodsName: ""
       },
       pageSize: 10,
-      fileList: [
-      ],
+      fileList: [],
       picFile: [],
       imgText: [],
-	  picList: [],
-	  pictureDetails:[],
-	  
+      picList: [],
+      pictureDetails: [],
+
       temp: {
         option1: "",
         val: true
@@ -844,433 +848,449 @@ export default {
   },
   created() {
     //所属分类
-    this.handleClick({name:'all'})
+    this.handleClick({ name: "all" });
     //系统标签
     serGasqSort()
-      .then(data=>{
-        this.systemOptions = data.data.data
-      }).catch(error=>{
+      .then(data => {
+        this.systemOptions = data.data.data;
       })
+      .catch(error => {});
     //是否 计量方式 全部 保洁 家修
     Whether()
       .then(({ data }) => {
         this.measure = data.meterage;
         this.whole = data.ser_sort;
       })
-      .catch(error => {
-      });
+      .catch(error => {});
 
-    this.sign   //获取签名
+    this.sign; //获取签名
   },
   computed: {
     sign: function() {
       return getSign();
     },
     btnShow() {
-      return JSON.parse(localStorage.getItem('btn'));
-    },
+      return JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
-    returnImg(item){
-      var arr = []
-      for(var i = 0;i<item.length;i++){
-        arr.push(item[i].url)
-	  }
-      return arr
+    returnImg(item) {
+      var arr = [];
+      for (var i = 0; i < item.length; i++) {
+        arr.push(item[i].url);
+      }
+      return arr;
     },
-    imgClick(item){
-		this.picFile = item
+    imgClick(item) {
+      this.picFile = item;
     },
-    imgTextClick(item){
-	  this.imgText = item
+    imgTextClick(item) {
+      this.imgText = item;
     },
     //对接商品
-    handleSendData(row){
-      var obj = {id:row.id}
-      sendData(obj).then(data=>{
-        if(data.data.code==1){
-          this.$message({
+    handleSendData(row) {
+      var obj = { id: row.id };
+      sendData(obj)
+        .then(data => {
+          if (data.data.code == 1) {
+            this.$message({
               type: "success",
               message: data.data.data
-          });
-        }
-        if(data.data.code==3){
-           this.$message({
+            });
+          }
+          if (data.data.code == 3) {
+            this.$message({
               type: "warning",
               message: data.data.data
-          });
-        }
-        this.getList(this.pageNumber, this.pageSize);
-      }).catch(error=>{
-        return false
-      })
+            });
+          }
+          this.getList(this.pageNumber, this.pageSize);
+        })
+        .catch(error => {
+          return false;
+        });
     },
     //添加商品
-    addCommodity(){
-		this.addCommodityFlag = true
-		this.resetForm('ser')
-		this.handleEditFlag = false
-		// this.addComm = !this.addComm
+    addCommodity() {
+      this.addCommodityFlag = true;
+      this.resetForm("ser");
+      this.handleEditFlag = false;
+      // this.addComm = !this.addComm
     },
-    converFilter(val){
+    converFilter(val) {
       var reg = /^\d+(\.\d{1,2})?$/;
-      var con = reg.test(val)? true : false
-      return con
+      var con = reg.test(val) ? true : false;
+      return con;
     },
-    filtersName(value){
-      var flag = true
-      var arr = this.basicForm.commoditys
-      for(var i=0;i<arr.length; i++){
-        if(arr[i].name==value){
-          flag = false
-          break
-        }else{
-          flag = true
+    filtersName(value) {
+      var flag = true;
+      var arr = this.basicForm.commoditys;
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].name == value) {
+          flag = false;
+          break;
+        } else {
+          flag = true;
         }
       }
-      if(flag){
-        return flag
-      }else{
-         return flag
+      if (flag) {
+        return flag;
+      } else {
+        return flag;
       }
     },
     //保洁家修切换
-    tableProject(obj,id){
+    tableProject(obj, id) {
       Taxonomy(obj)
-      .then(data => {
-        this.sortList = data.data.data;
-        if(id){
-          this.basicForm.sortId = id
-        }
-      })
-      .catch(error => {
-        return false
-      });
+        .then(data => {
+          this.sortList = data.data.data;
+          if (id) {
+            this.basicForm.sortId = id;
+          }
+        })
+        .catch(error => {
+          return false;
+        });
     },
     //系统标签已添加标签删除
-    AlreadyLabel(item){
-      if(this.labelClickArr.indexOf(item)!=-1){
-        this.SelectedLabel(item)
-      }else{
-        this.remove(this.alreadyArr,item)
+    AlreadyLabel(item) {
+      if (this.labelClickArr.indexOf(item) != -1) {
+        this.SelectedLabel(item);
+      } else {
+        this.remove(this.alreadyArr, item);
       }
     },
     //系统标签当前选择标签删除
-    SelectedLabel(item){
+    SelectedLabel(item) {
       this.remove(this.labelClickArr, item);
     },
     //四级标签点击
-    labelClick(item){
-         if(this.labelClickArr.indexOf(item.label) == -1){
-           if(this.labelClickArr.length+this.alreadyArr.length>2){
-             this.$message({
-               message:'最多设置3个系统标签',
-               type:'error'
-             })
-             return false
-           }
-           this.labelClickArr.push(item.label)
-         }else{
-           this.remove(this.labelClickArr, item.label);
-         }
+    labelClick(item) {
+      if (this.labelClickArr.indexOf(item.label) == -1) {
+        if (this.labelClickArr.length + this.alreadyArr.length > 2) {
+          this.$message({
+            message: "最多设置3个系统标签",
+            type: "error"
+          });
+          return false;
+        }
+        this.labelClickArr.push(item.label);
+      } else {
+        this.remove(this.labelClickArr, item.label);
+      }
     },
     //系统列表一级列表事件
-    systemClick(item){
-      this.systemClickId = item.value
-      this.systemOptions2 = item.children
+    systemClick(item) {
+      this.systemClickId = item.value;
+      this.systemOptions2 = item.children;
       this.systemOptions3 = [];
       this.systemOptions4 = [];
     },
     //系统列表二级列表事件
-    systemClick2(item){
-      this.systemClick2Id = item.value
-      this.systemOptions3 = item.children
-       this.systemOptions4 = [];
+    systemClick2(item) {
+      this.systemClick2Id = item.value;
+      this.systemOptions3 = item.children;
+      this.systemOptions4 = [];
     },
-    systemClick3(item){
-      this.systemClick3Id = item.value
-      this.systemOptions4 = item.children
+    systemClick3(item) {
+      this.systemClick3Id = item.value;
+      this.systemOptions4 = item.children;
     },
     //自定义弹框关闭的回调
-    closeingLabel(){
-      this.labelObj.labelName = ''
+    closeingLabel() {
+      this.labelObj.labelName = "";
     },
     //自定义标签删除
-    deleteLabel(index){
-      this.customArr.splice(index,1)
+    deleteLabel(index) {
+      this.customArr.splice(index, 1);
     },
     //自定义标签
-    CustomLabel(formName){
+    CustomLabel(formName) {
       this.$refs[formName].validate(valid => {
-        if(valid){
-          if(this.customArr.length>2){
+        if (valid) {
+          if (this.customArr.length > 2) {
             this.$message({
-              message: '最多设置3个自定义标签',
-              type: 'error'
+              message: "最多设置3个自定义标签",
+              type: "error"
             });
-            return false
-          }else{
-            this.customArr.push(this.labelObj.labelName)
-            this.labelObj.labelName = ''
+            return false;
+          } else {
+            this.customArr.push(this.labelObj.labelName);
+            this.labelObj.labelName = "";
           }
-          this.addLabel = false
-        }else{
-          return false
+          this.addLabel = false;
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
-      })
+      });
     },
     //商品添加/编辑
     submitForm(formName) {
-      this.$refs[formName].validate(valid=>{
-        if(valid){
-           var obj = Object.assign({},this.goods_info)
-              obj.startPerNum = this.goods_info.startPerNum
-              obj.minPurchase = this.goods_info.minPurchase
-              obj.cappingPerNum = this.goods_info.cappingPerNum
-          if(this.handleEditFlag){
-            this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
-            this.resetForm('ser')
-			this.handleEditFlag = false
-			this.addCommodityFlag = false
-          }else{
-              if("id" in obj){
-                delete obj.id
-              }
-              if('jointGoodsCode' in obj){
-                delete obj.jointGoodsCode
-              }
-              this.basicForm.commoditys.push(obj)
-			  this.resetForm('ser')
-			  this.addCommodityFlag = false
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var obj = Object.assign({}, this.goods_info);
+          obj.startPerNum = this.goods_info.startPerNum;
+          obj.minPurchase = this.goods_info.minPurchase;
+          obj.cappingPerNum = this.goods_info.cappingPerNum;
+          if (this.handleEditFlag) {
+            this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
+            this.resetForm("ser");
+            this.handleEditFlag = false;
+            this.addCommodityFlag = false;
+          } else {
+            if ("id" in obj) {
+              delete obj.id;
+            }
+            if ("jointGoodsCode" in obj) {
+              delete obj.jointGoodsCode;
+            }
+            this.basicForm.commoditys.push(obj);
+            this.resetForm("ser");
+            this.addCommodityFlag = false;
           }
-        }else{
-          return false
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
-      })
+      });
     },
     //表格编辑
     handleEdit(index, val) {
-		this.addCommodityFlag = true
-		this.handleEditFlag = true
-		this.handleEditIndex = index
-		this.editName = Object.assign({},val)
-		this.goods_info = Object.assign({},val)
-		this.goods_info.startPerNum = this.goods_info.startPerNum? this.goods_info.startPerNum : ''
-		this.goods_info.cappingPerNum = this.goods_info.cappingPerNum?this.goods_info.cappingPerNum : ''
-		this.goods_info.minPurchase = this.goods_info.minPurchase? this.goods_info.minPurchase : ''
-    //   this.addComm = true;
+      this.addCommodityFlag = true;
+      this.handleEditFlag = true;
+      this.handleEditIndex = index;
+      this.editName = Object.assign({}, val);
+      this.goods_info = Object.assign({}, val);
+      this.goods_info.startPerNum = this.goods_info.startPerNum
+        ? this.goods_info.startPerNum
+        : "";
+      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum
+        ? this.goods_info.cappingPerNum
+        : "";
+      this.goods_info.minPurchase = this.goods_info.minPurchase
+        ? this.goods_info.minPurchase
+        : "";
+      //   this.addComm = true;
     },
     //表格删除
     tableHandleDelete(index, item) {
-      if(this.basicForm.commoditys.length<=1){
-        this.$message.error('商品信息不能为空')
-        return false
-      }else{
-          if(item.id){
-            deleteGoodsData({id:item.id}).then(data=>{
-              if(data.data.code==1){
+      if (this.basicForm.commoditys.length <= 1) {
+        this.$message.error("商品信息不能为空");
+        return false;
+      } else {
+        if (item.id) {
+          deleteGoodsData({ id: item.id })
+            .then(data => {
+              if (data.data.code == 1) {
                 this.$message({
-                      message: data.data.data,
-                      type: "success"
+                  message: data.data.data,
+                  type: "success"
                 });
-                this.handleEditFlag = false
-                this.basicForm.commoditys.splice(index,1)
-              }else{
-               
+                this.handleEditFlag = false;
+                this.basicForm.commoditys.splice(index, 1);
+              } else {
               }
-            }).catch(error=>{
-              this.$message({
-                      message: data.data.data,
-                      type: "error"
-                });
-              return false
             })
-          }else{
-            this.$message({
-                message: '删除成功',
-                type: "success"
+            .catch(error => {
+              this.$message({
+                message: data.data.data,
+                type: "error"
               });
-            this.handleEditFlag = false
-            this.basicForm.commoditys.splice(index,1)
-          }
-       }
+              return false;
+            });
+        } else {
+          this.$message({
+            message: "删除成功",
+            type: "success"
+          });
+          this.handleEditFlag = false;
+          this.basicForm.commoditys.splice(index, 1);
+        }
+      }
     },
     houseClick(val) {
-      this.basicForm.sortId = ''
-      this.tableProject({majorSort:val})
+      this.basicForm.sortId = "";
+      this.tableProject({ majorSort: val });
       this.houseStr = val;
     },
     //数组去重
-    remove(arr, val,key) {
+    remove(arr, val, key) {
       for (var i = 0; i < arr.length; i++) {
-        if(arr[i][key]){
-          if(arr[i].value == val){
+        if (arr[i][key]) {
+          if (arr[i].value == val) {
             arr.splice(i, 1);
             break;
           }
-        }else{
-          if(arr[i] == val){
+        } else {
+          if (arr[i] == val) {
             arr.splice(i, 1);
             break;
           }
         }
       }
     },
-    serGetList(){
+    serGetList() {
       this.pageNumber = 1;
       this.getList(this.pageNumber);
       this.listQuery.page = 1;
     },
-    getList(page, size,getObj) {
-      var _page = page || this.pageNumber
-      var _size = size || this.pageSize
+    getList(page, size, getObj) {
+      var _page = page || this.pageNumber;
+      var _size = size || this.pageSize;
       this.listLoading = true;
       var obj = {};
-      if(getObj){
-        obj = getObj
-      }else{
-         var obj = {};
-          if (this.basicForm.majorSort) {
-            obj.majorSort = this.tabs;
-          }
-          if (this.search.sortId) {
-            obj.sortId = this.search.sortId;
-          }
-          if (this.search.name) {
-            obj.name = this.search.name;
-		  }
-		  if(this.search.goodsName){
-			  obj.goodsName = this.search.goodsName
-		  }
-		  if(this.search.sortIdandGoodsId){
-			  obj.sortIdandGoodsId = this.search.sortIdandGoodsId
-		  }
+      if (getObj) {
+        obj = getObj;
+      } else {
+        var obj = {};
+        if (this.basicForm.majorSort) {
+          obj.majorSort = this.tabs;
+        }
+        if (this.search.sortId) {
+          obj.sortId = this.search.sortId;
+        }
+        if (this.search.name) {
+          obj.name = this.search.name;
+        }
+        if (this.search.goodsName) {
+          obj.goodsName = this.search.goodsName;
+        }
+        if (this.search.sortIdandGoodsId) {
+          obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
+        }
       }
-        getProject(obj, _page, _size)
-          .then(res => {
-            this.total = res.data.data.count;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            this.listTable = res.data.data.list;
-            if(this.listTable!=undefined && this.listTable.length>0){
-              for(var i = 0 ;i<this.listTable.length ; i++){
-                this.listTable[i].num = i+1
-              }
+      getProject(obj, _page, _size)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          this.listTable = res.data.data.list;
+          if (this.listTable != undefined && this.listTable.length > 0) {
+            for (var i = 0; i < this.listTable.length; i++) {
+              this.listTable[i].num = i + 1;
             }
-            this.listLoading = false;
-          })
-          .catch(res => {
-            this.listLoading = false;
-          });
+          }
+          this.listLoading = false;
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
     },
     // 搜索
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getList(1, this.pageSize)
-      this.pageNumber = 1
-      this.listQuery.page = 1
+      this.getList(1, this.pageSize);
+      this.pageNumber = 1;
+      this.listQuery.page = 1;
     },
     handleCurrentChange(val) {
-		this.pageNumber = val;
-		var obj = {};
-		if (this.basicForm.majorSort) {
-			obj.majorSort = this.tabs;
-		}
-		if (this.search.sortId) {
-			obj.sortId = this.search.sortId;
-		}
-		if (this.search.name) {
-			obj.name = this.search.name;
-		}
-	   	if(this.search.goodsName){
-			  obj.goodsName = this.search.goodsName
-		}
-		if(this.search.sortIdandGoodsId){
-			obj.sortIdandGoodsId = this.search.sortIdandGoodsId
-		}
+      this.pageNumber = val;
+      var obj = {};
+      if (this.basicForm.majorSort) {
+        obj.majorSort = this.tabs;
+      }
+      if (this.search.sortId) {
+        obj.sortId = this.search.sortId;
+      }
+      if (this.search.name) {
+        obj.name = this.search.name;
+      }
+      if (this.search.goodsName) {
+        obj.goodsName = this.search.goodsName;
+      }
+      if (this.search.sortIdandGoodsId) {
+        obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
+      }
 
       this.listLoading = true;
-      this.getList(this.pageNumber, this.pageSize,obj)
+      this.getList(this.pageNumber, this.pageSize, obj);
     },
     handleCreate(formName) {
-      this.basicForm.sortId = ''
+      this.basicForm.sortId = "";
       this.imgNumber = 0;
-      this.tableProject({majorSort:"clean"})
-      this.alreadyArr = []
+      this.tableProject({ majorSort: "clean" });
+      this.alreadyArr = [];
       this.dialogFormVisible = true;
-      this.basicForm.name = ''
+      this.basicForm.name = "";
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
     },
     //编辑方法
     handleUpdate(row) {
-      this.resetForm()
+      this.resetForm();
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
       this.basicForm.majorSort = "clean";
-      this.picList = []
+      this.picList = [];
       this.editId = row.id;
       this.listLoading = true;
       ServerEdit({ id: this.editId })
         .then(data => {
-          if(data.data.code==1){
-              var dataUpdate = data.data.data
-              if(dataUpdate.commoditys!=undefined){
-                for(var i = 0;i<dataUpdate.commoditys.length;i++){
-                  if(dataUpdate.commoditys[i].jointGoodsCode){
-                    this.jointCode = true
-                    break;
-                  }else{
-                    this.jointCode = false
-                  }
+          if (data.data.code == 1) {
+            var dataUpdate = data.data.data;
+            if (dataUpdate.commoditys != undefined) {
+              for (var i = 0; i < dataUpdate.commoditys.length; i++) {
+                if (dataUpdate.commoditys[i].jointGoodsCode) {
+                  this.jointCode = true;
+                  break;
+                } else {
+                  this.jointCode = false;
                 }
               }
-              this.listLoading = false;
-              this.dialogFormVisible = true;   
-              var arr = data.data.data;
-              if (arr.pictures != undefined) {
-				this.picFile = arr.pictures;
-				this.picList = this.picFile
-                // this.imgNumber = arr.pictures.length;
-                // for (var i = 0; i < arr.pictures.length; i++) {
-                //   var obj = {
-                //     url:arr.pictures[i]
-                //   }
-                //   this.picList.push(arr.pictures[i]);
-				// }
-			  }
-			  if(arr.pictureDetails != undefined){
-				  this.imgText = arr.pictureDetails
-				  this.pictureDetails = this.imgText
-				  	// for(var i = 0;i<arr.pictureDetails.length; i++){
-					// var obj = {
-					// 	url:arr.pictureDetails[i]
-					// }
-				// 	this.pictureDetails.push(arr.pictureDetails[i])
-				// }
-			  }else{
-				  this.pictureDetails = ['','','','']
-			  }
-              this.tableProject({majorSort:arr.majorSort},arr.sortId)
-              this.basicForm = arr;
-              this.customArr = arr.customTags || []
-              this.alreadyArr = arr.sysTags || []
-          }else{
+            }
             this.listLoading = false;
-            return false
+            this.dialogFormVisible = true;
+            var arr = data.data.data;
+            if (arr.pictures != undefined) {
+              this.picFile = arr.pictures;
+              this.picList = this.picFile;
+              // this.imgNumber = arr.pictures.length;
+              // for (var i = 0; i < arr.pictures.length; i++) {
+              //   var obj = {
+              //     url:arr.pictures[i]
+              //   }
+              //   this.picList.push(arr.pictures[i]);
+              // }
+            }
+            if (arr.pictureDetails != undefined) {
+              this.imgText = arr.pictureDetails;
+              this.pictureDetails = this.imgText;
+              // for(var i = 0;i<arr.pictureDetails.length; i++){
+              // var obj = {
+              // 	url:arr.pictureDetails[i]
+              // }
+              // 	this.pictureDetails.push(arr.pictureDetails[i])
+              // }
+            } else {
+              this.pictureDetails = ["", "", "", ""];
+            }
+            this.tableProject({ majorSort: arr.majorSort }, arr.sortId);
+            this.basicForm = arr;
+            this.customArr = arr.customTags || [];
+            this.alreadyArr = arr.sysTags || [];
+          } else {
+            this.listLoading = false;
+            return false;
           }
         })
         .catch(error => {
           this.listLoading = false;
-          return false
+          return false;
         });
     },
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal:false,
+        closeOnClickModal: false,
         type: "warning"
       })
         .then(() => {
@@ -1280,19 +1300,19 @@ export default {
           ServerDelete(obj)
             .then(res => {
               if (res.data.code) {
-                if(res.data.code==1){
+                if (res.data.code == 1) {
                   this.$message({
                     type: "success",
                     message: res.data.data
                   });
                 }
-                if(res.data.code==3){
+                if (res.data.code == 3) {
                   this.$message({
                     type: "warning",
                     message: res.data.data
                   });
                 }
-              this.handleCurrentChange(this.listQuery.page)
+                this.handleCurrentChange(this.listQuery.page);
               } else {
                 // this.$message({
                 //   type: "error",
@@ -1301,9 +1321,9 @@ export default {
                 // return false
               }
             })
-            .catch((error) =>{
-                return false
-            })
+            .catch(error => {
+              return false;
+            });
         })
         .catch(() => {
           this.$message({
@@ -1313,27 +1333,26 @@ export default {
         });
     },
     handleClick(tab, event) {
-      this.search.sortId = ''
-	  this.search.name = ''
-	  this.search.goodsName = ''
-	  this.search.sortIdandGoodsId = ''
+      this.search.sortId = "";
+      this.search.name = "";
+      this.search.goodsName = "";
+      this.search.sortIdandGoodsId = "";
       var size = this.pageSize;
       this.pageNumber = 1;
-       Taxonomy({majorSort:tab.name})
+      Taxonomy({ majorSort: tab.name })
         .then(data => {
           this.searchSortList = data.data.data;
         })
-        .catch(error => {
-      });
+        .catch(error => {});
       this.getList(1, size);
       this.listQuery.page = 1;
     },
     //取消
     cancel(fromName) {
-      if(this.dialogStatus == "update"){
+      if (this.dialogStatus == "update") {
         this.getList(this.pageNumber, this.pageSize);
       }
-       this.dialogFormVisible = false;
+      this.dialogFormVisible = false;
     },
     //保存
     subForm(formName) {
@@ -1342,78 +1361,78 @@ export default {
         if (valid) {
           var loading = this.$loading({
             lock: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            target: document.querySelector('.tabBox ')
-          })
-          if(this.basicForm.commoditys.length<=0){
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+            target: document.querySelector(".tabBox ")
+          });
+          if (this.basicForm.commoditys.length <= 0) {
             this.$message({
-              message: '请添加商品',
+              message: "请添加商品",
               type: "error"
             });
-            return false
+            return false;
           }
-          this.btnState = true
-          var arr = []
-          var obj = Object.assign({},that.basicForm)
-              obj.pictures = this.picFile; //服务图片缩略图.
-              obj.pictureDetails = this.imgText;
-              obj.sysTags = this.labelClickArr //添加 系统标签
-			        obj.customTags = this.customArr
+          this.btnState = true;
+          var arr = [];
+          var obj = Object.assign({}, that.basicForm);
+          obj.pictures = this.picFile; //服务图片缩略图.
+          obj.pictureDetails = this.imgText;
+          obj.sysTags = this.labelClickArr; //添加 系统标签
+          obj.customTags = this.customArr;
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
-            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
-            that.basicForm.customTags = this.customArr
+            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr);
+            that.basicForm.customTags = this.customArr;
             that.basicForm.pictures = this.picFile;
-            that.basicForm.pictureDetails =  this.imgText;
+            that.basicForm.pictureDetails = this.imgText;
             serverEditPre(that.basicForm)
               .then(data => {
-                 this.btnState = false
-                if (data.data.code==1) {
+                this.btnState = false;
+                if (data.data.code == 1) {
                   this.$message({
                     message: data.data.data,
                     type: "success"
                   });
                   loading.close();
-                  this.resetForm()
+                  this.resetForm();
                   this.dialogFormVisible = false;
                   this.getList(this.pageNumber, this.pageSize);
                   this.picFile = [];
-                  this.pictureDetails = []
+                  this.pictureDetails = [];
                   this.picList = [];
-                  this.imgNumber = 0
+                  this.imgNumber = 0;
                 } else {
-                    loading.close();
-                    this.btnState = false
-                    this.imgNumber = 0
+                  loading.close();
+                  this.btnState = false;
+                  this.imgNumber = 0;
                 }
               })
               .catch(error => {
                 loading.close();
-                this.btnState = false
-                this.imgNumber = 0
+                this.btnState = false;
+                this.imgNumber = 0;
               });
           } else {
-            if("id" in obj){
-              delete obj.id
+            if ("id" in obj) {
+              delete obj.id;
             }
-            if("pictureDetail" in obj){
-              delete obj.pictureDetail
+            if ("pictureDetail" in obj) {
+              delete obj.pictureDetail;
             }
             // if("pictureDetails" in obj){
             //   delete obj.pictureDetails
-			// }
+            // }
             ServerAdd(obj)
               .then(data => {
-                this.btnState = false
+                this.btnState = false;
                 if (data.data.code) {
-                  if(data.data.code == 1){
+                  if (data.data.code == 1) {
                     this.$message({
                       message: data.data.data,
                       type: "success"
                     });
                   }
-                  if(data.data.code == 3){
+                  if (data.data.code == 3) {
                     this.$message({
                       message: data.data.data,
                       type: "warning"
@@ -1421,123 +1440,136 @@ export default {
                   }
                   loading.close();
                   this.cancel("basic");
-                  this.basicForm.majorSort = 'all';
-                  this.search.sortId = '';
-                  this.search.name ='';
-                  this.search.goodsName = ''
-                  this.search.sortIdandGoodsId = ''
-                  this.tabs = 'all';
-                  this.listQuery.page = 1
+                  this.basicForm.majorSort = "all";
+                  this.search.sortId = "";
+                  this.search.name = "";
+                  this.search.goodsName = "";
+                  this.search.sortIdandGoodsId = "";
+                  this.tabs = "all";
+                  this.listQuery.page = 1;
                   this.getList(1, this.pageSize);
                   this.picFile = [];
                   this.pictureDetails = [];
                 } else {
                   loading.close();
-                  this.btnState = false
+                  this.btnState = false;
                 }
               })
               .catch(error => {
                 loading.close();
-                this.btnState = false
+                this.btnState = false;
               });
           }
         } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
           return false;
         }
       });
     },
     resetForm(ser) {
-      if(this.$refs["goods_info"]){
-        this.$refs["goods_info"].resetFields()
-	  }
-	  if(ser=='ser'){
-		this.addCommodityFlag = true
-	  }else{
-		this.addCommodityFlag = false
-		// this.addComm = false
-	  }
-      this.goods_info.name = ''
-      this.goods_info.unit = ''
-      this.goods_info.type = ''
-      this.goods_info.price = ''
-      this.goods_info.convertHours = ''
-      this.goods_info.minPurchase = "";
-      this.goods_info.startPerNum = '';
-	  this.goods_info.cappingPerNum = ''
-    },
-    emptyingForm(){
-      if( this.$refs["goods_info"]){
-        this.$refs["goods_info"].resetFields()
+      if (this.$refs["goods_info"]) {
+        this.$refs["goods_info"].resetFields();
       }
-      this.$refs["basic"].resetFields()
-      this.jointCode = false
-    //   this.addComm = false
+      if (ser == "ser") {
+        this.addCommodityFlag = true;
+      } else {
+        this.addCommodityFlag = false;
+        // this.addComm = false
+      }
+      this.goods_info.name = "";
+      this.goods_info.unit = "";
+      this.goods_info.type = "";
+      this.goods_info.price = "";
+      this.goods_info.convertHours = "";
+      this.goods_info.minPurchase = "";
+      this.goods_info.startPerNum = "";
+      this.goods_info.cappingPerNum = "";
+    },
+    emptyingForm() {
+      if (this.$refs["goods_info"]) {
+        this.$refs["goods_info"].resetFields();
+      }
+      this.$refs["basic"].resetFields();
+      this.jointCode = false;
+      //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-	  this.picFile = ['','','',''] //清空图片
-	  this.pictureDetails = ['','','','']
-	  this.imgText =['','','','']
-      this.picList = ['','','',''] //清空图片this.alreadyArr.concat(this.labelClickArr)
-      this.alreadyArr = []
-      this.labelClickArr = []
-      this.customArr = []
+      this.picFile = ["", "", "", ""]; //清空图片
+      this.pictureDetails = ["", "", "", ""];
+      this.imgText = ["", "", "", ""];
+      this.picList = ["", "", "", ""]; //清空图片this.alreadyArr.concat(this.labelClickArr)
+      this.alreadyArr = [];
+      this.labelClickArr = [];
+      this.customArr = [];
       this.systemOptions2 = [];
       this.systemOptions3 = [];
       this.systemOptions4 = [];
     },
-    resetEmpty(txt){
-      if(txt == "ser"){
-        this.$refs["goods_info"].resetFields()
+    resetEmpty(txt) {
+      if (txt == "ser") {
+        this.$refs["goods_info"].resetFields();
         this.goods_info.minPurchase = "";
-        this.goods_info.startPerNum = '';
-        this.goods_info.cappingPerNum = ''
-      }else{
-        this.$refs["goods_info"].resetFields()
-        this.$refs["basic"].resetFields()
+        this.goods_info.startPerNum = "";
+        this.goods_info.cappingPerNum = "";
+      } else {
+        this.$refs["goods_info"].resetFields();
+        this.$refs["basic"].resetFields();
         this.goods_info.minPurchase = "";
         this.basicForm.sortNum = ""; //排序号好清空
         this.basicForm.cityCodes = []; //定向城市
         this.goods_info.minPurchase = ""; //起够数量
         this.basicForm.commoditys = []; //商品信息表格
-		this.picFile = [] //清空图片
-		this.pictureDetails = []
-        this.picList = [] //清空图片
+        this.picFile = []; //清空图片
+        this.pictureDetails = [];
+        this.picList = []; //清空图片
         this.dialogFormVisible = false;
       }
     }
   },
-  components:{
-    imgService,addCommodity
+  components: {
+    imgService,
+    addCommodity
   }
 };
 </script>
 <style>
-.selfTitle1{
-  display:inline-block;float:left;
+.selfTitle1 {
+  display: inline-block;
+  float: left;
 }
-.selfTabsaa{
-   display:inline-block;margin-top:10px;width:100px;height:30px;line-height:30px;border:1px solid #4c70e8;margin-left:10px;cursor:pointer;
+.selfTabsaa {
+  display: inline-block;
+  margin-top: 10px;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #4c70e8;
+  margin-left: 10px;
+  cursor: pointer;
 }
-.selfTabsaa .el-tooltip{
-  height:30px;
-  padding:0 5px;
+.selfTabsaa .el-tooltip {
+  height: 30px;
+  padding: 0 5px;
   /* padding:0 5px; */
 }
-.system-label{
-	border: 1px solid #bfcbd9;
+.system-label {
+  border: 1px solid #bfcbd9;
 }
-.selfTabContent{
-  float:left;
-  width:70px;
-  display:inline-block;
-  overflow:hidden;
-  text-align:center;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  border:none;
+.selfTabContent {
+  float: left;
+  width: 70px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: none;
 }
-.selfCloseSty{
-    border:none;
+.selfCloseSty {
+  border: none;
 }
 .el-radio-group {
   width: 100%;
@@ -1578,20 +1610,20 @@ export default {
 .goods_info {
   font-size: 12px;
 }
-.projectTableStyle  th > .cell {
+.projectTableStyle th > .cell {
   text-align: -webkit-center;
 }
 .projectTabel .el-table .cell,
 .projectTabel .el-table th > div {
   padding-left: 10px;
   padding-right: 10px;
-} 
-.projectTabel .el-table__row .operationTab{
-  text-align: left
 }
-.projectTabel .operationTab .cell{
- width: 165px;
- margin: 0 auto;
+.projectTabel .el-table__row .operationTab {
+  text-align: left;
+}
+.projectTabel .operationTab .cell {
+  width: 165px;
+  margin: 0 auto;
 }
 .upload_box {
   /* text-align: center; */
@@ -1617,9 +1649,9 @@ export default {
 .content-rowspan div:last-child {
   border-bottom: 0;
 }
-.tabBox .codeClean .el-radio-button__inner{
-  background-color:#eef1f6 !important;
-  color: #bbb !important; 
+.tabBox .codeClean .el-radio-button__inner {
+  background-color: #eef1f6 !important;
+  color: #bbb !important;
 }
 .add_Btn {
   width: 100px;
@@ -1635,15 +1667,15 @@ export default {
   line-height: 30px;
   width: 30px;
   height: 30px;
-  background-color: #3A5FCD;
+  background-color: #3a5fcd;
   font-weight: bolder;
   text-align: center;
 }
-.doubt{
+.doubt {
   font-size: 25px;
   vertical-align: middle;
   cursor: pointer;
-  color:#bfcbd9
+  color: #bfcbd9;
 }
 .btn_Span2 {
   width: 70px;
@@ -1660,10 +1692,10 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis; */
 }
-.branch{
-  border-bottom: 1px solid #dfe6ec
+.branch {
+  border-bottom: 1px solid #dfe6ec;
 }
-.el-table__row .cell .branch:last-child{
+.el-table__row .cell .branch:last-child {
   border-bottom: none;
 }
 .branch:nth-of-type(even) {
@@ -1696,20 +1728,20 @@ export default {
   background-color: #6d8dfc;
   color: #ffffff;
 }
-.tabLeft .el-radio-button__inner{
+.tabLeft .el-radio-button__inner {
   text-align: left;
   padding-left: 25%;
-  background: #f9f9f9
+  background: #f9f9f9;
 }
 
-.systemClose{
-  transform:scale(.7);
-  opacity: .75;
+.systemClose {
+  transform: scale(0.7);
+  opacity: 0.75;
   cursor: pointer;
   float: right;
   line-height: 30px;
   display: inline-block;
-  height:30px
+  height: 30px;
 }
 /* #diatable .el-upload__tip{
 	margin:0 0 10px 90px;
@@ -1718,11 +1750,11 @@ export default {
 	margin: 10px;
 	margin-left: 0;
 } */
-.prompt-img{
-	margin:0 0 10px 90px;
+.prompt-img {
+  margin: 0 0 10px 90px;
 }
 
-.bgWhite .el-switch.is-checked .el-switch__core{
+.bgWhite .el-switch.is-checked .el-switch__core {
   background-color: #4c70e8;
   border: 1px solid #4c70e8;
 }
@@ -1752,8 +1784,8 @@ export default {
 .el-upload .el-upload-list li .el-upload-list__item-name {
   display: none;
 }
-.senddata{
-  margin-left:10px;
+.senddata {
+  margin-left: 10px;
 }
 .tit {
   font-size: 14px;
@@ -1776,14 +1808,14 @@ export default {
 /* .bgWhite .el-popover{
   text-align: center;
 } */
-.question{
+.question {
   border-radius: 50%;
   width: 30px;
   height: 30px;
   display: inline-block;
   background: url("../../../static/icon/问号.png") no-repeat;
-  background-size:100%; 
-  vertical-align:middle;
+  background-size: 100%;
+  vertical-align: middle;
   cursor: pointer;
 }
 .upload-back::before {
@@ -1826,11 +1858,11 @@ export default {
   margin-right: 8px;
   color: red;
 }
-.upload-demo .el-upload-list__item-thumbnail{
+.upload-demo .el-upload-list__item-thumbnail {
   width: 100px;
   height: 100px;
 }
-.upload-demo .el-upload-list--picture-card .el-upload-list__item{
+.upload-demo .el-upload-list--picture-card .el-upload-list__item {
   width: 100px;
   height: 100px;
 }
@@ -1839,15 +1871,15 @@ export default {
   display: flex;
   justify-content: center;
 }
-.tabStyle .search{
-	/* width: 15%; */
-	margin-right: 0;
+.tabStyle .search {
+  /* width: 15%; */
+  margin-right: 0;
 }
-.tabStyle .el-select{
-	margin-left:1%;
+.tabStyle .el-select {
+  margin-left: 1%;
 }
-.tabStyle .el-input{
-	margin-left: 1%;
+.tabStyle .el-input {
+  margin-left: 1%;
 }
 .selfCheckBoxsday {
   width: 30px;
@@ -1861,7 +1893,7 @@ export default {
   font-size: 12px;
   cursor: pointer;
 }
-.proName{
+.proName {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1886,7 +1918,7 @@ export default {
 }
 
 hr {
-  border: .5px solid #eee
+  border: 0.5px solid #eee;
 }
 /* .image-text .el-dialog__body,
 .image-text .el-dialog__header {
@@ -1895,7 +1927,7 @@ hr {
 .image-text .el-dialog__header{
   height: 0;
 } */
-.bgWhite .el-dialog__footer{
+.bgWhite .el-dialog__footer {
   margin-top: 0;
 }
 .image-text-header {
@@ -1927,7 +1959,7 @@ hr {
   box-sizing: border-box;
   padding: 20px;
 }
-.image-text-body .img-upload .avatar-uploader-icon{
+.image-text-body .img-upload .avatar-uploader-icon {
   position: absolute;
   top: 0;
   right: 10px;
@@ -1989,62 +2021,62 @@ hr {
   height: 100%;
   width: 100%;
 }
-.imgList{
+.imgList {
   /* width: 60px;
   height: 60px; */
   margin-top: 5px;
 }
-.upload-demo .el-upload-list__item-preview{
+.upload-demo .el-upload-list__item-preview {
   display: none !important;
 }
-.el-icon-plus{
+.el-icon-plus {
   text-align: center;
   font-size: 20px;
 }
-.el-upload--picture{
+.el-upload--picture {
   width: 100%;
 }
-.el-upload-list{
+.el-upload-list {
   width: 100%;
   height: 100%;
 }
-.imgText .el-icon-plus{
+.imgText .el-icon-plus {
   position: absolute;
   top: 0;
   line-height: 44px;
   right: 15px;
   z-index: 1000;
 }
-.tableSer{
+.tableSer {
   padding: 5px 10px;
   cursor: pointer;
-  color: #6d8dfc
+  color: #6d8dfc;
 }
-.tableSer:nth-of-type(3){
-  color: red
+.tableSer:nth-of-type(3) {
+  color: red;
 }
-.details{
+.details {
   font-size: 18px;
   font-weight: 900;
   text-align: center;
   line-height: 80px;
   padding-top: 30px;
 }
-.tabRight .bottimPro .el-form-item__content{
+.tabRight .bottimPro .el-form-item__content {
   /* margin-left: 0; */
   width: 100%;
   display: flex;
-  justify-content:center;
+  justify-content: center;
 }
-.tabRight .bottimPro .el-form-item__content input:nth-child(2){
+.tabRight .bottimPro .el-form-item__content input:nth-child(2) {
   margin-left: 30px;
 }
-.custom{
+.custom {
   width: 100%;
   height: 36px;
   border: 1px solid #bfcbd9;
 }
-.custom span{
+.custom span {
   line-height: 36px;
 }
 .tech-order-btn {
@@ -2055,45 +2087,48 @@ hr {
   cursor: pointer;
   margin-left: 10px;
 }
-.labelName .el-dialog--small{
+.labelName .el-dialog--small {
   width: 30%;
 }
-.labelName .el-dialog__header,.systemLabel .el-dialog__header{
+.labelName .el-dialog__header,
+.systemLabel .el-dialog__header {
   padding: 0 0 0 20px;
   height: 45px;
   background: #f3f7f9;
-  border-bottom:1px solid #eee;
+  border-bottom: 1px solid #eee;
   font-size: 16px;
   line-height: 45px;
 }
-.labelName .el-form-item__label{
+.labelName .el-form-item__label {
   width: 80px;
   text-align: center;
 }
-.labelName .el-form-item__content{
+.labelName .el-form-item__content {
   margin-left: 90px;
 }
-.labelName .dialog-footer,.systemLabel .dialog-footer{
+.labelName .dialog-footer,
+.systemLabel .dialog-footer {
   display: flex;
   justify-content: center;
 }
-.labelName .dialog-footer input:nth-child(2),.systemLabel .dialog-footer input:nth-child(2){
+.labelName .dialog-footer input:nth-child(2),
+.systemLabel .dialog-footer input:nth-child(2) {
   margin-left: 20px;
 }
-.labelName .el-dialog__body{
+.labelName .el-dialog__body {
   padding: 30px 20px 10px 20px;
 }
-.systemLabel .el-dialog__body{
-  padding-top:0; 
+.systemLabel .el-dialog__body {
+  padding-top: 0;
 }
-.labelList{
-  width:100%;
+.labelList {
+  width: 100%;
   box-sizing: border-box;
   padding: 10px;
   border: 1px solid #bfcbd9;
   border-top: 0;
 }
-.labelList span{
+.labelList span {
   display: inline-block;
   border: 1px solid #bfcbd9;
   /* padding: 0 10px; */
@@ -2101,66 +2136,66 @@ hr {
   line-height: 20px;
   margin-right: 10px;
 }
-.labelDav .labelList span{
-  padding:0 5px;
-  line-height:30px;
+.labelDav .labelList span {
+  padding: 0 5px;
+  line-height: 30px;
 }
-.labelList span i{
+.labelList span i {
   font-size: 12px;
   margin-left: 5px;
 }
-.systemLabel ul{
+.systemLabel ul {
   width: 23%;
   float: left;
   height: 300px;
   overflow-y: auto;
-  border: 1px solid  #E8E8E8;
+  border: 1px solid #e8e8e8;
 }
-.systemLabel ul:nth-of-type(2){
-  border-left:0;
+.systemLabel ul:nth-of-type(2) {
+  border-left: 0;
 }
-.top-start{
+.top-start {
   min-width: 100px;
   text-align: center;
 }
-.systemLabel ul:nth-of-type(3){
-   border-left: 0;
+.systemLabel ul:nth-of-type(3) {
+  border-left: 0;
 }
-.systemLabel ul li{
-  width:100%;
+.systemLabel ul li {
+  width: 100%;
   padding: 0 5px;
   height: 29px;
-  border-bottom: 1px dashed  #E8E8E8;
+  border-bottom: 1px dashed #e8e8e8;
   line-height: 29px;
-  list-style: none
+  list-style: none;
 }
-.systemLabel ul li i{
+.systemLabel ul li i {
   float: right;
   line-height: 29px;
   width: 10%;
-  color: #BEBEBE
+  color: #bebebe;
 }
-.labelSystem{
+.labelSystem {
   float: left;
-  border: 1px solid #E8E8E8;
+  border: 1px solid #e8e8e8;
   width: 31%;
   height: 300px;
   border-left: 0;
 }
-.image-text-body .img-content{
+.image-text-body .img-content {
   width: 100%;
 }
-.image-text-body .image-border .img-list .img-content{
+.image-text-body .image-border .img-list .img-content {
   margin-top: 20px;
 }
-.image-text-body .img-list .img-content .layer{
+.image-text-body .img-list .img-content .layer {
   height: 50px !important;
   line-height: 50px !important;
   margin: 5px auto;
   width: 600px;
   border-radius: 2px;
 }
-.labelSystem input{
+.labelSystem input {
   background: #fff;
   padding: 0 10px 0 5px;
   float: left;
@@ -2175,48 +2210,50 @@ hr {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.activeSystem_1,.activeSystem_2,.activeSystem_3{
+.activeSystem_1,
+.activeSystem_2,
+.activeSystem_3 {
   background: #e0f1fb;
 }
-.already{
+.already {
   /* height: 50px; */
   line-height: 50px;
-  word-break:keep-all;
+  word-break: keep-all;
 }
-.alreadyUl{ 
-  width: 100%
+.alreadyUl {
+  width: 100%;
 }
-.already span{
-  border: 1px solid #E8E8E8;
+.already span {
+  border: 1px solid #e8e8e8;
   /* line-height:20px; */
   /* padding: 5px;
   margin-right: 5px; */
 }
-.already span i{
+.already span i {
   font-weight: bolder;
   margin-left: 5px;
 }
-.cursor{
-    cursor: pointer;
-    word-wrap:break-word;
-    color: #48576a
+.cursor {
+  cursor: pointer;
+  word-wrap: break-word;
+  color: #48576a;
 }
-.projectLabel{
+.projectLabel {
   cursor: pointer;
   width: 90%;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
-.labelDav .el-form-item__label{
+.labelDav .el-form-item__label {
   padding-right: 0;
 }
-.addCommidtyClass .el-dialog__body .el-table{
-	margin-top: 0;
-	margin-bottom: 20px;
+.addCommidtyClass .el-dialog__body .el-table {
+  margin-top: 0;
+  margin-bottom: 20px;
 }
-.diatable > .el-dialog--small{
+.diatable > .el-dialog--small {
   width: 75%;
 }
 </style>

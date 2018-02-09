@@ -33,55 +33,56 @@
 </template>
 
 <script>
-import {reassId} from "@/api/order";
+import { reassId } from "@/api/order";
 export default {
   name: "dispatchReass",
   data() {
     return {
-        reassList:[],
-        listLoading:false
+      reassList: [],
+      listLoading: false
+    };
+  },
+  methods: {
+    //列表获取
+    reassClick(id) {
+      this.listLoading = true;
+      var obj = {
+        orderId: id
+      };
+      reassId(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.reassList = res.data.data;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+          }
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
     }
   },
-  methods:{
-      //列表获取
-      reassClick(id){
-          this.listLoading=true;
-          var obj={
-              orderId:id
-          }
-          reassId(obj).then(res=>{
-            if(res.data.code === 1){
-                this.reassList=res.data.data;
-                this.listLoading=false;
-            }else{
-                this.listLoading=false;
-            }              
-          }).catch(res=>{
-                this.listLoading=false;
-          })
-      }
-  },
-  mounted(){
-    var orderId=window.localStorage.getItem("orderId1")
-    if(this.$route.query.id == undefined){
-      this.reassClick(orderId)
-    }else{
-      this.reassClick(this.$route.query.id)
-    }      
+  mounted() {
+    var orderId = window.localStorage.getItem("orderId1");
+    if (this.$route.query.id == undefined) {
+      this.reassClick(orderId);
+    } else {
+      this.reassClick(this.$route.query.id);
+    }
   }
 };
 </script>
 
 <style spend>
-    .tableWarp{
-        width: 100%;
-        background: #ffffff;
-        padding: 20px 30px;
-    }
-    .head-image{
-        width: 50px;
-        height: 50px;
-        margin-top: 5px;
-    }
-    
+.tableWarp {
+  width: 100%;
+  background: #ffffff;
+  padding: 20px 30px;
+}
+.head-image {
+  width: 50px;
+  height: 50px;
+  margin-top: 5px;
+}
 </style>

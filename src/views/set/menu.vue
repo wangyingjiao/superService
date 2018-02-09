@@ -233,7 +233,7 @@ export default {
         parentIds: "",
         name: "",
         href: "",
-        sort:"",
+        sort: "",
         permission: "",
         isShow: "",
         type: "",
@@ -257,7 +257,12 @@ export default {
           { min: 2, max: 15, message: "请输入2-15位的权限标识" }
         ],
         sort: [
-          {required:true, type:'number' ,message:"请输入排序号，排序号越大越靠后",trigger:"blur"}
+          {
+            required: true,
+            type: "number",
+            message: "请输入排序号，排序号越大越靠后",
+            trigger: "blur"
+          }
         ]
       },
       tableKey: 0,
@@ -290,7 +295,7 @@ export default {
       console.log(row.type);
       this.temp.isShow = "1";
 
-      if (row.type != 'click') {
+      if (row.type != "click") {
         this.typeShow = true;
         this.temp.type = row.type;
       } else {
@@ -373,7 +378,7 @@ export default {
         parentIds: this.temp.parentIds,
         name: this.temp.name,
         permission: this.temp.permission,
-        sort:this.temp.sort,
+        sort: this.temp.sort,
         href: this.temp.href,
         icon: this.temp.icon,
         isShow: this.temp.isShow,
@@ -403,6 +408,10 @@ export default {
               this.typeShow = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -414,7 +423,7 @@ export default {
         parentIds: this.temp.parentIds,
         name: this.temp.name,
         permission: this.temp.permission,
-        sort:this.temp.sort,
+        sort: this.temp.sort,
         href: this.temp.href,
         icon: this.temp.icon,
         isShow: this.temp.isShow,
@@ -443,6 +452,10 @@ export default {
               this.typeShow = false;
             });
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -465,7 +478,7 @@ export default {
         href: "",
         permission: "",
         isShow: "",
-        type:"",
+        type: "",
         icon: ""
       };
     }

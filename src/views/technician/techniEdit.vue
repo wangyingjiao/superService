@@ -575,16 +575,16 @@ var loading;
 export default {
   data() {
     //身份证
-    var TECHIDCARD = (rule,value,callback) =>{
-      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
-      if(value){
-        if(reg.test(value)){
-          callback()
-        }else{
-          callback(new Error('身份证号格式错误'))
+    var TECHIDCARD = (rule, value, callback) => {
+      var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (value) {
+        if (reg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("身份证号格式错误"));
         }
-      }else{
-        callback(new Error('请输入身份证号'))
+      } else {
+        callback(new Error("请输入身份证号"));
       }
     };
     //手机
@@ -617,75 +617,83 @@ export default {
 
     //现住地址
     var SKILLIDS = (rule, value, callback) => {
-      if (value!=undefined && value.length) {
+      if (value != undefined && value.length) {
         callback();
       } else {
         callback(new Error("请选择技能"));
       }
     };
     //邮箱
-    var EMAIL = (rule,value,callback)=>{
+    var EMAIL = (rule, value, callback) => {
       var reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
-      if(value){
-        if(value.length>=6 && value.length<=30){
-          if(reg.test(value)){
-            callback()
-          }else{
-            callback(new Error('请输入0-30位的邮箱'))
+      if (value) {
+        if (value.length >= 6 && value.length <= 30) {
+          if (reg.test(value)) {
+            callback();
+          } else {
+            callback(new Error("请输入0-30位的邮箱"));
           }
-        }else{
-          callback(new Error('请输入0-30位的邮箱'))
+        } else {
+          callback(new Error("请输入0-30位的邮箱"));
         }
-      }else{
-        callback()
+      } else {
+        callback();
       }
-    }
+    };
     //家庭成员手机号
-    var MEMBERPHONE = (rule,value,callback)=>{
-      if(value){
+    var MEMBERPHONE = (rule, value, callback) => {
+      if (value) {
         if (!/^1[34578]\d{9}$/.test(value)) {
-            callback(new Error('请输入正确的手机号'))
-        }else{
-          callback()
+          callback(new Error("请输入正确的手机号"));
+        } else {
+          callback();
         }
-      }else{
-        callback()
+      } else {
+        callback();
       }
-    }
+    };
     //工作时间
-    var WORKTIMES = (rule,value,callback) =>{
-      if(this.perServer.workTimes != undefined && this.perServer.workTimes.length>0){
-        callback()
-      }else{
-        callback(new Error('请添加工作时间'))
+    var WORKTIMES = (rule, value, callback) => {
+      if (
+        this.perServer.workTimes != undefined &&
+        this.perServer.workTimes.length > 0
+      ) {
+        callback();
+      } else {
+        callback(new Error("请添加工作时间"));
       }
-    }
+    };
     //详细地址
-    var ADDRESS = (rule,value,callback) =>{
-      if(value){
-        if(value.length>=6 && value.length<=100){
-          callback()
-        }else{
-          callback(new Error('请输入6到100位的详细地址'))
+    var ADDRESS = (rule, value, callback) => {
+      if (value) {
+        if (value.length >= 6 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入6到100位的详细地址"));
         }
-      }else{
-        callback(new Error('请输入详细地址'))
+      } else {
+        callback(new Error("请输入详细地址"));
       }
-    }
+    };
 
     return {
-      roomSelNum:[],
+      roomSelNum: [],
       techniEditId: "",
       roomSel1Arr: [],
       //其他信息
-      otherInfo:{
-        jobPic:'',
-        lifePic:'',
-        remark:''
+      otherInfo: {
+        jobPic: "",
+        lifePic: "",
+        remark: ""
       },
-      otherInfoRuls:{
-        remark:[
-          { min: 2, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+      otherInfoRuls: {
+        remark: [
+          {
+            min: 2,
+            max: 200,
+            message: "长度在 1 到 200 个字符",
+            trigger: "blur"
+          }
         ]
       },
       perFamily: {
@@ -696,21 +704,30 @@ export default {
         memberJob: ""
       },
       rulesFamily: {
-        relation: [{ required: true, message: "请选择关系", trigger: "change" }],
+        relation: [
+          { required: true, message: "请选择关系", trigger: "change" }
+        ],
         memberName: [
           { required: true, message: "请输入名字", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
-        memberPhone:[
-          {validator:MEMBERPHONE,trigger:'blur'}
+        memberPhone: [{ validator: MEMBERPHONE, trigger: "blur" }],
+        memberCompany: [
+          {
+            min: 0,
+            max: 50,
+            message: "请输入0-50位的单位名称",
+            trigger: "blur"
+          }
         ],
-        memberCompany:[
-          { min: 0, max: 50, message: "请输入0-50位的单位名称", trigger: "blur"}
-        ],
-        memberJob:[
-          {min: 2, max: 50, message: "请输入0-50位的职务名称", trigger: "blur"}
+        memberJob: [
+          {
+            min: 2,
+            max: 50,
+            message: "请输入0-50位的职务名称",
+            trigger: "blur"
+          }
         ]
-
       },
       //补充个人资料
       supplement: {
@@ -725,13 +742,16 @@ export default {
         description: ""
       },
       //补充个人治疗邮箱
-      ruleSupp:{
-        email:[
-          {validator:EMAIL,trigger:"blur"}
-        ],
-        description:[
+      ruleSupp: {
+        email: [{ validator: EMAIL, trigger: "blur" }],
+        description: [
           { message: "请输入名字", trigger: "blur" },
-          { min: 2, max: 200, message: "长度在 1 到 200 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 200,
+            message: "长度在 1 到 200 个字符",
+            trigger: "blur"
+          }
         ]
       },
       // 个人资料
@@ -746,10 +766,10 @@ export default {
         area: [],
         address: "",
         idCardPicBefor: "",
-        idCardPicAfter:'',
+        idCardPicAfter: "",
         headPic: "",
-        status:'',
-        nation:''
+        status: "",
+        nation: ""
       },
       rulesPerEdit: {
         name: [
@@ -764,12 +784,8 @@ export default {
           { required: true, validator: BIRTHDATE, trigger: "change" }
         ],
         area: [{ required: true, validator: AREA, trigger: "change" }],
-        address:[
-          {required:true,validator:ADDRESS,trigger:'blur'}
-        ],
-        headPic:[
-          {required:true,message:'请选择头像',trigger:'blur'}
-        ]
+        address: [{ required: true, validator: ADDRESS, trigger: "blur" }],
+        headPic: [{ required: true, message: "请选择头像", trigger: "blur" }]
       },
       //服务信息
       perServer: {
@@ -779,18 +795,26 @@ export default {
         jobStatus: "",
         workTime: "",
         skillIds: "",
-        workTimes:[]
+        workTimes: []
       },
       rulesServer: {
         stationCityCode: [
           { required: true, message: "请选择城市", trigger: "change" }
         ],
-        jobNature: [{ required: true, message: "请选择岗位性质", trigger: "change" }],
-        stationId: [{ required: true, message: "请选择服务站", trigger: "change" }],
-        jobStatus: [{ required: true, message: "请选择岗位状态", trigger: "change" }],
-        workTime: [{ required: true, message: "请选择工作年限", trigger: "change" }],
+        jobNature: [
+          { required: true, message: "请选择岗位性质", trigger: "change" }
+        ],
+        stationId: [
+          { required: true, message: "请选择服务站", trigger: "change" }
+        ],
+        jobStatus: [
+          { required: true, message: "请选择岗位状态", trigger: "change" }
+        ],
+        workTime: [
+          { required: true, message: "请选择工作年限", trigger: "change" }
+        ],
         skillIds: [{ required: true, validator: SKILLIDS, trigger: "change" }],
-        workTimes:[{required:true,validator:WORKTIMES, trigger: "change"}]
+        workTimes: [{ required: true, validator: WORKTIMES, trigger: "change" }]
       },
       ethnics: [],
       strong: {},
@@ -798,7 +822,7 @@ export default {
       place: [],
       caty: [],
       sexDay: [
-         {
+        {
           name: "星期一",
           id: 1
         },
@@ -847,7 +871,7 @@ export default {
       value4: "",
       startTime: "",
       endTime: "",
-      disbArr:[],
+      disbArr: [],
       startTimes: "",
       endTimes: "",
       techName: "",
@@ -881,84 +905,82 @@ export default {
         **
         */
 
-
-        this.personalEDit.name = val.name
-        this.personalEDit.idCard = val.idCard
-        this.personalEDit.phone = val.phone
+        this.personalEDit.name = val.name;
+        this.personalEDit.idCard = val.idCard;
+        this.personalEDit.phone = val.phone;
         this.personalEDit.area = [val.provinceCode, val.cityCode, val.areaCode];
-        this.personalEDit.sex = val.sex
-        this.personalEDit.address = val.address
-        this.personalEDit.nation = val.nation || ''
+        this.personalEDit.sex = val.sex;
+        this.personalEDit.address = val.address;
+        this.personalEDit.nation = val.nation || "";
         this.personalEDit.techBirthDate = val.birthDate;
-        this.personalEDit.status = val.status
-        this.personalEDit.headPic = val.headPic
-        this.personalEDit.idCardPicBefor = val.idCardPicBefor || ''
-        this.personalEDit.idCardPicAfter = val.idCardPicAfter || ''
-        this.personalEDit.birthDate = val.birthDate
+        this.personalEDit.status = val.status;
+        this.personalEDit.headPic = val.headPic;
+        this.personalEDit.idCardPicBefor = val.idCardPicBefor || "";
+        this.personalEDit.idCardPicAfter = val.idCardPicAfter || "";
+        this.personalEDit.birthDate = val.birthDate;
 
         /*
         **其他信息
         **
         */
-        
-        this.otherInfo.jobPic = val.jobPic
-        this.otherInfo.lifePic = val.lifePic
-        this.otherInfo.remark = val.remark
 
-
+        this.otherInfo.jobPic = val.jobPic;
+        this.otherInfo.lifePic = val.lifePic;
+        this.otherInfo.remark = val.remark;
 
         /*
         ** 服务信息
         ** 
         **/
 
-
-        this.perServer.stationId = val.stationId
-        this.perServer.jobNature = val.jobNature
-        this.perServer.jobStatus = val.jobStatus
-        this.perServer.skillIds = val.skillIds || []
-        this.perServer.workTime = val.workTime+''
-        this.perServer.workTimes = val.workTimes
+        this.perServer.stationId = val.stationId;
+        this.perServer.jobNature = val.jobNature;
+        this.perServer.jobStatus = val.jobStatus;
+        this.perServer.skillIds = val.skillIds || [];
+        this.perServer.workTime = val.workTime + "";
+        this.perServer.workTimes = val.workTimes;
         // //工作时间默认选中
         var work = this.perServer.workTimes || [],
-            i,j,weeks_i,num;
-        if(work.length>0){
-          for(i = 0 ; i<work.length;i++){
-            if(work[i].endTimeStr == "23:59"){
-              work[i].endTimeStr = "24:00"
+          i,
+          j,
+          weeks_i,
+          num;
+        if (work.length > 0) {
+          for (i = 0; i < work.length; i++) {
+            if (work[i].endTimeStr == "23:59") {
+              work[i].endTimeStr = "24:00";
             }
-            weeks_i = work[i].weeks
-            for( j =0 ; j<weeks_i.length ; j++){
-              num = weeks_i[j].id*1
-              if(num == 1){
-                weeks_i[j].name = "星期一"
-              }else if(num == 2){
-                weeks_i[j].name = "星期二"
-              }else if(num == 3){
-                weeks_i[j].name = "星期三"
-              }else if(num == 4){
-                weeks_i[j].name = "星期四"
-              }else if(num == 5){
-                weeks_i[j].name = "星期五"
-              }else if(num == 6){
-                weeks_i[j].name = "星期六"
-              }else{
-                weeks_i[j].name = "星期日"
+            weeks_i = work[i].weeks;
+            for (j = 0; j < weeks_i.length; j++) {
+              num = weeks_i[j].id * 1;
+              if (num == 1) {
+                weeks_i[j].name = "星期一";
+              } else if (num == 2) {
+                weeks_i[j].name = "星期二";
+              } else if (num == 3) {
+                weeks_i[j].name = "星期三";
+              } else if (num == 4) {
+                weeks_i[j].name = "星期四";
+              } else if (num == 5) {
+                weeks_i[j].name = "星期五";
+              } else if (num == 6) {
+                weeks_i[j].name = "星期六";
+              } else {
+                weeks_i[j].name = "星期日";
               }
-              this.disbArr.push(weeks_i[j].id*1)
-            } 
+              this.disbArr.push(weeks_i[j].id * 1);
+            }
           }
         }
-
 
         /*
         ** 补充个人信息
         ** 无法直接给supplement复制val,会无法重新复制
         **/
-        this.supplement.weight = val.weight? val.weight+'' : "";
+        this.supplement.weight = val.weight ? val.weight + "" : "";
         this.supplement.email = val.email || "";
         this.supplement.education = val.education || "";
-        this.supplement.height = val.height? val.height+'' : "";
+        this.supplement.height = val.height ? val.height + "" : "";
         this.supplement.marryStatus = val.marryStatus || "";
         this.supplement.nativeProvinceCode = val.nativeProvinceCode || "";
         this.value1 = val.inJobTime || "";
@@ -968,10 +990,10 @@ export default {
         this.familyList = val.familyMembers ? [].concat(val.familyMembers) : [];
       },
       deep: true
-	},
+    }
   },
   props: [
-	"listquer",
+    "listquer",
     "areaOptions",
     "technicianData",
     "sex",
@@ -988,38 +1010,42 @@ export default {
     "startend"
   ],
   methods: {
-    endEmpty(){
-      if(this.startTime != this.startend.start){
-         this.endTime = ''
+    endEmpty() {
+      if (this.startTime != this.startend.start) {
+        this.endTime = "";
       }
     },
     //全职兼职切换
-    jobStatusTable(){
-      if(this.perServer.jobNature == 'part_time'){
-        this.perServer.workTimes = []
-        this.roomSel1Arr = []
-        this.roomSelNum = []
-        this.disbArr = []
+    jobStatusTable() {
+      if (this.perServer.jobNature == "part_time") {
+        this.perServer.workTimes = [];
+        this.roomSel1Arr = [];
+        this.roomSelNum = [];
+        this.disbArr = [];
       }
     },
     //图片格式限制
-    beforeAvatarUpload(file){
-       if(file.type=='image/jpg' || file.type=='image/png' || file.type=='image/jpeg'){
-        }else{
-        this.$message.error('请上传正确的图片格式');
-        return false
+    beforeAvatarUpload(file) {
+      if (
+        file.type == "image/jpg" ||
+        file.type == "image/png" ||
+        file.type == "image/jpeg"
+      ) {
+      } else {
+        this.$message.error("请上传正确的图片格式");
+        return false;
       }
     },
     //关闭弹窗
-    closeThe(){
-        this.flagso = false
-        this.familyTable('perFamily')
-        this.$emit("dialogvisibleedit")
-        this.$emit("getlist",this.listquer.page)
-        this.familyFlag = false
-        this.$refs['personalEDit'].resetFields()
-        this.$refs['perServer'].resetFields()
-        this.isB = false
+    closeThe() {
+      this.flagso = false;
+      this.familyTable("perFamily");
+      this.$emit("dialogvisibleedit");
+      this.$emit("getlist", this.listquer.page);
+      this.familyFlag = false;
+      this.$refs["personalEDit"].resetFields();
+      this.$refs["perServer"].resetFields();
+      this.isB = false;
     },
     //其他信息保存
     sumitFormSub(formName){
@@ -1032,8 +1058,9 @@ export default {
             target: document.querySelector('.tabBox ')
           })
           this.otherInfo.id = this.techniEditId;
-          technicianOther(this.otherInfo).then(data=>{
-           if(data.data.code==1){
+          technicianOther(this.otherInfo)
+            .then(data => {
+              if (data.data.code == 1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1050,11 +1077,11 @@ export default {
         }else{
           return false
         }
-      })
+      });
     },
     //上传图片
-    picUpload(file,flag){
-      var type = file.file.name.split('.')
+    picUpload(file, flag) {
+      var type = file.file.name.split(".");
       let pro = new Promise((resolve, rej) => {
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
@@ -1068,18 +1095,28 @@ export default {
         }
       });
       var that = this;
-      pro.then(success=>{
+      pro.then(success => {
         var data = success;
         var ossData = new FormData();
         var date = new Date();
         var y = date.getFullYear();
-        var m = date.getMonth()+1;
+        var m = date.getMonth() + 1;
         var d = date.getDate();
-        var s = date.getTime()
-        ossData.append("name",file.file.name);
+        var s = date.getTime();
+        ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + '.'+type[type.length-1]
+          data.dir +
+            "/" +
+            y +
+            "/" +
+            m +
+            "/" +
+            d +
+            "/" +
+            s +
+            "." +
+            type[type.length - 1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1087,41 +1124,41 @@ export default {
         ossData.append("signature", data.signature);
         // 添加文件
         ossData.append("file", file.file, file.file.name);
-		
-		that.$http
-			.post(data.host,ossData,{
-				headers:{
-					"Content-Type": "multipart/form-data; boundary={boundary}"
-				}
-			})
-			.then(res=>{
-				if(flag == "head"){
-					this.personalEDit.headPic = ossData.get("key")
-				}else if(flag == "life"){
-					this.otherInfo.lifePic = ossData.get("key")
-				}else if(flag == 'cert'){
-					this.otherInfo.jobPic = ossData.get("key")
-				}else if(flag == 'after'){
-          this.personalEDit.idCardPicAfter = ossData.get("key")
-        }else{
-					this.personalEDit.idCardPicBefor = ossData.get("key")
-				}
-      })
-      .catch(error=>{
-        if(flag == "head"){
-					this.personalEDit.headPic = ossData.get("key")
-				}else if(flag == "life"){
-					this.otherInfo.lifePic = ossData.get("key")
-				}else if(flag == 'cert'){
-					this.otherInfo.jobPic = ossData.get("key")
-				}else if(flag == 'after'){
-          this.personalEDit.idCardPicAfter = ossData.get("key")
-        }else{
-					this.personalEDit.idCardPicBefor = ossData.get("key")
-        }
-        return false
-      })
-      })
+
+        that.$http
+          .post(data.host, ossData, {
+            headers: {
+              "Content-Type": "multipart/form-data; boundary={boundary}"
+            }
+          })
+          .then(res => {
+            if (flag == "head") {
+              this.personalEDit.headPic = ossData.get("key");
+            } else if (flag == "life") {
+              this.otherInfo.lifePic = ossData.get("key");
+            } else if (flag == "cert") {
+              this.otherInfo.jobPic = ossData.get("key");
+            } else if (flag == "after") {
+              this.personalEDit.idCardPicAfter = ossData.get("key");
+            } else {
+              this.personalEDit.idCardPicBefor = ossData.get("key");
+            }
+          })
+          .catch(error => {
+            if (flag == "head") {
+              this.personalEDit.headPic = ossData.get("key");
+            } else if (flag == "life") {
+              this.otherInfo.lifePic = ossData.get("key");
+            } else if (flag == "cert") {
+              this.otherInfo.jobPic = ossData.get("key");
+            } else if (flag == "after") {
+              this.personalEDit.idCardPicAfter = ossData.get("key");
+            } else {
+              this.personalEDit.idCardPicBefor = ossData.get("key");
+            }
+            return false;
+          });
+      });
     },
     familyTable(formName) {
       this.$refs[formName].resetFields();
@@ -1166,16 +1203,24 @@ export default {
               this.$message.error('保存失败')
               return false
             })
-        }else{
-          return false
+            .catch(error => {
+              this.$message.error("保存失败");
+              return false;
+            });
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
-      })
+      });
     },
     //提交信息
-    technicianEdit(obj){
+    technicianEdit(obj) {
       technicianEdit(obj)
         .then(data => {
-          if (data.data.code==1) {
+          if (data.data.code == 1) {
             this.$message({
               message: data.data.data,
               type: "success"
@@ -1196,21 +1241,20 @@ export default {
         .then(data => {
           this.servery = data.data.data;
         })
-        .catch(error => {
-        });
+        .catch(error => {});
     },
 
     //工作时间删除
-    deletes(item,index) {
-      this.disbArr = []
+    deletes(item, index) {
+      this.disbArr = [];
       // this.roomSelNum = []
-      var arr = [].concat(this.perServer.workTimes)
-      arr.splice(index,1)
-      this.perServer.workTimes = arr
+      var arr = [].concat(this.perServer.workTimes);
+      arr.splice(index, 1);
+      this.perServer.workTimes = arr;
 
-      for(var i =0 ; i<arr.length ; i++){
-        for(var j =0 ; j<arr[i].weeks.length ; j++){
-          this.disbArr.push(arr[i].weeks[j].id*1)
+      for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].weeks.length; j++) {
+          this.disbArr.push(arr[i].weeks[j].id * 1);
         }
       }
     },
@@ -1241,8 +1285,12 @@ export default {
           obj.idCardPicAfter = _personalEDit.idCardPicAfter;
           obj.headPic = _personalEDit.headPic;
           obj.status = _personalEDit.status;
-          this.technicianEdit(obj)
+          this.technicianEdit(obj);
         } else {
+          this.$message({
+            type: "error",
+            message: "填写的信息不符合要求"
+          });
           return false;
         }
       });
@@ -1293,10 +1341,14 @@ export default {
             return false
           })
           // this.technicianEdit(obj)
-        }else{
-          return false
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
-      })
+      });
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
@@ -1314,9 +1366,8 @@ export default {
               message: "删除成功",
               type: "success"
             });
-            this.familyFlag = false
+            this.familyFlag = false;
           } else {
-           
           }
         })
         .catch(error => {
@@ -1348,54 +1399,57 @@ export default {
       }
     },
     roomSel1(item) {
-      if(this.roomSelNum.indexOf(item.id) == -1){
-        this.roomSelNum.push(item.id)
-        this.roomSel1Arr.push(item)
-      }else{
-        this.remove(this.roomSelNum,this.roomSel1Arr,item.id)
+      if (this.roomSelNum.indexOf(item.id) == -1) {
+        this.roomSelNum.push(item.id);
+        this.roomSel1Arr.push(item);
+      } else {
+        this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
       }
     },
     //排序
-    by(property){
-      return function(obj1,obj2){
-          var value1 = obj1[property];
-          var value2 = obj2[property];
-          return value1 - value2;     // 升序
-      }
+    by(property) {
+      return function(obj1, obj2) {
+        var value1 = obj1[property];
+        var value2 = obj2[property];
+        return value1 - value2; // 升序
+      };
     },
     techClick() {
-      var c1 = Date.parse('2008-08-08 '+this.startTime);
-      var c2 = Date.parse('2008-08-08 '+this.endTime);
-      if(this.startTime && this.endTime && this.roomSel1Arr.length>0){
-        if(c2>c1){
-            var obj = {};
-            var arr = []
-            obj.startTimeStr = this.startTime
-            obj.endTimeStr = this.endTime
-            this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"))
-            obj.weeks = [].concat(this.roomSel1Arr);
-            for(var i = 0; i<obj.weeks.length; i++){
-              this.disbArr.push(obj.weeks[i].id)
-            }
-            arr.push(obj)
-            if(this.perServer.workTimes!=undefined&&this.perServer.workTimes.length>0){
-              this.perServer.workTimes = this.perServer.workTimes.concat(arr)
-            }else{
-              this.perServer.workTimes = [].concat(arr)
-            }
-            this.isB = false;
-            this.startTime = ''
-            this.endTime = ''
-        }else{
-           this.$message({
-              type: "warning",
-              message: "结束时间不能小于开始时间"
-            });
-            return false
+      var c1 = Date.parse("2008-08-08 " + this.startTime);
+      var c2 = Date.parse("2008-08-08 " + this.endTime);
+      if (this.startTime && this.endTime && this.roomSel1Arr.length > 0) {
+        if (c2 > c1) {
+          var obj = {};
+          var arr = [];
+          obj.startTimeStr = this.startTime;
+          obj.endTimeStr = this.endTime;
+          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
+          obj.weeks = [].concat(this.roomSel1Arr);
+          for (var i = 0; i < obj.weeks.length; i++) {
+            this.disbArr.push(obj.weeks[i].id);
+          }
+          arr.push(obj);
+          if (
+            this.perServer.workTimes != undefined &&
+            this.perServer.workTimes.length > 0
+          ) {
+            this.perServer.workTimes = this.perServer.workTimes.concat(arr);
+          } else {
+            this.perServer.workTimes = [].concat(arr);
+          }
+          this.isB = false;
+          this.startTime = "";
+          this.endTime = "";
+        } else {
+          this.$message({
+            type: "warning",
+            message: "结束时间不能小于开始时间"
+          });
+          return false;
         }
-      }else{
-          this.$message.error("请选择日期、时段")
-          return false
+      } else {
+        this.$message.error("请选择日期、时段");
+        return false;
       }
 
       if (this.disbArr.length > 0) {
@@ -1405,7 +1459,6 @@ export default {
           }
         });
       }
-
     },
     roomSel2(index, key) {
       this.supplement.jobLevel = key;
@@ -1418,24 +1471,24 @@ export default {
     // 添加时间
     addtime() {
       this.isB = true;
-      this.startTime = this.startend.start
-      this.endTime = this.startend.end
+      this.startTime = this.startend.start;
+      this.endTime = this.startend.end;
     },
     addtimes() {
       this.isB = false;
     },
     addtimeno() {
-      this.roomSel1Arr = []
-      this.roomSelNum = []
+      this.roomSel1Arr = [];
+      this.roomSelNum = [];
       this.isB = false;
     },
     //家庭成员
     savrTable(formName) {
       var arr = [];
       var obj = Object.assign({}, this.perFamily);
-      if(!this.familyFlag){
-        if(obj.id){
-          delete obj.id
+      if (!this.familyFlag) {
+        if (obj.id) {
+          delete obj.id;
         }
       }
       arr.push(obj);
@@ -1449,7 +1502,7 @@ export default {
           })
           familyAdd({ id: this.techniEditId, familyMembers: arr })
             .then(data => {
-              if (data.data.code==1) {
+              if (data.data.code == 1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1468,17 +1521,21 @@ export default {
               return false;
             });
         } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
           return false;
         }
       });
     },
     dateChange(val) {
       this.personalEDit.birthDate = val;
-    },
+    }
   },
   mounted() {
-    this.startTime = this.startend.start
-    this.endTime = this.startend.end
+    this.startTime = this.startend.start;
+    this.endTime = this.startend.end;
     getTech().then(res => {
       this.ethnics = res.data;
       this.ethnic = res.data[32].label;
@@ -1492,24 +1549,24 @@ export default {
       this.heights = res.data[18].value;
     });
   },
-  computed:{
-    sign(){
+  computed: {
+    sign() {
       return getSign();
     },
-    pickerOptions0(){
-          var data = new Date();
-          var year = data.getFullYear();
-          var month = data.getMonth() + 1;
-          var day = data.getDate();
-          var str = year+','+month+','+day
-          var time1 = Date.parse(new Date('1950,1,1'))
-          var time2 = Date.parse(new Date(str))
-          return {
-            disabledDate(time){
-              return time.getTime() <time1 || time.getTime() > time2
-            }
-          }
-      },
+    pickerOptions0() {
+      var data = new Date();
+      var year = data.getFullYear();
+      var month = data.getMonth() + 1;
+      var day = data.getDate();
+      var str = year + "," + month + "," + day;
+      var time1 = Date.parse(new Date("1950,1,1"));
+      var time2 = Date.parse(new Date(str));
+      return {
+        disabledDate(time) {
+          return time.getTime() < time1 || time.getTime() > time2;
+        }
+      };
+    }
   }
 };
 </script>
@@ -1520,8 +1577,8 @@ export default {
   padding: 0;
 }
 
-.tech-section-lage .el-form-item__content{
-	line-height: 20px;
+.tech-section-lage .el-form-item__content {
+  line-height: 20px;
 }
 .add_Btn {
   width: 100px;
@@ -1560,11 +1617,10 @@ export default {
   min-width: 60px;
 }
 @media screen and (min-width: 1200px) {
-    .tech-btn {
-        width: 80px;
-    }
+  .tech-btn {
+    width: 80px;
+  }
 }
-
 
 .tech-btn-right {
   margin-left: 300px;
@@ -1573,7 +1629,7 @@ export default {
 .tech-section {
   /* margin: 20px; */
 }
-.perServer{
+.perServer {
   margin-top: 10px;
 }
 
@@ -1586,7 +1642,7 @@ export default {
 /* .tech-section-ul {
   margin: 20px 0;
   display: flex; */
-  /* justify-content: space-between; */
+/* justify-content: space-between; */
 /* } */
 /* 
 .tech-table {
@@ -1627,26 +1683,28 @@ export default {
   margin: 0px;
   padding: 0px;
 }
-.tech-section-lage .el-dialog__footer{
+.tech-section-lage .el-dialog__footer {
   padding: 20px 0;
 }
-.perTech{
+.perTech {
   border-bottom: 20px solid #f3f1f1;
 }
-.perTech .tech-ul{border-bottom: none;}
+.perTech .tech-ul {
+  border-bottom: none;
+}
 
 .tech-section-lage > div:nth-of-type(1) {
   padding: 0px 20px 0 20px;
   font-size: 14;
   font-weight: 700;
 }
-.tech-order-jn-sons .tech-dir{
+.tech-order-jn-sons .tech-dir {
   border: 1px solid #a7a7a7;
   background: url("../../../static/icon/eee.png") no-repeat;
   background-size: 15px 15px;
   background-position: bottom right;
 }
-.tech-edit .btn_Span1{
+.tech-edit .btn_Span1 {
   font-size: 20px;
   line-height: 30px;
 }
@@ -1696,7 +1754,7 @@ export default {
   width: 100px;
 }
 
-.remarkImg{
+.remarkImg {
   /* width: 100px;
   height: 100px; */
   margin-top: 10px;
@@ -1711,11 +1769,11 @@ export default {
   font-size: 16px;
   padding: 5px;
 }
-.tech-service{
+.tech-service {
   border-bottom: 0;
 }
 
-.avatarBack{
+.avatarBack {
   /* position: absolute;
   left: 450px; */
   margin-left: 200px;
@@ -1734,7 +1792,7 @@ export default {
   border: 1px solid #4c70e8;
 }
 
-.seize .el-form-item__content{
+.seize .el-form-item__content {
   line-height: 38px;
 }
 
@@ -1751,10 +1809,10 @@ export default {
   border: 1px solid red;
   /* margin-left: 40px; */
 }
-.weekDate+.serverPres .perServer{
+.weekDate + .serverPres .perServer {
   margin-top: 0px;
 }
-.workHours-time+.serverPres{
+.workHours-time + .serverPres {
   margin-top: 20px;
 }
 
@@ -1762,7 +1820,7 @@ export default {
   border-radius: 0px;
 }
 
-.tech-edit .avatar-uploader .el-upload{
+.tech-edit .avatar-uploader .el-upload {
   border: none;
   border-radius: 0;
   width: 100px;
@@ -1785,12 +1843,12 @@ export default {
   -webkit-animation: show 1s;
   -o-animation: show 1s;
 } */
-.avatar-header .el-upload--text{
+.avatar-header .el-upload--text {
   width: 120px;
   height: 120px;
   overflow: hidden;
 }
-.avatar-header .header-img{
+.avatar-header .header-img {
   /* width: 120px;
   height: 120px;  */
 }
@@ -1823,13 +1881,13 @@ export default {
   margin: 20px;
 }
 
-.idBoxEdit{
+.idBoxEdit {
   overflow: hidden;
 }
-.idBoxEdit .el-form-item{
+.idBoxEdit .el-form-item {
   float: left;
 }
-.idBoxEdit>.avatar-uploader{
+.idBoxEdit > .avatar-uploader {
   margin-left: 20px;
   float: left;
 }
@@ -1883,14 +1941,14 @@ export default {
   cursor: pointer;
   margin-left: 10px;
 }
-.startTime{
-  margin-top:10px;
+.startTime {
+  margin-top: 10px;
 }
 
 .btn_Span1 {
   width: 30px;
   height: 30px;
-  background-color: #3A5FCD;
+  background-color: #3a5fcd;
   font-weight: bolder;
   text-align: center;
 }
@@ -1899,8 +1957,8 @@ export default {
   height: 30px;
   text-align: center;
 }
-.startTime .el-input__inner{
-    border: 1px solid #bfcbd9 !important;
+.startTime .el-input__inner {
+  border: 1px solid #bfcbd9 !important;
 }
 
 .tech-order-jn {
@@ -2034,8 +2092,8 @@ export default {
   cursor: pointer;
 }
 
-.level .selfCheckBox:nth-of-type(1){
-	margin-left:0; 
+.level .selfCheckBox:nth-of-type(1) {
+  margin-left: 0;
 }
 
 .tech-daytim {
@@ -2150,12 +2208,12 @@ export default {
 }
 .button-large-fourth {
   /* display: block; */
-  display:inline-block;
+  display: inline-block;
   widows: 20%;
   text-align: center;
   line-height: 34px;
 }
-.closeThe{
+.closeThe {
   /* margin: 20px 0;
   height: 30px;
   line-height: 30px; */
@@ -2163,7 +2221,7 @@ export default {
 .level {
   flex: 1;
 }
-.level p:nth-child(1){
+.level p:nth-child(1) {
   padding-left: 10px;
 }
 .hours {
@@ -2178,29 +2236,30 @@ export default {
 .operation:nth-child(1) {
   color: #4c70e8;
 }
-.tech-edit .avatar{
+.tech-edit .avatar {
   /* width: 100%;
   height: 100%; */
   float: left;
   margin-top: 10px;
 }
-.el-form-item{
-	margin-bottom: 22px;
+.el-form-item {
+  margin-bottom: 22px;
 }
-.workHours{
-	display: flex;
+.workHours {
+  display: flex;
   /* height: 36px; */
-	/* margin-bottom: 20px; */
+  /* margin-bottom: 20px; */
 }
-.workHours .workHours-input{
+.workHours .workHours-input {
   margin-bottom: 0;
   width: 100%;
 }
-.ferFamilyClass>li{
-	padding-bottom: 0;
+.ferFamilyClass > li {
+  padding-bottom: 0;
 }
-.upload-head,.upload-id{
-  cursor:pointer;
+.upload-head,
+.upload-id {
+  cursor: pointer;
   height: 36px;
   font-size: 12px;
   text-align: center;
@@ -2210,18 +2269,18 @@ export default {
   border: 1px solid #4c70e8;
   line-height: 36px;
 }
-.upload-id{
+.upload-id {
   border: 1px solid red;
   color: red;
 }
-.ofterinfo{
+.ofterinfo {
   border-bottom: 0;
 }
-.techniFooter{
+.techniFooter {
   text-align: center;
-  padding:30px 0 ; 
+  padding: 30px 0;
 }
-.techniFooter .button-large-fourth{
+.techniFooter .button-large-fourth {
   display: inline-block;
   width: 20%;
 }

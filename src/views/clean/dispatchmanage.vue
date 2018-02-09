@@ -148,309 +148,321 @@
 </template>
 
 <script>
-import {dispatchTechData1,dispatchTechSave1,Reassignment} from "@/api/order";
+import {
+  dispatchTechData1,
+  dispatchTechSave1,
+  Reassignment
+} from "@/api/order";
 export default {
   name: "dispatchmanage",
   data() {
     return {
-			btnShow: JSON.parse(localStorage.getItem('btn')),
-			techSaveFlag:false,
-			listTech:[],
-			techName:'',
-			middleA:[],
-			tableData:[],
-		//全局搜索下拉选项
-		technicianOptions:[
-		  { key: "1", technicianName: "技师姓名" },
-		  { key: "2", technicianName: "技师手机号" },
-		  { key: "3", technicianName: "订单编号" }
-		],				
-		dialogTableVisible:false,//选择技师弹窗开关
-		technicianName:'1',//技师姓名
-		technicianName1:'',//技师姓名
-		pagetotal1:null,//表格总页数
-		pageSize1:10,//表格每页条数
-		pageNumber:1,	
-		jumpPage:1,
-		aa:'',
-		orderId:'',
-		listLoading:false,
-		techName1:'',
-		techName2:'',
-		techPhone1:'', 
-		orderNumber1:'',			
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      techSaveFlag: false,
+      listTech: [],
+      techName: "",
+      middleA: [],
+      tableData: [],
+      //全局搜索下拉选项
+      technicianOptions: [
+        { key: "1", technicianName: "技师姓名" },
+        { key: "2", technicianName: "技师手机号" },
+        { key: "3", technicianName: "订单编号" }
+      ],
+      dialogTableVisible: false, //选择技师弹窗开关
+      technicianName: "1", //技师姓名
+      technicianName1: "", //技师姓名
+      pagetotal1: null, //表格总页数
+      pageSize1: 10, //表格每页条数
+      pageNumber: 1,
+      jumpPage: 1,
+      aa: "",
+      orderId: "",
+      listLoading: false,
+      techName1: "",
+      techName2: "",
+      techPhone1: "",
+      orderNumber1: ""
     };
   },
-  methods:{
-		//跳转改派记录页		
-		godispatchReass(id){
-			window.localStorage.setItem("orderId1",id)
-			this.$router.push({path:'/clean/dispatchReass/',query:{id:id}})			
-		},
+  methods: {
+    //跳转改派记录页
+    godispatchReass(id) {
+      window.localStorage.setItem("orderId1", id);
+      this.$router.push({ path: "/clean/dispatchReass/", query: { id: id } });
+    },
     //选择技师弹出层查询按钮
-    searchTeh(){  
-        var obj = {
-          id:this.orderId,
-          techName: this.techName2
-        };
-				dispatchTechData1(obj).then(res => {
-						if (res.data.code === 1) {
-							if(res.data.data != undefined){
-								this.listTech = res.data.data;
-								for (var c = 0; c < this.middleA.length; c++) {
-									for (var d = 0; d <this.listTech.length; d++) {
-										 this.$set(this.listTech[d],'techChecked',false)
-										if (
-											this.listTech[d].techId ==
-											this.middleA[c].techId
-										) {
-											this.listTech[d].techChecked = true;
-										}
-									}
-								}
-							}else{
-								this.listTech=[]                     
-							}
-						}
-					}).catch(res=>{
-									
-					});                          
+    searchTeh() {
+      var obj = {
+        id: this.orderId,
+        techName: this.techName2
+      };
+      dispatchTechData1(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.listTech = res.data.data;
+              for (var c = 0; c < this.middleA.length; c++) {
+                for (var d = 0; d < this.listTech.length; d++) {
+                  this.$set(this.listTech[d], "techChecked", false);
+                  if (this.listTech[d].techId == this.middleA[c].techId) {
+                    this.listTech[d].techChecked = true;
+                  }
+                }
+              }
+            } else {
+              this.listTech = [];
+            }
+          }
+        })
+        .catch(res => {});
     },
     //存储选择技师对象
-    ChangeTech(obj){
-      if(obj.techChecked){				  
-          this.middleA.push(obj)          
-      }else{
-          for (var a1 = 0; a1 < this.middleA.length; a1++) {
-            if (this.middleA[a1].techId == obj.techId) {
-                this.middleA.remove(this.middleA[a1]);
-            }
-          }       
+    ChangeTech(obj) {
+      if (obj.techChecked) {
+        this.middleA.push(obj);
+      } else {
+        for (var a1 = 0; a1 < this.middleA.length; a1++) {
+          if (this.middleA[a1].techId == obj.techId) {
+            this.middleA.remove(this.middleA[a1]);
+          }
+        }
       }
-    },    
+    },
     //选择技师弹出层保存
     submitForm2() {
-      this.techSaveFlag=true;
+      this.techSaveFlag = true;
       //先遍历数据中选中的再保存
       var arr = [];
       if (this.middleA != undefined && this.middleA.length != 0) {
         for (let a = 0; a < this.middleA.length; a++) {
           if (this.middleA[a].techChecked == true) {
-             arr.push(this.middleA[a].techId);
+            arr.push(this.middleA[a].techId);
           }
         }
       }
-      if(arr.length !=0 ){
-        var obj1={
-          id:this.orderId,
-          dispatchTechId:this.aa,
-          techIdList:arr
-        }
-        dispatchTechSave1(obj1).then(res => {
-          this.techSaveFlag=false;      
-          if (res.data.code === 1) {
+      if (arr.length != 0) {
+        var obj1 = {
+          id: this.orderId,
+          dispatchTechId: this.aa,
+          techIdList: arr
+        };
+        dispatchTechSave1(obj1)
+          .then(res => {
+            this.techSaveFlag = false;
+            if (res.data.code === 1) {
               this.$message({
                 type: "success",
                 message: "改派成功!"
               });
-							if(this.technicianName =='1'){
-									this.techName1=this.techName;
-									this.techPhone1='';
-									this.orderNumber1='';
-							}else if(this.technicianName =='2'){
-									this.techPhone1=this.techName;
-									this.orderNumber1='';
-									this.techName1='';
-							}else if(this.technicianName =='3'){
-									this.orderNumber1=this.techName;
-									this.techName1='';
-									this.techPhone1='';
-							}else{
-									this.techName1='';
-									this.techPhone1='';
-									this.orderNumber1='';
-							}
-							var obj={
-								techName:this.techName1,
-								techPhone:this.techPhone1, 
-								orderNumber:this.orderNumber1,
-							};
-							this.reassList(obj,this.pageNumber,this.pageSize1);	
-							this.middleA=[]; 
-							this.listTech=[];                          
-              this.dialogTableVisible = false
-          }   
-        }).catch(res=>{
-          this.techSaveFlag=false;
-        });        
+              if (this.technicianName == "1") {
+                this.techName1 = this.techName;
+                this.techPhone1 = "";
+                this.orderNumber1 = "";
+              } else if (this.technicianName == "2") {
+                this.techPhone1 = this.techName;
+                this.orderNumber1 = "";
+                this.techName1 = "";
+              } else if (this.technicianName == "3") {
+                this.orderNumber1 = this.techName;
+                this.techName1 = "";
+                this.techPhone1 = "";
+              } else {
+                this.techName1 = "";
+                this.techPhone1 = "";
+                this.orderNumber1 = "";
+              }
+              var obj = {
+                techName: this.techName1,
+                techPhone: this.techPhone1,
+                orderNumber: this.orderNumber1
+              };
+              this.reassList(obj, this.pageNumber, this.pageSize1);
+              this.middleA = [];
+              this.listTech = [];
+              this.dialogTableVisible = false;
+            }
+          })
+          .catch(res => {
+            this.techSaveFlag = false;
+          });
       }
-      if(arr.length ==0){
-				this.techSaveFlag=false;
-				this.dialogTableVisible = false;
-      }             	
-		},
+      if (arr.length == 0) {
+        this.techSaveFlag = false;
+        this.dialogTableVisible = false;
+      }
+    },
     //选择技师弹出层取消
-    cancelForm2(){
-      this.middleA=[];
-      this.listTech=[];     
-			this.dialogTableVisible = false			
-    },		         
+    cancelForm2() {
+      this.middleA = [];
+      this.listTech = [];
+      this.dialogTableVisible = false;
+    },
     //改派技师
-    gaiPai(id,obj){
-				this.techName2='';
-				this.aa=obj.techId;
-				this.orderId=id;         
-				var obj1={
-					id:id
-				};            
-				dispatchTechData1(obj1).then(res => {      
-					if (res.data.code === 1) {
-						this.dialogTableVisible=true;                                        
-						if(res.data.data != undefined){ 
-							this.listTech=res.data.data;
-							// for (var d = 0; d <this.listTech.length; d++) {
-							// 		this.$set(this.listTech[d],'techChecked',false)
-							// }						
-						}else{
-              this.listTech=[];
-						}
-					}     
-				}).catch(res=>{
-					
-				});
-    
-    },		
-	//查看跳转到订单详情页
-	lookInf(id){
-		window.localStorage.setItem("orderId",id)
-		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
-	},		
-	//列表渲染
-	reassList(pramsObj,pageNo,pageSize){
-		this.listLoading = true;
-		var obj=pramsObj; 
-		Reassignment(obj,pageNo,pageSize).then(res=>{
-       if (res.data.code === 1) {
-				   this.pagetotal1=res.data.data.count;	
-					 this.tableData = res.data.data.list;
-					 this.pageNumber=res.data.data.pageNo;
-					 this.jumpPage=res.data.data.pageNo;
-					 this.pageSize1=res.data.data.pageSize;															 		
-					 this.listLoading = false;
-			 }else{
-				 	this.listLoading = false;
-			 }
-		}).catch(res=>{
+    gaiPai(id, obj) {
+      this.techName2 = "";
+      this.aa = obj.techId;
+      this.orderId = id;
+      var obj1 = {
+        id: id
+      };
+      dispatchTechData1(obj1)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.dialogTableVisible = true;
+            if (res.data.data != undefined) {
+              this.listTech = res.data.data;
+              // for (var d = 0; d <this.listTech.length; d++) {
+              // 		this.$set(this.listTech[d],'techChecked',false)
+              // }
+            } else {
+              this.listTech = [];
+            }
+          }
+        })
+        .catch(res => {});
+    },
+    //查看跳转到订单详情页
+    lookInf(id) {
+      window.localStorage.setItem("orderId", id);
+      this.$router.push({ path: "/clean/orderinfo", query: { id: id } });
+    },
+    //列表渲染
+    reassList(pramsObj, pageNo, pageSize) {
+      this.listLoading = true;
+      var obj = pramsObj;
+      Reassignment(obj, pageNo, pageSize)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.pagetotal1 = res.data.data.count;
+            this.tableData = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.jumpPage = res.data.data.pageNo;
+            this.pageSize1 = res.data.data.pageSize;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+          }
+        })
+        .catch(res => {
           this.listLoading = false;
-		})
-	},
-	//全局搜索按钮
-	localSearch(){
-		if(this.technicianName =='1'){
-				this.techName1=this.techName;
-				this.techPhone1='';
-				this.orderNumber1='';
-		}else if(this.technicianName =='2'){
-				this.techPhone1=this.techName;
-				this.orderNumber1='';
-        this.techName1='';
-		}else if(this.technicianName =='3'){
-				this.orderNumber1=this.techName;
-				this.techName1='';
-				this.techPhone1='';
-		}else{
-				this.techName1='';
-				this.techPhone1='';
-				this.orderNumber1='';
-		}
-		var obj={
-			techName:this.techName1,
-			techPhone:this.techPhone1, 
-			orderNumber:this.orderNumber1,
-		};
-		this.pageNumber=1;
-		this.jumpPage=1;		
-		this.reassList(obj,this.pageNumber,this.pageSize1);		
-	},
-	//表格页数改变
-	handleSizeChange1(val) {
-		this.pageNumber=1;
-		this.jumpPage=1;
-		this.pageSize1=val;
-		if(this.technicianName =='1'){
-				this.techName1=this.techName;
-				this.techPhone1='';
-				this.orderNumber1='';
-		}else if(this.technicianName =='2'){
-				this.techPhone1=this.techName;
-				this.orderNumber1='';
-        this.techName1='';
-		}else if(this.technicianName =='3'){
-				this.orderNumber1=this.techName;
-				this.techName1='';
-				this.techPhone1='';
-		}else{
-				this.techName1='';
-				this.techPhone1='';
-				this.orderNumber1='';
-		}
-		var obj={
-			techName:this.techName1,
-			techPhone:this.techPhone1, 
-			orderNumber:this.orderNumber1,
-		};
-		this.reassList(obj,this.pageNumber,this.pageSize1);	
-
-	},
-	//表格当前页改变
-	handleCurrentChange1(val) {
-		this.pageNumber=val;
-		if(this.technicianName =='1'){
-				this.techName1=this.techName;
-				this.techPhone1='';
-				this.orderNumber1='';
-		}else if(this.technicianName =='2'){
-				this.techPhone1=this.techName;
-				this.orderNumber1='';
-        this.techName1='';
-		}else if(this.technicianName =='3'){
-				this.orderNumber1=this.techName;
-				this.techName1='';
-				this.techPhone1='';
-		}else{
-				this.techName1='';
-				this.techPhone1='';
-				this.orderNumber1='';
-		}
-		var obj={
-			techName:this.techName1,
-			techPhone:this.techPhone1, 
-			orderNumber:this.orderNumber1,
-		};
-		this.reassList(obj,this.pageNumber,this.pageSize1);
-	}	
+        });
+    },
+    //全局搜索按钮
+    localSearch() {
+      if (this.technicianName == "1") {
+        this.techName1 = this.techName;
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      } else if (this.technicianName == "2") {
+        this.techPhone1 = this.techName;
+        this.orderNumber1 = "";
+        this.techName1 = "";
+      } else if (this.technicianName == "3") {
+        this.orderNumber1 = this.techName;
+        this.techName1 = "";
+        this.techPhone1 = "";
+      } else {
+        this.techName1 = "";
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      }
+      var obj = {
+        techName: this.techName1,
+        techPhone: this.techPhone1,
+        orderNumber: this.orderNumber1
+      };
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.reassList(obj, this.pageNumber, this.pageSize1);
+    },
+    //表格页数改变
+    handleSizeChange1(val) {
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.pageSize1 = val;
+      if (this.technicianName == "1") {
+        this.techName1 = this.techName;
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      } else if (this.technicianName == "2") {
+        this.techPhone1 = this.techName;
+        this.orderNumber1 = "";
+        this.techName1 = "";
+      } else if (this.technicianName == "3") {
+        this.orderNumber1 = this.techName;
+        this.techName1 = "";
+        this.techPhone1 = "";
+      } else {
+        this.techName1 = "";
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      }
+      var obj = {
+        techName: this.techName1,
+        techPhone: this.techPhone1,
+        orderNumber: this.orderNumber1
+      };
+      this.reassList(obj, this.pageNumber, this.pageSize1);
+    },
+    //表格当前页改变
+    handleCurrentChange1(val) {
+      this.pageNumber = val;
+      if (this.technicianName == "1") {
+        this.techName1 = this.techName;
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      } else if (this.technicianName == "2") {
+        this.techPhone1 = this.techName;
+        this.orderNumber1 = "";
+        this.techName1 = "";
+      } else if (this.technicianName == "3") {
+        this.orderNumber1 = this.techName;
+        this.techName1 = "";
+        this.techPhone1 = "";
+      } else {
+        this.techName1 = "";
+        this.techPhone1 = "";
+        this.orderNumber1 = "";
+      }
+      var obj = {
+        techName: this.techName1,
+        techPhone: this.techPhone1,
+        orderNumber: this.orderNumber1
+      };
+      this.reassList(obj, this.pageNumber, this.pageSize1);
+    }
   },
   mounted() {
-    this.reassList({},1,10);
+    this.reassList({}, 1, 10);
   }
 };
 </script>
 <style scoped>
-.dispatchNumberStyle{
-	 cursor:pointer;
-	 padding-left:18px;
-	 padding-right:18px;
+.dispatchNumberStyle {
+  cursor: pointer;
+  padding-left: 18px;
+  padding-right: 18px;
 }
-.dispatchNumberStyle1{
-	 padding-left:18px;
-	 padding-right:18px;
+.dispatchNumberStyle1 {
+  padding-left: 18px;
+  padding-right: 18px;
 }
-.dispatchNumberStyle:hover{
-	color:#1d85fe;
+.dispatchNumberStyle:hover {
+  color: #1d85fe;
 }
-.width120{width:120px;}
-.FloatRight{float:right;}
-.selfpromMessageTab{position:relative;width:100%;margin-top:20px;margin-left:10px;}
+.width120 {
+  width: 120px;
+}
+.FloatRight {
+  float: right;
+}
+.selfpromMessageTab {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: 10px;
+}
 .techNameStyle {
   width: 80px;
   height: 25px;
@@ -463,7 +475,7 @@ export default {
   width: 80px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top:5px;
+  margin-top: 5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -473,132 +485,171 @@ export default {
   border: 1px solid #bfcbd9;
   position: relative;
 }
-.selfTableWrapONE{
-	margin-top: 20px;
+.selfTableWrapONE {
+  margin-top: 20px;
   overflow: hidden;
   width: 660px;
   height: 280px;
-	position:relative;
+  position: relative;
 }
-.table-d{
+.table-d {
   width: 677px;
   overflow-y: scroll;
   height: 276px;
   margin-left: 15px;
 }
-.selfTable,.selfTable tr th, .selfTable tr td { border:1px solid #eee; }
-.selfTable { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
-.height70{height:70px;}
-.imgStyle{display:block;}
+.selfTable,
+.selfTable tr th,
+.selfTable tr td {
+  border: 1px solid #eee;
+}
+.selfTable {
+  min-height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
+}
+.height70 {
+  height: 70px;
+}
+.imgStyle {
+  display: block;
+}
 .slide-enter-active {
-    transition: all .8s ease;
+  transition: all 0.8s ease;
 }
 .slide-leave-active {
-    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-enter,.slide-leave-active {
-    transform: translateY(-10px);
-    opacity: 0;
+.slide-enter,
+.slide-leave-active {
+  transform: translateY(-10px);
+  opacity: 0;
 }
-.tableHeader{position:absolute;z-index:99999;top:0px;}
+.tableHeader {
+  position: absolute;
+  z-index: 99999;
+  top: 0px;
+}
 .selfTdStyle1 {
-  vertical-align:middle;
+  vertical-align: middle;
   height: 70px;
-  line-height:70px;
+  line-height: 70px;
 }
-.selftechNameStyle{
-    width:185px;overflow:hidden;text-overflow: ellipsis;white-space: nowrap;
+.selftechNameStyle {
+  width: 185px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.fontSize12{font-size:12px;}
-.selfTabProm{width:100%;text-align:center;height:200px;line-height:200px;}
+.fontSize12 {
+  font-size: 12px;
+}
+.selfTabProm {
+  width: 100%;
+  text-align: center;
+  height: 200px;
+  line-height: 200px;
+}
 .bgWhite {
-    background-color: #ffffff;
-    padding: 20px 20px 20px 20px;
+  background-color: #ffffff;
+  padding: 20px 20px 20px 20px;
 }
-.el-table_1_column_8{
-	border-right:none; 
+.el-table_1_column_8 {
+  border-right: none;
 }
-.selfTd{
-	text-align:center;
-	height:60px;
-	line-height:60px;
-	border-bottom:1px solid #dfe6ec
+.selfTd {
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  border-bottom: 1px solid #dfe6ec;
 }
-.techNameStyle1{
-		height:60px;
-	  line-height:60px;
-    width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
-		margin:0 auto;
+.techNameStyle1 {
+  height: 60px;
+  line-height: 60px;
+  width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  margin: 0 auto;
 }
-.selfTd:last-child{
-   border:none;
+.selfTd:last-child {
+  border: none;
 }
-.addorder-container{
-    width:100%;
-	float:left;
-	background:#eef1f6;
+.addorder-container {
+  width: 100%;
+  float: left;
+  background: #eef1f6;
 }
-.fist-bar{
-  padding:20px;
-  background:#fff;
-  margin-right:20px;
- 
+.fist-bar {
+  padding: 20px;
+  background: #fff;
+  margin-right: 20px;
 }
-.width120{
-	width:120px
+.width120 {
+  width: 120px;
 }
-.paddingTop60{
-   padding-top:60px;
+.paddingTop60 {
+  padding-top: 60px;
 }
-.marginRight15{
-   margin-right:15px;
+.marginRight15 {
+  margin-right: 15px;
 }
-.dispatchTechNameSearch{
-   width:180px;margin-left:15px;
+.dispatchTechNameSearch {
+  width: 180px;
+  margin-left: 15px;
 }
-.dispatchMangFooter{
-  margin-top:20px;padding-bottom:0px;
+.dispatchMangFooter {
+  margin-top: 20px;
+  padding-bottom: 0px;
 }
-.second-bar{
-  padding-top:0px;
-  padding-bottom:20px;
-  background:#eef1f6;
-  margin-left:0px;
-  margin-right:0px;
-	height:500px;
-  
+.second-bar {
+  padding-top: 0px;
+  padding-bottom: 20px;
+  background: #eef1f6;
+  margin-left: 0px;
+  margin-right: 0px;
+  height: 500px;
 }
-.addStyle{
-	width:100%;background:#fff;padding:20px 20px;
+.addStyle {
+  width: 100%;
+  background: #fff;
+  padding: 20px 20px;
 }
-.tableWarpaa .el-pagination{
-	text-align: right;
+.tableWarpaa .el-pagination {
+  text-align: right;
 }
-.techDialog .el-pagination{
-	text-align: center;
-	padding: 0;
+.techDialog .el-pagination {
+  text-align: center;
+  padding: 0;
 }
-.techDialog .dialog-footer{
-	padding-bottom: 50px;
+.techDialog .dialog-footer {
+  padding-bottom: 50px;
 }
-.tableWarpaa tr>td:nth-child(1){
-	padding: 0 20px;
+.tableWarpaa tr > td:nth-child(1) {
+  padding: 0 20px;
 }
-.head-images{
-	width: 50px;
-	height: 50px;
-	margin-top: 5px;
+.head-images {
+  width: 50px;
+  height: 50px;
+  margin-top: 5px;
 }
 
-.addorder-container .pagination-container{
-	padding: 20px 0;
+.addorder-container .pagination-container {
+  padding: 20px 0;
 }
-.addorder-container .dialog-footer{
-	display: flex;
-	justify-content: center;
+.addorder-container .dialog-footer {
+  display: flex;
+  justify-content: center;
 }
-.addorder-container .dialog-footer .button-cancel{
-	margin-left: 20px;
+.addorder-container .dialog-footer .button-cancel {
+  margin-left: 20px;
 }
-.selfTableHEADTD{background:#eef1f6;height:60px;border:none !important;}
+.selfTableHEADTD {
+  background: #eef1f6;
+  height: 60px;
+  border: none !important;
+}
 </style>
