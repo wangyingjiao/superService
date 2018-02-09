@@ -297,7 +297,7 @@ import {
 } from "@/api/basic";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-
+var loading;
 export default {
   name: "station",
   directives: {
@@ -449,6 +449,15 @@ export default {
     //this.areaOptions = this.$store.state.user.area;
   },
   methods: {
+    //loading
+    loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     //获取列表
     getList() {
       this.listLoading = true;
@@ -711,11 +720,13 @@ export default {
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           addSite(obj)
             .then(res => {
               this.btnState = false;
               if (res.data.code === 1) {
+                loading.close();
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.$message({
@@ -725,10 +736,13 @@ export default {
                 this.search.name = "";
                 this.search.cityCode = "";
                 this.handleFilter();
-                this.dialogFormVisible = false;
+                // this.dialogFormVisible = false;
+              }else{
+                loading.close();
               }
             })
             .catch(() => {
+              loading.close();
               this.btnState = false;
             });
         } else {
@@ -749,6 +763,7 @@ export default {
     },
     createStore() {
       //保存门店
+      this.loadingClick()
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
@@ -760,6 +775,7 @@ export default {
             this.btnState = false;
           }, 1000);
           if (res.data.code == 1) {
+            loading.close();
             this.dialogStoreVisible = false;
             //this.rowInfo.storeList = [];
             this.$refs.domTree.setCheckedKeys([]);
@@ -783,9 +799,12 @@ export default {
               this.total = res.data.data.count;
               this.listLoading = false;
             });
+          }else{
+            loading.close();
           }
         })
         .catch(err => {
+          loading.close();
           this.btnState = false;
         });
       this.tempStore.tree = [];
@@ -798,6 +817,7 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           setMaster(obj)
             .then(res => {
@@ -807,16 +827,19 @@ export default {
                   type: "success",
                   message: "设置成功"
                 });
+                loading.close();
                 // this.rowInfo.id = "";
                 this.tempMaster.master = "";
                 this.$refs[formName].resetFields();
                 this.getList();
                 this.dialogMasterVisible = false;
               } else {
+                loading.close();
                 // this.dialogMasterVisible = false;
               }
             })
             .catch(() => {
+              loading.close();
               this.btnState = false;
             });
         } else {
@@ -835,6 +858,7 @@ export default {
         }
       });
     },
+
     update(formName) {
       //编辑保存
       var obj = {
@@ -851,6 +875,7 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           upSite(obj)
             .then(res => {
@@ -864,10 +889,14 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
+                loading.close();
                 this.dialogFormVisible = false;
+              }else{
+                loading.close();
               }
             })
             .catch(err => {
+              loading.close();
               this.btnState = false;
             });
         } else {

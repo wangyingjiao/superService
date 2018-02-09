@@ -280,7 +280,7 @@
       </el-dialog>
     <!-- 弹出层 新增技师-->
       <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-        <div class="techniAdd">
+        <div class="techniAdd tabBox">
           <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -1578,6 +1578,12 @@ export default {
     submitFormPer(formName) {
       this.$refs[formName].validate(val => {
         if (val) {
+          var loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           this.btnState = true;
           for (var i = 0; i < this.teachArr.length; i++) {
             if (this.teachArr[i].endTime == "24:00") {
@@ -1600,6 +1606,7 @@ export default {
                 } else {
                   this.getList(1, this.listQuery.limit);
                 }
+                loading.close();
                 this.btnState = false;
                 this.dialogVisible = false;
                 this.techniSearch.stationId = "";
@@ -1608,6 +1615,7 @@ export default {
                 this.chooContent = "";
                 this.roomSel2Arr = [];
               } else {
+                loading.close();
                 var str = data.data.data;
                 if (typeof str == "string") {
                   this.$message({
@@ -1625,6 +1633,7 @@ export default {
               }
             })
             .catch(error => {
+              loading.close();
               this.btnState = false;
               return false;
             });

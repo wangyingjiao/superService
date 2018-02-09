@@ -1,5 +1,5 @@
 <template>
-      <div class="techniEdit">
+      <div class="techniEdit tabBox">
         <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personalEDit"  ref="personalEDit"  label-width="100px" :rules="rulesPerEdit">
@@ -570,6 +570,8 @@ import {
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
 
+
+var loading;
 export default {
   data() {
     //身份证
@@ -1046,9 +1048,15 @@ export default {
       this.isB = false;
     },
     //其他信息保存
-    sumitFormSub(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
+    sumitFormSub(formName){
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           this.otherInfo.id = this.techniEditId;
           technicianOther(this.otherInfo)
             .then(data => {
@@ -1057,10 +1065,13 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
-              } else {
+                loading.close();
+              }else{
+               loading.close();
               }
             })
             .catch(error => {
+              loading.close();
               this.$message.error("保存失败");
               return false;
             });
@@ -1169,29 +1180,40 @@ export default {
     },
     //补充个人资料
     supplSub(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = {},
-            _supplement = this.supplement;
-          obj.id = this.techniEditId;
-          obj.email = _supplement.email;
-          obj.education = _supplement.education || null;
-          obj.weight = _supplement.weight || null;
-          obj.height = _supplement.height || null;
-          obj.marryStatus = _supplement.marryStatus || null;
-          obj.nativeProvinceCode = _supplement.nativeProvinceCode;
-          obj.inJobTime = _supplement.inJobTime || null;
-          obj.jobLevel = _supplement.jobLevel;
-          obj.description = _supplement.description;
-          technicianPlus(obj)
-            .then(data => {
-              if (data.data.code == 1) {
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
+           var obj = {},
+              _supplement = this.supplement;
+            obj.id = this.techniEditId;
+            obj.email = _supplement.email;
+            obj.education = _supplement.education || null;
+            obj.weight = _supplement.weight || null;
+            obj.height = _supplement.height || null;
+            obj.marryStatus = _supplement.marryStatus || null;
+            obj.nativeProvinceCode = _supplement.nativeProvinceCode;
+            obj.inJobTime = _supplement.inJobTime || null;
+            obj.jobLevel = _supplement.jobLevel;
+            obj.description = _supplement.description;
+            technicianPlus(obj).then(data=>{
+              if(data.data.code==1){
                 this.$message({
                   message: "保存成功",
                   type: "success"
                 });
-              } else {
+                loading.close();
+              }else{
+               loading.close();
               }
+            }).catch(error=>{
+              loading.close();
+              this.$message.error('保存失败')
+              return false
             })
             .catch(error => {
               this.$message.error("保存失败");
@@ -1222,11 +1244,14 @@ export default {
               message: data.data.data,
               type: "success"
             });
+            loading.close();
           } else {
+            loading.close();
           }
         })
         .catch(error => {
-          return false;
+          loading.close();
+          return false
         });
     },
     chooseChange(value) {
@@ -1256,6 +1281,12 @@ export default {
     perSubmitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           var obj = {},
             _personalEDit = this.personalEDit;
           obj.id = this.techniEditId;
@@ -1292,47 +1323,49 @@ export default {
     },
     //服务保存
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = {},
-            _perServer = this.perServer;
-          obj.id = this.techniEditId;
-          obj.stationId = _perServer.stationId;
-          obj.jobNature = _perServer.jobNature;
-          obj.jobStatus = _perServer.jobStatus;
-          obj.workTime = _perServer.workTime;
-          if (
-            _perServer.workTimes != undefined &&
-            _perServer.workTimes.length > 0
-          ) {
-            for (var i = 0; i < _perServer.workTimes.length; i++) {
-              if (_perServer.workTimes[i].endTimeStr) {
-                _perServer.workTimes[i].endTime =
-                  _perServer.workTimes[i].endTimeStr;
-                _perServer.workTimes[i].startTime =
-                  _perServer.workTimes[i].startTimeStr;
-                if (_perServer.workTimes[i].endTime == "24:00") {
-                  _perServer.workTimes[i].endTime = "23:59";
+      this.$refs[formName].validate(valid=>{
+        if(valid){
+          loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
+            var obj = {},
+          _perServer = this.perServer;
+          obj.id = this.techniEditId
+          obj.stationId = _perServer.stationId
+          obj.jobNature = _perServer.jobNature
+          obj.jobStatus = _perServer.jobStatus
+          obj.workTime = _perServer.workTime
+          if(_perServer.workTimes!=undefined && _perServer.workTimes.length>0){
+            for(var i =0; i<_perServer.workTimes.length; i++){
+              if(_perServer.workTimes[i].endTimeStr){
+                _perServer.workTimes[i].endTime = _perServer.workTimes[i].endTimeStr
+                _perServer.workTimes[i].startTime = _perServer.workTimes[i].startTimeStr
+                if( _perServer.workTimes[i].endTime=='24:00'){
+                  _perServer.workTimes[i].endTime = '23:59'
                 }
               }
             }
           }
-          obj.workTimes = _perServer.workTimes;
-          obj.skillIds = _perServer.skillIds;
-          technicianServer(obj)
-            .then(data => {
-              if (data.data.code == 1) {
-                this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
-              } else {
-              }
-            })
-            .catch(error => {
-              this.$message.error("保存失败");
-              return false;
-            });
+          obj.workTimes = _perServer.workTimes
+          obj.skillIds = _perServer.skillIds
+          technicianServer(obj).then(data=>{
+            if(data.data.code==1){
+              this.$message({
+                message: data.data.data,
+                type: "success"
+              })
+              loading.close();
+            }else{
+             loading.close();
+            }
+          }).catch(error=>{
+            loading.close();
+            this.$message.error('保存失败')
+            return false
+          })
           // this.technicianEdit(obj)
         } else {
           var errArr = this.$refs[formName]._data.fields;
@@ -1494,6 +1527,12 @@ export default {
       arr.push(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
+           loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           familyAdd({ id: this.techniEditId, familyMembers: arr })
             .then(data => {
               if (data.data.code == 1) {
@@ -1501,13 +1540,16 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
-                this.familyList = data.data.data;
+                loading.close();
+                this.familyList = data.data.data
                 this.familyFlag = false;
                 this.$refs[formName].resetFields();
               } else {
+               loading.close();
               }
             })
             .catch(error => {
+              loading.close();
               this.$message.error("保存失败");
               return false;
             });

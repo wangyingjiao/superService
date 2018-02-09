@@ -712,3 +712,9 @@ body {
   z-index:9999;
   width:350px;
 }
+
+//弹框loading
+.tabBox .el-loading-spinner{
+  position: fixed;
+  width: 74%;
+}
