@@ -1159,11 +1159,10 @@ export default {
         .then(data => {
           if (data.data.code==1) {
             this.$message({
-              message: "保存成功",
+              message: data.data.data,
               type: "success"
-			      });
+            });
           } else {
-            
           }
         })
         .catch(error => {
@@ -1491,18 +1490,18 @@ export default {
   cursor: pointer;
 }
 
-.tech-index {
+/* .tech-index {
   background: #fff;
   padding: 20px;
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+} */
 
-.tech {
+/* .tech {
   position: relative;
-}
+} */
 
 .tech-btn {
   background: #fff;

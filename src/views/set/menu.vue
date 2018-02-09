@@ -144,6 +144,12 @@
            class="form_item"
             placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
           </el-form-item>
+
+          <el-form-item label="排序:" prop="sort" >
+            <el-input        
+           class="form_item"
+            placeholder="请输入排序号，越大越靠后" v-model.number="temp.sort"></el-input>
+          </el-form-item>
            
           <el-form-item label="链接:">
             <el-input
@@ -227,6 +233,7 @@ export default {
         parentIds: "",
         name: "",
         href: "",
+        sort:"",
         permission: "",
         isShow: "",
         type: "",
@@ -248,6 +255,9 @@ export default {
             trigger: "blur"
           },
           { min: 2, max: 15, message: "请输入2-15位的权限标识" }
+        ],
+        sort: [
+          {required:true, type:'number' ,message:"请输入排序号，排序号越大越靠后",trigger:"blur"}
         ]
       },
       tableKey: 0,
@@ -363,6 +373,7 @@ export default {
         parentIds: this.temp.parentIds,
         name: this.temp.name,
         permission: this.temp.permission,
+        sort:this.temp.sort,
         href: this.temp.href,
         icon: this.temp.icon,
         isShow: this.temp.isShow,
@@ -403,6 +414,7 @@ export default {
         parentIds: this.temp.parentIds,
         name: this.temp.name,
         permission: this.temp.permission,
+        sort:this.temp.sort,
         href: this.temp.href,
         icon: this.temp.icon,
         isShow: this.temp.isShow,

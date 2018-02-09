@@ -15,9 +15,10 @@ Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 Vue.prototype.imgSrc = 'https://imgcdn.guoanshequ.com/'
+Vue.prototype.picWidth400 = '?x-oss-process=image/resize,m_fill,h_400,w_400'
 Vue.prototype.picWidth120 = '?x-oss-process=image/resize,m_fill,h_120,w_120'
 Vue.prototype.picWidth250 = '?x-oss-process=image/resize,w_250'
-Vue.prototype.picWidth600 = '?x-oss-process=image/resize,w_100'
+Vue.prototype.picWidth400Auto = '?x-oss-process=image/resize,m_pad,h_400,w_400'
 Vue.prototype.picWidth60 = '?x-oss-process=image/resize,m_fill,h_60,w_60'
 Vue.prototype.picWidth100 = '?x-oss-process=image/resize,m_fill,h_100,w_100'
 Vue.prototype.picWidth300 = '?x-oss-process=image/resize,m_fill,h_170,w_300,limit_0'
