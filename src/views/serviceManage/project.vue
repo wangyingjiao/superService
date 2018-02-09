@@ -358,43 +358,42 @@
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
-                label-width="90px" 
-                style='padding:20px 0 0 20px'
+                label-width="100px" 
+                class="dia_form"
                 :rules = "goods"
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
                     placeholder="请输入商品名称（1-24位）"
-                    style="width:70%"
+                    
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
 
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
-                    style="width:70%"
+                    
                     placeholder="请输入单位名称（1-6位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="请选择" style="width:70%">
+                  <el-select class="form_item" v-model="goods_info.type" placeholder="请选择" >
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
                 
                 <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price" style="width:70%">
+                  <el-input v-model="goods_info.price" >
                      <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours" style="width:70%">
+                  <el-input v-model="goods_info.convertHours" style="width:90%" >
                     <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
                   <el-popover
                       ref="popover1"
                       placement="top-start"
-                      width="200"
                       trigger="hover"
                       content="请录入1单位所需服务时长（以小时为单位）
 例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
@@ -405,21 +404,21 @@
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
                     placeholder="请输入起步人数(默认为1)"
-                    style="width:70%"
+                   
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
                 <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
-                    style="width:70%"
+                    
                     v-model="goods_info.cappingPerNum"></el-input>
                 </el-form-item>
 
                 <el-form-item label="起购数量:" class="seize" prop="minPurchase">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
-                    style="width:70%"
+                    
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
               </el-form>
