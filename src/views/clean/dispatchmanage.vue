@@ -204,7 +204,7 @@ export default {
               this.listTech = res.data.data;
               for (var c = 0; c < this.middleA.length; c++) {
                 for (var d = 0; d < this.listTech.length; d++) {
-                  this.$set(this.listTech[d], "techChecked", false);
+                  // this.$set(this.listTech[d], "techChecked", false);
                   if (this.listTech[d].techId == this.middleA[c].techId) {
                     this.listTech[d].techChecked = true;
                   }

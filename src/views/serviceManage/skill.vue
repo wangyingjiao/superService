@@ -853,6 +853,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
+  margin-top:5px;
+  margin-bottom:5px;
   margin-left: 10px;
   font-size: 12px;
   display: inline-block;

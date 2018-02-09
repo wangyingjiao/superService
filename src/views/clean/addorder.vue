@@ -800,9 +800,9 @@ export default {
           if (res.data.code === 1) {
             if (res.data.data != undefined) {
               this.listTech = res.data.data;
-              for (var a = 0; a < this.listTech.length; a++) {
-                this.$set(this.listTech[a], "techChecked", false);
-              }
+              // for (var a = 0; a < this.listTech.length; a++) {
+              //   this.$set(this.listTech[a], "techChecked", false);
+              // }
               this.dialogTableVisible = true;
               this.selectionreturn1();
             }
@@ -1009,7 +1009,7 @@ export default {
           if (res.data.code === 1) {
             for (var b = 0; b < this.middleA.length; b++) {
               for (var a = 0; a < this.listTech.length; a++) {
-                this.$set(this.listTech[a], "techChecked", false);
+                // this.$set(this.listTech[a], "techChecked", false);
                 if (this.listTech[a].techId == this.middleA[b].techId) {
                   this.listTech[a].techChecked = true;
                 }
@@ -1268,6 +1268,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
+  margin-top:5px;
+  margin-bottom:5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
