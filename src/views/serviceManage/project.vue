@@ -1632,7 +1632,7 @@ export default {
   text-align: left
 }
 .projectTabel .operationTab .cell{
- width: 165px;
+ width: 166px;
  margin: 0 auto;
 }
 .upload_box {
