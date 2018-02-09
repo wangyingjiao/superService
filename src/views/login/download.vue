@@ -11,7 +11,7 @@
         </div>
         <div class="footer">
             <a v-if="!isWeixin" href="https://imgcdn.guoanshequ.com/openservice/2018/2/8/1518073284027.apk">
-                111<img src="../../../static/icon/app_btn.png" alt="">
+               <img src="../../../static/icon/app_btn.png" alt="">
             </a>
             <div v-else @click="wxClick">
               <img  src="../../../static/icon/app_btn.png" alt="">
@@ -43,6 +43,7 @@ export default {
      var isWeixin = !!/MicroMessenger/i.test(ua);
      if(isWeixin){
        this.isWeixin = true
+       this.wxClick()
      }else{
        this.isWeixin = false
      }
@@ -86,12 +87,12 @@ export default {
     .main {
       width: 90%;
       margin: 0 auto;
-      margin-top: 20%;
+      margin-top: 1.1rem;
       img {
         width: 100%;
       }
       p {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         width: 100%;
         text-align: center;
         font-family: SourceHanSansCN-Normal;
@@ -103,13 +104,12 @@ export default {
     .footer {
       width: 90%;
       margin: 0 auto;
-      margin-bottom: 2rem;
+      margin-top: 1.2rem;
       overflow: hidden;
       a,div {
         display: block;
         width: 80%;
         margin: 0 auto;
-        margin-top: 15%;
         background-color: #fff;
         img {
           display: block;
