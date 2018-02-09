@@ -530,11 +530,18 @@ export default {
           if (valid) {
           } else {
             this.active = 2;
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
             this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
-          return false;
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
           }
         });
       } else {
@@ -547,11 +554,18 @@ export default {
             }
           } else {
             this.active = 1;
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
             this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
-          return false;
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
           }
         });
       }
@@ -673,10 +687,17 @@ export default {
         } else {
           this.$refs.pickerInput.value = "";
           this.ruleForm.address = "";
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -902,10 +923,17 @@ export default {
             })
             .catch(res => {});
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
