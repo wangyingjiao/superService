@@ -261,6 +261,8 @@ import {
 import {
   saveCus //保存客户（新增）
 } from "@/api/customer";
+
+var loading;
 export default {
   data() {
     var checkPhone = (rule, value, callback) => {
@@ -451,6 +453,14 @@ export default {
     }
   },
   methods: {
+     loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     seerchange(val) {
       this.form.serverStation1 = val;
     },
@@ -640,6 +650,7 @@ export default {
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           //省、市、区三级ID
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
@@ -652,15 +663,19 @@ export default {
                   type: "success",
                   message: "新增成功!"
                 });
+                loading.close();
                 this.$refs["ruleForm"].resetFields();
                 this.$refs.pickerInput.value = "";
                 this.dialogTableVisible1 = false;
               } else {
+                loading.close();
                 this.$refs.pickerInput.value = "";
                 this.ruleForm.address = "";
               }
             })
-            .catch(res => {});
+            .catch(res => {
+              loading.close();
+            });
         } else {
           this.$refs.pickerInput.value = "";
           this.ruleForm.address = "";
