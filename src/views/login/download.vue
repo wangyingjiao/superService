@@ -10,11 +10,20 @@
             <p>用心服务 洁净万家</p>
         </div>
         <div class="footer">
-            <a href="https://imgcdn.guoanshequ.com/openservice/2018/2/8/1518073284027.apk">
-                <img src="../../../static/icon/app_btn.png" alt="">
+            <a v-if="!isWeixin" href="https://imgcdn.guoanshequ.com/openservice/2018/2/8/1518073284027.apk">
+                111<img src="../../../static/icon/app_btn.png" alt="">
             </a>
+            <div v-else @click="wxClick">
+              <img  src="../../../static/icon/app_btn.png" alt="">
+            </div>
         </div>
       </div>
+      <div v-if="isShow" class="wxtip"  @click="noShow">
+        <span class="wxtip-icon">
+          <img src="http://img.caibaojian.com/uploads/2016/01/weixin-tip.png" />>
+        </span>
+        <p class="wxtip-txt">点击右上角按钮<br/>选择浏览器去下载APP</p>
+	    </div>
   </div>
 </template>
 
@@ -24,10 +33,27 @@ import { isvalidUsername } from "@/utils/validate";
 export default {
   name: "download",
   data() {
-    return {};
+    return {
+      isWeixin:false,
+      isShow:false,
+    };
+  },
+  mounted(){
+     var ua = navigator.userAgent;
+     var isWeixin = !!/MicroMessenger/i.test(ua);
+     if(isWeixin){
+       this.isWeixin = true
+     }else{
+       this.isWeixin = false
+     }
   },
   methods: {
-      
+      wxClick(){
+         this.isShow = true
+      },
+      noShow(){
+          this.isShow = false
+      }
   }
 };
 </script>
@@ -74,23 +100,51 @@ export default {
         letter-spacing: 0;
       }
     }
-    .footer{
-        width: 90%;
+    .footer {
+      width: 90%;
+      margin: 0 auto;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      a,div {
+        display: block;
+        width: 80%;
         margin: 0 auto;
-        margin-bottom: 2rem;
-        overflow: hidden;
-        a{
-            display: block;
-            width: 80%;
-            margin: 0 auto;
-            margin-top: 15%;
-            background-color: #fff;
-            img{
-              display: block;
-              width: 100%;
-            }
+        margin-top: 15%;
+        background-color: #fff;
+        img {
+          display: block;
+          width: 100%;
         }
+      }
     }
   }
+}
+.wxtip {
+  background: rgba(0, 0, 0, 0.8);
+  text-align: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 998;
+  // display: none;
+}
+.wxtip-icon {
+  width: 5rem;
+  height: 5rem;
+  display: block;
+  position: absolute;
+  right: 2rem;
+  top: 3rem;
+  img{
+    width: 100%;
+  }
+}
+.wxtip-txt {
+  padding-top: 14rem;
+  color: #eee;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 </style>
