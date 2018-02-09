@@ -9,7 +9,7 @@
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
             <el-dropdown-menu slot="dropdown" class="hoverStyle">
-              <el-dropdown-item ><vue-qr bgSrc='../../../static/icon/bgw.png'   :text="appSrc" height="300" width="300"></vue-qr><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
+              <el-dropdown-item ><vue-qr bgSrc='../../../static/icon/bgw.png' :dotScale = '1' :text="appSrc" height="300" width="300"></vue-qr><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     dropClick() {
-      console.log(1111111)
+      
     },
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");

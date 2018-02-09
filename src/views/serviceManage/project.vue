@@ -388,7 +388,7 @@
                   </el-input>
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours" style="width:90%" >
+                  <el-input v-model="goods_info.convertHours" style="width:100%" >
                     <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
                   <el-popover
@@ -1672,6 +1672,8 @@ export default {
   text-align: center;
 }
 .doubt{
+  position: relative;
+  left: 0;
   font-size: 25px;
   vertical-align: middle;
   cursor: pointer;
