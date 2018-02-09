@@ -409,7 +409,7 @@ export default {
 			orderTimeStart:startTime,
 			orderTimeEnd:endTime,
 			serviceTimeStart:severstartTime,
-			serivceTimeEnd:severEndTime,			
+			serviceTimeEnd:severEndTime,			
 		}
 		this.getTableData(obj,this.pageNumber,this.size);		
 	},

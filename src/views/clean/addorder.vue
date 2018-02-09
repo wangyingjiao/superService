@@ -298,8 +298,12 @@ export default {
       }
     };
     var checksum = (rule, value, callback) => {
-      if (value == 0) {
-        callback(new Error("请选择商品"));
+      if (!value) {        
+        if(value == 0){
+          callback(new Error("请选择商品"));
+        }else{
+          callback();
+        }
       } else {
       }
     };
@@ -392,7 +396,7 @@ export default {
           { required: true, message: "请选择服务项目", trigger: "change" }
         ],
         sumPrice:[
-          { required: true,type:'number',validator:checksum, message: "请选择商品"}
+          { required: true,type:'number',validator:checksum, message: "请选择商品",trigger: "change"}
         ]        
       },
       rules: {
@@ -510,17 +514,22 @@ export default {
         this.$refs['form1'].validate(valid => {
           if (valid) {
           }else{
-            this.active=2            
+            this.active=2 
+            return false            
           }
         })
       }else{
       }
       if(this.active == 2){
         this.$refs['form'].validate(valid => {
-          if (valid && this.serverStation1 != '') {           
-            this.findItemListFun();
+          if (valid) { 
+             if(this.serverStation1 != ''){
+                this.findItemListFun();
+             }         
+            
           }else{
-            this.active=1           
+            this.active=1
+            return false           
           }
         })
                 
