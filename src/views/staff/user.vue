@@ -273,6 +273,7 @@ import waves from "@/directive/waves/index.js"; // 水波纹指令
 //import { parseTime } from "@/utils";
 // arr to obj
 
+var loading;
 export default {
   name: "user",
   directives: {
@@ -533,6 +534,14 @@ export default {
     }
   },
   methods: {
+    loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     searchChange(val) {},
     //获取列表
     getList() {
@@ -982,11 +991,13 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           addStaff(obj)
             .then(res => {
               this.btnState = false;
               if (res.data.code === 1) {
+                loading.close();
                 //关闭弹框
                 this.dialogFormVisible = false;
                 this.resetTemp();
@@ -1021,9 +1032,12 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
+              }else{
+                loading.close();
               }
             })
             .catch(err => {
+              loading.close();
               this.btnState = false;
             });
         } else {
@@ -1116,11 +1130,13 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           upStaff(obj)
             .then(res => {
               this.btnState = false;
               if (res.data.code == 1) {
+                loading.close();
                 //编辑自己姓名时同步更改右上角展示
                 if (
                   this.temp.id == localStorage.getItem("userId") &&
@@ -1168,9 +1184,12 @@ export default {
                   });
                 }
                 // 判断结束
+              }else{
+                loading.close();
               }
             })
             .catch(err => {
+              loading.close();
               this.btnState = false;
             });
         } else {
