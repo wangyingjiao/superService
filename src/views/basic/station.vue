@@ -736,7 +736,7 @@ export default {
                 this.search.name = "";
                 this.search.cityCode = "";
                 this.handleFilter();
-                // this.dialogFormVisible = false;
+                this.dialogFormVisible = false;
               }else{
                 loading.close();
               }
