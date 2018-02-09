@@ -209,317 +209,320 @@
 </template>
 
 <script>
-import { staffList, addStaff, getStaff ,addMech} from "@/api/staff";
+import { staffList, addStaff, getStaff, addMech } from "@/api/staff";
 //import { parseTime } from "@/utils";
 export default {
   name: "addcustomer",
   data() {
-	var checkPhone = (rule, value, callback) => {
-			if (!value) {
-			  return callback(new Error('电话号码不能为空'));
-			}else{
-				if (!(/^1[3|4|5|6|7|8|9][0-9]\d{4,8}$/.test(value))) {
-				  callback(new Error('电话号码不正确！请重新填写'));
-				} else {
-				  callback();
-				}
-			}
-	};  
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("电话号码不能为空"));
+      } else {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{4,8}$/.test(value)) {
+          callback(new Error("电话号码不正确！请重新填写"));
+        } else {
+          callback();
+        }
+      }
+    };
     return {
-        rules2: {
-          phone: [
-            { validator: checkPhone, trigger: 'blur' }
-          ]
+      rules2: {
+        phone: [{ validator: checkPhone, trigger: "blur" }]
+      },
+      customPhone1: {
+        phone: "",
+        customName: "李四"
+      },
+      //客户下拉选项
+      customOptions: [
+        { key: "1", customName: "日常保洁" },
+        { key: "2", customName: "除尘除螨" },
+        { key: "3", customName: "家电清洗" },
+        { key: "4", customName: "擦玻璃" }
+      ],
+      //tabName
+      tabOptions: [
+        { key: "1", tabName: "王小虎" },
+        { key: "2", tabName: "王小虎" },
+        { key: "3", tabName: "王小虎" }
+      ],
+      //
+      serverOptions: [
+        { key: "1", serverName: "平米保洁" },
+        { key: "2", serverName: "灯具清洁" },
+        { key: "3", serverName: "居室保洁" }
+      ],
+      //
+      provinceOptions: [
+        { key: "1", provinceName: "北京" },
+        { key: "2", provinceName: "上海" },
+        { key: "3", provinceName: "天津" }
+      ],
+      province: "",
+      //
+      cityOptions: [
+        { key: "1", cityName: "朝阳区" },
+        { key: "2", cityName: "东城区" },
+        { key: "3", cityName: "西城区" }
+      ],
+      city: "",
+      //
+      countyOptions: [
+        { key: "1", countyName: "朝阳区" },
+        { key: "2", countyName: "东城区" },
+        { key: "3", countyName: "西城区" }
+      ],
+      county: "",
+      //orderOrgin
+      orderOrginOptions: [
+        { key: "1", orderOrginName: "中信国安" },
+        { key: "2", orderOrginName: "国安府" },
+        { key: "3", orderOrginName: "第三方" }
+      ],
+      orderOrgin: "",
+      //
+      detailedAddress: "XXX小区1号楼3单元222室",
+      //客户备注
+      textarea: "",
+      //服务站下拉选项
+      stationOptions: [
+        { key: "1", stationName: "服务站1" },
+        { key: "2", stationName: "服务站2" },
+        { key: "3", stationName: "服务站3" },
+        { key: "4", stationName: "服务站4" }
+      ],
+      //服务站
+      stationName: "",
+      //服务时间
+      severTime: "",
+      //弹窗表格数据
+      technicianData: [
+        {
+          headUrl: "headurl",
+          name: "王小虎",
+          sex: "男",
+          serverStation: "呼家楼服务站"
         },
-        customPhone1:{
-			phone:'',
-			customName:'李四'
-		},		
-		//客户下拉选项
-		customOptions:[
-		  { key: "1", customName: "日常保洁" },
-		  { key: "2", customName: "除尘除螨" },
-		  { key: "3", customName: "家电清洗" },
-		  { key: "4", customName: "擦玻璃" }
-		],
-		//tabName
-		tabOptions:[
-		  { key: "1", tabName: "王小虎" },
-		  { key: "2", tabName: "王小虎" },
-		  { key: "3", tabName: "王小虎" }
-		],
-    //
-		serverOptions:[
-		  { key: "1", serverName: "平米保洁" },
-		  { key: "2", serverName: "灯具清洁" },
-		  { key: "3", serverName: "居室保洁" }
-		],
-    //
-		provinceOptions:[
-		  { key: "1", provinceName: "北京" },
-		  { key: "2", provinceName: "上海" },
-		  { key: "3", provinceName: "天津" }
-		],
-		province:'',
-		//
-		cityOptions:[
-		  { key: "1", cityName: "朝阳区" },
-		  { key: "2", cityName: "东城区" },
-		  { key: "3", cityName: "西城区" }
-		],
-		city:'',
-		//
-		countyOptions:[
-		  { key: "1", countyName: "朝阳区" },
-		  { key: "2", countyName: "东城区" },
-		  { key: "3", countyName: "西城区" }
-		],
-		county:'',		
-		//orderOrgin
-		orderOrginOptions:[
-		  { key: "1", orderOrginName: "中信国安" },
-		  { key: "2", orderOrginName: "国安府" },
-		  { key: "3", orderOrginName: "第三方" }
-		],
-    orderOrgin:'',
-		//
-		detailedAddress:'XXX小区1号楼3单元222室',
-		//客户备注
-        textarea:'',		
-		//服务站下拉选项
-		stationOptions:[
-		  { key: "1", stationName: "服务站1" },
-		  { key: "2", stationName: "服务站2" },
-		  { key: "3", stationName: "服务站3" },
-		  { key: "4", stationName: "服务站4" }
-		],
-		//服务站
-		stationName:'',
-		//服务时间
-		severTime:'',
-		//弹窗表格数据
-		technicianData:[{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站'
-        }, 
-		{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站'
-        },{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站'
-        },{
-          headUrl: 'headurl',
-          name: '王小虎',
-          sex: '男',
-		  serverStation:'呼家楼服务站'
-        }],
-		//当前客户
-		custom:"1",
-		//当前电话
-		customPhone:13821209999,
-		//当前客户姓名		
-		customName:"李四",
-		serverAddress:'北京市朝阳区关东街11呼家楼',
-		serverStation:'呼家楼服务站',
-		dialogVisible:false,//更换地址弹窗开关
-		dialogTableVisible:false,//选择技师弹窗开关
-		serverType:2,//服务类型
-		smallLight:1,//小灯型
-		bigLight:1,//大灯型
-		roomType:[
-		  { key: "1", roomName: "一居室" },
-		  { key: "2", roomName: "二居室" },
-		  { key: "3", roomName: "三居室" }
-		],//居室信息
-		roomLen:0,//居室数量开关
-		price:1000,//服务价格
-		sexType:[
-		  { key: "1", sexName: "不限制" },
-		  { key: "2", sexName: "男" },
-		  { key: "3", sexName: "女" }
-		],//技师信息
-		sexLen:0,//技师性别开关
-        sysAllocat:1,//系统分配值
-		technicianName:'',//技师姓名
-		pagetotal:10,//技师总页数
-		pageSize:2,//每页条数
-		
+        {
+          headUrl: "headurl",
+          name: "王小虎",
+          sex: "男",
+          serverStation: "呼家楼服务站"
+        },
+        {
+          headUrl: "headurl",
+          name: "王小虎",
+          sex: "男",
+          serverStation: "呼家楼服务站"
+        },
+        {
+          headUrl: "headurl",
+          name: "王小虎",
+          sex: "男",
+          serverStation: "呼家楼服务站"
+        }
+      ],
+      //当前客户
+      custom: "1",
+      //当前电话
+      customPhone: 13821209999,
+      //当前客户姓名
+      customName: "李四",
+      serverAddress: "北京市朝阳区关东街11呼家楼",
+      serverStation: "呼家楼服务站",
+      dialogVisible: false, //更换地址弹窗开关
+      dialogTableVisible: false, //选择技师弹窗开关
+      serverType: 2, //服务类型
+      smallLight: 1, //小灯型
+      bigLight: 1, //大灯型
+      roomType: [
+        { key: "1", roomName: "一居室" },
+        { key: "2", roomName: "二居室" },
+        { key: "3", roomName: "三居室" }
+      ], //居室信息
+      roomLen: 0, //居室数量开关
+      price: 1000, //服务价格
+      sexType: [
+        { key: "1", sexName: "不限制" },
+        { key: "2", sexName: "男" },
+        { key: "3", sexName: "女" }
+      ], //技师信息
+      sexLen: 0, //技师性别开关
+      sysAllocat: 1, //系统分配值
+      technicianName: "", //技师姓名
+      pagetotal: 10, //技师总页数
+      pageSize: 2 //每页条数
     };
   },
-  methods:{ 
+  methods: {
     //搜索按钮
-    handleFilter() {
+    handleFilter() {},
+    //更换地址按钮
+    changeAddress() {
+      this.dialogVisible = true;
     },
-	//更换地址按钮
-	changeAddress(){
-	    this.dialogVisible=true;
-	},
-	//更换地址弹窗“确认”
-	changeOk(){
-	    this.dialogVisible = false;
-	},
-	//服务类型下拉改变
-	serverchange(value){
-	   this.serverType=value;
-	},
-	//小型灯减
-	smallminus(value){
-	    value=parseInt(value);
-	    if(value<=1){
-			this.smallLight=1
-		}else{
-		    this.smallLight=value-1
-		}
-	},
-	//小型灯加
-	smallplus(value){
-			value=parseInt(value);
-		    this.smallLight=value+1			
-	},
-	//大型灯减
-	bigminus(value){
-		value=parseInt(value);
-	    if(value<=1){
-			this.bigLight=1
-		}else{
-		    this.bigLight=value-1
-		}
-	},
-	//大型灯加
-	bigplus(value){
-			value=parseInt(value);
-		    this.bigLight=value+1			
-	},
-	//居室数量选择及样式变化
-	roomSel(index,obj){
-		this.roomLen=index+1;
-		for (var i=0 ;i<this.$refs.selcetOption.length;i++){
-		      if(i == index){
-			      this.$refs.selcetOption[i].style.borderColor='green';
-			  }else{
-			      this.$refs.selcetOption[i].style.borderColor='#bfcbd9';
-			  }
-		       
-		}		
-	},
-	//技师选择及样式变化
-	roomSel1(index,obj){
-		this.sexLen=index+1;
-		for (var i=0 ;i<this.$refs.sexOption.length;i++){
-		      if(i == index){
-			      this.$refs.sexOption[i].style.borderColor='green';
-			  }else{
-			      this.$refs.sexOption[i].style.borderColor='#bfcbd9';
-			  }
-		       
-		}		
-	},
-	//技师选择按钮点击
-	technicianSel(){
-		this.dialogTableVisible=true;
-	},
-	//弹窗搜索按钮点击
-	technicianSearch(){
-	},
-	//每页条数多少改变
-    handleSizeChange(val) {
-
+    //更换地址弹窗“确认”
+    changeOk() {
+      this.dialogVisible = false;
     },
-	//分页器改变当前页
-    handleCurrentChange(val) {
-
+    //服务类型下拉改变
+    serverchange(value) {
+      this.serverType = value;
     },
+    //小型灯减
+    smallminus(value) {
+      value = parseInt(value);
+      if (value <= 1) {
+        this.smallLight = 1;
+      } else {
+        this.smallLight = value - 1;
+      }
+    },
+    //小型灯加
+    smallplus(value) {
+      value = parseInt(value);
+      this.smallLight = value + 1;
+    },
+    //大型灯减
+    bigminus(value) {
+      value = parseInt(value);
+      if (value <= 1) {
+        this.bigLight = 1;
+      } else {
+        this.bigLight = value - 1;
+      }
+    },
+    //大型灯加
+    bigplus(value) {
+      value = parseInt(value);
+      this.bigLight = value + 1;
+    },
+    //居室数量选择及样式变化
+    roomSel(index, obj) {
+      this.roomLen = index + 1;
+      for (var i = 0; i < this.$refs.selcetOption.length; i++) {
+        if (i == index) {
+          this.$refs.selcetOption[i].style.borderColor = "green";
+        } else {
+          this.$refs.selcetOption[i].style.borderColor = "#bfcbd9";
+        }
+      }
+    },
+    //技师选择及样式变化
+    roomSel1(index, obj) {
+      this.sexLen = index + 1;
+      for (var i = 0; i < this.$refs.sexOption.length; i++) {
+        if (i == index) {
+          this.$refs.sexOption[i].style.borderColor = "green";
+        } else {
+          this.$refs.sexOption[i].style.borderColor = "#bfcbd9";
+        }
+      }
+    },
+    //技师选择按钮点击
+    technicianSel() {
+      this.dialogTableVisible = true;
+    },
+    //弹窗搜索按钮点击
+    technicianSearch() {},
+    //每页条数多少改变
+    handleSizeChange(val) {},
+    //分页器改变当前页
+    handleCurrentChange(val) {},
     //叉号点击关闭TAB
-    errorClose(obj,index){
-	   this.$refs.tabsName[index].style.display="none";
-	},
-	//确认下单按钮点击
-	confirmOrder(){
-	}
-	
+    errorClose(obj, index) {
+      this.$refs.tabsName[index].style.display = "none";
+    },
+    //确认下单按钮点击
+    confirmOrder() {}
   },
-  mounted() {
-
-
-  }
+  mounted() {}
 };
 </script>
 <style  lang="scss" scoped>
-
-.tabWrap{width:100px;margin-right:20px;font-size:12px;display:inline-block;height:25px;text-align:center;line-height:25px;border-radius:12px;border:1px solid #bfcbd9;position:relative;}
-.closePic{cursor:pointer;color:#bfcbd9;font-size:12px;position:absolute;margin-left:80px;margin-top:-25px;}
-.addorder-container{
-    width:100%;
-	float:left;
-	background:#eef1f6;
-	margin-top: 20px;
-	.fist-bar{
-	  padding-top:20px;
-	  padding-bottom:20px;
-	  background:#fff;
-	  margin-left:20px;
-	  margin-right:20px;
-	}
+.tabWrap {
+  width: 100px;
+  margin-right: 20px;
+  font-size: 12px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 12px;
+  border: 1px solid #bfcbd9;
+  position: relative;
 }
-.custom-action{
-	margin-left:30px;
-	margin-right:48px;
+.closePic {
+  cursor: pointer;
+  color: #bfcbd9;
+  font-size: 12px;
+  position: absolute;
+  margin-left: 80px;
+  margin-top: -25px;
 }
-
-.second-bar{
-  padding-top:20px;
-  padding-bottom:20px;
-  background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
-  
+.addorder-container {
+  width: 100%;
+  float: left;
+  background: #eef1f6;
+  margin-top: 20px;
+  .fist-bar {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #fff;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 }
-.thrid-bar{
-  padding-top:20px;
-  background:#eef1f6;
-  margin-left:20px;
-  margin-right:20px;
-  height:500px;
-  margin-top:120px;
-}
-.order-inf{
-    padding-top:20px;
-	background:#fff;
-	margin-top:20px;
-}
-.custom-inf{
-	width:49%;
-	background:#fff;
-	float:left;
-	height:160px;
-	padding-top:20px;
-	padding-bottom:20px;
-    color:#000;	
-}
-.sever-inf{
-    margin-left:2%;
-	width:49%;
-	background:#fff;
-	float:left;
-	height:160px;
-	padding-top:20px;
-	padding-bottom:20px;	
-}
-.customNamevalue{
-	padding-left:48px;	
-}
-.changeserver{
-	width:100%;
-	height:110px;
-	margin-left:30px;
-	margin-top:10px;
+.custom-action {
+  margin-left: 30px;
+  margin-right: 48px;
 }
 
+.second-bar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: #eef1f6;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.thrid-bar {
+  padding-top: 20px;
+  background: #eef1f6;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 500px;
+  margin-top: 120px;
+}
+.order-inf {
+  padding-top: 20px;
+  background: #fff;
+  margin-top: 20px;
+}
+.custom-inf {
+  width: 49%;
+  background: #fff;
+  float: left;
+  height: 160px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #000;
+}
+.sever-inf {
+  margin-left: 2%;
+  width: 49%;
+  background: #fff;
+  float: left;
+  height: 160px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.customNamevalue {
+  padding-left: 48px;
+}
+.changeserver {
+  width: 100%;
+  height: 110px;
+  margin-left: 30px;
+  margin-top: 10px;
+}
 </style>

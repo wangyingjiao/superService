@@ -111,43 +111,41 @@
 </template>
 
 <script>
-    export default {
-        name: "table_demo",
-        props:[
-            "measure"
-        ],
-        data() {
-            return{
-                handleEditFlag:false,   //商品的添加/编辑
-                 basicForm: {
-                    name: "",
-                    sortId: "",
-                    majorSort: "all",
-                    commoditys: [],
-                    sysTags:[],
-                    customTags:[]
-                },
-                goods_info:{
-                    name:'',
-                    unit:'',
-                    type:'',  
-                    price:'',
-                    convertHours:'',
-                    startPerNum:'',
-                    cappingPerNum:'',
-                    minPurchase:''
-                }
-            }
-        },
-        methods:{
-            //商品添加/编辑
-            submitForm(formName){
-                var obj = Object.assign({},this.goods_info)
-                    obj.startPerNum = this.goods_info.startPerNum
-                    obj.minPurchase = this.goods_info.minPurchase
-                    obj.cappingPerNum = this.goods_info.cappingPerNum
-                this.basicForm.commoditys.push(obj)
-            }
-        }
+export default {
+  name: "table_demo",
+  props: ["measure"],
+  data() {
+    return {
+      handleEditFlag: false, //商品的添加/编辑
+      basicForm: {
+        name: "",
+        sortId: "",
+        majorSort: "all",
+        commoditys: [],
+        sysTags: [],
+        customTags: []
+      },
+      goods_info: {
+        name: "",
+        unit: "",
+        type: "",
+        price: "",
+        convertHours: "",
+        startPerNum: "",
+        cappingPerNum: "",
+        minPurchase: ""
+      }
+    };
+  },
+  methods: {
+    //商品添加/编辑
+    submitForm(formName) {
+      var obj = Object.assign({}, this.goods_info);
+      obj.startPerNum = this.goods_info.startPerNum;
+      obj.minPurchase = this.goods_info.minPurchase;
+      obj.cappingPerNum = this.goods_info.cappingPerNum;
+      this.basicForm.commoditys.push(obj);
     }
+  }
+};
 </script>

@@ -1596,7 +1596,7 @@ export default {
 .upload_box {
   /* text-align: center; */
   box-sizing: border-box;
-  padding: 10px;
+  /* padding: 10px; */
   border: 1px #ccc dashed;
 }
 .upload_box .el-upload .el-button {

@@ -250,14 +250,14 @@
 
 <script>
 import {
-  findCustomerByPhone,//根据手机号查找客户
-  findCustomerById,//根据ID查找客户
-  findItemList,//获取服务项目列表
-  findGoodsListByItem,//获取服务项目下的商品列表
-  findTechListByGoods,//获取商品的技师列表
-  findTimeListByTech,//获取技师的时间列表
-  createOrder,//新增订单保存
-  } from '@/api/order'
+  findCustomerByPhone, //根据手机号查找客户
+  findCustomerById, //根据ID查找客户
+  findItemList, //获取服务项目列表
+  findGoodsListByItem, //获取服务项目下的商品列表
+  findTechListByGoods, //获取商品的技师列表
+  findTimeListByTech, //获取技师的时间列表
+  createOrder //新增订单保存
+} from "@/api/order";
 import {
   saveCus //保存客户（新增）
 } from "@/api/customer";
@@ -299,10 +299,10 @@ export default {
       }
     };
     var checksum = (rule, value, callback) => {
-      if (!value) {        
-        if(value == 0){
+      if (!value) {
+        if (value == 0) {
           callback(new Error("请选择商品"));
-        }else{
+        } else {
           callback();
         }
       } else {
@@ -313,18 +313,18 @@ export default {
         callback(new Error("请选择日期"));
       } else {
       }
-    };     
+    };
     return {
-      showDis:true,
+      showDis: true,
       changTime: "",
-      options2:[],
-      timeObj:[],
+      options2: [],
+      timeObj: [],
       middleA: [],
       techSaveFlag: false,
       form2: {
-         selectTech:'',
-         severTime:'',
-         severTime1:''         
+        selectTech: "",
+        severTime: "",
+        severTime1: ""
       },
       btnShow: JSON.parse(localStorage.getItem("btn")),
       //服务站下拉选项
@@ -348,13 +348,13 @@ export default {
       listTech: [],
       selectCommidty: [],
       form: {
-        name:"",       
+        name: "",
         address: "",
-        stationList:[],
-        serverStation1:''        
-      }, 
-      customPhone: "",     
-      serverStation1:'',
+        stationList: [],
+        serverStation1: ""
+      },
+      customPhone: "",
+      serverStation1: "",
       form1: {
         serverPro: '',
         sumPrice: 0,
@@ -363,19 +363,24 @@ export default {
         date: ""
       },
       active: 1,
-      forma:{
+      forma: {
         serverStation1: [
           { required: true, message: "请选择服务站", trigger: "change" }
-        ], 
+        ]
       },
       rules2: {
         selectTech: [
-          { required: true,message: "请选择技师",trigger: "change"}
+          { required: true, message: "请选择技师", trigger: "change" }
         ],
-        severTime:[
-          { required: true,validator: checkDate, message: "请选择服务日期", trigger: "change" }
+        severTime: [
+          {
+            required: true,
+            validator: checkDate,
+            message: "请选择服务日期",
+            trigger: "change"
+          }
         ],
-        severTime1:[
+        severTime1: [
           { required: true, message: "请选择服务时间", trigger: "change" }
         ]
       },
@@ -422,11 +427,11 @@ export default {
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
-      select: "date",      
-      tabOptions: [],//tabName      
-      serverOptions: [],//服务类型下拉     
-      textarea: "", //客户备注      
-      customName: "李四",//当前客户姓名
+      select: "date",
+      tabOptions: [], //tabName
+      serverOptions: [], //服务类型下拉
+      textarea: "", //客户备注
+      customName: "李四", //当前客户姓名
       serverAddress: "北京市朝阳区关东街11呼家楼",
       serverStation: "呼家楼服务站",
       dialogTableVisible: false, //选择技师弹窗开关
@@ -434,10 +439,10 @@ export default {
       technicianName: "", //技师姓名
       //当前客户
       custom: "",
-      customKeyFlag: false,//客户信息展示标志
-      customId:'',//客户ID
-      areaCode:'',
-      middleB:[],
+      customKeyFlag: false, //客户信息展示标志
+      customId: "", //客户ID
+      areaCode: "",
+      middleB: []
     };
   },
   computed: {
@@ -446,60 +451,64 @@ export default {
     }
   },
   methods: {
-      seerchange(val){
-         this.form.serverStation1=val;
-      },
-      inputFocus(){
-        if(this.$refs.pickerInput != undefined){
-             this.$refs.pickerInput.value='';
-        }       
-      },
+    seerchange(val) {
+      this.form.serverStation1 = val;
+    },
+    inputFocus() {
+      if (this.$refs.pickerInput != undefined) {
+        this.$refs.pickerInput.value = "";
+      }
+    },
     //存储选择技师对象
-    ChangeTech(obj){
-      if(obj.techChecked){
-          this.middleA.push(obj)          
-      }else{
+    ChangeTech(obj) {
+      if (obj.techChecked) {
+        this.middleA.push(obj);
+      } else {
         for (var a1 = 0; a1 < this.middleA.length; a1++) {
           if (this.middleA[a1].techId == obj.techId) {
-              this.middleA.remove(this.middleA[a1]);
+            this.middleA.remove(this.middleA[a1]);
           }
-        }         
+        }
       }
-    },     
+    },
     //选中行改变
     rowChange(item) {
-      if(item.goodsChecked){
-        this.form1.sumPrice=this.form1.sumPrice+item.payPriceSum*1; 
-      }else{
-        this.form1.sumPrice=this.form1.sumPrice-item.payPriceSum*1;
+      if (item.goodsChecked) {
+        this.form1.sumPrice = this.form1.sumPrice + item.payPriceSum * 1;
+      } else {
+        this.form1.sumPrice = this.form1.sumPrice - item.payPriceSum * 1;
       }
-               
     },
     //计数器改变
-    numberChange(item,index) {
-      this.$nextTick( () => {
-          item.payPriceSum=item.goodsNum*item.payPrice*1;
-      })            
-      if(item.goodsChecked){
-        this.$nextTick( () => {            
-            this.form1.sumPrice=this.form1.sumPrice+item.payPriceSum-this.$refs[index][0].innerText
-        })
-      }else{
-        this.form1.sumPrice=this.form1.sumPrice+0;
+    numberChange(item, index) {
+      this.$nextTick(() => {
+        item.payPriceSum = item.goodsNum * item.payPrice * 1;
+      });
+      if (item.goodsChecked) {
+        this.$nextTick(() => {
+          this.form1.sumPrice =
+            this.form1.sumPrice +
+            item.payPriceSum -
+            this.$refs[index][0].innerText;
+        });
+      } else {
+        this.form1.sumPrice = this.form1.sumPrice + 0;
       }
-     
     },
     //居室改变
-    roomChange(item,name) {
-      this.$nextTick( () => {
-        item.payPriceSum=item.roomType[item.roomId].payPrice*1
-      })      
-      if(item.goodsChecked){
-        this.$nextTick( () => {
-          this.form1.sumPrice=this.form1.sumPrice+item.payPriceSum-this.$refs[name][0].innerText
-        })
-      }else{
-         this.form1.sumPrice=this.form1.sumPrice+0;
+    roomChange(item, name) {
+      this.$nextTick(() => {
+        item.payPriceSum = item.roomType[item.roomId].payPrice * 1;
+      });
+      if (item.goodsChecked) {
+        this.$nextTick(() => {
+          this.form1.sumPrice =
+            this.form1.sumPrice +
+            item.payPriceSum -
+            this.$refs[name][0].innerText;
+        });
+      } else {
+        this.form1.sumPrice = this.form1.sumPrice + 0;
       }
     },
     //下一步
@@ -527,98 +536,96 @@ export default {
         this.middleB=Object.assign([], arr); 
         this.$refs[formName].validate(valid => {
           if (valid) {
-          }else{
-            this.active=2 
-            return false            
+          } else {
+            this.active = 2;
+            this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
           }
         })               
       }
     },
     //上一步
     prev() {
-      if (this.active-- <= 1) this.active = 1;          
+      if (this.active-- <= 1) this.active = 1;
     },
     //获取时间列表
-    findTimeListByTechFun(){
-          var obj = {
-            stationId:this.serverStation1,
-            goodsInfoList:this.middleB,
-            techList:this.tabOptions
-          };
-          findTimeListByTech(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                  if(res.data.data != undefined){
-                     this.options2=res.data.data
-                //默认选择当前日期
-                    if(this.options2 != undefined && this.options2[0] != undefined){
-                      this.form2.severTime=this.options2[0].value
-                      this.dateChange(this.form2.severTime) 
-                    }                      
-                  }
-
-              }else if(res.data.code === 3){
-                   this.options2=[]
-                  this.$message({
-                    type: 'warning',
-                    message: res.data.data
-                  });
-              }else{
-                   this.options2=[]
+    findTimeListByTechFun() {
+      var obj = {
+        stationId: this.serverStation1,
+        goodsInfoList: this.middleB,
+        techList: this.tabOptions
+      };
+      findTimeListByTech(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.options2 = res.data.data;
+              //默认选择当前日期
+              if (this.options2 != undefined && this.options2[0] != undefined) {
+                this.form2.severTime = this.options2[0].value;
+                this.dateChange(this.form2.severTime);
               }
-
-            })
-            .catch(res => {});      
+            }
+          } else if (res.data.code === 3) {
+            this.options2 = [];
+            this.$message({
+              type: "warning",
+              message: res.data.data
+            });
+          } else {
+            this.options2 = [];
+          }
+        })
+        .catch(res => {});
     },
     //客户查询事件
     changeCustom() {
       //根据手机号查询
-          var obj = {phone:this.customPhone};
-          findCustomerByPhone(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                  if(res.data.data != undefined){
-                    this.customId=res.data.data.id
-                    this.form=res.data.data
-                    this.customKeyFlag = true;                    
-                  }
-
-              }else if(res.data.code === 3){
-                  this.customKeyFlag = false;
-                  this.$message({
-                    type: 'warning',
-                    message: res.data.data
-                  });
-              }else{
-                  this.customKeyFlag = false;
-              }
-
-            })
-            .catch(res => {});
+      var obj = { phone: this.customPhone };
+      findCustomerByPhone(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.customId = res.data.data.id;
+              this.form = res.data.data;
+              this.customKeyFlag = true;
+            }
+          } else if (res.data.code === 3) {
+            this.customKeyFlag = false;
+            this.$message({
+              type: "warning",
+              message: res.data.data
+            });
+          } else {
+            this.customKeyFlag = false;
+          }
+        })
+        .catch(res => {});
     },
     //服务项目下拉获取
-    findItemListFun(){
-          var obj = {};
-          findItemList(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                  this.serverOptions=res.data.data
-              }else if(res.data.code ===3){
-                  this.$message({
-                    type: 'warning',
-                    message: res.data.data
-                  });
-              }
-
-            })
-            .catch(res => {});      
-
+    findItemListFun() {
+      var obj = {};
+      findItemList(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.serverOptions = res.data.data;
+          } else if (res.data.code === 3) {
+            this.$message({
+              type: "warning",
+              message: res.data.data
+            });
+          }
+        })
+        .catch(res => {});
     },
     //新增客户保存
     submitForm(formName) {
       if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
         this.ruleForm.address =
-          this.$refs.pickerInput.value +'-'+this.ruleForm.address;
+          this.$refs.pickerInput.value + "-" + this.ruleForm.address;
         var str = this.$refs.pickerInput1.value;
         str = str.split(",");
         //经度
@@ -648,7 +655,7 @@ export default {
                 this.$refs["ruleForm"].resetFields();
                 this.$refs.pickerInput.value = "";
                 this.dialogTableVisible1 = false;
-              } else {                
+              } else {
                 this.$refs.pickerInput.value = "";
                 this.ruleForm.address = "";
               }
@@ -657,6 +664,10 @@ export default {
         } else {
           this.$refs.pickerInput.value = "";
           this.ruleForm.address = "";
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
           return false;
         }
       });
@@ -673,37 +684,35 @@ export default {
     },
     //获取按客户ID客户数据
     getcustomerList() {
-      var coustomerId=this.$route.query.coustomerId
-      if(coustomerId != undefined){
-         this.customId=coustomerId
-          var obj = {
-            id: coustomerId
-          };
-          findCustomerById(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                  if(res.data.data != undefined){
-                    this.form=res.data.data
-                    this.customKeyFlag = true;                    
-                  }
-
-              }else if(res.data.code === 3){
-                  this.customKeyFlag = false;
-                  this.$message({
-                    type: 'warning',
-                    message: res.data.data
-                  });
-              }else{
-                  this.customKeyFlag = false;
+      var coustomerId = this.$route.query.coustomerId;
+      if (coustomerId != undefined) {
+        this.customId = coustomerId;
+        var obj = {
+          id: coustomerId
+        };
+        findCustomerById(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.form = res.data.data;
+                this.customKeyFlag = true;
               }
-
-            })
-            .catch(res => {}); 
-      }     
+            } else if (res.data.code === 3) {
+              this.customKeyFlag = false;
+              this.$message({
+                type: "warning",
+                message: res.data.data
+              });
+            } else {
+              this.customKeyFlag = false;
+            }
+          })
+          .catch(res => {});
+      }
     },
     //新增按钮
     addcustomer() {
-      this.showDis=true;
+      this.showDis = true;
       this.dialogTableVisible1 = true;
       this.ruleForm.provinceCode = "";
       this.ruleForm.cityCode = "";
@@ -718,40 +727,40 @@ export default {
     },
     //服务类型下拉改变
     serverchange(value) {
-      var obj = {itemId:value};
+      var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
           if (res.data.code === 1) {
-              if(res.data.data != undefined){
-                   this.selectCommidty=res.data.data
-                  if(this.middleB.length !=0){
-                      for(var d=0;d<this.selectCommidty.length;d++) {
-                          for(var a=0;a<this.middleB.length;a++){
-                            if(this.middleB[a].goodsId == this.selectCommidty[d].goodsId){                        
-                                   this.selectCommidty[d]=this.middleB[a]
-                            }
-                          }                   
-                      }
+            if (res.data.data != undefined) {
+              this.selectCommidty = res.data.data;
+              if (this.middleB.length != 0) {
+                for (var d = 0; d < this.selectCommidty.length; d++) {
+                  for (var a = 0; a < this.middleB.length; a++) {
+                    if (
+                      this.middleB[a].goodsId == this.selectCommidty[d].goodsId
+                    ) {
+                      this.selectCommidty[d] = this.middleB[a];
+                    }
                   }
-                  
-              }else{
-                this.selectCommidty=[];
-                this.form1.sumPrice=0
-              }             
-          }else if(res.data.code === 3){
-            this.selectCommidty=[];
-            this.form1.sumPrice=0;
+                }
+              }
+            } else {
+              this.selectCommidty = [];
+              this.form1.sumPrice = 0;
+            }
+          } else if (res.data.code === 3) {
+            this.selectCommidty = [];
+            this.form1.sumPrice = 0;
             this.$message({
-              type: 'warning',
+              type: "warning",
               message: res.data.data
             });
-          }else{
-            this.selectCommidty=[];
-            this.form1.sumPrice=0;            
+          } else {
+            this.selectCommidty = [];
+            this.form1.sumPrice = 0;
           }
-
         })
-        .catch(res => {});       
+        .catch(res => {});
     },
     //技师数据回显二级选中
     selectionreturn1() {
@@ -768,26 +777,25 @@ export default {
     //技师选择按钮点击
     technicianSel() {
       var obj = {
-            stationId:this.serverStation1,
-            goodsInfoList:this.middleB
-      };      
+        stationId: this.serverStation1,
+        goodsInfoList: this.middleB
+      };
       findTechListByGoods(obj)
         .then(res => {
           if (res.data.code === 1) {
-            if(res.data.data !=undefined){
+            if (res.data.data != undefined) {
               this.listTech = res.data.data;
-              for(var a=0;a<this.listTech.length;a++){
-                this.$set(this.listTech[a],'techChecked',false)
+              for (var a = 0; a < this.listTech.length; a++) {
+                this.$set(this.listTech[a], "techChecked", false);
               }
               this.dialogTableVisible = true;
               this.selectionreturn1();
             }
-
-          } else if(res.data.code === 3){
+          } else if (res.data.code === 3) {
             this.$message({
-              type: 'warning',
+              type: "warning",
               message: res.data.data
-            });            
+            });
           }
         })
         .catch(res => {});
@@ -804,7 +812,7 @@ export default {
         }
       }
       this.tabOptions = arr;
-      this.findTimeListByTechFun()
+      this.findTimeListByTechFun();
       this.dialogTableVisible = false;
     },
     //选择技师弹窗取消
@@ -813,12 +821,11 @@ export default {
       this.middleA = Object.assign([], this.tabOptions);
       for (var a = 0; a < this.listTech.length; a++) {
         this.listTech[a].techChecked = false;
-      }     
+      }
       this.dialogTableVisible = false;
     },
     //叉号点击关闭TAB
     errorClose(obj) {
-      
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -832,104 +839,107 @@ export default {
         }
         this.tabOptions.remove(obj);
       }
-      if(this.tabOptions.length == 0){
-        this.form2.severTime1=''
+      if (this.tabOptions.length == 0) {
+        this.form2.severTime1 = "";
       }
     },
     //确认下单按钮点击
     confirmOrder(formName) {
-        if(this.tabOptions.length == 0){
-          this.form2.severTime1=''
-          this.rules2.severTime1[0].message='请选择技师'
+      if (this.tabOptions.length == 0) {
+        this.form2.severTime1 = "";
+        this.rules2.severTime1[0].message = "请选择技师";
+      }
+      var kkk = "";
+      for (var a = 0; a < this.timeObj.length; a++) {
+        if (this.timeObj[a].selected == true) {
+          kkk = this.timeObj[a].serviceTimeStr;
         }
-        var kkk=''
-        for (var a = 0; a < this.timeObj.length; a++) {
-          if (this.timeObj[a].selected == true) {
-            kkk = this.timeObj[a].serviceTimeStr;
+      }
+      if (kkk == "") {
+        this.form2.severTime1 = "";
+      }
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var time = "";
+          for (var a = 0; a < this.timeObj.length; a++) {
+            if (this.timeObj[a].selected == true) {
+              time = this.timeObj[a].serviceTimeStr;
+            }
           }
+          var obj = {
+            customerId: this.customId, //客户ID
+            serviceTime: this.changTime + " " + time + ":00", //服务时间
+            customerRemark: this.textarea, //备注
+            techList: this.tabOptions, //技师对象
+            goodsInfoList: this.middleB, //商品对象
+            stationId: this.serverStation1
+          };
+          createOrder(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "新增成功!"
+                });
+                this.$refs["form2"].resetFields();
+                this.middleA = [];
+                this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+              } else if (res.data.code === 3) {
+                this.$message({
+                  type: "warning",
+                  message: res.data.data
+                });
+              }
+            })
+            .catch(res => {});
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
         }
-        if(kkk==''){
-          this.form2.severTime1=''
-        }        
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-            var time = "";
-              for (var a = 0; a < this.timeObj.length; a++) {
-                if (this.timeObj[a].selected == true) {
-                  time = this.timeObj[a].serviceTimeStr;
-                }
-              }            
-            var obj = {
-              customerId:this.customId,                 //客户ID
-              serviceTime:this.changTime+' '+time+':00',//服务时间
-              customerRemark:this.textarea,             //备注
-              techList:this.tabOptions,                 //技师对象
-              goodsInfoList:this.middleB,               //商品对象
-             stationId:this.serverStation1        
-            };
-            createOrder(obj)
-              .then(res => {
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "新增成功!"
-                  });
-                   this.$refs['form2'].resetFields();
-                   this.middleA = [];
-                   this.$router.push({path:'/clean/ordermanage'}) //跳转到订单管理                    
-                }else if(res.data.code ===3){
-                    this.$message({
-                      type: 'warning',
-                      message: res.data.data
-                    });
-                }
-                
-              })
-              .catch(res => {});             
-          }else{
-          }
-        })
-
+      });
     },
     //POI搜索功能调起
     test(value) {
-          this.showDis=false;
-          var that = this;
-          let inputname = this.$refs.pickerInput;
-          let inputname1 = this.$refs.pickerInput1;
-            //输入提示
-            var autoOptions = {
-              input:inputname,
-              city:value,
-              citylimit:true
-            };           
-            var auto = new AMap.Autocomplete(autoOptions);            
-            var placeSearch = new AMap.PlaceSearch({
-              map: this.mymap,
-              //panel:"panel",              
-            });  //构造地点查询类 
-            // AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
-            //           //获取当前选中的结果数据
-            //           console.log(results.selected.data);
-            // });                       
-            AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
-            function select(e) {
-              placeSearch.setCity(e.poi.adcode);
-              placeSearch.search(e.poi.name);  //关键字查询查询             
-              var poi =e.poi,
-                info = {
-                  id: poi.id,
-                  name: poi.name,
-                  location: poi.location.toString(),
-                  address: poi.address
-                };
-                inputname.value = info.name;
-                inputname1.value = info.location;              
-            }                                       
+      this.showDis = false;
+      var that = this;
+      let inputname = this.$refs.pickerInput;
+      let inputname1 = this.$refs.pickerInput1;
+      //输入提示
+      var autoOptions = {
+        input: inputname,
+        city: value,
+        citylimit: true
+      };
+      var auto = new AMap.Autocomplete(autoOptions);
+      var placeSearch = new AMap.PlaceSearch({
+        map: this.mymap
+        //panel:"panel",
+      }); //构造地点查询类
+      // AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
+      //           //获取当前选中的结果数据
+      //           console.log(results.selected.data);
+      // });
+      AMap.event.addListener(auto, "select", select); //注册监听，当选中某条记录时会触发
+      function select(e) {
+        placeSearch.setCity(e.poi.adcode);
+        placeSearch.search(e.poi.name); //关键字查询查询
+        var poi = e.poi,
+          info = {
+            id: poi.id,
+            name: poi.name,
+            location: poi.location.toString(),
+            address: poi.address
+          };
+        inputname.value = info.name;
+        inputname1.value = info.location;
+      }
     },
     //日期变化时改变时间对象
     dateChange(val) {
-      this.form2.severTime=val;
+      this.form2.severTime = val;
       var that = this;
       for (var b = 0; b < this.options2.length; b++) {
         if (val == this.options2[b].value) {
@@ -952,7 +962,7 @@ export default {
             that.$refs.TimeWrap[a].className = "selfSeverTimeSt";
           }
         });
-      }      
+      }
     },
     timeChange(index, obj) {
       for (var a = 0; a < this.timeObj.length; a++) {
@@ -970,29 +980,29 @@ export default {
           this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
         }
       }
-    },    
+    },
     //选择技师弹出层查询按钮
     searchTeh() {
       var obj = {
         techName: this.techName,
-        stationId:this.serverStation1,
-        goodsInfoList:this.middleB        
+        stationId: this.serverStation1,
+        goodsInfoList: this.middleB
       };
       //服务技师获取
       findTechListByGoods(obj)
         .then(res => {
           if (res.data.code === 1) {
-              for (var b = 0; b < this.middleA.length; b++) {
-                for (var a = 0; a < this.listTech.length; a++) {
-                   this.$set(this.listTech[a],'techChecked',false)
-                  if (this.listTech[a].techId == this.middleA[b].techId) {
-                    this.listTech[a].techChecked = true;
-                  }
+            for (var b = 0; b < this.middleA.length; b++) {
+              for (var a = 0; a < this.listTech.length; a++) {
+                this.$set(this.listTech[a], "techChecked", false);
+                if (this.listTech[a].techId == this.middleA[b].techId) {
+                  this.listTech[a].techChecked = true;
                 }
               }
-          }else if(res.data.code === 3){
+            }
+          } else if (res.data.code === 3) {
             this.$message({
-              type: 'warning',
+              type: "warning",
               message: res.data.data
             });
           }
@@ -1000,13 +1010,13 @@ export default {
         .catch(res => {});
     },
     //地图初始化
-    initMap1(){
-      var id=this.$refs.gdMap;	
+    initMap1() {
+      var id = this.$refs.gdMap;
       var map = new AMap.Map(id, {
-          zoom: 10
+        zoom: 10
       });
-      this.mymap=map;
-    }    
+      this.mymap = map;
+    }
   },
   mounted() {
     this.initMap1();
@@ -1022,7 +1032,12 @@ export default {
   height: 200px;
   line-height: 200px;
 }
-.selfLabelStyle{display:inline-block;position:absolute;left:-100px;color:red;}
+.selfLabelStyle {
+  display: inline-block;
+  position: absolute;
+  left: -100px;
+  color: red;
+}
 .dispatchTechNameSearch {
   width: 180px;
   margin-left: 15px;
@@ -1069,7 +1084,7 @@ export default {
   width: 100%;
   background: #fff;
   padding-top: 20px;
-  padding-bottom:20px;
+  padding-bottom: 20px;
 }
 .techNameStyle {
   width: 80px;
@@ -1087,7 +1102,7 @@ export default {
   width: 100%;
   padding-left: 30px;
   margin-top: 50px;
-  padding-bottom:50px;
+  padding-bottom: 50px;
 }
 .stepContent {
   width: 100%;
@@ -1118,7 +1133,7 @@ export default {
   width: 200px;
   height: 34px;
   line-height: 34px;
-  margin-left:0px;
+  margin-left: 0px;
   display: inline-block;
 }
 .stepThreeSelfTop {
@@ -1166,8 +1181,8 @@ export default {
 }
 .NextPrevWrap {
   position: absolute;
-  left:55%;
-  bottom:20px;
+  left: 55%;
+  bottom: 20px;
 }
 .NextPrevStyle {
   display: inline-block;
@@ -1259,8 +1274,8 @@ export default {
   width: 100%;
   float: left;
   // background: #eef1f6;
-  background:#fff;
-  min-height:500px;
+  background: #fff;
+  min-height: 500px;
 }
 .custom-action {
   margin-left: 30px;
@@ -1376,11 +1391,11 @@ export default {
   position: relative;
 }
 .selfTableWrapONE {
-	margin-top: 20px;
+  margin-top: 20px;
   overflow: hidden;
   width: 660px;
   height: 280px;
-	position:relative;
+  position: relative;
 }
 .table-d {
   width: 677px;
@@ -1415,10 +1430,14 @@ export default {
   height: 60px;
   border: none !important;
 }
-.tableHeader{position:absolute;z-index:99999;top:0px;}
+.tableHeader {
+  position: absolute;
+  z-index: 99999;
+  top: 0px;
+}
 .selfTdStyle1 {
-  vertical-align:middle;
+  vertical-align: middle;
   height: 70px;
-  line-height:70px;
+  line-height: 70px;
 }
 </style>

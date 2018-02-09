@@ -280,7 +280,7 @@
       </el-dialog>
     <!-- 弹出层 新增技师-->
       <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-        <div class="techniAdd">
+        <div class="techniAdd tabBox">
           <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -651,7 +651,7 @@ export default {
       }
     };
     //头像图片
-    var HEADPIC = (rule, value, callback) => { 
+    var HEADPIC = (rule, value, callback) => {
       if (
         this.personal.headPic.length > 0 &&
         this.personal.headPic != undefined
@@ -711,9 +711,7 @@ export default {
         startTime: [
           { required: true, message: "请选择时间", trigger: "change" }
         ],
-        endDate: [
-          { required: true, validator: ENDDATE, trigger: "change" }
-        ],
+        endDate: [{ required: true, validator: ENDDATE, trigger: "change" }],
         startDate: [
           {
             type: "date",
@@ -778,9 +776,7 @@ export default {
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         // 身份证
-        idCard: [
-          { required: true, validator: TECHIDCARD, trigger: "blur" }
-        ],
+        idCard: [{ required: true, validator: TECHIDCARD, trigger: "blur" }],
         //手机号
         phone: [{ required: true, validator: TECHPHONE, trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
@@ -810,7 +806,12 @@ export default {
         headPic: [{ required: true, validator: HEADPIC, trigger: "blur" }],
         address: [
           { required: true, message: "请输入详细地址", trigger: "blur" },
-          { min: 6, max: 100, message: "请输入6~100位详细地址", trigger: "blur" }
+          {
+            min: 6,
+            max: 100,
+            message: "请输入6~100位详细地址",
+            trigger: "blur"
+          }
         ]
       },
       server: [],
@@ -1049,14 +1050,13 @@ export default {
         this.disbArr = [];
       }
     },
-    beforeAvatarUpload(file) {        
+    beforeAvatarUpload(file) {
       if (
         file.type == "image/jpg" ||
         file.type == "image/png" ||
         file.type == "image/jpeg"
       ) {
-          
-      } else {       
+      } else {
         this.$message.error("请上传正确的图片格式");
         return false;
       }
@@ -1076,11 +1076,10 @@ export default {
           this.servery = stationObj.id != 0 ? obj : obj.slice(1);
           this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
         })
-        .catch(error => {
-        });
+        .catch(error => {});
     },
     picUpload(file, flag) {
-      var type = file.file.name.split('.')
+      var type = file.file.name.split(".");
       let pro = new Promise((resolve, rej) => {
         var res = JSON.parse(Cookies.get("sign"));
         var timestamp = Date.parse(new Date()) / 1000;
@@ -1095,7 +1094,6 @@ export default {
       });
       var that = this;
       pro.then(success => {
-
         var data = success;
         var ossData = new FormData();
         var date = new Date();
@@ -1106,7 +1104,17 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + "."+type[type.length-1]
+          data.dir +
+            "/" +
+            y +
+            "/" +
+            m +
+            "/" +
+            d +
+            "/" +
+            s +
+            "." +
+            type[type.length - 1]
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -1139,7 +1147,6 @@ export default {
             }
             return false;
           });
-
       });
     },
     //搜索
@@ -1190,14 +1197,13 @@ export default {
           obj.remark = this.ruleForm.desc;
           addVacation(obj)
             .then(data => {
-              if (data.data.code==1) {
+              if (data.data.code == 1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.vacationCancel("ruleForm");
               } else {
-                
               }
             })
             .catch(error => {
@@ -1232,8 +1238,7 @@ export default {
           this.ruleForm.startTime = data.data.data.start;
           this.ruleForm.endTime = data.data.data.end;
         })
-        .catch(error => {
-        });
+        .catch(error => {});
       this.flags = true;
       this.passwordId = item.id;
       this.vacationName = item.name;
@@ -1252,7 +1257,7 @@ export default {
             appLoginPassword: this.ruleForm2.checkPass
           })
             .then(data => {
-              if (data.data.code==1) {
+              if (data.data.code == 1) {
                 this.$message({
                   message: data.data.data,
                   type: "success"
@@ -1260,7 +1265,6 @@ export default {
                 this.passwordCancel("ruleForm2");
                 this.password = false;
               } else {
-                
               }
             })
             .catch(error => {
@@ -1302,8 +1306,7 @@ export default {
           this.startTime = data.data.data.start;
           this.endTime = data.data.data.end;
         })
-        .catch(error => {
-        });
+        .catch(error => {});
     },
 
     //技师编辑获取ID
@@ -1311,7 +1314,7 @@ export default {
       this.listLoadingTech = true;
       technicianEditId({ id: item.id })
         .then(data => {
-          if (data.data.code==1) {
+          if (data.data.code == 1) {
             this.listLoadingTech = false;
             this.technicianData = data.data.data;
             this.dialogVisibleEdit = true;
@@ -1338,8 +1341,7 @@ export default {
           var obj = data.data.data;
           this.servery = stationObj.id != 0 ? obj : obj.slice(1);
         })
-        .catch(error => {
-        });
+        .catch(error => {});
     },
     //现住地址
     nowAdd(val) {
@@ -1511,7 +1513,7 @@ export default {
         .then(() => {
           technicianDelete({ id: item.id })
             .then(data => {
-              if (data.data.code==1) {
+              if (data.data.code == 1) {
                 this.$message({
                   type: "success",
                   message: "删除成功!"
@@ -1519,7 +1521,6 @@ export default {
                 this.handleCurrentChange(this.listQuery.page);
                 this.dialogVisibleEditClick();
               } else {
-               
               }
             })
             .catch(error => {
@@ -1577,6 +1578,12 @@ export default {
     submitFormPer(formName) {
       this.$refs[formName].validate(val => {
         if (val) {
+          var loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           this.btnState = true;
           for (var i = 0; i < this.teachArr.length; i++) {
             if (this.teachArr[i].endTime == "24:00") {
@@ -1589,7 +1596,7 @@ export default {
           this.personal.workTimes = this.teachArr;
           Technician(this.personal)
             .then(data => {
-              if (data.data.code==1) {
+              if (data.data.code == 1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
@@ -1599,6 +1606,7 @@ export default {
                 } else {
                   this.getList(1, this.listQuery.limit);
                 }
+                loading.close();
                 this.btnState = false;
                 this.dialogVisible = false;
                 this.techniSearch.stationId = "";
@@ -1607,6 +1615,7 @@ export default {
                 this.chooContent = "";
                 this.roomSel2Arr = [];
               } else {
+                loading.close();
                 var str = data.data.data;
                 if (typeof str == "string") {
                   this.$message({
@@ -1624,6 +1633,7 @@ export default {
               }
             })
             .catch(error => {
+              loading.close();
               this.btnState = false;
               return false;
             });
@@ -1644,7 +1654,7 @@ export default {
       this.listLoadingTech = true;
       ChooseTheCity(num, size, obj)
         .then(data => {
-          if (data.data.code==1) {
+          if (data.data.code == 1) {
             this.listLoadingTech = false;
 
             this.Choose = data.data.data.cityCodes;
@@ -1688,7 +1698,7 @@ export default {
           this.listLoadingTech = false;
           return false;
         });
-    },
+    }
   },
   mounted() {
     this.sign; //获取签名
@@ -1705,8 +1715,7 @@ export default {
         this.education = data.education;
         this.relation = data.relation;
       })
-      .catch(error => {
-      });
+      .catch(error => {});
     getTech().then(res => {
       this.ethnics = res.data;
       this.ethnic = res.data[32].label;
@@ -1749,27 +1758,27 @@ export default {
   /* justify-content: space-between;
   align-items: center; */
 }
-.tech-index .serch-box{
+.tech-index .serch-box {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-.tech-index .serch-input{
+.tech-index .serch-input {
   width: 100%;
   float: left;
 }
-.tech-index .serch-btn{
+.tech-index .serch-btn {
   float: right;
   /* width: 8%; */
 }
 
-.tech-index .serch-ski{
+.tech-index .serch-ski {
   margin-top: 10px;
 }
-.tech-index .serch-ski .search{
+.tech-index .serch-ski .search {
   width: 102%;
 }
-.tech-index .serch-ski .search .el-input{
+.tech-index .serch-ski .search .el-input {
   /* width: 42%; */
 }
 
@@ -1919,13 +1928,13 @@ export default {
   justify-content: center;
 }
 
-.idBox{
+.idBox {
   overflow: hidden;
 }
-.idBox .el-form-item{
+.idBox .el-form-item {
   float: left;
 }
-.idBox>.avatar-uploader{
+.idBox > .avatar-uploader {
   margin-left: 20px;
   float: left;
 }
@@ -2085,7 +2094,7 @@ export default {
   width: 100px;
   text-align: center;
 }
-.searchHeader{
+.searchHeader {
   width: 30%;
 }
 .searchHeader .el-input__inner {
@@ -2363,7 +2372,7 @@ export default {
      justify-content: center; */
 }
 
-.avatarBack{
+.avatarBack {
   /* position: absolute;
   left: 450px; */
   margin-left: 200px;
@@ -2397,7 +2406,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-.tech-index .el-select .el-tag{
+.tech-index .el-select .el-tag {
   line-height: 23px;
 }
 .tech-mouse-div > span:nth-of-type(1) {

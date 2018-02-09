@@ -67,7 +67,8 @@ export default {
     logout() {
       this.$store.dispatch("LogOut").then(() => {
         this.$router.push({ path: "/login" });
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
+        this.$store.state.app.visitedViews = [];
+        // location.reload(); // 为了重新实例化vue-router对象 避免bug
       });
     }
   }

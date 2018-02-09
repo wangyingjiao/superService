@@ -125,328 +125,345 @@
 </template>
 
 <script>
-import {getOrderTable} from "@/api/order";
-import {getFuwu} from "@/api/staff";
+import { getOrderTable } from "@/api/order";
+import { getFuwu } from "@/api/staff";
 import util from "@/utils/date";
 export default {
-	name: "ordermanage",
-  data() { 		
+  name: "ordermanage",
+  data() {
     return {
-		btnShow:JSON.parse(localStorage.getItem('btn')),
-		severTime:'',
-		severEndTime:'',
-		dict:require("../../../static/dict.json"),
-		payTypeOptions:[],
-		orderTest:[],
-		payType:'',
-		payStusOptions:[],
-		payStus:'',
-		mechanismOptions:[],
-		mechanism:'',
-		sevicerStustasOptions:[],
-		sevicerStustas:'',//服务状态
-		searchCon:'',//搜索框的值初始化
-		customerName:'',
-		customerPhone:'',
-		orderNumber:'',
-		orderContent:'',
-		activeName:'dispatched',//当前tabs
-		startTime:'',//开始时间
-		endTime:'',//结束时间
-		tabDataList:[],//表格数据
-		size:10,
-		total:null,
-		jumpPage:1,
-		pageNumber:1,
-		listLoading:false,
-		active1:''
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      severTime: "",
+      severEndTime: "",
+      dict: require("../../../static/dict.json"),
+      payTypeOptions: [],
+      orderTest: [],
+      payType: "",
+      payStusOptions: [],
+      payStus: "",
+      mechanismOptions: [],
+      mechanism: "",
+      sevicerStustasOptions: [],
+      sevicerStustas: "", //服务状态
+      searchCon: "", //搜索框的值初始化
+      customerName: "",
+      customerPhone: "",
+      orderNumber: "",
+      orderContent: "",
+      activeName: "dispatched", //当前tabs
+      startTime: "", //开始时间
+      endTime: "", //结束时间
+      tabDataList: [], //表格数据
+      size: 10,
+      total: null,
+      jumpPage: 1,
+      pageNumber: 1,
+      listLoading: false,
+      active1: ""
     };
   },
-  methods: {	
-	//机构变化事件
-	orgChange(val){
-		this.payType='';
-		this.payTypeOptions=[];
-		if(val != ''){		
-			var obj={
-				orgId:val,
-			}
-			getFuwu(obj).then(res => {
-				if(res.data.code === 1){
-					    res.data.data.remove(res.data.data[0])
-						this.payTypeOptions=res.data.data;
-				}else{
-				}
-			});	
-		}
-	},
-  //获取表格数据
-	getTableData(pramsObj,pageNo,pageSize){ 
-		this.listLoading = true;
-		var obj=pramsObj; 
-	    getOrderTable(obj,pageNo,pageSize).then(res => {
-			if(res.data.code === 1){
-				this.total=res.data.data.page.count;
-				this.tabDataList = res.data.data.page.list;
-				this.pageNumber=res.data.data.page.pageNo;
-				this.jumpPage=res.data.data.page.pageNo;
-				this.size=res.data.data.page.pageSize;
-				for(var a=0;a<res.data.data.orgList.length;a++){
-					if(res.data.data.orgList[a].id == 0){
-						res.data.data.orgList.remove(res.data.data.orgList[a])
-					}					
-				}
-														
-				this.mechanismOptions=res.data.data.orgList;				
-				this.listLoading = false;
-			}else{
-				this.listLoading = false;
-			}
-        }).catch(res=>{
-          		this.listLoading = false;
-		});
-	},
-	//tabs操作需要请求表格数据
-	handleClick(tab, event) {
-		this.activeName=tab.name;
-		if(tab.name == 'whole'){
-			this.active1='';
-		}else{
-			this.active1=tab.name
-		}					
-		this.payStus='';
-		this.mechanism='';
-		this.payType='';
-		this.sevicerStustas='';
-		this.orderNumber='';
-		this.startTime='';
-		this.endTime='';
-		this.severTime='';
-		this.severEndTime='';
-		var obj={
-			orderStatus:this.active1
-		};
-		this.pageNumber=1;
-		this.jumpPage=1;
-		this.getTableData(obj,this.pageNumber,this.size);				
+  methods: {
+    //机构变化事件
+    orgChange(val) {
+      this.payType = "";
+      this.payTypeOptions = [];
+      if (val != "") {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          if (res.data.code === 1) {
+            res.data.data.remove(res.data.data[0]);
+            this.payTypeOptions = res.data.data;
+          } else {
+          }
+        });
+      }
     },
-	//全局search按钮
-	localSearch(){
-		//服务时间格式化		
-		if(this.severTime[0]){
-    		var severstartTime = util.formatDate.format(
-					new Date(this.severTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-			);          
-		}else{
-			  severstartTime=null
-		}
-		if(this.severTime[1]){
-    		var severEndTime = util.formatDate.format(
-					new Date(this.severTime[1]),
-					"yyyy-MM-dd 23:59:59"
-			);           
-		}else{
-			severEndTime=null
-		}		
-			
-		//开始时间格式化	
-		if(this.startTime[0]){
-    		var startTime = util.formatDate.format(
-					new Date(this.startTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-			);
-		}else{
-			  startTime=null
-		}
-		//结束时间格式化 
-        if(this.startTime[1]){
-			var endTime = util.formatDate.format(
-				new Date(this.startTime[1]),
-				"yyyy-MM-dd 23:59:59"
-			);
-		}else{
-			endTime=null
-		}
-		if(this.activeName == 'whole'){
-			this.active1='';
-		}else{
-			this.active1=this.activeName
-		}			
-		var obj={
-			orderStatus:this.active1,
-			serviceStatus:this.sevicerStustas,//服务状态 
-			// payStatus:this.payStus,
-			orgId:this.mechanism,
-			stationId:this.payType,
-			orderNumber:this.orderNumber,
-			orderTimeStart:startTime,
-			orderTimeEnd:endTime,
-			serviceTimeStart:severstartTime,
-			serviceTimeEnd:severEndTime
-		};
-		this.pageNumber=1;
-		this.jumpPage=1;		
-		this.getTableData(obj,this.pageNumber,this.size);	
-	},
-	//导出订单按钮
-	exportOrder(){
-	},
-	//查看跳转到订单详情页
-	lookInf(id){
-		window.localStorage.setItem("orderId",id)
-		this.$router.push({path:'/clean/orderinfo',query:{id:id}})
-	},	
-	//每页条数多少改变
-	handleSizeChange(val){
-		this.pageNumber=1;
-		this.jumpPage=1;
-		this.size=val;
-		//服务时间格式化				
-		if(this.severTime[0]){
-    		var severstartTime = util.formatDate.format(
-					new Date(this.severTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-			);          
-		}else{
-			  severstartTime=null
-		}
-		if(this.severTime[1]){
-    		var severEndTime = util.formatDate.format(
-					new Date(this.severTime[1]),
-					"yyyy-MM-dd 23:59:59"
-			);           
-		}else{
-			severEndTime=null
-		}				
-		//开始时间格式化	
-		if(this.startTime[0]){
-    		var startTime = util.formatDate.format(
-					new Date(this.startTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-				);
-		}else{
-			  startTime=null
-		}
-		//结束时间格式化 
-        if(this.startTime[1]){
-			var endTime = util.formatDate.format(
-				new Date(this.startTime[1]),
-				"yyyy-MM-dd 23:59:59"
-			);
-		}else{
-			endTime=null
-		}
-		if(this.activeName == 'whole'){
-			this.active1='';
-		}else{
-			this.active1=this.activeName
-		}		
-		var obj={
-			orderStatus:this.active1,
-			serviceStatus:this.sevicerStustas,//服务状态 
-			// payStatus:this.payStus,
-			orgId:this.mechanism,
-			stationId:this.payType,
-			orderNumber:this.orderNumber,
-			orderTimeStart:startTime,
-			orderTimeEnd:endTime,
-			serviceTimeStart:severstartTime,
-			serviceTimeEnd:severEndTime,			
-		}
-		this.getTableData(obj,this.pageNumber,this.size);		
-	},
-	//分页器改变当前页
-	handleCurrentChange(val){
-		this.pageNumber=val;
-		//服务时间格式化		
-		if(this.severTime[0]){
-    		var severstartTime = util.formatDate.format(
-					new Date(this.severTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-			);          
-		}else{
-			  severstartTime=null
-		}
-		if(this.severTime[1]){
-    		var severEndTime = util.formatDate.format(
-					new Date(this.severTime[1]),
-					"yyyy-MM-dd 23:59:59"
-			);           
-		}else{
-			severEndTime=null
-		}				
-		//开始时间格式化	
-		if(this.startTime[0]){
-    		var startTime = util.formatDate.format(
-					new Date(this.startTime[0]),
-					"yyyy-MM-dd hh:mm:ss"
-				);
-		}else{
-			  startTime=null
-		}
-		//结束时间格式化 
-        if(this.startTime[1]){
-			var endTime = util.formatDate.format(
-				new Date(this.startTime[1]),
-				"yyyy-MM-dd 23:59:59"
-			);
-		}else{
-			endTime=null
-		}
-		if(this.activeName == 'whole'){
-			this.active1='';
-		}else{
-			this.active1=this.activeName
-		}		
-		var obj={
-			orderStatus:this.active1,
-			serviceStatus:this.sevicerStustas,//服务状态 
-			// payStatus:this.payStus,
-			orgId:this.mechanism,
-			stationId:this.payType,
-			orderNumber:this.orderNumber,
-			orderTimeStart:startTime,
-			orderTimeEnd:endTime,
-			serviceTimeStart:severstartTime,
-			serviceTimeEnd:severEndTime,			
-		}
-		this.getTableData(obj,this.pageNumber,this.size);		
-	},
+    //获取表格数据
+    getTableData(pramsObj, pageNo, pageSize) {
+      this.listLoading = true;
+      var obj = pramsObj;
+      getOrderTable(obj, pageNo, pageSize)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.total = res.data.data.page.count;
+            this.tabDataList = res.data.data.page.list;
+            this.pageNumber = res.data.data.page.pageNo;
+            this.jumpPage = res.data.data.page.pageNo;
+            this.size = res.data.data.page.pageSize;
+            for (var a = 0; a < res.data.data.orgList.length; a++) {
+              if (res.data.data.orgList[a].id == 0) {
+                res.data.data.orgList.remove(res.data.data.orgList[a]);
+              }
+            }
 
-	
+            this.mechanismOptions = res.data.data.orgList;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+          }
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
+    },
+    //tabs操作需要请求表格数据
+    handleClick(tab, event) {
+      this.activeName = tab.name;
+      if (tab.name == "whole") {
+        this.active1 = "";
+      } else {
+        this.active1 = tab.name;
+      }
+      this.payStus = "";
+      this.mechanism = "";
+      this.payType = "";
+      this.sevicerStustas = "";
+      this.orderNumber = "";
+      this.startTime = "";
+      this.endTime = "";
+      this.severTime = "";
+      this.severEndTime = "";
+      var obj = {
+        orderStatus: this.active1
+      };
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.getTableData(obj, this.pageNumber, this.size);
+    },
+    //全局search按钮
+    localSearch() {
+      //服务时间格式化
+      if (this.severTime[0]) {
+        var severstartTime = util.formatDate.format(
+          new Date(this.severTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        severstartTime = null;
+      }
+      if (this.severTime[1]) {
+        var severEndTime = util.formatDate.format(
+          new Date(this.severTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        severEndTime = null;
+      }
+
+      //开始时间格式化
+      if (this.startTime[0]) {
+        var startTime = util.formatDate.format(
+          new Date(this.startTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        startTime = null;
+      }
+      //结束时间格式化
+      if (this.startTime[1]) {
+        var endTime = util.formatDate.format(
+          new Date(this.startTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        endTime = null;
+      }
+      if (this.activeName == "whole") {
+        this.active1 = "";
+      } else {
+        this.active1 = this.activeName;
+      }
+      var obj = {
+        orderStatus: this.active1,
+        serviceStatus: this.sevicerStustas, //服务状态
+        // payStatus:this.payStus,
+        orgId: this.mechanism,
+        stationId: this.payType,
+        orderNumber: this.orderNumber,
+        orderTimeStart: startTime,
+        orderTimeEnd: endTime,
+        serviceTimeStart: severstartTime,
+        serviceTimeEnd: severEndTime
+      };
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.getTableData(obj, this.pageNumber, this.size);
+    },
+    //导出订单按钮
+    exportOrder() {},
+    //查看跳转到订单详情页
+    lookInf(id) {
+      window.localStorage.setItem("orderId", id);
+      this.$router.push({ path: "/clean/orderinfo", query: { id: id } });
+    },
+    //每页条数多少改变
+    handleSizeChange(val) {
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.size = val;
+      //服务时间格式化
+      if (this.severTime[0]) {
+        var severstartTime = util.formatDate.format(
+          new Date(this.severTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        severstartTime = null;
+      }
+      if (this.severTime[1]) {
+        var severEndTime = util.formatDate.format(
+          new Date(this.severTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        severEndTime = null;
+      }
+      //开始时间格式化
+      if (this.startTime[0]) {
+        var startTime = util.formatDate.format(
+          new Date(this.startTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        startTime = null;
+      }
+      //结束时间格式化
+      if (this.startTime[1]) {
+        var endTime = util.formatDate.format(
+          new Date(this.startTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        endTime = null;
+      }
+      if (this.activeName == "whole") {
+        this.active1 = "";
+      } else {
+        this.active1 = this.activeName;
+      }
+      var obj = {
+        orderStatus: this.active1,
+        serviceStatus: this.sevicerStustas, //服务状态
+        // payStatus:this.payStus,
+        orgId: this.mechanism,
+        stationId: this.payType,
+        orderNumber: this.orderNumber,
+        orderTimeStart: startTime,
+        orderTimeEnd: endTime,
+        serviceTimeStart: severstartTime,
+        serviceTimeEnd: severEndTime
+      };
+      this.getTableData(obj, this.pageNumber, this.size);
+    },
+    //分页器改变当前页
+    handleCurrentChange(val) {
+      this.pageNumber = val;
+      //服务时间格式化
+      if (this.severTime[0]) {
+        var severstartTime = util.formatDate.format(
+          new Date(this.severTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        severstartTime = null;
+      }
+      if (this.severTime[1]) {
+        var severEndTime = util.formatDate.format(
+          new Date(this.severTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        severEndTime = null;
+      }
+      //开始时间格式化
+      if (this.startTime[0]) {
+        var startTime = util.formatDate.format(
+          new Date(this.startTime[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+      } else {
+        startTime = null;
+      }
+      //结束时间格式化
+      if (this.startTime[1]) {
+        var endTime = util.formatDate.format(
+          new Date(this.startTime[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+      } else {
+        endTime = null;
+      }
+      if (this.activeName == "whole") {
+        this.active1 = "";
+      } else {
+        this.active1 = this.activeName;
+      }
+      var obj = {
+        orderStatus: this.active1,
+        serviceStatus: this.sevicerStustas, //服务状态
+        // payStatus:this.payStus,
+        orgId: this.mechanism,
+        stationId: this.payType,
+        orderNumber: this.orderNumber,
+        orderTimeStart: startTime,
+        orderTimeEnd: endTime,
+        serviceTimeStart: severstartTime,
+        serviceTimeEnd: severEndTime
+      };
+      this.getTableData(obj, this.pageNumber, this.size);
+    }
   },
   mounted() {
-		this.getTableData({orderStatus:'dispatched'},1,10);
-		this.payStusOptions=this.dict.pay_status;
-		this.orderTest=this.dict.order_status;
-		this.sevicerStustasOptions=this.dict.service_status;
+    this.getTableData({ orderStatus: "dispatched" }, 1, 10);
+    this.payStusOptions = this.dict.pay_status;
+    this.orderTest = this.dict.order_status;
+    this.sevicerStustasOptions = this.dict.service_status;
   }
 };
 </script>
 <style lang="scss" scoped>
-.selfToolTip{
-   width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
+.selfToolTip {
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
-.addorder-container{
-  width:100%;
-	float:left;
-	background:#eef1f6;
+.addorder-container {
+  width: 100%;
+  float: left;
+  background: #eef1f6;
 }
-.width200{width:200px;}
-.floatRight{float:right}
-.fist-bar{
-  background:#fff;
-  border-bottom:1px solid #eee;
+.width200 {
+  width: 200px;
 }
-.second-input{
-	margin-top:10px;
+.floatRight {
+  float: right;
 }
-.orderMangeWarp{
-	background:#fff;
-	padding:20px 20px;
+.fist-bar {
+  background: #fff;
+  border-bottom: 1px solid #eee;
 }
-.exprotStyle{float:right;margin-bottom:10px;}
-.ordermanageTableWrap{width:100%;background:#fff;padding:20px 0px 46px 0px;}
-.ordermanagePagination{margin-top:20px;float:right;}
+.second-input {
+  margin-top: 10px;
+}
+.orderMangeWarp {
+  background: #fff;
+  padding: 20px 20px;
+}
+.exprotStyle {
+  float: right;
+  margin-bottom: 10px;
+}
+.ordermanageTableWrap {
+  width: 100%;
+  background: #fff;
+  padding: 20px 0px 46px 0px;
+}
+.ordermanagePagination {
+  margin-top: 20px;
+  float: right;
+}
 </style>

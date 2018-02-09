@@ -251,7 +251,8 @@ export default{
 	line-height:152px;
 	text-align: center;
 	padding:5px;
-	margin:0px 20px 0px 0;
+	margin: 10px;
+	/* margin:0px 20px 0px 0; */
 	border:1px solid #d1dbe5;
 	border-radius:4px;
 	transition:all .3s;
