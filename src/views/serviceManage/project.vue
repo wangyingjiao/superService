@@ -877,10 +877,10 @@ export default {
       return arr
     },
     imgClick(item){
-		this.picFile = item
+		  this.picFile = item
     },
     imgTextClick(item){
-	  this.imgText = item
+	    this.imgText = item
     },
     //对接商品
     handleSendData(row){
@@ -905,10 +905,9 @@ export default {
     },
     //添加商品
     addCommodity(){
-		this.addCommodityFlag = true
-		this.resetForm('ser')
-		this.handleEditFlag = false
-		// this.addComm = !this.addComm
+      this.addCommodityFlag = true
+      this.resetForm('ser')
+      this.handleEditFlag = false
     },
     converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
@@ -1039,8 +1038,8 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
-			this.handleEditFlag = false
-			this.addCommodityFlag = false
+            this.handleEditFlag = false
+            this.addCommodityFlag = false
           }else{
               if("id" in obj){
                 delete obj.id
@@ -1049,8 +1048,8 @@ export default {
                 delete obj.jointGoodsCode
               }
               this.basicForm.commoditys.push(obj)
-			  this.resetForm('ser')
-			  this.addCommodityFlag = false
+              this.resetForm('ser')
+              this.addCommodityFlag = false
           }
         } else {
           var errArr = this.$refs[formName]._data.fields;
@@ -1250,8 +1249,9 @@ export default {
               this.dialogFormVisible = true;   
               var arr = data.data.data;
               if (arr.pictures != undefined) {
-				this.picFile = arr.pictures;
-				this.picList = this.picFile
+                  this.picFile = arr.pictures;
+                  //banner传给upload组件
+                  this.picList = this.picFile
                 // this.imgNumber = arr.pictures.length;
                 // for (var i = 0; i < arr.pictures.length; i++) {
                 //   var obj = {
@@ -1261,7 +1261,8 @@ export default {
 				// }
 			  }
 			  if(arr.pictureDetails != undefined){
-				  this.imgText = arr.pictureDetails
+          this.imgText = arr.pictureDetails
+          //详情图片传给upload组件
 				  this.pictureDetails = this.imgText
 				  	// for(var i = 0;i<arr.pictureDetails.length; i++){
 					// var obj = {
@@ -1334,9 +1335,9 @@ export default {
     },
     handleClick(tab, event) {
       this.search.sortId = ''
-	  this.search.name = ''
-	  this.search.goodsName = ''
-	  this.search.sortIdandGoodsId = ''
+      this.search.name = ''
+      this.search.goodsName = ''
+      this.search.sortIdandGoodsId = ''
       var size = this.pageSize;
       this.pageNumber = 1;
        Taxonomy({majorSort:tab.name})
@@ -1447,6 +1448,7 @@ export default {
                       type: "warning"
                     });
                   }
+                  //loading取消
                   loading.close();
                   this.cancel("basic");
                   this.basicForm.majorSort = 'all';
@@ -1504,19 +1506,20 @@ export default {
       this.goods_info.startPerNum = '';
 	  this.goods_info.cappingPerNum = ''
     },
+    //弹框关闭回调
     emptyingForm(){
       if( this.$refs["goods_info"]){
         this.$refs["goods_info"].resetFields()
       }
       this.$refs["basic"].resetFields()
       this.jointCode = false
-    //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-	  this.picFile = ['','','',''] //清空图片
-	  this.pictureDetails = ['','','','']
-	  this.imgText =['','','','']
-      this.picList = ['','','',''] //清空图片this.alreadyArr.concat(this.labelClickArr)
+      //清空banner和图文详情图
+      this.picFile = ['','','',''] //清空图片
+      this.pictureDetails = ['','','','']
+      this.imgText =['','','','']
+      this.picList = ['','','',''] //清空图片
       this.alreadyArr = []
       this.labelClickArr = []
       this.customArr = []
@@ -1888,6 +1891,9 @@ export default {
 }
 .tabStyle .el-select{
 	margin-left:1%;
+}
+.tabStyle .button-large{
+  margin-left: 0;
 }
 .tabStyle .el-input{
 	margin-left: 1%;
