@@ -84,7 +84,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       list: [],
       total: null,
       listLoading: true,
@@ -101,14 +101,14 @@ export default {
       total: 1,
       tableKey: 0,
       search: {
-        refundStatus:"",
+        refundStatus: "",
         status: "",
         value: ""
       }
     };
   },
   created() {
-    this.getList();   
+    this.getList();
   },
   methods: {
     getList() {
@@ -116,17 +116,17 @@ export default {
       var obj = {};
       getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
         this.list = res.data.data.list;
-        if(this.list != undefined){
+        if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
-
         }
         this.total = res.data.data.count;
         this.listLoading = false;
       });
     },
-    handleFilter() { // 搜索
+    handleFilter() {
+      // 搜索
       // var value = this.search.value;
       // if (this.search.key == "name") {
       //   var obj = {
@@ -151,7 +151,6 @@ export default {
       //     for (var i = 0; i < this.list.length; i++) {
       //       this.list[i].index = i + 1;
       //     }
-
       //   }
       //   this.total = res.data.data.count;
       //   this.listLoading = false;
@@ -159,7 +158,8 @@ export default {
       // this.listQuery.page = 1;
       // // this.getList();
     },
-    handleSizeChange(val) { //每页的个数
+    handleSizeChange(val) {
+      //每页的个数
       // this.pageSize = val;
       // var value = this.search.value;
       // if (this.search.key == "name") {
@@ -182,13 +182,13 @@ export default {
       //     for (var i = 0; i < this.list.length; i++) {
       //       this.list[i].index = i + 1;
       //     }
-
       //   }
       //   this.total = res.data.data.count;
       //   this.listLoading = false;
       // });
     },
-    handleCurrentChange(val) { // 换页
+    handleCurrentChange(val) {
+      // 换页
       // this.pageNumber = val;
       // var value = this.search.value;
       // if (this.search.key == "name") {
@@ -211,14 +211,11 @@ export default {
       //     for (var i = 0; i < this.list.length; i++) {
       //       this.list[i].index = i + 1;
       //     }
-
       //   }
       //   this.listLoading = false;
       // });
-    }, 
-    searchChange(val) {
     },
-    
+    searchChange(val) {}
   }
 };
 </script>

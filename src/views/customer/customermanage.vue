@@ -146,505 +146,524 @@
 </template>
 
 <script>
-import { 
-	getCusTable,// 获取客户表格信息
-	deleteCus,  //删除客户
-	saveCus,     //保存客户（新增）
-	getCus,//客户（编辑）
-	upCus//保存客户（编辑）
-	} from "@/api/customer";
-import {getMech} from "@/api/basic";
+import {
+  getCusTable, // 获取客户表格信息
+  deleteCus, //删除客户
+  saveCus, //保存客户（新增）
+  getCus, //客户（编辑）
+  upCus //保存客户（编辑）
+} from "@/api/customer";
+import { getMech } from "@/api/basic";
 export default {
   name: "customermanage",
   data() {
-		//手机号验证规则
-		var checkPhone = (rule, value, callback) => {
-				if (!value) {
-					return callback(new Error('请输入11位手机号码'));
-				}else{
-					if (!(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value))) {
-						callback(new Error('请输入11位手机号码'));
-					} else {
-						callback();
-					}
-				}
-		};
-		//邮箱验证规则
-		var checkEmail = (rule, value, callback) => {
-				if (!value) {
+    //手机号验证规则
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error("请输入11位手机号码"));
+      } else {
+        if (!/^1[3|4|5|6|7|8|9][0-9]\d{8}$/.test(value)) {
+          callback(new Error("请输入11位手机号码"));
+        } else {
+          callback();
+        }
+      }
+    };
+    //邮箱验证规则
+    var checkEmail = (rule, value, callback) => {
+      if (!value) {
+        callback();
+      } else {
+        if (
+          !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)
+        ) {
+          callback(new Error("请输入正确的邮箱"));
+        } else {
+          if (value.length >= 5 && value.length <= 50) {
             callback();
-				}else{
-					if (!(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value))) {
-						callback(new Error('请输入正确的邮箱'));
-					} else {
-						 if(value.length>=5 && value.length<=50){
-                  callback()
-              }else{
-                callback(new Error('请输入5-50位详细地址'));
-              }
-					}
-				}			
-		};
-		//客户名验证规则
-		var checkName = (rule, value, callback) => {
-				if (!value) {
-            callback(new Error('请输入2-15位客户姓名'));
-				}else{
-						 if(value.length>=2 && value.length<=15){
-                  callback()
-              }else{
-                callback(new Error('请输入2-15位客户姓名'));
-              }
-				}			
-		};
-		//详细地址验证规则
-		var checkAddress = (rule, value, callback) => {			  
-				if (!value) {
-            callback(new Error('请选取地点,并填写详细地址'));
-				}else{
-						if(value.length>=1 && value.length<=100){
-								callback()
-						}else{
-							callback(new Error('请输入1-100位详细地址'));
-						}
-				}			
-		};				 		 		
+          } else {
+            callback(new Error("请输入5-50位详细地址"));
+          }
+        }
+      }
+    };
+    //客户名验证规则
+    var checkName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入2-15位客户姓名"));
+      } else {
+        if (value.length >= 2 && value.length <= 15) {
+          callback();
+        } else {
+          callback(new Error("请输入2-15位客户姓名"));
+        }
+      }
+    };
+    //详细地址验证规则
+    var checkAddress = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请选取地点,并填写详细地址"));
+      } else {
+        if (value.length >= 1 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入1-100位详细地址"));
+        }
+      }
+    };
     return {
-				showDis:true,
-				submitFlag:false,
-			  jumpPage:1,
-			  btnShow: JSON.parse(localStorage.getItem('btn')),
-				testvalue:'',
-				areaOptions:this.$store.state.user.area,
-			  listLoading:false,
-        ruleForm: {
-					name:'',
-					phone:'',
-					address:'',
-					email:'',
-					sex:'',
-					provinceCode:'',
-					cityCode:'',
-					areaCode:'',
-					areaCodes:[],
-					addrLongitude:'',
-					addrLatitude:'',
-				},
-        rules: {
-          name: [
-            { required: true,validator:checkName, trigger: 'blur' },
-          ],
-          phone: [
-            { required: true,validator: checkPhone, trigger: 'blur' }										
-          ],
-          address: [
-						{ required: true, validator:checkAddress,trigger: 'blur' },
-					],
-					email:[
-						{ required:false, validator: checkEmail, trigger: 'blur' },
-					],
-					sex: [
-						{ required: true, message: '请选择性别', trigger: 'change' }
-					],
-					areaCodes:[
-							{type:'array', required: true, message: '请选择区域', trigger: 'change' }
-					]					
-        },
-		dict:require("../../../static/dict.json"),
-		sex:'',
-		sexName:'',								
-    tableData: [],	
-		//全局搜索下拉选项
-		organizationOptions:[],
-		// organizationName:'',//服务机构				
-		dialogTableVisible:false,//新增弹窗开关
-		customName:'',//客户姓名
-		customPhone:'',//客户电话
-		pagetotal1:0,//表格总页数
-		pageSize1:10,//表格每页条数
-		pageNumber:1,
-		mymap:{},
-		testFlag:undefined,
+      showDis: true,
+      submitFlag: false,
+      jumpPage: 1,
+      btnShow: JSON.parse(localStorage.getItem("btn")),
+      testvalue: "",
+      areaOptions: this.$store.state.user.area,
+      listLoading: false,
+      ruleForm: {
+        name: "",
+        phone: "",
+        address: "",
+        email: "",
+        sex: "",
+        provinceCode: "",
+        cityCode: "",
+        areaCode: "",
+        areaCodes: [],
+        addrLongitude: "",
+        addrLatitude: ""
+      },
+      rules: {
+        name: [{ required: true, validator: checkName, trigger: "blur" }],
+        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        email: [{ required: false, validator: checkEmail, trigger: "blur" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        areaCodes: [
+          {
+            type: "array",
+            required: true,
+            message: "请选择区域",
+            trigger: "change"
+          }
+        ]
+      },
+      dict: require("../../../static/dict.json"),
+      sex: "",
+      sexName: "",
+      tableData: [],
+      //全局搜索下拉选项
+      organizationOptions: [],
+      // organizationName:'',//服务机构
+      dialogTableVisible: false, //新增弹窗开关
+      customName: "", //客户姓名
+      customPhone: "", //客户电话
+      pagetotal1: 0, //表格总页数
+      pageSize1: 10, //表格每页条数
+      pageNumber: 1,
+      mymap: {},
+      testFlag: undefined
     };
   },
-  methods:{
-		  //清空地址POI选择框值
-		  inputBlur(){
-				this.$refs.pickerInput.value='';			
-			},
-			//地址POI选择初始城市值
-		  testFun(value){				  
-					this.$nextTick(() => {
-							this.test(value[2]);
-					})	
-			},
-			//新增保存
-			submitForm(formName,status) {
-				    var that=this
-						this.submitFlag=true;
-						setTimeout(function() {
-							that.submitFlag=false;
-						},1000);		   
-						this.$refs[formName].validate((valid) => {							
-							if (valid) {								
-									if(this.$refs.pickerInput.value !='' && this.ruleForm.address !=''){						 
-											this.ruleForm.address=this.$refs.pickerInput.value+'-'+this.ruleForm.address;
-											var str=this.$refs.pickerInput1.value;
-													str=str.split(',')
-													//经度
-													var lng=str[0];
-													this.ruleForm.addrLongitude=lng;
-													//纬度
-													var lat=str[1];
-													this.ruleForm.addrLatitude=lat;
-									}else{
-										this.$refs.pickerInput.value='';
-										this.ruleForm.address='';
-									}	
-								//省、市、区三级ID	
-								this.ruleForm.provinceCode=this.ruleForm.areaCodes[0];
-								this.ruleForm.cityCode=this.ruleForm.areaCodes[1];
-								this.ruleForm.areaCode=this.ruleForm.areaCodes[2];
-								//保存upCus
-								if(status =='add'){
-											var obj = this.ruleForm;
-											saveCus(obj).then(res => {
-												if(res.data.code === 1){
-														this.$message({
-															type: 'success',
-															message: '新增成功!'
-														});
-														this.$refs['ruleForm'].resetFields();
-														this.customName='';
-														this.customPhone='';
-														// this.organizationName='';
-														this.$refs.pickerInput.value=''	
-														this.dialogTableVisible = false
-														var obj={};
-														this.pageNumber=1;
-														this.jumpPage=1;
-														this.getData(obj,this.pageNumber,this.pageSize1);
-												}else{
-													
-													this.$refs.pickerInput.value=''
-													this.ruleForm.address=''
-												}													
-											}).catch(res=>{												
-											});			
-								}else{
-										var obj1 = this.ruleForm;
-										upCus(obj1).then(res => {
-											if(res.data.code === 1){
-													this.$message({
-														type: 'success',
-														message: '编辑成功!'
-													});
-													this.$refs['ruleForm'].resetFields();
-													this.customName='';
-													this.customPhone='';
-													this.$refs.pickerInput.value=''	
-													this.dialogTableVisible = false
-													var obj2={};
-													this.pageNumber=1;
-													this.jumpPage=1;
-													this.getData(obj2,this.pageNumber,this.pageSize1);
-											}else{												
-												this.$refs.pickerInput.value=''
-												this.ruleForm.address=''
-											}													
-										}).catch(res=>{
-											
-										});			
-								}
-				
-							} else {         
-								return false;
-							}
-						});								
-				},
-				//新增客户弹窗取消
-				resetForm(formName) {
-					this.$refs[formName].resetFields();
-					this.ruleForm.provinceCode='';
-					this.ruleForm.cityCode='';
-					this.ruleForm.areaCode='';
-					this.ruleForm.sex='';
-					this.$refs.pickerInput.value=''	
-					this.dialogTableVisible = false;
-				},		 
-				//全局搜索按钮
-				localSearch(){
-					var obj={
-							name:this.customName,
-							phone:this.customPhone,
-							// orgId:this.organizationName,
-					}
-					this.pageNumber=1;
-					this.jumpPage=1;
-					this.getData(obj,this.pageNumber,this.pageSize1);
-				},
-				//表格页数改变
-					handleSizeChange1(val) {
-							this.pageNumber=1;
-							this.jumpPage=1;
-							this.pageSize1=val;
-							var obj={
-									name:this.customName,
-									phone:this.customPhone,
-									// orgId:this.organizationName,
-							}
-							this.getData(obj,this.pageNumber,this.pageSize1);
-					},
-				//表格当前页改变
-					handleCurrentChange1(val) {
-							this.pageNumber=val;
-							var obj={
-									name:this.customName,
-									phone:this.customPhone,
-									// orgId:this.organizationName,
-							}
-							this.getData(obj,this.pageNumber,this.pageSize1);
-					},	
-				//新增按钮点击
-					selectBut(row){
-						  this.testFlag=row.id;
-							this.dialogTableVisible=true;
-							this.areaOptions=this.$store.state.user.area;
-							if(row.id ==undefined){
-									this.showDis=true;					
-									this.ruleForm.provinceCode='';
-									this.ruleForm.cityCode='';
-									this.ruleForm.areaCode='';
-									this.ruleForm.sex='';
-							}else{
-								  this.showDis=true;
-									var obj={
-										id:row.id
-									}
-									getCus(obj).then(res => {
-										if(res.data.code === 1){											 
-											 var b=res.data.data.address;
-											 var indexa=b.indexOf('-')
-											 var a=b.substring(0,indexa)
-											 var c=b.substring(indexa+1)
-											 this.ruleForm=res.data.data;
-											 //经纬度回显
-											 var aar=[];
-											 aar.push(res.data.data.addrLongitude)
-											 aar.push(res.data.data.addrLatitude)
-											 this.$refs.pickerInput1.value=aar;
-											 //详细地址回显
-											 this.$refs.pickerInput.value=a;
-											 this.ruleForm.address=c;
-											 //区域代码回显
-											 var arr=[]
-											 arr.push(res.data.data.provinceCode)
-											 arr.push(res.data.data.cityCode)
-											 arr.push(res.data.data.areaCode)
-											 this.ruleForm.areaCodes=arr
-										}else{
-
-										}													
-									}).catch(res=>{
-										
-									});																
-							}
-							
-
-						  		
-					},
-					//表格下单操作按钮
-					lookInf(obj){
-							var id=obj.id;
-							this.$router.push({path:'/clean/addorder',query: { coustomerId:id}})
-					},
-					//表格删除操作按钮
-					Delete(row){
-						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-									confirmButtonText: '确定',
-									cancelButtonText: '取消',
-									closeOnClickModal:false
-								}).then(() => {
-									var obj = {
-										id:row.id
-									}
-									deleteCus(obj).then(res=>{
-										if(res.data.code === 1){
-												this.$message({
-													type: 'success',
-													message: '删除成功!'
-												});
-												var obj1={
-														name:this.customName,
-														phone:this.customPhone,
-														// orgId:this.organizationName,
-												}
-												this.getData(obj1,this.pageNumber,this.pageSize1);
-										}
-									}).catch(()=>{
-										this.getData(obj1,this.pageNumber,this.pageSize1);
-									})
-									
-								}).catch(() => {
-									this.$message({
-										type: 'warning',
-										message: '已取消删除'
-									});          
-								});			
-
-					},
-					//获取表格数据
-					getData(pramsObj,pageNo,pageSize){
-						this.listLoading = true;
-						var obj = pramsObj;
-						getCusTable(obj,pageNo,pageSize).then(res => {
-							if(res.data.code === 1){
-								this.pagetotal1 = res.data.data.page.count;
-								this.tableData = res.data.data.page.list;
-								this.pageNumber=res.data.data.page.pageNo;
-								this.jumpPage=res.data.data.page.pageNo;
-								this.pageSize1=res.data.data.page.pageSize;
-								if(res.data.data.page.list != undefined){
-											for(var a=0;a<this.tableData.length;a++){
-												this.tableData[a].index=a+1;
-											}								
-								}
-								this.organizationOptions=res.data.data.orgList;																			  								
-								this.listLoading = false
-							}else{
-								this.listLoading = false
-							}
-						}).catch(res=>{
-							this.listLoading = false
-						});
-
-					},
-					//按区域POI搜索
-					test(area){
-						  this.showDis=false;
-							var that = this;
-							let inputname = this.$refs.pickerInput;
-							let inputname1 = this.$refs.pickerInput1;
-								//输入提示
-								var autoOptions = {
-									input:inputname,
-									city:area,
-									citylimit:true,
-									// type:'120302｜120201'
-								};
-								var auto = new AMap.Autocomplete(autoOptions);
-								var placeSearch = new AMap.PlaceSearch({
-									map: this.mymap
-								});  //构造地点查询类
-								AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
-								function select(e) {             
-									placeSearch.setCity(e.poi.adcode);
-									placeSearch.search(e.poi.name);  //关键字查询查询              
-									var poi =e.poi,
-										info = {
-											id: poi.id,
-											name: poi.name,
-											location: poi.location.toString(),
-											address: poi.address
-										};
-										inputname.value = info.name;
-										inputname1.value = info.location;              
-								}	
-										  										
-					},
-					//地图初始化
-					initMap1(){
-						var id=this.$refs.gdMap;	
-						var map = new AMap.Map(id, {
-								zoom: 10
-						});
-						this.mymap=map;
-	        }
+  methods: {
+    //清空地址POI选择框值
+    inputBlur() {
+      this.$refs.pickerInput.value = "";
+    },
+    //地址POI选择初始城市值
+    testFun(value) {
+      this.$nextTick(() => {
+        this.test(value[2]);
+      });
+    },
+    //新增保存
+    submitForm(formName, status) {
+      var that = this;
+      this.submitFlag = true;
+      setTimeout(function() {
+        that.submitFlag = false;
+      }, 1000);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (
+            this.$refs.pickerInput.value != "" &&
+            this.ruleForm.address != ""
+          ) {
+            this.ruleForm.address =
+              this.$refs.pickerInput.value + "-" + this.ruleForm.address;
+            var str = this.$refs.pickerInput1.value;
+            str = str.split(",");
+            //经度
+            var lng = str[0];
+            this.ruleForm.addrLongitude = lng;
+            //纬度
+            var lat = str[1];
+            this.ruleForm.addrLatitude = lat;
+          } else {
+            this.$refs.pickerInput.value = "";
+            this.ruleForm.address = "";
+          }
+          //省、市、区三级ID
+          this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
+          this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
+          this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
+          //保存upCus
+          if (status == "add") {
+            var obj = this.ruleForm;
+            saveCus(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "新增成功!"
+                  });
+                  this.$refs["ruleForm"].resetFields();
+                  this.customName = "";
+                  this.customPhone = "";
+                  // this.organizationName='';
+                  this.$refs.pickerInput.value = "";
+                  this.dialogTableVisible = false;
+                  var obj = {};
+                  this.pageNumber = 1;
+                  this.jumpPage = 1;
+                  this.getData(obj, this.pageNumber, this.pageSize1);
+                } else {
+                  this.$refs.pickerInput.value = "";
+                  this.ruleForm.address = "";
+                }
+              })
+              .catch(res => {});
+          } else {
+            var obj1 = this.ruleForm;
+            upCus(obj1)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "编辑成功!"
+                  });
+                  this.$refs["ruleForm"].resetFields();
+                  this.customName = "";
+                  this.customPhone = "";
+                  this.$refs.pickerInput.value = "";
+                  this.dialogTableVisible = false;
+                  var obj2 = {};
+                  this.pageNumber = 1;
+                  this.jumpPage = 1;
+                  this.getData(obj2, this.pageNumber, this.pageSize1);
+                } else {
+                  this.$refs.pickerInput.value = "";
+                  this.ruleForm.address = "";
+                }
+              })
+              .catch(res => {});
+          }
+        } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
+          return false;
+        }
+      });
+    },
+    //新增客户弹窗取消
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      this.ruleForm.provinceCode = "";
+      this.ruleForm.cityCode = "";
+      this.ruleForm.areaCode = "";
+      this.ruleForm.sex = "";
+      this.$refs.pickerInput.value = "";
+      this.dialogTableVisible = false;
+    },
+    //全局搜索按钮
+    localSearch() {
+      var obj = {
+        name: this.customName,
+        phone: this.customPhone
+        // orgId:this.organizationName,
+      };
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.getData(obj, this.pageNumber, this.pageSize1);
+    },
+    //表格页数改变
+    handleSizeChange1(val) {
+      this.pageNumber = 1;
+      this.jumpPage = 1;
+      this.pageSize1 = val;
+      var obj = {
+        name: this.customName,
+        phone: this.customPhone
+        // orgId:this.organizationName,
+      };
+      this.getData(obj, this.pageNumber, this.pageSize1);
+    },
+    //表格当前页改变
+    handleCurrentChange1(val) {
+      this.pageNumber = val;
+      var obj = {
+        name: this.customName,
+        phone: this.customPhone
+        // orgId:this.organizationName,
+      };
+      this.getData(obj, this.pageNumber, this.pageSize1);
+    },
+    //新增按钮点击
+    selectBut(row) {
+      this.testFlag = row.id;
+      this.dialogTableVisible = true;
+      this.areaOptions = this.$store.state.user.area;
+      if (row.id == undefined) {
+        this.showDis = true;
+        this.ruleForm.provinceCode = "";
+        this.ruleForm.cityCode = "";
+        this.ruleForm.areaCode = "";
+        this.ruleForm.sex = "";
+      } else {
+        this.showDis = true;
+        var obj = {
+          id: row.id
+        };
+        getCus(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              var b = res.data.data.address;
+              var indexa = b.indexOf("-");
+              var a = b.substring(0, indexa);
+              var c = b.substring(indexa + 1);
+              this.ruleForm = res.data.data;
+              //经纬度回显
+              var aar = [];
+              aar.push(res.data.data.addrLongitude);
+              aar.push(res.data.data.addrLatitude);
+              this.$refs.pickerInput1.value = aar;
+              //详细地址回显
+              this.$refs.pickerInput.value = a;
+              this.ruleForm.address = c;
+              //区域代码回显
+              var arr = [];
+              arr.push(res.data.data.provinceCode);
+              arr.push(res.data.data.cityCode);
+              arr.push(res.data.data.areaCode);
+              this.ruleForm.areaCodes = arr;
+            } else {
+            }
+          })
+          .catch(res => {});
+      }
+    },
+    //表格下单操作按钮
+    lookInf(obj) {
+      var id = obj.id;
+      this.$router.push({
+        path: "/clean/addorder",
+        query: { coustomerId: id }
+      });
+    },
+    //表格删除操作按钮
+    Delete(row) {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false
+      })
+        .then(() => {
+          var obj = {
+            id: row.id
+          };
+          deleteCus(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                var obj1 = {
+                  name: this.customName,
+                  phone: this.customPhone
+                  // orgId:this.organizationName,
+                };
+                this.getData(obj1, this.pageNumber, this.pageSize1);
+              }
+            })
+            .catch(() => {
+              this.getData(obj1, this.pageNumber, this.pageSize1);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "warning",
+            message: "已取消删除"
+          });
+        });
+    },
+    //获取表格数据
+    getData(pramsObj, pageNo, pageSize) {
+      this.listLoading = true;
+      var obj = pramsObj;
+      getCusTable(obj, pageNo, pageSize)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.pagetotal1 = res.data.data.page.count;
+            this.tableData = res.data.data.page.list;
+            this.pageNumber = res.data.data.page.pageNo;
+            this.jumpPage = res.data.data.page.pageNo;
+            this.pageSize1 = res.data.data.page.pageSize;
+            if (res.data.data.page.list != undefined) {
+              for (var a = 0; a < this.tableData.length; a++) {
+                this.tableData[a].index = a + 1;
+              }
+            }
+            this.organizationOptions = res.data.data.orgList;
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
+          }
+        })
+        .catch(res => {
+          this.listLoading = false;
+        });
+    },
+    //按区域POI搜索
+    test(area) {
+      this.showDis = false;
+      var that = this;
+      let inputname = this.$refs.pickerInput;
+      let inputname1 = this.$refs.pickerInput1;
+      //输入提示
+      var autoOptions = {
+        input: inputname,
+        city: area,
+        citylimit: true
+        // type:'120302｜120201'
+      };
+      var auto = new AMap.Autocomplete(autoOptions);
+      var placeSearch = new AMap.PlaceSearch({
+        map: this.mymap
+      }); //构造地点查询类
+      AMap.event.addListener(auto, "select", select); //注册监听，当选中某条记录时会触发
+      function select(e) {
+        placeSearch.setCity(e.poi.adcode);
+        placeSearch.search(e.poi.name); //关键字查询查询
+        var poi = e.poi,
+          info = {
+            id: poi.id,
+            name: poi.name,
+            location: poi.location.toString(),
+            address: poi.address
+          };
+        inputname.value = info.name;
+        inputname1.value = info.location;
+      }
+    },
+    //地图初始化
+    initMap1() {
+      var id = this.$refs.gdMap;
+      var map = new AMap.Map(id, {
+        zoom: 10
+      });
+      this.mymap = map;
+    }
   },
   mounted() {
-		 this.initMap1();
-		 this.getData({},1,10);
-		 this.sex=this.dict.sex;		 
+    this.initMap1();
+    this.getData({}, 1, 10);
+    this.sex = this.dict.sex;
   }
 };
 </script>
 <style lang="scss" scoped>
-.selfToolTip{
-	 width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;
+.selfToolTip {
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
-.tableWarp{
-	width:100%;background:#fff;padding:20px 20px 70px 20px;
+.tableWarp {
+  width: 100%;
+  background: #fff;
+  padding: 20px 20px 70px 20px;
 }
-.selfStyle{
- margin-top:20px;float:right;
+.selfStyle {
+  margin-top: 20px;
+  float: right;
 }
-.width400{
-	width:400px;
+.width400 {
+  width: 400px;
 }
-.mapDiv{
-	float:left;margin-top:100px;
+.mapDiv {
+  float: left;
+  margin-top: 100px;
 }
-.addorder-container{
-  width:100%;
-	float:left;
-	background:#eef1f6;
+.addorder-container {
+  width: 100%;
+  float: left;
+  background: #eef1f6;
 }
-.selfPosi{
- width: 200px;margin-left:20px;
+.selfPosi {
+  width: 200px;
+  margin-left: 20px;
 }
-.selfPosi1{
-   width:200px;margin-left:30px;
+.selfPosi1 {
+  width: 200px;
+  margin-left: 30px;
 }
-.selfPosi2{
-	float:right;margin-right:20px;
+.selfPosi2 {
+  float: right;
+  margin-right: 20px;
 }
-.selfPosi3{
-	float:right;margin-right:20px;margin-top:10px;margin-bottom:20px;
+.selfPosi3 {
+  float: right;
+  margin-right: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
-.customerAddress{
-  width: 50%;margin-left:-5px
+.customerAddress {
+  width: 50%;
+  margin-left: -5px;
 }
-.padding10Prent{
-  width: 100%; padding:0 10%;
+.padding10Prent {
+  width: 100%;
+  padding: 0 10%;
 }
-.marginTop20{
-   margin-top:20px;
+.marginTop20 {
+  margin-top: 20px;
 }
-.fist-bar{
-  padding:20px;
-	background:#fff;
-	border-bottom: 1px solid #eee;
- 
+.fist-bar {
+  padding: 20px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
 }
-.second-bar{
-  background:#eef1f6;
-  
+.second-bar {
+  background: #eef1f6;
 }
-.mapWrap{
-	width:0px;
-	height:0px;
-	display:block;
+.mapWrap {
+  width: 0px;
+  height: 0px;
+  display: block;
 }
-.pickerInput{
-	  width: 50%;
-		height: 36px;
-		font-size:12px;
-		padding:0 10px;
-    border: none;
-		border: 1px solid #bfcbd9;
-		outline:none;
+.pickerInput {
+  width: 50%;
+  height: 36px;
+  font-size: 12px;
+  padding: 0 10px;
+  border: none;
+  border: 1px solid #bfcbd9;
+  outline: none;
 }
-.pickerInput:hover{
-	border-color:#8391a5;
+.pickerInput:hover {
+  border-color: #8391a5;
 }
-.amap-ui-poi-picker-sugg{
-	width:180px;
-	overflow:hidden;
+.amap-ui-poi-picker-sugg {
+  width: 180px;
+  overflow: hidden;
 }
-.amap-ui-poi-picker-sugg-list{
-	width:180px;
+.amap-ui-poi-picker-sugg-list {
+  width: 180px;
 }
-.sugg-item{
-	width:180px !important;
+.sugg-item {
+  width: 180px !important;
 }
 </style>

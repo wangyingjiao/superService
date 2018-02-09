@@ -280,7 +280,6 @@ export default {
             } else {
               this.listLoading = false;
               this.dialogVisible = false;
-              
             }
           })
           .catch(res => {
@@ -312,7 +311,6 @@ export default {
             } else {
               this.listLoading = false;
               this.dialogVisible = false;
-              
             }
           })
           .catch(res => {
@@ -370,7 +368,6 @@ export default {
                 } else {
                   this.middleB = [];
                   this.middleD = [];
-                  
                 }
               })
               .catch(res => {
@@ -400,7 +397,7 @@ export default {
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
-                } 
+                }
               })
               .catch(res => {
                 this.listLoading = false;
@@ -408,6 +405,10 @@ export default {
               });
           }
         } else {
+          this.$message({
+                  type: "error",
+                  message: "填写的信息不符合要求"
+                });
           return false;
         }
       });
@@ -569,11 +570,9 @@ export default {
                   name: this.localSearch
                 };
                 this.getList(obj, this.pageNumber, this.pageSize);
-              } 
+              }
             })
-            .catch(() =>{
-
-            });
+            .catch(() => {});
         })
         .catch(() => {
           this.$message({
@@ -670,7 +669,7 @@ export default {
     }
   },
   mounted() {
-    this.getList({},1,10);
+    this.getList({}, 1, 10);
   }
 };
 </script>
