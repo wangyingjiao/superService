@@ -32,8 +32,9 @@ export default {
 };
 </script>
 
-<style rel="stylesheet/scss" scoped lang="scss">
+<style rel="stylesheet/scss" lang="scss">
 @import "src/styles/app.scss";
+
 .appBox {
   overflow: hidden;
   background-color: #fff;
@@ -46,13 +47,14 @@ export default {
     .header {
       width: 80%;
       margin: 0 auto;
-      margin-top: 12%;
-      padding: 0 4%;
+      margin-top: 1.32rem;
+      text-align: center;
       .logo {
-        height: 6rem;
+        height: 1.6rem;
       }
       .word {
-        height: 6rem;
+        margin-left: 0.1rem;
+        height: 1.6rem;
       }
     }
     .main {
@@ -63,19 +65,20 @@ export default {
         width: 100%;
       }
       p {
-        margin-top: 6rem;
+        margin-top: 1rem;
         width: 100%;
         text-align: center;
         font-family: SourceHanSansCN-Normal;
-        font-size: 3.2rem;
+        font-size: 0.9rem;
         color: #666666;
         letter-spacing: 0;
       }
     }
     .footer{
-        width: 75%;
+        width: 90%;
         margin: 0 auto;
-        margin-bottom: 10%;
+        margin-bottom: 2rem;
+        overflow: hidden;
         a{
             display: block;
             width: 80%;
@@ -85,7 +88,6 @@ export default {
             img{
               display: block;
               width: 100%;
-              
             }
         }
     }
