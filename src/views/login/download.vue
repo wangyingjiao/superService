@@ -10,7 +10,7 @@
             <p>用心服务 洁净万家</p>
         </div>
         <div class="footer">
-            <a href="https://imgcdn.guoanshequ.com/openservice/2018/2/9/1518158079502.apk">
+            <a href="https://imgcdn.guoanshequ.com/openservice/2018/2/8/1518073284027.apk">
                 <img src="../../../static/icon/app_btn.png" alt="">
             </a>
         </div>
