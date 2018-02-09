@@ -1069,13 +1069,25 @@ export default {
               }else{
                loading.close();
               }
-          }).catch(error=>{
-            loading.close();
-            this.$message.error('保存失败')
-            return false
-          })
-        }else{
-          return false
+            })
+            .catch(error => {
+              loading.close();
+              this.$message.error("保存失败");
+              return false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
         }
       });
     },
@@ -1208,10 +1220,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1287,9 +1306,16 @@ export default {
           obj.status = _personalEDit.status;
           this.technicianEdit(obj);
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
             type: "error",
-            message: "填写的信息不符合要求"
+            message: errMes[0]
           });
           return false;
         }
@@ -1342,10 +1368,17 @@ export default {
           })
           // this.technicianEdit(obj)
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1521,10 +1554,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });

@@ -54,39 +54,44 @@ export default {
       var obj = this.$store.state.app.visitedViews;
       var objLen = obj.length;
       var activeIndex = 0;
-      for (var i = 0; i < objLen; i++) {
-        if (obj[i].path === this.$route.path) {
-          activeIndex = i;
-        }
+      if(objLen != 0){
+          for (var i = 0; i < objLen; i++) {            
+            if (obj[i].path === this.$route.path) {
+              activeIndex = i;
+            }
+          }
+          if (activeIndex < objLen - 1) {
+            activeIndex++;
+            this.$router.push({ path: obj[activeIndex].path });
+          } else {
+            activeIndex = 0;
+            this.$router.push({ path: obj[activeIndex].path });
+          }
       }
-      if (activeIndex < objLen - 1) {
-        activeIndex++;
-        this.$router.push({ path: obj[activeIndex].path });
-      } else {
-        activeIndex = 0;
-        this.$router.push({ path: obj[activeIndex].path });
-      }
+
     },
     leftmove() {
       var obj = this.$store.state.app.visitedViews;
       var objLen = obj.length;
-      var lastObj = obj.slice(-1)[0];
-      var lastIndex = 0;
-      var activeIndex = 0;
-      for (var i = 0; i < objLen; i++) {
-        if (obj[i].path === this.$route.path) {
-          activeIndex = i;
+      if(objLen != 0){
+        var lastObj = obj.slice(-1)[0];
+        var lastIndex = 0;
+        var activeIndex = 0;
+        for (var i = 0; i < objLen; i++) {
+          if (obj[i].path === this.$route.path) {
+            activeIndex = i;
+          }
+          if (obj[i].path === lastObj.path) {
+            lastIndex = i;
+          }
         }
-        if (obj[i].path === lastObj.path) {
-          lastIndex = i;
+        if (activeIndex > 0) {
+          activeIndex--;
+          this.$router.push({ path: obj[activeIndex].path });
+        } else {
+          activeIndex = lastIndex;
+          this.$router.push({ path: obj[activeIndex].path });
         }
-      }
-      if (activeIndex > 0) {
-        activeIndex--;
-        this.$router.push({ path: obj[activeIndex].path });
-      } else {
-        activeIndex = lastIndex;
-        this.$router.push({ path: obj[activeIndex].path });
       }
     }
   },

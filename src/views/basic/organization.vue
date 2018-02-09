@@ -361,7 +361,7 @@ export default {
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
         { id: "masterPhone", value: "负责人手机号" },
-        { id: "jointEshopCode", value: "E店编码" },
+        { id: "jointEshopCode", value: "E店编码" }
       ],
       scopeType: [],
       workTime: [],
@@ -479,55 +479,55 @@ export default {
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     this.workTime = [
-        "00:00",
-        "00:30",
-        "01:00",
-        "01:30",
-        "02:00",
-        "02:30",
-        "03:00",
-        "03:30",
-        "04:00",
-        "04:30",
-        "05:00",
-        "05:30",
-        "06:00",
-        "06:30",
-        "07:00",
-        "07:30",
-        "08:00",
-        "08:30",
-        "09:00",
-        "09:30",
-        "10:00",
-        "10:30",
-        "11:00",
-        "11:30",
-        "12:00",
-        "12:30",
-        "13:00",
-        "13:30",
-        "14:00",
-        "14:30",
-        "15:00",
-        "15:30",
-        "16:00",
-        "16:30",
-        "17:00",
-        "17:30",
-        "18:00",
-        "18:30",
-        "19:00",
-        "19:30",
-        "20:00",
-        "20:30",
-        "21:00",
-        "21:30",
-        "22:00",
-        "22:30",
-        "23:00",
-        "23:30",
-        "24:00"
+      "00:00",
+      "00:30",
+      "01:00",
+      "01:30",
+      "02:00",
+      "02:30",
+      "03:00",
+      "03:30",
+      "04:00",
+      "04:30",
+      "05:00",
+      "05:30",
+      "06:00",
+      "06:30",
+      "07:00",
+      "07:30",
+      "08:00",
+      "08:30",
+      "09:00",
+      "09:30",
+      "10:00",
+      "10:30",
+      "11:00",
+      "11:30",
+      "12:00",
+      "12:30",
+      "13:00",
+      "13:30",
+      "14:00",
+      "14:30",
+      "15:00",
+      "15:30",
+      "16:00",
+      "16:30",
+      "17:00",
+      "17:30",
+      "18:00",
+      "18:30",
+      "19:00",
+      "19:30",
+      "20:00",
+      "20:30",
+      "21:00",
+      "21:30",
+      "22:00",
+      "22:30",
+      "23:00",
+      "23:30",
+      "24:00"
     ];
     this.orgId = localStorage.getItem("orgId");
   },
@@ -547,32 +547,33 @@ export default {
         var obj = {
           masterPhone: value
         };
-      }else if(this.search.key =="jointEshopCode"){
+      } else if (this.search.key == "jointEshopCode") {
         var obj = {
           jointEshopCode: value
-        }
-
-      } else {      
-          var obj = {};
+        };
+      } else {
+        var obj = {};
       }
       this.listLoading = true;
-      getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getMechPage(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        setTimeout(() => {
+          setTimeout(() => {
+            this.listLoading = false;
+          }, 500);
+        })
+        .catch(() => {
           this.listLoading = false;
-        }, 500);
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        });
     },
     //搜索
     handleFilter() {
@@ -585,12 +586,12 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.getList()
+      this.getList();
     },
     //切换页数
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.getList()
+      this.getList();
     },
     //开始时间change事件
     startTimeChange(val) {
@@ -606,8 +607,7 @@ export default {
       }
     },
     //结束时间change事件
-    endTimeChange(val) {
-    },
+    endTimeChange(val) {},
     //点击新增
     handleCreate(formName) {
       this.dialogStatus = "create";
@@ -631,7 +631,7 @@ export default {
               { workStartTime: "", workEndTime: "", jointEshopCode: "" },
               res.data.data
             );
-            this.temp.scopeType = "store"
+            this.temp.scopeType = "store";
             this.dialogStatus = "update";
             this.updateId = res.data.data.id;
             // 省市区
@@ -738,17 +738,23 @@ export default {
                 this.handleFilter();
                 this.dialogFormVisible = false;
               } else {
-                
               }
             })
             .catch(err => {
               this.btnState = false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -756,7 +762,7 @@ export default {
     //编辑保存
     update(formName) {
       var obj = {
-        id: this.updateId,//被编辑的id
+        id: this.updateId, //被编辑的id
         name: this.temp.name, //机构名
         telephone: this.temp.telephone, //机构电话
         masterName: this.temp.masterName, //负责人
@@ -802,18 +808,23 @@ export default {
                 });
 
                 this.getList();
-              } else {
-                
               }
             })
             .catch(() => {
               this.btnState = false;
             });
-        }else{
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });

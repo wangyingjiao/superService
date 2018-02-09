@@ -1013,9 +1013,20 @@ export default {
             this.customArr.push(this.labelObj.labelName)
             this.labelObj.labelName = ''
           }
-          this.addLabel = false
-        }else{
-          return false
+          this.addLabel = false;
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
         }
       })
     },
@@ -1043,8 +1054,19 @@ export default {
 			  this.resetForm('ser')
 			  this.addCommodityFlag = false
           }
-        }else{
-          return false
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
         }
       })
     },
@@ -1442,6 +1464,17 @@ export default {
               });
           }
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });

@@ -42,7 +42,7 @@
 				<!--步骤1显示区域结束-->
 				<!--步骤2显示区域开始-->
 				<div class="stepContent"  v-if="active == 2">
-					<el-form ref="form1" :rules="rules3" :model="form1" label-width="100px" label-position="left">
+					<el-form ref="form1" :rules="rulesTest" :model="form1" label-width="100px" label-position="left">
 						<el-form-item label="服务项目:" prop="serverPro">
 							<el-select clearable  class="severChangeStyle" filterable v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
 								<el-option v-for="item in serverOptions" :key="item.id" :label="item.name" :value="item.id">
@@ -145,7 +145,8 @@
         <!--上、下步按钮开始-->
         <div class="NextPrevWrap">
           <span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3" @click="prev">上一步</span>
-          <span class="button-large NextPrevStyle"  v-if="active == 1 || active == 2"  @click="next">下一步</span>					
+          <span class="button-large NextPrevStyle"  v-if="active == 1"  @click="next('form')">下一步</span>	
+          <span class="button-large NextPrevStyle"  v-if="active == 2"  @click="next('form1')">下一步</span>					
           <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder('form2')">保存</span>		
         </div>
         <!--上、下步按钮结束-->        
@@ -357,8 +358,8 @@ export default {
       customPhone: "",
       serverStation1: "",
       form1: {
-        serverPro: "",
-        sumPrice: 0
+        serverPro: '',
+        sumPrice: 0,
       },
       form3: {
         date: ""
@@ -398,19 +399,14 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
-      rules3: {
+      rulesTest:{
+        sumPrice:[
+          { required: true,type:'number',validator:checksum, message: "请选择商品",trigger: "change"}
+        ],        
         serverPro: [
-          { required: true, message: "请选择服务项目", trigger: "change" }
+          { required: true,message: "请选择服务项目", trigger: "change"}
         ],
-        sumPrice: [
-          {
-            required: true,
-            type: "number",
-            validator: checksum,
-            message: "请选择商品",
-            trigger: "change"
-          }
-        ]
+       
       },
       rules: {
         name: [
@@ -526,25 +522,44 @@ export default {
       }
     },
     //下一步
-    next() {
+    next(formName) {
       if (this.active++ >= 3) this.active = 1;
-      if (this.active == 3) {
-        var arr = [];
-        for (var a = 0; a < this.selectCommidty.length; a++) {
-          if (this.selectCommidty[a].goodsChecked) {
-            arr.push(this.selectCommidty[a]);
+      if(formName == 'form'){
+        this.$refs[formName].validate(valid => {
+          if (valid) { 
+             if(this.serverStation1 != ''){
+                this.findItemListFun();                
+             }                     
+          }else{
+            this.active=1
+            return false           
+          }
+        })
+      }
+      if(formName == 'form1'){
+        var arr=[];
+        for(var a=0;a<this.selectCommidty.length;a++){
+          if(this.selectCommidty[a].goodsChecked){
+             arr.push(this.selectCommidty[a])
           }
         }
-        this.middleB = Object.assign([], arr);
-        this.$refs["form1"].validate(valid => {
+        this.middleB=Object.assign([], arr); 
+        this.$refs[formName].validate(valid => {
           if (valid) {
           } else {
             this.active = 2;
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
             this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
-          return false;
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
           }
         });
       } else {
@@ -557,11 +572,18 @@ export default {
             }
           } else {
             this.active = 1;
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
             this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
-          return false;
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
           }
         });
       }
@@ -688,10 +710,17 @@ export default {
         } else {
           this.$refs.pickerInput.value = "";
           this.ruleForm.address = "";
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -809,9 +838,9 @@ export default {
           if (res.data.code === 1) {
             if (res.data.data != undefined) {
               this.listTech = res.data.data;
-              for (var a = 0; a < this.listTech.length; a++) {
-                this.$set(this.listTech[a], "techChecked", false);
-              }
+              // for (var a = 0; a < this.listTech.length; a++) {
+              //   this.$set(this.listTech[a], "techChecked", false);
+              // }
               this.dialogTableVisible = true;
               this.selectionreturn1();
             }
@@ -917,10 +946,17 @@ export default {
             })
             .catch(res => {});
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
-                });
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1018,7 +1054,7 @@ export default {
           if (res.data.code === 1) {
             for (var b = 0; b < this.middleA.length; b++) {
               for (var a = 0; a < this.listTech.length; a++) {
-                this.$set(this.listTech[a], "techChecked", false);
+                // this.$set(this.listTech[a], "techChecked", false);
                 if (this.listTech[a].techId == this.middleA[b].techId) {
                   this.listTech[a].techChecked = true;
                 }
@@ -1277,6 +1313,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
+  margin-top:5px;
+  margin-bottom:5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;

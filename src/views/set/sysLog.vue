@@ -34,27 +34,28 @@
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求结果" prop="isSuccess">      
+      <el-table-column align="center" label="请求结果" width="100" prop="isSuccess">      
+      </el-table-column>
+
+      <el-table-column align="center" label="创建时间" width="200" prop="createDate">      
       </el-table-column>
 
       <el-table-column align="center" label="请求地址" prop="url">      
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间" prop="createDate">      
-      </el-table-column>
 
-      <el-table-column align="center"  width="150px" label="请求内容" prop="requestContent">     
+      <el-table-column align="center"   label="请求内容" prop="requestContent">     
         <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.requestContent.length < 10" :content="scope.row.requestContent">
-             <div class="tool" >{{scope.row.requestContent}}</div>
+             <div class="tool300" >{{scope.row.requestContent}}</div>
            </el-tooltip>
         </template> 
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="响应内容" prop="responseContent">    
+      <el-table-column align="center" label="响应内容" prop="responseContent">    
           <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.responseContent.length < 10" :content="scope.row.responseContent">
-             <div class="tool" >{{scope.row.responseContent}}</div>
+             <div class="tool300" >{{scope.row.responseContent}}</div>
            </el-tooltip>
         </template>
       </el-table-column>
@@ -207,8 +208,8 @@ export default {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
 }
-.tool {
-  width: 115px;
+.tool300 {
+  max-width: 275px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;

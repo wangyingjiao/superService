@@ -466,9 +466,16 @@ export default {
                   this.btnState = false;
                 });
             } else {
+              var errArr = this.$refs[formName]._data.fields;
+              var errMes = [];
+              for (var i = 0; i < errArr.length; i++) {
+                if (errArr[i].validateMessage != "") {
+                  errMes.push(errArr[i].validateMessage);
+                }
+              }
               this.$message({
                 type: "error",
-                message: "填写的信息不符合要求"
+                message: errMes[0]
               });
               return false;
             }
@@ -507,9 +514,16 @@ export default {
                 this.btnState = false;
               });
           } else {
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
             this.$message({
               type: "error",
-              message: "填写的信息不符合要求"
+              message: errMes[0]
             });
             return false;
           }
@@ -547,9 +561,16 @@ export default {
               this.btnState = false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
           this.$message({
             type: "error",
-            message: "填写的信息不符合要求"
+            message: errMes[0]
           });
           return false;
         }
