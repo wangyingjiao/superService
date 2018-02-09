@@ -1,3 +1,42 @@
+html {
+    font-size: 20px;
+}
+@media only screen and (min-width: 401px) {
+    html {
+        font-size: 25px !important;
+    }
+}
+@media only screen and (min-width: 428px) {
+    html {
+        font-size: 26.75px !important;
+    }
+}
+@media only screen and (min-width: 481px) {
+    html {
+        font-size: 30px !important;
+    }
+}
+@media only screen and (min-width: 569px) {
+    html {
+        font-size: 35px !important;
+    }
+}
+@media only screen and (min-width: 641px) {
+    html {
+        font-size: 40px !important;
+    }
+}
+@media only screen and (min-width: 751px) {
+    html {
+        font-size: 50px !important;
+    }
+}
+@media only screen and (min-width: 1080px) {
+    html {
+        font-size: 60px !important;
+    }
+}
+
 // html{font-size:10px}
 // @media screen and (min-width:321px) and (max-width:375px){html{font-size:11px}}
 // @media screen and (min-width:376px) and (max-width:414px){html{font-size:12px}}
@@ -5,75 +44,75 @@
 // @media screen and (min-width:640px) and (max-width:719px){html{font-size:20px}}
 // @media screen and (min-width:720px) and (max-width:749px){html{font-size:22.5px}}
 // @media screen and (min-width:750px) and (max-width:799px){html{font-size:23.5px}}
-// @media screen and (min-width:800px){html{font-size:25px}}
-@media screen and (max-width: 1602px) {
-    html {
-        font-size: 250px;
-    }
-}
+// @media screen and (min-width:800px){html{font-size:24px}}
+// @media screen and (max-width: 1602px) {
+//     html {
+//         font-size: 250px;
+//     }
+// }
 
-@media screen and (max-width: 1026px) {
-    html {
-        font-size: 160px;
-    }
-}
+// @media screen and (max-width: 1026px) {
+//     html {
+//         font-size: 160px;
+//     }
+// }
 
-@media screen and (max-width: 802px) {
-    html {
-        font-size: 125px;
-    }
-}
+// @media screen and (max-width: 802px) {
+//     html {
+//         font-size: 125px;
+//     }
+// }
 
-@media screen and (max-width: 770px) {
-    html {
-        font-size: 120px;
-    }
-}
+// @media screen and (max-width: 770px) {
+//     html {
+//         font-size: 120px;
+//     }
+// }
 
-@media screen and (max-width: 642px) {
-    html {
-        font-size: 100px;
-    }
-}
+// @media screen and (max-width: 642px) {
+//     html {
+//         font-size: 100px;
+//     }
+// }
 
-@media screen and (max-width: 602px) {
-    html {
-        font-size: 93.75px;
-    }
-}
+// @media screen and (max-width: 602px) {
+//     html {
+//         font-size: 93.75px;
+//     }
+// }
 
-@media screen and (max-width: 416px) {
-    html {
-        font-size: 64.6875px;
-    }
-}
+// @media screen and (max-width: 416px) {
+//     html {
+//         font-size: 64.6875px;
+//     }
+// }
 
-@media screen and (max-width: 414px) {
-    html {
-        font-size: 64.375px;
-    }
-}
+// @media screen and (max-width: 414px) {
+//     html {
+//         font-size: 64.375px;
+//     }
+// }
 
-@media screen and (max-width: 386px) {
-    html {
-        font-size: 60px;
-    }
-}
+// @media screen and (max-width: 386px) {
+//     html {
+//         font-size: 60px;
+//     }
+// }
 
-@media screen and (max-width: 377px) {
-    html {
-        font-size: 58.59375px;
-    }
-}
+// @media screen and (max-width: 377px) {
+//     html {
+//         font-size: 58.59375px;
+//     }
+// }
 
-@media screen and (max-width: 362px) {
-    html {
-        font-size: 56.25px;
-    }
-}
+// @media screen and (max-width: 362px) {
+//     html {
+//         font-size: 56.25px;
+//     }
+// }
 
-@media screen and (max-width: 322px) {
-    html {
-        font-size: 50px;
-    }
-}
+// @media screen and (max-width: 322px) {
+//     html {
+//         font-size: 50px;
+//     }
+// }

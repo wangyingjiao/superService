@@ -101,7 +101,13 @@
 </template>
 
 <script>
-import {getClass,addClass,delClass,setClass,upClass} from "@/api/serviceManage";
+import {
+  getClass,
+  addClass,
+  delClass,
+  setClass,
+  upClass
+} from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 //挂载数据
@@ -113,7 +119,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem('btn')),
+      btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
       selectState: false,
       active: true,
@@ -139,9 +145,15 @@ export default {
         name: ""
       },
       rules: {
-        majorSort: [{ required: true, message: "所属类型不能为空", trigger: "change" }],
+        majorSort: [
+          { required: true, message: "所属类型不能为空", trigger: "change" }
+        ],
         name: [
-          { required: true, message: "请输入 2 到 10 位的分类名称", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入 2 到 10 位的分类名称",
+            trigger: "blur"
+          },
           { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
         ]
       },
@@ -172,12 +184,9 @@ export default {
     // 字典表中获取分类
     var dict = require("../../../static/dict.json");
     this.majorSorts = dict.order_majorSort;
-  
   },
   methods: {
-    majorChange(val) {
-     
-    },
+    majorChange(val) {},
     getList() {
       // 获取列表
       this.listLoading = true;
@@ -187,12 +196,11 @@ export default {
       };
       getClass(obj, this.pageNumber, this.pageSize)
         .then(res => {
-         
           this.total = res.data.data.count;
           this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo
-          this.pageSize = res.data.data.pageSize
-          this.listQuery.page = res.data.data.pageNo
+          this.pageNumber = res.data.data.pageNo;
+          this.pageSize = res.data.data.pageSize;
+          this.listQuery.page = res.data.data.pageNo;
           if (this.list != undefined) {
             for (var i = 0; i < this.list.length; i++) {
               this.list[i].index = i + 1;
@@ -200,9 +208,7 @@ export default {
           }
           setTimeout(() => {
             this.listLoading = false;
-            
           }, 1000);
-          
         })
         .catch(res => {
           this.listLoading = false;
@@ -214,53 +220,54 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
-     
+
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
       getClass(obj, this.pageNumber, this.pageSize).then(res => {
-        
-       this.total = res.data.data.count;
+        this.total = res.data.data.count;
         this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo
-        this.pageSize = res.data.data.pageSize
-        this.listQuery.page = res.data.data.pageNo
+        this.pageNumber = res.data.data.pageNo;
+        this.pageSize = res.data.data.pageSize;
+        this.listQuery.page = res.data.data.pageNo;
         if (this.list != undefined) {
           for (var i = 0; i < this.list.length; i++) {
             this.list[i].index = i + 1;
           }
         }
         setTimeout(() => {
-            this.listLoading = false;   
-          }, 1000);
+          this.listLoading = false;
+        }, 1000);
       });
     },
-//页数变化
+    //页数变化
     handleSizeChange(val) {
       this.listQuery.page = 1;
-      this.pageNumber =1
+      this.pageNumber = 1;
       this.pageSize = val;
       // this.getList();
       var obj = {
         name: this.search.name,
         majorSort: this.activeName
       };
-      this.listLoading = true
-      getClass(obj, this.pageNumber, this.pageSize).then(res => {
-        this.list = res.data.data.list;
-        this.pageSize = res.data.data.pageSize
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      this.listLoading = true;
+      getClass(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.list = res.data.data.list;
+          this.pageSize = res.data.data.pageSize;
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        //this.total = res.data.data.count;
-        setTimeout(() => {
-            this.listLoading = false;   
+          //this.total = res.data.data.count;
+          setTimeout(() => {
+            this.listLoading = false;
           }, 1000);
-      }).catch(()=>{
-        this.listLoading = false;   
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //页码变化
     handleCurrentChange(val) {
@@ -269,25 +276,27 @@ export default {
         name: this.search.name,
         majorSort: this.activeName
       };
-      
+
       this.listLoading = true;
-      getClass(obj, this.pageNumber, this.pageSize).then(res => {
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        // this.pageNumber = res.data.data.pageNo
-        // this.pageSize = res.data.data.pageSize
-        
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getClass(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          this.total = res.data.data.count;
+          this.list = res.data.data.list;
+          // this.pageNumber = res.data.data.pageNo
+          // this.pageSize = res.data.data.pageSize
+
+          if (this.list != undefined) {
+            for (var i = 0; i < this.list.length; i++) {
+              this.list[i].index = i + 1;
+            }
           }
-        }
-        setTimeout(() => {
-            this.listLoading = false;   
+          setTimeout(() => {
+            this.listLoading = false;
           }, 1000);
-      }).catch(()=>{
-        this.listLoading = false;
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //点击新增
     handleCreate() {
@@ -313,27 +322,24 @@ export default {
           this.dialogFormVisible = true;
         } else {
           this.listLoading = false;
-          
         }
       });
     },
     // 点击删除
     handleDelete(row) {
       //删除
-      
+
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        closeOnClickModal: false,
+        closeOnClickModal: false
       })
         .then(() => {
-          
           var obj = {
             id: row.id
           };
           delClass(obj)
             .then(res => {
-             
               if (res.data.code === 1) {
                 this.$message({
                   type: "success",
@@ -341,11 +347,10 @@ export default {
                 });
                 this.getList();
               } else {
-                
               }
             })
-            .catch(() =>{
-              this.listLoading = false
+            .catch(() => {
+              this.listLoading = false;
             });
         })
         .catch(() => {
@@ -361,45 +366,52 @@ export default {
         majorSort: this.temp.majorSort,
         name: this.temp.name
       };
-      
       this.$refs[formName].validate(valid => {
+        console.log(valid, "222222");
         if (valid) {
-          this.btnState = true
-          addClass(obj).then(res => {
-            this.btnState = false;
-           
-            if (res.data.code === 1) {
-              this.dialogFormVisible = false;
-              this.activeName = "all";
-              this.resetSearch();
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.handleFilter();
-              this.$message({
-                type: "success",
-                message: "新增成功"
-              });
-            } else {
-              
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
-        } else {
-          this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
+          this.btnState = true;
+          addClass(obj)
+            .then(res => {
+              this.btnState = false;
+
+              if (res.data.code === 1) {
+                this.dialogFormVisible = false;
+                this.activeName = "all";
+                this.resetSearch();
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.handleFilter();
+                this.$message({
+                  type: "success",
+                  message: "新增成功"
                 });
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
     },
     resetForm(formName) {
       //清空列表
-        this.selectState = false;
-        this.resetTemp();
-        this.$refs[formName].resetFields();
-        this.dialogFormVisible = false;
+      this.selectState = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
+      this.dialogFormVisible = false;
     },
     resetSearch() {
       //清空搜索信息
@@ -419,31 +431,39 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-          upClass(obj).then(res => {
-            this.btnState = false;
-            if (res.data.code === 1) {
-              this.resetTemp();
-              this.$refs[formName].resetFields();
-              this.dialogFormVisible = false;
-              this.selectState = false;
-              this.getList();
-              this.$message({
-                type: "success",
-                message: "编辑成功"
-              });
-            } else {
-              //this.dialogFormVisible = false;
-              //this.selectState = false;
-              
-            }
-          }).catch(err=>{
-            this.btnState = false;
-          });
-        } else {
-          this.$message({
-                  type: "error",
-                  message: "填写的信息不符合要求"
+          upClass(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.dialogFormVisible = false;
+                this.selectState = false;
+                this.getList();
+                this.$message({
+                  type: "success",
+                  message: "编辑成功"
                 });
+              } else {
+                //this.dialogFormVisible = false;
+                //this.selectState = false;
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
