@@ -147,6 +147,7 @@ import {
   upDataTech
 } from "@/api/serviceManage";
 //挂载数据
+var loading;
 export default {
   name: "skill",
   data() {
@@ -217,6 +218,14 @@ export default {
     };
   },
   methods: {
+    loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     //全局搜索按钮
     search() {
       var obj = {
@@ -336,6 +345,7 @@ export default {
       this.ruleForm2.technicians = this.tabOptions;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.saveFlag = true;
           var obj = {
             id: this.id,
@@ -351,6 +361,7 @@ export default {
                     type: "success",
                     message: "新增成功!"
                   });
+                  loading.close();
                   this.saveFlag = false;
                   this.$refs["ruleForm2"].resetFields();
                   this.ruleForm2.name = "";
@@ -366,11 +377,13 @@ export default {
                   this.jumpPage = 1;
                   this.getList(obj1, this.pageNumber, this.pageSize);
                 } else {
+                  loading.close();
                   this.middleB = [];
                   this.middleD = [];
                 }
               })
               .catch(res => {
+                loading.close();
                 this.listLoading = false;
                 this.saveFlag = false;
               });
@@ -384,7 +397,7 @@ export default {
                     type: "success",
                     message: "编辑成功!"
                   });
-
+                  loading.close();
                   this.$refs["ruleForm2"].resetFields();
                   this.ruleForm2.name = "";
                   this.ruleForm2.staffClass = [];
@@ -397,9 +410,12 @@ export default {
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
+                }else{
+                  loading.close();
                 }
               })
               .catch(res => {
+                loading.close();
                 this.listLoading = false;
                 this.dialogVisible = false;
               });

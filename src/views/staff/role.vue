@@ -145,7 +145,7 @@ import {
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var data = [];
-
+var loading;
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
   name: "role",
@@ -307,6 +307,14 @@ export default {
     }
   },
   methods: {
+     loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     aaa(val) {
       //测试函数
     },
@@ -848,12 +856,14 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           addStation(obj)
             .then(res => {
               this.btnState = false;
 
               if (res.data.code === 1) {
+                loading.close();
                 this.resetTemp();
                 this.$refs[formName].resetFields();
                 this.$refs.domTree.setCheckedKeys([]);
@@ -869,9 +879,12 @@ export default {
                   officeId: ""
                 };
                 this.handleFilter();
+              }else{
+                loading.close();
               }
             })
             .catch(err => {
+              loading.close();
               this.btnState = false;
             });
         } else {
@@ -903,11 +916,13 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           this.btnState = true;
           upStation(obj)
             .then(res => {
               this.btnState = false;
               if (res.data.code === 1) {
+                loading.close();
                 this.selsctState = false;
                 this.resetTemp();
                 this.$refs.domTree.setCheckedKeys([]);
@@ -918,9 +933,12 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
+              }else{
+                loading.close();
               }
             })
             .catch(err => {
+              loading.close();
               this.btnState = false;
             });
         } else {

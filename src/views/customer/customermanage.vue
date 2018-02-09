@@ -154,6 +154,8 @@ import {
   upCus //保存客户（编辑）
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
+
+var loading;
 export default {
   name: "customermanage",
   data() {
@@ -265,6 +267,14 @@ export default {
     };
   },
   methods: {
+    loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     //清空地址POI选择框值
     inputBlur() {
       this.$refs.pickerInput.value = "";
@@ -284,6 +294,7 @@ export default {
       }, 1000);
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.loadingClick()
           if (
             this.$refs.pickerInput.value != "" &&
             this.ruleForm.address != ""
@@ -312,6 +323,7 @@ export default {
             saveCus(obj)
               .then(res => {
                 if (res.data.code === 1) {
+                  loading.close();
                   this.$message({
                     type: "success",
                     message: "新增成功!"
@@ -327,16 +339,20 @@ export default {
                   this.jumpPage = 1;
                   this.getData(obj, this.pageNumber, this.pageSize1);
                 } else {
+                  loading.close();
                   this.$refs.pickerInput.value = "";
                   this.ruleForm.address = "";
                 }
               })
-              .catch(res => {});
+              .catch(res => {
+                 loading.close();
+              });
           } else {
             var obj1 = this.ruleForm;
             upCus(obj1)
               .then(res => {
                 if (res.data.code === 1) {
+                  loading.close();
                   this.$message({
                     type: "success",
                     message: "编辑成功!"
@@ -351,11 +367,14 @@ export default {
                   this.jumpPage = 1;
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
+                   loading.close();
                   this.$refs.pickerInput.value = "";
                   this.ruleForm.address = "";
                 }
               })
-              .catch(res => {});
+              .catch(res => {
+                 loading.close();
+              });
           }
         } else {
           this.$message({
