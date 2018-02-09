@@ -368,7 +368,6 @@
                     style="width:70%"
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
-
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
                     style="width:70%"
@@ -1391,20 +1390,28 @@ export default {
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
-                if (data.data.code==1) {
-                  this.$message({
-                    message: data.data.data,
-                    type: "success"
-                  });
-                  loading.close();
-                  this.resetForm()
-                  this.dialogFormVisible = false;
-                  this.getList(this.pageNumber, this.pageSize);
-                  this.picFile = [];
-                  this.pictureDetails = []
-                  this.picList = [];
-                  this.imgNumber = 0
-                } else {
+                  if(data.data.code){
+                    if(data.data.code==3){
+                      this.$message({
+                        message: data.data.data,
+                        type: "warning"
+                      });
+                    }
+                    if (data.data.code==1) {
+                      this.$message({
+                        message: data.data.data,
+                        type: "success"
+                      });
+                    }
+                      loading.close();
+                      this.resetForm()
+                      this.dialogFormVisible = false;
+                      this.getList(this.pageNumber, this.pageSize);
+                      this.picFile = [];
+                      this.pictureDetails = []
+                      this.picList = [];
+                      this.imgNumber = 0       
+                }else {
                     loading.close();
                     this.btnState = false
                     this.imgNumber = 0
