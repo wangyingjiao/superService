@@ -164,6 +164,13 @@
                 </template>
                </el-table-column>
           </el-table>
+          
+      <!-- <el-pagination
+      small
+      layout="prev, pager, next"
+      :total="50">
+    </el-pagination>
+    -->
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
         <button class="button-large"  @click="close('temp')">关 闭</button>
@@ -338,14 +345,14 @@ export default {
     },
     // 点击查看
     handleRead(row) {
-      console.log(row, "1111111111");
-
       readDict({ type: row.type })
         .then(res => {
-          this.tableData = res.data.data.list;
-          this.temp.type = row.type;
-          this.temp.description = row.description;
-          this.dialogTable = true;
+          if (res.data.code == 1) {
+            this.tableData = res.data.data.list;
+            this.temp.type = row.type;
+            this.temp.description = row.description;
+            this.dialogTable = true;
+          }
         })
         .catch(err => {});
     },
@@ -375,7 +382,6 @@ export default {
     },
     // 点击删除时
     handleDelete(row) {
-      console.log(row);
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -453,7 +459,6 @@ export default {
                       type: "success",
                       message: "新增成功"
                     });
-                    console.log({ type: obj.type });
                     readDict({ type: obj.type })
                       .then(res => {
                         this.tableData = res.data.data.list;

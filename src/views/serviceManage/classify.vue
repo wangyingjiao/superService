@@ -367,7 +367,6 @@ export default {
         name: this.temp.name
       };
       this.$refs[formName].validate(valid => {
-        console.log(valid, "222222");
         if (valid) {
           this.btnState = true;
           addClass(obj)
