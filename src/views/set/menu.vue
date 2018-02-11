@@ -292,7 +292,6 @@ export default {
     },
     // 新增子菜单
     handleCreate(row) {
-      console.log(row.type);
       this.temp.isShow = "1";
 
       if (row.type != "click") {
@@ -304,7 +303,6 @@ export default {
       if (row.parentId) {
         this.temp.parentId = row.id;
       } else {
-        console.log(2222222);
         this.temp.parentId = "1";
       }
       if (row.parentIds) {
