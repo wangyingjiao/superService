@@ -179,16 +179,20 @@
 					class="width400" 
 				></el-cascader>								
 			</el-form-item>
+       <!-- @blur="inputFocus" -->
 			<el-form-item label="详细地址:" prop="address">
-				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputFocus" value='' placeholder="输入关键字选取地点">
+				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" value='' placeholder="输入关键字选取地点">        
 				<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
+				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
+        <div class="selfAddressGao1">
+             <div ref="panel" class="selfpanel1" ></div>        
+        </div>
+        		
 			</el-form-item>
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle"  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
-		</el-form>
-    <div id="panel"></div>					
+		</el-form>    					
 		<div slot="footer" class="dialog-footer" style="text-align:center;">
 				<button class="button-large" @click="submitForm('ruleForm')">确 定</button>
 				<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
@@ -464,11 +468,11 @@ export default {
     seerchange(val) {
       this.form.serverStation1 = val;
     },
-    inputFocus() {
-      if (this.$refs.pickerInput != undefined) {
-        this.$refs.pickerInput.value = "";
-      }
-    },
+    // inputFocus() {
+    //   if (this.$refs.pickerInput != undefined) {
+    //     this.$refs.pickerInput.value = "";
+    //   }
+    // },
     //存储选择技师对象
     ChangeTech(obj) {
       if (obj.techChecked) {
@@ -526,15 +530,28 @@ export default {
       if (this.active++ >= 3) this.active = 1;
       if(formName == 'form'){
         this.$refs[formName].validate(valid => {
-          if (valid) { 
-             if(this.serverStation1 != ''){
-                this.findItemListFun();                
-             }                     
-          }else{
-            this.active=1
-            return false           
+          if (valid) {
+            if (this.serverStation1 != "") {
+              this.findItemListFun();
+            }else{
+              this.active = 1;
+            }
+          } else {
+            this.active = 1;
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
+            this.$message({
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
           }
-        })
+        });        
       }
       if(formName == 'form1'){
         var arr=[];
@@ -563,29 +580,6 @@ export default {
           }
         });
       } else {
-      }
-      if (this.active == 2) {
-        this.$refs["form"].validate(valid => {
-          if (valid) {
-            if (this.serverStation1 != "") {
-              this.findItemListFun();
-            }
-          } else {
-            this.active = 1;
-            var errArr = this.$refs[formName]._data.fields;
-            var errMes = [];
-            for (var i = 0; i < errArr.length; i++) {
-              if (errArr[i].validateMessage != "") {
-                errMes.push(errArr[i].validateMessage);
-              }
-            }
-            this.$message({
-              type: "error",
-              message: errMes[0]
-            });
-            return false;
-          }
-        });
       }
     },
     //上一步
@@ -697,6 +691,7 @@ export default {
                 loading.close();
                 this.$refs["ruleForm"].resetFields();
                 this.$refs.pickerInput.value = "";
+                this.$refs.panel.style.display='none';
                 this.dialogTableVisible1 = false;
               } else {
                 loading.close();
@@ -733,6 +728,7 @@ export default {
       this.ruleForm.areaCode = "";
       this.ruleForm.sex = "";
       this.$refs.pickerInput.value = "";
+      this.$refs.panel.style.display='none';
       this.dialogTableVisible1 = false;
     },
     //获取按客户ID客户数据
@@ -773,8 +769,10 @@ export default {
       this.ruleForm.sex = "";
     },
     //地址变化时开始POI搜索
-    testFun(value) {
+    testFun(value) {      
       this.$nextTick(() => {
+        this.$refs.pickerInput.value = "";
+        this.$refs.panel.style.display='none';
         this.test(value[2]);
       });
     },
@@ -965,37 +963,41 @@ export default {
     test(value) {
       this.showDis = false;
       var that = this;
-      let inputname = this.$refs.pickerInput;
-      let inputname1 = this.$refs.pickerInput1;
-      //输入提示
-      var autoOptions = {
-        input: inputname,
-        city: value,
-        citylimit: true
-      };
-      var auto = new AMap.Autocomplete(autoOptions);
-      var placeSearch = new AMap.PlaceSearch({
-        map: this.mymap
-        //panel:"panel",
-      }); //构造地点查询类
-      // AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
-      //           //获取当前选中的结果数据
-      //           console.log(results.selected.data);
-      // });
-      AMap.event.addListener(auto, "select", select); //注册监听，当选中某条记录时会触发
-      function select(e) {
-        placeSearch.setCity(e.poi.adcode);
-        placeSearch.search(e.poi.name); //关键字查询查询
-        var poi = e.poi,
-          info = {
-            id: poi.id,
-            name: poi.name,
-            location: poi.location.toString(),
-            address: poi.address
-          };
-        inputname.value = info.name;
-        inputname1.value = info.location;
-      }
+      var inputname = this.$refs.pickerInput;
+      var inputname1 = this.$refs.pickerInput1;
+      //实例化PlaceSearch
+      var placeSearch= new AMap.PlaceSearch({
+        pageSize: 50,//每页显示多少行
+        pageIndex: 1,//显示的下标从那个开始
+        //type:'商务住宅|商务办公',//类别，可以以|后面加其他类
+        city: value, //城市
+        map: that.mymap,
+        citylimit: true,
+        renderStyle:'default',
+        panel: that.$refs.panel//服务显示的面板
+      });
+      AMap.service('AMap.PlaceSearch',function(){//回调函数 
+        placeSearch.clear();       
+        var text=that.$refs.pickerInput          
+            text.addEventListener("keyup",function(e) {
+              placeSearch.setCity(value)
+              placeSearch.search(text.value)
+              that.$refs.panel.style.display='block';
+            });          
+      })	  
+      AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
+      //获取当前选中的结果数据
+      var poi = results.selected.data;
+           that.$refs.panel.style.display='none';
+       var info = {
+        id: poi.id,
+        name: poi.name,
+        location: poi.location.toString(),
+        address: poi.address
+        };
+        var text=that.$refs.pickerInput
+        text.value=info.name;
+      });			
     },
     //日期变化时改变时间对象
     dateChange(val) {
@@ -1086,6 +1088,12 @@ export default {
 };
 </script>
 <style  lang="scss" scoped>
+.selfAddressGao1{
+   width:400px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+}
+.selfpanel1{
+  width:418px;max-height:290px;overflow-y:scroll
+}
 .selfTabProm {
   width: 100%;
   text-align: center;

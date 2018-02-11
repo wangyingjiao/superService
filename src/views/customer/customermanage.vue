@@ -123,10 +123,14 @@
                  style='width: 100%;'
               ></el-cascader>							
 					</el-form-item>
+          <!-- @blur="inputBlur" -->
 					<el-form-item label="详细地址:" prop="address">
-		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" @blur="inputBlur" value='' placeholder="输入关键字选取地点">
+		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis"  value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input class="customerAddress"   v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
+								<el-input class="customerAddress"   v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
+                <div class="selfAddressGao">
+                    <div ref="panel" class="selfpanel"></div>        
+                </div>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="email" >
 						<el-input  v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
@@ -282,6 +286,8 @@ export default {
     //地址POI选择初始城市值
     testFun(value) {
       this.$nextTick(() => {
+        this.$refs.pickerInput.value = "";
+        this.$refs.panel.style.display='none';
         this.test(value[2]);
       });
     },
@@ -333,6 +339,7 @@ export default {
                   this.customPhone = "";
                   // this.organizationName='';
                   this.$refs.pickerInput.value = "";
+                  this.$refs.panel.style.display='none';
                   this.dialogTableVisible = false;
                   var obj = {};
                   this.pageNumber = 1;
@@ -361,6 +368,7 @@ export default {
                   this.customName = "";
                   this.customPhone = "";
                   this.$refs.pickerInput.value = "";
+                  this.$refs.panel.style.display='none';
                   this.dialogTableVisible = false;
                   var obj2 = {};
                   this.pageNumber = 1;
@@ -400,6 +408,7 @@ export default {
       this.ruleForm.areaCode = "";
       this.ruleForm.sex = "";
       this.$refs.pickerInput.value = "";
+      this.$refs.panel.style.display='none';
       this.dialogTableVisible = false;
     },
     //全局搜索按钮
@@ -555,33 +564,41 @@ export default {
     test(area) {
       this.showDis = false;
       var that = this;
-      let inputname = this.$refs.pickerInput;
-      let inputname1 = this.$refs.pickerInput1;
-      //输入提示
-      var autoOptions = {
-        input: inputname,
-        city: area,
-        citylimit: true
-        // type:'120302｜120201'
-      };
-      var auto = new AMap.Autocomplete(autoOptions);
-      var placeSearch = new AMap.PlaceSearch({
-        map: this.mymap
-      }); //构造地点查询类
-      AMap.event.addListener(auto, "select", select); //注册监听，当选中某条记录时会触发
-      function select(e) {
-        placeSearch.setCity(e.poi.adcode);
-        placeSearch.search(e.poi.name); //关键字查询查询
-        var poi = e.poi,
-          info = {
-            id: poi.id,
-            name: poi.name,
-            location: poi.location.toString(),
-            address: poi.address
-          };
-        inputname.value = info.name;
-        inputname1.value = info.location;
-      }
+      var inputname = this.$refs.pickerInput;
+      var inputname1 = this.$refs.pickerInput1;
+      //实例化PlaceSearch
+      var placeSearch= new AMap.PlaceSearch({
+        pageSize: 50,//每页显示多少行
+        pageIndex: 1,//显示的下标从那个开始
+        //type:'商务住宅|商务办公',//类别，可以以|后面加其他类
+        city: area, //城市
+        map: that.mymap,
+        citylimit: true,
+        renderStyle:'default',
+        panel: that.$refs.panel//服务显示的面板
+      });
+      AMap.service('AMap.PlaceSearch',function(){//回调函数 
+        placeSearch.clear();       
+        var text=that.$refs.pickerInput          
+            text.addEventListener("keyup",function(e) {
+              placeSearch.setCity(area)
+              placeSearch.search(text.value)
+              that.$refs.panel.style.display='block';
+            });          
+      })	  
+      AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
+      //获取当前选中的结果数据
+      var poi = results.selected.data;
+       that.$refs.panel.style.display='none';
+       var info = {
+        id: poi.id,
+        name: poi.name,
+        location: poi.location.toString(),
+        address: poi.address
+        };
+        var text=that.$refs.pickerInput
+        text.value=info.name;
+      });	      
     },
     //地图初始化
     initMap1() {
@@ -600,6 +617,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.selfAddressGao{
+   width:332px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+}
+.selfpanel{
+  width:350px;max-height:290px;overflow-y:scroll
+}
 .selfToolTip {
   width: 100px;
   overflow: hidden;
