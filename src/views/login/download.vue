@@ -34,27 +34,27 @@ export default {
   name: "download",
   data() {
     return {
-      isWeixin:false,
-      isShow:false,
+      isWeixin: false,
+      isShow: false
     };
   },
-  mounted(){
-     var ua = navigator.userAgent;
-     var isWeixin = !!/MicroMessenger/i.test(ua);
-     if(isWeixin){
-       this.isWeixin = true
-       this.wxClick()
-     }else{
-       this.isWeixin = false
-     }
+  mounted() {
+    var ua = navigator.userAgent;
+    var isWeixin = !!/MicroMessenger/i.test(ua);
+    if (isWeixin) {
+      this.isWeixin = true;
+      this.wxClick();
+    } else {
+      this.isWeixin = false;
+    }
   },
   methods: {
-      wxClick(){
-         this.isShow = true
-      },
-      noShow(){
-          this.isShow = false
-      }
+    wxClick() {
+      this.isShow = true;
+    },
+    noShow() {
+      this.isShow = false;
+    }
   }
 };
 </script>
@@ -106,7 +106,8 @@ export default {
       margin: 0 auto;
       margin-top: 1.2rem;
       overflow: hidden;
-      a,div {
+      a,
+      div {
         display: block;
         width: 80%;
         margin: 0 auto;
@@ -137,7 +138,7 @@ export default {
   position: absolute;
   right: 2rem;
   top: 3rem;
-  img{
+  img {
     width: 100%;
   }
 }

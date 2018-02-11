@@ -3,7 +3,7 @@
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
-        <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
+        <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -108,7 +108,7 @@
     <!-- 2层弹框开始 -->
     <el-dialog 
       :title="textMap2[dialogStatus]"
-      :visible.sync="dialogFormVisible2" 
+      :visible.sync="dialogFormVisible2"
       :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
