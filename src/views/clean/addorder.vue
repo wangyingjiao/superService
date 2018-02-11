@@ -13,7 +13,7 @@
 			<!--步骤显示区域开始-->
 			<div class="stepContentWrap">
 				<!--步骤1显示区域开始-->
-				<div class="stepContent"  v-if="active == 1">
+				<div class="stepContent"  v-show="active == 1">
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
@@ -41,8 +41,8 @@
 				</div>
 				<!--步骤1显示区域结束-->
 				<!--步骤2显示区域开始-->
-				<div class="stepContent"  v-if="active == 2">
-					<el-form ref="form1" :rules="rulesTest" :model="form1" label-width="100px" label-position="left">
+				<div class="stepContent"  v-show="active == 2">
+					<el-form ref="form1"  :rules="rulesTest" :model="form1" label-width="100px" label-position="left">
 						<el-form-item label="服务项目:" prop="serverPro">
 							<el-select clearable  class="severChangeStyle" filterable v-model="form1.serverPro" placeholder="请选择" @change="serverchange">
 								<el-option v-for="item in serverOptions" :key="item.id" :label="item.name" :value="item.id">
@@ -99,11 +99,14 @@
 				</div>
 				<!--步骤2显示区域结束-->
 				<!--步骤3显示区域开始-->
-				<div class="stepContent" v-if="active == 3">
+				<div class="stepContent" v-show="active == 3">
 					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
 						<el-form-item label="技师:" prop="selectTech">
-              <el-input type="hidden" style="display:none" value='' v-model='form2.selectTech'></el-input>               
-							<span  class="button-cancel stepThreeBut" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
+              <el-select  class="roomTypeStyle" style="z-index:-1" multiple  v-model="form2.selectTech" placeholder="请选择">
+                <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
+                </el-option>
+              </el-select>                             
+							<span  class="button-cancel stepThreeBut" style="margin-left: -120px;" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
@@ -114,7 +117,7 @@
 							</div>																	
 						</el-form-item>																																													
             <el-form-item label="选择日期:" prop='severTime' >
-                <el-select v-model="form2.severTime" class="width200"  @change='dateChange' placeholder="请选择">
+                <el-select clearable v-model="form2.severTime" class="width200"  @change='dateChange' placeholder="请选择">
                   <el-option
                     v-for="item in options2"
                     :key="item.value"
@@ -134,7 +137,7 @@
 								type="textarea"
 								:rows="3"
 								placeholder="请输入内容"
-								v-model="textarea"
+								v-model="form2.textarea"
 								class="width400"
 								>
 							</el-input>						
@@ -144,10 +147,10 @@
 				<!--步骤3显示区域结束-->
         <!--上、下步按钮开始-->
         <div class="NextPrevWrap">
-          <span class="button-large NextPrevStyle"  v-if="active == 2 || active == 3" @click="prev">上一步</span>
-          <span class="button-large NextPrevStyle"  v-if="active == 1"  @click="next('form')">下一步</span>	
-          <span class="button-large NextPrevStyle"  v-if="active == 2"  @click="next('form1')">下一步</span>					
-          <span class="button-large NextPrevStyle"  v-if="active == 3" @click="confirmOrder('form2')">保存</span>		
+          <span class="button-large NextPrevStyle"  v-show="active == 2 || active == 3" @click="prev">上一步</span>
+          <span class="button-large NextPrevStyle"  v-show="active == 1"  @click="next('form')">下一步</span>	
+          <span class="button-large NextPrevStyle"  v-show="active == 2"  @click="next('form1')">下一步</span>					
+          <span class="button-large NextPrevStyle"  v-show="active == 3" @click="confirmOrder('form2')">保存</span>		
         </div>
         <!--上、下步按钮结束-->        
 			</div>
@@ -316,8 +319,10 @@ export default {
     };
     var checkDate = (rule, value, callback) => {
       if (!value) {
+        
         callback(new Error("请选择日期"));
       } else {
+        callback();
       }
     };
     return {
@@ -328,9 +333,10 @@ export default {
       middleA: [],
       techSaveFlag: false,
       form2: {
-        selectTech: "",
+        selectTech: [],
         severTime: "",
-        severTime1: ""
+        severTime1: "",
+        textarea:''
       },
       btnShow: JSON.parse(localStorage.getItem("btn")),
       //服务站下拉选项
@@ -376,7 +382,7 @@ export default {
       },
       rules2: {
         selectTech: [
-          { required: true, message: "请选择技师", trigger: "change" }
+          { required: true,type:'array', message: "请选择技师", trigger: "change" }
         ],
         severTime: [
           {
@@ -388,7 +394,8 @@ export default {
         ],
         severTime1: [
           { required: true, message: "请选择服务时间", trigger: "change" }
-        ]
+        ],
+        textarea:[{ required: false, message: "请", trigger: "blur" }]
       },
       ruleForm: {
         name: "",
@@ -409,7 +416,7 @@ export default {
         ],        
         serverPro: [
           { required: true,message: "请选择服务项目", trigger: "change"}
-        ],
+        ]
        
       },
       rules: {
@@ -535,6 +542,10 @@ export default {
               this.findItemListFun();
             }else{
               this.active = 1;
+              this.$message({
+                type: "error",
+                message: "请输入客户电话，查询客户"
+              });
             }
           } else {
             this.active = 1;
@@ -553,16 +564,17 @@ export default {
           }
         });        
       }
-      if(formName == 'form1'){
+      if(formName == 'form1'){      
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
           if(this.selectCommidty[a].goodsChecked){
              arr.push(this.selectCommidty[a])
           }
         }
-        this.middleB=Object.assign([], arr); 
+        this.middleB=Object.assign([], arr);
         this.$refs[formName].validate(valid => {
           if (valid) {
+              
           } else {
             this.active = 2;
             var errArr = this.$refs[formName]._data.fields;
@@ -579,7 +591,6 @@ export default {
             return false;
           }
         });
-      } else {
       }
     },
     //上一步
@@ -815,13 +826,17 @@ export default {
     },
     //技师数据回显二级选中
     selectionreturn1() {
-      if (this.tabOptions.length != "undefined") {
-        for (let a = 0; a < this.listTech.length; a++) {
-          for (let b = 0; b < this.tabOptions.length; b++) {
-            if (this.tabOptions[b].techId == this.listTech[a].techId) {
+      if (this.middleA.length != 0) {
+        for (var a = 0; a < this.listTech.length; a++) {
+          for (var b = 0; b < this.middleA.length; b++) {
+            if (this.middleA[b].techId == this.listTech[a].techId) {
               this.listTech[a].techChecked = true;
             }
           }
+        }
+      }else{
+        for (var a1 = 0; a1 < this.listTech.length; a1++) {
+              this.listTech[a1].techChecked = false;
         }
       }
     },
@@ -836,9 +851,6 @@ export default {
           if (res.data.code === 1) {
             if (res.data.data != undefined) {
               this.listTech = res.data.data;
-              // for (var a = 0; a < this.listTech.length; a++) {
-              //   this.$set(this.listTech[a], "techChecked", false);
-              // }
               this.dialogTableVisible = true;
               this.selectionreturn1();
             }
@@ -855,14 +867,15 @@ export default {
     submitForm2() {
       //先遍历数据中选中的再保存
       var arr = [];
-      if (this.listTech.length) {
-        for (let a = 0; a < this.listTech.length; a++) {
-          if (this.listTech[a].techChecked == true) {
-            arr.push(this.listTech[a]);
+      if (this.middleA.length !=0) {
+        for (let a = 0; a < this.middleA.length; a++) {
+          if (this.middleA[a].techChecked == true) {
+            arr.push(this.middleA[a]);
           }
         }
       }
       this.tabOptions = arr;
+      this.form2.selectTech=this.middleA;
       this.findTimeListByTechFun();
       this.dialogTableVisible = false;
     },
@@ -887,28 +900,13 @@ export default {
           if (obj.techId == this.middleA[b].techId) {
             this.middleA.remove(this.middleA[b]);
           }
-        }
+        }       
         this.tabOptions.remove(obj);
-      }
-      if (this.tabOptions.length == 0) {
-        this.form2.severTime1 = "";
+        this.form2.selectTech=this.middleA;
       }
     },
     //确认下单按钮点击
     confirmOrder(formName) {
-      if (this.tabOptions.length == 0) {
-        this.form2.severTime1 = "";
-        this.rules2.severTime1[0].message = "请选择技师";
-      }
-      var kkk = "";
-      for (var a = 0; a < this.timeObj.length; a++) {
-        if (this.timeObj[a].selected == true) {
-          kkk = this.timeObj[a].serviceTimeStr;
-        }
-      }
-      if (kkk == "") {
-        this.form2.severTime1 = "";
-      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           var time = "";
@@ -920,11 +918,11 @@ export default {
           var obj = {
             customerId: this.customId, //客户ID
             serviceTime: this.changTime + " " + time + ":00", //服务时间
-            customerRemark: this.textarea, //备注
+            customerRemark: this.form2.textarea, //备注
             techList: this.tabOptions, //技师对象
             goodsInfoList: this.middleB, //商品对象
             stationId: this.serverStation1
-          };
+          };          
           createOrder(obj)
             .then(res => {
               if (res.data.code === 1) {
@@ -934,6 +932,7 @@ export default {
                 });
                 this.$refs["form2"].resetFields();
                 this.middleA = [];
+                this.this.tabOptions=[];
                 this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
               } else if (res.data.code === 3) {
                 this.$message({
@@ -955,7 +954,7 @@ export default {
             type: "error",
             message: errMes[0]
           });
-          return false;
+         
         }
       });
     },
@@ -1003,16 +1002,22 @@ export default {
     dateChange(val) {
       this.form2.severTime = val;
       var that = this;
-      for (var b = 0; b < this.options2.length; b++) {
-        if (val == this.options2[b].value) {
-          if (this.options2[b].serviceTime != undefined) {
-            this.timeObj = this.options2[b].serviceTime;
+      if(this.form2.severTime == ''){
+          this.timeObj=[];
+      }else{
+
+          for (var b = 0; b < this.options2.length; b++) {
+            if (val == this.options2[b].value) {
+              if (this.options2[b].serviceTime != undefined) {
+                this.timeObj = this.options2[b].serviceTime;
+              }
+              if (this.options2[b].label != undefined) {
+                this.changTime = this.options2[b].label;
+              }
+            }
           }
-          if (this.options2[b].label != undefined) {
-            this.changTime = this.options2[b].label;
-          }
-        }
       }
+
       if (this.timeObj != undefined && this.timeObj.length != 0) {
         //样式复位
         this.$nextTick(() => {
