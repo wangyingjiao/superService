@@ -358,43 +358,41 @@
                 :model="goods_info"
                 ref="goods_info"
                 label-position="left"
-                label-width="90px" 
-                style='padding:20px 0 0 20px'
+                label-width="100px" 
+                class="dia_form"
                 :rules = "goods"
                  >
                 <el-form-item label="商品名称:" prop="name">
                   <el-input
                     placeholder="请输入商品名称（1-24位）"
-                    style="width:70%"
+                    
                     v-model="goods_info.name"></el-input>
                 </el-form-item>
-
                 <el-form-item label="商品单位:" prop="unit">
                   <el-input 
-                    style="width:70%"
+                    
                     placeholder="请输入单位名称（1-6位）"
                     v-model="goods_info.unit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="计量方式:" prop="type">
-                  <el-select class="filter-item" v-model="goods_info.type" placeholder="请选择" style="width:70%">
+                  <el-select class="form_item" v-model="goods_info.type" placeholder="请选择" >
                      <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
                 
                 <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price" style="width:70%">
+                  <el-input v-model="goods_info.price" >
                      <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="折算时长:" prop="convertHours">
-                  <el-input v-model="goods_info.convertHours" style="width:70%">
+                <el-form-item label="折算时长:" prop="convertHours" class="doubtf">
+                  <el-input v-model="goods_info.convertHours" style="width:100%" >
                     <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
                   <el-popover
                       ref="popover1"
                       placement="top-start"
-                      width="200"
                       trigger="hover"
                       content="请录入1单位所需服务时长（以小时为单位）
 例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
@@ -405,21 +403,21 @@
                 <el-form-item label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
                     placeholder="请输入起步人数(默认为1)"
-                    style="width:70%"
+                   
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
                 <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
-                    style="width:70%"
+                    
                     v-model="goods_info.cappingPerNum"></el-input>
                 </el-form-item>
 
                 <el-form-item label="起购数量:" class="seize" prop="minPurchase">
                   <el-input
                     placeholder="请输入起购数量（默认为1）"
-                    style="width:70%"
+                    
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
               </el-form>
@@ -879,10 +877,10 @@ export default {
       return arr
     },
     imgClick(item){
-		this.picFile = item
+		  this.picFile = item
     },
     imgTextClick(item){
-	  this.imgText = item
+	    this.imgText = item
     },
     //对接商品
     handleSendData(row){
@@ -907,10 +905,9 @@ export default {
     },
     //添加商品
     addCommodity(){
-		this.addCommodityFlag = true
-		this.resetForm('ser')
-		this.handleEditFlag = false
-		// this.addComm = !this.addComm
+      this.addCommodityFlag = true
+      this.resetForm('ser')
+      this.handleEditFlag = false
     },
     converFilter(val){
       var reg = /^\d+(\.\d{1,2})?$/;
@@ -1041,8 +1038,8 @@ export default {
           if(this.handleEditFlag){
             this.$set(this.basicForm.commoditys,this.handleEditIndex,obj)
             this.resetForm('ser')
-			this.handleEditFlag = false
-			this.addCommodityFlag = false
+            this.handleEditFlag = false
+            this.addCommodityFlag = false
           }else{
               if("id" in obj){
                 delete obj.id
@@ -1051,8 +1048,8 @@ export default {
                 delete obj.jointGoodsCode
               }
               this.basicForm.commoditys.push(obj)
-			  this.resetForm('ser')
-			  this.addCommodityFlag = false
+              this.resetForm('ser')
+              this.addCommodityFlag = false
           }
         } else {
           var errArr = this.$refs[formName]._data.fields;
@@ -1252,8 +1249,9 @@ export default {
               this.dialogFormVisible = true;   
               var arr = data.data.data;
               if (arr.pictures != undefined) {
-				this.picFile = arr.pictures;
-				this.picList = this.picFile
+                  this.picFile = arr.pictures;
+                  //banner传给upload组件
+                  this.picList = this.picFile
                 // this.imgNumber = arr.pictures.length;
                 // for (var i = 0; i < arr.pictures.length; i++) {
                 //   var obj = {
@@ -1263,7 +1261,8 @@ export default {
 				// }
 			  }
 			  if(arr.pictureDetails != undefined){
-				  this.imgText = arr.pictureDetails
+          this.imgText = arr.pictureDetails
+          //详情图片传给upload组件
 				  this.pictureDetails = this.imgText
 				  	// for(var i = 0;i<arr.pictureDetails.length; i++){
 					// var obj = {
@@ -1336,9 +1335,9 @@ export default {
     },
     handleClick(tab, event) {
       this.search.sortId = ''
-	  this.search.name = ''
-	  this.search.goodsName = ''
-	  this.search.sortIdandGoodsId = ''
+      this.search.name = ''
+      this.search.goodsName = ''
+      this.search.sortIdandGoodsId = ''
       var size = this.pageSize;
       this.pageNumber = 1;
        Taxonomy({majorSort:tab.name})
@@ -1362,12 +1361,6 @@ export default {
       var that = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var loading = this.$loading({
-            lock: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            target: document.querySelector('.tabBox ')
-          })
           if(this.basicForm.commoditys.length<=0){
             this.$message({
               message: '请添加商品',
@@ -1381,7 +1374,13 @@ export default {
               obj.pictures = this.picFile; //服务图片缩略图.
               obj.pictureDetails = this.imgText;
               obj.sysTags = this.labelClickArr //添加 系统标签
-			        obj.customTags = this.customArr
+              obj.customTags = this.customArr
+          var loading = this.$loading({
+            lock: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            target: document.querySelector('.tabBox ')
+          })
           //==update 是编辑   create是添加
           if (this.dialogStatus == "update") {
             that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr)
@@ -1391,20 +1390,28 @@ export default {
             serverEditPre(that.basicForm)
               .then(data => {
                  this.btnState = false
-                if (data.data.code==1) {
-                  this.$message({
-                    message: data.data.data,
-                    type: "success"
-                  });
-                  loading.close();
-                  this.resetForm()
-                  this.dialogFormVisible = false;
-                  this.getList(this.pageNumber, this.pageSize);
-                  this.picFile = [];
-                  this.pictureDetails = []
-                  this.picList = [];
-                  this.imgNumber = 0
-                } else {
+                  if(data.data.code){
+                    if(data.data.code==3){
+                      this.$message({
+                        message: data.data.data,
+                        type: "warning"
+                      });
+                    }
+                    if (data.data.code==1) {
+                      this.$message({
+                        message: data.data.data,
+                        type: "success"
+                      });
+                    }
+                      loading.close();
+                      this.resetForm()
+                      this.dialogFormVisible = false;
+                      this.getList(this.pageNumber, this.pageSize);
+                      this.picFile = [];
+                      this.pictureDetails = []
+                      this.picList = [];
+                      this.imgNumber = 0       
+                }else {
                     loading.close();
                     this.btnState = false
                     this.imgNumber = 0
@@ -1441,6 +1448,7 @@ export default {
                       type: "warning"
                     });
                   }
+                  //loading取消
                   loading.close();
                   this.cancel("basic");
                   this.basicForm.majorSort = 'all';
@@ -1498,19 +1506,20 @@ export default {
       this.goods_info.startPerNum = '';
 	  this.goods_info.cappingPerNum = ''
     },
+    //弹框关闭回调
     emptyingForm(){
       if( this.$refs["goods_info"]){
         this.$refs["goods_info"].resetFields()
       }
       this.$refs["basic"].resetFields()
       this.jointCode = false
-    //   this.addComm = false
       this.imgNumber = 0;
       this.basicForm.commoditys = [];
-	  this.picFile = ['','','',''] //清空图片
-	  this.pictureDetails = ['','','','']
-	  this.imgText =['','','','']
-      this.picList = ['','','',''] //清空图片this.alreadyArr.concat(this.labelClickArr)
+      //清空banner和图文详情图
+      this.picFile = ['','','',''] //清空图片
+      this.pictureDetails = ['','','','']
+      this.imgText =['','','','']
+      this.picList = ['','','',''] //清空图片
       this.alreadyArr = []
       this.labelClickArr = []
       this.customArr = []
@@ -1623,7 +1632,7 @@ export default {
   text-align: left
 }
 .projectTabel .operationTab .cell{
- width: 165px;
+ width: 166px;
  margin: 0 auto;
 }
 .upload_box {
@@ -1672,7 +1681,11 @@ export default {
   font-weight: bolder;
   text-align: center;
 }
+
 .doubt{
+  position:absolute;
+  right: -30px;
+  top: 0;
   font-size: 25px;
   vertical-align: middle;
   cursor: pointer;
@@ -1878,6 +1891,9 @@ export default {
 }
 .tabStyle .el-select{
 	margin-left:1%;
+}
+.tabStyle .button-large{
+  margin-left: 0;
 }
 .tabStyle .el-input{
 	margin-left: 1%;

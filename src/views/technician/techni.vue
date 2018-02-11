@@ -280,7 +280,7 @@
       </el-dialog>
     <!-- 弹出层 新增技师-->
       <el-dialog @close="handleClose('personal')" title="新增技师" :close-on-click-modal="false" :visible.sync="dialogVisible" custom-class="tech-section-lage" class="tech-qj">
-        <div class="techniAdd tabBox">
+        <div class="techniAdd techtabBox">
           <!-- 个人资料 -->
           <h3 class="tech-tc-prson">个人资料</h3>
           <el-form :model="personal"  ref="personal"  label-width="100px" :rules="rulesPer">
@@ -1210,6 +1210,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1272,6 +1283,17 @@ export default {
               return false;
             });
         } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });
@@ -1580,10 +1602,10 @@ export default {
         if (val) {
           var loading = this.$loading({
             lock: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            target: document.querySelector('.tabBox ')
-          })
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+            target: document.querySelector(".tabBox ")
+          });
           this.btnState = true;
           for (var i = 0; i < this.teachArr.length; i++) {
             if (this.teachArr[i].endTime == "24:00") {
@@ -1639,6 +1661,17 @@ export default {
             });
         } else {
           this.btnState = false;
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
           return false;
         }
       });

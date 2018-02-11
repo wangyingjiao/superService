@@ -522,12 +522,6 @@ export default {
   color: #aeaeae;
   line-height: 15px;
 }
-.tabBox {
-  width: 100%;
-  overflow: hidden;
-  border: 1px #f5f5f5 solid;
-  background-color: #f5f5f5;
-}
 .tabLeft {
   width: 15%;
 }
