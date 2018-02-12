@@ -102,11 +102,11 @@
 				<div class="stepContent" v-show="active == 3">
 					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
 						<el-form-item label="技师:" prop="selectTech">
-              <el-select  class="roomTypeStyle" style="z-index:-1"   v-model="form2.selectTech" placeholder="请选择">
+              <el-select  class="roomTypeStyle" style="display:none;"   v-model="form2.selectTech" placeholder="请选择">
                 <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
                 </el-option>
               </el-select>                             
-							<span  class="button-cancel stepThreeBut" style="margin-left: -120px;" @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
+							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
@@ -824,22 +824,6 @@ export default {
         })
         .catch(res => {});
     },
-    //技师数据回显二级选中
-    selectionreturn1() {
-      if (this.middleA.length != 0) {
-        for (var a = 0; a < this.listTech.length; a++) {
-          for (var b = 0; b < this.middleA.length; b++) {
-            if (this.middleA[b].techId == this.listTech[a].techId) {
-              this.listTech[a].techChecked = true;
-            }
-          }
-        }
-      }else{
-        for (var a1 = 0; a1 < this.listTech.length; a1++) {
-              this.listTech[a1].techChecked = false;
-        }
-      }
-    },
     //技师选择按钮点击
     technicianSel() {
       var obj = {
@@ -851,8 +835,21 @@ export default {
           if (res.data.code === 1) {
             this.dialogTableVisible = true;
             if (res.data.data != undefined) {
-              this.listTech = res.data.data;              
-              this.selectionreturn1();
+              this.listTech = res.data.data;           
+              if (this.middleA.length != 0) {
+                for (var a = 0; a < this.listTech.length; a++) {
+                  this.listTech[a].techChecked = false;
+                  for (var b = 0; b < this.middleA.length; b++) {
+                    if (this.middleA[b].techId == this.listTech[a].techId) {
+                      this.listTech[a].techChecked = true;
+                    }
+                  }
+                }
+              }else{
+                for (var a1 = 0; a1 < this.listTech.length; a1++) {
+                      this.listTech[a1].techChecked = false;
+                }
+              }
             }else{
               this.listTech=[];
             }
@@ -868,6 +865,7 @@ export default {
     //选择技师弹出层保存
     submitForm2() {
       //先遍历数据中选中的再保存
+      this.techName='';
       var arr = [];
       if (this.middleA.length !=0) {
         for (let a = 0; a < this.middleA.length; a++) {
@@ -1072,9 +1070,13 @@ export default {
       findTechListByGoods(obj)
         .then(res => {
           if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+               this.listTech=res.data.data;
+            }else{
+               this.listTech=[];
+            }           
             for (var b = 0; b < this.middleA.length; b++) {
               for (var a = 0; a < this.listTech.length; a++) {
-                // this.$set(this.listTech[a], "techChecked", false);
                 if (this.listTech[a].techId == this.middleA[b].techId) {
                   this.listTech[a].techChecked = true;
                 }
