@@ -102,7 +102,7 @@
 				<div class="stepContent" v-show="active == 3">
 					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
 						<el-form-item label="技师:" prop="selectTech">
-              <el-select  class="roomTypeStyle" style="z-index:-1" multiple  v-model="form2.selectTech" placeholder="请选择">
+              <el-select  class="roomTypeStyle" style="z-index:-1"   v-model="form2.selectTech" placeholder="请选择">
                 <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
                 </el-option>
               </el-select>                             
@@ -239,7 +239,7 @@
 							</tr>
 					</div>
 					</table>
-					<div   v-if="listTech.length == 0  || listTech.length == undefined" class="selfTabProm">暂无数据</div>
+					<div   v-if="listTech.length == 0" class="selfTabProm">暂无数据</div>
 				</div>            
 			</div> 	  	  
 			<div slot="footer" class="dialog-footer" style="text-align:center">
@@ -318,8 +318,7 @@ export default {
       }
     };
     var checkDate = (rule, value, callback) => {
-      if (!value) {
-        
+      if (!value) {        
         callback(new Error("请选择日期"));
       } else {
         callback();
@@ -333,7 +332,7 @@ export default {
       middleA: [],
       techSaveFlag: false,
       form2: {
-        selectTech: [],
+        selectTech: '',
         severTime: "",
         severTime1: "",
         textarea:''
@@ -382,7 +381,7 @@ export default {
       },
       rules2: {
         selectTech: [
-          { required: true,type:'array', message: "请选择技师", trigger: "change" }
+          { required: true, message: "请选择技师", trigger: "change" }
         ],
         severTime: [
           {
@@ -395,7 +394,7 @@ export default {
         severTime1: [
           { required: true, message: "请选择服务时间", trigger: "change" }
         ],
-        textarea:[{ required: false, message: "请", trigger: "blur" }]
+        textarea:[{ required: false, message: "请入0-255个字符", trigger: "blur" }]
       },
       ruleForm: {
         name: "",
@@ -789,6 +788,7 @@ export default {
     },
     //服务类型下拉改变
     serverchange(value) {
+      this.form1.sumPrice = 0;
       var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
@@ -849,10 +849,12 @@ export default {
       findTechListByGoods(obj)
         .then(res => {
           if (res.data.code === 1) {
+            this.dialogTableVisible = true;
             if (res.data.data != undefined) {
-              this.listTech = res.data.data;
-              this.dialogTableVisible = true;
+              this.listTech = res.data.data;              
               this.selectionreturn1();
+            }else{
+              this.listTech=[];
             }
           } else if (res.data.code === 3) {
             this.$message({
@@ -875,7 +877,11 @@ export default {
         }
       }
       this.tabOptions = arr;
-      this.form2.selectTech=this.middleA;
+      if(this.middleA.length != 0){
+          this.form2.selectTech=this.middleA[0].techId;
+      }else{
+        this.form2.selectTech='';
+      }
       this.findTimeListByTechFun();
       this.dialogTableVisible = false;
     },
@@ -902,7 +908,12 @@ export default {
           }
         }       
         this.tabOptions.remove(obj);
-        this.form2.selectTech=this.middleA;
+        if(this.middleA.length != 0){
+           this.form2.selectTech=this.middleA[0].techId;
+        }else{
+          this.form2.selectTech='';
+        }
+        
       }
     },
     //确认下单按钮点击
@@ -926,14 +937,16 @@ export default {
           createOrder(obj)
             .then(res => {
               if (res.data.code === 1) {
+                this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                 this.$message({
                   type: "success",
                   message: "新增成功!"
                 });
-                this.$refs["form2"].resetFields();
-                this.middleA = [];
-                this.this.tabOptions=[];
-                this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                // this.$refs["form2"].resetFields();
+                // this.middleA = [];
+                // this.this.tabOptions=[];
+                // this.form2.selectTech='';
+                
               } else if (res.data.code === 3) {
                 this.$message({
                   type: "warning",
