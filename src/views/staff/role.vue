@@ -25,7 +25,7 @@
       highlight-current-row
       style="width: 100%">
 
-      <el-table-column align="center" label="编号" width="300">
+      <el-table-column align="center" label="编号" width="200">
         <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
