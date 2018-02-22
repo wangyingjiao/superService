@@ -456,7 +456,6 @@ import { parseTime } from "@/utils";
 import {
   Taxonomy,
   Orienteering,
-  Whether,
   ServerAdd,
   ServerDelete,
   ServerEdit,
@@ -471,10 +470,9 @@ import addCommodity from "./addCommodity.vue";
 // import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
-const option1 = ["北京", "北京"];
 var arr = [];
 export default {
-  name: "table_demo",
+  name: "project",
   directives: {
     waves
   },
@@ -830,7 +828,6 @@ export default {
       pictureDetails: [],
 
       temp: {
-        option1: "",
         val: true
       },
       dialogFormVisible: false,
@@ -840,8 +837,7 @@ export default {
         create: "新增服务项目"
       },
       tableKey: 0,
-      city: ["1", "2", "3"],
-      option1: []
+      city: ["1", "2", "3"]
     };
   },
   created() {
@@ -854,12 +850,16 @@ export default {
       })
       .catch(error => {});
     //是否 计量方式 全部 保洁 家修
-    Whether()
-      .then(({ data }) => {
-        this.measure = data.meterage;
-        this.whole = data.ser_sort;
-      })
-      .catch(error => {});
+    var dict = require("../../../static/dict.json");
+    this.measure = dict.meterage;
+    this.whole = dict.ser_sort;
+
+    // Whether()
+    //   .then(({ data }) => {
+    //     this.measure = data.meterage;
+    //     this.whole = data.ser_sort;
+    //   })
+    //   .catch(error => {});
 
     this.sign; //获取签名
   },

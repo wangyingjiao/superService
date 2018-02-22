@@ -74,15 +74,15 @@ export function Orienteering(obj) {
 }
 
 // 是否
-export function Whether() {
-  return new Promise((resolve, reject) => {
-    instance.get('../../static/dict.json').then(data => {
-      resolve(data)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}
+// export function Whether() {
+//   return new Promise((resolve, reject) => {
+//     instance.get('../../static/dict.json').then(data => {
+//       resolve(data)
+//     }).catch(error => {
+//       reject(error)
+//     })
+//   })
+// }
 
 // 服务项目添加
 export function ServerAdd(obj) {

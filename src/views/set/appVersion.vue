@@ -451,6 +451,7 @@ export default {
               this.btnState = false;
             });
         } else {
+          //当表单验证不通过时抛出第一个错误
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {

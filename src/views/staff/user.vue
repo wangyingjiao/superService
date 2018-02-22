@@ -17,12 +17,14 @@
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-
+      <!-- 搜索按钮 -->
       <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
+    <!-- v-if用来判断按钮权限 -->
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
+    <!-- 表单 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -178,12 +180,11 @@
     
       
   </el-dialog>
-   
+   <!-- 新增岗位弹窗 -->
   <el-dialog 
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
-       
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -534,13 +535,13 @@ export default {
     }
   },
   methods: {
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     searchChange(val) {},
     //获取列表
@@ -991,7 +992,7 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           addStaff(obj)
             .then(res => {
@@ -1032,7 +1033,7 @@ export default {
                   type: "success",
                   message: "新增成功"
                 });
-              }else{
+              } else {
                 loading.close();
               }
             })
@@ -1130,7 +1131,7 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           upStaff(obj)
             .then(res => {
@@ -1184,7 +1185,7 @@ export default {
                   });
                 }
                 // 判断结束
-              }else{
+              } else {
                 loading.close();
               }
             })
