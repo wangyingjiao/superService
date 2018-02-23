@@ -52,8 +52,8 @@
       <el-table-column align="center" label="读取状态" prop="isRead">      
       </el-table-column>
       
-      <el-table-column align="center" label="发送成功状态" prop="isSuccess">      
-      </el-table-column>
+      <!-- <el-table-column align="center" label="发送成功状态" prop="isSuccess">      
+      </el-table-column> -->
       
       <el-table-column align="center" label="appKey" prop="appKey">      
       </el-table-column>
@@ -81,12 +81,12 @@
 </template>
 
 <script>
-import { getPushMes,sendPushMes } from "@/api/set";
+import { getPushMes, sendPushMes } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "log",
+  name: "pushMes",
   directives: {
     waves
   },
@@ -124,63 +124,60 @@ export default {
   methods: {
     getList() {
       var obj = {};
-     
-      
-      getPushMes(obj, this.pageNumber, this.pageSize).then(res => { 
-        if(res.data.code == 1){
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        this.listQuery.page = res.data.data.pageNo;
-        if (this.list != undefined) {
-          for (var i = 0; i < this.list.length; i++) {
-            this.list[i].index = i + 1;
+      getPushMes(obj, this.pageNumber, this.pageSize)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.total = res.data.data.count;
+            this.list = res.data.data.list;
+            this.pageNumber = res.data.data.pageNo;
+            this.pageSize = res.data.data.pageSize;
+            this.listQuery.page = res.data.data.pageNo;
+            if (this.list != undefined) {
+              for (var i = 0; i < this.list.length; i++) {
+                this.list[i].index = i + 1;
+              }
+            }
+            this.listLoading = false;
+          } else {
+            this.listLoading = false;
           }
-        }
-        this.listLoading = false;
-        }else{
-          this.listLoading = false
-        }
-        
-      }).catch(()=>{
-        this.listLoading = false
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
-    handleFilter() {
-     
-    },
+    // handleFilter() {
+
+    // },
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
       this.listLoading = true;
-      this.getList()
-      
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.listLoading = true;
-      this.getList()
-     
+      this.getList();
     },
     handleSend(row) {
-      
       var obj = {
-        id:row.id
-      }
-      sendPushMes(obj).then(res=>{
-              if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: "发送成功!"
-                });
-                this.getList();
-              }
-            })
-            .catch(() =>{
-              this.listLoading = false
-            });  
+        id: row.id
+      };
+      sendPushMes(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.$message({
+              type: "success",
+              message: "发送成功!"
+            });
+            this.getList();
+          }
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     }
   }
 };
