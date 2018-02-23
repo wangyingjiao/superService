@@ -450,13 +450,13 @@ export default {
   },
   methods: {
     //loading
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     //获取列表
     getList() {
@@ -486,31 +486,9 @@ export default {
     },
     //搜索
     handleFilter() {
-      this.listLoading = true;
       this.pageNumber = 1;
       this.listQuery.page = 1;
-      var obj = {
-        name: this.search.name,
-        cityCode: this.search.cityCode
-      };
-      getSite(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo;
-          this.rowInfo.id = "";
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          this.listLoading = false;
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList();
     },
     // 设置站长
     handleSetMaster() {
@@ -572,57 +550,15 @@ export default {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      var obj = {
-        name: this.search.name,
-        cityCode: this.search.cityCode
-      };
-      getSite(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.rowInfo.id = "";
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          this.listLoading = false;
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList();
     },
     handleCurrentChange(val) {
       //页数
       this.pageNumber = val;
-      var obj = {
-        name: this.search.name,
-        cityCode: this.search.cityCode
-      };
-      this.listLoading = true;
-      getSite(obj, this.pageNumber, this.pageSize)
-        .then(res => {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.rowInfo.id = "";
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          this.listLoading = false;
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+      this.getList();
     },
     resetForm(formName) {
       //清空表单
-      // this.rowInfo.id = "";
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
@@ -653,11 +589,9 @@ export default {
       this.dialogFormVisible = true;
       this.temp.isUseable = "yes";
       this.temp.type = "self";
-      //this.areaOptions = this.$store.state.user.area;
     },
     handleUpdate(row) {
       //点击编辑
-      // this.areaOptions = this.$store.state.user.area;
       this.temp = {
         id: row.id,
         name: row.name,
@@ -720,7 +654,7 @@ export default {
       //return
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           addSite(obj)
             .then(res => {
@@ -737,7 +671,7 @@ export default {
                 this.search.cityCode = "";
                 this.handleFilter();
                 this.dialogFormVisible = false;
-              }else{
+              } else {
                 loading.close();
               }
             })
@@ -763,7 +697,7 @@ export default {
     },
     createStore() {
       //保存门店
-      this.loadingClick()
+      this.loadingClick();
       var obj = {
         id: this.rowInfo.id,
         storeList: this.$refs.domTree.getCheckedKeys(true)
@@ -799,7 +733,7 @@ export default {
               this.total = res.data.data.count;
               this.listLoading = false;
             });
-          }else{
+          } else {
             loading.close();
           }
         })
@@ -817,7 +751,7 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           setMaster(obj)
             .then(res => {
@@ -858,7 +792,6 @@ export default {
         }
       });
     },
-
     update(formName) {
       //编辑保存
       var obj = {
@@ -875,7 +808,7 @@ export default {
       //return;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           upSite(obj)
             .then(res => {
@@ -891,7 +824,7 @@ export default {
                 this.getList();
                 loading.close();
                 this.dialogFormVisible = false;
-              }else{
+              } else {
                 loading.close();
               }
             })
