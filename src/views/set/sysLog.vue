@@ -104,12 +104,14 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
+        //搜索下拉框
         url: "请求地址",
         requestContent: "请求内容",
         responseContent: "响应内容",
         isSuccess: "请求结果"
       },
       search: {
+        //绑定搜搜参数
         type: "",
         val: ""
       },
@@ -123,8 +125,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      var obj = {};
-
+      var obj = {}; //搜索参数
       if (this.search.type == "url") {
         var url = {
           url: this.search.val
@@ -146,7 +147,6 @@ export default {
         };
         obj = Object.assign(obj, isSuccess);
       }
-
       getsysLog(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -173,14 +173,14 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.getList()
+      this.getList();
     },
     //切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-      this.getList()
+      this.getList();
     },
     //翻页
     handleCurrentChange(val) {
