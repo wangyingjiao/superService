@@ -822,8 +822,8 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
-                loading.close();
                 this.dialogFormVisible = false;
+                loading.close();
               } else {
                 loading.close();
               }
