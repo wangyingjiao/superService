@@ -73,7 +73,7 @@
         >
 
         <el-form-item label="所属机构:"  prop="officeId">
-          <el-select :disabled="selsctState" class="form_item" filterable @change="aaa" v-model="temp.officeId" placeholder="请选择">
+          <el-select :disabled="selsctState" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -84,7 +84,7 @@
         </el-form-item>
 
         <!-- <el-form-item label="等级:" prop="dataScope">
-          <el-select class="form_item" @change="lvChange" disabled v-model="temp.dataScope" placeholder="请选择">
+          <el-select class="form_item"  disabled v-model="temp.dataScope" placeholder="请选择">
             <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
             </el-option>
           </el-select>
@@ -119,6 +119,7 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <!-- v-if判断当前是编辑还是新增 -->
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate"  @click="update('temp')">保 存</button>    
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
         <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
@@ -145,7 +146,6 @@ import {
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var data = [];
-var loading;
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 export default {
   name: "role",
@@ -188,11 +188,11 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
-      btnState: false,
-      selsctState: false,
-      myselfUpdate: true,
-      list: [],
+      btnShow: JSON.parse(localStorage.getItem("btn")),//按钮权限
+      btnState: false,//按钮状态，是否禁用
+      selsctState: false,//下拉框状态，是否禁用
+      myselfUpdate: true,//判断是否编辑自己
+      list: [],//列表数据
       officeIds: [],
       total: null,
       listLoading: false,
@@ -206,8 +206,7 @@ export default {
         limit: 10,
         importance: undefined,
         title: undefined,
-        type: undefined,
-        sort: "+id"
+        type: undefined
       },
       pageNumber: 1,
       pageSize: 10,
@@ -246,8 +245,8 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       tableKey: 0,
-      data2: [],
-      defaultProps: {
+      data2: [],//树状图数据
+      defaultProps: {//树形结构参数
         children: "subMenus",
         label: "name"
       },
@@ -307,6 +306,7 @@ export default {
     }
   },
   methods: {
+    //点击时loading状态
      loadingClick(){
         loading = this.$loading({
           lock: true,
@@ -315,13 +315,10 @@ export default {
           target: document.querySelector('.el-dialog__body')
         })
     },
-    aaa(val) {
-      //测试函数
-    },
     getList() {
       //获取列表
       this.listLoading = true;
-      var obj = {
+      var obj = {//搜索参数
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
@@ -373,154 +370,19 @@ export default {
       //搜索
       this.listQuery.page = 1;
       this.pageNumber = 1;
-
-      var obj = {
-        name: this.search.name,
-        organization: { id: this.search.officeId }
-      };
-
-      this.listLoading = true;
-      if (obj.name != "" || obj.organization.id != "") {
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      } else {
-        var obj = {};
-
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      }
+      this.getList()
     },
     handleSizeChange(val) {
+      // 切换条数
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.listLoading = true;
-      var obj = {
-        name: this.search.name,
-        organization: { id: this.search.officeId }
-      };
-      if (obj.name != "" || obj.organization.id != "") {
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      } else {
-        var obj = {};
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      }
+      this.getList()
     },
     handleCurrentChange(val) {
+      // 切换页数
       this.pageNumber = val;
-      this.listLoading = true;
-      var obj = {
-        name: this.search.name,
-        organization: { id: this.search.officeId }
-      };
-      if (obj.name != "" || obj.organization.id != "") {
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      } else {
-        var obj = {};
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
-              }
-            }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
-          } else {
-            this.listLoading = false;
-          }
-        });
-      }
+      this.getList()
     },
     handTreechange(a, b, c) {
       if (b) {
@@ -655,11 +517,8 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    lvChange(value) {},
-    offChange(val) {},
     //点击新增时
     handleCreate() {
-      //this.resetTemp();
       this.listLoading = true;
       getMenudata()
         .then(res => {
