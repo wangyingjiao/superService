@@ -559,7 +559,6 @@
 import {
   addTech,
   getTech,
-  getEducations,
   getStrong,
   getHeight,
   getMatrimony,
@@ -574,7 +573,7 @@ import {
 } from "@/api/tech";
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
-import { Whether } from "@/api/serviceManage";
+// import { Whether } from "@/api/serviceManage";
 import Cookies from "js-cookie";
 
 export default {
@@ -1737,18 +1736,27 @@ export default {
     this.sign; //获取签名
     this.getList(1, 12, {});
     //性别,工作年限,岗位性质，岗位状态
-    Whether()
-      .then(({ data }) => {
-        this.sex = data.sex;
-        this.workyear = data.work_time;
-        this.station = data.job_natrue;
-        this.statu = data.job_status;
-        this.sexTypes = data.assess_grade;
-        this.marriage = data.matrimony;
-        this.education = data.education;
-        this.relation = data.relation;
-      })
-      .catch(error => {});
+    var dict = require("../../../static/dict.json");
+    this.sex = dict.sex;
+    this.workyear = dict.work_time;
+    this.station = dict.job_natrue;
+    this.statu = dict.job_status;
+    this.sexTypes = dict.assess_grade;
+    this.marriage = dict.matrimony;
+    this.education = dict.education;
+    this.relation = dict.relation;
+    // Whether()
+    //   .then(({ data }) => {
+    //     this.sex = data.sex;
+    //     this.workyear = data.work_time;
+    //     this.station = data.job_natrue;
+    //     this.statu = data.job_status;
+    //     this.sexTypes = data.assess_grade;
+    //     this.marriage = data.matrimony;
+    //     this.education = data.education;
+    //     this.relation = data.relation;
+    //   })
+    //   .catch(error => {});
     getTech().then(res => {
       this.ethnics = res.data;
       this.ethnic = res.data[32].label;

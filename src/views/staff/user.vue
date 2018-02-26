@@ -17,12 +17,14 @@
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-
+      <!-- 搜索按钮 -->
       <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
+    <!-- v-if用来判断按钮权限 -->
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('user_insert') >= 0" @click="handleCreate">新增</button>
+    <!-- 表单 -->
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -178,12 +180,11 @@
     
       
   </el-dialog>
-   
+   <!-- 新增岗位弹窗 -->
   <el-dialog 
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
        append-to-body
-       
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -534,13 +535,13 @@ export default {
     }
   },
   methods: {
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     searchChange(val) {},
     //获取列表
@@ -590,151 +591,35 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      if (this.search.type == "name") {
-        var obj = {
-          name: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "mobile") {
-        var obj = {
-          mobile: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "roleName") {
-        var obj = {
-          roleName: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else {
-        var obj = {};
-      }
-      this.listLoading = true;
-      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.code === 1) {
-          this.total = res.data.data.count;
-          this.list = res.data.data.list;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo;
-          if (this.list != undefined) {
-            for (var i = 0; i < this.list.length; i++) {
-              this.list[i].index = i + 1;
-            }
-          }
-          this.listLoading = false;
-          this.listQuery.page = 1;
-        } else {
-          this.listLoading = false;
-        }
-      });
+      this.getList();
     },
     addRole() {
+      // 新增岗位
       this.dialogFormStation = true;
       if (this.mechanismCheck.length == 1) {
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
     },
     handleSizeChange(val) {
-      if (this.search.type == "name") {
-        var obj = {
-          name: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "mobile") {
-        var obj = {
-          mobile: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "roleName") {
-        var obj = {
-          roleName: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else {
-        var obj = {};
-      }
+      // 切换条数
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.listLoading = true;
-      this.list = [];
-      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.data.list != undefined) {
-          for (var i = 0; i < res.data.data.list.length; i++) {
-            res.data.data.list[i].index = i + 1;
-          }
-        }
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 500);
-      });
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      if (this.search.type == "name") {
-        var obj = {
-          name: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "mobile") {
-        var obj = {
-          mobile: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else if (this.search.type == "roleName") {
-        var obj = {
-          roleName: this.search.val,
-          orgId: this.search.officeId,
-          stationId: this.search.stationId
-        };
-      } else {
-        var obj = {};
-      }
-      this.listLoading = true;
-      getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-        if (res.data.data.list != undefined) {
-          for (var i = 0; i < res.data.data.list.length; i++) {
-            res.data.data.list[i].index = i + 1;
-          }
-        }
-        this.total = res.data.data.count;
-        this.list = res.data.data.list;
-        this.pageNumber = res.data.data.pageNo;
-        this.pageSize = res.data.data.pageSize;
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 500);
-      });
-    },
-    timeFilter(time) {
-      if (!time[0]) {
-        this.listQuery.start = undefined;
-        this.listQuery.end = undefined;
-        return;
-      }
-      this.listQuery.start = parseInt(+time[0] / 1000);
-      this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
+      this.getList();
     },
     handleCreate() {
+      // 点击新增时
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.resetTemp();
     },
-    addstation() {
-      this.resetTemptwo();
-    },
+    // addstation() {
+    //   this.resetTemptwo();
+    // },
     handTreechange(a, b, c) {
       if (b) {
         // 处理订单里的查看详情
@@ -859,8 +744,7 @@ export default {
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
     },
     handleUpdate(row) {
-      //this.handleCreate();
-
+      // 点击编辑
       this.dialogFormVisible = true;
       this.dialogStatus = "update";
       if (localStorage.getItem("userId") == row.id) {
@@ -886,6 +770,7 @@ export default {
       setTimeout(() => (this.temp.role = row.role.id), 30);
     },
     handleDelete(row) {
+      // 点击删除
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -978,7 +863,7 @@ export default {
       }
     },
     create(formName) {
-      //var arr = [this]
+      //新增保存
       var obj = {
         mobile: this.temp.mobile,
         name: this.temp.name,
@@ -991,7 +876,7 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           addStaff(obj)
             .then(res => {
@@ -1002,37 +887,17 @@ export default {
                 this.dialogFormVisible = false;
                 this.resetTemp();
                 this.$refs[formName].resetFields();
-                this.listQuery.page = 1;
-                this.pageNumber = 1;
                 //清空搜索条件
                 this.search.type = "name";
                 this.search.val = "";
                 this.search.officeId = "";
                 this.search.stationId = "";
-
-                var obj = {};
-                getStaff(obj, this.pageNumber, this.pageSize).then(res => {
-                  if (res.data.code === 1) {
-                    this.total = res.data.data.count;
-                    this.list = res.data.data.list;
-                    this.pageNumber = res.data.data.pageNo;
-                    this.pageSize = res.data.data.pageSize;
-                    if (this.list != undefined) {
-                      for (var i = 0; i < this.list.length; i++) {
-                        this.list[i].index = i + 1;
-                      }
-                    }
-
-                    this.listLoading = false;
-                  } else {
-                    this.listLoading = false;
-                  }
-                });
+                this.handleFilter()
                 this.$message({
                   type: "success",
                   message: "新增成功"
                 });
-              }else{
+              } else {
                 loading.close();
               }
             })
@@ -1057,6 +922,7 @@ export default {
       });
     },
     create2(formName) {
+      // 岗位保存
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
@@ -1088,8 +954,6 @@ export default {
                   this.temp.role = res.data.data.id;
                 }
 
-                //this.resetTemp2();
-
                 this.$message({
                   type: "success",
                   message: "添加成功"
@@ -1116,6 +980,7 @@ export default {
       });
     },
     update(formName) {
+      // 编辑保存
       var that = this;
       var obj = {
         id: this.temp.id,
@@ -1130,7 +995,7 @@ export default {
       //this.dialogFormVisible = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           upStaff(obj)
             .then(res => {
@@ -1184,7 +1049,7 @@ export default {
                   });
                 }
                 // 判断结束
-              }else{
+              } else {
                 loading.close();
               }
             })
@@ -1209,6 +1074,7 @@ export default {
       });
     },
     resetTemp() {
+      // 清空员工信息
       this.temp = {
         name: "",
         mobile: "",
@@ -1222,6 +1088,7 @@ export default {
       };
     },
     resetTemp2() {
+      // 清空岗位信息
       this.temp2 = {
         officeId2: "",
         name: "",
@@ -1231,6 +1098,7 @@ export default {
       //this.dataScope = "";
     },
     resetForm(formName) {
+      // 清空表单并还原状态
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
@@ -1241,6 +1109,7 @@ export default {
       this.useableState = false;
     },
     resetForm2(formName) {
+      // 清空岗位表单
       this.temp2 = {
         officeId2: "",
         name: "",

@@ -8,10 +8,7 @@ export function addTech(obj) {
 export function getTech() {
   return instance.get(`/apiservice/a/sys/dict/listData?type=ethnic`)
 }
-// 获取学历
-export function getEducations() {
-  return instance.get(`/apiservice/a/sys/dict/listData?type=education`)
-}
+
 // 婚姻状况
 export function getMatrimony() {
   return instance.get(`/apiservice/a/sys/dict/listData?type=matrimony`)

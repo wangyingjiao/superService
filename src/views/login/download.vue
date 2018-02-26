@@ -20,7 +20,7 @@
       </div>
       <div v-if="isShow" class="wxtip"  @click="noShow">
         <span class="wxtip-icon">
-          <img src="http://img.caibaojian.com/uploads/2016/01/weixin-tip.png" />>
+          <img src="http://img.caibaojian.com/uploads/2016/01/weixin-tip.png" />
         </span>
         <p class="wxtip-txt">点击右上角按钮<br/>选择浏览器去下载APP</p>
 	    </div>
