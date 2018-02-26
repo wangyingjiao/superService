@@ -10,7 +10,6 @@ import '@/icons' // icon
 import '@/permission' // 权限
 import 'animate.css'
 // axios.defaults.withCredentials = true
-Vue.config.productionTip = false
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.prototype.$http = axios

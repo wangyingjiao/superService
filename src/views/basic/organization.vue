@@ -386,7 +386,12 @@ export default {
             message: "请输入 2 到 15 位的机构名称",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 15,
+            message: "机构名称长度为 2 到 15 个字符",
+            trigger: "blur"
+          }
         ],
         telephone: [
           {
@@ -401,11 +406,16 @@ export default {
             message: "请输入 2 到 15 位的负责人姓名",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          {
+            min: 2,
+            max: 15,
+            message: "负责人姓名长度为 2 到 15 个字符",
+            trigger: "blur"
+          }
         ],
         masterPhone: [
           { required: true, validator: validateMasterPhone, trigger: "blur" },
-          { min: 11, max: 11, message: "长度11个字符", trigger: "blur" }
+          { min: 11, max: 11, message: "手机号长度为11个字符", trigger: "blur" }
         ],
         address: [
           {
@@ -416,7 +426,7 @@ export default {
           {
             min: 6,
             max: 100,
-            message: "长度在 6 到 100 个字符",
+            message: "详细地址长度为 6 到 100 个字符",
             trigger: "blur"
           }
         ],
@@ -442,19 +452,34 @@ export default {
           { required: true, message: "工作结束时间不能为空", trigger: "change" }
         ],
         jointEshopCode: [
-          { max: 50, message: "长度不超过50个字符", trigger: "blur" }
+          { max: 50, message: "E店编码长度不超过50个字符", trigger: "blur" }
         ],
         url: [
           { validator: validateurl, trigger: "blur" },
-          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
+          {
+            min: 0,
+            max: 100,
+            message: "机构网址长度不超过100个字符",
+            trigger: "blur"
+          }
         ],
         fax: [
           { validator: validatefax, trigger: "blur" },
-          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
+          {
+            min: 0,
+            max: 100,
+            message: "机构传真长度不超过100个字符",
+            trigger: "blur"
+          }
         ],
         tel400: [
           { validator: validatetel400, trigger: "blur" },
-          { min: 0, max: 100, message: "长度不超过255个字符", trigger: "blur" }
+          {
+            min: 0,
+            max: 100,
+            message: "400客服电话长度不超过100个字符",
+            trigger: "blur"
+          }
         ]
       }
     };
