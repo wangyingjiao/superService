@@ -92,8 +92,8 @@
 								</table>
 							</div>   																																
 						</el-form-item>
-						<el-form-item label="总价:" prop="sumPrice">
-							<span>￥{{form1.sumPrice}}.00</span>
+						<el-form-item label="总价:" prop="sumPrice" >
+							<span v-if="selectCommidty.length != 0">￥{{form1.sumPrice}}.00</span>
 						</el-form-item>																																														
 					</el-form>
 				</div>
