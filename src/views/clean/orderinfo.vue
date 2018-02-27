@@ -599,6 +599,7 @@ export default {
                       message: "更换时间成功!"
                     });
                     this.$refs["formInline"].resetFields();
+                    this.dialogVisible = false;
                     this.timeObj = [];
                     this.tableData1 = res.data.data.list;
                     this.otherInfo.serviceHour = this.formatDuring(
@@ -607,8 +608,7 @@ export default {
                     this.otherInfo.serviceTime = that.changTime + " " + that.bb;
                     var nowtime = new Date();
                     var severtime = new Date(this.otherInfo.serviceTime);
-                    this.nowTime = severtime.getTime() - nowtime.getTime();
-                    this.dialogVisible = false;
+                    this.nowTime = severtime.getTime() - nowtime.getTime();                    
                   } else {
                     this.timeObj = [];
                     this.timeSaveFlag = false;

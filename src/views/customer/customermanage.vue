@@ -270,6 +270,7 @@ export default {
       mymap: {},
       testFlag: undefined,
       addflag1:false,
+      addressBefore:''
     };
   },
   methods: {
@@ -321,6 +322,7 @@ export default {
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
+          // this.ruleForm.beforeAdd=this.addressBefore 省市区名称
           //保存upCus
           if (status == "add") {
             this.ruleForm.id='';
@@ -599,8 +601,10 @@ export default {
         location: poi.location.toString(),
         address: poi.address
         };
+        that.$refs.pickerInput1.value=info.location;
         var text=that.$refs.pickerInput
-        text.value=poi.pname+poi.cityname+poi.adname+info.name;
+        that.addressBefore=poi.pname+poi.cityname+poi.adname;
+        text.value=info.name;
       });	      
     },
     //地图初始化

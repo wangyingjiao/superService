@@ -50,8 +50,7 @@
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="选择商品:">
-              <span class="selfLabelStyle">*</span>
+						<el-form-item label="选择商品:" prop="servercommidty">
 							<div class="table-d1" v-if="selectCommidty.length != 0">
 								<table width="80%" class="selfTable">
 									<tr>
@@ -99,23 +98,22 @@
 											</span>                       
                     </td>
 										<td class="height30" align="center">
-                      <span v-if="item.goodsType=='num' || item.goodsType=='area'"> <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)" :max="999999"></el-input-number></span>
-											<!-- <span v-if="item.goodsType=='house'">{{item.goodsNum}}</span> -->
-											<span v-if="item.goodsType=='house'">
-                        <span v-for="aa in item.houses" :key="aa.id">
-                          <span v-if="aa.id == item.houseId">{{aa.goodsNum}}</span>
-                        </span>
-											</span>                       											
+                      <span > <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)" :max="999999"></el-input-number></span>
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
                     </td>                     							
 									</tr>
 								</table>
-							</div>   																																
+                <el-select   style="display:none;"   v-model="form1.servercommidty" placeholder="请选择">
+                  <el-option v-for="item in selectCommidty" :key="item.goodsId" :label="item.goodsId" :value="item.goodsId">
+                  </el-option>
+                </el-select>                 
+							</div>  																																
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice">
-							<span v-if="selectCommidty.length != 0">￥{{form1.sumPrice}}.00</span>
+              <span class="selfLabelStyle">*</span>
+							<span v-if="selectCommidty.length != 0">￥{{form1.sumPrice | keepTwoNum }}</span>
 						</el-form-item>																																														
 					</el-form>
 				</div>
@@ -181,18 +179,18 @@
 	</div>
 	<!--新增客户弹窗开始-->
 	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
-		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
+		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
 			<el-form-item label="姓名:" prop="name" >
-				<el-input class="width400" v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
+				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
-				<el-select clearable class="width400" v-model="ruleForm.sex" placeholder="请选择性别" >
+				<el-select clearable style='width: 100%;' v-model="ruleForm.sex" placeholder="请选择性别" >
 					<el-option v-for="(value,key,index) in sex" :key="index" :label="value" :value="key">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="手机号:"  prop="phone">
-		    <el-input  v-model="ruleForm.phone" class="width400" placeholder="请输入11位手机号"></el-input>
+		    <el-input  v-model="ruleForm.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 			</el-form-item>
 			<el-form-item label="所在区域:" prop="areaCodes">
 				<!-- 省市区 -->
@@ -202,10 +200,9 @@
 					:show-all-levels="true"
 					@change="testFun"
 					v-model="ruleForm.areaCodes"
-					class="width400" 
+					style='width: 100%;' 
 				></el-cascader>								
 			</el-form-item>
-       <!-- @blur="inputFocus" -->
 			<el-form-item label="详细地址:" prop="address">
 				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" value='' placeholder="输入关键字选取地点">        
 				<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
@@ -215,7 +212,7 @@
         </div>        		
 			</el-form-item>
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
-				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle"  placeholder="请输入常用邮箱"></el-input>
+				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle" style='width: 100%;'  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
 		</el-form>    					
 		<div slot="footer" class="dialog-footer" style="text-align:center;">
@@ -333,16 +330,6 @@ export default {
         }
       }
     };
-    var checksum = (rule, value, callback) => {
-      if (!value) {
-        if (value == 0) {
-          callback(new Error("请选择商品"));
-        } else {
-          callback();
-        }
-      } else {
-      }
-    };
     var checkDate = (rule, value, callback) => {
       if (!value) {        
         callback(new Error("请选择日期"));
@@ -395,6 +382,7 @@ export default {
       form1: {
         serverPro: '',
         sumPrice: 0,
+        servercommidty:'',
       },
       form3: {
         date: ""
@@ -435,9 +423,9 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
-      rulesTest:{
-        sumPrice:[
-          { required: true,type:'number',validator:checksum, message: "请选择商品",trigger: "change"}
+      rulesTest:{   
+        servercommidty:[
+          { required: true, message: "请选择商品",trigger: "change"}
         ],        
         serverPro: [
           { required: true,message: "请选择服务项目", trigger: "change"}
@@ -480,12 +468,19 @@ export default {
       customKeyFlag: false, //客户信息展示标志
       customId: "", //客户ID
       areaCode: "",
-      middleB: []
+      middleB: [],
+      addressBefore:''
     };
   },
   computed: {
     areaOptions: function() {
       return this.$store.state.user.area;
+    }
+  },
+  filters:{
+    keepTwoNum:function(val){
+      val=Number(val);
+      return val.toFixed(2)
     }
   },
   methods: {
@@ -515,10 +510,20 @@ export default {
     //选中行改变
     rowChange(item) {
       if (item.goodsChecked) {
+        this.form1.servercommidty=item.goodsId
         this.form1.sumPrice = this.form1.sumPrice + item.payPriceSum * 1;
       } else {
         this.form1.sumPrice = this.form1.sumPrice - item.payPriceSum * 1;
       }
+      var flag=0
+      for(var a=0;a<this.selectCommidty.length;a++){
+        if(this.selectCommidty[a].goodsChecked){
+            flag=1;
+        }
+      }
+      if(flag == 0){
+        this.form1.servercommidty='';
+      }      
     },
     //计数器改变
     numberChange(item, index) {
@@ -542,8 +547,10 @@ export default {
       if(item.houseId != undefined){
           for(var a=0;a<item.houses.length;a++){
             if(item.houses[a].id == item.houseId){
-                aa=item.houses[a].payPrice*1*item.houses[a].goodsNum
-                item.goodsNum=item.houses[a].goodsNum
+                item.goodsNum=item.houses[a].goodsNum;
+                item.payPrice=item.houses[a].payPrice;
+                item.minPurchase=item.houses[a].minPurchase;
+                aa=item.houses[a].payPrice*item.goodsNum
             }
           }
           this.$nextTick(() => {
@@ -593,7 +600,7 @@ export default {
           }
         });        
       }
-      if(formName == 'form1'){             
+      if(formName == 'form1'){            
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
           if(this.selectCommidty[a].goodsChecked){
@@ -605,8 +612,8 @@ export default {
         this.$refs[formName].validate(valid => {
           if (valid) {
                
-          } else {
-            this.active = 2;
+          } else {           
+            this.active = 2;            
             var errArr = this.$refs[formName]._data.fields;
             var errMes = [];
             for (var i = 0; i < errArr.length; i++) {
@@ -614,10 +621,22 @@ export default {
                 errMes.push(errArr[i].validateMessage);
               }
             }
-            this.$message({
-              type: "error",
-              message: errMes[0]
-            });
+            if(errArr[1].validateMessage == '请选择商品' && this.form1.serverPro == ''){
+                this.$refs[formName]._data.fields[1].validateMessage=''
+                this.rulesTest.servercommidty[0].message=''
+                this.$message({
+                  type: "error",
+                  message: errMes[0]
+                });                                
+            }else{
+                this.$refs[formName]._data.fields[1].validateMessage='请选择商品'
+                this.rulesTest.servercommidty[0].message='请选择商品'
+                this.$message({
+                  type: "error",
+                  message:'请选择商品' 
+                });                
+            }            
+
 
           }
         });
@@ -644,6 +663,10 @@ export default {
                 this.form2.severTime = this.options2[0].value;
                 this.dateChange(this.form2.severTime);
               }
+            }else{
+              this.options2=[];
+              this.form2.severTime = '';
+              this.dateChange(this.form2.severTime);              
             }
           } else if (res.data.code === 3) {
             this.options2 = [];
@@ -659,6 +682,7 @@ export default {
     },
     //客户查询事件
     changeCustom() {
+      this.serverStation1='';
       //根据手机号查询
       if(this.customPhone != ''){
         var obj = { phone: this.customPhone };
@@ -709,8 +733,6 @@ export default {
     //新增客户保存
     submitForm(formName) {
       if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
-        // var str1=this.$refs.allDeress.currentLabels;
-        // str1=str1.join("");
         this.ruleForm.address =
           this.$refs.pickerInput.value + "-" + this.ruleForm.address;
         var str = this.$refs.pickerInput1.value;
@@ -732,6 +754,7 @@ export default {
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
+          // this.ruleForm.beforeAdd=this.addressBefore 省市区名称
           var obj = this.ruleForm;
           saveCus(obj)
             .then(res => {
@@ -831,6 +854,7 @@ export default {
     },
     //服务类型下拉改变
     serverchange(value) {
+      this.form1.servercommidty='';
       this.form1.sumPrice = 0;
       var obj = { itemId: value };
       findGoodsListByItem(obj)
@@ -838,17 +862,17 @@ export default {
           if (res.data.code === 1) {            
             if (res.data.data != undefined) {
               this.selectCommidty = res.data.data;             
-              if (this.middleB.length != 0) {
-                for (var d = 0; d < this.selectCommidty.length; d++) {
-                  for (var a = 0; a < this.middleB.length; a++) {
-                    if (
-                      this.middleB[a].goodsId == this.selectCommidty[d].goodsId
-                    ) {
-                      this.selectCommidty[d] = this.middleB[a];
-                    }
-                  }
-                }
-              }
+              // if (this.middleB.length != 0) {
+              //   for (var d = 0; d < this.selectCommidty.length; d++) {
+              //     for (var a = 0; a < this.middleB.length; a++) {
+              //       if (
+              //         this.middleB[a].goodsId == this.selectCommidty[d].goodsId
+              //       ) {
+              //         this.selectCommidty[d] = this.middleB[a];
+              //       }
+              //     }
+              //   }
+              // }
             } else {
               this.selectCommidty = [];
               this.form1.sumPrice = 0;
@@ -937,6 +961,9 @@ export default {
     },
     //叉号点击关闭TAB
     errorClose(obj) {
+      if(this.tabOptions.length == 1){
+         this.findTimeListByTechFun()        
+      }
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -1049,8 +1076,10 @@ export default {
         location: poi.location.toString(),
         address: poi.address
         };
+        that.$refs.pickerInput1.value=info.location;
         var text=that.$refs.pickerInput
-        text.value=poi.pname+poi.cityname+poi.adname+info.name;
+        that.addressBefore=poi.pname+poi.cityname+poi.adname;
+        text.value=info.name;
       });			
     },
     //日期变化时改变时间对象
@@ -1060,7 +1089,6 @@ export default {
       if(this.form2.severTime == ''){
           this.timeObj=[];
       }else{
-
           for (var b = 0; b < this.options2.length; b++) {
             if (val == this.options2[b].value) {
               if (this.options2[b].serviceTime != undefined) {
@@ -1153,10 +1181,10 @@ export default {
 </script>
 <style  lang="scss" scoped>
 .selfAddressGao1{
-   width:400px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+   width:332px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
 }
 .selfpanel1{
-  width:418px;max-height:290px;overflow-y:scroll
+   width:350px;max-height:290px;overflow-y:scroll
 }
 .selfTabProm {
   width: 100%;
@@ -1303,7 +1331,7 @@ export default {
 }
 .selfAddressStyle {
   margin-left: -5px;
-  width: 200px;
+  width: 50%;
 }
 .marginLeft10 {
   margin-left: 10px;
@@ -1472,7 +1500,7 @@ export default {
   display: block;
 }
 .pickerInput {
-  width: 200px;
+  width: 50%;
   height: 36px;
   font-size: 12px;
   padding: 0 10px;
@@ -1572,5 +1600,9 @@ export default {
   vertical-align: middle;
   height: 70px;
   line-height: 70px;
+}
+.padding10Prent {
+  width: 100%;
+  padding: 0 10%;
 }
 </style>

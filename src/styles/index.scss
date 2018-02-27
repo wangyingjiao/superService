@@ -273,6 +273,10 @@ input, button{
   letter-spacing:-1px;
   padding-right:10px;
   text-align: center;
+  border:1px solid #ccc !important;
+}
+.roomTypeStyle .el-input__inner{
+  border:1px solid #ccc !important;
 }
 .el-input-number__decrease {
   right:0px;
