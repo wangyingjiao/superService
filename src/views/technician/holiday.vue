@@ -123,9 +123,9 @@ export default {
     this.getList();
   },
   methods: {
+    //请求列表数据
     getList() {
       var obj = {};
-
       if (this.search.time[0]) {
         var startTime = util.formatDate.format(
           new Date(this.search.time[0]),
@@ -182,22 +182,26 @@ export default {
           this.listLoading = false;
         });
     },
+    // 搜索
     handleFilter() {
       this.listLoading = true;
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();
     },
+    // 切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
       this.getList();
     },
+    // 切换页数
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.getList();
     },
+    // 删除
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
