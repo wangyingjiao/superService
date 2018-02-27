@@ -16,6 +16,7 @@
 				<div class="stepContent"  v-show="active == 1">
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
+              <span class="selfLabelStyle">*</span>
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
 							<div  class="selftSerchBut"  v-if="btnShow.indexOf('order_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
@@ -73,17 +74,38 @@
 												</el-select>
 											</span>
 										</td>
-                    <td  align="center">{{item.goodsUnit}}</td>
+                    <td  align="center">
+                      <span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.goodsUnit}}</span>
+											<span v-if="item.goodsType=='house'">
+                        <span v-for="aa in item.houses" :key="aa.id">
+                          <span v-if="aa.id == item.houseId">{{aa.goodsUnit}}</span>
+                        </span>
+											</span>                      
+                    </td>
 										<td  align="center">
 											<span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.payPrice}}</span>
 											<span v-if="item.goodsType=='house'">
-                        <span>{{item.houses[item.houseId].payPrice}}</span>                        
+                        <span v-for="aa in item.houses" :key="aa.id">
+                          <span v-if="aa.id == item.houseId">{{aa.payPrice}}</span>
+                        </span>
 											</span>
 										</td>
-										<td  align="center">{{item.minPurchase}}</td>
+										<td  align="center">
+                      <span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.minPurchase}}</span>
+											<span v-if="item.goodsType=='house'">
+                        <span v-for="aa in item.houses" :key="aa.id">
+                          <span v-if="aa.id == item.houseId">{{aa.minPurchase}}</span>
+                        </span>
+											</span>                       
+                    </td>
 										<td class="height30" align="center">
-                      <span v-if="item.goodsType=='num' || item.goodsType=='area'"> <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)"></el-input-number></span>
-											<span v-if="item.goodsType=='house'">{{item.goodsNum}}</span>											
+                      <span v-if="item.goodsType=='num' || item.goodsType=='area'"> <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)" :max="999999"></el-input-number></span>
+											<!-- <span v-if="item.goodsType=='house'">{{item.goodsNum}}</span> -->
+											<span v-if="item.goodsType=='house'">
+                        <span v-for="aa in item.houses" :key="aa.id">
+                          <span v-if="aa.id == item.houseId">{{aa.goodsNum}}</span>
+                        </span>
+											</span>                       											
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
@@ -92,7 +114,7 @@
 								</table>
 							</div>   																																
 						</el-form-item>
-						<el-form-item label="总价:" prop="sumPrice" >
+						<el-form-item label="总价:" prop="sumPrice">
 							<span v-if="selectCommidty.length != 0">￥{{form1.sumPrice}}.00</span>
 						</el-form-item>																																														
 					</el-form>
@@ -158,7 +180,7 @@
 
 	</div>
 	<!--新增客户弹窗开始-->
-	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false">
+	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" label-position="left" class="demo-ruleForm">
 			<el-form-item label="姓名:" prop="name" >
 				<el-input class="width400" v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
@@ -176,6 +198,7 @@
 				<!-- 省市区 -->
 				<el-cascader
 					:options="areaOptions"
+          ref="allDeress"
 					:show-all-levels="true"
 					@change="testFun"
 					v-model="ruleForm.areaCodes"
@@ -189,8 +212,7 @@
 				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
         <div class="selfAddressGao1">
              <div ref="panel" class="selfpanel1" ></div>        
-        </div>
-        		
+        </div>        		
 			</el-form-item>
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle"  placeholder="请输入常用邮箱"></el-input>
@@ -292,7 +314,11 @@ export default {
         ) {
           callback(new Error("请输入正确的邮箱"));
         } else {
-          callback();
+           if (value.length >= 5 && value.length <= 50) {
+            callback();
+          } else {
+            callback(new Error("请输入5-50位邮箱地址"));
+          }
         }
       }
     };
@@ -380,9 +406,9 @@ export default {
         ]
       },
       rules2: {
-        selectTech: [
-          { required: true, message: "请选择技师", trigger: "change" }
-        ],
+        // selectTech: [
+        //   { required: true, message: "请选择技师", trigger: "change" }
+        // ],
         severTime: [
           {
             required: true,
@@ -474,11 +500,6 @@ export default {
     seerchange(val) {
       this.form.serverStation1 = val;
     },
-    // inputFocus() {
-    //   if (this.$refs.pickerInput != undefined) {
-    //     this.$refs.pickerInput.value = "";
-    //   }
-    // },
     //存储选择技师对象
     ChangeTech(obj) {
       if (obj.techChecked) {
@@ -517,9 +538,18 @@ export default {
     },
     //居室改变
     roomChange(item, name) {
-      this.$nextTick(() => {
-        item.payPriceSum = item.roomType[item.roomId].payPrice * 1;
-      });
+      var aa=0;
+      if(item.houseId != undefined){
+          for(var a=0;a<item.houses.length;a++){
+            if(item.houses[a].id == item.houseId){
+                aa=item.houses[a].payPrice*1*item.houses[a].goodsNum
+                item.goodsNum=item.houses[a].goodsNum
+            }
+          }
+          this.$nextTick(() => {
+             item.payPriceSum = aa * 1;            
+          });
+      }
       if (item.goodsChecked) {
         this.$nextTick(() => {
           this.form1.sumPrice =
@@ -563,7 +593,7 @@ export default {
           }
         });        
       }
-      if(formName == 'form1'){      
+      if(formName == 'form1'){             
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
           if(this.selectCommidty[a].goodsChecked){
@@ -571,9 +601,10 @@ export default {
           }
         }
         this.middleB=Object.assign([], arr);
+        this.findTimeListByTechFun(); 
         this.$refs[formName].validate(valid => {
           if (valid) {
-              
+               
           } else {
             this.active = 2;
             var errArr = this.$refs[formName]._data.fields;
@@ -587,7 +618,7 @@ export default {
               type: "error",
               message: errMes[0]
             });
-            return false;
+
           }
         });
       }
@@ -629,26 +660,35 @@ export default {
     //客户查询事件
     changeCustom() {
       //根据手机号查询
-      var obj = { phone: this.customPhone };
-      findCustomerByPhone(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            if (res.data.data != undefined) {
-              this.customId = res.data.data.id;
-              this.form = res.data.data;
-              this.customKeyFlag = true;
+      if(this.customPhone != ''){
+        var obj = { phone: this.customPhone };
+        findCustomerByPhone(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.customId = res.data.data.id;
+                this.form = res.data.data;
+                this.customKeyFlag = true;
+              }
+            } else if (res.data.code === 3) {
+              this.customKeyFlag = false;
+              this.$message({
+                type: "warning",
+                message: res.data.data
+              });
+            } else {
+              this.customKeyFlag = false;
             }
-          } else if (res.data.code === 3) {
-            this.customKeyFlag = false;
-            this.$message({
-              type: "warning",
-              message: res.data.data
-            });
-          } else {
-            this.customKeyFlag = false;
-          }
-        })
-        .catch(res => {});
+          })
+          .catch(res => {});
+      }else{
+        this.customKeyFlag = false;
+        this.$message({
+          type: "warning",
+          message: '客户电话不能为空！'
+        });
+      }
+
     },
     //服务项目下拉获取
     findItemListFun() {
@@ -669,6 +709,8 @@ export default {
     //新增客户保存
     submitForm(formName) {
       if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
+        // var str1=this.$refs.allDeress.currentLabels;
+        // str1=str1.join("");
         this.ruleForm.address =
           this.$refs.pickerInput.value + "-" + this.ruleForm.address;
         var str = this.$refs.pickerInput1.value;
@@ -754,6 +796,7 @@ export default {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.form = res.data.data;
+                this.customPhone=res.data.data.phone
                 this.customKeyFlag = true;
               }
             } else if (res.data.code === 3) {
@@ -792,9 +835,9 @@ export default {
       var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
-          if (res.data.code === 1) {
+          if (res.data.code === 1) {            
             if (res.data.data != undefined) {
-              this.selectCommidty = res.data.data;
+              this.selectCommidty = res.data.data;             
               if (this.middleB.length != 0) {
                 for (var d = 0; d < this.selectCommidty.length; d++) {
                   for (var a = 0; a < this.middleB.length; a++) {
@@ -924,35 +967,36 @@ export default {
               time = this.timeObj[a].serviceTimeStr;
             }
           }
-          var obj = {
-            customerId: this.customId, //客户ID
-            serviceTime: this.changTime + " " + time + ":00", //服务时间
-            customerRemark: this.form2.textarea, //备注
-            techList: this.tabOptions, //技师对象
-            goodsInfoList: this.middleB, //商品对象
-            stationId: this.serverStation1
-          };          
-          createOrder(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
-                this.$message({
-                  type: "success",
-                  message: "新增成功!"
-                });
-                // this.$refs["form2"].resetFields();
-                // this.middleA = [];
-                // this.this.tabOptions=[];
-                // this.form2.selectTech='';
-                
-              } else if (res.data.code === 3) {
-                this.$message({
-                  type: "warning",
-                  message: res.data.data
-                });
-              }
-            })
-            .catch(res => {});
+          if(time == ''){
+            this.form2.severTime1 = '';
+          }else{
+              var obj = {
+                customerId: this.customId, //客户ID
+                serviceTime: this.changTime + " " + time + ":00", //服务时间
+                customerRemark: this.form2.textarea, //备注
+                techList: this.tabOptions, //技师对象
+                goodsInfoList: this.middleB, //商品对象
+                stationId: this.serverStation1
+              };          
+              createOrder(obj)
+                .then(res => {
+                  if (res.data.code === 1) {
+                    this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                    this.$message({
+                      type: "success",
+                      message: "新增成功!"
+                    });                
+                  } else if (res.data.code === 3) {
+                    this.$message({
+                      type: "warning",
+                      message: res.data.data
+                    });
+                  }
+                })
+                .catch(res => {});            
+
+          }
+
         } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
@@ -1006,7 +1050,7 @@ export default {
         address: poi.address
         };
         var text=that.$refs.pickerInput
-        text.value=info.name;
+        text.value=poi.pname+poi.cityname+poi.adname+info.name;
       });			
     },
     //日期变化时改变时间对象
@@ -1495,7 +1539,6 @@ export default {
 }
 .table-d1 {
   width: 750px;
-  height: 276px;
 }
 .selfTable,
 .selfTable tr th,

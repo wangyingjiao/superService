@@ -93,7 +93,7 @@
 			</div>
 		</div>
 		<!--新增客户弹窗开始-->
-		<el-dialog title="新增客户" :visible.sync="dialogTableVisible" :show-close="false" :close-on-click-modal="false">	
+		<el-dialog :title="titlevar" :visible.sync="dialogTableVisible" :show-close="false" :close-on-click-modal="false">	
 				<el-form 
 				  :model="ruleForm" 
 					:rules="rules" 
@@ -117,15 +117,15 @@
               <!-- 省市区 -->
               <el-cascader
                 :options="areaOptions"
+                ref="allDeress"
 								@change="testFun"
                 :show-all-levels="true"
                  v-model="ruleForm.areaCodes"
                  style='width: 100%;'
               ></el-cascader>							
 					</el-form-item>
-          <!-- @blur="inputBlur" -->
 					<el-form-item label="详细地址:" prop="address">
-		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis"  value='' placeholder="输入关键字选取地点">
+		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis"   value='' placeholder="输入关键字选取地点">
 								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
 								<el-input class="customerAddress"   v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
                 <div class="selfAddressGao">
@@ -188,7 +188,7 @@ export default {
           if (value.length >= 5 && value.length <= 50) {
             callback();
           } else {
-            callback(new Error("请输入5-50位详细地址"));
+            callback(new Error("请输入5-50位邮箱地址"));
           }
         }
       }
@@ -218,6 +218,7 @@ export default {
       }
     };
     return {
+      titlevar:'新增客户',
       showDis: true,
       submitFlag: false,
       jumpPage: 1,
@@ -267,7 +268,8 @@ export default {
       pageSize1: 10, //表格每页条数
       pageNumber: 1,
       mymap: {},
-      testFlag: undefined
+      testFlag: undefined,
+      addflag1:false,
     };
   },
   methods: {
@@ -279,21 +281,16 @@ export default {
           target: document.querySelector('.el-dialog__body')
         })
     },
-    //清空地址POI选择框值
-    inputBlur() {
-      this.$refs.pickerInput.value = "";
-    },
     //地址POI选择初始城市值
     testFun(value) {
       this.$nextTick(() => {
-        this.$refs.pickerInput.value = "";
         this.$refs.panel.style.display='none';
         this.test(value[2]);
       });
     },
     //新增保存
     submitForm(formName, status) {
-      var that = this;
+      var that = this;     
       this.submitFlag = true;
       setTimeout(function() {
         that.submitFlag = false;
@@ -302,11 +299,11 @@ export default {
         if (valid) {
           this.loadingClick()
           if (
-            this.$refs.pickerInput.value != "" &&
-            this.ruleForm.address != ""
+            this.$refs.pickerInput.value != "" && !this.addflag1
           ) {
-            this.ruleForm.address =
-              this.$refs.pickerInput.value + "-" + this.ruleForm.address;
+            // var str1=that.$refs.allDeress.currentLabels;
+            // str1=str1.join("");
+            this.ruleForm.address =this.$refs.pickerInput.value + "-" + this.ruleForm.address;
             var str = this.$refs.pickerInput1.value;
             str = str.split(",");
             //经度
@@ -316,15 +313,17 @@ export default {
             var lat = str[1];
             this.ruleForm.addrLatitude = lat;
           } else {
-            this.$refs.pickerInput.value = "";
-            this.ruleForm.address = "";
+            // this.$refs.pickerInput.value = "";
+            // this.ruleForm.address = "";
           }
           //省、市、区三级ID
+          
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
           //保存upCus
           if (status == "add") {
+            this.ruleForm.id='';
             var obj = this.ruleForm;
             saveCus(obj)
               .then(res => {
@@ -345,13 +344,16 @@ export default {
                   this.pageNumber = 1;
                   this.jumpPage = 1;
                   this.getData(obj, this.pageNumber, this.pageSize1);
+                  this.addflag1=false;
                 } else {
                   loading.close();
-                  this.$refs.pickerInput.value = "";
-                  this.ruleForm.address = "";
+                  this.addflag1=true;
+                  //this.$refs.pickerInput.value = "";
+                  //this.ruleForm.address = "";
                 }
               })
               .catch(res => {
+                 this.addflag1=true;
                  loading.close();
               });
           } else {
@@ -365,14 +367,13 @@ export default {
                     message: "编辑成功!"
                   });
                   this.$refs["ruleForm"].resetFields();
-                  this.customName = "";
-                  this.customPhone = "";
                   this.$refs.pickerInput.value = "";
                   this.$refs.panel.style.display='none';
                   this.dialogTableVisible = false;
-                  var obj2 = {};
-                  this.pageNumber = 1;
-                  this.jumpPage = 1;
+                  var obj2 = {
+                      name: this.customName,
+                      phone: this.customPhone
+                  };
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
                    loading.close();
@@ -450,12 +451,14 @@ export default {
       this.dialogTableVisible = true;
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
+        this.titlevar='新增客户';
         this.showDis = true;
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
+        this.titlevar='编辑客户';
         this.showDis = true;
         var obj = {
           id: row.id
@@ -597,7 +600,7 @@ export default {
         address: poi.address
         };
         var text=that.$refs.pickerInput
-        text.value=info.name;
+        text.value=poi.pname+poi.cityname+poi.adname+info.name;
       });	      
     },
     //地图初始化
