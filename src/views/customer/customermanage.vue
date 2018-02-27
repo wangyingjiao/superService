@@ -76,9 +76,9 @@
 						label="操作"
 						width='230'>
 										<template scope="scope">
-												<el-button type="button" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
-												<el-button type="button" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
-												<el-button type="button" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
+												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
+												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
+												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
 										</template>
 					  </el-table-column>					  
 					</el-table>
@@ -270,6 +270,7 @@ export default {
       mymap: {},
       testFlag: undefined,
       addflag1:false,
+      addressBefore:''
     };
   },
   methods: {
@@ -321,6 +322,7 @@ export default {
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
+          // this.ruleForm.beforeAdd=this.addressBefore 省市区名称
           //保存upCus
           if (status == "add") {
             this.ruleForm.id='';
@@ -599,8 +601,10 @@ export default {
         location: poi.location.toString(),
         address: poi.address
         };
+        that.$refs.pickerInput1.value=info.location;
         var text=that.$refs.pickerInput
-        text.value=poi.pname+poi.cityname+poi.adname+info.name;
+        that.addressBefore=poi.pname+poi.cityname+poi.adname;
+        text.value=info.name;
       });	      
     },
     //地图初始化
@@ -644,6 +648,9 @@ export default {
 }
 .width400 {
   width: 400px;
+}
+.ceshi3{
+  font-size:12px; 
 }
 .mapDiv {
   float: left;

@@ -273,6 +273,10 @@ input, button{
   letter-spacing:-1px;
   padding-right:10px;
   text-align: center;
+  border:1px solid #ccc !important;
+}
+.roomTypeStyle .el-input__inner{
+  border:1px solid #ccc !important;
 }
 .el-input-number__decrease {
   right:0px;
@@ -693,11 +697,27 @@ body {
 }
 #app .ceshi3:hover{
   color: #fff;
+  background-color: $operationColor;
 }
 #app .el-table{
   @include tableWhole($tableSize,$tableColor,$tableTrHeight,$tableBackGround)
 }
 .el-select-dropdown__item.selected{
+  @include seleteColor($seleteColor,$seleteBack)
+}
+.el-select-dropdown__item.selected.hover{
+  @include seleteColor($seleteColor,$seleteBack)
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected{
+  color: $seleteBack;
+}
+.el-cascader-menu__item.is-active{
+  @include seleteColor($seleteColor,$seleteBack)
+}
+.el-date-table td.current:not(.disabled), .el-date-table td.end-date, .el-date-table td.start-date{
+  background-color: $seleteBack !important;
+}
+.el-cascader-menu__item.is-active:hover{
   @include seleteColor($seleteColor,$seleteBack)
 }
 .btn-color{
