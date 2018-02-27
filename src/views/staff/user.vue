@@ -143,13 +143,13 @@
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable :disabled="dialogStatus == 'update'"  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable :disabled="dialogStatus == 'update'"  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
