@@ -50,7 +50,8 @@
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="选择商品:" prop="servercommidty">
+						<el-form-item label="选择商品:" >
+              <span class="selfLabelStyle">*</span>
 							<div class="table-d1" v-if="selectCommidty.length != 0">
 								<table width="80%" class="selfTable">
 									<tr>
@@ -98,7 +99,7 @@
 											</span>                       
                     </td>
 										<td class="height30" align="center">
-                      <span > <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min="parseInt(item.minPurchase)" :max="999999"></el-input-number></span>
+                      <span > <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
@@ -109,7 +110,8 @@
                   <el-option v-for="item in selectCommidty" :key="item.goodsId" :label="item.goodsId" :value="item.goodsId">
                   </el-option>
                 </el-select>                 
-							</div>  																																
+							</div>
+              <div class="addrulesStyle" ref="addrulesStyle">请选择商品</div>  																																
 						</el-form-item>
 						<el-form-item label="总价:" prop="sumPrice">
               <span class="selfLabelStyle">*</span>
@@ -409,7 +411,9 @@ export default {
         severTime1: [
           { required: true, message: "请选择服务时间", trigger: "change" }
         ],
-        textarea:[{ required: false, message: "请入0-255个字符", trigger: "blur" }]
+        textarea:[
+          { min: 0, max: 200, message: '请入0-200个字符', trigger: 'blur' }
+        ]
       },
       ruleForm: {
         name: "",
@@ -424,10 +428,13 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
+      formtest:{
+
+      },
       rulesTest:{   
-        servercommidty:[
-          { required: true, message: "请选择商品",trigger: "change"}
-        ],        
+        // servercommidty:[
+        //   { required: true, message: "请选择商品",trigger: "change"}
+        // ],        
         serverPro: [
           { required: true,message: "请选择服务项目", trigger: "change"}
         ]
@@ -472,7 +479,8 @@ export default {
       middleB: [],
       addressBefore:'',
       ideaserverTime:'',
-      ideaPersonNum:''
+      ideaPersonNum:'',
+      addflag1:false
     };
   },
   computed: {
@@ -558,10 +566,15 @@ export default {
       }
       if(flag == 0){
         this.form1.servercommidty='';
+        if(this.form1.serverPro !=''){
+          this.$refs.addrulesStyle.style.display='block'
+        }
+      }else{
+          this.$refs.addrulesStyle.style.display='none'        
       }      
     },
     //计数器改变
-    numberChange(item, index) {
+    numberChange(item,index) {
       this.$nextTick(() => {
         item.payPriceSum = item.goodsNum * item.payPrice * 1;
       });
@@ -635,7 +648,13 @@ export default {
           }
         });        
       }
-      if(formName == 'form1'){            
+      if(formName == 'form1'){ 
+        if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
+          this.$refs.addrulesStyle.style.display='block'
+        }
+        if(this.form1.serverPro ==''){
+          this.$refs.addrulesStyle.style.display='none'
+        }           
         var arr=[];
         for(var a=0;a<this.selectCommidty.length;a++){
           if(this.selectCommidty[a].goodsChecked){
@@ -643,39 +662,37 @@ export default {
           }
         }
         this.middleB=Object.assign([], arr);
-        this.findTimeListByTechFun();
-        this.getPersonAndTime();//建议时长与技师人数 
-        this.$refs[formName].validate(valid => {
-          if (valid) {
-               
-          } else {           
-            this.active = 2;            
-            var errArr = this.$refs[formName]._data.fields;
-            var errMes = [];
-            for (var i = 0; i < errArr.length; i++) {
-              if (errArr[i].validateMessage != "") {
-                errMes.push(errArr[i].validateMessage);
-              }
-            }
-            if(errArr[1].validateMessage == '请选择商品' && this.form1.serverPro == ''){
-                this.$refs[formName]._data.fields[1].validateMessage=''
-                this.rulesTest.servercommidty[0].message=''
+        if(this.form1.serverPro !='' && this.form1.servercommidty == ''){
+           this.active = 2;
+            this.$message({
+              type: "error",
+              message:'请选择商品'
+            });
+        }else{
+            this.findTimeListByTechFun();
+            this.getPersonAndTime();//建议时长与技师人数 
+            this.$refs[formName].validate(valid => {
+              if (valid) {
+                  
+              } else {           
+                this.active = 2;            
+                var errArr = this.$refs[formName]._data.fields;
+                var errMes = [];
+                for (var i = 0; i < errArr.length; i++) {
+                  if (errArr[i].validateMessage != "") {
+                    errMes.push(errArr[i].validateMessage);
+                  }
+                }            
                 this.$message({
                   type: "error",
                   message: errMes[0]
-                });                                
-            }else{
-                this.$refs[formName]._data.fields[1].validateMessage='请选择商品'
-                this.rulesTest.servercommidty[0].message='请选择商品'
-                this.$message({
-                  type: "error",
-                  message:'请选择商品' 
-                });                
-            }            
+                }); 
 
+              }
+            });          
 
-          }
-        });
+        }
+
       }
     },
     //上一步
@@ -768,7 +785,7 @@ export default {
     },
     //新增客户保存
     submitForm(formName) {
-      if (this.$refs.pickerInput.value != "" && this.ruleForm.address != "") {
+      if (this.$refs.pickerInput.value != "" && !this.addflag1) {
         this.ruleForm.address =
           this.$refs.pickerInput.value + "-" + this.ruleForm.address;
         var str = this.$refs.pickerInput1.value;
@@ -780,8 +797,8 @@ export default {
         var lat = str[1];
         this.ruleForm.addrLatitude = lat;
       } else {
-        this.$refs.pickerInput.value = "";
-        this.ruleForm.address = "";
+        // this.$refs.pickerInput.value = "";
+        // this.ruleForm.address = "";
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -804,14 +821,17 @@ export default {
                 this.$refs.pickerInput.value = "";
                 this.$refs.panel.style.display='none';
                 this.dialogTableVisible1 = false;
+                this.addflag1=false;
               } else {
                 loading.close();
-                this.$refs.pickerInput.value = "";
-                this.ruleForm.address = "";
+                this.addflag1=true;
+                // this.$refs.pickerInput.value = "";
+                // this.ruleForm.address = "";
               }
             })
             .catch(res => {
               loading.close();
+              this.addflag1=true;
             });
         } else {
           this.$refs.pickerInput.value = "";
@@ -889,8 +909,14 @@ export default {
       });
     },
     //服务类型下拉改变
-    serverchange(value) {
+    serverchange(value) {     
       this.form1.servercommidty='';
+      if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
+        this.$refs.addrulesStyle.style.display='block'
+      }
+      if(this.form1.serverPro ==''){
+        this.$refs.addrulesStyle.style.display='none'
+      }      
       this.form1.sumPrice = 0;
       var obj = { itemId: value };
       findGoodsListByItem(obj)
@@ -998,9 +1024,9 @@ export default {
     //叉号点击关闭TAB
     errorClose(obj) {
       //是否是删除就调取时间
-      if(this.tabOptions.length == 1){
+      // if(this.tabOptions.length == 1){
          this.findTimeListByTechFun()        
-      }
+      // }
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -1034,7 +1060,7 @@ export default {
           if(time == ''){
             this.form2.severTime1 = '';
           }else{
-              if(this.tabOptions.length != this.ideaPersonNum){
+              if((this.tabOptions.length != 0) && (this.tabOptions.length != this.ideaPersonNum)){
                   this.$confirm("已选技师人数与建议派单人数不一致，您确定要下单吗？", "提示", {
                     confirmButtonText: "确定",
                     cancelButtonText: "取消",
@@ -1682,5 +1708,15 @@ export default {
 .padding10Prent {
   width: 100%;
   padding: 0 10%;
+}
+.addrulesStyle{
+    display:none;
+    color: #ff4949;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
 }
 </style>
