@@ -408,9 +408,9 @@ input, button{
 body {
   background-color: #eef1f6;
 }
-.pagination-container {
-  overflow: hidden;
-}
+// .pagination-container {
+//   overflow: hidden;
+// }
 // 选中行的样式
 #tableColor tbody tr.current-row>td{
   background-color: rgba(10, 104, 226, 0.26);
