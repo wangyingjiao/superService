@@ -76,3 +76,7 @@ export function findTimeListByTech(obj) {
 export function createOrder(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/createOrder`, obj)
 }
+//获取建议服务时长
+export function findGoodsNeedTech(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/findGoodsNeedTech`, obj)
+}

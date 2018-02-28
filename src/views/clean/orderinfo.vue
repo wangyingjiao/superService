@@ -552,6 +552,7 @@ export default {
         })
         .catch(res => {});
     },
+    //时间转化成xx小时XX分钟
     formatDuring(mss) {
       var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));

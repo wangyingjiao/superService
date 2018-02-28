@@ -126,7 +126,7 @@
                 <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
                 </el-option>
               </el-select>                             
-							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配</span>
+							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配；建议派单人数为<span>{{ideaPersonNum}}</span>人，建议总服务时长为<span>{{ideaserverTime}}</span></span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
@@ -282,7 +282,8 @@ import {
   findGoodsListByItem, //获取服务项目下的商品列表
   findTechListByGoods, //获取商品的技师列表
   findTimeListByTech, //获取技师的时间列表
-  createOrder //新增订单保存
+  createOrder, //新增订单保存
+  findGoodsNeedTech //获取建议服务时长
 } from "@/api/order";
 import {
   saveCus //保存客户（新增）
@@ -469,7 +470,9 @@ export default {
       customId: "", //客户ID
       areaCode: "",
       middleB: [],
-      addressBefore:''
+      addressBefore:'',
+      ideaserverTime:'',
+      ideaPersonNum:''
     };
   },
   computed: {
@@ -495,6 +498,38 @@ export default {
     seerchange(val) {
       this.form.serverStation1 = val;
     },
+    //时间转化成xx小时XX分钟
+    formatDuring(mss) {
+      var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = (mss % (1000 * 60)) / 1000;
+      if (hours == 0 && seconds == 0) {
+        return minutes + "分钟";
+      } else if (hours == 0 && seconds != 0) {
+        return minutes + 1 + "分钟";
+      } else if (seconds == 0 && minutes == 0) {
+        return hours + "小时";
+      } else {
+        return hours + "小时" + minutes + "分钟";
+      }
+    },
+    //调取建议服务时间与技师人数
+    getPersonAndTime(){
+      var obj = {
+        goodsInfoList: this.middleB,
+      };
+      findGoodsNeedTech(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+              this.ideaserverTime=this.formatDuring(res.data.data.serviceHour * 3600000)
+              this.ideaPersonNum=res.data.data.dispatchNum
+              // 人数：dispatchNum 时间： serviceHour
+          }else {
+          }
+        })
+        .catch(res => {});      
+
+    },    
     //存储选择技师对象
     ChangeTech(obj) {
       if (obj.techChecked) {
@@ -608,7 +643,8 @@ export default {
           }
         }
         this.middleB=Object.assign([], arr);
-        this.findTimeListByTechFun(); 
+        this.findTimeListByTechFun();
+        this.getPersonAndTime();//建议时长与技师人数 
         this.$refs[formName].validate(valid => {
           if (valid) {
                
@@ -961,6 +997,7 @@ export default {
     },
     //叉号点击关闭TAB
     errorClose(obj) {
+      //是否是删除就调取时间
       if(this.tabOptions.length == 1){
          this.findTimeListByTechFun()        
       }
@@ -997,6 +1034,46 @@ export default {
           if(time == ''){
             this.form2.severTime1 = '';
           }else{
+              if(this.tabOptions.length != this.ideaPersonNum){
+                  this.$confirm("已选技师人数与建议派单人数不一致，您确定要下单吗？", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnClickModal: false
+                  })
+                  .then(() => {
+                      var obj = {
+                        customerId: this.customId, //客户ID
+                        serviceTime: this.changTime + " " + time + ":00", //服务时间
+                        customerRemark: this.form2.textarea, //备注
+                        techList: this.tabOptions, //技师对象
+                        goodsInfoList: this.middleB, //商品对象
+                        stationId: this.serverStation1
+                      };          
+                      createOrder(obj)
+                        .then(res => {
+                          if (res.data.code === 1) {
+                            this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                            this.$message({
+                              type: "success",
+                              message: "新增成功!"
+                            });                
+                          } else if (res.data.code === 3) {
+                            this.$message({
+                              type: "warning",
+                              message: res.data.data
+                            });
+                          }
+                        })
+                        .catch(res => {});                               
+
+                  })
+                  .catch(() => {
+                      this.$message({
+                        type: "warning",
+                        message: "已取消下单"
+                      });                    
+                  });
+              }else{
               var obj = {
                 customerId: this.customId, //客户ID
                 serviceTime: this.changTime + " " + time + ":00", //服务时间
@@ -1020,8 +1097,9 @@ export default {
                     });
                   }
                 })
-                .catch(res => {});            
+                .catch(res => {});                 
 
+              }
           }
 
         } else {
