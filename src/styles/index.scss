@@ -720,6 +720,42 @@ body {
 .el-cascader-menu__item.is-active:hover{
   @include seleteColor($seleteColor,$seleteBack)
 }
+.el-tabs__item.is-active{
+  color: $seleteBack;
+}
+.el-tabs__active-bar{
+  background-color: $seleteBack;
+}
+.el-tabs__nav .el-tabs__item:hover{
+  color: $seleteBack;
+}
+.el-loading-spinner .path{
+  stroke:$seleteBack;
+}
+.el-select .el-input__inner:focus{
+  border-color: $seleteBack;
+}
+.el-input__inner:focus{
+  border-color: $seleteBack;
+}
+.el-textarea__inner:focus{
+  border-color: $seleteBack;
+}
+.el-loading-spinner .el-loading-text{
+  color: $seleteBack;
+}
+.tabs-view-container .router-link-active .el-tag{
+  background-color: $seleteBack;
+}
+.el-checkbox__input.is-checked .el-checkbox__inner{
+  @include backColor($seleteBack,$seleteBack)
+}
+.el-checkbox__inner:hover{
+  border-color: $seleteBack;
+}
+.el-checkbox__input.is-focus .el-checkbox__inner{
+  border-color: $seleteBack;
+}
 .btn-color{
   @include backColor($buttonBack,$buttonBack);
   color: $buttonColor; 
