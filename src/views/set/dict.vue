@@ -165,13 +165,6 @@
                </el-table-column>
           </el-table>
           
-      <!-- <el-pagination
-      small
-      layout="prev, pager, next"
-      :total="50">
-    </el-pagination>
-    -->
-      
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
         <button class="button-large"  @click="close('temp')">关 闭</button>
       </div>
