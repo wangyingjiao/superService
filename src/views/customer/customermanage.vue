@@ -4,10 +4,6 @@
 		<div class="fist-bar">
 		  <el-input  class="search"   placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
 			<el-input  class="search"   placeholder="请输入搜索的姓名" v-model="customName"></el-input>
-		  <!-- <el-select clearable   class="search" v-model="organizationName" placeholder="请选择服务机构">
-				<el-option v-for="item in organizationOptions" :key="item.id" :label="item.name" :value="item.id">
-				</el-option>
-		  </el-select>      		   -->
 		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<!--搜索结束-->
@@ -31,42 +27,32 @@
 					  <el-table-column
 					    align="center"
 						prop="name"
+            width='180'
 						label="姓名"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
 						prop="phone"
+            width='120'
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
+            width='80'
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>
 										<span v-if="scope.row.sex =='female'">女</span>
 								</template>						
 					  </el-table-column>
-					  <!-- <el-table-column
-						align="center"
-						prop="orgName"
-						label="服务机构">
-					  </el-table-column> -->
-					  <!-- <el-table-column
-						align="center"
-						label="来源">
-						    <template scope="scope">
-						    		<span v-if="scope.row.source =='own'">本机构</span>
-										<span v-if="scope.row.source =='other'">第三方</span>
-								</template>							
-					  </el-table-column>											  -->
 						<el-table-column
 						align="center"				
-						width="130"
+						width="300"
 						label="地址"						
 						>
 						<template scope="scope">
-							<el-tooltip placement="left" :disabled="scope.row.address.length < 9" :content="scope.row.address">
+							<el-tooltip placement="left" :disabled="scope.row.address.length < 30" :content="scope.row.address">
 							 <div class="selfToolTip">{{scope.row.address}}</div>
 							</el-tooltip>
 						</template>						            
@@ -74,12 +60,12 @@
 					  <el-table-column
 						align="center"
 						label="操作"
-						width='230'>
-										<template scope="scope">
-												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
-												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
-												<el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
-										</template>
+						>
+              <template scope="scope">
+                  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
+                  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
+                  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
+              </template>
 					  </el-table-column>					  
 					</el-table>
 					<!--客户数据表格结束-->
@@ -631,7 +617,7 @@ export default {
   width:350px;max-height:290px;overflow-y:scroll
 }
 .selfToolTip {
-  width: 100px;
+  width: 280px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
