@@ -99,7 +99,7 @@
 											</span>                       
                     </td>
 										<td class="height30" align="center">
-                      <span > <el-input-number class="selfINputNumStyle"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
+                      <span > <el-input-number class="selfINputNumStyle"    @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
@@ -531,7 +531,6 @@ export default {
           if (res.data.code === 1) {
               this.ideaserverTime=this.formatDuring(res.data.data.serviceHour * 3600000)
               this.ideaPersonNum=res.data.data.dispatchNum
-              // 人数：dispatchNum 时间： serviceHour
           }else {
           }
         })
@@ -924,17 +923,6 @@ export default {
           if (res.data.code === 1) {            
             if (res.data.data != undefined) {
               this.selectCommidty = res.data.data;             
-              // if (this.middleB.length != 0) {
-              //   for (var d = 0; d < this.selectCommidty.length; d++) {
-              //     for (var a = 0; a < this.middleB.length; a++) {
-              //       if (
-              //         this.middleB[a].goodsId == this.selectCommidty[d].goodsId
-              //       ) {
-              //         this.selectCommidty[d] = this.middleB[a];
-              //       }
-              //     }
-              //   }
-              // }
             } else {
               this.selectCommidty = [];
               this.form1.sumPrice = 0;
