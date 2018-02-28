@@ -147,6 +147,7 @@ import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var data = [];
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
+var loading;
 export default {
   name: "role",
   directives: {
