@@ -50,27 +50,32 @@ instance.interceptors.response.use(res => {
 
   return res
 }, error => {
-  // if (error.response) {
-  //   const num = error.response.status
-  //   if ([502, 503, 504].indexOf(num) > -1) {
-  //     arr.push(error.response.status)
-  //     // console.log(arr.length)
-  //     if (arr.length === 1) {
-  //       Message.error('服务器断开！')
-  //     }
-  //   }
-  // } else {
-    // arr.push(error)
-    // if (arr.length === 1) {
-    //   store.dispatch('LogOut').then(() => {
-    //     Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
-    //     setTimeout(() => {
-    //       arr = []
-    //       store.state.app.visitedViews = []
-    //       router.push({ path: '/login' })
-    //     }, 2500)
-    //   })
-    // }
+  if (error.response) {
+    const num = error.response.status
+    if ([502, 503, 504].indexOf(num) > -1) {
+      arr.push(num)
+      // console.log(arr.length)
+      if (arr.length === 1) {
+        Message.error('服务器断开！')
+      }
+      if (arr.length === 2) {
+        arr = ['1']
+      }
+    }
+  }
+
+  // else {
+  // arr.push(error)
+  // if (arr.length === 1) {
+  //   store.dispatch('LogOut').then(() => {
+  //     Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
+  //     setTimeout(() => {
+  //       arr = []
+  //       store.state.app.visitedViews = []
+  //       router.push({ path: '/login' })
+  //     }, 2500)
+  //   })
+  // }
   // }
   return Promise.reject(error)
 })
