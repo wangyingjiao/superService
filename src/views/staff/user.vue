@@ -811,13 +811,15 @@ export default {
       // 搜索时机构改变
       this.search.stationId = "";
       this.servicestationSearch = [];
-      var obj = {
-        orgId: val
-      };
-      getFuwu(obj).then(res => {
-        // 请求服务站列表
-        this.servicestationSearch = res.data.data;
-      });
+      if (val) {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站列表
+          this.servicestationSearch = res.data.data;
+        });
+      }
     },
     mechChange(val) {
       if (val != "") {
@@ -892,7 +894,7 @@ export default {
                 this.search.val = "";
                 this.search.officeId = "";
                 this.search.stationId = "";
-                this.handleFilter()
+                this.handleFilter();
                 this.$message({
                   type: "success",
                   message: "新增成功"
