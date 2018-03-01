@@ -527,6 +527,14 @@ export default {
     };
   },
   methods: {
+    loadingClick(){
+        loading = this.$loading({
+          lock: true,
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)',
+          target: document.querySelector('.el-dialog__body')
+        })
+    },
     //用订单ID获取页面相关信息
     getOrderAllInf(orderId) {
       this.orderId = orderId;
@@ -609,19 +617,19 @@ export default {
                     this.otherInfo.serviceTime = that.changTime + " " + that.bb;
                     var nowtime = new Date();
                     var severtime = new Date(this.otherInfo.serviceTime);
-                    this.nowTime = severtime.getTime() - nowtime.getTime();                    
-                  } else {
+                    this.nowTime = severtime.getTime() - nowtime.getTime();                     
+                  } else {                      
                     this.timeObj = [];
                     this.timeSaveFlag = false;
-                    this.dateChange(this.formInline.Date);
+                    this.dateChange(this.formInline.Date);                   
                   }
                 })
                 .catch(res => {
                   this.timeSaveFlag = false;
-                  this.timeObj = [];
+                  this.timeObj = [];                  
                 });
             })
-            .catch(() => {
+            .catch(() => {              
               this.$message({
                 type: "warning",
                 message: "已取消更换时间"
@@ -629,6 +637,7 @@ export default {
               this.timeSaveFlag = false;
               this.timeObj = [];
               this.dateChange(this.formInline.Date);
+              this.formInline.Time=''
             });
         } else {
           var errArr = this.$refs[formName]._data.fields;

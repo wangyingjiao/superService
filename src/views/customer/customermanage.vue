@@ -48,7 +48,6 @@
 					  </el-table-column>
 						<el-table-column
 						align="center"				
-						width="300"
 						label="地址"						
 						>
 						<template scope="scope">
@@ -288,8 +287,6 @@ export default {
           if (
             this.$refs.pickerInput.value != "" && !this.addflag1
           ) {
-            // var str1=that.$refs.allDeress.currentLabels;
-            // str1=str1.join("");
             this.ruleForm.address =this.$refs.pickerInput.value + "-" + this.ruleForm.address;
             var str = this.$refs.pickerInput1.value;
             str = str.split(",");
@@ -300,8 +297,6 @@ export default {
             var lat = str[1];
             this.ruleForm.addrLatitude = lat;
           } else {
-            // this.$refs.pickerInput.value = "";
-            // this.ruleForm.address = "";
           }
           //省、市、区三级ID
           
@@ -334,8 +329,9 @@ export default {
                   this.getData(obj, this.pageNumber, this.pageSize1);
                   this.addflag1=false;
                 } else {
-                  loading.close();
                   this.addflag1=true;
+                  loading.close();
+                  
                   //this.$refs.pickerInput.value = "";
                   //this.ruleForm.address = "";
                 }
@@ -345,7 +341,12 @@ export default {
                  loading.close();
               });
           } else {
-            var obj1 = this.ruleForm;
+            var b = this.ruleForm.address;
+            var n=(b.split('-')).length-1;
+            if(n == 0){
+              this.ruleForm.address =this.$refs.pickerInput.value + "-" + this.ruleForm.address;
+            }           
+            var obj1 = this.ruleForm;            
             upCus(obj1)
               .then(res => {
                 if (res.data.code === 1) {
@@ -364,13 +365,14 @@ export default {
                   };
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
+                   this.addflag1=true;
                    loading.close();
-                  this.$refs.pickerInput.value = "";
-                  this.ruleForm.address = "";
+                   
                 }
               })
               .catch(res => {
-                 loading.close();
+                 this.addflag1=true;
+                 loading.close();                 
               });
           }
         } else {
