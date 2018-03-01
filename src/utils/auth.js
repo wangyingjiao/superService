@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'Admin-Token'
+const TokenKey = 'Js-Session-Id'
 
 export function getToken() {
   return Cookies.get(TokenKey)
@@ -8,12 +8,6 @@ export function getToken() {
 
 export function setToken(token) {
   return Cookies.set(TokenKey, token)
-}
-export function getSession() {
-  return Cookies.get('jeesite.session.id')
-}
-export function setSession(id) {
-  return Cookies.set('JSESSIONID', id)
 }
 
 export function removeToken() {
