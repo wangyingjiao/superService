@@ -466,6 +466,7 @@ import {
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
+var loading
 export default {
   name: "orderinfo",
   data() {
@@ -594,6 +595,7 @@ export default {
             closeOnClickModal: false
           })
             .then(() => {
+              this.loadingClick()
               //更换时间的保存
               var obj = {
                 id: this.orderId,
@@ -617,16 +619,19 @@ export default {
                     this.otherInfo.serviceTime = that.changTime + " " + that.bb;
                     var nowtime = new Date();
                     var severtime = new Date(this.otherInfo.serviceTime);
-                    this.nowTime = severtime.getTime() - nowtime.getTime();                     
+                    this.nowTime = severtime.getTime() - nowtime.getTime();
+                    loading.close();                     
                   } else {                      
                     this.timeObj = [];
                     this.timeSaveFlag = false;
-                    this.dateChange(this.formInline.Date);                   
+                    this.dateChange(this.formInline.Date);
+                    loading.close();                   
                   }
                 })
                 .catch(res => {
                   this.timeSaveFlag = false;
-                  this.timeObj = [];                  
+                  this.timeObj = [];
+                  loading.close();                  
                 });
             })
             .catch(() => {              
