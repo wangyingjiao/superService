@@ -33,13 +33,11 @@
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="phone"
-         
+						prop="phone"         
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-            width='80'
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>
@@ -59,7 +57,7 @@
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
-            width="250"
+            width="300"
 						label="操作"
 						>
               <template scope="scope">
