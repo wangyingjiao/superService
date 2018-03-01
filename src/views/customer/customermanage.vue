@@ -27,14 +27,14 @@
 					  <el-table-column
 					    align="center"
 						prop="name"
-            width='180'
+    
 						label="姓名"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
 						prop="phone"
-            width='120'
+         
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
@@ -48,7 +48,8 @@
 					  </el-table-column>
 						<el-table-column
 						align="center"				
-						label="地址"						
+						label="地址"		
+            width="300"				
 						>
 						<template scope="scope">
 							<el-tooltip placement="left" :disabled="scope.row.address.length < 30" :content="scope.row.address">
@@ -58,6 +59,7 @@
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
+            width="250"
 						label="操作"
 						>
               <template scope="scope">
