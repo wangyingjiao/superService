@@ -79,8 +79,8 @@
     </el-table>
 <!-- 列表结束 -->
 <!-- 分页器 -->
-    <div v-if="!listLoading" class="pagination-container">
-      <el-pagination class="fr page mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
+    <div v-if="!listLoading" class="pagination-container clearfix">
+      <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
@@ -915,9 +915,7 @@ export default {
   border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
-.pagination-container {
-  overflow: hidden;
-}
+
 /* //  修改*号
 .el-form-item .el-form-item__label:before {
     content: '　';

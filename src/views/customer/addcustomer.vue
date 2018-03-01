@@ -195,7 +195,7 @@
 		<el-table-column prop="sex" align="center" label="性别"></el-table-column>
 		<el-table-column prop="serverStation" align="center" label="服务站"></el-table-column>
 	  </el-table>
-	  <div  class="pagination-container">
+	  <div  class="pagination-container clearfix">
 		  <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" 
 			:page-sizes="[10,20,30, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal">
 		  </el-pagination>

@@ -261,7 +261,7 @@
 
     </div>
     <!-- 分页 -->
-      <div v-show="!listLoading" class="pagination-container fy">
+      <div v-show="!listLoading" class="pagination-container fy clearfix">
         <el-pagination class="page" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.sync"
           :page-sizes="[6,12,18,24]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
