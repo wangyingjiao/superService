@@ -668,9 +668,9 @@ export default {
               message:'请选择商品'
             });
         }else{
-            this.findTimeListByTechFun();
             this.tabOptions=[];
-            this.middleA=[];
+            this.middleA=[];          
+            this.findTimeListByTechFun();
             this.getPersonAndTime();//建议时长与技师人数 
             this.$refs[formName].validate(valid => {
               if (valid) {
