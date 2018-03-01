@@ -412,7 +412,7 @@ export default {
           { required: true, message: "请选择服务时间", trigger: "change" }
         ],
         textarea:[
-          { min: 0, max: 200, message: '请入0-200个字符', trigger: 'blur' }
+          { min: 0, max: 200, message: '长度在0-200个字符', trigger: 'blur' }
         ]
       },
       ruleForm: {
@@ -669,6 +669,8 @@ export default {
             });
         }else{
             this.findTimeListByTechFun();
+            this.tabOptions=[];
+            this.middleA=[];
             this.getPersonAndTime();//建议时长与技师人数 
             this.$refs[formName].validate(valid => {
               if (valid) {

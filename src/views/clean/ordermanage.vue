@@ -173,7 +173,9 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            res.data.data.remove(res.data.data[0]);
+            if(res.data.data[0].id == 0){
+               res.data.data.remove(res.data.data[0]);
+            }
             this.payTypeOptions = res.data.data;
           } else {
           }
