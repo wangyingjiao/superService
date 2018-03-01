@@ -55,7 +55,7 @@
 
     </el-table>
 
-    <div v-if="!listLoading" class="pagination-container">
+    <div v-if="!listLoading" class="pagination-container clearfix">
       <el-pagination class="fr page mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -125,96 +125,9 @@ export default {
         this.listLoading = false;
       });
     },
-    handleFilter() {
-      // 搜索
-      // var value = this.search.value;
-      // if (this.search.key == "name") {
-      //   var obj = {
-      //     name: value
-      //   };
-      // } else if (this.search.key == "masterName") {
-      //   var obj = {
-      //     masterName: value
-      //   };
-      // } else if (this.search.key == "masterPhone") {
-      //   var obj = {
-      //     masterPhone: value
-      //   };
-      // }else{
-      //    var obj = {}
-      // }
-      // this.listLoading = true;
-      // getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-      //   console.log(res);
-      //   this.list = res.data.data.list;
-      //   if(this.list != undefined){
-      //     for (var i = 0; i < this.list.length; i++) {
-      //       this.list[i].index = i + 1;
-      //     }
-      //   }
-      //   this.total = res.data.data.count;
-      //   this.listLoading = false;
-      // });
-      // this.listQuery.page = 1;
-      // // this.getList();
-    },
-    handleSizeChange(val) {
-      //每页的个数
-      // this.pageSize = val;
-      // var value = this.search.value;
-      // if (this.search.key == "name") {
-      //   var obj = {
-      //     name: value
-      //   };
-      // } else if (this.search.key == "masterName") {
-      //   var obj = {
-      //     masterName: value
-      //   };
-      // } else {
-      //   var obj = {
-      //     masterPhone: value
-      //   };
-      // }
-      // getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-      //   console.log(res);
-      //   this.list = res.data.data.list;
-      //   if(this.list != undefined){
-      //     for (var i = 0; i < this.list.length; i++) {
-      //       this.list[i].index = i + 1;
-      //     }
-      //   }
-      //   this.total = res.data.data.count;
-      //   this.listLoading = false;
-      // });
-    },
-    handleCurrentChange(val) {
-      // 换页
-      // this.pageNumber = val;
-      // var value = this.search.value;
-      // if (this.search.key == "name") {
-      //   var obj = {
-      //     name: value
-      //   };
-      // } else if (this.search.key == "masterName") {
-      //   var obj = {
-      //     masterName: value
-      //   };
-      // } else {
-      //   var obj = {
-      //     masterPhone: value
-      //   };
-      // }
-      // this.listLoading = true;
-      // getMechPage(obj, this.pageNumber, this.pageSize).then(res => {
-      //   this.list = res.data.data.list;
-      //   if(this.list != undefined){
-      //     for (var i = 0; i < this.list.length; i++) {
-      //       this.list[i].index = i + 1;
-      //     }
-      //   }
-      //   this.listLoading = false;
-      // });
-    },
+    handleFilter() {},
+    handleSizeChange(val) {},
+    handleCurrentChange(val) {},
     searchChange(val) {}
   }
 };
@@ -262,7 +175,5 @@ export default {
   border: 1px solid #1d85fe;
   background-color: #ffffff;
 }
-.pagination-container {
-  overflow: hidden;
-}
+
 </style>

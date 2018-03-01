@@ -1,6 +1,5 @@
 import { loginByUsername, logout, getUserInfo, getArea, getButton } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { Message } from 'element-ui'
 import store from '../../store'
 const user = {
   state: {
@@ -66,9 +65,7 @@ const user = {
             if (response.data.data.user.station) {
               localStorage.setItem('station', JSON.stringify(response.data.data.user.station))
             }
-            // const data = response.data
-            // setSession(response.data.data.JSESSIONID)
-            setToken('user')
+            setToken(response.data.data.JSESSIONID)
             resolve(response)
           } else {
             // Message.error('用户名不存在或者密码错误')
@@ -89,7 +86,6 @@ const user = {
         return new Promise((resolve, reject) => {
           getUserInfo().then(response => {
             const data = response.data
-            // console.log(data, '权限列表')
             localStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
             commit('SET_NAME', localStorage.getItem('name'))
@@ -104,7 +100,6 @@ const user = {
     Getarea({ commit }) {
       return new Promise((resolve, reject) => {
         getArea().then(res => {
-          // console.log(res)
           const data = res.data
           commit('SET_AREA', data.data)
           resolve(res)

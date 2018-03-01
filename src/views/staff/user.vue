@@ -88,7 +88,7 @@
 
     </el-table>
 
-    <div v-if="!listLoading" class="pagination-container">
+    <div v-if="!listLoading" class="pagination-container clearfix">
       <el-pagination class="fr mt20" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page"
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -811,13 +811,15 @@ export default {
       // 搜索时机构改变
       this.search.stationId = "";
       this.servicestationSearch = [];
-      var obj = {
-        orgId: val
-      };
-      getFuwu(obj).then(res => {
-        // 请求服务站列表
-        this.servicestationSearch = res.data.data;
-      });
+      if (val) {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站列表
+          this.servicestationSearch = res.data.data;
+        });
+      }
     },
     mechChange(val) {
       if (val != "") {
@@ -892,7 +894,7 @@ export default {
                 this.search.val = "";
                 this.search.officeId = "";
                 this.search.stationId = "";
-                this.handleFilter()
+                this.handleFilter();
                 this.$message({
                   type: "success",
                   message: "新增成功"
