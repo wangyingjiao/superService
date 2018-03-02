@@ -899,7 +899,7 @@ export default {
     //地址变化时开始POI搜索
     testFun(value) {      
       this.$nextTick(() => {
-        this.$refs.pickerInput.value = "";
+        //this.$refs.pickerInput.value = "";
         this.$refs.panel.style.display='none';
         this.test(value[2]);
       });
