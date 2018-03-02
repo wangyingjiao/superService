@@ -83,10 +83,10 @@
 											</span>                      
                     </td>
 										<td  align="center">
-											<span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.payPrice}}</span>
+											<span v-if="item.goodsType=='num' || item.goodsType=='area'">￥{{item.payPrice}}</span>
 											<span v-if="item.goodsType=='house'">
                         <span v-for="aa in item.houses" :key="aa.id">
-                          <span v-if="aa.id == item.houseId">{{aa.payPrice}}</span>
+                          <span v-if="aa.id == item.houseId">￥{{aa.payPrice}}</span>
                         </span>
 											</span>
 										</td>
