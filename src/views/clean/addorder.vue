@@ -651,6 +651,9 @@ export default {
         if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
           this.$refs.addrulesStyle.style.display='block'
         }
+        if(this.form1.serverPro !='' && this.form1.servercommidty =='' && this.selectCommidty.length == 0){
+          this.$refs.addrulesStyle.style.display='none'
+        }        
         if(this.form1.serverPro ==''){
           this.$refs.addrulesStyle.style.display='none'
         }           
@@ -663,10 +666,18 @@ export default {
         this.middleB=Object.assign([], arr);
         if(this.form1.serverPro !='' && this.form1.servercommidty == ''){
            this.active = 2;
-            this.$message({
-              type: "error",
-              message:'请选择商品'
-            });
+           if(this.selectCommidty.length == 0){
+              this.$message({
+                type: "error",
+                message:'请更换服务项目，并选择商品'
+              });
+           }else{
+              this.$message({
+                type: "error",
+                message:'请选择商品'
+              });
+           }
+
         }else{
             this.tabOptions=[];
             this.middleA=[];          
@@ -906,26 +917,28 @@ export default {
     },
     //服务类型下拉改变
     serverchange(value) {     
-      this.form1.servercommidty='';
-      if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
-        this.$refs.addrulesStyle.style.display='block'
-      }
+      this.form1.servercommidty='';     
+      this.form1.sumPrice = 0;
       if(this.form1.serverPro ==''){
         this.$refs.addrulesStyle.style.display='none'
-      }      
-      this.form1.sumPrice = 0;
+      }       
       var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
           if (res.data.code === 1) {            
             if (res.data.data != undefined) {
-              this.selectCommidty = res.data.data;             
+              this.selectCommidty = res.data.data;
+              if(this.form1.serverPro !=''){
+                this.$refs.addrulesStyle.style.display='block'
+              }                           
             } else {
               this.selectCommidty = [];
               this.form1.sumPrice = 0;
             }
           } else if (res.data.code === 3) {
             this.selectCommidty = [];
+            this.$refs.addrulesStyle.style.display='none'
+          
             this.form1.sumPrice = 0;
             this.$message({
               type: "warning",
@@ -933,10 +946,12 @@ export default {
             });
           } else {
             this.selectCommidty = [];
+            this.$refs.addrulesStyle.style.display='none'
             this.form1.sumPrice = 0;
           }
         })
         .catch(res => {});
+
     },
     //技师选择按钮点击
     technicianSel() {
