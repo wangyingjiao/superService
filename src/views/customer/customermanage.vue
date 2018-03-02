@@ -331,9 +331,6 @@ export default {
                 } else {
                   this.addflag1=true;
                   loading.close();
-                  
-                  //this.$refs.pickerInput.value = "";
-                  //this.ruleForm.address = "";
                 }
               })
               .catch(res => {

@@ -786,24 +786,23 @@ export default {
     },
     //新增客户保存
     submitForm(formName) {
-      if (this.$refs.pickerInput.value != "" && !this.addflag1) {
-        this.ruleForm.address =
-          this.$refs.pickerInput.value + "-" + this.ruleForm.address;
-        var str = this.$refs.pickerInput1.value;
-        str = str.split(",");
-        //经度
-        var lng = str[0];
-        this.ruleForm.addrLongitude = lng;
-        //纬度
-        var lat = str[1];
-        this.ruleForm.addrLatitude = lat;
-      } else {
-        // this.$refs.pickerInput.value = "";
-        // this.ruleForm.address = "";
-      }
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.loadingClick()
+          if (this.$refs.pickerInput.value != "" && !this.addflag1) {
+            this.ruleForm.address =
+              this.$refs.pickerInput.value + "-" + this.ruleForm.address;
+            var str = this.$refs.pickerInput1.value;
+            str = str.split(",");
+            //经度
+            var lng = str[0];
+            this.ruleForm.addrLongitude = lng;
+            //纬度
+            var lat = str[1];
+            this.ruleForm.addrLatitude = lat;
+          } else {
+          }          
           //省、市、区三级ID
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
@@ -826,8 +825,6 @@ export default {
               } else {
                 loading.close();
                 this.addflag1=true;
-                // this.$refs.pickerInput.value = "";
-                // this.ruleForm.address = "";
               }
             })
             .catch(res => {
@@ -835,8 +832,6 @@ export default {
               this.addflag1=true;
             });
         } else {
-          this.$refs.pickerInput.value = "";
-          this.ruleForm.address = "";
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
