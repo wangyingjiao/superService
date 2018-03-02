@@ -18,7 +18,7 @@
 						<el-form-item label="联系电话:">
               <span class="selfLabelStyle">*</span>
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
-							<div  class="selftSerchBut"  v-if="btnShow.indexOf('order_insert') != -1" @click="addcustomer">新增</div>
+							<div  class="selftSerchBut"   v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
 							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
@@ -1158,6 +1158,8 @@ export default {
               placeSearch.setCity(value)
               placeSearch.search(text.value)
               that.$refs.panel.style.display='block';
+              that.$refs.panel.style.borderRight='1px solid #ccc'
+              that.$refs.panel.style.borderBottom='1px solid #ccc'
             });          
       })	  
       AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
@@ -1275,10 +1277,10 @@ export default {
 </script>
 <style  lang="scss" scoped>
 .selfAddressGao1{
-   width:332px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+   width:332px;max-height:290px;overflow:hidden;
 }
 .selfpanel1{
-   width:350px;max-height:290px;overflow-y:scroll
+   width:350px;max-height:290px;overflow-y:auto
 }
 .selfTabProm {
   width: 100%;
