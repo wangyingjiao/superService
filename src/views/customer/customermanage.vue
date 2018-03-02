@@ -50,7 +50,7 @@
             width="300"				
 						>
 						<template scope="scope">
-							<el-tooltip placement="left" :disabled="scope.row.address.length < 30" :content="scope.row.address">
+							<el-tooltip placement="left" :disabled="scope.row.address.length < 28" :content="scope.row.address">
 							 <div class="selfToolTip">{{scope.row.address}}</div>
 							</el-tooltip>
 						</template>						            
@@ -331,9 +331,6 @@ export default {
                 } else {
                   this.addflag1=true;
                   loading.close();
-                  
-                  //this.$refs.pickerInput.value = "";
-                  //this.ruleForm.address = "";
                 }
               })
               .catch(res => {
@@ -577,6 +574,8 @@ export default {
               placeSearch.setCity(area)
               placeSearch.search(text.value)
               that.$refs.panel.style.display='block';
+              that.$refs.panel.style.borderRight='1px solid #ccc'
+              that.$refs.panel.style.borderBottom='1px solid #ccc'
             });          
       })	  
       AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
@@ -613,10 +612,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .selfAddressGao{
-   width:332px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+   width:332px;max-height:290px;overflow:hidden;
 }
 .selfpanel{
-  width:350px;max-height:290px;overflow-y:scroll
+  width:350px;max-height:290px;overflow-y:auto
 }
 .selfToolTip {
   width: 280px;

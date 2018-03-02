@@ -18,7 +18,7 @@
 						<el-form-item label="联系电话:">
               <span class="selfLabelStyle">*</span>
               <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
-							<div  class="selftSerchBut"  v-if="btnShow.indexOf('order_insert') != -1" @click="addcustomer">新增</div>
+							<div  class="selftSerchBut"   v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
 							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
@@ -83,10 +83,10 @@
 											</span>                      
                     </td>
 										<td  align="center">
-											<span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.payPrice}}</span>
+											<span v-if="item.goodsType=='num' || item.goodsType=='area'">￥{{item.payPrice}}</span>
 											<span v-if="item.goodsType=='house'">
                         <span v-for="aa in item.houses" :key="aa.id">
-                          <span v-if="aa.id == item.houseId">{{aa.payPrice}}</span>
+                          <span v-if="aa.id == item.houseId">￥{{aa.payPrice}}</span>
                         </span>
 											</span>
 										</td>
@@ -651,6 +651,9 @@ export default {
         if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
           this.$refs.addrulesStyle.style.display='block'
         }
+        if(this.form1.serverPro !='' && this.form1.servercommidty =='' && this.selectCommidty.length == 0){
+          this.$refs.addrulesStyle.style.display='none'
+        }        
         if(this.form1.serverPro ==''){
           this.$refs.addrulesStyle.style.display='none'
         }           
@@ -663,10 +666,18 @@ export default {
         this.middleB=Object.assign([], arr);
         if(this.form1.serverPro !='' && this.form1.servercommidty == ''){
            this.active = 2;
-            this.$message({
-              type: "error",
-              message:'请选择商品'
-            });
+           if(this.selectCommidty.length == 0){
+              this.$message({
+                type: "error",
+                message:'请更换服务项目，并选择商品'
+              });
+           }else{
+              this.$message({
+                type: "error",
+                message:'请选择商品'
+              });
+           }
+
         }else{
             this.tabOptions=[];
             this.middleA=[];          
@@ -786,24 +797,23 @@ export default {
     },
     //新增客户保存
     submitForm(formName) {
-      if (this.$refs.pickerInput.value != "" && !this.addflag1) {
-        this.ruleForm.address =
-          this.$refs.pickerInput.value + "-" + this.ruleForm.address;
-        var str = this.$refs.pickerInput1.value;
-        str = str.split(",");
-        //经度
-        var lng = str[0];
-        this.ruleForm.addrLongitude = lng;
-        //纬度
-        var lat = str[1];
-        this.ruleForm.addrLatitude = lat;
-      } else {
-        // this.$refs.pickerInput.value = "";
-        // this.ruleForm.address = "";
-      }
+
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.loadingClick()
+          if (this.$refs.pickerInput.value != "" && !this.addflag1) {
+            this.ruleForm.address =
+              this.$refs.pickerInput.value + "-" + this.ruleForm.address;
+            var str = this.$refs.pickerInput1.value;
+            str = str.split(",");
+            //经度
+            var lng = str[0];
+            this.ruleForm.addrLongitude = lng;
+            //纬度
+            var lat = str[1];
+            this.ruleForm.addrLatitude = lat;
+          } else {
+          }          
           //省、市、区三级ID
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
@@ -826,8 +836,6 @@ export default {
               } else {
                 loading.close();
                 this.addflag1=true;
-                // this.$refs.pickerInput.value = "";
-                // this.ruleForm.address = "";
               }
             })
             .catch(res => {
@@ -835,8 +843,6 @@ export default {
               this.addflag1=true;
             });
         } else {
-          this.$refs.pickerInput.value = "";
-          this.ruleForm.address = "";
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
@@ -904,33 +910,35 @@ export default {
     //地址变化时开始POI搜索
     testFun(value) {      
       this.$nextTick(() => {
-        this.$refs.pickerInput.value = "";
+        //this.$refs.pickerInput.value = "";
         this.$refs.panel.style.display='none';
         this.test(value[2]);
       });
     },
     //服务类型下拉改变
     serverchange(value) {     
-      this.form1.servercommidty='';
-      if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
-        this.$refs.addrulesStyle.style.display='block'
-      }
+      this.form1.servercommidty='';     
+      this.form1.sumPrice = 0;
       if(this.form1.serverPro ==''){
         this.$refs.addrulesStyle.style.display='none'
-      }      
-      this.form1.sumPrice = 0;
+      }       
       var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
           if (res.data.code === 1) {            
             if (res.data.data != undefined) {
-              this.selectCommidty = res.data.data;             
+              this.selectCommidty = res.data.data;
+              if(this.form1.serverPro !=''){
+                this.$refs.addrulesStyle.style.display='block'
+              }                           
             } else {
               this.selectCommidty = [];
               this.form1.sumPrice = 0;
             }
           } else if (res.data.code === 3) {
             this.selectCommidty = [];
+            this.$refs.addrulesStyle.style.display='none'
+          
             this.form1.sumPrice = 0;
             this.$message({
               type: "warning",
@@ -938,10 +946,12 @@ export default {
             });
           } else {
             this.selectCommidty = [];
+            this.$refs.addrulesStyle.style.display='none'
             this.form1.sumPrice = 0;
           }
         })
         .catch(res => {});
+
     },
     //技师选择按钮点击
     technicianSel() {
@@ -1158,6 +1168,8 @@ export default {
               placeSearch.setCity(value)
               placeSearch.search(text.value)
               that.$refs.panel.style.display='block';
+              that.$refs.panel.style.borderRight='1px solid #ccc'
+              that.$refs.panel.style.borderBottom='1px solid #ccc'
             });          
       })	  
       AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
@@ -1275,10 +1287,10 @@ export default {
 </script>
 <style  lang="scss" scoped>
 .selfAddressGao1{
-   width:332px;max-height:290px;overflow:hidden;border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+   width:332px;max-height:290px;overflow:hidden;
 }
 .selfpanel1{
-   width:350px;max-height:290px;overflow-y:scroll
+   width:350px;max-height:290px;overflow-y:auto
 }
 .selfTabProm {
   width: 100%;
