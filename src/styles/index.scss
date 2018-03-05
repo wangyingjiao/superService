@@ -749,6 +749,11 @@ body {
 .tabs-view-container .router-link-active .el-tag{
   background-color: $seleteBack;
 }
+// 修改树状图多选框颜色
+.el-checkbox__input.is-indeterminate .el-checkbox__inner{
+  background-color:#4c70c8;
+  border-color:#4c70c8;
+}
 .el-checkbox__input.is-checked .el-checkbox__inner{
   @include backColor($seleteBack,$seleteBack)
 }
