@@ -224,7 +224,7 @@
                   </el-table-column>
                   <el-table-column prop="convertHours" align="center" label="折算时长">
                     <template scope="scope">
-                      <span>{{scope.row.convertHours+'小时 / 每人 / '+scope.row.unit}}</span>
+                      <span>{{scope.row.convertHours+'小时 / '+scope.row.unit}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column align="center" label="起步人数">
@@ -388,7 +388,7 @@
                 </el-form-item>
                 <el-form-item label="折算时长:" prop="convertHours" class="doubtf">
                   <el-input v-model="goods_info.convertHours" style="width:100%" >
-                    <template slot="append">小时 / 每人 / {{goods_info.unit || "单位"}}</template>                
+                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
                   <el-popover
                       ref="popover1"
