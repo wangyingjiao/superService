@@ -83,7 +83,7 @@
 											</span>                      
                     </td>
 										<td  align="center">
-											<span v-if="item.goodsType=='num' || item.goodsType=='area'">￥{{item.payPrice}}</span>
+											<span v-if="item.goodsType=='num' || item.goodsType=='area'">￥{{item.payPrice }}</span>
 											<span v-if="item.goodsType=='house'">
                         <span v-for="aa in item.houses" :key="aa.id">
                           <span v-if="aa.id == item.houseId">￥{{aa.payPrice}}</span>
@@ -128,7 +128,7 @@
                 <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
                 </el-option>
               </el-select>                             
-							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配；建议派单人数为<span>{{ideaPersonNum}}</span>人，建议总服务时长为<span>{{ideaserverTime}}</span></span>
+							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配；建议派单人数为<span>{{ideaPersonNum}}</span>人，建议总服务时长为<span>{{ideaserverTime}}</span>。</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
@@ -146,7 +146,8 @@
                     :label="item.label"
                     :value="item.value">
                   </el-option>
-                </el-select>                      
+                </el-select>
+                <div class="selfPromInfStyle1">* 若未选择技师，则服务日期是根据系统建议派单人数的空闲时间安排;若选择技师，则服务日期是根据已选技师的空闲时间安排。</div>                      
             </el-form-item>            
 						<el-form-item label="选择时间:" prop="severTime1">
               <el-input type="hidden" value='' v-model='form2.severTime1'></el-input> 
@@ -1411,6 +1412,13 @@ export default {
   heihgt: 30px;
   line-height: 30px;
   margin-left: 30px;
+  color: #8391a5;
+  font-size: 12px;
+}
+.selfPromInfStyle1 {
+  heihgt: 30px;
+  line-height: 30px;
+  margin-top:20px;
   color: #8391a5;
   font-size: 12px;
 }
