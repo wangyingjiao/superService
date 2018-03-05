@@ -582,6 +582,7 @@ export default {
     resetForm(formName) {
       if (this.dialogTable) {
         if (this.dialogFormVisible2) {
+          this.resetTemp();
           this.dialogFormVisible2 = false;
         } else {
           this.dialogTable = false;
