@@ -17,6 +17,7 @@
     "js-cookie": "2.1.4",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
+    "vtip": "^1.0.5",
     "vue": "2.4.2",
     "vue-qr": "^1.2.7",
     "vue-router": "2.7.0",

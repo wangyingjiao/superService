@@ -331,15 +331,15 @@
                       </li>
                   </ul>
                   <div class="labelSystem" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
-                      <div  v-for="(item,key) in systemOptions4" :key="key">
-                          <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
+                      <div  v-for="(item,key) in systemOptions4" :key="key" v-tip.dark.left="item.label">
+                          <!-- <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label"> -->
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
                                     :key="item.value" :value="item.label" @click="labelClick(item)"
                                     :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                                     :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                        </el-tooltip>
+                        <!-- </el-tooltip> -->
                       </div>        
                     <!--  -->
                   </div>
@@ -2213,6 +2213,7 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
+  overflow-y: auto;
   float: left;
   border: 1px solid #e8e8e8;
   width: 31%;
