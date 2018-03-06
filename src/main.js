@@ -8,6 +8,12 @@ import store from './store'
 import axios from 'axios'
 import '@/icons' // icon
 import '@/permission' // 权限
+
+import Vtip from 'vtip'
+import 'vtip/lib/index.min.css'
+Vue.use(Vtip.directive)
+Vue.prototype.$tip = Vtip.tip
+
 // import 'animate.css'
 // axios.defaults.withCredentials = true
 Vue.use(ElementUI, { locale })
