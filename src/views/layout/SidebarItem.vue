@@ -7,7 +7,8 @@
       </router-link>
     </div>
      <template>
-        <el-submenu v-for="item in menu" :index="item.id" :key="item.id">        
+       <el-menu :default-openeds='itemArr' :unique-opened='true'>
+        <el-submenu v-for="item in menu" :index="item.id" :key="item.id" >        
               <template slot="title">
                 <img v-if="item.icon != ''" :src="'../../../static/icon/'+item.icon+'.png'" alt="" class="side-img">
               
@@ -19,6 +20,7 @@
                   </router-link>  
               </el-menu-item>         
         </el-submenu>
+        </el-menu>
     </template>     	  
   </div>
 </template>
@@ -26,16 +28,28 @@
 <script>
 export default {
   name: "SidebarItem",
+  data() {
+    return {
+      //itemArr: ["dade9aee35d24dedb490559e56d07e2b","d3210b7d15034fae9a9fb5f470161952","682c66b633664db18fc69441e70399a4","d2b3a425dee84e8fa76baa5ab5e0fd52","3a5a444a9b41461d8b5f3c820d5dc343","b0a94141fce74d8e8b37c1cdb72bea7b","1abcf1e9a22545159cc5863d54541226"]
+    };
+  },
+  computed: {
+    itemArr: function() {
+      var arr = [];
+      for (var i = 0; i < this.menu.length; i++) {
+        arr.push(this.menu[i].id);
+      }
+      return arr
+    }
+  },
   props: {
     menu: {
       type: Array
     }
   },
-  created() {},
+  mounted() {},
   methods: {
-    show() {
-     
-    }
+    show() {},
   }
 };
 </script>
