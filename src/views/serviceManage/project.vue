@@ -335,16 +335,16 @@
                        当鼠标经过这段文字时，会显示一个气泡框
                     </tooltip> -->
                       <div  v-for="(item,key) in systemOptions4" :key="key">
-                          <!-- <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label"> -->
-                          <tooltip :content="item.label" placement="left">
+                          <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
+                          <!-- <tooltip :content="item.label" placement="left"> -->
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
-                                    :key="item.value" :value="item.label" @click="labelClick(item)"
+                                     :value="item.label" @click="labelClick(item)"
                                     :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                                     :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                        <!-- </el-tooltip> -->
-                        </tooltip>
+                        </el-tooltip>
+                        <!-- </tooltip> -->
                       </div>        
                     <!--  -->
                   </div>
