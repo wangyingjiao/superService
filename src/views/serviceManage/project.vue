@@ -331,8 +331,12 @@
                       </li>
                   </ul>
                   <div class="labelSystem" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
-                      <div  v-for="(item,key) in systemOptions4" :key="key" v-tip.dark.left="item.label">
+                   <!--  <tooltip content="这里是提示文字" placement="left">
+                       当鼠标经过这段文字时，会显示一个气泡框
+                    </tooltip> -->
+                      <div  v-for="(item,key) in systemOptions4" :key="key">
                           <!-- <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label"> -->
+                          <tooltip :content="item.label" placement="left">
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
@@ -340,6 +344,7 @@
                                     :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                                     :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
                         <!-- </el-tooltip> -->
+                        </tooltip>
                       </div>        
                     <!--  -->
                   </div>
@@ -453,6 +458,8 @@ import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
+import tooltip from 'iview/src/components/tooltip';  
+import 'iview/dist/styles/iview.css'; // 导入样式  
 import {
   Taxonomy,
   Orienteering,
@@ -1561,7 +1568,8 @@ export default {
   },
   components: {
     imgService,
-    addCommodity
+    addCommodity,
+    tooltip
   }
 };
 </script>
@@ -2009,6 +2017,15 @@ hr {
   box-sizing: border-box;
   /* padding: 100px 20px; */
   margin: 10px 0;
+}
+.ivu-tooltip{
+  float: left;
+}
+.ivu-tooltip-popper .ivu-tooltip-arrow{
+  border-left-color:#1f2d3d !important;
+}
+.ivu-tooltip-inner{
+  background-color:#1f2d3d;
 }
 
 /* .avatar-uploader .el-upload {
