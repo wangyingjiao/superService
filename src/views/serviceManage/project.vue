@@ -2027,6 +2027,9 @@ hr {
 .ivu-tooltip-inner{
   background-color:#1f2d3d;
 }
+.ivu-tooltip-inner{
+  max-width:100%;
+}
 
 /* .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
