@@ -264,7 +264,7 @@
             </el-dialog>
     <!-- 商品信息 完成 -->
     <!--自定义标签 -->
-      <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
+      <el-dialog title="设置自定义标签" :close-on-click-modal="false" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
             <el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(1~10)"></el-input>
@@ -355,7 +355,7 @@
     <!-- 系统标签结束 -->
 
     <!-- 商品添加 -->
-	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
+	<el-dialog :title='handleEditFlag?"编辑商品":"添加商品"' :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -2215,6 +2215,7 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
+  overflow-y: auto;
   float: left;
   border: 1px solid #e8e8e8;
   width: 31%;
