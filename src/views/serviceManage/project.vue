@@ -178,7 +178,7 @@
                    <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
-                    <div class="labelList form_item" v-show="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+                    <div class="labelList form_item" v-if="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
                         <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa system-label" style="border-radius:20px;">
                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
                               <div>
@@ -264,7 +264,7 @@
             </el-dialog>
     <!-- 商品信息 完成 -->
     <!--自定义标签 -->
-      <el-dialog title="设置自定义标签" :close-on-click-modal="false" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
+      <el-dialog title="设置自定义标签" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
           <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
             <el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(1~10)"></el-input>
@@ -330,21 +330,18 @@
                         <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
                       </li>
                   </ul>
-                  <div class="labelSystem" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
-                   <!--  <tooltip content="这里是提示文字" placement="left">
-                       当鼠标经过这段文字时，会显示一个气泡框
-                    </tooltip> -->
-                      <div  v-for="(item,key) in systemOptions4" :key="key">
+                  <div></div>
+                  <div class="labelSystem" v-if="systemOptions4 !== undefined && systemOptions4.length>0">
+                      <div  v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
                           <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
-                          <!-- <tooltip :content="item.label" placement="left"> -->
+                            <!-- <span>{{item.label}}</span> -->
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
-                                     :value="item.label" @click="labelClick(item)"
+                                   :value="item.label" @click="labelClick(item)"
                                     :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                                     :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
                         </el-tooltip>
-                        <!-- </tooltip> -->
                       </div>        
                     <!--  -->
                   </div>
@@ -358,7 +355,7 @@
     <!-- 系统标签结束 -->
 
     <!-- 商品添加 -->
-	<el-dialog :title='handleEditFlag?"编辑商品":"添加商品"' :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
+	<el-dialog title="添加商品" :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -458,8 +455,6 @@ import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
-import tooltip from 'iview/src/components/tooltip';  
-import 'iview/dist/styles/iview.css'; // 导入样式  
 import {
   Taxonomy,
   Orienteering,
@@ -1568,8 +1563,7 @@ export default {
   },
   components: {
     imgService,
-    addCommodity,
-    tooltip
+    addCommodity
   }
 };
 </script>
@@ -2018,18 +2012,6 @@ hr {
   /* padding: 100px 20px; */
   margin: 10px 0;
 }
-.ivu-tooltip{
-  float: left;
-}
-.ivu-tooltip-popper .ivu-tooltip-arrow{
-  border-left-color:#1f2d3d !important;
-}
-.ivu-tooltip-inner{
-  background-color:#1f2d3d;
-}
-.ivu-tooltip-inner{
-  max-width:100%;
-}
 
 /* .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -2233,7 +2215,6 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
-  overflow-y: auto;
   float: left;
   border: 1px solid #e8e8e8;
   width: 31%;
