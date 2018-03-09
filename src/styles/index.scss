@@ -581,7 +581,8 @@ body {
   height:24px;
 }
 //改派表头显示
-.tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2){
+.tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2),
+.app-container .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
 }
 //改派内部表格样式自定义
