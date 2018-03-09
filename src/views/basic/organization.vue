@@ -188,7 +188,17 @@
           </el-col>
           
         </el-form-item>
-        
+        <!-- <el-form-item label="对接E店:" prop="">
+          <el-select
+          class="form_item"
+            disabled
+            v-model="temp.scopeType" 
+            placeholder="请选择">
+            <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
+
         <el-form-item label=" E店编码:" prop="jointEshopCode">
           <el-input 
            class="form_item"
@@ -637,6 +647,11 @@ export default {
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        console.log(this.$refs["temp_1"]);
+        console.log(this.$refs.temp_1);
+      });
+
       this.typeState = false;
     },
     //点击编辑
