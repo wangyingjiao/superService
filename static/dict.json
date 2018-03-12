@@ -138,6 +138,11 @@
         "payed": "已支付",
         "waitpay": "待支付"
     },
+    "cancel_type": {
+        "customer": "客户来电取消",
+        "tech": "无可派技师",
+        "other": "其它原因"
+    },
     "relation": {
         "spouse": "夫妻",
         "parent": "父母",
