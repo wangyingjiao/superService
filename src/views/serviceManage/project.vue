@@ -22,6 +22,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="buttDetails">对接详情</button>
 
     <el-table 
     :key='tableKey' 
@@ -121,7 +122,7 @@
       </el-table-column> -->
       <el-table-column label="操作" align="center">
         <!-- 商品 -->
-        <el-table-column align="center" label=""  >
+        <el-table-column align="center" label="" min-width="250">
              <template scope="scope">
             <div
               class="branch"  
@@ -135,13 +136,15 @@
           </template>
         </el-table-column>
         <!-- 项目 -->
-        <el-table-column align="center" label="">
+        <el-table-column align="center" label="" min-width="200">
           <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
+            <span class="probtn" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
+            <span class="probtn" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
+            <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
+            <!-- <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
               <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
-            </el-tooltip>
+            </el-tooltip> -->
         </template>
         </el-table-column>
       </el-table-column>
@@ -281,7 +284,7 @@
                   <el-table-column label="操作" width="150" align="center"> 
                     <template scope="scope">
                       <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
-                      <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
+                      <span class="tableSer" v-if="!scope.row.id" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -471,9 +474,9 @@
     <!-- 商品添加完成 -->
     <!-- 对接E店 -->
       <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog" @close="closeingLabel">
-        <el-table :data="dockingData" border style="width: 100%">
-          <el-table-column prop="date" align="center" label="商品名称" width="180"></el-table-column>
-          <el-table-column prop="name" align="center" label="对接编码" width="180"></el-table-column>
+        <el-table :data="dockingData" stripe border style="width: 100%">
+          <el-table-column prop="date" align="center" label="商品名称"></el-table-column>
+          <el-table-column prop="name" align="center" label="对接编码"></el-table-column>
           <el-table-column prop="address" align="center" label="E店名称">
             <template scope="scope">
               <div class="branch" v-for="(item,index) in scope.row.address" :key="index">
@@ -965,6 +968,10 @@ export default {
     }
   },
   methods: {
+    //对接详情
+    buttDetails(){
+      this.$router.push({ path: "/service/buttDetails/" });
+    },
     returnImg(item) {
       var arr = [];
       for (var i = 0; i < item.length; i++) {
@@ -2394,9 +2401,20 @@ hr {
 }
 .commEd{
   border: 1px solid #4c70e8;
-  padding: 5px 10px;
+  padding: 5px 15px;
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
+  margin: 0 10px;
 }
+.probtn{
+  border: 1px solid #4c70e8;
+  padding: 5px 15px;
+  color: #4c70e8;
+  border-radius:5px; 
+  cursor: pointer;
+  margin: 0 10px;
+  line-height: 26px;
+}
+
 </style>
