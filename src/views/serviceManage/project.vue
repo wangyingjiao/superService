@@ -22,6 +22,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="buttDetails">对接详情</button>
 
     <el-table 
     :key='tableKey' 
@@ -79,7 +80,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="对接编码" align="center">
+      <!-- <el-table-column label="对接编码" align="center">
         <template scope="scope">
           <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
             <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'_'+item.id">
@@ -97,17 +98,55 @@
              </el-tooltip>
           </div>
         </template>
+      </el-table-column> -->
+      <!-- <el-table-column align="center" label="" min-width="200px">
+          <template scope="scope">
+            <div
+              class="branch"  
+              v-for="(item,index) in scope.row.commoditys" 
+              :key="index">
+                <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
+                <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
+            </div>
+          </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="200px" class-name="operationTab">
         <template scope="scope">
-            <!-- <el-button class="el-icon-upload ceshi3" v-if="btnShow.indexOf('project_detail')>-1" @click="handleUplode(scope.row)"></el-button> -->
             <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
             <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
               <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
             </el-tooltip>
         </template>
+      </el-table-column> -->
+      <el-table-column label="操作" align="center">
+        <!-- 商品 -->
+        <el-table-column align="center" label="" min-width="250">
+             <template scope="scope">
+            <div
+              class="branch"  
+              v-for="(item,index) in scope.row.commoditys" 
+              :key="index">
+              <span class="commEd">删除商品</span>
+              <span @click="docking=true" class="commEd">已对接E店</span>
+                <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
+                <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
+            </div>
+          </template>
+        </el-table-column>
+        <!-- 项目 -->
+        <el-table-column align="center" label="" min-width="200">
+          <template scope="scope">
+            <span class="probtn" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
+            <span class="probtn" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
+            <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
+            <!-- <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
+              <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
+            </el-tooltip> -->
+        </template>
+        </el-table-column>
       </el-table-column>
 
     </el-table>
@@ -245,7 +284,7 @@
                   <el-table-column label="操作" width="150" align="center"> 
                     <template scope="scope">
                       <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
-                      <span class="tableSer" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
+                      <span class="tableSer" v-if="!scope.row.id" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -278,7 +317,7 @@
     <!-- 自定义标签结束-->
 
     <!--系统标签-->
-      <el-dialog title="选择标签" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
+      <el-dialog title="选择标签" :close-on-click-modal="false" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
         <el-row>
           <el-col :span="24">
               <div class="already">
@@ -355,7 +394,7 @@
     <!-- 系统标签结束 -->
 
     <!-- 商品添加 -->
-	<el-dialog :title='handleEditFlag?"编辑商品":"添加商品"' :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
+	    <el-dialog :title='handleEditFlag?"编辑商品":"添加商品"' :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
               <el-form 
                 :model="goods_info"
                 ref="goods_info"
@@ -396,8 +435,7 @@
                       ref="popover1"
                       placement="top-start"
                       trigger="hover"
-                      content="请录入1单位所需服务时长（以小时为单位）
-例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
+                      content="请录入1单位所需服务时长（以小时为单位）例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
                     </el-popover>
                    <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
                 </el-form-item>
@@ -434,6 +472,35 @@
 			<addCommodity :measure="measure"></addCommodity>
         </el-dialog> -->
     <!-- 商品添加完成 -->
+    <!-- 对接E店 -->
+      <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog" @close="closeingLabel">
+        <el-table :data="dockingData" stripe border style="width: 100%">
+          <el-table-column prop="date" align="center" label="商品名称"></el-table-column>
+          <el-table-column prop="name" align="center" label="对接编码"></el-table-column>
+          <el-table-column prop="address" align="center" label="E店名称">
+            <template scope="scope">
+              <div class="branch" v-for="(item,index) in scope.row.address" :key="index">
+                  <el-tooltip placement="left" :disabled="item.length<=10" :content="item">
+                      <span>{{item}}</span>
+                   </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="id" align="center" label="对接商品ID">
+            <template scope="scope">
+              <div class="branch" v-for="(item,index) in scope.row.id" :key="index">
+                <el-tooltip placement="left" :disabled="item.length<=10" :content="item">
+                  <span>{{item}}</span>
+                </el-tooltip>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <input type="button" class="button-cancel" @click="docking = false" value="关 闭">
+        </div>
+      </el-dialog>
+    <!-- 对接E店完成 -->
 
   </div>
 </div>
@@ -473,6 +540,31 @@ import addCommodity from "./addCommodity.vue";
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];
+
+var dockingData=[{
+          date: '2016-05-02',
+          name: '王小虎',
+          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
+          id:['123123123123123','123123123123123','123123123123123']
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
+          id:['123123123123123','123123123123123','123123123123123']
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
+          id:['123123123123123','123123123123123','123123123123123']
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
+          id:['123123123123123','123123123123123','123123123123123']
+        }]
+
+
+
 export default {
   name: "project",
   directives: {
@@ -700,11 +792,13 @@ export default {
       editName: {},
       customArr: [],
       jointCode: false,
+      dockingData:dockingData,
       alreadyArr: [],
       labelClickArr: [],
       systemClickId: null,
       systemClick2Id: null,
       systemClick3Id: null,
+      docking:false,
       systemOptions: [],
       systemOptions2: [],
       imgNumber: 0,
@@ -874,6 +968,10 @@ export default {
     }
   },
   methods: {
+    //对接详情
+    buttDetails(){
+      this.$router.push({ path: "/service/buttDetails/" });
+    },
     returnImg(item) {
       var arr = [];
       for (var i = 0; i < item.length; i++) {
@@ -1737,9 +1835,14 @@ export default {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.projectTabel .el-table__row .cell {
+.projectTabel .el-table__row .cell,.dockingDialog .el-table__row .cell {
   padding: 0;
   /* display: flex; */
+}
+.dockingDialog .el-table__row .cell div{
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: inherit;
 }
 
 .tabBox {
@@ -2146,7 +2249,7 @@ hr {
   margin-left: 90px;
 }
 .labelName .dialog-footer,
-.systemLabel .dialog-footer {
+.systemLabel .dialog-footer,.dockingDialog .dialog-footer{
   display: flex;
   justify-content: center;
 }
@@ -2296,4 +2399,22 @@ hr {
 .diatable > .el-dialog--small {
   width: 75%;
 }
+.commEd{
+  border: 1px solid #4c70e8;
+  padding: 5px 15px;
+  color: #4c70e8;
+  border-radius:5px; 
+  cursor: pointer;
+  margin: 0 10px;
+}
+.probtn{
+  border: 1px solid #4c70e8;
+  padding: 5px 15px;
+  color: #4c70e8;
+  border-radius:5px; 
+  cursor: pointer;
+  margin: 0 10px;
+  line-height: 26px;
+}
+
 </style>

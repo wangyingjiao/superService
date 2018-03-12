@@ -9,7 +9,7 @@
               <div><i class="iconfont color scan" >&#xe61a;</i><span class="scanText">下载国安好帮手</span></div>
             </span>
             <el-dropdown-menu slot="dropdown" class="hoverStyle">
-              <el-dropdown-item ><vue-qr bgSrc='../../../static/icon/bgw.png' :dotScale = '1' :text="appSrc" height="300" width="300"></vue-qr><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
+              <el-dropdown-item ><vue-qr class="qrcode" bgSrc='../../../static/icon/bgw.png' :dotScale = '1' logoSrc='../../../static/icon/wx_logo.png' :margin=0 :logoScale =0.25 :text="appSrc" :logoMargin=2 ></vue-qr><p class="Scandown">扫描二维码下载</p></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>                    
         </li>        
@@ -33,7 +33,7 @@
 import { mapGetters } from "vuex";
 import TabsView from "./TabsView";
 import Hamburger from "@/components/Hamburger";
-import VueQr from 'vue-qr';
+import VueQr from "vue-qr";
 
 export default {
   components: {
@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      appSrc:"",
+      appSrc: "",
       flag: false,
       username: ""
     };
@@ -51,16 +51,14 @@ export default {
   computed: {
     ...mapGetters(["sidebar", "name", "avatar"])
   },
-  created(){
-    var src1 = window.location.href
-    var src2 = this.$route.path
-    var src3 = src1.replace(src2,'/download')
-    this.appSrc = src3
+  created() {
+    var src1 = window.location.href;
+    var src2 = this.$route.path;
+    var src3 = src1.replace(src2, "/download");
+    this.appSrc = src3;
   },
   methods: {
-    dropClick() {
-      
-    },
+    dropClick() {},
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");
     },
@@ -216,5 +214,11 @@ export default {
   .color {
     color: #fff !important;
   }
+}
+.qrcode {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; /* Firefox */
+  -webkit-box-sizing: border-box; /* Safari */
+  padding: 5px;
 }
 </style>

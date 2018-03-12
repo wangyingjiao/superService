@@ -400,7 +400,7 @@ input, button{
   width: 80px;
 }
 .ceshi3 {
-  font-size: 14px;
+  font-size: 12px;
   color: #1d85fe;
   border: 1px solid #1d85fe;
   background-color: #ffffff;
@@ -519,27 +519,29 @@ body {
   height: 2px;
 }
 .el-tabs__item{
-  width: 50px;
-  padding: 0;
-  text-align: center;
+  // width: 50px;
+  // padding: 0;
+  // text-align: center;
 }
 .el-tabs__header{
   margin: 0 0 20px;
   border-bottom: 1px solid #eee;
 }
 .el-tabs__item{
-  padding-left: 1px;
- height: 26px;
- line-height: 24px;
- padding-right: 80px;
+  // padding-left: 1px;
+//  height: 26px;
+//  line-height: 24px;
+//  padding-right: 80px;
 }
 .el-tabs__active-bar{
-  width: 32px !important;
+  // width: 32px !important;
 }
 .tabStyle{
   background-color: #fff;
 }
-.tabStyle .el-tabs .el-tabs__header .el-tabs__nav-wrap{
+.tabStyle .el-tabs .el-tabs__header .el-tabs__nav-wrap,
+.buttDetails .el-tabs .el-tabs__header .el-tabs__nav-wrap
+{
   padding: 15px 20px 0 20px;
 }
 .tabStyle .el-input{
@@ -562,7 +564,7 @@ body {
 }
 
 .orderTab .el-tabs__active-bar{
-  width: 42px !important;
+  // width: 42px !important;
 }
 .orderTab .el-tabs__header .el-tabs__nav-wrap{
   padding: 15px 20px 0 20px;
@@ -581,7 +583,8 @@ body {
   height:24px;
 }
 //改派表头显示
-.tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2){
+.tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2),
+.app-container .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
 }
 //改派内部表格样式自定义

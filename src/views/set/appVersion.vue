@@ -67,7 +67,7 @@
 
       <el-table-column align="center" width="150" label="操作">
         <template scope="scope">
-            <el-button class="el-icon-edit ceshi3"   @click="handleUpdate(scope.row)"></el-button>
+            <!-- <el-button class="el-icon-edit ceshi3"   @click="handleUpdate(scope.row)"></el-button> -->
             <el-button class="el-icon-delete ceshi3"   @click="handleDelete(scope.row)"></el-button>
           </template>
       </el-table-column>
@@ -123,8 +123,21 @@
 
           <el-form-item label="更新地址:" prop="refreshAddress">
             <el-input        
-           class="form_item"
+           class=""
             placeholder="请输入更新地址" v-model.trim="temp.refreshAddress"></el-input>
+           
+              <el-upload
+                      :show-file-list="false"
+                      action="'https://imgcdn.guoanshequ.com/'"
+                      :file-list="fileList"
+                      :http-request="uploadSectionFile"> <!--此处使用自定义上传实现http-request-->
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <!-- <el-tag type="gray">{{sectionFileName}}</el-tag> -->
+                  <div slot="tip" class="el-upload__tip">请等待进度条100%之后再提交表单</div>
+              </el-upload>
+              <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18"
+                          :percentage="uploadPercent"></el-progress>
+          
           </el-form-item>
           
 
@@ -172,6 +185,11 @@ export default {
       list: [],
       total: null,
       listLoading: true,
+      showProgress: true,
+      uploadPercent: 0,
+      i:0,
+      Form:{fileList:''},
+      fileList: [],
       listQuery: {
         page: 1,
         limit: 10,
@@ -370,6 +388,68 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    uploadSectionFile: function(param) {
+      console.log(param);
+      //自定义文件上传
+      var fileObj = param.file;
+      // 接收上传文件的后台地址
+      var FileController = "https://imgcdn.guoanshequ.com/";
+      // FormData 对象
+      var form = new FormData();
+      // 文件对象
+      form.append("file", fileObj);
+      // 其他参数
+      form.append("policy", 'eyJleHBpcmF0aW9uIjoiMjAxOC0wMy0wOVQwOTo1OTozNy4zMzlaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJvcGVuc2VydmljZSJdXX0=');
+      form.append("OSSAccessKeyId", 'LTAIXHANaNGE30fM');
+      form.append("success_action_status", 201);
+      form.append("signature", '0Ik00jU8MR5qAxZWaQAta5k2rs0=');
+      form.append("file", param.file, param.file.name);
+      // XMLHttpRequest 对象
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", FileController, true);
+      xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
+      xhr.onload = function() {
+        this.Form.fileList = xhr.response; //接收上传到阿里云的文件地址
+        this.$message({
+          message: "恭喜你，上传成功!",
+          type: "success"
+        });
+      };
+      xhr.send(form);
+    },
+    progressFunction: function() {
+      if (this.i == 0) {
+        //控制上传中状态只执行一次上传
+        this.showStatus();
+        this.showProgress = true;
+        this.i = 1;
+      }
+    },
+    showStatus: function() {
+      var intervalId = setInterval(function() {
+        this.$http.get(
+          "/file/item/percent",
+          {},
+          function(data) {
+            var percent = data;
+            if (percent >= 100) {
+              clearInterval(intervalId);
+              percent = 100; //不能大于100
+              this.uploadPercent = percent;
+              this.resetPercent(); //在文章开头的上篇文章中有此函数,用于重置后台的上传进度
+            }
+            this.uploadPercent = percent;
+          },
+          "json"
+        );
+      }, 1000);
     },
     // 新增保存
     create(formName) {

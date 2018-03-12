@@ -173,7 +173,7 @@ export function addVacation(obj) {
   })
 }
 
-// 获取休假列表（不要删，上面没用的接口可以删掉，下面的是我加的）
+// 获取休假列表
 export function getHoliday(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
@@ -181,6 +181,10 @@ export function getHoliday(obj, pageNumber, pageSize) {
 export function delHoliday(obj) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/delete`, obj)
 }
+// // 审核休假
+// export function checkHoliday(obj) {
+//   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/reviewedHoliday`, obj)
+// }   暂时不做
 
 // 获取用户机构时间
 export function serviceTechnicianInfo() {
