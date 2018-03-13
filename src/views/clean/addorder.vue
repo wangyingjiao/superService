@@ -1039,7 +1039,7 @@ export default {
                             this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                             this.$message({
                               type: "success",
-                              message: "新增成功!"
+                              message: "下单成功!"
                             });                
                           } else if (res.data.code === 3) {
                             this.$message({

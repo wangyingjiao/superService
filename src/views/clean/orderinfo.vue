@@ -516,14 +516,14 @@
 
 <script>
 import {
-  getOrderInf,
-  addTechData,
-  ChangeTimeData,
-  dispatchTechData,
-  addTechSave,
-  dispatchTechSave,
-  saveTime,
-  orderCancelFun
+  getOrderInf,//用订单ID获取页面相关信息
+  addTechData,//服务技师获取
+  ChangeTimeData,//请求服务时间下拉菜单值
+  dispatchTechData,//改派技师获取
+  addTechSave,//新增技师保存
+  dispatchTechSave,//改派技师保存
+  saveTime,//更换服务时间保存
+  orderCancelFun//取消订单保存
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
