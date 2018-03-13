@@ -52,7 +52,7 @@ instance.interceptors.response.use(res => {
 }, error => {
   if (error.response) {
     const num = error.response.status
-    if ([502, 503, 504].indexOf(num) > -1) {
+    if ([501, 404, 502, 503, 504].indexOf(num) > -1) {
       arr.push(num)
       // console.log(arr.length)
       if (arr.length === 1) {

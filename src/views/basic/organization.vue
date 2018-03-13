@@ -17,14 +17,14 @@
      <button class="button-small btn_pad" v-if="btnShow.indexOf('office_insert') > -1"  @click="handleCreate('temp')">新增</button>
     <!-- 列表开始 -->
     <el-table 
-    :key='tableKey' 
-    :data="list" 
-    v-loading="listLoading"
-    fit
-    highlight-current-row 
-    tooltip-effect='light'
-    element-loading-text="正在加载" 
-    style="width: 100%" >
+      :key='tableKey'
+      :data="list" 
+      v-loading="listLoading"
+      fit
+      highlight-current-row 
+      tooltip-effect='light'
+      element-loading-text="正在加载" 
+      style="width: 100%" >
       <el-table-column align="center" label="编号" width="100">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
@@ -33,7 +33,7 @@
 
       <el-table-column  label="机构名称" align="center" >
         <template scope="scope">
-           <el-tooltip  placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
+           <el-tooltip  placement="left" :content="scope.row.name">
              <div class="overheidden" >{{scope.row.name}}</div>
            </el-tooltip>
          </template>
@@ -61,12 +61,12 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="E店编码" align="center"  prop="jointEshopCode">
+      <el-table-column  label="E店名称" align="center">
           <template scope="scope">
-           <el-tooltip placement="left"  :content="scope.row.jointEshopCode">
-             <div class="tool">{{scope.row.jointEshopCode}}</div>
-           </el-tooltip>
-         </template>
+              <el-tooltip placement="left"  :content="scope.row.eshopNames">
+                  <span class="overheidden">{{scope.row.eshopNames}}</span>
+              </el-tooltip>
+          </template>
       </el-table-column>
 
       <el-table-column align="center" label="操作">
@@ -188,45 +188,59 @@
           </el-col>
           
         </el-form-item>
-        <!-- <el-form-item label="对接E店:">
+        <el-form-item label="对接平台:">
           <el-select
           class="form_item"
-            v-model="temp.scopeType"
+            v-model="temp.dockType"
+            clearable
             placeholder="请选择">
-            <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
+            <el-option v-for="(val, key, index) in eshopList" :key="index" :label="val" :value="key">
             </el-option>
           </el-select>
-        </el-form-item> -->
-
-        <el-form-item label=" E店编码:" prop="jointEshopCode">
-          <el-input 
-           class="form_item"
-            v-model.trim="temp.jointEshopCode"
-            placeholder="请输入E店编码"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 机构网址:" prop="url">
+        <el-form-item  v-if="temp.dockType == 'gasq'" label="对接E店:" prop="basicOrganizationEshops">
+          <el-input 
+          style="width:80%"
+            v-model.trim="temp.jointEshopCode"
+            placeholder="请输入E店编码"></el-input>
+            <div class="btn_addEshop" style="width:20%" @click="getEcode(temp.jointEshopCode)">添加e店</div>
+            <div class="box_eshop clearfix" v-if="temp.basicOrganizationEshops.length !=0">
+              <div class="main_eshop clearfix" v-for="item in temp.basicOrganizationEshops">
+                <el-tooltip  effect="dark" :content=item.name placement="left">
+                  <div>
+                  <span class="span_eshop">{{item.name}}</span>
+                  <span @click="delEshop(item)" class="el-icon-close close_eshop" style=""></span>
+                  </div>
+                </el-tooltip>
+              </div>
+              
+            </div>
+            <p class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作；</p>
+        </el-form-item>
+
+        <el-form-item label="机构网址:" prop="url">
           <el-input 
             class="form_item"
             v-model="temp.url"
             placeholder="请输入机构网址"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 机构传真:" prop="fax">
+        <el-form-item label="机构传真:" prop="fax">
           <el-input 
             class="form_item"
             v-model="temp.fax"
             placeholder="请输入机构传真号"></el-input>
         </el-form-item>
 
-        <el-form-item label="  400客服电话:" prop="tel400">
+        <el-form-item label="400客服电话:" prop="tel400">
           <el-input 
             class="form_item"
             v-model="temp.tel400"
             placeholder="允许格式：400XXXXXXX"></el-input>
         </el-form-item>
 
-        <el-form-item label=" 备注:">
+        <el-form-item label="备注:">
           <el-input 
           class="form_item"
             type="textarea" 
@@ -255,7 +269,9 @@ import {
   setMech,
   upMech,
   getMechPage,
-  getCity
+  getCity,
+  getEShopByCode,
+  deleteEshop
 } from "@/api/basic";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -326,6 +342,13 @@ export default {
         }
       }
     };
+    var validateEshop = (rule, value, callback) => {
+      if (value.length == 0) {
+        callback(new Error("请至少选择一个E店"));
+      } else {
+        callback();
+      }
+    };
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
       btnState: false,
@@ -359,6 +382,8 @@ export default {
         masterPhone: "",
         workStartTime: "",
         workEndTime: "",
+        dockType: "",
+        basicOrganizationEshops: [],
         jointEshopCode: "",
         remark: "",
         areaCodes: [],
@@ -370,12 +395,12 @@ export default {
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
         { id: "masterPhone", value: "负责人手机号" },
-        { id: "jointEshopCode", value: "E店编码" }
+        { id: "jointEshopCode", value: "E店名称" }
       ],
       scopeType: [],
       workTime: [],
       workEndTime: [],
-      eshopList:{},
+      eshopList: {},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -464,6 +489,13 @@ export default {
         jointEshopCode: [
           { max: 50, message: "E店编码长度不超过50个字符", trigger: "blur" }
         ],
+        basicOrganizationEshops: [
+          {
+            required: true,
+            message: "请至少选择1个E店",
+            validator: validateEshop
+          }
+        ],
         url: [
           { validator: validateurl, trigger: "blur" },
           {
@@ -513,7 +545,7 @@ export default {
     this.getList();
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
-    // this.eshopList = dict.eshopList;
+    this.eshopList = dict.dock_platform;
     this.workTime = [
       "00:00",
       "00:30",
@@ -648,11 +680,6 @@ export default {
     handleCreate(formName) {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        console.log(this.$refs["temp_1"]);
-        console.log(this.$refs.temp_1);
-      });
-
       this.typeState = false;
     },
     //点击编辑
@@ -669,7 +696,13 @@ export default {
               this.typeState = true;
             }
             this.temp = Object.assign(
-              { workStartTime: "", workEndTime: "", jointEshopCode: "" },
+              {
+                workStartTime: "",
+                workEndTime: "",
+                jointEshopCode: "",
+                dockType: "",
+                basicOrganizationEshops: []
+              },
               res.data.data
             );
             this.temp.scopeType = "store";
@@ -701,6 +734,16 @@ export default {
                 }
               }, 30);
             }
+
+            if (res.data.data.basicOrganizationEshops) {
+              this.temp.dockType =
+                res.data.data.basicOrganizationEshops[0].dockType;
+              this.temp.basicOrganizationEshops =
+                res.data.data.basicOrganizationEshops;
+            } else {
+              this.temp.dockType = "";
+              this.temp.basicOrganizationEshops = [];
+            }
             this.dialogFormVisible = true;
           } else {
             this.listLoading = false;
@@ -713,6 +756,43 @@ export default {
         .catch(error => {
           this.listLoading = false;
         });
+    },
+    // 获取e店信息
+    getEcode(val) {
+      if (val != "") {
+        for (var i = 0; i < this.temp.basicOrganizationEshops.length; i++) {
+          if (
+            val == this.temp.basicOrganizationEshops[i].code ||
+            val == this.temp.basicOrganizationEshops[i].eshopCode
+          ) {
+            this.$message({
+              type: "error",
+              message: "当前E店已经添加"
+            });
+            return;
+          }
+        }
+        getEShopByCode({ code: val })
+          .then(res => {
+            if (res.data.code === 1) {
+              this.temp.basicOrganizationEshops.push(res.data.data);
+              this.$refs.temp.validateField("basicOrganizationEshops");
+            }
+          })
+          .catch(err => {});
+      }
+    },
+    //删除E店
+    delEshop(val) {
+      if (val.id != undefined) {
+        deleteEshop({ eshopCode: val.eshopCode }).then(res => {
+          if (res.data.code == 1) {
+            this.temp.basicOrganizationEshops.remove(val);
+          }
+        });
+      } else {
+        this.temp.basicOrganizationEshops.remove(val);
+      }
     },
     //取消
     resetForm(formName) {
@@ -740,7 +820,9 @@ export default {
         scopeType: this.temp.scopeType, //服务类型
         workStartTime: this.temp.workStartTime + ":00", //开始时间
         workEndTime: this.temp.workEndTime + ":00", //结束时间
-        jointEshopCode: this.temp.jointEshopCode, //e店
+        // jointEshopCode: this.temp.jointEshopCode, //e店
+        dockType: this.temp.dockType, //平台
+        basicOrganizationEshops: this.temp.basicOrganizationEshops, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -749,6 +831,11 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      
+      for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
+        obj.basicOrganizationEshops[i].eshopCode =
+          obj.basicOrganizationEshops[i].code;
+      }
       //防止数据库24:00:00乱码
       if (obj.workEndTime == "24:00:00") {
         obj.workEndTime = "23:59:59";
@@ -760,7 +847,6 @@ export default {
       if (obj.workEndTime == "08:00:00") {
         obj.workEndTime = "08:00:01";
       }
-
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -812,7 +898,8 @@ export default {
         scopeType: this.temp.scopeType, //服务类型
         workStartTime: this.temp.workStartTime + ":00", //开始时间
         workEndTime: this.temp.workEndTime + ":00", //结束时间
-        jointEshopCode: this.temp.jointEshopCode, //e店
+        dockType: this.temp.dockType, //平台
+        basicOrganizationEshops: this.temp.basicOrganizationEshops, //e店
         url: this.temp.url, //网址
         fax: this.temp.fax, //传真
         tel400: this.temp.tel400, //400
@@ -821,6 +908,13 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      if(obj.dockType ==''){
+        obj.basicOrganizationEshops=[]
+      }
+      for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
+        obj.basicOrganizationEshops[i].eshopCode =
+          obj.basicOrganizationEshops[i].code;
+      }
       //防止数据库24:00:00乱码
       if (obj.workEndTime == "24:00:00") {
         obj.workEndTime = "23:59:59";
@@ -884,6 +978,8 @@ export default {
         areaCodes: [],
         workStartTime: "",
         workEndTime: "",
+        dockType: "",
+        basicOrganizationEshops: [],
         jointEshopCode: "",
         scopeType: "store",
         remark: ""
@@ -932,17 +1028,70 @@ export default {
   background-color: #ffffff;
 }
 
-/* //  修改*号
-.el-form-item .el-form-item__label:before {
-    content: '　';
-    color: #ff4949;
-    margin-right: -6px;
-    font-size: 1px;
-    vertical-align:middle;
-} */
+.proName {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
 .overheidden {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.btn_addEshop {
+  float: right;
+  height: 36px;
+  width: 80px;
+  background-color: #fff;
+  border: 1px solid #4c70e8;
+  text-align: center;
+  line-height: 34px;
+  color: #4c70e8;
+  cursor: pointer;
+}
+.box_eshop {
+  width: 100%;
+  border: 1px solid #bfcbd9;
+  border-top: 0px;
+}
+.main_eshop {
+  border: 1px solid #bfcbd9;
+  float: left;
+  border-radius: 5px;
+  line-height: 25px;
+  margin: 5px 10px;
+}
+.span_eshop {
+  float: left;
+  padding: 0 5px;
+  line-height: 25px;
+}
+.close_eshop {
+  transform: scale(0.7);
+  opacity: 0.75;
+  cursor: pointer;
+  padding: 2px;
+  display: inline-block;
+}
+.selfCloseSty {
+  border: none;
+}
+.branch,
+.branchSpan {
+  padding: 0 10px;
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+}
+.branch {
+  border-bottom: 1px solid #dfe6ec;
+}
+.warn {
+  font-size: 12px;
+  color: #8391a5;
+  margin-top: 20px;
+  line-height: 12px;
 }
 </style>

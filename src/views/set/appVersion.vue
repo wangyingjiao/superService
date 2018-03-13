@@ -158,7 +158,14 @@
 </template>
 
 <script>
-import { getApp, addApp, handleUpApp, upApp, delApp } from "@/api/set";
+import {
+  getApp,
+  addApp,
+  handleUpApp,
+  upApp,
+  delApp,
+  getNewest
+} from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -187,8 +194,8 @@ export default {
       listLoading: true,
       showProgress: true,
       uploadPercent: 0,
-      i:0,
-      Form:{fileList:''},
+      i: 0,
+      Form: { fileList: "" },
       fileList: [],
       listQuery: {
         page: 1,
@@ -261,6 +268,11 @@ export default {
   },
   created() {
     this.getList();
+    getNewest().then(res=>{
+      console.log(res.data)
+    }).catch(err=>{
+
+    })
   },
   methods: {
     // 获取列表
@@ -406,10 +418,13 @@ export default {
       // 文件对象
       form.append("file", fileObj);
       // 其他参数
-      form.append("policy", 'eyJleHBpcmF0aW9uIjoiMjAxOC0wMy0wOVQwOTo1OTozNy4zMzlaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJvcGVuc2VydmljZSJdXX0=');
-      form.append("OSSAccessKeyId", 'LTAIXHANaNGE30fM');
+      form.append(
+        "policy",
+        "eyJleHBpcmF0aW9uIjoiMjAxOC0wMy0wOVQwOTo1OTozNy4zMzlaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJvcGVuc2VydmljZSJdXX0="
+      );
+      form.append("OSSAccessKeyId", "LTAIXHANaNGE30fM");
       form.append("success_action_status", 201);
-      form.append("signature", '0Ik00jU8MR5qAxZWaQAta5k2rs0=');
+      form.append("signature", "0Ik00jU8MR5qAxZWaQAta5k2rs0=");
       form.append("file", param.file, param.file.name);
       // XMLHttpRequest 对象
       var xhr = new XMLHttpRequest();
