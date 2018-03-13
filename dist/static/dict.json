@@ -208,5 +208,19 @@
     "yes_no": {
         "yes": "是",
         "no": "否"
+    },
+    "send_type": {
+        "save_order": "更新订单信息",
+        "del_goods": "删除商品",
+        "save_goods": "保存商品"
+    },
+    "butt_status": {
+        "butt_butt": "对接中",
+        "butt_success": "对接成功",
+        "butt_fail": "对接失败",
+        "remove_fail": "解除失败"
+    },
+    "dock_platform": {
+        "gasq": "国安社区"
     }
 }
