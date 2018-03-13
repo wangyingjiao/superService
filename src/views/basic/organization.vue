@@ -21,7 +21,6 @@
       :data="list" 
       v-loading="listLoading"
       fit
-      border
       highlight-current-row 
       tooltip-effect='light'
       element-loading-text="正在加载" 
@@ -62,15 +61,13 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <!-- <el-table-column  label="E店名称" align="center" prop="basicOrganizationEshops" >
+      <el-table-column  label="E店名称" align="center">
           <template scope="scope">
-            
-              <el-tooltip placement="left"  :content="item.name">
-                  <span class="proName">{{basicOrganizationEshops.name}}</span>
+              <el-tooltip placement="left"  :content="scope.row.eshopNames">
+                  <span class="overheidden">{{scope.row.eshopNames}}</span>
               </el-tooltip>
-           
           </template>
-      </el-table-column> -->
+      </el-table-column>
 
       <el-table-column align="center" label="操作">
         <template scope="scope">
@@ -219,6 +216,7 @@
               </div>
               
             </div>
+            <p class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作；</p>
         </el-form-item>
 
         <el-form-item label="机构网址:" prop="url">
@@ -272,7 +270,8 @@ import {
   upMech,
   getMechPage,
   getCity,
-  getEShopByCode
+  getEShopByCode,
+  deleteEshop
 } from "@/api/basic";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
@@ -344,7 +343,6 @@ export default {
       }
     };
     var validateEshop = (rule, value, callback) => {
-      console.log(value, "role");
       if (value.length == 0) {
         callback(new Error("请至少选择一个E店"));
       } else {
@@ -737,9 +735,11 @@ export default {
               }, 30);
             }
 
-            if (res.data.data.dockType) {
-              this.temp.dockType = res.data.data.dockType;
-              this.temp.basicOrganizationEshops = [];
+            if (res.data.data.basicOrganizationEshops) {
+              this.temp.dockType =
+                res.data.data.basicOrganizationEshops[0].dockType;
+              this.temp.basicOrganizationEshops =
+                res.data.data.basicOrganizationEshops;
             } else {
               this.temp.dockType = "";
               this.temp.basicOrganizationEshops = [];
@@ -761,7 +761,10 @@ export default {
     getEcode(val) {
       if (val != "") {
         for (var i = 0; i < this.temp.basicOrganizationEshops.length; i++) {
-          if (val == this.temp.basicOrganizationEshops[i].code) {
+          if (
+            val == this.temp.basicOrganizationEshops[i].code ||
+            val == this.temp.basicOrganizationEshops[i].eshopCode
+          ) {
             this.$message({
               type: "error",
               message: "当前E店已经添加"
@@ -776,15 +779,17 @@ export default {
               this.$refs.temp.validateField("basicOrganizationEshops");
             }
           })
-          .catch(err => {
-            console.log(err);
-          });
+          .catch(err => {});
       }
     },
     //删除E店
     delEshop(val) {
-      console.log(val);
       if (val.id != undefined) {
+        deleteEshop({ eshopCode: val.eshopCode }).then(res => {
+          if (res.data.code == 1) {
+            this.temp.basicOrganizationEshops.remove(val);
+          }
+        });
       } else {
         this.temp.basicOrganizationEshops.remove(val);
       }
@@ -826,6 +831,11 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
+      
+      for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
+        obj.basicOrganizationEshops[i].eshopCode =
+          obj.basicOrganizationEshops[i].code;
+      }
       //防止数据库24:00:00乱码
       if (obj.workEndTime == "24:00:00") {
         obj.workEndTime = "23:59:59";
@@ -837,7 +847,6 @@ export default {
       if (obj.workEndTime == "08:00:00") {
         obj.workEndTime = "08:00:01";
       }
-      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -899,11 +908,14 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      //防止数据库24:00:00乱码
+      if(obj.dockType ==''){
+        obj.basicOrganizationEshops=[]
+      }
       for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
         obj.basicOrganizationEshops[i].eshopCode =
           obj.basicOrganizationEshops[i].code;
       }
+      //防止数据库24:00:00乱码
       if (obj.workEndTime == "24:00:00") {
         obj.workEndTime = "23:59:59";
       }
@@ -914,7 +926,6 @@ export default {
       if (obj.workEndTime == "08:00:00") {
         obj.workEndTime = "08:00:01";
       }
-      console.log(obj);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -1076,5 +1087,11 @@ export default {
 }
 .branch {
   border-bottom: 1px solid #dfe6ec;
+}
+.warn {
+  font-size: 12px;
+  color: #8391a5;
+  margin-top: 20px;
+  line-height: 12px;
 }
 </style>
