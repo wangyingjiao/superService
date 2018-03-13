@@ -188,11 +188,10 @@
           </el-col>
           
         </el-form-item>
-        <!-- <el-form-item label="对接E店:" prop="">
+        <!-- <el-form-item label="对接E店:">
           <el-select
           class="form_item"
-            disabled
-            v-model="temp.scopeType" 
+            v-model="temp.scopeType"
             placeholder="请选择">
             <el-option v-for="(val, key, index) in scopeType" :key="index" :label="val" :value="key">
             </el-option>
@@ -376,6 +375,7 @@ export default {
       scopeType: [],
       workTime: [],
       workEndTime: [],
+      eshopList:{},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -513,6 +513,7 @@ export default {
     this.getList();
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
+    // this.eshopList = dict.eshopList;
     this.workTime = [
       "00:00",
       "00:30",
