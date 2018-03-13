@@ -59,7 +59,9 @@ instance.interceptors.response.use(res => {
         Message.error('服务器断开！')
       }
       if (arr.length === 2) {
+        console.log(arr)
         arr = ['1']
+        console.log(arr)
       }
     }
   }

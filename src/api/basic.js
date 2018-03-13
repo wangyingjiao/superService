@@ -67,3 +67,11 @@ export function setStore(obj) {
 export function setScope(obj) {
   return instance.post(`/apiservice/a/service/station/serviceStation/setScope`, obj)
 }
+// 获取E店
+export function getEShopByCode(obj) {
+  return instance.post(`/apiservice/a/sys/organization/getEShopByCode`, obj)
+}
+// 删除E店
+export function deleteEshop(obj) {
+  return instance.post(`/apiservice/a/sys/organization/deleteEshop`, obj)
+}
