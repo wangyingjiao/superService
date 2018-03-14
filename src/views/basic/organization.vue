@@ -61,7 +61,7 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="E店名称" align="center">
+      <el-table-column  label="对接E店" align="center">
           <template scope="scope">
               <el-tooltip placement="left"  :content="scope.row.eshopNames">
                   <span class="overheidden">{{scope.row.eshopNames}}</span>
@@ -192,7 +192,6 @@
           <el-select
           class="form_item"
             v-model="temp.dockType"
-            clearable
             placeholder="请选择对接平台">
             <el-option v-for="(val, key, index) in eshopList" :key="index" :label="val" :value="key">
             </el-option>
@@ -681,6 +680,7 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false;
+      this.temp.dockType = "select";
     },
     //点击编辑
     handleUpdate(row) {
@@ -737,11 +737,11 @@ export default {
 
             if (res.data.data.basicOrganizationEshops) {
               this.temp.dockType =
-                res.data.data.basicOrganizationEshops[0].dockType;
+                res.data.data.dockType;
               this.temp.basicOrganizationEshops =
                 res.data.data.basicOrganizationEshops;
             } else {
-              this.temp.dockType = "";
+              this.temp.dockType = "select";
               this.temp.basicOrganizationEshops = [];
             }
             this.dialogFormVisible = true;

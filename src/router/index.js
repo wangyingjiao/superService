@@ -71,7 +71,7 @@ export const constantRouterMap = [
       { path: 'project', name: '服务项目', component: _import('serviceManage/project') },
       { path: 'skill', name: '技能管理', component: _import('serviceManage/skill') },
       { path: 'station', name: '服务站', component: _import('basic/station') },
-      { path: 'buttDetails',name:"对接详情",component: _import('serviceManage/buttDetails')}
+      { path: 'buttDetails', name: '对接详情', component: _import('serviceManage/buttDetails') }
     ]
   },
   {

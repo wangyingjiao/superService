@@ -10,7 +10,7 @@
             <p>用心服务 洁净万家</p>
         </div>
         <div class="footer">
-            <a v-if="!isWeixin" href="https://imgcdn.guoanshequ.com/openservice/2018/2/9/1518158079502.apk  ">
+            <a v-if="!isWeixin" :href="apkSrc">
                <img src="../../../static/icon/app_btn.png" alt="">
             </a>
             <div v-else @click="wxClick">
@@ -28,12 +28,14 @@
 </template>
 
 <script>
+import { getNewest } from "@/api/set";
 import { isvalidUsername } from "@/utils/validate";
 
 export default {
   name: "download",
   data() {
     return {
+      apkSrc:'',
       isWeixin: false,
       isShow: false
     };
@@ -47,6 +49,10 @@ export default {
     } else {
       this.isWeixin = false;
     }
+    getNewest().then(res=>{
+      console.log(res,'res')
+      this.apkSrc = 'https://imgcdn.guoanshequ.com/' + res.data.data.refreshAddress
+    })
   },
   methods: {
     wxClick() {
