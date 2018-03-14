@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-                        <el-table-column type="selection" width="100" align="center"></el-table-column>
+                        <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="commoditys" label="商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortId" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="price" label="价格/单位" align="center"></el-table-column>
@@ -124,7 +124,7 @@ var tableData3 = [{
             sortId:'所属分类',
             price:'价格/单位',
             sortIds:'对接编码',
-            jointGoodsCode:'对接商品ID',
+            jointGoodsCode:'',
             button:'对接状态'
         }, {
             commoditys:'商品名称6',
@@ -163,7 +163,18 @@ var tableData3 = [{
         }
       };
     },
+    computed:{
+     
+    },
     methods: {
+        //复选框禁选
+        selectable(row,index){
+            //通过id来禁止不能选择的项
+            // return row.id !== 1
+            //通过索引index来禁止不能选择的项
+            // return index !== 2
+            return row.jointGoodsCode
+        },
         //搜索
         searchBtt(){
             console.log(this.search,"search---")
@@ -183,20 +194,77 @@ var tableData3 = [{
         },
         //复选框
         handleSelectionChange(val) {
-            val.forEach(row=>{
-                //没有对接商品ID无法选中
-                if(!row.jointGoodsCode){
-                    this.$refs.multipleTable.toggleRowSelection(row,false);
-                }
-            })
+            console.log(val)
+            // val.forEach(row=>{
+            //     //没有对接商品ID无法选中
+            //     if(!row.jointGoodsCode){
+            //         this.$refs.multipleTable.toggleRowSelection(row,false);
+            //     }
+            // })
             this.multipleSelection = val;
         },
         //移除对接按钮
         toggleSelection(row, selected){
             console.log(this.multipleSelection)
         },
-        handleSizeChange(){},
-        handleCurrentChange(){},
+        //一页展示几条
+        handleSizeChange(page){
+            console.log(page)
+        },
+        // 分页
+        handleCurrentChange(val){
+           console.log(val,"val")
+           this.tableData3 = [{
+                commoditys:'商品名称11',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称22',
+                sortId:'111',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称33',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称44',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称55',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称66',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称77',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }]
+        },
         //所属类型
         typeChange(){
             //切换类型，请求分类数据
@@ -214,10 +282,12 @@ var tableData3 = [{
         }
     },
     mounted(){
-        //默认选中第一个
+        //check默认选中第一个
         this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]); 
-        //所属类型
+        //所属类型select
         this.thisType = dict.ser_sort
+        //对接E店默认选中第一个
+        this.search.ed = "选项2"
     }
   };
 </script>

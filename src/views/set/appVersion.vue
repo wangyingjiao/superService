@@ -125,19 +125,20 @@
             <el-input        
            class=""
             placeholder="请输入更新地址" v-model.trim="temp.refreshAddress"></el-input>
-           
+           <p style="font-size: 12px;color: #8391a5;">*上传安装包后会自动生成更新地址</p>
+              
               <el-upload
-                      :show-file-list="false"
-                      action="'https://imgcdn.guoanshequ.com/'"
-                      :file-list="fileList"
-                      :http-request="uploadSectionFile"> <!--此处使用自定义上传实现http-request-->
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <!-- <el-tag type="gray">{{sectionFileName}}</el-tag> -->
-                  <div slot="tip" class="el-upload__tip">请等待进度条100%之后再提交表单</div>
+                  action="http://openservice.oss-cn-beijing.aliyuncs.com"
+                  list-type="text"
+                  :file-list="fileList"
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="Upload"
+                  :show-file-list="false"          
+                  >
+                  <div class="btn_upload">上传安装包</div>
               </el-upload>
-              <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18"
-                          :percentage="uploadPercent"></el-progress>
-          
+              <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18" :percentage="uploadPercent">
+              </el-progress>
           </el-form-item>
           
 
@@ -158,14 +159,9 @@
 </template>
 
 <script>
-import {
-  getApp,
-  addApp,
-  handleUpApp,
-  upApp,
-  delApp,
-  getNewest
-} from "@/api/set";
+import { getApp, addApp, handleUpApp, upApp, delApp } from "@/api/set";
+import Cookies from "js-cookie";
+import { getSign } from "@/api/sign";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -192,9 +188,8 @@ export default {
       list: [],
       total: null,
       listLoading: true,
-      showProgress: true,
+      showProgress: false,
       uploadPercent: 0,
-      i: 0,
       Form: { fileList: "" },
       fileList: [],
       listQuery: {
@@ -268,11 +263,9 @@ export default {
   },
   created() {
     this.getList();
-    getNewest().then(res=>{
-      console.log(res.data)
-    }).catch(err=>{
-
-    })
+    if (!Cookies.get("sign")) {
+      getSign();
+    }
   },
   methods: {
     // 获取列表
@@ -401,70 +394,69 @@ export default {
           });
         });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    uploadSectionFile: function(param) {
-      console.log(param);
-      //自定义文件上传
-      var fileObj = param.file;
-      // 接收上传文件的后台地址
-      var FileController = "https://imgcdn.guoanshequ.com/";
-      // FormData 对象
-      var form = new FormData();
-      // 文件对象
-      form.append("file", fileObj);
-      // 其他参数
-      form.append(
-        "policy",
-        "eyJleHBpcmF0aW9uIjoiMjAxOC0wMy0wOVQwOTo1OTozNy4zMzlaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJvcGVuc2VydmljZSJdXX0="
-      );
-      form.append("OSSAccessKeyId", "LTAIXHANaNGE30fM");
-      form.append("success_action_status", 201);
-      form.append("signature", "0Ik00jU8MR5qAxZWaQAta5k2rs0=");
-      form.append("file", param.file, param.file.name);
-      // XMLHttpRequest 对象
-      var xhr = new XMLHttpRequest();
-      xhr.open("post", FileController, true);
-      xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
-      xhr.onload = function() {
-        this.Form.fileList = xhr.response; //接收上传到阿里云的文件地址
-        this.$message({
-          message: "恭喜你，上传成功!",
-          type: "success"
-        });
-      };
-      xhr.send(form);
-    },
-    progressFunction: function() {
-      if (this.i == 0) {
-        //控制上传中状态只执行一次上传
-        this.showStatus();
-        this.showProgress = true;
-        this.i = 1;
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    beforeAvatarUpload(file) {
+      const isAPK = file.type === "application/vnd.android.package-archive";
+      if (!isAPK) {
+        this.$message.error("上传只能是 apk 格式安装包!");
       }
+      return isAPK;
     },
-    showStatus: function() {
-      var intervalId = setInterval(function() {
-        this.$http.get(
-          "/file/item/percent",
-          {},
-          function(data) {
-            var percent = data;
-            if (percent >= 100) {
-              clearInterval(intervalId);
-              percent = 100; //不能大于100
-              this.uploadPercent = percent;
-              this.resetPercent(); //在文章开头的上篇文章中有此函数,用于重置后台的上传进度
-            }
-            this.uploadPercent = percent;
-          },
-          "json"
+    Upload(file) {
+      // 安装包上传
+      let pro = new Promise((resolve, rej) => {
+        var res = JSON.parse(Cookies.get("sign"));
+        var timestamp = Date.parse(new Date()) / 1000;
+        if (res.expire - 3 > timestamp) {
+          resolve(res);
+        } else {
+          this.$http.get("/apiservice/oss/getSign").then(res => {
+            Cookies.set("sign", JSON.stringify(res.data));
+            resolve(res.data);
+          });
+        }
+      });
+      var that = this;
+      pro.then(success => {
+        var data = success;
+        var ossData = new FormData();
+        var date = new Date();
+        var s = date.getTime();
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        ossData.append("name", file.file.name);
+        ossData.append(
+          "key",
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".apk"
         );
-      }, 1000);
+        ossData.append("policy", data.policy);
+        ossData.append("OSSAccessKeyId", data.accessid);
+        ossData.append("success_action_status", 201);
+        ossData.append("signature", data.signature);
+        // 添加文件
+        ossData.append("file", file.file, file.file.name);
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", data.host, true);
+        xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
+        xhr.onload = () => {
+          this.temp.refreshAddress = ossData.get("key");
+        };
+
+        xhr.send(ossData);
+      });
+    },
+    progressFunction(event) {
+      if (event.lengthComputable) {
+        var percent = Math.floor(event.loaded / event.total * 100);
+        // 设置进度显示
+        if (percent > 100) {
+          percent = 100;
+        }
+        this.uploadPercent = percent;
+      }
+      this.showProgress = true;
     },
     // 新增保存
     create(formName) {
@@ -614,5 +606,27 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.btn_upload {
+  color: #fff;
+  background-color: #6d8dfc;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid #6d8dfc;
+  border-color: #6d8dfc;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 4px;
 }
 </style>

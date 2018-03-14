@@ -221,6 +221,7 @@
         "remove_fail": "解除失败"
     },
     "dock_platform": {
+        "select":"请选择",
         "gasq": "国安社区"
     }
 }

@@ -61,7 +61,7 @@
       <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="E店名称" align="center">
+      <el-table-column  label="对接E店" align="center">
           <template scope="scope">
               <el-tooltip placement="left"  :content="scope.row.eshopNames">
                   <span class="overheidden">{{scope.row.eshopNames}}</span>
@@ -192,8 +192,7 @@
           <el-select
           class="form_item"
             v-model="temp.dockType"
-            clearable
-            placeholder="请选择">
+            placeholder="请选择对接平台">
             <el-option v-for="(val, key, index) in eshopList" :key="index" :label="val" :value="key">
             </el-option>
           </el-select>
@@ -204,7 +203,7 @@
           style="width:80%"
             v-model.trim="temp.jointEshopCode"
             placeholder="请输入E店编码"></el-input>
-            <div class="btn_addEshop" style="width:20%" @click="getEcode(temp.jointEshopCode)">添加e店</div>
+            <div class="btn_addEshop" style="width:20%" @click="getEcode(temp.jointEshopCode)">添加E店</div>
             <div class="box_eshop clearfix" v-if="temp.basicOrganizationEshops.length !=0">
               <div class="main_eshop clearfix" v-for="item in temp.basicOrganizationEshops">
                 <el-tooltip  effect="dark" :content=item.name placement="left">
@@ -395,7 +394,7 @@ export default {
         { id: "name", value: "机构名称" },
         { id: "masterName", value: "负责人姓名" },
         { id: "masterPhone", value: "负责人手机号" },
-        { id: "jointEshopCode", value: "E店名称" }
+        { id: "eshopNames", value: "E店名称" }
       ],
       scopeType: [],
       workTime: [],
@@ -615,9 +614,9 @@ export default {
         var obj = {
           masterPhone: value
         };
-      } else if (this.search.key == "jointEshopCode") {
+      } else if (this.search.key == "eshopNames") {
         var obj = {
-          jointEshopCode: value
+          eshopNames: value
         };
       } else {
         var obj = {};
@@ -681,6 +680,7 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false;
+      this.temp.dockType = "select";
     },
     //点击编辑
     handleUpdate(row) {
@@ -737,11 +737,11 @@ export default {
 
             if (res.data.data.basicOrganizationEshops) {
               this.temp.dockType =
-                res.data.data.basicOrganizationEshops[0].dockType;
+                res.data.data.dockType;
               this.temp.basicOrganizationEshops =
                 res.data.data.basicOrganizationEshops;
             } else {
-              this.temp.dockType = "";
+              this.temp.dockType = "select";
               this.temp.basicOrganizationEshops = [];
             }
             this.dialogFormVisible = true;
@@ -831,7 +831,9 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      
+      if (obj.dockType == "select") {
+        obj.dockType == "";
+      }
       for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
         obj.basicOrganizationEshops[i].eshopCode =
           obj.basicOrganizationEshops[i].code;
@@ -908,8 +910,9 @@ export default {
         cityCode: this.temp.areaCodes[1], //市
         areaCode: this.temp.areaCodes[2] //区
       };
-      if(obj.dockType ==''){
-        obj.basicOrganizationEshops=[]
+      if (obj.dockType == "" || obj.dockType == "select") {
+        obj.dockType = "";
+        obj.basicOrganizationEshops = [];
       }
       for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
         obj.basicOrganizationEshops[i].eshopCode =

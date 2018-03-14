@@ -1,8 +1,5 @@
 import instance from '@/utils/fetch'
 
-export function getCity() {
-  return instance.get(`/apiservice/a/sys/organization/getOrgCityCodes`)
-}
 export function getClass(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/sort/serSortInfo/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
