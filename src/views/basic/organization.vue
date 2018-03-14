@@ -737,7 +737,7 @@ export default {
 
             if (res.data.data.basicOrganizationEshops) {
               this.temp.dockType =
-                res.data.data.basicOrganizationEshops[0].dockType;
+                res.data.data.dockType;
               this.temp.basicOrganizationEshops =
                 res.data.data.basicOrganizationEshops;
             } else {
