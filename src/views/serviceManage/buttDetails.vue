@@ -195,8 +195,64 @@ var tableData3 = [{
         toggleSelection(row, selected){
             console.log(this.multipleSelection)
         },
-        handleSizeChange(){},
-        handleCurrentChange(){},
+        //一页展示几条
+        handleSizeChange(page){
+            console.log(page)
+        },
+        // 分页
+        handleCurrentChange(val){
+           console.log(val,"val")
+           this.tableData3 = [{
+                commoditys:'商品名称11',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称22',
+                sortId:'111',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称33',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称44',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称55',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称66',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+            }, {
+                commoditys:'商品名称77',
+                sortId:'所属分类',
+                price:'价格/单位',
+                sortIds:'对接编码',
+                jointGoodsCode:'对接商品ID',
+                button:'对接状态'
+}]
+        },
         //所属类型
         typeChange(){
             //切换类型，请求分类数据
