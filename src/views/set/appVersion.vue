@@ -125,15 +125,17 @@
             <el-input        
            class=""
             placeholder="请输入更新地址" v-model.trim="temp.refreshAddress"></el-input>
-           
+           <p style="font-size: 12px;color: #8391a5;">*上传安装包后会自动生成更新地址</p>
               
               <el-upload
                   action="http://openservice.oss-cn-beijing.aliyuncs.com"
                   list-type="text"
                   :file-list="fileList"
-                  :http-request="Upload"            
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="Upload"
+                  :show-file-list="false"          
                   >
-                  <i class="el-icon-plus"></i>
+                  <div class="btn_upload">上传安装包</div>
               </el-upload>
               <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18" :percentage="uploadPercent">
               </el-progress>
@@ -157,14 +159,7 @@
 </template>
 
 <script>
-import {
-  getApp,
-  addApp,
-  handleUpApp,
-  upApp,
-  delApp,
-  getNewest
-} from "@/api/set";
+import { getApp, addApp, handleUpApp, upApp, delApp } from "@/api/set";
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import util from "@/utils/date";
@@ -268,12 +263,9 @@ export default {
   },
   created() {
     this.getList();
-    getSign();
-    getNewest()
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {});
+    if (!Cookies.get("sign")) {
+      getSign();
+    }
   },
   methods: {
     // 获取列表
@@ -402,11 +394,14 @@ export default {
           });
         });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    beforeAvatarUpload(file) {
+      const isAPK = file.type === "application/vnd.android.package-archive";
+      if (!isAPK) {
+        this.$message.error("上传只能是 apk 格式安装包!");
+      }
+      return isAPK;
     },
     Upload(file) {
       // 安装包上传
@@ -434,7 +429,7 @@ export default {
         ossData.append("name", file.file.name);
         ossData.append(
           "key",
-          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".jpg"
+          data.dir + "/" + y + "/" + m + "/" + d + "/" + s + ".apk"
         );
         ossData.append("policy", data.policy);
         ossData.append("OSSAccessKeyId", data.accessid);
@@ -446,9 +441,7 @@ export default {
         xhr.open("post", data.host, true);
         xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
         xhr.onload = () => {
-          console.log(xhr.response, "fffff");
-          console.log(ossData.get("key"),'路径')
-          this.temp.refreshAddress = ossData.get('key')
+          this.temp.refreshAddress = ossData.get("key");
         };
 
         xhr.send(ossData);
@@ -613,5 +606,27 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.btn_upload {
+  color: #fff;
+  background-color: #6d8dfc;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid #6d8dfc;
+  border-color: #6d8dfc;
+  -webkit-appearance: none;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  font-weight: 500;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 4px;
 }
 </style>
