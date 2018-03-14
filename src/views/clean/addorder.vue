@@ -201,18 +201,12 @@
 					:options="areaOptions"
           ref="allDeress"
 					:show-all-levels="true"
-					@change="testFun"
 					v-model="ruleForm.areaCodes"
 					style='width: 100%;' 
 				></el-cascader>								
 			</el-form-item>
 			<el-form-item label="详细地址:" prop="address">
-				<input class="pickerInput" ref="pickerInput"  :disabled="showDis" value='' placeholder="输入关键字选取地点">        
-				<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-				<el-input class="selfAddressStyle"  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
-        <div class="selfAddressGao1">
-             <div ref="panel" class="selfpanel1" ></div>        
-        </div>        		
+				<el-input class="selfAddressStyle"  style='width: 100%;' v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>       		
 			</el-form-item>
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle" style='width: 100%;'  placeholder="请输入常用邮箱"></el-input>
@@ -325,7 +319,7 @@ export default {
     };
     var checkAddress = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请选取地点,并填写详细地址"));
+        callback(new Error("请输入1-100位详细地址"));
       } else {
         if (value.length >= 1 && value.length <= 100) {
           callback();
@@ -342,7 +336,6 @@ export default {
       }
     };
     return {
-      showDis: true,
       changTime: "",
       options2: [],
       timeObj: [],
@@ -432,10 +425,7 @@ export default {
       formtest:{
 
       },
-      rulesTest:{   
-        // servercommidty:[
-        //   { required: true, message: "请选择商品",trigger: "change"}
-        // ],        
+      rulesTest:{          
         serverPro: [
           { required: true,message: "请选择服务项目", trigger: "change"}
         ]
@@ -480,8 +470,7 @@ export default {
       middleB: [],
       addressBefore:'',
       ideaserverTime:'',
-      ideaPersonNum:'',
-      addflag1:false
+      ideaPersonNum:''
     };
   },
   computed: {
@@ -801,25 +790,11 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
-          if (this.$refs.pickerInput.value != "" && !this.addflag1) {
-            this.ruleForm.address =
-              this.$refs.pickerInput.value + "-" + this.ruleForm.address;
-            var str = this.$refs.pickerInput1.value;
-            str = str.split(",");
-            //经度
-            var lng = str[0];
-            this.ruleForm.addrLongitude = lng;
-            //纬度
-            var lat = str[1];
-            this.ruleForm.addrLatitude = lat;
-          } else {
-          }          
+          this.loadingClick()          
           //省、市、区三级ID
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
-          // this.ruleForm.beforeAdd=this.addressBefore 省市区名称
           var obj = this.ruleForm;
           saveCus(obj)
             .then(res => {
@@ -830,18 +805,13 @@ export default {
                 });
                 loading.close();
                 this.$refs["ruleForm"].resetFields();
-                this.$refs.pickerInput.value = "";
-                this.$refs.panel.style.display='none';
                 this.dialogTableVisible1 = false;
-                this.addflag1=false;
               } else {
                 loading.close();
-                this.addflag1=true;
               }
             })
             .catch(res => {
               loading.close();
-              this.addflag1=true;
             });
         } else {
           var errArr = this.$refs[formName]._data.fields;
@@ -866,8 +836,6 @@ export default {
       this.ruleForm.cityCode = "";
       this.ruleForm.areaCode = "";
       this.ruleForm.sex = "";
-      this.$refs.pickerInput.value = "";
-      this.$refs.panel.style.display='none';
       this.dialogTableVisible1 = false;
     },
     //获取按客户ID客户数据
@@ -901,20 +869,11 @@ export default {
     },
     //新增按钮
     addcustomer() {
-      this.showDis = true;
       this.dialogTableVisible1 = true;
       this.ruleForm.provinceCode = "";
       this.ruleForm.cityCode = "";
       this.ruleForm.areaCode = "";
       this.ruleForm.sex = "";
-    },
-    //地址变化时开始POI搜索
-    testFun(value) {      
-      this.$nextTick(() => {
-        //this.$refs.pickerInput.value = "";
-        this.$refs.panel.style.display='none';
-        this.test(value[2]);
-      });
     },
     //服务类型下拉改变
     serverchange(value) {     
@@ -1025,9 +984,7 @@ export default {
     //叉号点击关闭TAB
     errorClose(obj) {
       //是否是删除就调取时间
-      // if(this.tabOptions.length == 1){
          this.findTimeListByTechFun()        
-      // }
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -1082,7 +1039,7 @@ export default {
                             this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                             this.$message({
                               type: "success",
-                              message: "新增成功!"
+                              message: "下单成功!"
                             });                
                           } else if (res.data.code === 3) {
                             this.$message({
@@ -1144,50 +1101,6 @@ export default {
          
         }
       });
-    },
-    //POI搜索功能调起
-    test(value) {
-      this.showDis = false;
-      var that = this;
-      var inputname = this.$refs.pickerInput;
-      var inputname1 = this.$refs.pickerInput1;
-      //实例化PlaceSearch
-      var placeSearch= new AMap.PlaceSearch({
-        pageSize: 50,//每页显示多少行
-        pageIndex: 1,//显示的下标从那个开始
-        //type:'商务住宅|商务办公',//类别，可以以|后面加其他类
-        city: value, //城市
-        map: that.mymap,
-        citylimit: true,
-        renderStyle:'default',
-        panel: that.$refs.panel//服务显示的面板
-      });
-      AMap.service('AMap.PlaceSearch',function(){//回调函数 
-        placeSearch.clear();       
-        var text=that.$refs.pickerInput          
-            text.addEventListener("keyup",function(e) {
-              placeSearch.setCity(value)
-              placeSearch.search(text.value)
-              that.$refs.panel.style.display='block';
-              that.$refs.panel.style.borderRight='1px solid #ccc'
-              that.$refs.panel.style.borderBottom='1px solid #ccc'
-            });          
-      })	  
-      AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
-      //获取当前选中的结果数据
-      var poi = results.selected.data;
-           that.$refs.panel.style.display='none';
-       var info = {
-        id: poi.id,
-        name: poi.name,
-        location: poi.location.toString(),
-        address: poi.address
-        };
-        that.$refs.pickerInput1.value=info.location;
-        var text=that.$refs.pickerInput
-        that.addressBefore=poi.pname+poi.cityname+poi.adname;
-        text.value=info.name;
-      });			
     },
     //日期变化时改变时间对象
     dateChange(val) {
@@ -1269,18 +1182,9 @@ export default {
           }
         })
         .catch(res => {});
-    },
-    //地图初始化
-    initMap1() {
-      var id = this.$refs.gdMap;
-      var map = new AMap.Map(id, {
-        zoom: 10
-      });
-      this.mymap = map;
     }
   },
   mounted() {
-    this.initMap1();
     this.getcustomerList();
     this.sex = this.dict.sex;
   }
@@ -1442,10 +1346,6 @@ export default {
 }
 .width200 {
   width: 200px;
-}
-.selfAddressStyle {
-  margin-left: -5px;
-  width: 50%;
 }
 .marginLeft10 {
   margin-left: 10px;

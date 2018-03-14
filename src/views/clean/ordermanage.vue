@@ -58,7 +58,13 @@
 					<el-table-column  align="center" width="220"   label="服务机构" prop="orgName">
 					</el-table-column>
 					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
-					</el-table-column>							
+					</el-table-column>
+					<el-table-column  align="center" width="150"  label="订单来源">
+						<template scope="scope">
+							<span v-if="scope.row.orderSource =='own'">本机构</span>
+							<span v-if="scope.row.orderSource =='gasq'">国安社区</span>																													
+						</template>            
+					</el-table-column>	          							
 					<el-table-column  align="center"  width="150" label="服务内容">
 						<template scope="scope">
 							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">

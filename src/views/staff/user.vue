@@ -624,7 +624,7 @@ export default {
       if (b) {
         // 处理订单里的查看详情
         if (
-          ["order_time", "order_dispatch", "order_addTech"].indexOf(
+          ["order_time", "order_dispatch", "order_addTech","order_cancel"].indexOf(
             a.permission
           ) > -1
         ) {

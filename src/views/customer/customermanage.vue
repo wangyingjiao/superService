@@ -103,19 +103,13 @@
               <el-cascader
                 :options="areaOptions"
                 ref="allDeress"
-								@change="testFun"
                 :show-all-levels="true"
                  v-model="ruleForm.areaCodes"
                  style='width: 100%;'
               ></el-cascader>							
 					</el-form-item>
 					<el-form-item label="详细地址:" prop="address">
-		    				<input class="pickerInput" ref="pickerInput"  :disabled="showDis"   value='' placeholder="输入关键字选取地点">
-								<input type="hidden" class="pickerInput" ref="pickerInput1"  value='' placeholder="输入关键字选取地点">
-								<el-input class="customerAddress"   v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>
-                <div class="selfAddressGao">
-                    <div ref="panel" class="selfpanel"></div>        
-                </div>		
+						<el-input   style='width: 100%;'  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="email" >
 						<el-input  v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
@@ -128,9 +122,6 @@
 				</div>
 		</el-dialog>
 		<!--新增客户弹窗结束-->
-		<!--地图开始-->
-		<div ref="gdMap" class="mapWrap"></div>              	
-		<!--地图结束-->
   </div>
 </template>
 
@@ -193,7 +184,7 @@ export default {
     //详细地址验证规则
     var checkAddress = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请选取地点,并填写详细地址"));
+        callback(new Error("请输入1-100位详细地址"));
       } else {
         if (value.length >= 1 && value.length <= 100) {
           callback();
@@ -204,7 +195,6 @@ export default {
     };
     return {
       titlevar:'新增客户',
-      showDis: true,
       submitFlag: false,
       jumpPage: 1,
       btnShow: JSON.parse(localStorage.getItem("btn")),
@@ -254,8 +244,6 @@ export default {
       pageNumber: 1,
       mymap: {},
       testFlag: undefined,
-      addflag1:false,
-      addressBefore:''
     };
   },
   methods: {
@@ -267,13 +255,6 @@ export default {
           target: document.querySelector('.el-dialog__body')
         })
     },
-    //地址POI选择初始城市值
-    testFun(value) {
-      this.$nextTick(() => {
-        this.$refs.panel.style.display='none';
-        this.test(value[2]);
-      });
-    },
     //新增保存
     submitForm(formName, status) {
       var that = this;     
@@ -284,26 +265,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.loadingClick()
-          if (
-            this.$refs.pickerInput.value != "" && !this.addflag1
-          ) {
-            this.ruleForm.address =this.$refs.pickerInput.value + "-" + this.ruleForm.address;
-            var str = this.$refs.pickerInput1.value;
-            str = str.split(",");
-            //经度
-            var lng = str[0];
-            this.ruleForm.addrLongitude = lng;
-            //纬度
-            var lat = str[1];
-            this.ruleForm.addrLatitude = lat;
-          } else {
-          }
-          //省、市、区三级ID
-          
+          //省、市、区三级ID         
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
-          // this.ruleForm.beforeAdd=this.addressBefore 省市区名称
           //保存upCus
           if (status == "add") {
             this.ruleForm.id='';
@@ -320,29 +285,19 @@ export default {
                   this.customName = "";
                   this.customPhone = "";
                   // this.organizationName='';
-                  this.$refs.pickerInput.value = "";
-                  this.$refs.panel.style.display='none';
                   this.dialogTableVisible = false;
                   var obj = {};
                   this.pageNumber = 1;
                   this.jumpPage = 1;
                   this.getData(obj, this.pageNumber, this.pageSize1);
-                  this.addflag1=false;
                 } else {
-                  this.addflag1=true;
                   loading.close();
                 }
               })
               .catch(res => {
-                 this.addflag1=true;
                  loading.close();
               });
-          } else {
-            var b = this.ruleForm.address;
-            var n=(b.split('-')).length-1;
-            if(n == 0){
-              this.ruleForm.address =this.$refs.pickerInput.value + "-" + this.ruleForm.address;
-            }           
+          } else {         
             var obj1 = this.ruleForm;            
             upCus(obj1)
               .then(res => {
@@ -353,8 +308,6 @@ export default {
                     message: "编辑成功!"
                   });
                   this.$refs["ruleForm"].resetFields();
-                  this.$refs.pickerInput.value = "";
-                  this.$refs.panel.style.display='none';
                   this.dialogTableVisible = false;
                   var obj2 = {
                       name: this.customName,
@@ -362,13 +315,11 @@ export default {
                   };
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
-                   this.addflag1=true;
                    loading.close();
                    
                 }
               })
               .catch(res => {
-                 this.addflag1=true;
                  loading.close();                 
               });
           }
@@ -395,8 +346,6 @@ export default {
       this.ruleForm.cityCode = "";
       this.ruleForm.areaCode = "";
       this.ruleForm.sex = "";
-      this.$refs.pickerInput.value = "";
-      this.$refs.panel.style.display='none';
       this.dialogTableVisible = false;
     },
     //全局搜索按钮
@@ -439,33 +388,21 @@ export default {
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
         this.titlevar='新增客户';
-        this.showDis = true;
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
         this.titlevar='编辑客户';
-        this.showDis = true;
         var obj = {
           id: row.id
         };
         getCus(obj)
           .then(res => {
             if (res.data.code === 1) {
-              var b = res.data.data.address;
-              var indexa = b.indexOf("-");
-              var a = b.substring(0, indexa);
-              var c = b.substring(indexa + 1);
               this.ruleForm = res.data.data;
-              //经纬度回显
-              var aar = [];
-              aar.push(res.data.data.addrLongitude);
-              aar.push(res.data.data.addrLatitude);
-              this.$refs.pickerInput1.value = aar;
-              //详细地址回显
-              this.$refs.pickerInput.value = a;
-              this.ruleForm.address = c;
+              var b = res.data.data.address;
+              this.ruleForm.address = b;
               //区域代码回显
               var arr = [];
               arr.push(res.data.data.provinceCode);
@@ -549,62 +486,9 @@ export default {
         .catch(res => {
           this.listLoading = false;
         });
-    },
-    //按区域POI搜索
-    test(area) {
-      this.showDis = false;
-      var that = this;
-      var inputname = this.$refs.pickerInput;
-      var inputname1 = this.$refs.pickerInput1;
-      //实例化PlaceSearch
-      var placeSearch= new AMap.PlaceSearch({
-        pageSize: 50,//每页显示多少行
-        pageIndex: 1,//显示的下标从那个开始
-        //type:'商务住宅|商务办公',//类别，可以以|后面加其他类
-        city: area, //城市
-        map: that.mymap,
-        citylimit: true,
-        renderStyle:'default',
-        panel: that.$refs.panel//服务显示的面板
-      });
-      AMap.service('AMap.PlaceSearch',function(){//回调函数 
-        placeSearch.clear();       
-        var text=that.$refs.pickerInput          
-            text.addEventListener("keyup",function(e) {
-              placeSearch.setCity(area)
-              placeSearch.search(text.value)
-              that.$refs.panel.style.display='block';
-              that.$refs.panel.style.borderRight='1px solid #ccc'
-              that.$refs.panel.style.borderBottom='1px solid #ccc'
-            });          
-      })	  
-      AMap.event.addListener(placeSearch, 'selectChanged', function(results) {
-      //获取当前选中的结果数据
-      var poi = results.selected.data;
-       that.$refs.panel.style.display='none';
-       var info = {
-        id: poi.id,
-        name: poi.name,
-        location: poi.location.toString(),
-        address: poi.address
-        };
-        that.$refs.pickerInput1.value=info.location;
-        var text=that.$refs.pickerInput
-        that.addressBefore=poi.pname+poi.cityname+poi.adname;
-        text.value=info.name;
-      });	      
-    },
-    //地图初始化
-    initMap1() {
-      var id = this.$refs.gdMap;
-      var map = new AMap.Map(id, {
-        zoom: 10
-      });
-      this.mymap = map;
     }
   },
   mounted() {
-    this.initMap1();
     this.getData({}, 1, 10);
     this.sex = this.dict.sex;
   }
@@ -665,10 +549,6 @@ export default {
   margin-right: 20px;
   margin-top: 10px;
   margin-bottom: 20px;
-}
-.customerAddress {
-  width: 50%;
-  margin-left: -5px;
 }
 .padding10Prent {
   width: 100%;

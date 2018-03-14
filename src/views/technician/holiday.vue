@@ -61,9 +61,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作" >
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)"></el-button>
+          <!-- <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleCheck(scope.row)">审核</el-button> -->
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -75,6 +76,49 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <!-- 弹窗 -->
+    <el-dialog 
+      title="审核休假"
+      :visible.sync="dialogForm" 
+      :show-close= "false"
+       :close-on-click-modal="false"
+       :close-on-press-escape="false"
+       >
+          <el-form        
+            class="small-space dia_form" 
+            ref="temp" 
+            :rules="rules" 
+            :model="temp" 
+            label-position="left" 
+            label-width="100px"
+            >
+
+          <el-form-item label="审核休假:" prop="reviewStatus">
+            <el-select class="form_item"  v-model="temp.reviewStatus">
+              <el-option v-for="item in holidayState" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="temp.reviewStatus == 'no'" label="未通过原因:" prop="failReason">
+            <el-input 
+            class="form_item"
+              type="textarea" 
+              :rows="2" 
+              placeholder="请输入0 - 100 字休假未通过原因"
+              v-model="temp.failReason"></el-input>
+          </el-form-item>
+
+         
+          </el-form>
+      
+      <div slot="footer" class="dialog-footer" style="text-align: center;">   
+        
+        <button class="button-large" :disabled="btnState" @click="create('temp')">保 存</button>    
+        <button class="button-cancel" @click="resetForm('temp')">取 消</button>
+      </div>
+    </el-dialog>
+    <!-- 弹框结束 -->
 
   </div>
   </div>
@@ -97,6 +141,8 @@ export default {
       list: [],
       total: null,
       listLoading: true,
+      dialogForm: false,
+      btnState: false,
       listQuery: {
         page: 1,
         limit: 10,
@@ -111,9 +157,31 @@ export default {
         val: "",
         time: ""
       },
+      temp: {
+        reviewStatus: "",
+        failReason: ""
+      },
+      rules: {
+        reviewStatus: [
+          { required: true, message: "请选择审核状态", trigger: "change" }
+        ],
+        failReason: [
+          { required: true, message: "请填写休假未通过原因",  trigger: "blur" },
+          {
+            min: 0,
+            max: 100,
+            message: "未通过原因长度不超过100个字符",
+            trigger: "blur"
+          }
+        ],
+      },
       seOptions: [
         { label: "姓名", value: "techName" },
         { label: "手机号", value: "techPhone" }
+      ],
+      holidayState: [
+        { label: "通过", value: "yes" },
+        { label: "不通过", value: "no" }
       ],
       tableKey: 0,
       isIndeterminate: true
@@ -201,6 +269,9 @@ export default {
       this.pageNumber = val;
       this.getList();
     },
+    handleCheck() {
+      this.dialogForm = true;
+    },
     // 删除
     handleDelete(row) {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
@@ -235,6 +306,62 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    create(formName){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true;
+          checkHoliday(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$message({
+                  type: "success",
+                  message: "审核成功"
+                });
+                this.resetSearch()
+                this.handleFilter();
+                this.dialogForm = false;
+              } else {
+              }
+            })
+            .catch(err => {
+              this.btnState = false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.dialogForm = false;
+      this.resetTemp();
+      this.$refs[formName].resetFields();
+    },
+    resetTemp() {
+      this.temp = {
+        reviewStatus: "",
+        failReason: ""
+      };
+    },
+    resetSearch() {
+      this.search= {
+        type: "techName",
+        val: "",
+        time: ""
+      }
     }
   }
 };

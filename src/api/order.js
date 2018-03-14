@@ -80,3 +80,7 @@ export function createOrder(obj) {
 export function findGoodsNeedTech(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findGoodsNeedTech`, obj)
 }
+//取消订单
+export function orderCancelFun(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/orderCancel`, obj)
+}

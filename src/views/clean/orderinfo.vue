@@ -2,7 +2,9 @@
     <div class="addorder-container">
        <!--订单信息开始-->
         <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息</div>
+            <div class="custom-action orderOneBar">订单信息
+              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
+            </div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
@@ -72,7 +74,30 @@
 		    </div>
         <!--订单信息结束-->
         <!--支付信息开始-->
-        <!-- <div class="thrid-bar marginTop15">
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
+            <div class="custom-action">订单取消信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">取消原因:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.cancelReason =='customer'">客户来电取消</span>
+                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
+                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
+                      </span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
+                   </p>                                      
+                </div>
+
+            </div>                                     		
+		    </div>
+        <!--支付信息结束-->        
+        <!--支付信息开始-->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
             <div class="custom-action">支付信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -122,7 +147,7 @@
                    </p>                                       
                 </div> 
             </div>                                     		
-		    </div> -->
+		    </div>
         <!--支付信息结束-->
         <!--服务信息开始-->
         <div class="thrid-bar marginTop15">
@@ -293,7 +318,7 @@
 		    </div>
         <!--订单备注结束-->               
         <!--业务人员信息开始-->
-        <div class="thrid-bar marginTop15">
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource !='own'">
             <div class="custom-action">业务人员信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -329,7 +354,7 @@
 		    </div>
         <!--业务人员信息结束-->
         <!--门店信息开始-->
-        <div class="thrid-bar marginTop15 marginBOT20">
+        <div class="thrid-bar marginTop15 marginBOT20" v-if="otherInfo.orderSource !='own'">
             <div class="custom-action">门店信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -450,19 +475,55 @@
               <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
-        <!--修改服务时间弹窗结束-->        
+        <!--修改服务时间弹窗结束-->
+        <!--取消订单弹窗开始-->
+        <el-dialog
+          title="取消订单"
+          :visible.sync="cancelOrderFlag"
+          :close-on-click-modal="false"
+          >
+            <el-form  :model="Orderform" :rules="orderrules" ref="Orderform" label-width="80px" label-position="left" >
+              <el-form-item label="取消原因:" prop='becouss' >
+                      <el-select v-model="Orderform.becouss"  style="width:80%;"  placeholder="请选择">
+                        <el-option
+                          v-for="(value,key,index) in becaussOptions"
+                          :key="index"
+                          :label="value"
+                          :value="key">
+                        </el-option>
+                      </el-select>                      
+              </el-form-item>
+              <el-form-item label="备注:" prop='beizhu'>
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    placeholder="请输入内容"
+                    v-model="Orderform.beizhu"
+                    style="width:80%;"
+                    >
+                  </el-input>	                    
+              </el-form-item>              
+
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" :disabled="timeSaveFlag"  @click="submitOrder('Orderform')">确定</button>
+              <button class="button-cancel"  @click="unOrder('Orderform')">取 消</button>
+            </div>
+        </el-dialog>
+        <!--取消订单弹窗结束-->                 
   </div>
 </template>
 
 <script>
 import {
-  getOrderInf,
-  addTechData,
-  ChangeTimeData,
-  dispatchTechData,
-  addTechSave,
-  dispatchTechSave,
-  saveTime
+  getOrderInf,//用订单ID获取页面相关信息
+  addTechData,//服务技师获取
+  ChangeTimeData,//请求服务时间下拉菜单值
+  dispatchTechData,//改派技师获取
+  addTechSave,//新增技师保存
+  dispatchTechSave,//改派技师保存
+  saveTime,//更换服务时间保存
+  orderCancelFun//取消订单保存
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
@@ -471,6 +532,9 @@ export default {
   name: "orderinfo",
   data() {
     return {
+      dict: require("../../../static/dict.json"),
+      becaussOptions:[],
+      cancelOrderFlag:false,
       options2: [],
       btnShow: JSON.parse(localStorage.getItem("btn")),
       timeSaveFlag: false,
@@ -486,6 +550,16 @@ export default {
             return true;
           }
         }
+      },
+      Orderform:{
+        becouss:"",
+        beizhu:''
+      },
+      orderrules:{
+        becouss: [
+          { required: true, message: "请选择取消原因", trigger: "change" }
+        ],
+        beizhu: [{ min: 0, max: 100, message: '长度在0-100个字符', trigger: 'blur' }]        
       },
       formInline1rules: {
         Date: [
@@ -896,6 +970,44 @@ export default {
           .catch(res => {});
       }
     },
+    //取消订单
+    cancelOrder(){
+      this.cancelOrderFlag=true;
+    },
+    //取消订单确认
+    submitOrder(formName){
+      this.$refs[formName].validate(valid => {
+        if(valid){
+        var obj = {
+          id: this.orderId,
+          cancelReason:this.Orderform.becouss,
+          cancelReasonRemark:this.Orderform.beizhu
+        };
+        orderCancelFun(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.$message({
+                type: "success",
+                message: "取消成功!"
+              });
+              this.getOrderAllInf(this.orderId)
+              this.cancelOrderFlag=false;
+
+            }
+          })
+          .catch(res => {});           
+           
+        }else{
+
+        }
+      })
+      
+    },
+    //取消订单取消
+    unOrder(formName){
+      this.$refs[formName].resetFields();
+      this.cancelOrderFlag=false;
+    },
     //改变服务时间按钮
     changeTime() {
       this.timeObj = [];
@@ -926,6 +1038,7 @@ export default {
     }
   },
   mounted() {
+    this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
@@ -1020,6 +1133,9 @@ export default {
 }
 .width120 {
   width: 120px;
+}
+.marginBottom20{
+  margin-bottom:20px;
 }
 .selfPromINF {
   font-size: 12px;
