@@ -491,8 +491,9 @@ export default {
         basicOrganizationEshops: [
           {
             required: true,
-            message: "请至少选择1个E店",
-            validator: validateEshop
+            // message: "请至少选择1个E店",
+            validator: validateEshop,
+            trigger:"blur"
           }
         ],
         url: [
@@ -747,10 +748,6 @@ export default {
             this.dialogFormVisible = true;
           } else {
             this.listLoading = false;
-            this.$message({
-              type: "error",
-              message: "请求错误"
-            });
           }
         })
         .catch(error => {
@@ -777,6 +774,7 @@ export default {
             if (res.data.code === 1) {
               this.temp.basicOrganizationEshops.push(res.data.data);
               this.$refs.temp.validateField("basicOrganizationEshops");
+              this.temp.jointEshopCode = ''
             }
           })
           .catch(err => {});
