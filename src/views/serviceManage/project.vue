@@ -128,8 +128,8 @@
               class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-              <span class="commEd">删除商品</span>
-              <span @click="docking=true" class="commEd">已对接E店</span>
+              <span class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
+              <span class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
                 <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
                 <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
             </div>
@@ -138,8 +138,8 @@
         <!-- 项目 -->
         <el-table-column align="center" label="" min-width="200">
           <template scope="scope">
-            <span class="probtn" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
-            <span class="probtn" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
+            <span class="probtn ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
+            <span class="probtn ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
             <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
             <!-- <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
@@ -968,6 +968,15 @@ export default {
     }
   },
   methods: {
+    //删除商品
+    deletGood(item){
+      console.log(item.id)
+    },
+    //已对接E店
+    dockingE(item){
+      this.docking = true
+      console.log(item.id)
+    },
     //对接详情
     buttDetails(){
       this.$router.push({ path: "/service/buttDetails/" });
@@ -981,6 +990,9 @@ export default {
     },
     imgClick(item) {
       this.picFile = item;
+      //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
+      //上传图片成功触发表单验证
+      this.$refs['basic'].validate(valid => {})
     },
     imgTextClick(item) {
       this.imgText = item;
@@ -1072,6 +1084,7 @@ export default {
           return false;
         }
         this.labelClickArr.push(item.label);
+        this.$refs['basic'].validate(valid => {})
       } else {
         this.remove(this.labelClickArr, item.label);
       }
