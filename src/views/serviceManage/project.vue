@@ -970,6 +970,19 @@ export default {
     //删除商品
     deletGood(item){
       console.log(item.id)
+      this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        customClass:"deleteCom",
+        type: "warning"
+      })
+        .then(() => {
+          alert('123123')
+        })
+        .catch(() => {
+          // return
+        });
     },
     //已对接E店
     dockingE(item){
@@ -991,7 +1004,7 @@ export default {
       this.picFile = item;
       //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
       //上传图片成功触发表单验证
-      this.$refs['basic'].validate(valid => {})
+      // this.$refs['basic'].validate(valid => {})
     },
     imgTextClick(item) {
       this.imgText = item;
@@ -1083,7 +1096,7 @@ export default {
           return false;
         }
         this.labelClickArr.push(item.label);
-        this.$refs['basic'].validate(valid => {})
+        // this.$refs['basic'].validate(valid => {})
       } else {
         this.remove(this.labelClickArr, item.label);
       }
@@ -1416,6 +1429,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
+        customClass:"deleteCom",
         type: "warning"
       })
         .then(() => {
@@ -2417,6 +2431,7 @@ hr {
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
+  font-size: 14px;
   margin: 0 10px;
 }
 .probtn{
@@ -2424,9 +2439,13 @@ hr {
   padding: 5px 15px;
   color: #4c70e8;
   border-radius:5px; 
+  font-size: 14px;
   cursor: pointer;
   margin: 0 10px;
-  line-height: 26px;
+  line-height: 28px;
+}
+.deleteCom .el-message-box__message{
+  text-align: left !important;
 }
 
 </style>
