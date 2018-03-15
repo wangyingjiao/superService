@@ -35,7 +35,7 @@ export default {
   name: "download",
   data() {
     return {
-      apkSrc:'',
+      apkSrc: "",
       isWeixin: false,
       isShow: false
     };
@@ -49,9 +49,10 @@ export default {
     } else {
       this.isWeixin = false;
     }
-    getNewest().then(res=>{
-      this.apkSrc = 'https://imgcdn.guoanshequ.com/' + res.data.data.refreshAddress
-    })
+    getNewest().then(res => {
+      this.apkSrc =
+        "https://imgcdn.guoanshequ.com/" + res.data.data.refreshAddress;
+    });
   },
   methods: {
     wxClick() {
