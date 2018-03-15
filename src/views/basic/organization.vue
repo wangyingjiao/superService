@@ -830,7 +830,7 @@ export default {
         areaCode: this.temp.areaCodes[2] //区
       };
       if (obj.dockType == "select") {
-        obj.dockType == "";
+        obj.dockType = "";
       }
       for (var i = 0; i < obj.basicOrganizationEshops.length; i++) {
         obj.basicOrganizationEshops[i].eshopCode =
