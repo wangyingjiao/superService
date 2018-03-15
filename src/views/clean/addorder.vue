@@ -17,7 +17,7 @@
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
               <span class="selfLabelStyle">*</span>
-              <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" v-model="customPhone"></el-input>
+              <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
 							<div  class="selftSerchBut"   v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">新增</div>
 						</el-form-item>
 						<el-form-item label="获取信息:">
@@ -99,7 +99,7 @@
 											</span>                       
                     </td>
 										<td class="height30" align="center">
-                      <span > <el-input-number class="selfINputNumStyle"    @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
+                      <span > <el-input-number class="selfINputNumStyle" :ref="item.goodsId"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
@@ -480,8 +480,8 @@ export default {
       val=Number(val);
       return val.toFixed(2)
     }
-  },
-  methods: {
+  }, 
+  methods: {    
      loadingClick(){
         loading = this.$loading({
           lock: true,
@@ -560,8 +560,10 @@ export default {
       }      
     },
     //计数器改变
-    numberChange(item,index) {
+    numberChange(item,index) {      
       this.$nextTick(() => {
+        item.goodsNum=parseInt(item.goodsNum)
+        this.$refs[index][0].currentValue=parseInt(this.$refs[index][0].currentValue)
         item.payPriceSum = item.goodsNum * item.payPrice * 1;
       });
       if (item.goodsChecked) {
@@ -569,7 +571,7 @@ export default {
           this.form1.sumPrice =
             this.form1.sumPrice +
             item.payPriceSum -
-            this.$refs[index][0].innerText;
+            this.$refs[index][1].innerText;
         });
       } else {
         this.form1.sumPrice = this.form1.sumPrice + 0;
@@ -588,7 +590,7 @@ export default {
             }
           }
           this.$nextTick(() => {
-             item.payPriceSum = aa * 1;            
+             item.payPriceSum = aa * 1;                         
           });
       }
       if (item.goodsChecked) {
@@ -596,7 +598,7 @@ export default {
           this.form1.sumPrice =
             this.form1.sumPrice +
             item.payPriceSum -
-            this.$refs[name][0].innerText;
+            this.$refs[name][1].innerText;
         });
       } else {
         this.form1.sumPrice = this.form1.sumPrice + 0;
