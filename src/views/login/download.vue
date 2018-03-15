@@ -50,7 +50,6 @@ export default {
       this.isWeixin = false;
     }
     getNewest().then(res=>{
-      alert(res.data.data.refreshAddress,'res')
       this.apkSrc = 'https://imgcdn.guoanshequ.com/' + res.data.data.refreshAddress
     })
   },
