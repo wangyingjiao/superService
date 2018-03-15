@@ -67,7 +67,7 @@
 						</div>
 					</div>
 					<div style="margin-left:88px;" v-if="serverType==3">
-						<div class="selfCheckBox" ref="selcetOption" @click="roomSel($index,item)" v-for="(item,$index) in roomType">
+						<div class="selfCheckBox" ref="selcetOption" @click="roomSel($index,item)" v-for="(item,$index) in roomType" :key="$index">
 							{{item.roomName}}
 							<div v-if="roomLen==item.key" class="triangle-bottomright"></div>
 							<div class="tally">&#10004</div>
@@ -79,7 +79,7 @@
 				</div>
 				<div class="custom-action" style="margin-top:20px;"><span class="redStart">*</span>技师性别:
 				    <div style="display:inline-block;margin-left:28px;" >
-						<div class="selfCheckBox"  ref="sexOption"  @click="roomSel1($index,item)" v-for="(item,$index) in sexType">
+						<div class="selfCheckBox"  ref="sexOption"  @click="roomSel1($index,item)" v-for="(item,$index) in sexType" :key="$index">
 							{{item.sexName}}
 							<div v-if="sexLen==item.key" class="triangle-bottomright"></div>
 							<div class="tally">&#10004</div>
@@ -104,7 +104,7 @@
 				</div>
 				<div class="custom-action" style="margin-top:20px;">
 					<div class="customNamevalue" style="margin-left:60px;width:100%;height:40px;">
-						<div class="tabWrap" v-for="(item,$index) in tabOptions " ref="tabsName">
+						<div class="tabWrap" v-for="(item,$index) in tabOptions " :key='$index' ref="tabsName">
 						   {{item.tabName}}
 						   <div class="closePic"  @click="errorClose(item,$index)">&#10005</div>
 						</div>						

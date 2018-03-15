@@ -263,10 +263,7 @@
 				<button class="button-cancel" @click="cancelForm2()">取 消</button>
 			</div>
 		</el-dialog>	
-	<!--技师选择弹窗结束-->
-		<!--地图开始-->
-			<div ref="gdMap" class="mapWrap"></div>              	
-		<!--地图结束-->   
+	  <!--技师选择弹窗结束-->   
   </div>
  
 </template>
@@ -305,7 +302,7 @@ export default {
         callback();
       } else {
         if (
-          !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)
+          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
         ) {
           callback(new Error("请输入正确的邮箱"));
         } else {
