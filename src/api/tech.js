@@ -41,7 +41,6 @@ export function ChooseTheCity(pageNumber, pageSize, obj) {
     })
   })
 }
-
 // 所属服务站
 export function serviceStation(obj) {
   return new Promise((resolve, reject) => {
