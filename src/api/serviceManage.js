@@ -146,17 +146,6 @@ export function serGasqSort() {
   })
 }
 
-// 对接
-export function sendData(obj) {
-  return new Promise((resolve, reject) => {
-    instance.post(`apiservice/a/service/item/serItemInfo/sendData`, obj).then(data => {
-      resolve(data)
-    }).catch(error => {
-      reject(error)
-    })
-  })
-}
-
 // 商品删除
 export function deleteGoodsData(obj) {
   return new Promise((resolve, reject) => {
