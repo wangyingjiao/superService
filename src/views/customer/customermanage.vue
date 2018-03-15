@@ -157,7 +157,7 @@ export default {
         callback();
       } else {
         if (
-          !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/.test(value)
+          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
         ) {
           callback(new Error("请输入正确的邮箱"));
         } else {

@@ -15,8 +15,8 @@
       </el-input> 
 	  <el-input class="search" placeholder="请输入搜索的商品名称" v-model="search.goodsName">
       </el-input> 
-	  <el-input class="search" placeholder="请输入搜索的对接编码" v-model="search.sortIdandGoodsId">
-      </el-input> 
+	  <!-- <el-input class="search" placeholder="请输入搜索的对接编码" v-model="search.sortIdandGoodsId">
+      </el-input>  -->
       <button class="button-large el-icon-search btn_search btn-color" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
@@ -913,7 +913,7 @@ export default {
       search: {
         sortId: "",
         name: "",
-        sortIdandGoodsId: "",
+        // sortIdandGoodsId: "",
         goodsName: ""
       },
       pageSize: 10,
@@ -1273,9 +1273,9 @@ export default {
         if (this.search.goodsName) {
           obj.goodsName = this.search.goodsName;
         }
-        if (this.search.sortIdandGoodsId) {
-          obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-        }
+        // if (this.search.sortIdandGoodsId) {
+        //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
+        // }
       }
       getProject(obj, _page, _size)
         .then(res => {
@@ -1317,9 +1317,9 @@ export default {
       if (this.search.goodsName) {
         obj.goodsName = this.search.goodsName;
       }
-      if (this.search.sortIdandGoodsId) {
-        obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-      }
+      // if (this.search.sortIdandGoodsId) {
+      //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
+      // }
 
       this.listLoading = true;
       this.getList(this.pageNumber, this.pageSize, obj);
@@ -1449,7 +1449,7 @@ export default {
       this.search.sortId = "";
       this.search.name = "";
       this.search.goodsName = "";
-      this.search.sortIdandGoodsId = "";
+      // this.search.sortIdandGoodsId = "";
       var size = this.pageSize;
       this.pageNumber = 1;
       Taxonomy({ majorSort: tab.name })
@@ -1566,7 +1566,7 @@ export default {
                   this.search.sortId = "";
                   this.search.name = "";
                   this.search.goodsName = "";
-                  this.search.sortIdandGoodsId = "";
+                  // this.search.sortIdandGoodsId = "";
                   this.tabs = "all";
                   this.listQuery.page = 1;
                   this.getList(1, this.pageSize);
