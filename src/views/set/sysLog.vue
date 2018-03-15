@@ -60,11 +60,11 @@
         </template>
       </el-table-column>
       
-      <!-- <el-table-column align="center" label="操作">
+      <el-table-column align="center" label="操作">
         <template scope="scope">
-          <el-button class="el-icon-delete ceshi3"  @click="handleDelete(scope.row)"></el-button>
+          <el-button class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>
 
     </el-table>
 
@@ -186,6 +186,9 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.getList();
+    },
+    handleAgain(val){
+      console.log(val)
     }
   }
 };
