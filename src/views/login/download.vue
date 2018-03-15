@@ -10,7 +10,7 @@
             <p>用心服务 洁净万家</p>
         </div>
         <div class="footer">
-            <a v-if="!isWeixin" :href="apkSrc">
+            <a v-if="!isWeixin" :href=apkSrc>
                <img src="../../../static/icon/app_btn.png" alt="">
             </a>
             <div v-else @click="wxClick">
@@ -50,7 +50,7 @@ export default {
       this.isWeixin = false;
     }
     getNewest().then(res=>{
-      console.log(res,'res')
+      // alert(res.data.data.refreshAddress,'res')
       this.apkSrc = 'https://imgcdn.guoanshequ.com/' + res.data.data.refreshAddress
     })
   },

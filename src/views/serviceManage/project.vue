@@ -531,7 +531,6 @@ import {
   serverEditPre,
   sortList,
   serGasqSort,
-  sendData,
   deleteGoodsData
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
