@@ -58,7 +58,6 @@ export default {
     this.appSrc = src3;
   },
   methods: {
-    dropClick() {},
     toggleSideBar() {
       this.$store.dispatch("ToggleSideBar");
     },
