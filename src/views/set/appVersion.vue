@@ -27,6 +27,11 @@
       style="width: 100%">
 
       <el-table-column align="center" label="ID" prop="id">
+        <template scope="scope">
+           <el-tooltip placement="left"  :content="scope.row.id">
+             <div class="tool" >{{scope.row.id}}</div>
+           </el-tooltip>
+        </template> 
       </el-table-column>
 
       <el-table-column align="center" label="版本号" prop="versionNumber">
@@ -68,7 +73,7 @@
       <el-table-column align="center" width="150" label="操作">
         <template scope="scope">
             <!-- <el-button class="el-icon-edit ceshi3"   @click="handleUpdate(scope.row)"></el-button> -->
-            <el-button class="el-icon-delete ceshi3"   @click="handleDelete(scope.row)"></el-button>
+            <el-button v-if="scope.row.index == 1" class="el-icon-delete ceshi3"   @click="handleDelete(scope.row)"></el-button>
           </template>
       </el-table-column>
 
@@ -137,7 +142,7 @@
                   >
                   <div class="btn_upload">上传安装包</div>
               </el-upload>
-              <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18" :percentage="uploadPercent">
+              <el-progress v-show="showProgress" :text-inside="true" :stroke-width="15" :percentage="uploadPercent">
               </el-progress>
           </el-form-item>
           
@@ -159,7 +164,7 @@
 </template>
 
 <script>
-import { getApp, addApp, handleUpApp, upApp, delApp } from "@/api/set";
+import { getApp, addApp, handleUpApp, upApp, delApp ,getNewest} from "@/api/set";
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import util from "@/utils/date";
@@ -318,6 +323,9 @@ export default {
     },
     // 搜索
     handleFilter() {
+      // getNewest().then(res=>{
+      //   console.log(res)
+      // })
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();
@@ -442,15 +450,18 @@ export default {
         xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
         xhr.onload = () => {
           this.temp.refreshAddress = ossData.get("key");
+          this.$message({
+            type: "success",
+            message: "上传完成"
+          });
         };
-
         xhr.send(ossData);
       });
     },
     progressFunction(event) {
+      // 设置进度显示
       if (event.lengthComputable) {
         var percent = Math.floor(event.loaded / event.total * 100);
-        // 设置进度显示
         if (percent > 100) {
           percent = 100;
         }
@@ -474,18 +485,15 @@ export default {
           addApp(obj)
             .then(res => {
               this.btnState = false;
-
               if (res.data.code === 1) {
                 this.dialogFormVisible = false;
                 this.resetSearch();
-                this.resetTemp();
-                this.$refs[formName].resetFields();
+                this.resetForm(formName);
                 this.handleFilter();
                 this.$message({
                   type: "success",
                   message: "新增成功"
                 });
-              } else {
               }
             })
             .catch(err => {
@@ -557,6 +565,8 @@ export default {
     // 清空表单
     resetForm(formName) {
       this.resetTemp();
+      this.showProgress = false;
+      this.uploadPercent = 0;
       this.$refs[formName].resetFields();
       this.dialogFormVisible = false;
     },

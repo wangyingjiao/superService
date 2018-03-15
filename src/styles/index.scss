@@ -785,4 +785,9 @@ body {
   position: fixed;
   width: 74%;
 }
-.poi-more{display:none;}
+.poi-more{
+  display:none;
+}
+.el-progress-bar__inner{
+  background-color: #4c70e8 !important;
+}

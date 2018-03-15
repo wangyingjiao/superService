@@ -198,14 +198,26 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item  v-if="temp.dockType == 'gasq'" label="对接E店:" prop="basicOrganizationEshops">
-          <el-input 
-          style="width:80%"
-            v-model.trim="temp.jointEshopCode"
-            placeholder="请输入E店编码"></el-input>
-            <div class="btn_addEshop" style="width:20%" @click="getEcode(temp.jointEshopCode)">添加E店</div>
+        <el-form-item  v-if="temp.dockType == 'gasq'" label="对接E店:" required="">
+          <el-row>
+          <el-col :span="20">
+          <el-form-item >
+            <el-input 
+              
+              v-model.trim="temp.jointEshopCode"
+              placeholder="请输入E店编码"></el-input>
+          </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item > 
+              <div class="btn_addEshop"  @click="getEcode(temp.jointEshopCode)">添加E店
+              </div>
+            </el-form-item>
+          </el-col>
+          </el-row>
+          <el-row>
             <div class="box_eshop clearfix" v-if="temp.basicOrganizationEshops.length !=0">
-              <div class="main_eshop clearfix" v-for="item in temp.basicOrganizationEshops">
+              <div class="main_eshop clearfix" v-for="(item,index) in temp.basicOrganizationEshops" :key="index">
                 <el-tooltip  effect="dark" :content=item.name placement="left">
                   <div>
                   <span class="span_eshop">{{item.name}}</span>
@@ -215,7 +227,10 @@
               </div>
               
             </div>
-            <p class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作；</p>
+            <el-form-item prop="basicOrganizationEshops">
+            <p  class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作</p>
+            </el-form-item>
+            </el-row>
         </el-form-item>
 
         <el-form-item label="机构网址:" prop="url">
@@ -353,6 +368,7 @@ export default {
       btnState: false,
       typeState: false,
       list: [],
+      number: 0,
       total: null,
       listLoading: true,
       listQuery: {
@@ -493,7 +509,7 @@ export default {
             required: true,
             // message: "请至少选择1个E店",
             validator: validateEshop,
-            trigger:"blur"
+            trigger: "blur"
           }
         ],
         url: [
@@ -737,8 +753,7 @@ export default {
             }
 
             if (res.data.data.basicOrganizationEshops) {
-              this.temp.dockType =
-                res.data.data.dockType;
+              this.temp.dockType = res.data.data.dockType;
               this.temp.basicOrganizationEshops =
                 res.data.data.basicOrganizationEshops;
             } else {
@@ -774,7 +789,7 @@ export default {
             if (res.data.code === 1) {
               this.temp.basicOrganizationEshops.push(res.data.data);
               this.$refs.temp.validateField("basicOrganizationEshops");
-              this.temp.jointEshopCode = ''
+              this.temp.jointEshopCode = "";
             }
           })
           .catch(err => {});
@@ -783,7 +798,13 @@ export default {
     //删除E店
     delEshop(val) {
       if (val.id != undefined) {
-        deleteEshop({ eshopCode: val.eshopCode }).then(res => {
+        var obj = {
+          id:this.temp.id,
+          eshopCode: val.eshopCode
+        }
+        console.log(obj)
+        deleteEshop(obj).then(res => {
+          this.number++;
           if (res.data.code == 1) {
             this.temp.basicOrganizationEshops.remove(val);
           }
@@ -798,6 +819,10 @@ export default {
       this.dialogFormVisible = false;
       this.resetTemp();
       this.$refs[formName].resetFields();
+      if (this.number > 0) {
+        this.getList();
+        this.number = 0;
+      }
     },
     //切换省市区
     codeChange(val) {
