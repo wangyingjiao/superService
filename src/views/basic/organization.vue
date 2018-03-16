@@ -106,7 +106,7 @@
           <el-input 
           v-model.trim="temp.name"
           class="form_item" 
-          :disabled="dialogStatus == 'update' && orgId != '0' "
+          :disabled="dialogStatus == 'update' && orgId != 'yes' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
@@ -613,7 +613,6 @@ export default {
       "23:30",
       "24:00"
     ];
-    this.orgId = localStorage.getItem("orgId");
   },
   methods: {
     //获取列表
@@ -702,12 +701,14 @@ export default {
     //点击编辑
     handleUpdate(row) {
       this.listLoading = true;
+
       const obj = {
         id: row.id
       };
       setMech(obj)
         .then(res => {
           if (res.data.code == "1") {
+            this.orgId = res.data.data.updateOwnFlag;
             this.listLoading = false;
             if (res.data.data.haveStation !== 0) {
               this.typeState = true;
@@ -799,10 +800,10 @@ export default {
     delEshop(val) {
       if (val.id != undefined) {
         var obj = {
-          id:this.temp.id,
+          id: this.temp.id,
           eshopCode: val.eshopCode
-        }
-        console.log(obj)
+        };
+        console.log(obj);
         deleteEshop(obj).then(res => {
           this.number++;
           if (res.data.code == 1) {
