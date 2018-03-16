@@ -2436,7 +2436,6 @@ hr {
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
-  /* font-size: 14px; */
   margin: 0 10px;
 }
 .probtn{
@@ -2444,10 +2443,9 @@ hr {
   padding: 6px 16px;
   color: #4c70e8;
   border-radius:5px; 
-  /* font-size: 14px; */
   cursor: pointer;
   margin: 0 10px;
-  line-height: 28px;
+  line-height:30px;
 }
 .deleteCom .el-message-box__message{
   text-align: left !important;

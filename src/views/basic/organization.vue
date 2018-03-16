@@ -1047,12 +1047,6 @@ export default {
   padding: 20px 20px 20px 20px;
 }
 
-.ceshi3 {
-  font-size: 14px;
-  color: #1d85fe;
-  border: 1px solid #1d85fe;
-  background-color: #ffffff;
-}
 
 .proName {
   width: 100%;
