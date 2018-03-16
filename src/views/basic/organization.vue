@@ -200,7 +200,7 @@
 
         <el-form-item  v-if="temp.dockType == 'gasq'" label="对接E店:" required="">
           <el-row>
-          <el-col :span="20">
+          <el-col :span="21">
           <el-form-item >
             <el-input 
               
@@ -208,7 +208,7 @@
               placeholder="请输入E店编码"></el-input>
           </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-form-item > 
               <div class="btn_addEshop"  @click="getEcode(temp.jointEshopCode)">添加E店
               </div>
@@ -1069,7 +1069,7 @@ export default {
 .btn_addEshop {
   float: right;
   height: 36px;
-  width: 80px;
+  width: 100%;
   background-color: #fff;
   border: 1px solid #4c70e8;
   text-align: center;
