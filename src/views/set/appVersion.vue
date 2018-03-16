@@ -141,7 +141,9 @@
                   :show-file-list="false"          
                   >
                   <div class="btn_upload">上传安装包</div>
+                  
               </el-upload>
+              <!-- <div class="btn_upload" @click="refUpload">取消上传</div> -->
               <el-progress v-show="showProgress" :text-inside="true" :stroke-width="15" :percentage="uploadPercent">
               </el-progress>
           </el-form-item>
@@ -468,6 +470,9 @@ export default {
         this.uploadPercent = percent;
       }
       this.showProgress = true;
+    },
+    refUpload(){
+      
     },
     // 新增保存
     create(formName) {
