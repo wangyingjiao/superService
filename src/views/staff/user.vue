@@ -1206,17 +1206,6 @@ export default {
 .ceshi2 label {
   padding-left: 12px;
 }
-.ceshi3 {
-  font-size: 14px;
-  color: #1d85fe;
-  border: 1px solid #1d85fe;
-  background-color: #ffffff;
-}
-.ceshi3:hover {
-  color: #ffffff;
-  border: 1px solid #3e9fff;
-  background-color: #3e9fff;
-}
 .ceshi4 {
   color: #999999;
   border: 1px solid #b9b9b9;

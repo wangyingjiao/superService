@@ -932,12 +932,7 @@ export default {
   height: 25px;
   width: 80px;
 }
-.ceshi3 {
-  font-size: 14px;
-  color: #1d85fe;
-  border: 1px solid #1d85fe;
-  background-color: #ffffff;
-}
+
 .dialog-footer {
   text-align: center;
 }
