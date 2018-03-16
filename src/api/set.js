@@ -9,6 +9,10 @@ export function getLog(obj, pageNumber, pageSize) {
 export function getsysLog(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/log/SysJointLogger/listSysJointLogger?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 获取对接日志列表
+export function doOpenSend(obj) {
+  return instance.post(`/apiservice/a//service/log/SysJointLogger/doOpenSend`, obj)
+}
 
 // 获取app发版列表
 export function getApp(obj, pageNumber, pageSize) {

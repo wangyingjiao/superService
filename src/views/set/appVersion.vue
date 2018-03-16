@@ -195,12 +195,12 @@ export default {
       btnState: false,
       list: [],
       total: null,
-      xhr:new XMLHttpRequest(),
+      xhr: new XMLHttpRequest(),
       listLoading: true,
       showProgress: false,
       uploadPercent: 0,
       Form: { fileList: "" },
-      a:false,
+      a: false,
       fileList: [],
       listQuery: {
         page: 1,
@@ -249,7 +249,11 @@ export default {
           { required: true, message: "强更状态不能为空", trigger: "change" }
         ],
         upgradeContent: [
-          { required: true, message: "请输入不超过200位的提示语", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入不超过200位的提示语",
+            trigger: "blur"
+          },
           {
             min: 1,
             max: 200,
@@ -451,8 +455,12 @@ export default {
         // 添加文件
         ossData.append("file", file.file, file.file.name);
         this.xhr.open("post", data.host, true);
-        
-        this.xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
+
+        this.xhr.upload.addEventListener(
+          "progress",
+          this.progressFunction,
+          false
+        ); //监听上传进度
         this.xhr.onload = () => {
           this.temp.refreshAddress = ossData.get("key");
           this.$message({
@@ -461,11 +469,6 @@ export default {
           });
         };
         this.xhr.send(ossData);
-        // if(!this.a){
-        //   xhr.abort();
-        // }
-       
-
       });
     },
     progressFunction(event) {
@@ -480,7 +483,7 @@ export default {
       this.showProgress = true;
     },
     refUpload() {
-      this.xhr.abort()
+      this.xhr.abort();
     },
     // 新增保存
     create(formName) {

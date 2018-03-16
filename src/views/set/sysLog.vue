@@ -61,8 +61,8 @@
       </el-table-column>
       
       <el-table-column align="center" label="操作">
-        <template scope="scope">
-          <el-button class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
+        <template scope="scope" >
+          <el-button v-if="scope.row.senFlag" class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
         </template>
       </el-table-column>
 
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { getsysLog } from "@/api/set";
+import { getsysLog ,doOpenSend} from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -188,7 +188,15 @@ export default {
       this.getList();
     },
     handleAgain(val){
-      console.log(val)
+      doOpenSend({id:val.id}).then(res=>{
+        if(res.data.code ===1){
+          this.$message({
+                  type: "success",
+                  message: "操作成功"
+                });
+          this.handleFilter()
+        }
+      })
     }
   }
 };
