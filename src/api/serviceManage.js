@@ -156,6 +156,30 @@ export function deleteGoodsData(obj) {
     })
   })
 }
+
+//已对接E店
+export function alreadyButted(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/getEshopGoods`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//对接详情E店列表
+export function buttedList(){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/getGoodsCode`).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+
 // -------------技能-----------------
 
 export function getListdata(obj, pageNumber, pageSize) {
