@@ -475,22 +475,28 @@
     <!-- 对接E店 -->
       <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog" @close="closeingLabel">
         <el-table :data="dockingData" stripe border style="width: 100%">
-          <el-table-column prop="date" align="center" label="商品名称"></el-table-column>
-          <el-table-column prop="name" align="center" label="对接编码"></el-table-column>
+          <el-table-column prop="name" align="center" label="商品名称"></el-table-column>
+          <el-table-column class-name="joCode" prop="jointCode" align="center" label="对接编码">
+            <template scope="scope">
+              <el-tooltip placement="left" :disabled="scope.row.jointCode.length<=20" :content="scope.row.jointCode">
+                <span>{{scope.row.jointCode}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column prop="address" align="center" label="E店名称">
             <template scope="scope">
-              <div class="branch" v-for="(item,index) in scope.row.address" :key="index">
-                  <el-tooltip placement="left" :disabled="item.length<=10" :content="item">
-                      <span>{{item}}</span>
+              <div class="branch" v-for="(item,index) in scope.row.commodityEshops" :key="index">
+                  <el-tooltip placement="left" :disabled="item.eshopName.length<=10" :content="item.eshopName">
+                      <span>{{item.eshopName}}</span>
                    </el-tooltip>
               </div>
             </template>
           </el-table-column>
           <el-table-column prop="id" align="center" label="对接商品ID">
             <template scope="scope">
-              <div class="branch" v-for="(item,index) in scope.row.id" :key="index">
-                <el-tooltip placement="left" :disabled="item.length<=10" :content="item">
-                  <span>{{item}}</span>
+              <div class="branch" v-for="(item,index) in scope.row.commodityEshops" :key="index">
+                <el-tooltip placement="left" :disabled="item.jointGoodsCode.length<=10" :content="item.jointGoodsCode">
+                  <span>{{item.jointGoodsCode}}</span>
                 </el-tooltip>
               </div>
             </template>
@@ -529,7 +535,7 @@ import {
   ServerDelete,
   ServerEdit,
   serverEditPre,
-  sortList,
+  alreadyButted,
   serGasqSort,
   deleteGoodsData
 } from "@/api/serviceManage";
@@ -541,25 +547,10 @@ import addCommodity from "./addCommodity.vue";
 var arr = [];
 
 var dockingData=[{
-          date: '2016-05-02',
+          jointCode: '2016-05-02',
           name: '王小虎',
-          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
-          id:['123123123123123','123123123123123','123123123123123']
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
-          id:['123123123123123','123123123123123','123123123123123']
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
-          id:['123123123123123','123123123123123','123123123123123']
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address:['上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄','上海市普陀区金沙江路 1518 弄'],
-          id:['123123123123123','123123123123123','123123123123123']
+          commodityEshops:[{eshopName:'上海市普陀区金沙江路 1518 弄',jointGoodsCode:'123123123123123'},{eshopName:'上海市普陀区金沙江路 1519 弄',jointGoodsCode:'123123123123123'},
+          {eshopName:'上海市普陀区金沙江路 1511 弄',jointGoodsCode:'123123123123123'},{eshopName:'上海市普陀区金沙江路 1512 弄',jointGoodsCode:'123123123123123'}]
         }]
 
 
@@ -791,7 +782,7 @@ export default {
       editName: {},
       customArr: [],
       jointCode: false,
-      dockingData:dockingData,
+      dockingData:[],
       alreadyArr: [],
       labelClickArr: [],
       systemClickId: null,
@@ -970,11 +961,39 @@ export default {
     //删除商品
     deletGood(item){
       console.log(item.id)
+      this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        customClass:"deleteCom",
+        type: "warning"
+      })
+        .then(() => {
+          alert('123123')
+        })
+        .catch(() => {
+          // return
+        });
     },
     //已对接E店
     dockingE(item){
-      this.docking = true
       console.log(item.id)
+      alreadyButted({id:item.id})
+        .then(data=>{
+          if(data.data.code==1){
+            console.log(data.data.data)
+            this.dockingData[0] = data.data.data
+            this.docking = true
+          }else{
+            this.$message({
+              type: "warning",
+              message: data.data.data
+            });
+          }
+        })
+        .catch(error=>{
+          return false
+        })
     },
     //对接详情
     buttDetails(){
@@ -991,7 +1010,7 @@ export default {
       this.picFile = item;
       //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
       //上传图片成功触发表单验证
-      this.$refs['basic'].validate(valid => {})
+      // this.$refs['basic'].validate(valid => {})
     },
     imgTextClick(item) {
       this.imgText = item;
@@ -1083,7 +1102,7 @@ export default {
           return false;
         }
         this.labelClickArr.push(item.label);
-        this.$refs['basic'].validate(valid => {})
+        // this.$refs['basic'].validate(valid => {})
       } else {
         this.remove(this.labelClickArr, item.label);
       }
@@ -1416,6 +1435,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
+        customClass:"deleteCom",
         type: "warning"
       })
         .then(() => {
@@ -1847,9 +1867,8 @@ export default {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.projectTabel .el-table__row .cell,.dockingDialog .el-table__row .cell {
+.projectTabel .el-table__row .cell{
   padding: 0;
-  /* display: flex; */
 }
 .dockingDialog .el-table__row .cell div{
    overflow: hidden;
@@ -2413,7 +2432,7 @@ hr {
 }
 .commEd{
   border: 1px solid #4c70e8;
-  padding: 5px 15px;
+  padding: 6px 16px;
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
@@ -2421,12 +2440,19 @@ hr {
 }
 .probtn{
   border: 1px solid #4c70e8;
-  padding: 5px 15px;
+  padding: 6px 16px;
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
   margin: 0 10px;
-  line-height: 26px;
+  line-height:30px;
+}
+.deleteCom .el-message-box__message{
+  text-align: left !important;
+}
+.joCode .cell{
+  padding: 0 10px;
+  white-space: nowrap;
 }
 
 </style>

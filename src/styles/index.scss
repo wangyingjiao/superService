@@ -403,7 +403,7 @@ input, button{
   width: 80px;
 }
 .ceshi3 {
-  font-size: 12px;
+  font-size: 14px;
   color: #1d85fe;
   border: 1px solid #1d85fe;
   background-color: #ffffff;
@@ -706,6 +706,7 @@ body {
 #app .ceshi3:hover{
   color: #fff;
   background-color: $operationColor;
+  border: 1px solid $operationColor;
 }
 #app .el-table{
   @include tableWhole($tableSize,$tableColor,$tableTrHeight,$tableBackGround)

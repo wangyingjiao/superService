@@ -104,7 +104,7 @@
           <el-form-item label="版本号:" prop="versionNumber">
             <el-input        
            class="form_item"
-            placeholder="请输入2-10位的版本号" v-model.trim="temp.versionNumber"></el-input>
+            placeholder="请输入1-15位的版本号" v-model.trim="temp.versionNumber"></el-input>
           </el-form-item>
 
           <el-form-item label="build号:" prop="build">
@@ -145,11 +145,7 @@
               <el-progress v-show="showProgress" :text-inside="true" :stroke-width="15" :percentage="uploadPercent">
               </el-progress>
           </el-form-item>
-          
-
-           
-
-          </el-form>
+        </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
         <button class="button-large" :loading="true" :disabled="btnState"  v-if="dialogStatus == 'update'"  @click="update('temp')">保 存</button>     
@@ -164,7 +160,14 @@
 </template>
 
 <script>
-import { getApp, addApp, handleUpApp, upApp, delApp ,getNewest} from "@/api/set";
+import {
+  getApp,
+  addApp,
+  handleUpApp,
+  upApp,
+  delApp,
+  getNewest
+} from "@/api/set";
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import util from "@/utils/date";
@@ -185,17 +188,19 @@ export default {
           callback();
         }
       } else {
-        callback(new Error("build号不能为空"));
+        callback(new Error("请输入build号"));
       }
     };
     return {
       btnState: false,
       list: [],
       total: null,
+      xhr: new XMLHttpRequest(),
       listLoading: true,
       showProgress: false,
       uploadPercent: 0,
       Form: { fileList: "" },
+      a: false,
       fileList: [],
       listQuery: {
         page: 1,
@@ -244,16 +249,20 @@ export default {
           { required: true, message: "强更状态不能为空", trigger: "change" }
         ],
         upgradeContent: [
-          { required: true, message: "更新提示语不能为空", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入不超过200位的提示语",
+            trigger: "blur"
+          },
           {
             min: 1,
             max: 200,
-            message: "长度在 1 到 200 个字符",
+            message: "请输入不超过200位的提示语",
             trigger: "blur"
           }
         ],
         refreshAddress: [
-          { required: true, message: "更新地址不能为空", trigger: "blur" },
+          { required: true, message: "请输入更新地址", trigger: "blur" },
           {
             min: 1,
             max: 200,
@@ -323,9 +332,9 @@ export default {
     },
     // 搜索
     handleFilter() {
-      // getNewest().then(res=>{
-      //   console.log(res)
-      // })
+      getNewest().then(res => {
+        console.log(res);
+      });
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();
@@ -445,17 +454,21 @@ export default {
         ossData.append("signature", data.signature);
         // 添加文件
         ossData.append("file", file.file, file.file.name);
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", data.host, true);
-        xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
-        xhr.onload = () => {
+        this.xhr.open("post", data.host, true);
+
+        this.xhr.upload.addEventListener(
+          "progress",
+          this.progressFunction,
+          false
+        ); //监听上传进度
+        this.xhr.onload = () => {
           this.temp.refreshAddress = ossData.get("key");
           this.$message({
             type: "success",
             message: "上传完成"
           });
         };
-        xhr.send(ossData);
+        this.xhr.send(ossData);
       });
     },
     progressFunction(event) {
@@ -468,6 +481,9 @@ export default {
         this.uploadPercent = percent;
       }
       this.showProgress = true;
+    },
+    refUpload() {
+      this.xhr.abort();
     },
     // 新增保存
     create(formName) {
@@ -565,6 +581,7 @@ export default {
     // 清空表单
     resetForm(formName) {
       this.resetTemp();
+      this.refUpload();
       this.showProgress = false;
       this.uploadPercent = 0;
       this.$refs[formName].resetFields();

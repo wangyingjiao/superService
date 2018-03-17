@@ -599,7 +599,7 @@ export default {
             }
           }
           this.data2 = arr;
-          if (localStorage.getItem("roleId") == res.data.data.id) {
+          if (res.data.data.updateOwnFlag == "yes") {
             this.myselfUpdate = false;
           }
           if (res.data.data.flagRoleId) {
@@ -932,12 +932,7 @@ export default {
   height: 25px;
   width: 80px;
 }
-.ceshi3 {
-  font-size: 14px;
-  color: #1d85fe;
-  border: 1px solid #1d85fe;
-  background-color: #ffffff;
-}
+
 .dialog-footer {
   text-align: center;
 }

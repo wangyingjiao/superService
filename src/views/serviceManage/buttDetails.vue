@@ -60,6 +60,7 @@
 import dict from '../../../static/dict.json'
 import {
   Taxonomy,
+  buttedList
 } from "@/api/serviceManage";
 
 var options = [{
@@ -295,11 +296,17 @@ var tableData3 = [{
         //默认已对接商品数据
         this.handleClick()
         //check默认选中第一个
-        this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]); 
+        // this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]); 
         //所属类型select
         this.thisType = dict.ser_sort
+        delete this.thisType.all
         //对接E店默认选中第一个
         this.search.ed = this.options[0].value
+        // buttedList().then(data=>{
+        //     console.log(data,"data")
+        // }).catch(error=>{
+        //     console.log(error,"error")
+        // })
         //当前E店
         this.dockingEName = this.options[0].label
     }

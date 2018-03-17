@@ -674,9 +674,7 @@ export default {
 .width400 {
   width: 400px;
 }
-.ceshi3{
-  font-size:12px; 
-}
+
 .mapDiv {
   float: left;
   margin-top: 100px;

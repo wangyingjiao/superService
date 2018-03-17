@@ -106,7 +106,7 @@
           <el-input 
           v-model.trim="temp.name"
           class="form_item" 
-          :disabled="dialogStatus == 'update' && orgId != '0' "
+          :disabled="dialogStatus == 'update' && orgId != 'yes' "
           placeholder="请正确填写机构名称（2-15个字）"></el-input>
         </el-form-item>
 
@@ -200,7 +200,7 @@
 
         <el-form-item  v-if="temp.dockType == 'gasq'" label="对接E店:" required="">
           <el-row>
-          <el-col :span="20">
+          <el-col :span="21">
           <el-form-item >
             <el-input 
               
@@ -208,7 +208,7 @@
               placeholder="请输入E店编码"></el-input>
           </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-form-item > 
               <div class="btn_addEshop"  @click="getEcode(temp.jointEshopCode)">添加E店
               </div>
@@ -613,7 +613,6 @@ export default {
       "23:30",
       "24:00"
     ];
-    this.orgId = localStorage.getItem("orgId");
   },
   methods: {
     //获取列表
@@ -702,12 +701,14 @@ export default {
     //点击编辑
     handleUpdate(row) {
       this.listLoading = true;
+
       const obj = {
         id: row.id
       };
       setMech(obj)
         .then(res => {
           if (res.data.code == "1") {
+            this.orgId = res.data.data.updateOwnFlag;
             this.listLoading = false;
             if (res.data.data.haveStation !== 0) {
               this.typeState = true;
@@ -799,10 +800,10 @@ export default {
     delEshop(val) {
       if (val.id != undefined) {
         var obj = {
-          id:this.temp.id,
+          id: this.temp.id,
           eshopCode: val.eshopCode
-        }
-        console.log(obj)
+        };
+        console.log(obj);
         deleteEshop(obj).then(res => {
           this.number++;
           if (res.data.code == 1) {
@@ -1047,12 +1048,6 @@ export default {
   padding: 20px 20px 20px 20px;
 }
 
-.ceshi3 {
-  font-size: 14px;
-  color: #1d85fe;
-  border: 1px solid #1d85fe;
-  background-color: #ffffff;
-}
 
 .proName {
   width: 100%;
@@ -1069,7 +1064,7 @@ export default {
 .btn_addEshop {
   float: right;
   height: 36px;
-  width: 80px;
+  width: 100%;
   background-color: #fff;
   border: 1px solid #4c70e8;
   text-align: center;

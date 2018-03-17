@@ -1,12 +1,16 @@
 import instance from '@/utils/fetch'
 
-// 添加员工
+// 添加保存员工
 export function addStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/saveData`, obj)
 }
-// 编辑员工
+// 编辑保存员工
 export function upStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/upData`, obj)
+}
+// 编辑员工
+export function hanleUpuser(obj) {
+  return instance.post(`/apiservice/a/sys/user/formData`, obj)
 }
 // 获取岗位列表（分页）
 export function getStationPage(obj, pageNumber, pageSize) {
