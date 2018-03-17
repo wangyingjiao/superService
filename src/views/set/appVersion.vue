@@ -332,9 +332,9 @@ export default {
     },
     // 搜索
     handleFilter() {
-      getNewest().then(res => {
-        console.log(res);
-      });
+      // getNewest().then(res => {
+      //   console.log(res);
+      // });
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();

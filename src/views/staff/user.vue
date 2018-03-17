@@ -728,8 +728,6 @@ export default {
                         this.data2[i].subMenus[j].subMenus[k].id
                       ) > -1
                     ) {
-                      console.log(this.$refs.domTree);
-                      console.log(this.$refs["domTree"]);
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           this.data2[i].subMenus[j].subMenus.length - 1
@@ -753,7 +751,6 @@ export default {
       //点击编辑
       this.listLoading = true;
       hanleUpuser({ id: row.id }).then(res => {
-        console.log(res);
         if (res.data.code === 1) {
           var user = res.data.data;
           this.temp = {
