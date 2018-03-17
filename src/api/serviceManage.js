@@ -179,6 +179,28 @@ export function buttedList(){
   })
 }
 
+//对接详情已对接商品列表
+export function buttedConnList(obj,pageNumber,pageSize){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/getGoodsList?pageNo=${pageNumber}&pageSize=${pageSize}`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//对接详情已未对接商品列表
+export function noButtedConnList(obj,pageNumber,pageSize){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/getNotJonitGoods?pageNo=${pageNumber}&pageSize=${pageSize}`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
 
 // -------------技能-----------------
 

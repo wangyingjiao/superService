@@ -22,7 +22,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="buttDetails">对接详情</button>
+    <button class="button-small btn_pad btn-color" v-if="orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
 
     <el-table 
     :key='tableKey' 
@@ -473,7 +473,7 @@
         </el-dialog> -->
     <!-- 商品添加完成 -->
     <!-- 对接E店 -->
-      <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog" @close="closeingLabel">
+      <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog">
         <el-table :data="dockingData" stripe border style="width: 100%">
           <el-table-column prop="name" align="center" label="商品名称"></el-table-column>
           <el-table-column class-name="joCode" prop="jointCode" align="center" label="对接编码">
@@ -777,6 +777,7 @@ export default {
       }
     };
     return {
+      orgStatus:'',
       pageNumber: 1,
       addCommodityFlag: false,
       editName: {},
@@ -960,7 +961,6 @@ export default {
   methods: {
     //删除商品
     deletGood(item){
-      console.log(item.id)
       this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -969,7 +969,22 @@ export default {
         type: "warning"
       })
         .then(() => {
-          alert('123123')
+          deleteGoodsData({id:item.id,itemId:item.itemId})
+            .then(data=>{
+              console.log(data,"data___++++")
+              if(data.data.code==1){
+                  this.$message({
+                    type: "success",
+                    message: data.data.data
+                  });
+                  this.handleCurrentChange(this.listQuery.page);
+              }else{
+               
+              }
+            })
+            .catch(error=>{
+              console.log(error,"error----")
+            })
         })
         .catch(() => {
           // return
@@ -1227,34 +1242,13 @@ export default {
         this.$message.error("商品信息不能为空");
         return false;
       } else {
-        if (item.id) {
-          deleteGoodsData({ id: item.id })
-            .then(data => {
-              if (data.data.code == 1) {
-                this.$message({
-                  message: data.data.data,
-                  type: "success"
-                });
-                this.handleEditFlag = false;
-                this.basicForm.commoditys.splice(index, 1);
-              } else {
-              }
-            })
-            .catch(error => {
-              this.$message({
-                message: data.data.data,
-                type: "error"
-              });
-              return false;
-            });
-        } else {
           this.$message({
             message: "删除成功",
             type: "success"
           });
           this.handleEditFlag = false;
           this.basicForm.commoditys.splice(index, 1);
-        }
+        
       }
     },
     houseClick(val) {
@@ -1310,11 +1304,13 @@ export default {
       }
       getProject(obj, _page, _size)
         .then(res => {
-          this.total = res.data.data.count;
-          this.pageNumber = res.data.data.pageNo;
-          this.pageSize = res.data.data.pageSize;
-          this.listQuery.page = res.data.data.pageNo;
-          this.listTable = res.data.data.list;
+          console.log(res,"res---")
+          this.orgStatus = res.data.data.orgStatus
+          this.total = res.data.data.page.count;
+          this.pageNumber = res.data.data.page.pageNo;
+          this.pageSize = res.data.data.page.pageSize;
+          this.listQuery.page = res.data.data.page.pageNo;
+          this.listTable = res.data.data.page.list;
           if (this.listTable != undefined && this.listTable.length > 0) {
             for (var i = 0; i < this.listTable.length; i++) {
               this.listTable[i].num = i + 1;
@@ -2432,7 +2428,7 @@ hr {
 }
 .commEd{
   border: 1px solid #4c70e8;
-  padding: 6px 16px;
+  padding: 4px 16px;
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;
@@ -2440,7 +2436,7 @@ hr {
 }
 .probtn{
   border: 1px solid #4c70e8;
-  padding: 6px 16px;
+  padding: 4px 16px;
   color: #4c70e8;
   border-radius:5px; 
   cursor: pointer;

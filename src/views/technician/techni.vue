@@ -1067,15 +1067,18 @@ export default {
       //服务时间
       this.serviceTech();
       //所属服务站
-      serviceStation({})
-        .then(data => {
-          var stationLocal = localStorage.getItem("station");
-          var stationObj = JSON.parse(stationLocal);
-          var obj = data.data.data;
-          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
-          this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
-        })
-        .catch(error => {});
+      var stationLocal = localStorage.getItem("station");
+      var stationObj = JSON.parse(stationLocal);
+      this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
+      // serviceStation({})
+      //   .then(data => {
+      //     var stationLocal = localStorage.getItem("station");
+      //     var stationObj = JSON.parse(stationLocal);
+      //     // var obj = data.data.data;
+      //     this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+      //     this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
+      //   })
+      //   .catch(error => {});
     },
     picUpload(file, flag) {
       var type = file.file.name.split(".");
@@ -1356,14 +1359,14 @@ export default {
       this.serviceTech();
 
       //所属服务站
-      serviceStation({})
-        .then(data => {
-          var stationLocal = localStorage.getItem("station");
-          var stationObj = JSON.parse(stationLocal);
-          var obj = data.data.data;
-          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
-        })
-        .catch(error => {});
+      // serviceStation({})
+      //   .then(data => {
+      //     var stationLocal = localStorage.getItem("station");
+      //     var stationObj = JSON.parse(stationLocal);
+      //     var obj = data.data.data;
+      //     this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+      //   })
+      //   .catch(error => {});
     },
     //现住地址
     nowAdd(val) {
@@ -1694,6 +1697,7 @@ export default {
             this.sexTypeo = data.data.data.skillInfos;
             this.infoname = data.data.data.page.list || [];
             this.server = data.data.data.stations;
+            this.servery = data.data.data.stations;
             this.total = data.data.data.page.count;
             var i = 0,
               len = this.infoname.length,

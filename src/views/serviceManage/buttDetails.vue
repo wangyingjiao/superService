@@ -9,11 +9,11 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" clearable v-model="search.ed" placeholder="请选择" @change="searchEd(search.ed)">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                <el-select class="butt-search" clearable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
+                    <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>
-                <el-select class="butt-search" clearable v-model="search.type" placeholder="所属类型" @change="typeChange">
+                <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="所属类型" @change="typeChange">
                     <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
                     </el-option>
                 </el-select>
@@ -21,8 +21,8 @@
                     <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
-                <el-input class="butt-search" v-model="search.name" placeholder="请输入商品名称"></el-input>
-                <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.jointGoodsCode" placeholder="请输入对接编码"></el-input>
+                <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入商品名称"></el-input>
+                <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
                 <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
             </div>
         <!-- 搜索 完成 -->
@@ -30,19 +30,26 @@
         <!-- table列表 分页-->
             <div class="btton-table">
                 <div>
-                    <span style="line-height:25px">当前查询的E店为：{{dockingEName}}</span>
+                    <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
                     <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
-                    <button v-else class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">设置对接</button>
+                    <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
                 </div>
                 <div>
                     <el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
-                        <el-table-column prop="commoditys" label="商品名称" align="center"></el-table-column>
-                        <el-table-column prop="sortId" label="所属分类" align="center"></el-table-column>
-                        <el-table-column prop="price" label="价格/单位" align="center"></el-table-column>
-                        <el-table-column prop="sortIds" label="对接编码" align="center"></el-table-column>
-                        <el-table-column prop="jointGoodsCode" label="对接商品ID" align="center"></el-table-column>
-                        <el-table-column prop="button" label="对接状态" align="center"></el-table-column>
+                        <el-table-column prop="newName" label="商品名称" align="center"></el-table-column>
+                        <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
+                        <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center"></el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="jointGoodsCode" label="对接商品ID" align="center"></el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="jointStatus" label="对接状态" align="center">
+                            <template scope="scope">
+                                <span v-if="scope.row.jointStatus=='butt_butt'">对接中</span>
+                                <span v-if="scope.row.jointStatus=='butt_success'">对接成功</span>
+                                <span v-if="scope.row.jointStatus=='butt_fail'">对接失败</span>
+                                <span v-if="scope.row.jointStatus=='remove_fail'">解除失败</span>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </div>
             <!-- 分页 -->
@@ -60,96 +67,99 @@
 import dict from '../../../static/dict.json'
 import {
   Taxonomy,
+  buttedConnList,
+  noButtedConnList,
   buttedList
 } from "@/api/serviceManage";
 
-var options = [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }]
+// var options = [{
+//           id: '选项1',
+//           name: '黄金糕'
+//         }, {
+//           id: '选项2',
+//           name: '双皮奶'
+//         }, {
+//           id: '选项3',
+//           name: '蚵仔煎'
+//         }, {
+//           id: '选项4',
+//           name: '龙须面'
+//         }, {
+//           id: '选项5',
+//           name: '北京烤鸭'
+//         }]
 
 var tableData3 = [{
-            commoditys:'商品名称1',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称1',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'对接商品ID',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称2',
-            sortId:'111',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称2',
+            sortName:'111',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'对接商品ID',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称3',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称3',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称4',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称4',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'对接商品ID',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称5',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称5',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称6',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称6',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'对接商品ID',
-            button:'对接状态'
+            jointStatus:'对接状态'
         }, {
-            commoditys:'商品名称7',
-            sortId:'所属分类',
-            price:'价格/单位',
-            sortIds:'对接编码',
+            newName:'商品名称7',
+            sortName:'所属分类',
+            univalence:'价格/单位',
+            selfCode:'对接编码',
             jointGoodsCode:'对接商品ID',
-            button:'对接状态'
+            jointStatus:'对接状态'
 }]
 
   export default {
     data() {
       return {
         activeName: 'yesDocking',   //tab切换
-        dockingEName:'',
-        options:options,
+        dockingEName:{},
+        eshopStatus:null,
+        options:[],
         tableData3:tableData3,
         multipleSelection:[],
         typeOptions:[],
         pageSync:1,
         pageSize:10,
-        total:100,
+        total:1,
         thisType:{},
         search:{
-            ed:'',
-            type:'',
+            eshopCode:'',
+            majorSort:'',
             sortId:'',
-            name:'',
-            jointGoodsCode:'',
+            goodsName:'',
+            selfCode:'',
         }
       };
     },
@@ -160,9 +170,48 @@ var tableData3 = [{
      
     },
     methods: {
+        //已对接api
+        buttedConnListApi(obj,page,size){
+            page = page || 1
+            size = size || 10
+            buttedConnList(obj,page,size).then(data=>{
+                if(data.data.code){
+                    this.tableData3 = data.data.data.list
+                    this.total = data.data.data.count
+                    console.log(data,"data+++++")
+                }else{
+                    this.$message({
+                        type: "warning",
+                        message: data.data.data
+                    });
+                }
+            }).catch(error=>{
+                console.log(error,"-----error")
+            })
+        },
+        //未对接api
+        noButtedConnListApi(obj,page,size){
+            page = page || 1;
+            size = size || 10;
+            noButtedConnList(obj,page,size).then(data=>{
+                if(data.data.code){
+                    this.tableData3 = data.data.data.page.list
+                    this.total = data.data.data.page.count
+                    this.eshopStatus = data.data.data.eshopStatus
+                    console.log(data,"data+++++")
+                }else{
+                    this.$message({
+                        type: "warning",
+                        message: data.data.data
+                    });
+                }
+            }).catch(error=>{
+                console.log(error,"error-----")
+            })
+        },
         //当前查询的E店
         searchEd(val){  
-        
+            
         },
         //复选框禁选
         selectable(row,index){
@@ -170,37 +219,54 @@ var tableData3 = [{
             // return row.id !== 1
             //通过索引index来禁止不能选择的项
             // return index !== 2
-            return row.jointGoodsCode
+            if(this.activeName == "yesDocking"){
+                return row.jointGoodsCode
+            }else{
+                return true
+            }
         },
         //搜索
         searchBtt(){
             //改变当前查询的E店：
-            if(this.search.ed){
+            if(this.search.eshopCode){
                 var i , options = this.options;
                 for( i = 0 ; i < options.length ; i++){
-                    if( options[i].value==this.search.ed){
-                        this.dockingEName = options[i].label
+                    if( options[i].eshopCode==this.search.eshopCode){
+                        this.dockingEName = options[i]
                         break;
                     }
                 }
             }else{
-                this.dockingEName = ''
+                this.dockingEName = {name:''}
             }
             //--改变当前查询的E店------------------：
-            console.log(this.search,"search---")
+            if(this.pageSync == 1){
+                this.tablePageSize(this.search)
+            }else{
+                this.pageSync = 1
+            }
         },
         // 搜索框清空
         searchEmpty(){
-            this.search.ed = ''
-            this.search.type = ''
+            // this.search.eshopCode = ''
+            this.search.majorSort = ''
             this.search.sortId = ''
-            this.search.name = ''
-            this.search.jointGoodsCode = ''
+            this.search.goodsName = ''
+            this.search.selfCode = ''
+        },
+        //切换，page，size判断当前是已对接还是未对接
+        tablePageSize(obj,page,size){
+            if(this.activeName == "yesDocking"){
+                this.buttedConnListApi(obj,page,size)
+            }else{
+                this.noButtedConnListApi(obj,page,size)
+            }
         },
         //tabs切换
         handleClick(tab, event) {
-            // console.log(tab.name, event);
-            console.log(this.activeName)
+            this.search.eshopCode = this.options[0].eshopCode || ''
+            this.dockingEName = this.options[0] || {name:''}
+            this.tablePageSize(this.search)
             this.searchEmpty()  //清空搜索框
         },
         //复选框
@@ -214,75 +280,46 @@ var tableData3 = [{
             // })
             this.multipleSelection = val;
         },
+        //对接设置、移除数据
+        setUpDelete(data){
+            var obj = {}
+            var arr = this.multipleSelection
+            var arrPost = [],i;
+             for( i = 0 ; i<arr.length; i++){
+                arrPost.push(arr[i][data])
+            }
+            obj.jointGoodsCodes = arrPost
+            obj.eshopCode = this.search.eshopCode
+            return obj
+        },
         //移除对接按钮
         toggleSelection(row, selected){
-            console.log(this.multipleSelection)
+            this.setUpDelete('jointGoodsCode')
+            console.log(this.setUpDelete('jointGoodsCode'),"移除")
+            // console.log(obj,"obj------")
+        },
+        //设置对接按钮
+        toggleSetUp(){
+            this.setUpDelete('id')
+            console.log(this.setUpDelete('id'),"设置")
         },
         //一页展示几条
         handleSizeChange(page){
-            console.log(page)
+            this.pageSize = page
+            this.tablePageSize(this.search,this.pageSync, this.pageSize)
         },
         // 分页
         handleCurrentChange(val){
-           console.log(val,"val")
-           this.tableData3 = [{
-                commoditys:'商品名称11',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称22',
-                sortId:'111',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称33',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称44',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称55',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称66',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }, {
-                commoditys:'商品名称77',
-                sortId:'所属分类',
-                price:'价格/单位',
-                sortIds:'对接编码',
-                jointGoodsCode:'对接商品ID',
-                button:'对接状态'
-            }]
+            this.pageSync = val
+            this.tablePageSize(this.search,this.pageSync, this.pageSize)
         },
         //所属类型
         typeChange(){
             //切换类型，请求分类数据
             //清空分类数据，重新请求
             this.search.sortId = ""
-            if(this.search.type){
-                Taxonomy({majorSort:this.search.type})
+            if(this.search.majorSort){
+                Taxonomy({majorSort:this.search.majorSort})
                     .then(data=>{
                         this.typeOptions = data.data.data
                     })
@@ -294,21 +331,40 @@ var tableData3 = [{
     },
     mounted(){
         //默认已对接商品数据
-        this.handleClick()
+        // this.handleClick()
         //check默认选中第一个
         // this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]); 
         //所属类型select
         this.thisType = dict.ser_sort
         delete this.thisType.all
         //对接E店默认选中第一个
-        this.search.ed = this.options[0].value
-        // buttedList().then(data=>{
-        //     console.log(data,"data")
-        // }).catch(error=>{
-        //     console.log(error,"error")
-        // })
-        //当前E店
-        this.dockingEName = this.options[0].label
+        //先请求E店列表获取第一条数据的id，在请求table列表数据，
+        let promise = new Promise((resolve,reject)=>{
+            buttedList().then(data=>{
+                console.log(data,"data")
+                if(data.data.code==1){
+                    if(data.data.data){
+                        this.options = data.data.data
+                        this.search.eshopCode = data.data.data[0].eshopCode
+                        resolve(this.search)
+                        this.dockingEName = data.data.data[0]  //当前E店
+                    }else{
+                        this.dockingEName = {name:''}
+                    }
+                }else{
+                    this.$message({
+                        type: "warning",
+                        message: data.data.data
+                    });
+                }
+            }).catch(error=>{
+                console.log(error,"error")
+            })
+        })
+        //获取E店数据请求table列表
+        promise.then(success=>{
+            this.buttedConnListApi(success)
+        })
     }
   };
 </script>
