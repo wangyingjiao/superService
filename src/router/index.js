@@ -109,6 +109,7 @@ export const constantRouterMap = [
       { path: 'appVersion', name: ' APP发版', component: _import('set/appVersion') },
       { path: 'menu', name: ' 菜单管理', component: _import('set/menu') },
       { path: 'dict', name: ' 数据字典', component: _import('set/dict') },
+      { path: 'sysJointWait', name: ' 待执行任务', component: _import('set/sysJointWait') },
       { path: 'pushMes', name: ' 推送消息', component: _import('set/pushMes') }
     ]
   },
