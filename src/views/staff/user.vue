@@ -267,6 +267,7 @@ import {
   delStaff,
   getMenudata,
   chkName,
+  hanleUpuser,
   addStation
 } from "@/api/staff";
 import { getSign } from "@/api/sign";
@@ -624,9 +625,12 @@ export default {
       if (b) {
         // 处理订单里的查看详情
         if (
-          ["order_time", "order_dispatch", "order_addTech","order_cancel"].indexOf(
-            a.permission
-          ) > -1
+          [
+            "order_time",
+            "order_dispatch",
+            "order_addTech",
+            "order_cancel"
+          ].indexOf(a.permission) > -1
         ) {
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
@@ -724,8 +728,6 @@ export default {
                         this.data2[i].subMenus[j].subMenus[k].id
                       ) > -1
                     ) {
-                      console.log(this.$refs.domTree)
-                      console.log(this.$refs['domTree'])
                       this.$refs.domTree.setChecked(
                         this.data2[i].subMenus[j].subMenus[
                           this.data2[i].subMenus[j].subMenus.length - 1
@@ -746,30 +748,37 @@ export default {
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
     },
     handleUpdate(row) {
-      // 点击编辑
+      //点击编辑
+      this.listLoading = true;
+      hanleUpuser({ id: row.id }).then(res => {
+        if (res.data.code === 1) {
+          var user = res.data.data;
+          this.temp = {
+            id: user.id,
+            name: user.name,
+            mobile: user.mobile,
+            password: "",
+            officeId: user.organization.id,
+            stationId: user.station.id,
+            role: user.role.id,
+            useable: user.useable
+          };
+          setTimeout(() => (this.temp.officeId = row.organization.id), 30);
+          setTimeout(() => (this.temp.stationId = row.station.id), 30);
+          setTimeout(() => (this.temp.role = row.role.id), 30);
+          this.listLoading = false;
+          if (user.updateOwnFlag == "yes") {
+            //判断是不是编辑自己：是，禁用；
+            this.officeState = true;
+            this.statStatte = true;
+            this.roleState = true;
+            this.crBtnState = true;
+            this.useableState = true;
+          }
+        }
+      });
       this.dialogFormVisible = true;
       this.dialogStatus = "update";
-      if (localStorage.getItem("userId") == row.id) {
-        //判断是不是编辑自己：是，禁用；
-        this.officeState = true;
-        this.statStatte = true;
-        this.roleState = true;
-        this.crBtnState = true;
-        this.useableState = true;
-      }
-      this.temp = {
-        id: row.id,
-        name: row.name,
-        mobile: row.mobile,
-        password: "",
-        officeId: "",
-        stationId: row.station.id,
-        role: row.role.id,
-        useable: row.useable
-      };
-      setTimeout(() => (this.temp.officeId = row.organization.id), 30);
-      setTimeout(() => (this.temp.stationId = row.station.id), 30);
-      setTimeout(() => (this.temp.role = row.role.id), 30);
     },
     handleDelete(row) {
       // 点击删除

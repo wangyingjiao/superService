@@ -2,14 +2,14 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width:40%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+      <!-- <el-input @keyup.enter.native="handleFilter" style="width:40%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
         </el-select>
       </el-input>
 
-       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
+       <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button> -->
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
@@ -34,15 +34,15 @@
       <el-table-column align="center" label="ID" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求结果" width="100" prop="isSuccess">      
+      <el-table-column align="center" label="请求路径"  prop="url">      
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间" width="200" prop="createDate">      
+      <el-table-column align="center" label="是否多次" prop="many">      
       </el-table-column>
-
-      <el-table-column align="center" label="请求地址" prop="url">      
+      <el-table-column align="center" label="请求次数" prop="num">      
       </el-table-column>
-
+      <el-table-column align="center" label="请求类型" prop="sendType">      
+      </el-table-column>
 
       <el-table-column align="center"   label="请求内容" prop="requestContent">     
         <template scope="scope">
@@ -51,20 +51,12 @@
            </el-tooltip>
         </template> 
       </el-table-column>
-
-      <el-table-column align="center" label="响应内容" prop="responseContent">    
-          <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.responseContent.length < 10" :content="scope.row.responseContent">
-             <div class="tool300" >{{scope.row.responseContent}}</div>
-           </el-tooltip>
-        </template>
-      </el-table-column>
       
-      <el-table-column align="center" label="操作">
+      <!-- <el-table-column align="center" label="操作">
         <template scope="scope" >
           <el-button v-if="scope.row.senFlag" class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
     </el-table>
 
@@ -80,7 +72,7 @@
 </template>
 
 <script>
-import { getsysLog ,doOpenSend} from "@/api/set";
+import { getSysjoint } from "@/api/set";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -103,18 +95,6 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
-      seOptions: {
-        //搜索下拉框
-        url: "请求地址",
-        requestContent: "请求内容",
-        responseContent: "响应内容",
-        isSuccess: "请求结果"
-      },
-      search: {
-        //绑定搜搜参数
-        type: "",
-        val: ""
-      },
       tableKey: 0,
       isIndeterminate: true
     };
@@ -125,39 +105,19 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      var obj = {}; //搜索参数
-      if (this.search.type == "url") {
-        var url = {
-          url: this.search.val
-        };
-        obj = Object.assign(obj, url);
-      } else if (this.search.type == "requestContent") {
-        var requestContent = {
-          requestContent: this.search.val
-        };
-        obj = Object.assign(obj, requestContent);
-      } else if (this.search.type == "responseContent") {
-        var responseContent = {
-          responseContent: this.search.val
-        };
-        obj = Object.assign(obj, responseContent);
-      } else if (this.search.type == "isSuccess") {
-        var isSuccess = {
-          isSuccess: this.search.val
-        };
-        obj = Object.assign(obj, isSuccess);
-      }
-      getsysLog(obj, this.pageNumber, this.pageSize)
+      getSysjoint({}, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
+            if (res.data.data) {
+              this.total = res.data.data.count;
+              this.list = res.data.data.list;
+              this.pageNumber = res.data.data.pageNo;
+              this.pageSize = res.data.data.pageSize;
+              this.listQuery.page = res.data.data.pageNo;
+              if (this.list != undefined) {
+                for (var i = 0; i < this.list.length; i++) {
+                  this.list[i].index = i + 1;
+                }
               }
             }
             this.listLoading = false;
@@ -186,17 +146,6 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       this.getList();
-    },
-    handleAgain(val){
-      doOpenSend({id:val.id}).then(res=>{
-        if(res.data.code ===1){
-          this.$message({
-                  type: "success",
-                  message: "操作成功"
-                });
-          this.handleFilter()
-        }
-      })
     }
   }
 };

@@ -111,7 +111,7 @@
             <el-input        
            class="form_item"
            
-            placeholder="请输入build号" v-model.trim="temp.build"></el-input>
+            placeholder="请输入1-15位build号" v-model.trim="temp.build"></el-input>
           </el-form-item>
 
           <el-form-item label="强更状态:" prop="forcedUpdate">
@@ -188,19 +188,19 @@ export default {
           callback();
         }
       } else {
-        callback(new Error("请输入build号"));
+        callback(new Error("build号为1 - 15位数字"));
       }
     };
     return {
       btnState: false,
       list: [],
       total: null,
-      xhr:new XMLHttpRequest(),
+      xhr: new XMLHttpRequest(),
       listLoading: true,
       showProgress: false,
       uploadPercent: 0,
       Form: { fileList: "" },
-      a:false,
+      a: false,
       fileList: [],
       listQuery: {
         page: 1,
@@ -249,7 +249,11 @@ export default {
           { required: true, message: "强更状态不能为空", trigger: "change" }
         ],
         upgradeContent: [
-          { required: true, message: "请输入不超过200位的提示语", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入不超过200位的提示语",
+            trigger: "blur"
+          },
           {
             min: 1,
             max: 200,
@@ -328,9 +332,9 @@ export default {
     },
     // 搜索
     handleFilter() {
-      getNewest().then(res => {
-        console.log(res);
-      });
+      // getNewest().then(res => {
+      //   console.log(res);
+      // });
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();
@@ -410,7 +414,11 @@ export default {
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     beforeAvatarUpload(file) {
-      const isAPK = file.type === "application/vnd.android.package-archive";
+      let name = file.name
+      var apk = name.substring(name.length-3,name.length)
+      console.log(apk)
+      console.log(file,'111111111')
+      const isAPK = apk === "apk";
       if (!isAPK) {
         this.$message.error("上传只能是 apk 格式安装包!");
       }
@@ -451,8 +459,12 @@ export default {
         // 添加文件
         ossData.append("file", file.file, file.file.name);
         this.xhr.open("post", data.host, true);
-        
-        this.xhr.upload.addEventListener("progress", this.progressFunction, false); //监听上传进度
+
+        this.xhr.upload.addEventListener(
+          "progress",
+          this.progressFunction,
+          false
+        ); //监听上传进度
         this.xhr.onload = () => {
           this.temp.refreshAddress = ossData.get("key");
           this.$message({
@@ -461,11 +473,6 @@ export default {
           });
         };
         this.xhr.send(ossData);
-        // if(!this.a){
-        //   xhr.abort();
-        // }
-       
-
       });
     },
     progressFunction(event) {
@@ -480,7 +487,7 @@ export default {
       this.showProgress = true;
     },
     refUpload() {
-      this.xhr.abort()
+      this.xhr.abort();
     },
     // 新增保存
     create(formName) {

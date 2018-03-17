@@ -599,7 +599,7 @@ export default {
             }
           }
           this.data2 = arr;
-          if (localStorage.getItem("roleId") == res.data.data.id) {
+          if (res.data.data.updateOwnFlag == "yes") {
             this.myselfUpdate = false;
           }
           if (res.data.data.flagRoleId) {

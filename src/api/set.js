@@ -9,6 +9,10 @@ export function getLog(obj, pageNumber, pageSize) {
 export function getsysLog(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/log/SysJointLogger/listSysJointLogger?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 再次对接
+export function doOpenSend(obj) {
+  return instance.post(`/apiservice/a//service/log/SysJointLogger/doOpenSend`, obj)
+}
 
 // 获取app发版列表
 export function getApp(obj, pageNumber, pageSize) {
@@ -78,4 +82,8 @@ export function addDict(obj) {
 // 删除字典
 export function delDict(obj) {
   return instance.post(`/apiservice/a/sys/dict/deleteDict`, obj)
+}
+// 获取队列列表
+export function getSysjoint(obj, pageNumber, pageSize) {
+  return instance.post(`/apiservice/a/service/log/sysJointWait/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
