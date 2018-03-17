@@ -111,7 +111,7 @@
             <el-input        
            class="form_item"
            
-            placeholder="请输入build号" v-model.trim="temp.build"></el-input>
+            placeholder="请输入1-15位build号" v-model.trim="temp.build"></el-input>
           </el-form-item>
 
           <el-form-item label="强更状态:" prop="forcedUpdate">
@@ -188,7 +188,7 @@ export default {
           callback();
         }
       } else {
-        callback(new Error("请输入build号"));
+        callback(new Error("build号为1 - 15位数字"));
       }
     };
     return {
@@ -414,7 +414,11 @@ export default {
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     beforeAvatarUpload(file) {
-      const isAPK = file.type === "application/vnd.android.package-archive";
+      let name = file.name
+      var apk = name.substring(name.length-3,name.length)
+      console.log(apk)
+      console.log(file,'111111111')
+      const isAPK = apk === "apk";
       if (!isAPK) {
         this.$message.error("上传只能是 apk 格式安装包!");
       }
