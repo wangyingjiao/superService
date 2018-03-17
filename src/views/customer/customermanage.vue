@@ -15,7 +15,7 @@
 					  :data="tableData"
 						v-loading="listLoading"
 					  style="width:100%;"
-						>
+						>          
 					  <el-table-column
 						align="center"
 						label="编号"						
@@ -60,10 +60,12 @@
             width="300"
 						label="操作"
 						>
+            <!-- 360 -->
               <template scope="scope">
                   <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
                   <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
                   <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
+                  <!-- <el-button type="button" class="ceshi3" v-if="true" @click="ChangeAdress(scope.row)">地址管理</el-button> -->
               </template>
 					  </el-table-column>					  
 					</el-table>
@@ -122,6 +124,87 @@
 				</div>
 		</el-dialog>
 		<!--新增客户弹窗结束-->
+    <!--服务地址管理弹窗结束-->
+		<el-dialog title="服务地址管理" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
+				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
+            <el-table
+					  :data="tableDataAddress"
+						v-loading="listLoading"
+					  style="width:100%;"
+						>          
+            <el-table-column align="center" label="默认地址" width="100">
+              <template scope="scope">
+                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row.id)">&nbsp;</el-radio>
+              </template>
+            </el-table-column> 
+					  <el-table-column
+					    align="center"
+						prop="name"    
+						label="姓名"
+						>
+					  </el-table-column>
+					  <el-table-column
+						align="center"
+						prop="phone"         
+						label="电话">
+					  </el-table-column>
+						<el-table-column
+						align="center"				
+						label="地址"
+            prop="address"					
+						>						            
+					  </el-table-column>						
+					  <el-table-column
+						align="center"
+						label="操作"
+            width="180"
+						>
+              <template scope="scope">
+                  <el-button type="button" class="ceshi3"  @click="selectButAddress(scope.row)">编辑</el-button>
+                  <el-button type="button" class="ceshi3"  @click="DeleteAddress(scope.row)">删除</el-button>
+              </template>
+					  </el-table-column>					  
+					</el-table>				
+        <div slot="footer" class="dialog-footer" style="text-align:center;">
+						<button class="button-cancel"  @click="colseAddress()">关闭</button>
+				</div>
+		</el-dialog>
+    <!--服务地址管理弹窗结束-->
+		<!--新增服务地址管理弹窗开始-->
+		<el-dialog :title="titlevarAddress" :visible.sync="addAddrssDialogShow" :show-close="false" :close-on-click-modal="false">	
+				<el-form 
+				  :model="ruleFormAddress" 
+					:rules="rulesAddress" 
+					ref="ruleFormAddress" 
+					label-width="160px" 
+					label-position="left" 
+					class="demo-ruleForm padding10Prent">
+					<el-form-item label="姓名:" prop="name"  >
+						<el-input v-model.trim="ruleFormAddress.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+					</el-form-item>
+					<el-form-item label="手机号:"  prop="phone">
+                <el-input  v-model="ruleFormAddress.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
+					</el-form-item>
+					<el-form-item label="所在区域:" prop="areaCodes">
+              <!-- 省市区 -->
+              <el-cascader
+                :options="areaOptionsAddress"
+                :show-all-levels="true"
+                 v-model="ruleFormAddress.areaCodes"
+                 style='width: 100%;'
+              ></el-cascader>							
+					</el-form-item>
+					<el-form-item label="详细地址:" prop="address">
+						<el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="输入详细地址"></el-input>		
+					</el-form-item>				
+				</el-form>						    
+				<div slot="footer" class="dialog-footer" style="text-align:center;">
+					  <button class="button-large"    @click="submitFormAddress('ruleFormAddress','add')">确 定</button>
+						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
+						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
+				</div>
+		</el-dialog>
+		<!--新增服务地址管理弹窗结束-->        
   </div>
 </template>
 
@@ -195,11 +278,13 @@ export default {
     };
     return {
       titlevar:'新增客户',
+      titlevarAddress:'新增服务地址',
       submitFlag: false,
       jumpPage: 1,
       btnShow: JSON.parse(localStorage.getItem("btn")),
       testvalue: "",
       areaOptions: this.$store.state.user.area,
+      areaOptionsAddress: this.$store.state.user.area,
       listLoading: false,
       ruleForm: {
         name: "",
@@ -214,6 +299,15 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
+      ruleFormAddress: {
+        name: "",
+        phone: "",
+        address: "",
+        provinceCode: "",
+        cityCode: "",
+        areaCode: "",
+        areaCodes: []
+      },      
       rules: {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
@@ -229,10 +323,27 @@ export default {
           }
         ]
       },
+      rulesAddress: {
+        name: [{ required: true, validator: checkName, trigger: "blur" }],
+        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        areaCodes: [
+          {
+            type: "array",
+            required: true,
+            message: "请选择区域",
+            trigger: "change"
+          }
+        ]
+      },      
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
       tableData: [],
+      tableDataAddress:[
+        {id:'ab',name:'jack',phone:'13426345690',address:'天津天津市和平区1222222'},
+        {id:'abc',name:'king',phone:'13426345678',address:'蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff'}
+      ],
       //全局搜索下拉选项
       organizationOptions: [],
       // organizationName:'',//服务机构
@@ -242,11 +353,54 @@ export default {
       pagetotal1: 0, //表格总页数
       pageSize1: 10, //表格每页条数
       pageNumber: 1,
-      mymap: {},
       testFlag: undefined,
+      radio:'',
+      serviceAddressVisible:false,
+      addAddrssDialogShow:false
     };
   },
   methods: {
+    //单选改变
+    getCurrentRow(value){
+      console.log(value)
+    },
+    //服务地址管理弹窗按钮打开
+    ChangeAdress(row){
+      this.radio=''
+      this.serviceAddressVisible=true;
+    },
+    //服务地址管理弹窗关闭
+    colseAddress(){
+      this.serviceAddressVisible=false;
+    },
+    //服务地址管理编辑
+    selectButAddress(row) {
+      console.log(row.id)
+    },
+    //服务地址管理删除
+    DeleteAddress(row){
+      console.log(row.id)
+    },
+    //服务地址管理新增地址
+    addAddressFun(status){
+      this.areaOptionsAddress = this.$store.state.user.area;
+      console.log(status)
+      this.addAddrssDialogShow=true
+    },
+    //服务地址管理新增地址保存
+    submitFormAddress(formName, status){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+            this.addAddrssDialogShow=false;
+            this.$refs["ruleFormAddress"].resetFields();
+        }
+      })      
+    },
+    //服务地址管理新增地址取消
+    resetFormAddress(formName){
+      this.$refs[formName].resetFields();
+      this.addAddrssDialogShow=false;
+    },
     loadingClick(){
         loading = this.$loading({
           lock: true,
@@ -591,5 +745,11 @@ export default {
 }
 .sugg-item {
   width: 180px !important;
+}
+.selfPromInfStyle1 {
+  heihgt: 30px;
+  line-height: 30px;
+  color: #8391a5;
+  font-size: 12px;
 }
 </style>
