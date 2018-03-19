@@ -22,7 +22,7 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
-    <button class="button-small btn_pad btn-color" v-if="orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
 
     <el-table 
     :key='tableKey' 

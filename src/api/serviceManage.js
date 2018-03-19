@@ -201,6 +201,17 @@ export function noButtedConnList(obj,pageNumber,pageSize){
   })
 }
 
+//解除对接
+export function deleteGoodsCode(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/deleteGoodsCode`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
 
 // -------------技能-----------------
 

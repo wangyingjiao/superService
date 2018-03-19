@@ -31,8 +31,10 @@
             <div class="btton-table">
                 <div>
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
-                    <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
-                    <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
+                    <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
+                    <button v-if="activeName=='noDocking' && eshopStatus =='yes' && btnShow.indexOf('project_butt')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
+                     <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
+                    <!-- <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button> -->
                 </div>
                 <div>
                     <el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
@@ -69,6 +71,7 @@ import {
   Taxonomy,
   buttedConnList,
   noButtedConnList,
+  deleteGoodsCode,
   buttedList
 } from "@/api/serviceManage";
 
@@ -167,7 +170,9 @@ var tableData3 = [{
 
     },
     computed:{
-     
+        btnShow() {
+            return JSON.parse(localStorage.getItem("btn"));
+        }
     },
     methods: {
         //已对接api
@@ -220,7 +225,7 @@ var tableData3 = [{
             //通过索引index来禁止不能选择的项
             // return index !== 2
             if(this.activeName == "yesDocking"){
-                return row.jointGoodsCode
+                return row.jointStatus != 'butt_butt'
             }else{
                 return true
             }
@@ -294,14 +299,28 @@ var tableData3 = [{
         },
         //移除对接按钮
         toggleSelection(row, selected){
-            this.setUpDelete('jointGoodsCode')
-            console.log(this.setUpDelete('jointGoodsCode'),"移除")
-            // console.log(obj,"obj------")
+            var obj = this.setUpDelete('jointGoodsCode')
+            console.log(obj,"移除")
+            deleteGoodsCode(obj).then(data=>{
+                console.log(data,"移除对接成功")
+                if(data.data.code==1){
+                    this.$message({
+                        type: "success",
+                        message: data.data.data
+                    });
+                    this.tablePageSize(this.search,this.pageSync, this.pageSize)
+                }else{
+
+                }
+            })
+            .catch(error=>{
+                console.log(error,"移除对接失败")
+            })
         },
         //设置对接按钮
         toggleSetUp(){
-            this.setUpDelete('id')
-            console.log(this.setUpDelete('id'),"设置")
+            var obj = this.setUpDelete('id')
+            console.log(obj,"设置")
         },
         //一页展示几条
         handleSizeChange(page){
@@ -352,10 +371,10 @@ var tableData3 = [{
                         this.dockingEName = {name:''}
                     }
                 }else{
-                    this.$message({
-                        type: "warning",
-                        message: data.data.data
-                    });
+                    // this.$message({
+                    //     type: "warning",
+                    //     message: data.data.data
+                    // });
                 }
             }).catch(error=>{
                 console.log(error,"error")
