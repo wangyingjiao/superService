@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="buttBox">
         <div class="buttDetails">
         <!-- tabs切换 -->
             <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -43,8 +43,20 @@
                         <el-table-column prop="newName" label="商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center"></el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="id" label="对接商品ID" align="center"></el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
+                            <template scope="scope">
+                                <el-tooltip placement="left" :disabled="scope.row.selfCode.length <= 20" :content="scope.row.selfCode">
+                                    <span>{{scope.row.selfCode}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="id" label="对接商品ID" align="center">
+                            <template scope="scope">
+                                <el-tooltip placement="left" :disabled="scope.row.id.length <= 20" :content="scope.row.id">
+                                    <span>{{scope.row.id}}</span>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="jointStatus" label="对接状态" align="center">
                             <template scope="scope">
                                 <span v-if="scope.row.jointStatus=='butt_butt'">对接中</span>
@@ -108,42 +120,7 @@ import {
 //             selfCode:'对接编码',
 //             jointGoodsCode:'对接商品ID',
 //             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称3',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'',
-//             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称4',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'对接商品ID',
-//             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称5',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'',
-//             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称6',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'对接商品ID',
-//             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称7',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'对接商品ID',
-//             jointStatus:'对接状态'
-// }]
+//         }]
 
   export default {
     data() {
@@ -221,8 +198,7 @@ import {
             //通过索引index来禁止不能选择的项
             // return index !== 2
             if(this.activeName == "yesDocking"){
-                // return row.jointStatus != 'butt_butt'
-                return true
+                return row.jointStatus != 'butt_butt'
             }else{
                 return true
             }
@@ -270,12 +246,12 @@ import {
             this.search.eshopCode = this.options[0].eshopCode || ''
             this.dockingEName = this.options[0] || {name:''}
             // this.$refs.multipleTable.clearSelection();
+            //防止请求多次
             if(this.pageSync == 1){
                 this.tablePageSize(this.search)
             }else{
                 this.pageSync = 1
             }
-            // this.tablePageSize(this.search)
             this.searchEmpty()  //清空搜索框
         },
         //复选框
@@ -435,5 +411,10 @@ import {
     .notice{
         color: red;
         margin-left:6%; 
+    }
+    .buttBox .el-table .cell{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
