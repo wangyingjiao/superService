@@ -22,8 +22,8 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
-    <button class="button-small btn_pad btn-color" v-if="orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
-
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    <!-- btnShow.indexOf('project_send')>-1 && -->
     <el-table 
     :key='tableKey' 
     :data="listTable" 
@@ -996,8 +996,18 @@ export default {
       alreadyButted({id:item.id})
         .then(data=>{
           if(data.data.code==1){
-            console.log(data.data.data)
-            this.dockingData[0] = data.data.data
+            var arr = data.data.data
+             if('commodityEshops' in arr){
+               for(var i = 0 ; i < arr.commodityEshops.length; i++){
+                 if('jointGoodsCode' in arr.commodityEshops[i]){
+                   continue;
+                 }else{
+                   arr.commodityEshops[i].jointGoodsCode = ''
+                 }
+               }
+             }
+            this.dockingData[0] = arr
+            console.log(arr,"arr-----")
             this.docking = true
           }else{
             this.$message({
