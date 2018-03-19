@@ -31,6 +31,7 @@
             <div class="btton-table">
                 <div>
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
+                    <span v-if="activeName=='noDocking'" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button v-if="activeName=='noDocking' && eshopStatus =='yes' && btnShow.indexOf('project_butt')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
                      <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
@@ -43,7 +44,7 @@
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center"></el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="jointGoodsCode" label="对接商品ID" align="center"></el-table-column>
+                        <el-table-column v-if="activeName!='noDocking'" prop="id" label="对接商品ID" align="center"></el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="jointStatus" label="对接状态" align="center">
                             <template scope="scope">
                                 <span v-if="scope.row.jointStatus=='butt_butt'">对接中</span>
@@ -72,6 +73,7 @@ import {
   buttedConnList,
   noButtedConnList,
   deleteGoodsCode,
+  JonitGoods,
   buttedList
 } from "@/api/serviceManage";
 
@@ -92,56 +94,56 @@ import {
 //           name: '北京烤鸭'
 //         }]
 
-var tableData3 = [{
-            newName:'商品名称1',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'对接商品ID',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称2',
-            sortName:'111',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'对接商品ID',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称3',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称4',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'对接商品ID',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称5',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称6',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'对接商品ID',
-            jointStatus:'对接状态'
-        }, {
-            newName:'商品名称7',
-            sortName:'所属分类',
-            univalence:'价格/单位',
-            selfCode:'对接编码',
-            jointGoodsCode:'对接商品ID',
-            jointStatus:'对接状态'
-}]
+// var tableData3 = [{
+//             newName:'商品名称1',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'对接商品ID',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称2',
+//             sortName:'111',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'对接商品ID',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称3',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称4',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'对接商品ID',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称5',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称6',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'对接商品ID',
+//             jointStatus:'对接状态'
+//         }, {
+//             newName:'商品名称7',
+//             sortName:'所属分类',
+//             univalence:'价格/单位',
+//             selfCode:'对接编码',
+//             jointGoodsCode:'对接商品ID',
+//             jointStatus:'对接状态'
+// }]
 
   export default {
     data() {
@@ -150,7 +152,7 @@ var tableData3 = [{
         dockingEName:{},
         eshopStatus:null,
         options:[],
-        tableData3:tableData3,
+        tableData3:[],
         multipleSelection:[],
         typeOptions:[],
         pageSync:1,
@@ -185,10 +187,7 @@ var tableData3 = [{
                     this.total = data.data.data.count
                     console.log(data,"data+++++")
                 }else{
-                    this.$message({
-                        type: "warning",
-                        message: data.data.data
-                    });
+                  
                 }
             }).catch(error=>{
                 console.log(error,"-----error")
@@ -205,10 +204,7 @@ var tableData3 = [{
                     this.eshopStatus = data.data.data.eshopStatus
                     console.log(data,"data+++++")
                 }else{
-                    this.$message({
-                        type: "warning",
-                        message: data.data.data
-                    });
+                    this.tableData3 = []
                 }
             }).catch(error=>{
                 console.log(error,"error-----")
@@ -269,9 +265,16 @@ var tableData3 = [{
         },
         //tabs切换
         handleClick(tab, event) {
+            // debugger;
             this.search.eshopCode = this.options[0].eshopCode || ''
             this.dockingEName = this.options[0] || {name:''}
-            this.tablePageSize(this.search)
+            // this.$refs.multipleTable.clearSelection();
+            if(this.pageSync == 1){
+                this.tablePageSize(this.search)
+            }else{
+                this.pageSync = 1
+            }
+            // this.tablePageSize(this.search)
             this.searchEmpty()  //清空搜索框
         },
         //复选框
@@ -293,13 +296,13 @@ var tableData3 = [{
              for( i = 0 ; i<arr.length; i++){
                 arrPost.push(arr[i][data])
             }
-            obj.jointGoodsCodes = arrPost
+            obj.goodIds = arrPost
             obj.eshopCode = this.search.eshopCode
             return obj
         },
         //移除对接按钮
         toggleSelection(row, selected){
-            var obj = this.setUpDelete('jointGoodsCode')
+            var obj = this.setUpDelete('id')
             console.log(obj,"移除")
             deleteGoodsCode(obj).then(data=>{
                 console.log(data,"移除对接成功")
@@ -321,6 +324,21 @@ var tableData3 = [{
         toggleSetUp(){
             var obj = this.setUpDelete('id')
             console.log(obj,"设置")
+            JonitGoods(obj).then(data=>{
+                console.log(data,"设置对接成功")
+                if(data.data.code==1){
+                    this.$message({
+                        type: "success",
+                        message: data.data.data
+                    });
+                    this.tablePageSize(this.search,this.pageSync, this.pageSize)
+                }else{
+
+                }
+            })
+            .catch(error=>{
+                console.log(error,"设置对接失败")
+            })
         },
         //一页展示几条
         handleSizeChange(page){
@@ -363,10 +381,10 @@ var tableData3 = [{
                 console.log(data,"data")
                 if(data.data.code==1){
                     if(data.data.data){
-                        this.options = data.data.data
-                        this.search.eshopCode = data.data.data[0].eshopCode
+                        this.options = data.data.data || []
+                        this.search.eshopCode = data.data.data[0].eshopCode || ''
                         resolve(this.search)
-                        this.dockingEName = data.data.data[0]  //当前E店
+                        this.dockingEName = data.data.data[0] || {name:''}  //当前E店
                     }else{
                         this.dockingEName = {name:''}
                     }
@@ -412,5 +430,9 @@ var tableData3 = [{
     .butt-pagin{
         margin-top: 20px;
         float: right;
+    }
+    .notice{
+        color: red;
+        margin-left:6%; 
     }
 </style>
