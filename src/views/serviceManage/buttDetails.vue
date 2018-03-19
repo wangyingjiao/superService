@@ -221,7 +221,8 @@ import {
             //通过索引index来禁止不能选择的项
             // return index !== 2
             if(this.activeName == "yesDocking"){
-                return row.jointStatus != 'butt_butt'
+                // return row.jointStatus != 'butt_butt'
+                return true
             }else{
                 return true
             }
