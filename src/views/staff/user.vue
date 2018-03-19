@@ -143,13 +143,13 @@
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">
-          <el-select  filterable  class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
+          <el-select  filterable :disabled="officeState" class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="服务站:" prop="stationId" >
-          <el-select  filterable  class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
+          <el-select  filterable :disabled="statStatte" class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -749,7 +749,6 @@ export default {
     },
     handleUpdate(row) {
       //点击编辑
-      this.listLoading = true;
       hanleUpuser({ id: row.id }).then(res => {
         if (res.data.code === 1) {
           var user = res.data.data;
@@ -766,7 +765,6 @@ export default {
           setTimeout(() => (this.temp.officeId = row.organization.id), 30);
           setTimeout(() => (this.temp.stationId = row.station.id), 30);
           setTimeout(() => (this.temp.role = row.role.id), 30);
-          this.listLoading = false;
           if (user.updateOwnFlag == "yes") {
             //判断是不是编辑自己：是，禁用；
             this.officeState = true;

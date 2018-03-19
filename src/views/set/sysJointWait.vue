@@ -49,7 +49,7 @@
            <el-tooltip placement="left" :disabled="scope.row.requestContent.length < 10" :content="scope.row.requestContent">
              <div class="tool300" >{{scope.row.requestContent}}</div>
            </el-tooltip>
-        </template> 
+        </template>
       </el-table-column>
       
       <!-- <el-table-column align="center" label="操作">
@@ -74,10 +74,10 @@
 <script>
 import { getSysjoint } from "@/api/set";
 import util from "@/utils/date";
-import waves from "@/directive/waves/index.js"; // 水波纹指令
+import waves from "@/directive/waves/index.js";
 
 export default {
-  name: "sysLog",
+  name: "sysjointWait",
   directives: {
     waves
   },
