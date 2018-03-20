@@ -38,7 +38,7 @@
                     <!-- <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button> -->
                 </div>
                 <div>
-                    <el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                    <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="newName" label="商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
@@ -89,43 +89,11 @@ import {
   buttedList
 } from "@/api/serviceManage";
 
-// var options = [{
-//           id: '选项1',
-//           name: '黄金糕'
-//         }, {
-//           id: '选项2',
-//           name: '双皮奶'
-//         }, {
-//           id: '选项3',
-//           name: '蚵仔煎'
-//         }, {
-//           id: '选项4',
-//           name: '龙须面'
-//         }, {
-//           id: '选项5',
-//           name: '北京烤鸭'
-//         }]
-
-// var tableData3 = [{
-//             newName:'商品名称1',
-//             sortName:'所属分类',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'对接商品ID',
-//             jointStatus:'对接状态'
-//         }, {
-//             newName:'商品名称2',
-//             sortName:'111',
-//             univalence:'价格/单位',
-//             selfCode:'对接编码',
-//             jointGoodsCode:'对接商品ID',
-//             jointStatus:'对接状态'
-//         }]
-
   export default {
     data() {
       return {
         activeName: 'yesDocking',   //tab切换
+        listLoading:true,
         dockingEName:{},
         eshopStatus:null,
         options:[],
@@ -156,34 +124,40 @@ import {
     methods: {
         //已对接api
         buttedConnListApi(obj,page,size){
+            this.listLoading = true
             page = page || 1
             size = size || 10
             buttedConnList(obj,page,size).then(data=>{
                 if(data.data.code){
+                    this.listLoading = false
                     this.tableData3 = data.data.data.list
                     this.total = data.data.data.count
                     console.log(data,"data+++++")
                 }else{
-                  
+                  this.listLoading = false
                 }
             }).catch(error=>{
-                console.log(error,"-----error")
+                this.listLoading = false
             })
         },
         //未对接api
         noButtedConnListApi(obj,page,size){
             page = page || 1;
             size = size || 10;
+            this.listLoading = true
             noButtedConnList(obj,page,size).then(data=>{
                 if(data.data.code){
+                    this.listLoading = false
                     this.tableData3 = data.data.data.page.list
                     this.total = data.data.data.page.count
                     this.eshopStatus = data.data.data.eshopStatus
                     console.log(data,"data+++++")
                 }else{
+                    this.listLoading = false
                     this.tableData3 = []
                 }
             }).catch(error=>{
+                this.listLoading = false
                 console.log(error,"error-----")
             })
         },
@@ -281,19 +255,22 @@ import {
         toggleSelection(row, selected){
             var obj = this.setUpDelete('id')
             console.log(obj,"移除")
+            this.listLoading = true
             deleteGoodsCode(obj).then(data=>{
                 console.log(data,"移除对接成功")
                 if(data.data.code==1){
+                    this.listLoading = false
                     this.$message({
                         type: "success",
                         message: data.data.data
                     });
                     this.tablePageSize(this.search,this.pageSync, this.pageSize)
                 }else{
-
+                    this.listLoading = false
                 }
             })
             .catch(error=>{
+                this.listLoading = false
                 console.log(error,"移除对接失败")
             })
         },
@@ -301,19 +278,22 @@ import {
         toggleSetUp(){
             var obj = this.setUpDelete('id')
             console.log(obj,"设置")
+            this.listLoading = true
             JonitGoods(obj).then(data=>{
                 console.log(data,"设置对接成功")
                 if(data.data.code==1){
+                    this.listLoading = false
                     this.$message({
                         type: "success",
                         message: data.data.data
                     });
                     this.tablePageSize(this.search,this.pageSync, this.pageSize)
                 }else{
-
+                    this.listLoading = false
                 }
             })
             .catch(error=>{
+                this.listLoading = false
                 console.log(error,"设置对接失败")
             })
         },
