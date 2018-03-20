@@ -132,7 +132,7 @@
 
 <script>
 import { getOrderTable } from "@/api/order";
-import { getFuwu } from "@/api/staff";
+import { getFuwu,getSList } from "@/api/staff";
 import util from "@/utils/date";
 export default {
   name: "ordermanage",
@@ -206,7 +206,7 @@ export default {
               }
             }
 
-            this.mechanismOptions = res.data.data.orgList;
+            
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -214,6 +214,12 @@ export default {
         })
         .catch(res => {
           this.listLoading = false;
+        });
+    },
+    // 服务机构
+    getoffice(){
+        getSList({}).then(res => {          
+          this.mechanismOptions = res.data.data.list;
         });
     },
     //tabs操作需要请求表格数据
@@ -425,6 +431,7 @@ export default {
   },
   mounted() {
     this.getTableData({ orderStatus: "dispatched" }, 1, 10);
+    this.getoffice();
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
     this.sevicerStustasOptions = this.dict.service_status;
