@@ -1067,15 +1067,18 @@ export default {
       //服务时间
       this.serviceTech();
       //所属服务站
-      serviceStation({})
-        .then(data => {
-          var stationLocal = localStorage.getItem("station");
-          var stationObj = JSON.parse(stationLocal);
-          var obj = data.data.data;
-          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
-          this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
-        })
-        .catch(error => {});
+      var stationLocal = localStorage.getItem("station");
+      var stationObj = JSON.parse(stationLocal);
+      this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
+      // serviceStation({})
+      //   .then(data => {
+      //     var stationLocal = localStorage.getItem("station");
+      //     var stationObj = JSON.parse(stationLocal);
+      //     // var obj = data.data.data;
+      //     this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+      //     this.personal.stationId = stationObj.id != 0 ? stationObj.id : "";
+      //   })
+      //   .catch(error => {});
     },
     picUpload(file, flag) {
       var type = file.file.name.split(".");
@@ -1167,7 +1170,7 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
-      this.getList(_page, _size, obj);
+      this.getList(_page, _size, obj,'sear');
     },
     startDateChange(val) {
       this.storeEnd.storeDate = val;
@@ -1356,14 +1359,14 @@ export default {
       this.serviceTech();
 
       //所属服务站
-      serviceStation({})
-        .then(data => {
-          var stationLocal = localStorage.getItem("station");
-          var stationObj = JSON.parse(stationLocal);
-          var obj = data.data.data;
-          this.servery = stationObj.id != 0 ? obj : obj.slice(1);
-        })
-        .catch(error => {});
+      // serviceStation({})
+      //   .then(data => {
+      //     var stationLocal = localStorage.getItem("station");
+      //     var stationObj = JSON.parse(stationLocal);
+      //     var obj = data.data.data;
+      //     this.servery = stationObj.id != 0 ? obj : obj.slice(1);
+      //   })
+      //   .catch(error => {});
     },
     //现住地址
     nowAdd(val) {
@@ -1679,7 +1682,7 @@ export default {
     dialogVisibleEditClick() {
       this.dialogVisibleEdit = false;
     },
-    getList(num, size, obj) {
+    getList(num, size, obj,str) {
       //技师编辑获取ID
 
       //选择城市
@@ -1689,12 +1692,16 @@ export default {
         .then(data => {
           if (data.data.code == 1) {
             this.listLoadingTech = false;
-
             this.Choose = data.data.data.cityCodes;
-            this.sexTypeo = data.data.data.skillInfos;
-            this.infoname = data.data.data.page.list || [];
-            this.server = data.data.data.stations;
             this.total = data.data.data.page.count;
+            if(str == 'sear'){
+              this.infoname = data.data.data.page.list || [];
+            }else{
+              this.sexTypeo = data.data.data.skillInfos;
+              this.infoname = data.data.data.page.list || [];
+              this.server = data.data.data.stations;
+              this.servery = data.data.data.stations;
+            }
             var i = 0,
               len = this.infoname.length,
               date = new Date(),

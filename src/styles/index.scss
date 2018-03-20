@@ -795,3 +795,8 @@ body {
 .el-progress-bar__inner{
   background-color: #4c70e8 !important;
 }
+.buttBox .el-table .cell{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
