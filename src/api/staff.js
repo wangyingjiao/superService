@@ -50,10 +50,7 @@ export function getSList(obj) {
 export function getFuwu(obj) {
   return instance.post(`/apiservice/a/service/station/serviceStation/listByOffice`, obj)
 }
-// 获取menudata
-// export function getMenudata() {
-//   return instance.get(`/apiservice/a/sys/user/menuData`)
-// }
+
 export function getMenudata() {
   return instance.get(`/apiservice/a/sys/menu/getMenuList`)
 }
@@ -61,18 +58,10 @@ export function getMenudata() {
 export function delStaff(obj) {
   return instance.post(`/apiservice/a/sys/user/deleteUser`, obj)
 }
-// 岗位新增时重名检测
-// export function chkName(obj) {
-//   return instance.get(`/apiservice/a/sys/role/chkName?name=` + obj.name)
-// }
+
 export function chkName(obj) {
   return instance.get(`/apiservice/a/sys/role/chkName?id=` + obj.id + '&name=' + obj.name)
 }
-// 岗位编辑时重名检测
-
-// export function chkNameUp(obj) {
-//   return instance.get(`/apiservice/a/sys/role/chkNameUpdate?name=` + obj.name + '&roleId=' + obj.roleId)
-// }
 export function chkNameUp(obj) {
   return instance.get(`/apiservice/a/sys/role/chkNameUpdate?id=` + obj.id + '&name=' + obj.name + '&roleId=' + obj.roleId)
 }
