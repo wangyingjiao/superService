@@ -45,14 +45,14 @@
                         <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.selfCode.length <= 20" :content="scope.row.selfCode">
+                                <el-tooltip placement="left" :disabled="scope.row.selfCode+''.length <= 20" :content="scope.row.selfCode">
                                     <span>{{scope.row.selfCode}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="id" label="对接商品ID" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.id.length <= 20" :content="scope.row.id">
+                                <el-tooltip placement="left" :disabled="scope.row.id+''.length <= 20" :content="scope.row.id">
                                     <span>{{scope.row.id}}</span>
                                 </el-tooltip>
                             </template>
@@ -255,6 +255,9 @@ import {
         toggleSelection(row, selected){
             var obj = this.setUpDelete('id')
             console.log(obj,"移除")
+            if(obj.goodIds.length<=0){
+                return
+            }
             this.listLoading = true
             deleteGoodsCode(obj).then(data=>{
                 console.log(data,"移除对接成功")
@@ -278,6 +281,9 @@ import {
         toggleSetUp(){
             var obj = this.setUpDelete('id')
             console.log(obj,"设置")
+            if(obj.goodIds.length<=0){
+                return
+            }
             this.listLoading = true
             JonitGoods(obj).then(data=>{
                 console.log(data,"设置对接成功")
