@@ -125,13 +125,11 @@
         <el-table-column align="center" label="" min-width="250">
              <template scope="scope">
             <div
-              class="branch deleteEd"  
+              class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-              <div>
                 <span class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
-                <span v-show="item.jointEshopFlag == 'yes' " class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
-              </div>
+                <span v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
                 <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
                 <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
             </div>
@@ -994,34 +992,39 @@ export default {
     },
     //已对接E店
     dockingE(item){
-      console.log(item.id)
-      alreadyButted({id:item.id})
-        .then(data=>{
-          if(data.data.code==1){
-            var arr = data.data.data
-             if('commodityEshops' in arr){
-               for(var i = 0 ; i < arr.commodityEshops.length; i++){
-                 if('jointGoodsCode' in arr.commodityEshops[i]){
-                   continue;
-                 }else{
-                   arr.commodityEshops[i].jointGoodsCode = ''
+      console.log(item)
+      if(item.jointEshopFlag=='yes'){
+        alreadyButted({id:item.id})
+          .then(data=>{
+            if(data.data.code==1){
+              var arr = data.data.data
+               if('commodityEshops' in arr){
+                 for(var i = 0 ; i < arr.commodityEshops.length; i++){
+                   if('jointGoodsCode' in arr.commodityEshops[i]){
+                     continue;
+                   }else{
+                     arr.commodityEshops[i].jointGoodsCode = ''
+                   }
                  }
                }
-             }
-            // this.dockingData[0] = arr
-            console.log(arr,"arr-----")
-            this.$set(this.dockingData,0,arr)
-            this.docking = true
-          }else{
-            this.$message({
-              type: "warning",
-              message: data.data.data
-            });
-          }
-        })
-        .catch(error=>{
-          return false
-        })
+              // this.dockingData[0] = arr
+              console.log(arr,"arr-----")
+              this.$set(this.dockingData,0,arr)
+              this.docking = true
+            }else{
+              this.$message({
+                type: "warning",
+                message: data.data.data
+              });
+            }
+          })
+          .catch(error=>{
+            return false
+          })
+      }else{
+        this.dockingData = []
+        this.docking = true
+      }
     },
     //对接详情
     buttDetails(){
@@ -2466,12 +2469,12 @@ hr {
   padding: 0 10px;
   white-space: nowrap;
 }
-.deleteEd{
+/* .deleteEd{
   text-align: left;
 }
 .deleteEd>div{
   width: 240px;
   margin: 0 auto;
-}
+} */
 
 </style>
