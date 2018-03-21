@@ -189,11 +189,11 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),//按钮权限
-      btnState: false,//按钮状态，是否禁用
-      selsctState: false,//下拉框状态，是否禁用
-      myselfUpdate: true,//判断是否编辑自己
-      list: [],//列表数据
+      btnShow: JSON.parse(localStorage.getItem("btn")), //按钮权限
+      btnState: false, //按钮状态，是否禁用
+      selsctState: false, //下拉框状态，是否禁用
+      myselfUpdate: true, //判断是否编辑自己
+      list: [], //列表数据
       officeIds: [],
       total: null,
       listLoading: false,
@@ -246,8 +246,9 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       tableKey: 0,
-      data2: [],//树状图数据
-      defaultProps: {//树形结构参数
+      data2: [], //树状图数据
+      defaultProps: {
+        //树形结构参数
         children: "subMenus",
         label: "name"
       },
@@ -308,18 +309,19 @@ export default {
   },
   methods: {
     //点击时loading状态
-     loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     getList() {
       //获取列表
       this.listLoading = true;
-      var obj = {//搜索参数
+      var obj = {
+        //搜索参数
         name: this.search.name,
         organization: { id: this.search.officeId }
       };
@@ -371,27 +373,30 @@ export default {
       //搜索
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.getList()
+      this.getList();
     },
     handleSizeChange(val) {
       // 切换条数
       this.pageSize = val;
       this.listQuery.page = 1;
       this.pageNumber = 1;
-      this.getList()
+      this.getList();
     },
     handleCurrentChange(val) {
       // 切换页数
       this.pageNumber = val;
-      this.getList()
+      this.getList();
     },
     handTreechange(a, b, c) {
       if (b) {
         // 处理订单里的查看详情
         if (
-          ["order_time", "order_dispatch", "order_addTech","order_cancel"].indexOf(
-            a.permission
-          ) > -1
+          [
+            "order_time",
+            "order_dispatch",
+            "order_addTech",
+            "order_cancel"
+          ].indexOf(a.permission) > -1
         ) {
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.data2.length; i++) {
@@ -521,130 +526,135 @@ export default {
     //点击新增时
     handleCreate() {
       this.listLoading = true;
-      getMenudata()
-        .then(res => {
-          this.data2 = res.data.data;
-          if (res.data.code == 1) {
-            this.dialogStatus = "create";
-            this.dialogFormVisible = true;
-            this.listLoading = false;
-            if (this.officeIds.length == 1) {
-              this.temp.officeId = this.officeIds[0].id;
+      getSList({}).then(res => {
+        this.officeIds = res.data.data.list;
+        getMenudata()
+          .then(res => {
+            this.data2 = res.data.data;
+            if (res.data.code == 1) {
+              this.dialogStatus = "create";
+              this.dialogFormVisible = true;
+              this.listLoading = false;
+              if (this.officeIds.length == 1) {
+                this.temp.officeId = this.officeIds[0].id;
+              }
+            } else {
+              this.listLoading = false;
             }
-          } else {
+          })
+          .catch(() => {
             this.listLoading = false;
-          }
-        })
-        .catch(() => {
-          this.listLoading = false;
-        });
+          });
+      });
     },
     //点击编辑时
     handleUpdate(row) {
       this.myselfUpdate = true;
       this.listLoading = true;
-      getPower(row.id).then(res => {
-        this.listLoading = false;
-        if (res.data.code == 1) {
-          //处理权限位置
-          //处理订单的查看详情
-          var arr = res.data.data.menuListUnion;
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].subMenus != undefined) {
-              var arri = arr[i].subMenus;
-              for (var j = 0; j < arri.length; j++) {
-                if (arri[j].subMenus != undefined) {
-                  var arrj = arri[j].subMenus;
-                  for (var k = 0; k < arrj.length; k++) {
-                    var arrk = arrj[k];
-                    if (arrk.permission != undefined) {
-                      if (arrk.permission == "order_info") {
-                        if (arrk.disabled == undefined) {
-                          arrj.remove(arrk);
-                          arrj.push(arrk);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          //处理所有列表权限
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].subMenus != undefined) {
-              var arri = arr[i].subMenus;
-              for (var j = 0; j < arri.length; j++) {
-                if (arri[j].subMenus != undefined) {
-                  var arrj = arri[j].subMenus;
-                  for (var k = 0; k < arrj.length; k++) {
-                    var arrk = arrj[k];
-                    if (arrk.permission != undefined) {
-                      if (
-                        arrk.permission.substring(
-                          arrk.permission.length - 4,
-                          arrk.permission.length
-                        ) == "view"
-                      ) {
-                        if (arrk.disabled == undefined) {
-                          var obj = arrk;
-                          arrj.remove(arrk);
-                          arrj.push(arrk);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          this.data2 = arr;
-          if (res.data.data.updateOwnFlag == "yes") {
-            this.myselfUpdate = false;
-          }
-          if (res.data.data.flagRoleId) {
-            this.myselfUpdate = false;
-            this.$nextTick(() => {
-              this.myselfUpdate = false;
-            });
-          }
-          this.dialogStatus = "update";
-          this.dialogFormVisible = true;
-          var a = res.data.data;
-          this.roleId = a.id;
-          this.temp.officeId = a.organization.id;
-          this.temp.name = a.name;
-          //this.temp.dataScope = a.dataScope;
-          //一期默认10级
-          this.temp.dataScope = "10";
-
-          //this.temp.check = a.menuIdList;
-          this.temp.check = a.menuIdListEdit;
-
-          if (res.data.data.flag) {
-            this.selsctState = true;
-          }
-          for (let i = 0; i < this.data2.length; i++) {
-            //特殊首页处理
-            if (this.data2[i].permission == "index") {
-            } else {
-              this.temp.check.remove(this.data2[i].id);
-            }
-
-            if (this.data2[i].subMenus != undefined) {
-              var child = this.data2[i];
-              for (let j = 0; j < child.subMenus.length; j++) {
-                this.temp.check.remove(child.subMenus[j].id);
-              }
-            }
-          }
-
-          this.$nextTick(() => {
-            this.$refs.domTree.setCheckedKeys(this.temp.check);
-          });
-        } else {
+      getSList({}).then(res => {
+        this.officeIds = res.data.data.list;
+        getPower(row.id).then(res => {
           this.listLoading = false;
-        }
+          if (res.data.code == 1) {
+            //处理权限位置
+            //处理订单的查看详情
+            var arr = res.data.data.menuListUnion;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].subMenus != undefined) {
+                var arri = arr[i].subMenus;
+                for (var j = 0; j < arri.length; j++) {
+                  if (arri[j].subMenus != undefined) {
+                    var arrj = arri[j].subMenus;
+                    for (var k = 0; k < arrj.length; k++) {
+                      var arrk = arrj[k];
+                      if (arrk.permission != undefined) {
+                        if (arrk.permission == "order_info") {
+                          if (arrk.disabled == undefined) {
+                            arrj.remove(arrk);
+                            arrj.push(arrk);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            //处理所有列表权限
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].subMenus != undefined) {
+                var arri = arr[i].subMenus;
+                for (var j = 0; j < arri.length; j++) {
+                  if (arri[j].subMenus != undefined) {
+                    var arrj = arri[j].subMenus;
+                    for (var k = 0; k < arrj.length; k++) {
+                      var arrk = arrj[k];
+                      if (arrk.permission != undefined) {
+                        if (
+                          arrk.permission.substring(
+                            arrk.permission.length - 4,
+                            arrk.permission.length
+                          ) == "view"
+                        ) {
+                          if (arrk.disabled == undefined) {
+                            var obj = arrk;
+                            arrj.remove(arrk);
+                            arrj.push(arrk);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            this.data2 = arr;
+            if (res.data.data.updateOwnFlag == "yes") {
+              this.myselfUpdate = false;
+            }
+            if (res.data.data.flagRoleId) {
+              this.myselfUpdate = false;
+              this.$nextTick(() => {
+                this.myselfUpdate = false;
+              });
+            }
+            this.dialogStatus = "update";
+            this.dialogFormVisible = true;
+            var a = res.data.data;
+            this.roleId = a.id;
+            this.temp.officeId = a.organization.id;
+            this.temp.name = a.name;
+            //this.temp.dataScope = a.dataScope;
+            //一期默认10级
+            this.temp.dataScope = "10";
+
+            //this.temp.check = a.menuIdList;
+            this.temp.check = a.menuIdListEdit;
+
+            if (res.data.data.flag) {
+              this.selsctState = true;
+            }
+            for (let i = 0; i < this.data2.length; i++) {
+              //特殊首页处理
+              if (this.data2[i].permission == "index") {
+              } else {
+                this.temp.check.remove(this.data2[i].id);
+              }
+
+              if (this.data2[i].subMenus != undefined) {
+                var child = this.data2[i];
+                for (let j = 0; j < child.subMenus.length; j++) {
+                  this.temp.check.remove(child.subMenus[j].id);
+                }
+              }
+            }
+            this.$nextTick(() => {
+              this.$refs.domTree.setCheckedKeys(this.temp.check);
+            });
+          } else {
+            this.listLoading = false;
+          }
+        });
       });
     },
     //删除数据
@@ -716,7 +726,7 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           addStation(obj)
             .then(res => {
@@ -739,7 +749,7 @@ export default {
                   officeId: ""
                 };
                 this.handleFilter();
-              }else{
+              } else {
                 loading.close();
               }
             })
@@ -783,7 +793,7 @@ export default {
       };
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.btnState = true;
           upStation(obj)
             .then(res => {
@@ -800,7 +810,7 @@ export default {
                   message: "修改成功"
                 });
                 this.getList();
-              }else{
+              } else {
                 loading.close();
               }
             })
