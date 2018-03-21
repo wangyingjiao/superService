@@ -332,9 +332,6 @@ export default {
     },
     // 搜索
     handleFilter() {
-      // getNewest().then(res => {
-      //   console.log(res);
-      // });
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.getList();
@@ -416,8 +413,6 @@ export default {
     beforeAvatarUpload(file) {
       let name = file.name
       var apk = name.substring(name.length-3,name.length)
-      console.log(apk)
-      console.log(file,'111111111')
       const isAPK = apk === "apk";
       if (!isAPK) {
         this.$message.error("上传只能是 apk 格式安装包!");
