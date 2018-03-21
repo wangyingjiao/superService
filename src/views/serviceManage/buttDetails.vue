@@ -44,7 +44,7 @@
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center">
                             <template scope="scope">
-                                {{scope.row.univalence | capitalize}}
+                                {{scope.row.univalence}}
                             </template>
                         </el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
