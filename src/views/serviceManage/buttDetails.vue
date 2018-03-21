@@ -17,7 +17,7 @@
                     <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
                     </el-option>
                 </el-select>
-                <el-select class="butt-search" clearable v-model="search.sortId" placeholder="所属分类">
+                <el-select class="butt-search" filterable clearable v-model="search.sortId" placeholder="所属分类">
                     <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
@@ -128,19 +128,27 @@ import {
             page = page || 1
             size = size || 10
             buttedConnList(obj,page,size).then(data=>{
+                console.log(data,"---")
                 if(data.data.code){
                     this.listLoading = false
-                    var arr = data.data.data.list
-                    var i,len = arr.length
-                    for( i = 0 ; i< len; i++){
-                        if("jointGoodsCode" in arr[i]){
-                            continue
-                        }else{
-                            arr[i].jointGoodsCode = ""
-                        }
-                    }
-                    this.tableData3 = arr
                     this.total = data.data.data.count
+                    if("list" in data.data.data){
+                        this.tableData3 = data.data.data.list
+                    }else{
+                        this.tableData3 = []
+                    }
+                    // this.listLoading = false
+                    // var arr = data.data.data.list
+                    // var i,len = arr.length
+                    // for( i = 0 ; i< len; i++){
+                    //     if("jointGoodsCode" in arr[i]){
+                    //         continue
+                    //     }else{
+                    //         arr[i].jointGoodsCode = ""
+                    //     }
+                    // }
+                    // this.tableData3 = data.data.data.list
+                    // this.total = data.data.data.count
                     console.log(this.tableData3,"data+++++")
                 }else{
                   this.listLoading = false
@@ -217,6 +225,10 @@ import {
         },
         //切换，page，size判断当前是已对接还是未对接
         tablePageSize(obj,page,size){
+            if(!obj.eshopCode){
+                this.tableData3 = []
+                return
+            }
             if(this.activeName == "yesDocking"){
                 this.buttedConnListApi(obj,page,size)
             }else{
@@ -352,6 +364,7 @@ import {
             buttedList().then(data=>{
                 console.log(data,"data")
                 if(data.data.code==1){
+                    this.listLoading = false
                     if(data.data.data){
                         this.options = data.data.data || []
                         this.search.eshopCode = data.data.data[0].eshopCode || ''
@@ -361,12 +374,14 @@ import {
                         this.dockingEName = {name:''}
                     }
                 }else{
+                    this.listLoading = false
                     // this.$message({
                     //     type: "warning",
                     //     message: data.data.data
                     // });
                 }
             }).catch(error=>{
+                this.listLoading = false
                 console.log(error,"error")
             })
         })
