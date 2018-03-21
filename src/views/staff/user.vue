@@ -614,9 +614,13 @@ export default {
     },
     handleCreate() {
       // 点击新增时
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-      this.resetTemp();
+      getSList({}).then(res => {
+        // 服务机构
+        this.mechanismCheck = res.data.data.list;
+        this.dialogStatus = "create";
+        this.dialogFormVisible = true;
+        this.resetTemp();
+      });
     },
     // addstation() {
     //   this.resetTemptwo();
@@ -749,34 +753,38 @@ export default {
     },
     handleUpdate(row) {
       //点击编辑
-      hanleUpuser({ id: row.id }).then(res => {
-        if (res.data.code === 1) {
-          var user = res.data.data;
-          this.temp = {
-            id: user.id,
-            name: user.name,
-            mobile: user.mobile,
-            password: "",
-            officeId: user.organization.id,
-            stationId: user.station.id,
-            role: user.role.id,
-            useable: user.useable
-          };
-          setTimeout(() => (this.temp.officeId = row.organization.id), 30);
-          setTimeout(() => (this.temp.stationId = row.station.id), 30);
-          setTimeout(() => (this.temp.role = row.role.id), 30);
-          if (user.updateOwnFlag == "yes") {
-            //判断是不是编辑自己：是，禁用；
-            this.officeState = true;
-            this.statStatte = true;
-            this.roleState = true;
-            this.crBtnState = true;
-            this.useableState = true;
+      getSList({}).then(res => {
+        // 服务机构
+        this.mechanismCheck = res.data.data.list;
+        hanleUpuser({ id: row.id }).then(res => {
+          if (res.data.code === 1) {
+            var user = res.data.data;
+            this.temp = {
+              id: user.id,
+              name: user.name,
+              mobile: user.mobile,
+              password: "",
+              officeId: user.organization.id,
+              stationId: user.station.id,
+              role: user.role.id,
+              useable: user.useable
+            };
+            setTimeout(() => (this.temp.officeId = row.organization.id), 30);
+            setTimeout(() => (this.temp.stationId = row.station.id), 30);
+            setTimeout(() => (this.temp.role = row.role.id), 30);
+            if (user.updateOwnFlag == "yes") {
+              //判断是不是编辑自己：是，禁用；
+              this.officeState = true;
+              this.statStatte = true;
+              this.roleState = true;
+              this.crBtnState = true;
+              this.useableState = true;
+            }
           }
-        }
+        });
+        this.dialogFormVisible = true;
+        this.dialogStatus = "update";
       });
-      this.dialogFormVisible = true;
-      this.dialogStatus = "update";
     },
     handleDelete(row) {
       // 点击删除

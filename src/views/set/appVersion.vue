@@ -660,4 +660,7 @@ export default {
   font-size: 14px;
   border-radius: 4px;
 }
+.el-upload{
+  text-align: left;
+}
 </style>

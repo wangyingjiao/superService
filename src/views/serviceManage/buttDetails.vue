@@ -31,7 +31,7 @@
             <div class="btton-table">
                 <div>
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
-                    <span v-if="activeName=='noDocking'" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
+                    <span v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')==-1" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button v-if="activeName=='noDocking' && eshopStatus =='yes' && btnShow.indexOf('project_butt')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
                      <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
@@ -45,15 +45,15 @@
                         <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.selfCode.length <= 20" :content="scope.row.selfCode">
+                                <el-tooltip placement="left" :disabled="scope.row.selfCode+''.length <= 20" :content="scope.row.selfCode">
                                     <span>{{scope.row.selfCode}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="id" label="对接商品ID" align="center">
+                        <el-table-column v-if="activeName!='noDocking'" prop="jointGoodsCode" label="对接商品ID" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.id.length <= 20" :content="scope.row.id">
-                                    <span>{{scope.row.id}}</span>
+                                <el-tooltip placement="left" :disabled="scope.row.jointGoodsCode+''.length <= 20" :content="scope.row.jointGoodsCode">
+                                    <span>{{scope.row.jointGoodsCode}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -130,9 +130,18 @@ import {
             buttedConnList(obj,page,size).then(data=>{
                 if(data.data.code){
                     this.listLoading = false
-                    this.tableData3 = data.data.data.list
+                    var arr = data.data.data.list
+                    var i,len = arr.length
+                    for( i = 0 ; i< len; i++){
+                        if("jointGoodsCode" in arr[i]){
+                            continue
+                        }else{
+                            arr[i].jointGoodsCode = ""
+                        }
+                    }
+                    this.tableData3 = arr
                     this.total = data.data.data.count
-                    console.log(data,"data+++++")
+                    console.log(this.tableData3,"data+++++")
                 }else{
                   this.listLoading = false
                 }
@@ -255,6 +264,9 @@ import {
         toggleSelection(row, selected){
             var obj = this.setUpDelete('id')
             console.log(obj,"移除")
+            if(obj.goodIds.length<=0){
+                return
+            }
             this.listLoading = true
             deleteGoodsCode(obj).then(data=>{
                 console.log(data,"移除对接成功")
@@ -278,6 +290,9 @@ import {
         toggleSetUp(){
             var obj = this.setUpDelete('id')
             console.log(obj,"设置")
+            if(obj.goodIds.length<=0){
+                return
+            }
             this.listLoading = true
             JonitGoods(obj).then(data=>{
                 console.log(data,"设置对接成功")
