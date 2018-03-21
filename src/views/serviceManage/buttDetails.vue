@@ -248,6 +248,7 @@ import {
             }else{
                 this.search.eshopCode = ''
             }
+            this.pageSize = 10;
             this.dockingEName = this.options[0] || {name:''}
             // this.$refs.multipleTable.clearSelection();
             //防止请求多次
