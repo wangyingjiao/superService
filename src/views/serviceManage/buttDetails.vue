@@ -42,7 +42,11 @@
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="newName" label="商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
-                        <el-table-column prop="univalence" label="价格/单位" align="center"></el-table-column>
+                        <el-table-column prop="univalence" label="价格/单位" align="center">
+                            <template scope="scope">
+                                {{scope.row.univalence | capitalize}}
+                            </template>
+                        </el-table-column>
                         <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
                             <template scope="scope">
                                 <el-tooltip placement="left" :disabled="scope.row.selfCode+''.length <= 20" :content="scope.row.selfCode">
@@ -227,6 +231,7 @@ import {
         tablePageSize(obj,page,size){
             if(!obj.eshopCode){
                 this.tableData3 = []
+                this.total = 0
                 return
             }
             if(this.activeName == "yesDocking"){
@@ -238,7 +243,11 @@ import {
         //tabs切换
         handleClick(tab, event) {
             // debugger;
-            this.search.eshopCode = this.options[0].eshopCode || ''
+            if(this.options[0]){
+                this.search.eshopCode = this.options[0].eshopCode
+            }else{
+                this.search.eshopCode = ''
+            }
             this.dockingEName = this.options[0] || {name:''}
             // this.$refs.multipleTable.clearSelection();
             //防止请求多次
@@ -389,6 +398,11 @@ import {
         promise.then(success=>{
             this.buttedConnListApi(success)
         })
+    },
+    filters:{
+        capitalize(value){
+            return value.replace('.00','元 ')
+        }
     }
   };
 </script>
