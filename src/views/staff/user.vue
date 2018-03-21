@@ -968,15 +968,14 @@ export default {
                 this.$refs.domTree.setCheckedKeys([]);
                 this.$refs[formName].resetFields();
                 this.dialogFormStation = false;
-                if (res.data.data.organization.id == this.temp.officeId) {
-                  this.stationCheck.push(res.data.data);
-                  this.temp.role = res.data.data.id;
-                }
-
                 this.$message({
                   type: "success",
                   message: "添加成功"
                 });
+                if (res.data.data.organization.id == this.temp.officeId) {
+                  this.stationCheck.push(res.data.data);
+                  this.temp.role = res.data.data.id;
+                }
               }
             })
             .catch(err => {

@@ -30,7 +30,7 @@ instance.interceptors.response.use(res => {
       arr.push(res.data.code)
       if (arr.length === 1) {
         store.dispatch('LogOut').then(() => {
-          Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
+          Message.error('登录已过期或者个人资料被更改,请重新登录,3秒后回到登录页面')
           setTimeout(() => {
             arr = []
             router.push({ path: '/login' })
