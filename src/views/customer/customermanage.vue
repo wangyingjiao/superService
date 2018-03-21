@@ -264,7 +264,7 @@ export default {
         }
       }
     };
-    //详细地址验证规则
+    //详细地址验证
     var checkAddress = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请输入1-100位详细地址"));
