@@ -125,11 +125,13 @@
         <el-table-column align="center" label="" min-width="250">
              <template scope="scope">
             <div
-              class="branch"  
+              class="branch deleteEd"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-              <span class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
-              <span class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
+              <div>
+                <span class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
+                <span v-show="item.jointEshopFlag == 'yes' " class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
+              </div>
                 <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
                 <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
             </div>
@@ -1006,8 +1008,9 @@ export default {
                  }
                }
              }
-            this.dockingData[0] = arr
+            // this.dockingData[0] = arr
             console.log(arr,"arr-----")
+            this.$set(this.dockingData,0,arr)
             this.docking = true
           }else{
             this.$message({
@@ -1881,6 +1884,9 @@ export default {
    white-space: nowrap;
    text-overflow: inherit;
 }
+.dockingDialog .el-table td>div{
+  padding: 0;
+}
 
 .tabBox {
   overflow: hidden;
@@ -2459,6 +2465,13 @@ hr {
 .joCode .cell{
   padding: 0 10px;
   white-space: nowrap;
+}
+.deleteEd{
+  text-align: left;
+}
+.deleteEd>div{
+  width: 240px;
+  margin: 0 auto;
 }
 
 </style>
