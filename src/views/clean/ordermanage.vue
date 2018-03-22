@@ -303,7 +303,6 @@ export default {
       this.jumpPage = 1;
       this.getTableData(obj, this.pageNumber, this.size);
     },
-    
     //导出订单按钮
     exportOrder() {},
     //查看跳转到订单详情页
