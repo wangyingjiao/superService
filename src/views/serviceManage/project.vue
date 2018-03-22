@@ -1390,16 +1390,17 @@ export default {
         .then(data => {
           if (data.data.code == 1) {
             var dataUpdate = data.data.data;
-            if (dataUpdate.commoditys != undefined) {
-              for (var i = 0; i < dataUpdate.commoditys.length; i++) {
-                if (dataUpdate.commoditys[i].jointGoodsCode) {
-                  this.jointCode = true;
-                  break;
-                } else {
-                  this.jointCode = false;
-                }
-              }
-            }
+            this.jointCode = true
+            // if (dataUpdate.commoditys != undefined) {
+            //   for (var i = 0; i < dataUpdate.commoditys.length; i++) {
+            //     if (dataUpdate.commoditys[i].jointGoodsCode) {
+            //       this.jointCode = true;
+            //       break;
+            //     } else {
+            //       this.jointCode = false;
+            //     }
+            //   }
+            // }
             this.listLoading = false;
             this.dialogFormVisible = true;
             var arr = data.data.data;
