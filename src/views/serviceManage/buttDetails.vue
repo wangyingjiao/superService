@@ -33,7 +33,7 @@
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
                     <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
-                    <button v-if="activeName=='noDocking' && eshopStatus =='yes' && btnShow.indexOf('project_butt')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
+                    <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
                      <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
                     <!-- <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button> -->
                 </div>
@@ -441,5 +441,9 @@ import {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+    .buttBox .disabled{
+        background: #ccc;
+        border-color: #ccc;
     }
 </style>
