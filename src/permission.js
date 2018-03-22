@@ -33,7 +33,6 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    Message.error('11111111')
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
