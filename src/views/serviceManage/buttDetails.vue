@@ -21,7 +21,7 @@
                     <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
-                <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入商品名称"></el-input>
+                <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入对接商品名称"></el-input>
                 <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
                 <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
             </div>
@@ -31,7 +31,7 @@
             <div class="btton-table">
                 <div>
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
-                    <span v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')==-1" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
+                    <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button v-if="activeName=='noDocking' && eshopStatus =='yes' && btnShow.indexOf('project_butt')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button>
                      <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
@@ -40,7 +40,7 @@
                 <div>
                     <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
-                        <el-table-column prop="newName" label="商品名称" align="center"></el-table-column>
+                        <el-table-column prop="newName" label="对接商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center">
                             <template scope="scope">
