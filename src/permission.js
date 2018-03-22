@@ -7,7 +7,7 @@ import { getToken } from '@/utils/auth' // 验权
 
 const whiteList = ['/login', '/download'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
-  NProgress.start()
+  // NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
       next({ path: '/' })
@@ -36,8 +36,11 @@ router.beforeEach((to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      next('/login')
-      NProgress.done()
+      store.dispatch('LogOut').then(() => {
+        next({ path: '/login' })
+        location.reload()
+      })
+      // NProgress.done()
     }
   }
 })
