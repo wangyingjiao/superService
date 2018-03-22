@@ -9,7 +9,7 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" clearable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
+                <el-select class="butt-search" filterable  clearable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>
@@ -214,7 +214,7 @@ import {
             }
             //--改变当前查询的E店------------------：
             if(this.pageSync == 1){
-                this.tablePageSize(this.search)
+                this.tablePageSize(this.search,this.pageSync, this.pageSize)
             }else{
                 this.pageSync = 1
             }
@@ -445,5 +445,6 @@ import {
     .buttBox .disabled{
         background: #ccc;
         border-color: #ccc;
+        cursor:not-allowed;
     }
 </style>
