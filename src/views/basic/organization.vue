@@ -228,7 +228,7 @@
               
             </div>
             <el-form-item prop="basicOrganizationEshops">
-            <p  class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作</p>
+            <!-- <p  class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作</p> -->
             </el-form-item>
             </el-row>
         </el-form-item>
