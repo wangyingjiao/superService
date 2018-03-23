@@ -370,7 +370,7 @@ export default {
   methods: {
     //单选改变
     getCurrentRow(value) {
-      console.log(value);
+      
     },
     //服务地址管理弹窗按钮打开
     ChangeAdress(row) {
@@ -383,16 +383,13 @@ export default {
     },
     //服务地址管理编辑
     selectButAddress(row) {
-      console.log(row.id);
     },
     //服务地址管理删除
     DeleteAddress(row) {
-      console.log(row.id);
     },
     //服务地址管理新增地址
     addAddressFun(status) {
       this.areaOptionsAddress = this.$store.state.user.area;
-      console.log(status);
       this.addAddrssDialogShow = true;
     },
     //服务地址管理新增地址保存

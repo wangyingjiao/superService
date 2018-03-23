@@ -33,15 +33,11 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    console.log(to.path,'11111111111111')
     if (whiteList.indexOf(to.path) !== -1) {
-      console.log(222222222)
       next()
     } else {
       store.dispatch('LogOut').then(() => {
-        console.log(3333333333)
         next({ path: '/login' })
-        // location.reload()
       })
       // NProgress.done()
     }

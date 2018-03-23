@@ -433,7 +433,6 @@ export default {
           });
         }
       });
-      var that = this;
       pro.then(success => {
         var data = success;
         var ossData = new FormData();
