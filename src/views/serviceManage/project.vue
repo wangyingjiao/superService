@@ -767,19 +767,19 @@ export default {
       }
     };
     return {
-      orgStatus:'',
+      orgStatus: "",
       pageNumber: 1,
       addCommodityFlag: false,
       editName: {},
       customArr: [],
       jointCode: false,
-      dockingData:[],
+      dockingData: [],
       alreadyArr: [],
       labelClickArr: [],
       systemClickId: null,
       systemClick2Id: null,
       systemClick3Id: null,
-      docking:false,
+      docking: false,
       systemOptions: [],
       systemOptions2: [],
       imgNumber: 0,
@@ -950,74 +950,69 @@ export default {
   },
   methods: {
     //删除商品
-    deletGood(item){
+    deletGood(item) {
       this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        customClass:"deleteCom",
+        customClass: "deleteCom",
         type: "warning"
       })
         .then(() => {
-          deleteGoodsData({id:item.id,itemId:item.itemId})
-            .then(data=>{
-              console.log(data,"data___++++")
-              if(data.data.code==1){
-                  this.$message({
-                    type: "success",
-                    message: data.data.data
-                  });
-                  this.handleCurrentChange(this.listQuery.page);
-              }else{
-               
+          deleteGoodsData({ id: item.id, itemId: item.itemId })
+            .then(data => {
+              if (data.data.code == 1) {
+                this.$message({
+                  type: "success",
+                  message: data.data.data
+                });
+                this.handleCurrentChange(this.listQuery.page);
+              } else {
               }
             })
-            .catch(error=>{
-              console.log(error,"error----")
-            })
+            .catch(error => {});
         })
         .catch(() => {
           // return
         });
     },
     //已对接E店
-    dockingE(item){
-      console.log(item)
-      if(item.jointEshopFlag=='yes'){
-        alreadyButted({id:item.id})
-          .then(data=>{
-            if(data.data.code==1){
-              var arr = data.data.data
-               if('commodityEshops' in arr){
-                 for(var i = 0 ; i < arr.commodityEshops.length; i++){
-                   if('jointGoodsCode' in arr.commodityEshops[i]){
-                     continue;
-                   }else{
-                     arr.commodityEshops[i].jointGoodsCode = ''
-                   }
-                 }
-               }
+    dockingE(item) {
+      if (item.jointEshopFlag == "yes") {
+        alreadyButted({ id: item.id })
+          .then(data => {
+            if (data.data.code == 1) {
+              var arr = data.data.data;
+              if ("commodityEshops" in arr) {
+                for (var i = 0; i < arr.commodityEshops.length; i++) {
+                  if ("jointGoodsCode" in arr.commodityEshops[i]) {
+                    continue;
+                  } else {
+                    arr.commodityEshops[i].jointGoodsCode = "";
+                  }
+                }
+              }
               // this.dockingData[0] = arr
-              console.log(arr,"arr-----")
-              this.$set(this.dockingData,0,arr)
-              this.docking = true
-            }else{
+
+              this.$set(this.dockingData, 0, arr);
+              this.docking = true;
+            } else {
               this.$message({
                 type: "warning",
                 message: data.data.data
               });
             }
           })
-          .catch(error=>{
-            return false
-          })
-      }else{
-        this.dockingData = []
-        this.docking = true
+          .catch(error => {
+            return false;
+          });
+      } else {
+        this.dockingData = [];
+        this.docking = true;
       }
     },
     //对接详情
-    buttDetails(){
+    buttDetails() {
       this.$router.push({ path: "/service/buttDetails/" });
     },
     returnImg(item) {
@@ -1185,18 +1180,18 @@ export default {
       });
     },
     //价格没有小数点补填00
-    returnFloat(value){
-      var value=Math.round(parseFloat(value)*100)/100;
-			var xsd=value.toString().split(".");
-      if(xsd.length==1){
-        value=value.toString()+".00";
+    returnFloat(value) {
+      var value = Math.round(parseFloat(value) * 100) / 100;
+      var xsd = value.toString().split(".");
+      if (xsd.length == 1) {
+        value = value.toString() + ".00";
         return value;
       }
-      if(xsd.length>1){
-        if(xsd[1].length<2){
-        value=value.toString()+"0";
+      if (xsd.length > 1) {
+        if (xsd[1].length < 2) {
+          value = value.toString() + "0";
         }
-      return value;
+        return value;
       }
     },
     //商品添加/编辑
@@ -1207,7 +1202,7 @@ export default {
           obj.startPerNum = this.goods_info.startPerNum;
           obj.minPurchase = this.goods_info.minPurchase;
           obj.cappingPerNum = this.goods_info.cappingPerNum;
-          obj.price = this.returnFloat(this.goods_info.price)
+          obj.price = this.returnFloat(this.goods_info.price);
           if (this.handleEditFlag) {
             this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
             this.resetForm("ser");
@@ -1264,13 +1259,12 @@ export default {
         this.$message.error("商品信息不能为空");
         return false;
       } else {
-          this.$message({
-            message: "删除成功",
-            type: "success"
-          });
-          this.handleEditFlag = false;
-          this.basicForm.commoditys.splice(index, 1);
-        
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+        this.handleEditFlag = false;
+        this.basicForm.commoditys.splice(index, 1);
       }
     },
     houseClick(val) {
@@ -1326,16 +1320,16 @@ export default {
       }
       getProject(obj, _page, _size)
         .then(res => {
-          console.log(res,"res---")
-          this.orgStatus = res.data.data.orgStatus
+          this.orgStatus = res.data.data.orgStatus;
           this.total = res.data.data.page.count;
           this.pageNumber = res.data.data.page.pageNo;
           this.pageSize = res.data.data.page.pageSize;
           this.listQuery.page = res.data.data.page.pageNo;
           this.listTable = res.data.data.page.list;
-          let i,len = this.listTable.length;
+          let i,
+            len = this.listTable.length;
           if (this.listTable != undefined && this.listTable.length > 0) {
-            for (i = 0; i < len ; i++) {
+            for (i = 0; i < len; i++) {
               this.listTable[i].num = i + 1;
             }
           }
@@ -1397,12 +1391,15 @@ export default {
         .then(data => {
           if (data.data.code == 1) {
             var dataUpdate = data.data.data;
-            this.jointCode = true
+            this.jointCode = true;
             // if (dataUpdate.commoditys != undefined) {
-              let i,len = dataUpdate.commoditys.length
-              for ( i = 0; i < len ; i++) {
-                dataUpdate.commoditys[i].price = this.returnFloat(dataUpdate.commoditys[i].price)
-              }
+            let i,
+              len = dataUpdate.commoditys.length;
+            for (i = 0; i < len; i++) {
+              dataUpdate.commoditys[i].price = this.returnFloat(
+                dataUpdate.commoditys[i].price
+              );
+            }
             // }
             this.listLoading = false;
             this.dialogFormVisible = true;
@@ -1451,7 +1448,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        customClass:"deleteCom",
+        customClass: "deleteCom",
         type: "warning"
       })
         .then(() => {
@@ -1883,15 +1880,15 @@ export default {
 .branch:nth-of-type(even) {
   /* background-color: #f5f5f5; */
 }
-.projectTabel .el-table__row .cell{
+.projectTabel .el-table__row .cell {
   padding: 0;
 }
-.dockingDialog .el-table__row .cell div{
-   overflow: hidden;
-   white-space: nowrap;
-   text-overflow: inherit;
+.dockingDialog .el-table__row .cell div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: inherit;
 }
-.dockingDialog .el-table td>div{
+.dockingDialog .el-table td > div {
   padding: 0;
 }
 
@@ -2299,7 +2296,8 @@ hr {
   margin-left: 90px;
 }
 .labelName .dialog-footer,
-.systemLabel .dialog-footer,.dockingDialog .dialog-footer{
+.systemLabel .dialog-footer,
+.dockingDialog .dialog-footer {
   display: flex;
   justify-content: center;
 }
@@ -2449,27 +2447,27 @@ hr {
 .diatable > .el-dialog--small {
   width: 75%;
 }
-.commEd{
+.commEd {
   border: 1px solid #4c70e8;
   padding: 4px 16px;
   color: #4c70e8;
-  border-radius:5px; 
+  border-radius: 5px;
   cursor: pointer;
   margin: 0 10px;
 }
-.probtn{
+.probtn {
   border: 1px solid #4c70e8;
   padding: 4px 16px;
   color: #4c70e8;
-  border-radius:5px; 
+  border-radius: 5px;
   cursor: pointer;
   margin: 0 10px;
-  line-height:30px;
+  line-height: 30px;
 }
-.deleteCom .el-message-box__message{
+.deleteCom .el-message-box__message {
   text-align: left !important;
 }
-.joCode .cell{
+.joCode .cell {
   padding: 0 10px;
   white-space: nowrap;
 }
@@ -2480,5 +2478,4 @@ hr {
   width: 240px;
   margin: 0 auto;
 } */
-
 </style>
