@@ -63,20 +63,6 @@ instance.interceptors.response.use(res => {
       }
     }
   }
-
-  // else {
-  // arr.push(error)
-  // if (arr.length === 1) {
-  //   store.dispatch('LogOut').then(() => {
-  //     Message.error('当前登录已过期,请重新登录,3秒后回到登录页面')
-  //     setTimeout(() => {
-  //       arr = []
-  //       store.state.app.visitedViews = []
-  //       router.push({ path: '/login' })
-  //     }, 2500)
-  //   })
-  // }
-  // }
   return Promise.reject(error)
 })
 
