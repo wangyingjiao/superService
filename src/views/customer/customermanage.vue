@@ -114,9 +114,9 @@
 						<el-input   style='width: 100%;'  v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>		
 					</el-form-item>
 					<el-form-item label="邮箱:" prop="email" >
-						<el-input  v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
+						<el-input v-model.trim="ruleForm.email" style='width: 100%;' placeholder="请输入常用邮箱"></el-input>
 					</el-form-item>					
-				</el-form>						    
+				</el-form>
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
 					  <button class="button-large" v-if="testFlag == undefined" :disabled="submitFlag"  @click="submitForm('ruleForm','add')">确 定</button>
 						<button class="button-large" v-if="testFlag != undefined" :disabled="submitFlag"  @click="submitForm('ruleForm','up')">确 定</button>
@@ -239,9 +239,7 @@ export default {
       if (!value) {
         callback();
       } else {
-        if (
-          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
-        ) {
+        if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) {
           callback(new Error("请输入正确的邮箱"));
         } else {
           if (value.length >= 5 && value.length <= 50) {
@@ -277,8 +275,8 @@ export default {
       }
     };
     return {
-      titlevar:'新增客户',
-      titlevarAddress:'新增服务地址',
+      titlevar: "新增客户",
+      titlevarAddress: "新增服务地址",
       submitFlag: false,
       jumpPage: 1,
       btnShow: JSON.parse(localStorage.getItem("btn")),
@@ -307,7 +305,7 @@ export default {
         cityCode: "",
         areaCode: "",
         areaCodes: []
-      },      
+      },
       rules: {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
@@ -335,14 +333,24 @@ export default {
             trigger: "change"
           }
         ]
-      },      
+      },
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
       tableData: [],
-      tableDataAddress:[
-        {id:'ab',name:'jack',phone:'13426345690',address:'天津天津市和平区1222222'},
-        {id:'abc',name:'king',phone:'13426345678',address:'蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff'}
+      tableDataAddress: [
+        {
+          id: "ab",
+          name: "jack",
+          phone: "13426345690",
+          address: "天津天津市和平区1222222"
+        },
+        {
+          id: "abc",
+          name: "king",
+          phone: "13426345678",
+          address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff"
+        }
       ],
       //全局搜索下拉选项
       organizationOptions: [],
@@ -354,78 +362,75 @@ export default {
       pageSize1: 10, //表格每页条数
       pageNumber: 1,
       testFlag: undefined,
-      radio:'',
-      serviceAddressVisible:false,
-      addAddrssDialogShow:false
+      radio: "",
+      serviceAddressVisible: false,
+      addAddrssDialogShow: false
     };
   },
   methods: {
     //单选改变
-    getCurrentRow(value){
-      console.log(value)
+    getCurrentRow(value) {
+      
     },
     //服务地址管理弹窗按钮打开
-    ChangeAdress(row){
-      this.radio=''
-      this.serviceAddressVisible=true;
+    ChangeAdress(row) {
+      this.radio = "";
+      this.serviceAddressVisible = true;
     },
     //服务地址管理弹窗关闭
-    colseAddress(){
-      this.serviceAddressVisible=false;
+    colseAddress() {
+      this.serviceAddressVisible = false;
     },
     //服务地址管理编辑
     selectButAddress(row) {
-      console.log(row.id)
     },
     //服务地址管理删除
-    DeleteAddress(row){
-      console.log(row.id)
+    DeleteAddress(row) {
     },
     //服务地址管理新增地址
-    addAddressFun(status){
+    addAddressFun(status) {
       this.areaOptionsAddress = this.$store.state.user.area;
-      console.log(status)
-      this.addAddrssDialogShow=true
+      this.addAddrssDialogShow = true;
     },
     //服务地址管理新增地址保存
-    submitFormAddress(formName, status){
+    submitFormAddress(formName, status) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-            this.addAddrssDialogShow=false;
-            this.$refs["ruleFormAddress"].resetFields();
+          this.addAddrssDialogShow = false;
+          this.$refs["ruleFormAddress"].resetFields();
         }
-      })      
+      });
     },
     //服务地址管理新增地址取消
-    resetFormAddress(formName){
+    resetFormAddress(formName) {
       this.$refs[formName].resetFields();
-      this.addAddrssDialogShow=false;
+      this.addAddrssDialogShow = false;
     },
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     //新增保存
     submitForm(formName, status) {
-      var that = this;     
+      var that = this;
       this.submitFlag = true;
       setTimeout(function() {
         that.submitFlag = false;
       }, 1000);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
-          //省、市、区三级ID         
+          this.loadingClick();
+          //省、市、区三级ID
           this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
           this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
           this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
           //保存upCus
           if (status == "add") {
-            this.ruleForm.id='';
+            this.ruleForm.id = "";
             var obj = this.ruleForm;
             saveCus(obj)
               .then(res => {
@@ -449,10 +454,10 @@ export default {
                 }
               })
               .catch(res => {
-                 loading.close();
+                loading.close();
               });
-          } else {         
-            var obj1 = this.ruleForm;            
+          } else {
+            var obj1 = this.ruleForm;
             upCus(obj1)
               .then(res => {
                 if (res.data.code === 1) {
@@ -464,17 +469,16 @@ export default {
                   this.$refs["ruleForm"].resetFields();
                   this.dialogTableVisible = false;
                   var obj2 = {
-                      name: this.customName,
-                      phone: this.customPhone
+                    name: this.customName,
+                    phone: this.customPhone
                   };
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
-                   loading.close();
-                   
+                  loading.close();
                 }
               })
               .catch(res => {
-                 loading.close();                 
+                loading.close();
               });
           }
         } else {
@@ -541,13 +545,13 @@ export default {
       this.dialogTableVisible = true;
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
-        this.titlevar='新增客户';
+        this.titlevar = "新增客户";
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
-        this.titlevar='编辑客户';
+        this.titlevar = "编辑客户";
         var obj = {
           id: row.id
         };
@@ -649,11 +653,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.selfAddressGao{
-   width:332px;max-height:290px;overflow:hidden;
+.selfAddressGao {
+  width: 332px;
+  max-height: 290px;
+  overflow: hidden;
 }
-.selfpanel{
-  width:350px;max-height:290px;overflow-y:auto
+.selfpanel {
+  width: 350px;
+  max-height: 290px;
+  overflow-y: auto;
 }
 .selfToolTip {
   width: 280px;

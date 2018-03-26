@@ -551,8 +551,6 @@ export default {
     handleUpdate(row) {
       this.myselfUpdate = true;
       this.listLoading = true;
-      getSList({}).then(res => {
-        this.officeIds = res.data.data.list;
         getPower(row.id).then(res => {
           this.listLoading = false;
           if (res.data.code == 1) {
@@ -655,7 +653,7 @@ export default {
             this.listLoading = false;
           }
         });
-      });
+    
     },
     //删除数据
     handleDelete(row) {

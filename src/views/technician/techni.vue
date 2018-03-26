@@ -1133,7 +1133,7 @@ export default {
           .then(res => {
             if (flag == "head") {
               this.personal.headPic = ossData.get("key");
-              this.$refs['personal'].validate(valid => {})  //验证头像
+              // this.$refs['personal'].validate(valid => {})  //验证头像
             } else if (flag == "at") {
               this.personal.idCardPicAfter = ossData.get("key");
             } else {

@@ -62,7 +62,7 @@
       
       <el-table-column align="center" label="操作">
         <template scope="scope" >
-          <el-button v-if="scope.row.senFlag" class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
+          <el-button v-if="scope.row.sendFlag =='yes'" class="ceshi3"  @click="handleAgain(scope.row)">再次对接</el-button>
         </template>
       </el-table-column>
 

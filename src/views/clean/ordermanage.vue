@@ -55,9 +55,9 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="220"   label="服务机构" prop="orgName">
+					<el-table-column  align="center" width="220"  label="服务机构" prop="orgName">
 					</el-table-column>
-					<el-table-column  align="center" width="150"  label="服务站" prop="stationName">
+					<el-table-column  align="center" width="150" label="服务站" prop="stationName">
 					</el-table-column>
 					<el-table-column  align="center" width="150"  label="订单来源">
 						<template scope="scope">
@@ -73,9 +73,9 @@
 						</template>	
 					</el-table-column>
 					<el-table-column   align="center" width="150" label="付款价格">
-                          <template scope="scope">
-                              <span>￥{{scope.row.payPrice}}</span>
-                          </template>							
+              <template scope="scope">
+                  <span>￥{{scope.row.payPrice}}</span>
+              </template>							
 					</el-table-column>
 					<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
 					</el-table-column>
@@ -132,7 +132,7 @@
 
 <script>
 import { getOrderTable } from "@/api/order";
-import { getFuwu,getSList } from "@/api/staff";
+import { getFuwu, getSList } from "@/api/staff";
 import util from "@/utils/date";
 export default {
   name: "ordermanage",
@@ -179,8 +179,8 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            if(res.data.data[0].id == 0){
-               res.data.data.remove(res.data.data[0]);
+            if (res.data.data[0].id == 0) {
+              res.data.data.remove(res.data.data[0]);
             }
             this.payTypeOptions = res.data.data;
           } else {
@@ -205,8 +205,6 @@ export default {
                 res.data.data.orgList.remove(res.data.data.orgList[a]);
               }
             }
-
-            
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -217,10 +215,10 @@ export default {
         });
     },
     // 服务机构
-    getoffice(){
-        getSList({}).then(res => {          
-          this.mechanismOptions = res.data.data.list;
-        });
+    getoffice() {
+      getSList({}).then(res => {
+        this.mechanismOptions = res.data.data.list;
+      });
     },
     //tabs操作需要请求表格数据
     handleClick(tab, event) {

@@ -228,7 +228,7 @@
               
             </div>
             <el-form-item prop="basicOrganizationEshops">
-            <p  class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作</p>
+            <!-- <p  class="warn clearfix">*已对接的E店，点击删除，则会彻底删除，无法撤销，请谨慎操作</p> -->
             </el-form-item>
             </el-row>
         </el-form-item>
@@ -798,21 +798,30 @@ export default {
     },
     //删除E店
     delEshop(val) {
-      if (val.id != undefined) {
-        var obj = {
-          id: this.temp.id,
-          eshopCode: val.eshopCode
-        };
-        console.log(obj);
-        deleteEshop(obj).then(res => {
-          this.number++;
-          if (res.data.code == 1) {
+      this.$confirm("解除对接E店，会解除商品的对接，无法撤销，您确定要解除吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false
+      })
+        .then(() => {
+          if (val.id != undefined) {
+            var obj = {
+              id: this.temp.id,
+              eshopCode: val.eshopCode
+            };
+            deleteEshop(obj).then(res => {
+              this.number++;
+              if (res.data.code == 1) {
+                this.temp.basicOrganizationEshops.remove(val);
+              }
+            });
+          } else {
             this.temp.basicOrganizationEshops.remove(val);
           }
+        })
+        .catch(() => {
+          
         });
-      } else {
-        this.temp.basicOrganizationEshops.remove(val);
-      }
     },
     //取消
     resetForm(formName) {
@@ -1047,7 +1056,6 @@ export default {
   background-color: #ffffff;
   padding: 20px 20px 20px 20px;
 }
-
 
 .proName {
   width: 100%;
