@@ -37,6 +37,9 @@
       <el-table-column align="center" label="请求结果" width="100" prop="isSuccess">      
       </el-table-column>
 
+      <el-table-column align="center" label="请求类型" width="200" prop="sendType">      
+      </el-table-column>
+
       <el-table-column align="center" label="创建时间" width="200" prop="createDate">      
       </el-table-column>
 
