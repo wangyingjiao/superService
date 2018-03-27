@@ -53,7 +53,7 @@
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
-							  <el-button type="button" class="ceshi3" v-if="true" @click="ChangeAdress(scope.row)">地址管理</el-button>
+							  <el-button type="button" class="ceshi3" v-if="true" @click="ChangeAdress(scope.row,'add')">地址管理</el-button>
 						  </template>
 					  </el-table-column>					  
 					</el-table>
@@ -101,7 +101,7 @@
 		<!--新增客户弹窗结束-->
         <!--服务地址管理弹窗结束-->
 		<el-dialog title="服务地址管理" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
-				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
+				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('','add')"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
 						v-loading="listLoading"
@@ -135,7 +135,7 @@
                         width="180"
 						>
 						  <template scope="scope">
-							  <el-button type="button" class="ceshi3"  @click="selectButAddress(scope.row)">编辑</el-button>
+							  <el-button type="button" class="ceshi3"  @click="addAddressFun(scope.row,'up')">编辑</el-button>
 							  <el-button type="button" class="ceshi3"  @click="DeleteAddress(scope.row)">删除</el-button>
 						  </template>
 					  </el-table-column>					  
@@ -170,13 +170,22 @@
 						 style='width: 100%;'
 					  ></el-cascader>							
 					</el-form-item>
-					<el-form-item label="详细地址:" prop="address">
-						<el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="输入详细地址"></el-input>		
+					<el-form-item label="详细地址:" required>
+                <el-col :span="12">
+                  <el-form-item prop="address">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="address">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="单元楼、门牌号"></el-input>
+                  </el-form-item>
+                </el-col>							
 					</el-form-item>				
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-					  <button class="button-large"    @click="submitFormAddress('ruleFormAddress','add')">保存</button>
-						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
+					  <button class="button-large" v-if="AddressStatus == 'add'"   @click="submitFormAddress('ruleFormAddress','add')">保存</button>
+						<button class="button-large" v-if="AddressStatus == 'up'"   @click="submitFormAddress('ruleFormAddress','up')">保存</button>
 						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
 				</div>
 		</el-dialog>
@@ -251,6 +260,7 @@ export default {
       }
     };
     return {
+      AddressStatus:'add',
       titlevar: "新增用户",
       titlevarAddress: "新增服务地址",
       submitFlag: false,
@@ -340,7 +350,7 @@ export default {
       
     },
     //服务地址管理弹窗按钮打开
-    ChangeAdress(row) {
+    ChangeAdress(row,status) {
       this.radio = "";
       this.serviceAddressVisible = true;
     },
@@ -352,14 +362,12 @@ export default {
 	submitAddress(){
 	  this.serviceAddressVisible = false;
 	},
-    //服务地址管理编辑
-    selectButAddress(row) {
-    },
     //服务地址管理删除
     DeleteAddress(row) {
     },
-    //服务地址管理新增地址
-    addAddressFun(status) {
+    //服务地址管理新增地址/服务地址管理编辑
+    addAddressFun(row,status) {
+      this.AddressStatus=status
       this.areaOptionsAddress = this.$store.state.user.area;
       this.addAddrssDialogShow = true;
     },
@@ -367,6 +375,7 @@ export default {
     submitFormAddress(formName, status) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          //status=='add'时是新增地址，status=='up'时是编辑地址          
           this.addAddrssDialogShow = false;
           this.$refs["ruleFormAddress"].resetFields();
         }

@@ -294,10 +294,10 @@
 					  <el-table-column
 						align="center"
 						label="默认地址"
-                        width="100"
+            width="100"
 						>
 						  <template scope="scope">
-                             <span v-if="scope.row.moren =='0'">否</span>
+              <span v-if="scope.row.moren =='0'">否</span>
 							 <span v-if="scope.row.moren =='1'">是</span>
 						  </template>
 					  </el-table-column>					  
@@ -332,8 +332,17 @@
 						 style='width: 100%;'
 					  ></el-cascader>							
 					</el-form-item>
-					<el-form-item label="详细地址:" prop="address">
-						<el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="输入详细地址"></el-input>		
+					<el-form-item label="详细地址:" required>
+                <el-col :span="12">
+                  <el-form-item prop="address">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="address">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="单元楼、门牌号"></el-input>
+                  </el-form-item>
+                </el-col>							
 					</el-form-item>				
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
