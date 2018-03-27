@@ -2,8 +2,8 @@
     <div class="addorder-container">
 		<!--搜索开始-->
 		<div class="fist-bar">
-		  <el-input  class="search"   placeholder="请输入搜索的手机号" v-model="customPhone"></el-input>
-			<el-input  class="search"   placeholder="请输入搜索的姓名" v-model="customName"></el-input>
+		  <el-input  class="search"   placeholder="请输入用户的手机号" v-model="customPhone"></el-input>
+			<el-input  class="search"   placeholder="请输入用户的姓名" v-model="customName"></el-input>
 		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 		</div>
 		<!--搜索结束-->
@@ -104,6 +104,8 @@
 				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('','add')"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
+            highlight-current-row
+            empty-text='此用户暂无服务地址'
 						v-loading="listLoading"
 					  style="width:100%;"
 						>          
@@ -141,8 +143,8 @@
 					  </el-table-column>					  
 					</el-table>				
 					<div slot="footer" class="dialog-footer" style="text-align:center;">
-							<button class="button-large"   @click="submitAddress()">确定</button>
-							<button class="button-cancel"  @click="colseAddress()">取消</button>
+							<!-- <button class="button-large"   @click="submitAddress()">确定</button> -->
+							<button class="button-cancel"  @click="colseAddress()">关闭</button>
 					</div>
 		</el-dialog>
         <!--服务地址管理弹窗结束-->
@@ -177,8 +179,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="单元楼、门牌号"></el-input>
+                  <el-form-item prop="houseNumber">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeh placeholder="单元楼、门牌号"></el-input>
                   </el-form-item>
                 </el-col>							
 					</el-form-item>				
@@ -250,15 +252,27 @@ export default {
     //详细地址验证
     var checkAddress = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入1-100位详细地址"));
+        callback(new Error("长度在1-100个字符"));
       } else {
         if (value.length >= 1 && value.length <= 100) {
           callback();
         } else {
-          callback(new Error("请输入1-100位详细地址"));
+          callback(new Error("长度在1-100个字符"));
         }
       }
     };
+    //门牌号验证
+    var checkAddressa = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("长度在1-50个字符"));
+      } else {
+        if (value.length >= 1 && value.length <= 50) {
+          callback();
+        } else {
+          callback(new Error("长度在1-50个字符"));
+        }
+      }
+    };    
     return {
       AddressStatus:'add',
       titlevar: "新增用户",
@@ -274,7 +288,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        email: "",
+        email: "",        
         sex: "",
         provinceCode: "",
         cityCode: "",
@@ -287,6 +301,7 @@ export default {
         name: "",
         phone: "",
         address: "",
+        houseNumber:'',
         provinceCode: "",
         cityCode: "",
         areaCode: "",
@@ -309,7 +324,8 @@ export default {
             message: "请选择区域",
             trigger: "change"
           }
-        ]
+        ],
+        houseNumber:[{ required: true, validator: checkAddressa, trigger: "blur" }],
       },
       dict: require("../../../static/dict.json"),
       sex: "",
@@ -347,29 +363,45 @@ export default {
   methods: {
     //单选改变
     getCurrentRow(value) {
-      
+      this.radio=value
     },
     //服务地址管理弹窗按钮打开
     ChangeAdress(row,status) {
       this.radio = "";
       this.serviceAddressVisible = true;
     },
-    //服务地址管理弹窗取消
+    //服务地址管理弹窗关闭
     colseAddress() {
       this.serviceAddressVisible = false;
     },
 	//服务地址管理弹窗保存
-	submitAddress(){
-	  this.serviceAddressVisible = false;
-	},
+    // submitAddress(){
+    //   this.serviceAddressVisible = false;
+    // },
     //服务地址管理删除
     DeleteAddress(row) {
     },
     //服务地址管理新增地址/服务地址管理编辑
     addAddressFun(row,status) {
-      this.AddressStatus=status
+      this.AddressStatus=status;
       this.areaOptionsAddress = this.$store.state.user.area;
-      this.addAddrssDialogShow = true;
+      if(status == 'up'){
+        this.titlevarAddress="编辑服务地址";
+        this.addAddrssDialogShow = true;
+      }else{
+        this.titlevarAddress="新增服务地址"
+        if(this.tableDataAddress.length < 6){
+          this.addAddrssDialogShow = true;
+        }else{
+          this.addAddrssDialogShow = false;
+          this.$message({
+            type: "warning",
+            message: "最多可添加6个服务地址"
+          });
+        }        
+      }
+      
+      
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName, status) {
@@ -522,13 +554,13 @@ export default {
       this.dialogTableVisible = true;
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
-        this.titlevar = "新增客户";
+        this.titlevar = "新增用户";
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
-        this.titlevar = "编辑客户";
+        this.titlevar = "编辑用户";
         var obj = {
           id: row.id
         };

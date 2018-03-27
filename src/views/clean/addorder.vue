@@ -266,6 +266,7 @@
 				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
+            empty-text='此用户暂无服务地址'
 					  style="width:100%;"
 						>          
             <el-table-column align="center" label="选择地址" width="100">
@@ -339,8 +340,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="单元楼、门牌号"></el-input>
+                  <el-form-item prop="houseNumber">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeholder="单元楼、门牌号"></el-input>
                   </el-form-item>
                 </el-col>							
 					</el-form-item>				
@@ -416,12 +417,12 @@ export default {
     };	
     var checkAddress = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入1-100位详细地址"));
+        callback(new Error("长度在1-100个字符"));
       } else {
         if (value.length >= 1 && value.length <= 100) {
           callback();
         } else {
-          callback(new Error("请输入1-100位详细地址"));
+          callback(new Error("长度在1-100个字符"));
         }
       }
     };
@@ -432,9 +433,21 @@ export default {
         callback();
       }
     };
+    //门牌号验证
+    var checkAddressa = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("长度在1-50个字符"));
+      } else {
+        if (value.length >= 1 && value.length <= 50) {
+          callback();
+        } else {
+          callback(new Error("长度在1-50个字符"));
+        }
+      }
+    };    
     return {
       titlevarAddress: "新增服务地址",
-	  areaOptionsAddress: this.$store.state.user.area,
+	    areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
       options2: [],
       timeObj: [],
@@ -525,6 +538,7 @@ export default {
         name: "",
         phone: "",
         address: "",
+        houseNumber:'',
         provinceCode: "",
         cityCode: "",
         areaCode: "",
@@ -552,6 +566,7 @@ export default {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         address: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        houseNumber:[{ required: true, validator: checkAddressa, trigger: "blur" }],
         areaCodes: [
           {
             type: "array",
@@ -599,7 +614,7 @@ export default {
           name: "king",
           phone: "13426345678",
           address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff",
-		  moren:'0'
+		      moren:'0'
         }
       ],	  
     };
@@ -618,7 +633,7 @@ export default {
   methods: {
     //单选改变
     getCurrentRow(value) {
-      
+      this.radio = value;
     },
     //服务地址管理弹窗按钮打开
     changeuserAddress() {
@@ -629,14 +644,22 @@ export default {
     colseAddress() {
       this.serviceAddressVisible = false;
     },
-	//服务地址管理弹窗保存
-	submitAddress(){
-	  this.serviceAddressVisible = false;
-	},
+    //服务地址管理弹窗保存
+    submitAddress(){
+      this.serviceAddressVisible = false;
+    },
     //服务地址管理新增地址
     addAddressFun(status) {
-      this.areaOptionsAddress = this.$store.state.user.area;
-      this.addAddrssDialogShow = true;
+        this.areaOptionsAddress = this.$store.state.user.area;
+        if(this.tableDataAddress.length < 6){
+          this.addAddrssDialogShow = true;
+        }else{
+          this.addAddrssDialogShow = false;
+          this.$message({
+            type: "warning",
+            message: "最多可添加6个服务地址"
+          });
+        }
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName, status) {
