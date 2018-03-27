@@ -38,6 +38,7 @@
         </template>
       </el-table-column>
 
+
       <el-table-column  label="分类名称" align="center" prop="name">
       </el-table-column>
 

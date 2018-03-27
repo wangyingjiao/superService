@@ -1,6 +1,7 @@
-<template>
+﻿<template>
 <div>
   <!-- 搜索开始 -->
+
   <div class="filter-container bgWhite">
       <el-input @keyup.enter.native="handleFilter" style="width: 350px;" placeholder="请输入搜索的内容" v-model="search.value">
         <el-select slot="prepend" clearable style="width: 120px" class="filter-item" @change="searchChange" v-model="search.key" placeholder="请选择">
