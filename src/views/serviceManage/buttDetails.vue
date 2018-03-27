@@ -9,7 +9,7 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" filterable  clearable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
+                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>

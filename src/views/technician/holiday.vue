@@ -166,14 +166,14 @@ export default {
           { required: true, message: "请选择审核状态", trigger: "change" }
         ],
         failReason: [
-          { required: true, message: "请填写休假未通过原因",  trigger: "blur" },
+          { required: true, message: "请填写休假未通过原因", trigger: "blur" },
           {
             min: 0,
             max: 100,
             message: "未通过原因长度不超过100个字符",
             trigger: "blur"
           }
-        ],
+        ]
       },
       seOptions: [
         { label: "姓名", value: "techName" },
@@ -307,7 +307,7 @@ export default {
           });
         });
     },
-    create(formName){
+    create(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
@@ -320,7 +320,7 @@ export default {
                   type: "success",
                   message: "审核成功"
                 });
-                this.resetSearch()
+                this.resetSearch();
                 this.handleFilter();
                 this.dialogForm = false;
               } else {
@@ -357,11 +357,11 @@ export default {
       };
     },
     resetSearch() {
-      this.search= {
+      this.search = {
         type: "techName",
         val: "",
         time: ""
-      }
+      };
     }
   }
 };
