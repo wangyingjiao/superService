@@ -56,6 +56,14 @@
       <el-table-column align="center" label="请求地址" prop="requestUri">      
       </el-table-column>
 
+      <el-table-column align="center" label="请求内容" >  
+        <template scope="scope">
+           <el-tooltip placement="left"  :content="scope.row.requestContent">
+             <div class="tool" >{{scope.row.requestContent}}</div>
+           </el-tooltip>
+        </template>     
+      </el-table-column>
+
       <el-table-column align="center" label="创建时间" prop="createDate">      
       </el-table-column>
 
