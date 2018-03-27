@@ -56,7 +56,11 @@
       <el-table-column align="center" label="请求地址" prop="requestUri">      
       </el-table-column>
 
+<<<<<<< HEAD
       <el-table-column align="center" label="请求内容" >  
+=======
+      <el-table-column align="center" label="请求内容dev1.0.0" >  
+>>>>>>> 71d9f57f4a459cb592f695d633d46db0bdeb6cb2
         <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
@@ -76,7 +80,7 @@
       <el-table-column align="center" label="日志类型" prop="type">      
       </el-table-column>
 
-      <el-table-column align="center" label="异常信息" prop="exceptions">     
+      <el-table-column align="center" label="异常信息1" prop="exceptions">     
         <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
              <div class="tool" >{{scope.row.exceptions}}</div>
