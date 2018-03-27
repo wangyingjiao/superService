@@ -579,8 +579,7 @@ export default {
       addAddrssDialogShow: false,
       tableDataAddress: [
         {
-          id: "ab",
-          
+          id: "ab",         
           name: "jack",
           phone: "13426345690",
           address: "天津天津市和平区1222222",
