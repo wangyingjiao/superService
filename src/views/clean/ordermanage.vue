@@ -118,7 +118,8 @@
 							<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
 					</template>
 					</el-table-column>
-				</el-table>
+				</el-table>    
+        
 				<div v-if="!listLoading" class="ordermanagePagination">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync='jumpPage'
 					:page-sizes="[5,10,15,20]" :page-size="size" layout="total, sizes, prev, pager, next, jumper" :total="total">
