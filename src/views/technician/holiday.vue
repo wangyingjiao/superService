@@ -61,7 +61,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="180">
+      <el-table-column align="center" label="操作" >
         <template scope="scope">
           <!-- <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleCheck(scope.row)">审核</el-button> -->
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
