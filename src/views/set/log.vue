@@ -68,7 +68,7 @@
       <el-table-column align="center" label="日志类型" prop="type">      
       </el-table-column>
 
-      <el-table-column align="center" label="异常信息" prop="exceptions">     
+      <el-table-column align="center" label="异常信息1" prop="exceptions">     
         <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
              <div class="tool" >{{scope.row.exceptions}}</div>
