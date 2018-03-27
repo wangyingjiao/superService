@@ -56,7 +56,7 @@
       <el-table-column align="center" label="请求地址" prop="requestUri">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求内容dev1.0.0" >  
+      <el-table-column align="center" label="请求内容" >  
         <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
