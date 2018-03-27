@@ -31,11 +31,12 @@
             <div class="btton-table">
                 <div>
                     <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
-                    <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
+                    <span class="e-prompt">对接相关的请求的交互结果非实时数据，最终的交互结果需耐心等待一段时间</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
-                     <!-- <button v-if="activeName!='noDocking'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button> -->
-                    <!-- <button v-if="activeName=='noDocking' && eshopStatus =='yes'" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSetUp">设置对接</button> -->
+                </div>
+                <div>
+                  <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                 </div>
                 <div>
                     <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
@@ -429,8 +430,13 @@ export default {
   float: right;
 }
 .notice {
+  display: block;
   color: red;
+  margin-top: 10px;
+}
+.e-prompt{
   margin-left: 6%;
+  color: #b7b5b5;
 }
 .buttBox .el-table .cell {
   white-space: nowrap;
