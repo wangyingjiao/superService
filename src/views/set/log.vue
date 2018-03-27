@@ -53,7 +53,7 @@
       <el-table-column align="center" label="请求方式" width="100" prop="method">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求地址111" prop="requestUri">      
+      <el-table-column align="center" label="请求地址" prop="requestUri">      
       </el-table-column>
 
       <el-table-column align="center" label="创建时间" prop="createDate">      
