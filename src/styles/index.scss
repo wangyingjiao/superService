@@ -800,3 +800,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.el-step__head.is-text.is-finish{
+  background-color: #4c70e8;
+  border-color: #4c70e8;
+}
+.el-step__title.is-finish{
+  color:#4c70e8;
+}
