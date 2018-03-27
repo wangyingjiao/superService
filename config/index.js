@@ -36,45 +36,6 @@ module.exports = {
           '^/apiservice': '/apiservice'
         }
       },
-     // '/api': {
-       // target: 'http://www.localhost.8800/',
-       // changeOrigin: false, // 如果接口跨域，需要进行这个参数配置
-       // pathRewrite: {
-        //  '^/api': ''
-       // }
-     // }
-<<<<<<< HEAD
-      // '/apiservice': {
-      //   target: 'http://10.16.70.63:8800/',
-=======
-<<<<<<< HEAD
-      // '/apiservice': {
-      //   target: 'http://10.16.70.62:8800/',
->>>>>>> 592346067c5e564fdee6c899c8c00f33fa0ac1bd
-      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
-      //   pathRewrite: {
-      //     '^/apiservice': ''
-      //   }
-      // }
-<<<<<<< HEAD
-=======
-=======
-      '/apiservice': {
-        target: 'http://10.16.70.63:8800/',
-        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
-        pathRewrite: {
-          '^/apiservice': ''
-        }
-      }
->>>>>>> 42fbfbf51337910e553fe2ec320e91a673063197
->>>>>>> 592346067c5e564fdee6c899c8c00f33fa0ac1bd
-      // '/apiservice': {
-      //   target: 'http://10.16.70.139:8800/',
-      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
-      //   pathRewrite: {
-      //     '^/apiservice': ''
-      //   }
-      // }
      },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
