@@ -54,11 +54,21 @@
       
       <el-table-column align="center" label="服务站" prop="techStationName">      
       </el-table-column>
+
       
       <el-table-column align="center" label="开始时间" prop="startTime">     
       </el-table-column>
       
       <el-table-column align="center" label="结束时间" prop="endTime">      
+      </el-table-column>
+
+      <el-table-column align="center" label="审核状态" prop="reviewStatus">  
+        <template scope="scope">
+           
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="来源" prop="source">      
       </el-table-column>
       
       <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
@@ -151,7 +161,7 @@ export default {
       listLoading: true,
       dialogForm: false,
       btnState: false,
-      activeName:"",
+      activeName: "",
       listQuery: {
         page: 1,
         limit: 10,
@@ -354,8 +364,8 @@ export default {
         }
       });
     },
-    handleClick(){
-          console.log(this.activeName)
+    handleClick() {
+      console.log(this.activeName);
     },
     resetForm(formName) {
       this.dialogForm = false;
@@ -404,11 +414,11 @@ export default {
   white-space: nowrap;
 }
 .tabStyle .el-input {
-    margin-left: 0px;
-    margin-bottom: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
 }
 .tabStyle .el-input-group {
-    margin-left: 20px;
-    margin-bottom: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
 }
 </style>
