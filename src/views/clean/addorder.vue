@@ -171,7 +171,11 @@
           <span class="button-large NextPrevStyle"  v-show="active == 2 || active == 3" @click="prev">上一步</span>
           <span class="button-large NextPrevStyle"  v-show="active == 1"  @click="next('form')">下一步</span>	
           <span class="button-large NextPrevStyle"  v-show="active == 2"  @click="next('form1')">下一步</span>					
+<<<<<<< HEAD
           <button class="button-large NextPrevStyle" :disabled="submitFlag1" v-show="active == 3" @click="confirmOrder('form2')">保存</button>		
+=======
+          <button class="button-large NextPrevStyle" :disabled="submitFlag1"  v-show="active == 3" @click="confirmOrder('form2')">保存</button>		
+>>>>>>> 65d42c7c3f42d10be4bc93cdb3a8748619c439e0
         </div>
         <!--上、下步按钮结束-->        
 			</div>
@@ -452,6 +456,7 @@ export default {
 	    areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
       options2: [],
+      submitFlag1:false,
       timeObj: [],
       middleA: [],
       techSaveFlag: false,
@@ -1199,6 +1204,7 @@ export default {
     //确认下单按钮点击
     confirmOrder(formName) {                
       this.$refs[formName].validate(valid => {
+        
         if (valid) {
           var time = "";
           for (var a = 0; a < this.timeObj.length; a++) {
