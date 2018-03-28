@@ -171,7 +171,7 @@
           <span class="button-large NextPrevStyle"  v-show="active == 2 || active == 3" @click="prev">上一步</span>
           <span class="button-large NextPrevStyle"  v-show="active == 1"  @click="next('form')">下一步</span>	
           <span class="button-large NextPrevStyle"  v-show="active == 2"  @click="next('form1')">下一步</span>					
-          <span class="button-large NextPrevStyle"  v-show="active == 3" @click="confirmOrder('form2')">保存</span>		
+          <button class="button-large NextPrevStyle" :disabled="submitFlag1" v-show="active == 3" @click="confirmOrder('form2')">保存</button>		
         </div>
         <!--上、下步按钮结束-->        
 			</div>
@@ -347,7 +347,7 @@
 					</el-form-item>				
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-					    <button class="button-large"    @click="submitFormAddress('ruleFormAddress','add')">保存</button>
+					    <button class="button-large"  :disabled="submitFlag"  @click="submitFormAddress('ruleFormAddress','add')">保存</button>
 						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
 						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
 				</div>
@@ -446,6 +446,8 @@ export default {
       }
     };    
     return {
+      submitFlag: false,
+      submitFlag1: false,
       titlevarAddress: "新增服务地址",
 	    areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
@@ -662,9 +664,10 @@ export default {
         }
     },
     //服务地址管理新增地址保存
-    submitFormAddress(formName, status) {
+    submitFormAddress(formName, status) {         
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.submitFlag = true; 
           this.addAddrssDialogShow = false;
           this.$refs["ruleFormAddress"].resetFields();
         }
@@ -1194,7 +1197,7 @@ export default {
       }
     },
     //确认下单按钮点击
-    confirmOrder(formName) {
+    confirmOrder(formName) {                
       this.$refs[formName].validate(valid => {
         if (valid) {
           var time = "";
@@ -1213,6 +1216,7 @@ export default {
                     closeOnClickModal: false
                   })
                   .then(() => {
+                      this.submitFlag1 = true;                     
                       var obj = {
                         customerId: this.customId, //客户ID
                         serviceTime: this.changTime + " " + time + ":00", //服务时间
@@ -1223,6 +1227,7 @@ export default {
                       };          
                       createOrder(obj)
                         .then(res => {
+                          this.submitFlag1 = false; 
                           if (res.data.code === 1) {
                             this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                             this.$message({
@@ -1236,16 +1241,20 @@ export default {
                             });
                           }
                         })
-                        .catch(res => {});                               
+                        .catch(res => {
+                          this.submitFlag1 = false;
+                        });                               
 
                   })
                   .catch(() => {
+                      this.submitFlag1 = false;
                       this.$message({
                         type: "warning",
                         message: "已取消下单"
                       });                    
                   });
               }else{
+              this.submitFlag1 = true; 
               var obj = {
                 customerId: this.customId, //客户ID
                 serviceTime: this.changTime + " " + time + ":00", //服务时间
@@ -1256,6 +1265,7 @@ export default {
               };          
               createOrder(obj)
                 .then(res => {
+                  this.submitFlag1 = false;
                   if (res.data.code === 1) {
                     this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                     this.$message({
@@ -1269,7 +1279,9 @@ export default {
                     });
                   }
                 })
-                .catch(res => {});                 
+                .catch(res => {
+                  this.submitFlag1 = false;
+                });                 
 
               }
           }
