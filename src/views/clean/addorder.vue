@@ -16,24 +16,26 @@
 				<div class="stepContent"  v-show="active == 1">
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
-						    <span class="selfLabelStyle">*</span>
-						    <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
-			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+              <span class="selfLabelStyle">*</span>
+              <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
+							<div  class="selftSerchBut"   v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">新增</div>
+						</el-form-item>
+						<el-form-item label="获取信息:">
+							<div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
+							<el-form-item label="客户姓名:" prop="name">
+								<span class="fontSize12">{{form.name}}</span>
+							</el-form-item>
 							<el-form-item label="服务地址:" prop="address">
-							    <span class="selfLabelStyle">*</span>
-							    <span class="fontSize12">{{form.name}}</span><span style="margin-left:50px;"class="fontSize12">{{form.phone}}</span><br>
-								<span class="fontSize12">{{form.address}}</span><br/>	
-								<div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+								{{form.address}}
 							</el-form-item>
 							<el-form-item label="所属服务站:" prop='serverStation1'>
-								<el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
-								<el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
-								  <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
-								  </el-option>
-								</el-select>                
+                <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
+                <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
+                  <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
+                  </el-option>
+                </el-select>                
 							</el-form-item>	
 						</div>																										
 					</el-form>						
@@ -49,17 +51,17 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="选择商品:" >
-							<span class="selfLabelStyle">*</span>
+              <span class="selfLabelStyle">*</span>
 							<div class="table-d1" v-if="selectCommidty.length != 0">
 								<table width="80%" class="selfTable">
 									<tr>
 										<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
 										<td  class="selfTableHEADTD" align="center" width="28%">商品名称</td>
-                                        <td  class="selfTableHEADTD" align="center" width="10%">单位</td>
+                    <td  class="selfTableHEADTD" align="center" width="10%">单位</td>
 										<td  class="selfTableHEADTD" align="center" width="18%">单价</td>
 										<td  class="selfTableHEADTD" align="center" width="10%">起购数</td>
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>
-                                        <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
+                    <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
 									</tr>
 									<tr v-for="(item,index) in selectCommidty" :key="item.goodsId" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked"></el-checkbox></td>
@@ -122,10 +124,10 @@
 				<div class="stepContent" v-show="active == 3">
 					<el-form ref="form2" :rules="rules2" :model="form2" label-width="100px" label-position="left">
 						<el-form-item label="技师:" prop="selectTech">
-						    <el-select  class="roomTypeStyle" style="display:none;"   v-model="form2.selectTech" placeholder="请选择">
-								<el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
-								</el-option>
-						    </el-select>                             
+              <el-select  class="roomTypeStyle" style="display:none;"   v-model="form2.selectTech" placeholder="请选择">
+                <el-option v-for="item in tabOptions" :key="item.techId" :label="item.techName" :value="item.techId">
+                </el-option>
+              </el-select>                             
 							<span  class="button-cancel stepThreeBut"  @click="technicianSel">+选择技师</span><span class="selfPromInfStyle">* 若不选择技师，则为系统自动分配；建议派单人数为<span>{{ideaPersonNum}}</span>人，建议总服务时长为<span>{{ideaserverTime}}</span>。</span>
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
@@ -179,7 +181,7 @@
 
 	</div>
 	<!--新增客户弹窗开始-->
-	<el-dialog title="新增用户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
+	<el-dialog title="新增客户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
 			<el-form-item label="姓名:" prop="name" >
 				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
@@ -193,10 +195,11 @@
 			<el-form-item label="手机号:"  prop="phone">
 		    <el-input  v-model="ruleForm.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 			</el-form-item>
-			<!--<el-form-item label="所在区域:" prop="areaCodes">
+			<el-form-item label="所在区域:" prop="areaCodes">
+				<!-- 省市区 -->
 				<el-cascader
 					:options="areaOptions"
-					ref="allDeress"
+          ref="allDeress"
 					:show-all-levels="true"
 					v-model="ruleForm.areaCodes"
 					style='width: 100%;' 
@@ -204,7 +207,7 @@
 			</el-form-item>
 			<el-form-item label="详细地址:" prop="address">
 				<el-input class="selfAddressStyle"  style='width: 100%;' v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>       		
-			</el-form-item>-->
+			</el-form-item>
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle" style='width: 100%;'  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
@@ -260,99 +263,7 @@
 				<button class="button-cancel" @click="cancelForm2()">取 消</button>
 			</div>
 		</el-dialog>	
-	  <!--技师选择弹窗结束-->
-    <!--服务地址管理弹窗结束-->
-		<el-dialog title="选择服务地址" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
-				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
-            <el-table
-					  :data="tableDataAddress"
-            empty-text='此用户暂无服务地址'
-					  style="width:100%;"
-						>          
-            <el-table-column align="center" label="选择地址" width="100">
-              <template scope="scope">
-                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row.id)">&nbsp;</el-radio>
-              </template>
-            </el-table-column> 
-					  <el-table-column
-					    align="center"
-						prop="name"    
-						label="联系人"
-						>
-					  </el-table-column>
-					  <el-table-column
-						align="center"
-						prop="phone"         
-						label="联系电话">
-					  </el-table-column>
-						<el-table-column
-						align="center"				
-						label="服务地址"
-						width="300"
-                        prop="address"					
-						>						            
-					  </el-table-column>						
-					  <el-table-column
-						align="center"
-						label="默认地址"
-            width="100"
-						>
-						  <template scope="scope">
-              <span v-if="scope.row.moren =='0'">否</span>
-							 <span v-if="scope.row.moren =='1'">是</span>
-						  </template>
-					  </el-table-column>					  
-					</el-table>				
-					<div slot="footer" class="dialog-footer" style="text-align:center;">
-							<button class="button-large"   @click="submitAddress()">确定</button>
-							<button class="button-cancel"  @click="colseAddress()">取消</button>
-					</div>
-		</el-dialog>
-        <!--服务地址管理弹窗结束-->
-		<!--新增服务地址管理弹窗开始-->
-		<el-dialog :title="titlevarAddress" :visible.sync="addAddrssDialogShow" :show-close="false" :close-on-click-modal="false">	
-				<el-form 
-				  :model="ruleFormAddress" 
-					:rules="rulesAddress" 
-					ref="ruleFormAddress" 
-					label-width="160px" 
-					label-position="left" 
-					class="demo-ruleForm padding10Prent">
-					<el-form-item label="联系人:" prop="name"  >
-						<el-input v-model.trim="ruleFormAddress.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
-					</el-form-item>
-					<el-form-item label="联系电话:"  prop="phone">
-                <el-input  v-model="ruleFormAddress.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
-					</el-form-item>
-					<el-form-item label="所在区域:" prop="areaCodes">
-					  <!-- 省市区 -->
-					  <el-cascader
-						:options="areaOptionsAddress"
-						:show-all-levels="true"
-						 v-model="ruleFormAddress.areaCodes"
-						 style='width: 100%;'
-					  ></el-cascader>							
-					</el-form-item>
-					<el-form-item label="详细地址:" required>
-                <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item prop="houseNumber">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeholder="单元楼、门牌号"></el-input>
-                  </el-form-item>
-                </el-col>							
-					</el-form-item>				
-				</el-form>						    
-				<div slot="footer" class="dialog-footer" style="text-align:center;">
-					    <button class="button-large"    @click="submitFormAddress('ruleFormAddress','add')">保存</button>
-						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
-						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
-				</div>
-		</el-dialog>
-		<!--新增服务地址管理弹窗结束--> 	  
+	  <!--技师选择弹窗结束-->   
   </div>
  
 </template>
@@ -403,26 +314,14 @@ export default {
         }
       }
     };
-    //客户名验证规则
-    var checkName = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("请输入2-15位客户姓名"));
-      } else {
-        if (value.length >= 2 && value.length <= 15) {
-          callback();
-        } else {
-          callback(new Error("请输入2-15位客户姓名"));
-        }
-      }
-    };	
     var checkAddress = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("长度在1-100个字符"));
+        callback(new Error("请输入1-100位详细地址"));
       } else {
         if (value.length >= 1 && value.length <= 100) {
           callback();
         } else {
-          callback(new Error("长度在1-100个字符"));
+          callback(new Error("请输入1-100位详细地址"));
         }
       }
     };
@@ -433,27 +332,13 @@ export default {
         callback();
       }
     };
-    //门牌号验证
-    var checkAddressa = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("长度在1-50个字符"));
-      } else {
-        if (value.length >= 1 && value.length <= 50) {
-          callback();
-        } else {
-          callback(new Error("长度在1-50个字符"));
-        }
-      }
-    };    
     return {
-      titlevarAddress: "新增服务地址",
-	    areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
       options2: [],
-      submitFlag1:false,
       timeObj: [],
       middleA: [],
       techSaveFlag: false,
+      submitFlag1:false,
       form2: {
         selectTech: '',
         severTime: "",
@@ -535,16 +420,6 @@ export default {
         addrLongitude: "",
         addrLatitude: ""
       },
-      ruleFormAddress: {
-        name: "",
-        phone: "",
-        address: "",
-        houseNumber:'',
-        provinceCode: "",
-        cityCode: "",
-        areaCode: "",
-        areaCodes: []
-      },	  
       formtest:{
 
       },
@@ -560,14 +435,9 @@ export default {
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-      },
-      rulesAddress: {
-        name: [{ required: true, validator: checkName, trigger: "blur" }],
-        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
-        houseNumber:[{ required: true, validator: checkAddressa, trigger: "blur" }],
         areaCodes: [
           {
             type: "array",
@@ -576,7 +446,7 @@ export default {
             trigger: "change"
           }
         ]
-      },	  
+      },
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
@@ -598,26 +468,7 @@ export default {
       middleB: [],
       addressBefore:'',
       ideaserverTime:'',
-      ideaPersonNum:'',
-      radio: "",
-      serviceAddressVisible: false,
-      addAddrssDialogShow: false,
-      tableDataAddress: [
-        {
-          id: "ab",                  
-          name: "jack",
-          phone: "13426345690",
-          address: "天津天津市和平区1222222",
-		      moren:'1'
-        },
-        {
-          id: "abc",
-          name: "king",
-          phone: "13426345678",
-          address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff",
-		      moren:'0'
-        }
-      ],	  
+      ideaPersonNum:''
     };
   },
   computed: {
@@ -631,51 +482,7 @@ export default {
       return val.toFixed(2)
     }
   }, 
-  methods: {
-    //单选改变
-    getCurrentRow(value) {
-      this.radio = value;
-    },
-    //服务地址管理弹窗按钮打开
-    changeuserAddress() {
-      this.radio = "";
-      this.serviceAddressVisible = true;
-    },
-    //服务地址管理弹窗取消
-    colseAddress() {
-      this.serviceAddressVisible = false;
-    },
-    //服务地址管理弹窗保存
-    submitAddress(){
-      this.serviceAddressVisible = false;
-    },
-    //服务地址管理新增地址
-    addAddressFun(status) {
-        this.areaOptionsAddress = this.$store.state.user.area;
-        if(this.tableDataAddress.length < 6){
-          this.addAddrssDialogShow = true;
-        }else{
-          this.addAddrssDialogShow = false;
-          this.$message({
-            type: "warning",
-            message: "最多可添加6个服务地址"
-          });
-        }
-    },
-    //服务地址管理新增地址保存
-    submitFormAddress(formName, status) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.addAddrssDialogShow = false;
-          this.$refs["ruleFormAddress"].resetFields();
-        }
-      });
-    },
-    //服务地址管理新增地址取消
-    resetFormAddress(formName) {
-      this.$refs[formName].resetFields();
-      this.addAddrssDialogShow = false;
-    },    
+  methods: {    
      loadingClick(){
         loading = this.$loading({
           lock: true,
@@ -984,6 +791,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.loadingClick()          
+          //省、市、区三级ID
+          this.ruleForm.provinceCode = this.ruleForm.areaCodes[0];
+          this.ruleForm.cityCode = this.ruleForm.areaCodes[1];
+          this.ruleForm.areaCode = this.ruleForm.areaCodes[2];
           var obj = this.ruleForm;
           saveCus(obj)
             .then(res => {
@@ -1197,7 +1008,6 @@ export default {
     //确认下单按钮点击
     confirmOrder(formName) {
       this.$refs[formName].validate(valid => {
-        
         if (valid) {
           var time = "";
           for (var a = 0; a < this.timeObj.length; a++) {
