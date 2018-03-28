@@ -1,7 +1,15 @@
 <template>
 <div>
   <!-- 搜索开始 -->
-    <div class="filter-container bgWhite">
+    <div class="filter-container tabStyle">
+    <!-- 选项卡 -->
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="全部" name="all"></el-tab-pane>
+      <el-tab-pane label="待审核" name="submit"></el-tab-pane>
+      <el-tab-pane label="审核通过" name="yes"></el-tab-pane>
+      <el-tab-pane label="审核未通过" name="no"></el-tab-pane>
+    </el-tabs>
+      
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
           <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
@@ -61,9 +69,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" >
+      <el-table-column align="center" label="操作" min-width="150">
         <template scope="scope">
-          <!-- <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleCheck(scope.row)">审核</el-button> -->
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -143,6 +151,7 @@ export default {
       listLoading: true,
       dialogForm: false,
       btnState: false,
+      activeName:"",
       listQuery: {
         page: 1,
         limit: 10,
@@ -345,6 +354,9 @@ export default {
         }
       });
     },
+    handleClick(){
+          console.log(this.activeName)
+    },
     resetForm(formName) {
       this.dialogForm = false;
       this.resetTemp();
@@ -390,5 +402,13 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.tabStyle .el-input {
+    margin-left: 0px;
+    margin-bottom: 0px;
+}
+.tabStyle .el-input-group {
+    margin-left: 20px;
+    margin-bottom: 20px;
 }
 </style>
