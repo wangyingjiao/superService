@@ -1074,6 +1074,7 @@ export default {
               };          
               createOrder(obj)
                 .then(res => {
+                  
                   this.submitFlag1 = false
                   if (res.data.code === 1) {
                     this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
