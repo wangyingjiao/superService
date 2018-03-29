@@ -49,7 +49,7 @@
 							</el-table-column>
 							<el-table-column className="work" align="center" width='150'>
 								<template scope="scope">
-									<div style="height:100%">
+									<div class="time-arr" style="height:100%">
 										<div class="work-time">工作时间</div>
 										<div class="time-arrange-whole">
 											<div class="time-arrange-content">
@@ -65,7 +65,7 @@
 					<!-- 开始时间 -->
 						<el-table-column prop="time" :label="store" align="center" className="work">
 							<template scope="scope">
-								<div style="height:100%" v-if="scope.row.time">
+								<div class="time-arr" style="height:100%" v-if="scope.row.time">
 									<div class="work-time">{{scope.row.time}}</div>
 									<div class="time-arrange-whole">
 										<div class="time-arrange-content">
@@ -84,7 +84,7 @@
 					<!-- 过渡时间 -->
 						<el-table-column label="..." align="center" className="work">
 							<template scope="scope">
-								<div style="height:100%" v-if="scope.row.timetran">
+								<div class="time-arr" style="height:100%" v-if="scope.row.timetran">
 									<div class="work-time">{{scope.row.timetran}}</div>
 									<div class="time-arrange-whole">
 										<div class="time-arrange-content">
@@ -103,7 +103,7 @@
 					<!-- 结束时间 -->
 						<el-table-column :label="end" align="center" className="work">
 							<template scope="scope">
-								<div style="height:100%" v-if="scope.row.timetranend">
+								<div class="time-arr" style="height:100%" v-if="scope.row.timetranend">
 									<div class="work-time">{{scope.row.timetranend}}</div>
 									<div class="time-arrange-whole">
 										<div class="time-arrange-content">
@@ -247,25 +247,56 @@ let tableData = [{
 	  margin: 20px 0;
 	  float: right;
 	}
+	.time-arr{
+		display: flex;
+		flex-direction: column;
+	}
 	.time-arrange-whole{
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		padding: 10px 0;
+		/*height:80%;
+		height:-moz-calc(100% - 45px); 
+		height:-webkit-calc(100% - 45px);
+		height: calc(100% - 45px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px 0 ;*/
+		/*position: absolute;
+		top: 45px;
+		bottom: 0;*/
+		/*padding-bottom: 45px;*/
+		/*padding: 10px 0;
 		display: table;
 		height: 68%;
 		width: 100%;
-		overflow: hidden;
+		overflow: hidden;*/
 	}
 	.time-arrange-content{
-		vertical-align: middle;
+		/*display: table-cell;
+		vertical-align: middle;*/
+		/*vertical-align: middle;
 		display: table-cell;
-		text-align: center;
+		text-align: center;*/
+	}
+	.time-arrange-content div{
+		/*padding: 5px 0 ;*/
 	}
 	.no-orders{
-		padding: 10px 0;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: red;
+		/*padding: 10px 0;
 		display: table;
 		height: 100%;
 		width: 100%;
 		overflow: hidden;
-		color: red;
+		color: red;*/
 	}
 	.schedult-con{
 		overflow: hidden;
@@ -276,6 +307,7 @@ let tableData = [{
 		 padding: 20px;
 		 border-bottom:1px solid #eee; 
 	}
+
 	.searchRight{
 		margin-right: 1%;
 		margin-bottom: 10px; 
@@ -295,15 +327,20 @@ let tableData = [{
 		padding: 20px;
 	}
 	.work-time{
+		height: 45px;
+		line-height: 45px;
 		border-bottom: 1px solid #dfe6ec;
-		padding: 10px 0;
+		/*padding: 10px 0;*/
 	}
 	.schedule-table td.work .cell{
 		padding: 0;
 		height: 100%;
 	}
+	.schedule-table .work .cell{
+		height: 100%;
+	}
 	.work-arrange{
 		/*box-sizing: border-box;*/
-		padding: 20px 0;
+		/*padding: 20px 0;*/
 	}
 </style>
