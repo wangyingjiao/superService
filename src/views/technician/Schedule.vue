@@ -47,7 +47,7 @@
 									</div>
 								</template>
 							</el-table-column>
-							<el-table-column className="work" align="center" width='150'>
+							<el-table-column className="work" align="center" width='150' :fit="false">
 								<template scope="scope">
 									<div class="time-arr" style="height:100%">
 										<div class="work-time">工作时间</div>
@@ -153,7 +153,7 @@ let tableData = [{
           phone:'15711445668',
           address: '上海市普陀区金',
           time:'08:00~18:00',
-          arrange:['08:00~12:00   订单'],
+          arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
           timetran:'13:00~18:00',
         }, {
           date: '2016-05-04',
@@ -237,15 +237,25 @@ let tableData = [{
 </script>
 
 <style>
+	#app .schedule-table .el-table td{
+		height: auto;
+	}
 	.schedule-table .el-table th{
 		border-right: none;
 	}
 	.schedule-tech div{
 		line-height: 30px;
 	}
+	.schedule-tech {
+		padding: 10px 0;
+	}
 	.schedult-pagin {
 	  margin: 20px 0;
 	  float: right;
+	}
+	.schedule-table td.work{
+		vertical-align:text-bottom;
+		position: relative;
 	}
 	.time-arr{
 		display: flex;
@@ -332,13 +342,14 @@ let tableData = [{
 		border-bottom: 1px solid #dfe6ec;
 		/*padding: 10px 0;*/
 	}
-	.schedule-table td.work .cell{
+	.schedule-table td.work .cell,.schedule-table td.work{
 		padding: 0;
 		height: 100%;
 	}
-	.schedule-table .work .cell{
+	/*vertical-align:text-bottom*/
+	/*.schedule-table .work .cell{
 		height: 100%;
-	}
+	}*/
 	.work-arrange{
 		/*box-sizing: border-box;*/
 		/*padding: 20px 0;*/
