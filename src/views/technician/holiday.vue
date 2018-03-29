@@ -64,11 +64,17 @@
 
       <el-table-column align="center" label="审核状态" prop="reviewStatus">  
         <template scope="scope">
-           
+           <span v-if="scope.row.reviewStatus=='submit'">待审核</span>
+           <span v-if="scope.row.reviewStatus=='yes'">审核通过</span>
+           <span v-if="scope.row.reviewStatus=='no'">不通过</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="来源" prop="source">      
+      <el-table-column align="center" label="来源" prop="source">   
+        <template scope="scope">
+           <span v-if="scope.row.source=='sys'">系统</span>
+           <span v-if="scope.row.source=='app'">App</span>
+        </template>   
       </el-table-column>
       
       <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
@@ -208,11 +214,14 @@ export default {
   },
   created() {
     this.getList();
+    this.activeName = 'all'
   },
   methods: {
     //请求列表数据
     getList() {
-      var obj = {};
+      var obj = {
+        reviewStatus:this.activeName
+      };
       if (this.search.time[0]) {
         var startTime = util.formatDate.format(
           new Date(this.search.time[0]),
@@ -247,6 +256,10 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
+      if(obj.reviewStatus == 'all'){
+        obj.reviewStatus =''
+      }
+      console.log(obj)
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -366,6 +379,7 @@ export default {
     },
     handleClick() {
       console.log(this.activeName);
+      this.getList()
     },
     resetForm(formName) {
       this.dialogForm = false;
