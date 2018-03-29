@@ -173,7 +173,7 @@
           <span class="button-large NextPrevStyle"  v-show="active == 2 || active == 3" @click="prev">上一步</span>
           <span class="button-large NextPrevStyle"  v-show="active == 1"  @click="next('form')">下一步</span>	
           <span class="button-large NextPrevStyle"  v-show="active == 2"  @click="next('form1')">下一步</span>					
-          <span class="button-large NextPrevStyle"  v-show="active == 3" @click="confirmOrder('form2')">保存</span>		
+          <button class="button-large NextPrevStyle" :disabled="submitFlag1"  v-show="active == 3" @click="confirmOrder('form2')">保存</button>		
         </div>
         <!--上、下步按钮结束-->        
 			</div>
@@ -338,6 +338,7 @@ export default {
       timeObj: [],
       middleA: [],
       techSaveFlag: false,
+      submitFlag1:false,
       form2: {
         selectTech: '',
         severTime: "",
@@ -1024,6 +1025,7 @@ export default {
                     closeOnClickModal: false
                   })
                   .then(() => {
+                    this.submitFlag1 = true
                       var obj = {
                         customerId: this.customId, //客户ID
                         serviceTime: this.changTime + " " + time + ":00", //服务时间
@@ -1034,6 +1036,7 @@ export default {
                       };          
                       createOrder(obj)
                         .then(res => {
+                          this.submitFlag1 = false
                           if (res.data.code === 1) {
                             this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                             this.$message({
@@ -1047,16 +1050,20 @@ export default {
                             });
                           }
                         })
-                        .catch(res => {});                               
+                        .catch(res => {
+                          this.submitFlag1 = false
+                        });                               
 
                   })
                   .catch(() => {
+                    this.submitFlag1 = false
                       this.$message({
                         type: "warning",
                         message: "已取消下单"
                       });                    
                   });
               }else{
+                this.submitFlag1 = true
               var obj = {
                 customerId: this.customId, //客户ID
                 serviceTime: this.changTime + " " + time + ":00", //服务时间
@@ -1067,6 +1074,8 @@ export default {
               };          
               createOrder(obj)
                 .then(res => {
+                  
+                  this.submitFlag1 = false
                   if (res.data.code === 1) {
                     this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                     this.$message({
@@ -1080,7 +1089,9 @@ export default {
                     });
                   }
                 })
-                .catch(res => {});                 
+                .catch(res => {
+                  this.submitFlag1 = false
+                });                 
 
               }
           }
