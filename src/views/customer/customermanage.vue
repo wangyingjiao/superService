@@ -374,12 +374,39 @@ export default {
     colseAddress() {
       this.serviceAddressVisible = false;
     },
-	//服务地址管理弹窗保存
-    // submitAddress(){
-    //   this.serviceAddressVisible = false;
-    // },
     //服务地址管理删除
     DeleteAddress(row) {
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });          
+          // var obj = {
+          //   id: row.id
+          // };
+          // deleteCus(obj)
+          //   .then(res => {
+          //     if (res.data.code === 1) {
+          //       this.$message({
+          //         type: "success",
+          //         message: "删除成功!"
+          //       });
+          //     }
+          //   })
+          //   .catch(() => {
+          //   });
+        })
+        .catch(() => {
+          this.$message({
+            type: "warning",
+            message: "已取消删除"
+          });
+        });      
     },
     //服务地址管理新增地址/服务地址管理编辑
     addAddressFun(row,status) {
@@ -429,10 +456,6 @@ export default {
     //新增保存
     submitForm(formName, status) {
       var that = this;
-      this.submitFlag = true;
-      setTimeout(function() {
-        that.submitFlag = false;
-      }, 1000);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.loadingClick();
@@ -441,8 +464,10 @@ export default {
           if (status == "add") {
             this.ruleForm.id = "";
             var obj = this.ruleForm;
+            this.submitFlag = true;
             saveCus(obj)
               .then(res => {
+                this.submitFlag = false;
                 if (res.data.code === 1) {
                   loading.close();
                   this.$message({
@@ -464,12 +489,15 @@ export default {
               })
               .catch(res => {
                 loading.close();
+                this.submitFlag = false;
               });
           } else {
+            this.submitFlag = true;
             var obj1 = this.ruleForm;
             upCus(obj1)
               .then(res => {
                 if (res.data.code === 1) {
+                  this.submitFlag = false;
                   loading.close();
                   this.$message({
                     type: "success",
@@ -484,10 +512,12 @@ export default {
                   this.getData(obj2, this.pageNumber, this.pageSize1);
                 } else {
                   loading.close();
+                  this.submitFlag = false;
                 }
               })
               .catch(res => {
                 loading.close();
+                this.submitFlag = false;
               });
           }
         } else {
