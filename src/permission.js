@@ -38,6 +38,8 @@ router.beforeEach((to, from, next) => {
     } else {
       store.dispatch('LogOut').then(() => {
         next({ path: '/login' })
+      }).catch(() => {
+        next({ path: '/login' })
       })
       // NProgress.done()
     }
