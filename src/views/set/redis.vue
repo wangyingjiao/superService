@@ -31,7 +31,7 @@
                         <br>
                         <el-row>
                             <el-col :span="16" :offset="6">
-                              <el-input v-if="textareaState" type="textarea" :rows='3' :autosize='true' v-model="textarea"></el-input>
+                              <el-input v-if="textareaState" type="textarea" :rows="2"  :autosize='true' v-model="textarea"></el-input>
                             </el-col>
                         </el-row>
                 </el-col>
@@ -108,10 +108,8 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      console.log(this.form);
       if (this.form.pass) {
         checkPassword({ password: this.form.pass }).then(res => {
-          console.log(res);
           if (res.data.code == 1) {
             this.loginState = false;
           }
@@ -124,7 +122,6 @@ export default {
       }
     },
     handleGet() {
-      console.log(this.redis);
       if (this.redis.inquiryKey) {
         getRedisValue({ key: this.redis.inquiryKey }).then(res => {
           if (res.data.code == 1) {
@@ -141,7 +138,6 @@ export default {
       }
     },
     handleSave() {
-      console.log(this.redis);
       if (this.redis.key) {
         if (this.redis.value) {
           saveRedisValue({ key: this.redis.key, value: this.redis.value }).then(
@@ -193,6 +189,7 @@ export default {
   border: 1px solid #333;
 }
 .redis_span {
+  color: #333;
   font-size: 15px;
   display: block;
   line-height: 34px;

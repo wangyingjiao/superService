@@ -491,6 +491,7 @@ export default {
         permission: "",
         isShow: "",
         type: "",
+        sort:"",
         icon: ""
       };
     }
