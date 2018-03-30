@@ -73,7 +73,7 @@
             </div>                                     		
 		    </div>
         <!--订单信息结束-->
-        <!--支付信息开始-->
+        <!--订单取消开始-->
         <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
             <div class="custom-action">订单取消信息</div>
             <div class="hr-style"></div>
@@ -95,7 +95,37 @@
 
             </div>                                     		
 		    </div>
-        <!--支付信息结束-->        
+        <!--订单取消结束-->
+        <!--服务地址信息开始-->
+        <div class="thrid-bar marginTop15" >
+            <div class="custom-action">服务地址信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">联系人:</span>
+                      <span class="lineContent">
+                          <span>张三</span>
+                      </span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">服务地址:</span>
+                      <span class="selfbeizhu1">
+                        <span>北京市朝阳区呼家楼宾馆3923rd</span>
+                      </span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" >
+                      <span class="lineTitle">联系电话:</span>
+                      <span class="lineContent" >
+                        <span>13426345690</span>                                                                        
+                      </span>
+                   </p>
+                </div>
+            </div>                                     		
+		    </div>
+        <!--服务地址信息结束-->                
         <!--支付信息开始-->
         <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
             <div class="custom-action">支付信息</div>

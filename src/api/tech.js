@@ -180,10 +180,14 @@ export function getHoliday(obj, pageNumber, pageSize) {
 export function delHoliday(obj) {
   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/delete`, obj)
 }
-// // 审核休假
-// export function checkHoliday(obj) {
-//   return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/reviewedHoliday`, obj)
-// }   暂时不做
+// 审核休假
+export function reviewedHoliday(obj) {
+  return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/reviewedHoliday`, obj)
+}
+// 审核休假
+export function getHolidayById(obj) {
+  return instance.post(`/apiservice/a/service/technician/serviceTechnicianHoliday/getHolidayById`, obj)
+}
 
 // 获取用户机构时间
 export function serviceTechnicianInfo() {

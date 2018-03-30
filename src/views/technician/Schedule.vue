@@ -35,17 +35,76 @@
 			<!-- 搜索完成 -->
 			<!-- 表格 -->
 			<div class="schedule-table">
-				<el-table :data="tableData" border style="width: 100%">
-    				<el-table-column prop="date" label="姓名" align="center"> </el-table-column>
-    				<el-table-column prop="name" label="手机号" align="center"> </el-table-column>
-    				<el-table-column prop="address" label="服务站" align="center"> </el-table-column>
-    				<el-table-column prop="address" label="服务站---" align="center" className="work">
-    					<template scope="scope"> 
-    						<div class="work-time">工作时间</div>
-    						<div class="work-arrange">工作安排</div>
-    					</template>
-    				</el-table-column>
+				<el-table :data="tableData" stripe border style="width: 100%">
+					<!-- 技师 -->
+						<el-table-column label="技师" align="center">
+							<el-table-column align="center">
+								<template scope="scope">
+									<div class="schedule-tech">
+										<div>{{scope.row.name}}</div>
+										<div>{{scope.row.phone}}</div>
+										<div>{{scope.row.address}}</div>
+									</div>
+								</template>
+							</el-table-column>
+							<el-table-column className="work" align="center" width='100'>
+								<template scope="scope">
+									<div style="height:100%">
+										<div class="work-time">工作时间</div>
+										<div class="time-arrange-whole">
+											<div class="time-arrange-content">
+												<div class="work-arrange">工作安排</div>
+											</div>
+										</div>
+									</div>
+								</template>
+							</el-table-column>
+						</el-table-column>
+					<!-- 技师结束 -->
+					<!-- 时间 -->
+						<el-table-column v-for="(item,index) in tableData" :key="index" :label="item.date" align="center" className="work">
+							<template scope="scope">
+								<div class="work-bo" v-if="scope.row['time'+index]">
+									<div class="work-time">{{scope.row["time"+index]}}</div>
+									<div class="work-add-bo">
+										<div v-for="(data,key) in scope.row['arrange'+index]" :key="key">
+											{{data}}
+										</div>
+									</div>
+								</div>
+								<div v-else class="no-orders">
+									<div>全天不可接单</div>
+								</div>
+							</template>
+						</el-table-column>
+						<!-- <el-table-column prop="time" :label="store" align="center" className="work">
+							<template scope="scope">
+								<div style="height:100%" v-if="scope.row.time">
+									<div class="work-time">{{scope.row.time}}</div>
+									<div class="time-arrange-whole">
+										<div class="time-arrange-content">
+											<div v-for="(item,index) in scope.row.arrange" :key="index">{{item}}</div>
+										</div>
+									</div>
+								</div>
+								<div v-else class="no-orders">
+									<div class="time-arrange-content">
+										<div>全天不可接单</div>
+									</div>
+								</div>
+							</template>
+						</el-table-column> -->
+					<!--时间结束 -->
+					<!-- 过渡时间 -->
+					<!-- 过渡结束 -->
+					<!-- 结束时间 -->
+					<!-- 结束时间结束 -->
  				 </el-table>
+ 				 <div class="schedult-pagin">
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageSync"
+                        :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
+                </div>
 			</div>
 			<!-- 表格完成 -->
 		</div>
@@ -53,34 +112,167 @@
 </template>
 
 <script>
-let opt = [
-	{value:'111',id:'1'},
-	{value:'111',id:'2'},
-	{value:'111',id:'3'},
-	{value:'111',id:'4'},
-	{value:'111',id:'5'}
-]
 
-let tableData = [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+	var getData = function(obj,size,page){
+		return new Promise((res,rej)=>{
+			res(2)
+		})
+	}
+
+	let opt = [
+		{value:'111',id:'1'},
+		{value:'111',id:'2'},
+		{value:'111',id:'3'},
+		{value:'111',id:'4'},
+		{value:'111',id:'5'}
+	]
+
+	let tableData = [{
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单',],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+    }]
 	export default{
 		data(){
 			return{
+				total:100,
+				pageSync:1,
+				pageSize:10,
 				opt : opt,
 				search:{
 					mechanism:'',
@@ -93,17 +285,76 @@ let tableData = [{
 				tableData:tableData
 			}
 		},
+		computed:{
+			// table开始和结束时间
+			store(){ return this.GetDateStr(0) },
+			end(){ return this.GetDateStr(6) }
+		},
 		methods:{
-
+			handleSizeChange(page){
+				this.pageSize = page;
+				this.getList()
+			},
+			handleCurrentChange(val){
+				this.pageSync = val
+				this.getList()
+			},
+			getList(){
+				getData(this.search,this.pageSync,this.pageSize)
+					.then(data=>{
+						console.log(data)
+					})
+					.catch(error=>{
+						console.log(error)
+					})
+			},
+			// table开始和结束时间
+			GetDateStr(AddDayCount){
+				var dd = new Date();  
+			   	dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期  
+			   	var y = dd.getFullYear();   
+			   	var m = (dd.getMonth()+1)<10?"0"+(dd.getMonth()+1):(dd.getMonth()+1);//获取当前月份的日期，不足10补0  
+			   	var d = dd.getDate()<10?"0"+dd.getDate():dd.getDate();//获取当前几号，不足10补0  
+			   	return y+"-"+m+"-"+d;   
+			},
 		},
 		mounted(){
-
+			this.getList()
 		}
 	}
 </script>
 
 <style>
+	.schedule-table td.work{
+		vertical-align:text-bottom;
+	}
+	#app .schedule-table .el-table td{
+		height: auto;
+	}
+	.work-add-bo{
+		padding: 10px 0;
+	}
+	.no-orders{
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: red;
+	}
+	.work-time{
+		border-bottom: 1px solid #dfe6ec;
+		padding: 10px 0;
+	}
+	.schedule-table .el-table th{
+		border-right: none;
+	}
+	.schedult-pagin {
+	  margin: 20px 0;
+	  float: right;
+	}
+	
 	.schedult-con{
+		overflow: hidden;
 		background: #fff;
   		border-bottom: 1px solid #eee;
 	}
@@ -129,14 +380,12 @@ let tableData = [{
 	.schedule-table{
 		padding: 20px;
 	}
-	.work-time{
-		border-bottom: 1px solid #dfe6ec;
-		padding: 10px 0;
-	}
-	.schedule-table .work .cell{
+	.schedule-table td.work .cell{
 		padding: 0;
+		height: 100%;
 	}
 	.work-arrange{
+		/*box-sizing: border-box;*/
 		padding: 20px 0;
 	}
 </style>
