@@ -87,3 +87,15 @@ export function delDict(obj) {
 export function getSysjoint(obj, pageNumber, pageSize) {
   return instance.post(`/apiservice/a/service/log/sysJointWait/listData?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 验证redis密码
+export function checkPassword(obj) {
+  return instance.post(`/apiservice/a/sys/redis/checkPassword   `, obj)
+}
+// 设置redis
+export function saveRedisValue(obj) {
+  return instance.post(`/apiservice/a/sys/redis/saveRedisValue`, obj)
+}
+// 查询redis
+export function getRedisValue(obj) {
+  return instance.post(`/apiservice/a/sys/redis/getRedisValue`, obj)
+}

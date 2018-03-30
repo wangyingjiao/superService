@@ -56,12 +56,12 @@
       <el-table-column align="center" label="请求地址" prop="requestUri">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求内容" >  
+      <el-table-column align="center" label="请求内容" min-width="200">
         <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
            </el-tooltip>
-        </template>     
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="创建时间" prop="createDate">      
@@ -279,7 +279,7 @@ export default {
   padding: 20px 20px 20px 20px;
 }
 .tool {
-  width: 115px;
+  width: 155px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;

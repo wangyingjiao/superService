@@ -93,10 +93,10 @@ export const constantRouterMap = [
     path: '/customer',
     component: Layout,
     redirect: 'base',
-    name: '客户管理',
+    name: ' 用户管理',
     children: [
-      { path: 'customermanage', name: ' 客户管理', component: _import('customer/customermanage') },
-      { path: 'addcustomer', name: '新增客户', component: _import('customer/addcustomer') }
+      { path: 'customermanage', name: '用户管理', component: _import('customer/customermanage') },
+      { path: 'addcustomer', name: '新增用户', component: _import('customer/addcustomer') }
     ]
   },
   {
@@ -111,6 +111,7 @@ export const constantRouterMap = [
       { path: 'menu', name: ' 菜单管理', component: _import('set/menu') },
       { path: 'dict', name: ' 数据字典', component: _import('set/dict') },
       { path: 'sysJointWait', name: ' 待执行任务', component: _import('set/sysJointWait') },
+      { path: 'redis', name: ' redis查询', component: _import('set/redis') },
       { path: 'pushMes', name: ' 推送消息', component: _import('set/pushMes') }
     ]
   },
