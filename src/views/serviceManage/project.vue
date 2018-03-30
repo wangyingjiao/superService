@@ -79,47 +79,6 @@
           </div>
         </template>
       </el-table-column>
-
-      <!-- <el-table-column label="对接编码" align="center">
-        <template scope="scope">
-          <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="left" :disabled="(scope.row.sortId+item.id).length <= 10" :content="scope.row.sortId+'_'+item.id">
-              <span class="proName">{{scope.row.sortId+"_"+item.id}}</span>
-            </el-tooltip>
-          </div>
-        </template>  
-      </el-table-column>
-
-      <el-table-column  label="对接商品ID" align="center" prop="jointGoodsCode">
-        <template scope="scope">
-          <div class="branch" v-for="(item,index) in scope.row.commoditys" :key="index">
-            <el-tooltip placement="left" :content="item.jointGoodsCode">
-                <span class="proName">{{item.jointGoodsCode}}</span>
-             </el-tooltip>
-          </div>
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column align="center" label="" min-width="200px">
-          <template scope="scope">
-            <div
-              class="branch"  
-              v-for="(item,index) in scope.row.commoditys" 
-              :key="index">
-                <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
-                <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            </div>
-          </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="操作" min-width="200px" class-name="operationTab">
-        <template scope="scope">
-            <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button>
-            <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
-              <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
-            </el-tooltip>
-        </template>
-      </el-table-column> -->
       <el-table-column label="操作" align="center">
         <!-- 商品 -->
         <el-table-column align="center" label="" min-width="250">
@@ -128,10 +87,8 @@
               class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-                <span class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
+                <span v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
                 <span v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
-                <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
-                <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -140,11 +97,6 @@
           <template scope="scope">
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
-            <!-- <el-button class="el-icon-edit ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)"></el-button> -->
-            <!-- <el-tooltip class="item" effect="dark" content="对接商品" placement="left"  v-if="scope.row.flag!='yes'">
-              <el-button class="ceshi3 iconfont senddata" @click="handleSendData(scope.row)">&#xe641;</el-button>
-            </el-tooltip> -->
         </template>
         </el-table-column>
       </el-table-column>

@@ -47,13 +47,12 @@
 									</div>
 								</template>
 							</el-table-column>
-							<el-table-column className="work" align="center" width='150'>
+							<el-table-column className="work" align="center" width='100'>
 								<template scope="scope">
-									<div class="time-arr" style="height:100%">
+									<div style="height:100%">
 										<div class="work-time">工作时间</div>
 										<div class="time-arrange-whole">
 											<div class="time-arrange-content">
-												<!-- <div class="work-arrange">工作安排</div>	 -->
 												<div class="work-arrange">工作安排</div>
 											</div>
 										</div>
@@ -62,10 +61,25 @@
 							</el-table-column>
 						</el-table-column>
 					<!-- 技师结束 -->
-					<!-- 开始时间 -->
-						<el-table-column prop="time" :label="store" align="center" className="work">
+					<!-- 时间 -->
+						<el-table-column v-for="(item,index) in tableData" :key="index" :label="item.date" align="center" className="work">
 							<template scope="scope">
-								<div class="time-arr" style="height:100%" v-if="scope.row.time">
+								<div class="work-bo" v-if="scope.row['time'+index]">
+									<div class="work-time">{{scope.row["time"+index]}}</div>
+									<div class="work-add-bo">
+										<div v-for="(data,key) in scope.row['arrange'+index]" :key="key">
+											{{data}}
+										</div>
+									</div>
+								</div>
+								<div v-else class="no-orders">
+									<div>全天不可接单</div>
+								</div>
+							</template>
+						</el-table-column>
+						<!-- <el-table-column prop="time" :label="store" align="center" className="work">
+							<template scope="scope">
+								<div style="height:100%" v-if="scope.row.time">
 									<div class="work-time">{{scope.row.time}}</div>
 									<div class="time-arrange-whole">
 										<div class="time-arrange-content">
@@ -79,45 +93,11 @@
 									</div>
 								</div>
 							</template>
-						</el-table-column>
-					<!-- 开始时间结束 -->
+						</el-table-column> -->
+					<!--时间结束 -->
 					<!-- 过渡时间 -->
-						<el-table-column label="..." align="center" className="work">
-							<template scope="scope">
-								<div class="time-arr" style="height:100%" v-if="scope.row.timetran">
-									<div class="work-time">{{scope.row.timetran}}</div>
-									<div class="time-arrange-whole">
-										<div class="time-arrange-content">
-											<div v-for="(item,index) in scope.row.arrangess" :key="index">{{item}}</div>
-										</div>
-									</div>
-								</div>
-								<div v-else class="no-orders">
-									<div class="time-arrange-content">
-										<div>全天不可接单</div>
-									</div>
-								</div>
-							</template>
-						</el-table-column>
 					<!-- 过渡结束 -->
 					<!-- 结束时间 -->
-						<el-table-column :label="end" align="center" className="work">
-							<template scope="scope">
-								<div class="time-arr" style="height:100%" v-if="scope.row.timetranend">
-									<div class="work-time">{{scope.row.timetranend}}</div>
-									<div class="time-arrange-whole">
-										<div class="time-arrange-content">
-											<div v-for="(item,index) in scope.row.arrangeend" :key="index">{{item}}</div>
-										</div>
-									</div>
-								</div>
-								<div v-else class="no-orders">
-									<div class="time-arrange-content">
-										<div>全天不可接单</div>
-									</div>
-								</div>
-							</template>
-						</el-table-column>
 					<!-- 结束时间结束 -->
  				 </el-table>
  				 <div class="schedult-pagin">
@@ -133,49 +113,160 @@
 
 <script>
 
-var getData = function(obj,size,page){
-	return new Promise((res,rej)=>{
-		res(2)
-	})
-}
+	var getData = function(obj,size,page){
+		return new Promise((res,rej)=>{
+			res(2)
+		})
+	}
 
-let opt = [
-	{value:'111',id:'1'},
-	{value:'111',id:'2'},
-	{value:'111',id:'3'},
-	{value:'111',id:'4'},
-	{value:'111',id:'5'}
-]
+	let opt = [
+		{value:'111',id:'1'},
+		{value:'111',id:'2'},
+		{value:'111',id:'3'},
+		{value:'111',id:'4'},
+		{value:'111',id:'5'}
+	]
 
-let tableData = [{
-          date: '2016-05-02',
-          name: '王小虎',
-          phone:'15711445668',
-          address: '上海市普陀区金',
-          time:'08:00~18:00',
-          arrange:['08:00~12:00   订单'],
-          timetran:'13:00~18:00',
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          phone:'15711445668',
-          address: '上海市普',
-          time:'08:00~18:00',
-          // arrange:['08:00~12:00   订单'],
-          timetran:'08:00~18:00',
-          timetranend:'08:00~18:00',
-          arrangeend:['15:30~18:00   休假']
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          phone:'15711445668',
-          address: '上海市普陀区',
-          // time:'13213',
-          // arrange:['13:00~14:00   订单','15:00~16:00   订单','17:00~18:00   休假','13:00~14:00   订单','13:00~14:00   订单'],
-          timetran:'08:00~18:00',
-          timetranend:'08:00~12:00',
-          arrangess:['13:00~14:00   订单','15:00~16:00   订单','17:00~18:00   休假','13:00~14:00   订单','13:00~14:00   订单']
-        }]
+	let tableData = [{
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单',],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'14:00~18:00',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+	        },
+	        {
+	          date: '2016-05-02',
+	          name: '王小虎1',
+	          phone:'15711445668',
+	          address: '上海市普陀区金',
+	          time0:'08:00~18:00',
+	          arrange0:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
+	          time1:'13:00~18:00',
+	          arrange1:['08:10~12:00   订单'],
+	          time2:'',
+	          arrange2:['08:20~12:00   订单'],
+	          time3:'15:00~18:00',
+	          arrange3:['08:30~12:00   订单'],
+	          time4:'16:00~18:00',
+	          arrange4:['08:00~12:00   订单'],
+	          time5:'17:00~18:00',
+	          arrange5:['08:40~12:00   订单'],
+	          time6:'18:00~18:00',
+	          arrange6:['08:50~12:00   订单'],
+    }]
 	export default{
 		data(){
 			return{
@@ -195,6 +286,7 @@ let tableData = [{
 			}
 		},
 		computed:{
+			// table开始和结束时间
 			store(){ return this.GetDateStr(0) },
 			end(){ return this.GetDateStr(6) }
 		},
@@ -227,63 +319,20 @@ let tableData = [{
 			},
 		},
 		mounted(){
-			// table开始和结束时间
-			// this.store = this.GetDateStr(0)
-			// this.end = this.GetDateStr(6)
-
 			this.getList()
 		}
 	}
 </script>
 
 <style>
-	.schedule-table .el-table th{
-		border-right: none;
+	.schedule-table td.work{
+		vertical-align:text-bottom;
 	}
-	.schedule-tech div{
-		line-height: 30px;
+	#app .schedule-table .el-table td{
+		height: auto;
 	}
-	.schedult-pagin {
-	  margin: 20px 0;
-	  float: right;
-	}
-	.time-arr{
-		display: flex;
-		flex-direction: column;
-	}
-	.time-arrange-whole{
-		flex: 1;
-		display: flex;
-		justify-content: center;
-		align-items: center;
+	.work-add-bo{
 		padding: 10px 0;
-		/*height:80%;
-		height:-moz-calc(100% - 45px); 
-		height:-webkit-calc(100% - 45px);
-		height: calc(100% - 45px);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 10px 0 ;*/
-		/*position: absolute;
-		top: 45px;
-		bottom: 0;*/
-		/*padding-bottom: 45px;*/
-		/*padding: 10px 0;
-		display: table;
-		height: 68%;
-		width: 100%;
-		overflow: hidden;*/
-	}
-	.time-arrange-content{
-		/*display: table-cell;
-		vertical-align: middle;*/
-		/*vertical-align: middle;
-		display: table-cell;
-		text-align: center;*/
-	}
-	.time-arrange-content div{
-		/*padding: 5px 0 ;*/
 	}
 	.no-orders{
 		height: 100%;
@@ -291,13 +340,19 @@ let tableData = [{
 		justify-content: center;
 		align-items: center;
 		color: red;
-		/*padding: 10px 0;
-		display: table;
-		height: 100%;
-		width: 100%;
-		overflow: hidden;
-		color: red;*/
 	}
+	.work-time{
+		border-bottom: 1px solid #dfe6ec;
+		padding: 10px 0;
+	}
+	.schedule-table .el-table th{
+		border-right: none;
+	}
+	.schedult-pagin {
+	  margin: 20px 0;
+	  float: right;
+	}
+	
 	.schedult-con{
 		overflow: hidden;
 		background: #fff;
@@ -307,7 +362,6 @@ let tableData = [{
 		 padding: 20px;
 		 border-bottom:1px solid #eee; 
 	}
-
 	.searchRight{
 		margin-right: 1%;
 		margin-bottom: 10px; 
@@ -326,21 +380,12 @@ let tableData = [{
 	.schedule-table{
 		padding: 20px;
 	}
-	.work-time{
-		height: 45px;
-		line-height: 45px;
-		border-bottom: 1px solid #dfe6ec;
-		/*padding: 10px 0;*/
-	}
 	.schedule-table td.work .cell{
 		padding: 0;
 		height: 100%;
 	}
-	.schedule-table .work .cell{
-		height: 100%;
-	}
 	.work-arrange{
 		/*box-sizing: border-box;*/
-		/*padding: 20px 0;*/
+		padding: 20px 0;
 	}
 </style>
