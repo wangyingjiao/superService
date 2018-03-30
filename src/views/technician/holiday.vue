@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- 搜索开始 -->
-    <div class="filter-container tabStyle">
+    <div class="filter-container tabStyle tabStyle2">
     <!-- 选项卡 -->
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="全部" name="all"></el-tab-pane>
@@ -64,11 +64,17 @@
 
       <el-table-column align="center" label="审核状态" prop="reviewStatus">  
         <template scope="scope">
-           
+           <span v-if="scope.row.reviewStatus=='submit'">待审核</span>
+           <span v-if="scope.row.reviewStatus=='yes'">审核通过</span>
+           <span v-if="scope.row.reviewStatus=='no'">不通过</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="来源" prop="source">      
+      <el-table-column align="center" label="来源" prop="source">   
+        <template scope="scope">
+           <span v-if="scope.row.source=='sys'">系统</span>
+           <span v-if="scope.row.source=='app'">App</span>
+        </template>   
       </el-table-column>
       
       <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
@@ -81,7 +87,7 @@
 
       <el-table-column align="center" label="操作" min-width="150">
         <template scope="scope">
-          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.reviewStatus != 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -144,7 +150,12 @@
 </template>
 
 <script>
-import { getHoliday, delHoliday } from "@/api/tech";
+import {
+  getHoliday,
+  delHoliday,
+  getHolidayById,
+  reviewedHoliday
+} from "@/api/tech";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -177,6 +188,7 @@ export default {
         time: ""
       },
       temp: {
+        rowId: "",
         reviewStatus: "",
         failReason: ""
       },
@@ -208,11 +220,14 @@ export default {
   },
   created() {
     this.getList();
+    this.activeName = "all";
   },
   methods: {
     //请求列表数据
     getList() {
-      var obj = {};
+      var obj = {
+        reviewStatus: this.activeName
+      };
       if (this.search.time[0]) {
         var startTime = util.formatDate.format(
           new Date(this.search.time[0]),
@@ -247,6 +262,10 @@ export default {
         var newobj = {};
         obj = Object.assign(obj, newobj);
       }
+      if (obj.reviewStatus == "all") {
+        obj.reviewStatus = "";
+      }
+      console.log(obj);
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -288,8 +307,20 @@ export default {
       this.pageNumber = val;
       this.getList();
     },
-    handleCheck() {
+    handleCheck(row) {
       this.dialogForm = true;
+      this.temp.rowId = row.id;
+      if (row.reviewStatus == "yes") {
+        this.temp.reviewStatus = "yes";
+      }
+      if (row.reviewStatus == "no") {
+        this.temp.reviewStatus = "no";
+        getHolidayById({ id: row.id }).then(res => {
+          if (res.data.code == "1") {
+            this.temp.failReason = res.data.data.failReason;
+          }
+        });
+      }
     },
     // 删除
     handleDelete(row) {
@@ -330,24 +361,74 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
-          checkHoliday(obj)
-            .then(res => {
-              this.btnState = false;
-              if (res.data.code === 1) {
-                this.resetTemp();
-                this.$message({
-                  type: "success",
-                  message: "审核成功"
-                });
-                this.resetSearch();
-                this.handleFilter();
-                this.dialogForm = false;
-              } else {
+          if (this.temp.reviewStatus == "yes") {
+            this.$confirm(
+              "审核通过后不可再修改其审核状态，是否继续？",
+              "提示",
+              {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnClickModal: false
               }
-            })
-            .catch(err => {
-              this.btnState = false;
-            });
+            )
+              .then(() => {
+                var obj = {
+                  id: this.temp.rowId,
+                  reviewStatus: this.temp.reviewStatus
+                };
+                if (obj.reviewStatus == "no") {
+                  obj.failReason = this.temp.failReason;
+                }
+                reviewedHoliday(obj)
+                  .then(res => {
+                    this.btnState = false;
+                    if (res.data.code === 1) {
+                      this.resetTemp();
+                      this.$refs[formName].resetFields();
+                      this.$message({
+                        type: "success",
+                        message: "审核成功"
+                      });
+                      this.resetSearch();
+                      this.handleFilter();
+                      this.dialogForm = false;
+                    } else {
+                    }
+                  })
+                  .catch(err => {
+                    this.btnState = false;
+                  });
+              })
+              .catch(() => {
+                return;
+              });
+          } else {
+            var obj = {
+              id: this.temp.rowId,
+              reviewStatus: this.temp.reviewStatus,
+              failReason: this.temp.failReason
+            };
+            // if()
+            reviewedHoliday(obj)
+              .then(res => {
+                this.btnState = false;
+                if (res.data.code === 1) {
+                  this.resetTemp();
+                  this.$refs[formName].resetFields();
+                  this.$message({
+                    type: "success",
+                    message: "审核成功"
+                  });
+                  this.resetSearch();
+                  this.handleFilter();
+                  this.dialogForm = false;
+                } else {
+                }
+              })
+              .catch(err => {
+                this.btnState = false;
+              });
+          }
         } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
@@ -365,7 +446,7 @@ export default {
       });
     },
     handleClick() {
-      console.log(this.activeName);
+      this.getList();
     },
     resetForm(formName) {
       this.dialogForm = false;
@@ -374,6 +455,7 @@ export default {
     },
     resetTemp() {
       this.temp = {
+        rowId: "",
         reviewStatus: "",
         failReason: ""
       };
@@ -413,11 +495,11 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tabStyle .el-input {
+.tabStyle2 .el-input {
   margin-left: 0px;
   margin-bottom: 0px;
 }
-.tabStyle .el-input-group {
+.tabStyle2 .el-input-group {
   margin-left: 20px;
   margin-bottom: 20px;
 }

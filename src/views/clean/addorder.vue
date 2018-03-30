@@ -18,13 +18,13 @@
 						<el-form-item label="联系电话:">
 						    <span class="selfLabelStyle">*</span>
 						    <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
-			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
+                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
 							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
 							<el-form-item label="服务地址:" prop="address">
-							    <span class="selfLabelStyle">*</span>
-							    <span class="fontSize12">{{form.name}}</span><span style="margin-left:50px;"class="fontSize12">{{form.phone}}</span><br>
+                <span class="selfLabelStyle">*</span>
+                <span class="fontSize12">{{form.name}}</span><span style="margin-left:50px;"class="fontSize12">{{form.phone}}</span><br>
 								<span class="fontSize12">{{form.address}}</span><br/>	
 								<div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
 							</el-form-item>
@@ -55,11 +55,11 @@
 									<tr>
 										<td  class="selfTableHEADTD" align="center" width="8%">选择</td>
 										<td  class="selfTableHEADTD" align="center" width="28%">商品名称</td>
-                                        <td  class="selfTableHEADTD" align="center" width="10%">单位</td>
+                    <td  class="selfTableHEADTD" align="center" width="10%">单位</td>
 										<td  class="selfTableHEADTD" align="center" width="18%">单价</td>
 										<td  class="selfTableHEADTD" align="center" width="10%">起购数</td>
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>
-                                        <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
+                    <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
 									</tr>
 									<tr v-for="(item,index) in selectCommidty" :key="item.goodsId" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked"></el-checkbox></td>
