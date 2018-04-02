@@ -116,7 +116,9 @@
             label-position="left" 
             label-width="100px"
             >
-
+          <el-form-item>
+            <p>11111111111111</p>
+          </el-form-item>
           <el-form-item label="审核休假:" prop="reviewStatus">
             <el-select class="form_item"  v-model="temp.reviewStatus">
               <el-option v-for="item in holidayState" :key="item.value" :label="item.label" :value="item.value">

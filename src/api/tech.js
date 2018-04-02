@@ -201,11 +201,11 @@ export function serviceTechnicianInfo() {
 }
 
 // 排期管理，机构和服务站
-export function mechanismService(){
-  return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/orgList`).then(data=>{
+export function mechanismService() {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/orgList`).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
