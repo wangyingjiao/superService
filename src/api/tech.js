@@ -207,7 +207,7 @@ export function mechanismService(){
   return new Promise((resolve,reject)=>{
     instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/orgList`).then(data=>{
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
