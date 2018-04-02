@@ -116,15 +116,17 @@
             label-position="left" 
             label-width="100px"
             >
-
+          <el-form-item v-if="failReasonState" label="未通过原因:">
+            <p style="width:100%;word-wrap:break-word;font-size: 12px;color: #8391a5;">{{temp.failReason}}</p>
+          </el-form-item>
           <el-form-item label="审核休假:" prop="reviewStatus">
-            <el-select class="form_item"  v-model="temp.reviewStatus">
+            <el-select class="form_item"  v-model="temp.reviewStatus" >
               <el-option v-for="item in holidayState" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="temp.reviewStatus == 'no'" label="未通过原因:" prop="failReason">
+          <el-form-item v-if="temp.reviewStatus == 'no'&& !failReasonState" label="未通过原因:" prop="failReason">
             <el-input 
             class="form_item"
               type="textarea" 
@@ -172,6 +174,7 @@ export default {
       listLoading: true,
       dialogForm: false,
       btnState: false,
+      failReasonState: false,
       activeName: "",
       listQuery: {
         page: 1,
@@ -308,18 +311,28 @@ export default {
       this.getList();
     },
     handleCheck(row) {
-      this.dialogForm = true;
       this.temp.rowId = row.id;
       if (row.reviewStatus == "yes") {
         this.temp.reviewStatus = "yes";
-      }
-      if (row.reviewStatus == "no") {
-        this.temp.reviewStatus = "no";
-        getHolidayById({ id: row.id }).then(res => {
-          if (res.data.code == "1") {
-            this.temp.failReason = res.data.data.failReason;
-          }
-        });
+        this.dialogForm = true;
+      } else if (row.reviewStatus == "no") {
+        this.listLoading = true;
+        this.temp.reviewStatus = "";
+        getHolidayById({ id: row.id })
+          .then(res => {
+            this.listLoading = false;
+            if (res.data.code == "1") {
+              this.holidayState = [{ label: "通过", value: "yes" }];
+              this.temp.failReason = res.data.data.failReason;
+              this.failReasonState = true;
+              this.dialogForm = true;
+            }
+          })
+          .catch(err => {
+            this.listLoading = false;
+          });
+      } else {
+        this.dialogForm = true;
       }
     },
     // 删除
@@ -358,10 +371,12 @@ export default {
         });
     },
     create(formName) {
+      console.log(this.temp);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           if (this.temp.reviewStatus == "yes") {
+            console.log("yessssssssssssssssss");
             this.$confirm(
               "审核通过后不可再修改其审核状态，是否继续？",
               "提示",
@@ -383,8 +398,7 @@ export default {
                   .then(res => {
                     this.btnState = false;
                     if (res.data.code === 1) {
-                      this.resetTemp();
-                      this.$refs[formName].resetFields();
+                      this.resetForm(formName);
                       this.$message({
                         type: "success",
                         message: "审核成功"
@@ -400,9 +414,11 @@ export default {
                   });
               })
               .catch(() => {
-                return;
+                this.btnState = false;
+                console.log(111111);
               });
           } else {
+            console.log(222222);
             var obj = {
               id: this.temp.rowId,
               reviewStatus: this.temp.reviewStatus,
@@ -449,9 +465,15 @@ export default {
       this.getList();
     },
     resetForm(formName) {
-      this.dialogForm = false;
+      //console.log(this.holidayState)
+      this.holidayState = [
+        { label: "通过", value: "yes" },
+        { label: "不通过", value: "no" }
+      ];
       this.resetTemp();
       this.$refs[formName].resetFields();
+      this.failReasonState = false;
+      this.dialogForm = false;
     },
     resetTemp() {
       this.temp = {
