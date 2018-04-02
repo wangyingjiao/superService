@@ -22,11 +22,11 @@
 							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
-							<el-form-item label="服务地址:" prop="address">
-							    <span class="selfLabelStyle">*</span>
-							    <span class="fontSize12">{{form.name}}</span><span style="margin-left:50px;"class="fontSize12">{{form.phone}}</span><br>
-								<span class="fontSize12">{{form.address}}</span><br/>	
-								<div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+							<el-form-item label="服务地址:" prop='radiovalue'>                  
+							    <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
+								  <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
+								  <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+                  <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
 							</el-form-item>
 							<el-form-item label="所属服务站:" prop='serverStation1'>
 								<el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
@@ -193,18 +193,6 @@
 			<el-form-item label="手机号:"  prop="phone">
 		    <el-input  v-model="ruleForm.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 			</el-form-item>
-			<!--<el-form-item label="所在区域:" prop="areaCodes">
-				<el-cascader
-					:options="areaOptions"
-					ref="allDeress"
-					:show-all-levels="true"
-					v-model="ruleForm.areaCodes"
-					style='width: 100%;' 
-				></el-cascader>								
-			</el-form-item>
-			<el-form-item label="详细地址:" prop="address">
-				<el-input class="selfAddressStyle"  style='width: 100%;' v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>       		
-			</el-form-item>-->
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle" style='width: 100%;'  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
@@ -261,35 +249,39 @@
 			</div>
 		</el-dialog>	
 	  <!--技师选择弹窗结束-->
-        <!--服务地址管理弹窗结束-->
+    <!--服务地址管理弹窗结束-->
 		<el-dialog title="选择服务地址" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
-				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
+				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
 					  style="width:100%;"
 						>          
             <el-table-column align="center" label="选择地址" width="100">
               <template scope="scope">
-                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row.id)">&nbsp;</el-radio>
+                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row)">&nbsp;</el-radio>
               </template>
             </el-table-column> 
 					  <el-table-column
 					    align="center"
-						prop="name"    
+						prop="addressName"    
 						label="联系人"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="phone"         
+						prop="addressPhone"         
 						label="联系电话">
 					  </el-table-column>
 						<el-table-column
 						align="center"				
 						label="服务地址"
-						width="300"
-                        prop="address"					
-						>						            
+						width="300"					
+						>	
+              <template scope='scope'>
+                  <el-tooltip placement="left" :disabled="scope.row.detailAddress.length < 28" :content="scope.row.detailAddress">
+                  <div class="selfToolTip">{{scope.row.detailAddress}}</div>
+                  </el-tooltip>
+              </template>            					            
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
@@ -297,17 +289,17 @@
             width="100"
 						>
 						  <template scope="scope">
-              <span v-if="scope.row.moren =='0'">否</span>
-							 <span v-if="scope.row.moren =='1'">是</span>
+              <span v-if="scope.row.defaultType =='no'">否</span>
+							 <span v-if="scope.row.defaultType =='yes'">是</span>
 						  </template>
 					  </el-table-column>					  
 					</el-table>				
 					<div slot="footer" class="dialog-footer" style="text-align:center;">
-							<button class="button-large"   @click="submitAddress()">确定</button>
-							<button class="button-cancel"  @click="colseAddress()">取消</button>
+							<button class="button-large"   @click="submitAddress()">关闭</button>
+							<!-- <button class="button-cancel"  @click="colseAddress()">取消</button> -->
 					</div>
 		</el-dialog>
-        <!--服务地址管理弹窗结束-->
+    <!--服务地址管理弹窗结束-->
 		<!--新增服务地址管理弹窗开始-->
 		<el-dialog :title="titlevarAddress" :visible.sync="addAddrssDialogShow" :show-close="false" :close-on-click-modal="false">	
 				<el-form 
@@ -317,11 +309,11 @@
 					label-width="160px" 
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
-					<el-form-item label="联系人:" prop="name"  >
-						<el-input v-model.trim="ruleFormAddress.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+					<el-form-item label="联系人:" prop="addressName"  >
+						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
-					<el-form-item label="联系电话:"  prop="phone">
-                <el-input  v-model="ruleFormAddress.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
+					<el-form-item label="联系电话:"  prop="addressPhone">
+                <el-input  v-model="ruleFormAddress.addressPhone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" prop="areaCodes">
 					  <!-- 省市区 -->
@@ -334,21 +326,20 @@
 					</el-form-item>
 					<el-form-item label="详细地址:" required>
                 <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
+                  <el-form-item prop="placename">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.placename" placeholder="请输入街道、小区、办公楼名称"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item prop="houseNumber">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeholder="单元楼、门牌号"></el-input>
+                  <el-form-item prop="detailAddress">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.detailAddress" placeholder="单元楼、门牌号"></el-input>
                   </el-form-item>
                 </el-col>							
 					</el-form-item>				
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-					    <button class="button-large"  :disabled="submitFlag"  @click="submitFormAddress('ruleFormAddress','add')">保存</button>
-						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
-						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
+					    <button class="button-large"  :disabled="submitFlag"  @click="submitFormAddress('ruleFormAddress')">保存</button>
+						  <button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
 				</div>
 		</el-dialog>
 		<!--新增服务地址管理弹窗结束--> 	  
@@ -368,7 +359,9 @@ import {
   findGoodsNeedTech //获取建议服务时长
 } from "@/api/order";
 import {
-  saveCus //保存客户（新增）
+  saveCus, //保存客户（新增）
+  listDataAddress,//地址管理
+  saveDataAddress,// 新增地址保存  
 } from "@/api/customer";
 
 var loading;
@@ -483,7 +476,8 @@ export default {
       selectCommidty: [],
       form: {
         name: "",
-        address: "",
+        radiovalue:'',
+        address: {},
         stationList: [],
         serverStation1: ""
       },
@@ -501,6 +495,9 @@ export default {
       forma: {
         serverStation1: [
           { required: true, message: "请选择服务站", trigger: "change" }
+        ],
+        radiovalue:[
+          { required: true, message: "请选择服务地址", trigger: "change" }
         ]
       },
       rules2: {
@@ -536,13 +533,13 @@ export default {
         addrLatitude: ""
       },
       ruleFormAddress: {
-        name: "",
-        phone: "",
-        address: "",
-        houseNumber: "",
-        provinceCode: "",
-        cityCode: "",
-        areaCode: "",
+        addressName:'',
+        addressPhone:'',
+        provinceCode:'',
+        cityCode:'',
+        areaCode:'',
+        placename:'',
+        detailAddress:'',
         areaCodes: []
       },
       formtest: {},
@@ -560,11 +557,11 @@ export default {
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
-      rulesAddress: {
-        name: [{ required: true, validator: checkName, trigger: "blur" }],
-        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
-        houseNumber: [
+      rulesAddress: {       
+        addressName: [{ required: true, validator: checkName, trigger: "blur" }],
+        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        placename: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        detailAddress: [
           { required: true, validator: checkAddressa, trigger: "blur" }
         ],
         areaCodes: [
@@ -601,23 +598,10 @@ export default {
       radio: "",
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
-      tableDataAddress: [
-        {
-          id: "ab",
-                   
-          name: "jack",
-          phone: "13426345690",
-          address: "天津天津市和平区1222222",
-		      moren:'1'
-        },
-        {
-          id: "abc",
-          name: "king",
-          phone: "13426345678",
-          address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff",
-		      moren:'0'
-        }
-      ],	  
+      tableDataAddress: [],
+      radioSave:'',
+      defaultAddress:[],
+      defaultAddress1:[],	  
     };
   },
   computed: {
@@ -631,35 +615,109 @@ export default {
       return val.toFixed(2);
     }
   }, 
-  methods: {
+  methods: {    
     //单选改变
-    getCurrentRow(value) {
-      
+    getCurrentRow(row) {
+      this.radio=row.id
+      this.form.radiovalue=row.id
+      this.defaultAddress=Object.assign({},row)
     },
     //服务地址管理弹窗按钮打开
     changeuserAddress() {
-      this.radio = "";
       this.serviceAddressVisible = true;
+          var obj = {
+            customerId: this.customId
+          };
+          listDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                if(res.data.data != undefined){
+                  this.tableDataAddress=res.data.data
+                  for(var a=0;a<this.tableDataAddress.length;a++){
+                      if(this.tableDataAddress[a].defaultType == 'yes'){                        
+                        this.radio=this.tableDataAddress[a].id;
+                        this.form.radiovalue=this.tableDataAddress[a].id;                                                                      
+                        this.radioSave=this.tableDataAddress[a].id                        
+                        this.defaultAddress1=Object.assign({},this.tableDataAddress[a])
+                        this.defaultAddress=Object.assign({},this.tableDataAddress[a])
+                      }
+                  }
+                }else{
+                  this.tableDataAddress=[]
+                  this.radioSave=''
+                }
+
+              }
+            })
+            .catch(() => {
+            });      
     },
     //服务地址管理弹窗取消
-    colseAddress() {
+    // colseAddress() {
+    //   this.radio=this.radioSave;
+    //   this.form.radiovalue=this.radioSave;
+    //   this.form.address=Object.assign({}, this.defaultAddress1);
+    //   this.serviceAddressVisible = false;
+    // },
+    //服务地址管理弹窗保存
+    submitAddress(){
+      this.form.address=Object.assign({}, this.defaultAddress);       
+      this.radio=this.defaultAddress.id;
+      this.form.radiovalue=this.defaultAddress.id;
+      this.serverStation1='';
+      this.form.serverStation1='';           
       this.serviceAddressVisible = false;
     },
-	//服务地址管理弹窗保存
-	submitAddress(){
-	  this.serviceAddressVisible = false;
-	},
     //服务地址管理新增地址
-    addAddressFun(status) {
+    addAddressFun() {
       this.areaOptionsAddress = this.$store.state.user.area;
-      this.addAddrssDialogShow = true;
+        if(this.tableDataAddress.length < 6){
+          this.addAddrssDialogShow = true;
+        }else{
+          this.addAddrssDialogShow = false;
+          this.$message({
+            type: "warning",
+            message: "最多可添加6个服务地址"
+          });
+        }      
     },
     //服务地址管理新增地址保存
-    submitFormAddress(formName, status) {
+    submitFormAddress(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.addAddrssDialogShow = false;
-          this.$refs["ruleFormAddress"].resetFields();
+            this.ruleFormAddress.customerId=this.customId;
+            //省、市、区三级ID          
+            this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
+            this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
+            this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];                   
+            var obj=this.ruleFormAddress
+            saveDataAddress(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "新增地址成功!"
+                  });
+                  this.addAddrssDialogShow = false;
+                  this.changeuserAddress()
+                  this.$refs["ruleFormAddress"].resetFields();                
+                }
+              })
+              .catch(() => {
+              });        
+        }else{
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;           
         }
       });
     },
@@ -934,6 +992,9 @@ export default {
               if (res.data.data != undefined) {
                 this.customId = res.data.data.id;
                 this.form = res.data.data;
+                if(res.data.data.address.id != undefined){
+                  this.form.radiovalue=res.data.data.address.id
+                }                
                 this.customKeyFlag = true;
               }
             } else if (res.data.code === 3) {
@@ -1032,6 +1093,9 @@ export default {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.form = res.data.data;
+                if(res.data.data.address.id != undefined){
+                  this.form.radiovalue=res.data.data.address.id
+                }               
                 this.customPhone = res.data.data.phone;
                 this.customKeyFlag = true;
               }
@@ -1218,7 +1282,8 @@ export default {
                     customerRemark: this.form2.textarea, //备注
                     techList: this.tabOptions, //技师对象
                     goodsInfoList: this.middleB, //商品对象
-                    stationId: this.serverStation1
+                    stationId: this.serverStation1,
+                    customerAddressId:this.form.radiovalue
                   };
                   createOrder(obj)
                     .then(res => {
@@ -1255,7 +1320,8 @@ export default {
                 customerRemark: this.form2.textarea, //备注
                 techList: this.tabOptions, //技师对象
                 goodsInfoList: this.middleB, //商品对象
-                stationId: this.serverStation1
+                stationId: this.serverStation1,
+                customerAddressId:this.form.radiovalue
               };
               createOrder(obj)
                 .then(res => {
@@ -1788,6 +1854,13 @@ export default {
   text-align: center;
   border-collapse: collapse;
   padding: 2px;
+}
+.selfToolTip {
+  width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 .height70 {
   height: 70px;

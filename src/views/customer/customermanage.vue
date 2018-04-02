@@ -53,7 +53,7 @@
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('order_insert') != -1" @click="lookInf(scope.row)">下单</el-button>
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_update') != -1" @click="selectBut(scope.row)">编辑</el-button>
 							  <el-button type="button" class="ceshi3" v-if="btnShow.indexOf('customer_delete') != -1" @click="Delete(scope.row)">删除</el-button>
-							  <el-button type="button" class="ceshi3" v-if="true" @click="ChangeAdress(scope.row,'add')">地址管理</el-button>
+							  <el-button type="button" class="ceshi3" v-if="true" @click="ChangeAdress(scope.row.id)">地址管理</el-button>
 						  </template>
 					  </el-table-column>					  
 					</el-table>
@@ -115,26 +115,31 @@
               </template>
             </el-table-column> 
 					  <el-table-column
-					    align="center"
-						prop="name"    
+					  align="center"
+						prop="addressName"    
 						label="联系人"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="phone"         
+						prop="addressPhone"         
 						label="联系电话">
 					  </el-table-column>
 						<el-table-column
 						align="center"				
 						label="服务地址"
-                        prop="address"					
-						>						            
+            width="300"					
+						>	
+              <template scope='scope'>
+                  <el-tooltip placement="left" :disabled="scope.row.detailAddress.length < 28" :content="scope.row.detailAddress">
+                  <div class="selfToolTip">{{scope.row.detailAddress}}</div>
+                  </el-tooltip>
+              </template>            					            
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
 						label="操作"
-                        width="180"
+            width="180"
 						>
 						  <template scope="scope">
 							  <el-button type="button" class="ceshi3"  @click="addAddressFun(scope.row,'up')">编辑</el-button>
@@ -157,11 +162,11 @@
 					label-width="160px" 
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
-					<el-form-item label="联系人:" prop="name"  >
-						<el-input v-model.trim="ruleFormAddress.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+					<el-form-item label="联系人:" prop="addressName"  >
+						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
-					<el-form-item label="联系电话:"  prop="phone">
-                <el-input  v-model="ruleFormAddress.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
+					<el-form-item label="联系电话:"  prop="addressPhone">
+                <el-input  v-model="ruleFormAddress.addressPhone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" prop="areaCodes">
 					  <!-- 省市区 -->
@@ -174,13 +179,13 @@
 					</el-form-item>
 					<el-form-item label="详细地址:" required>
                 <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
+                  <el-form-item prop="placename">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.placename" placeholder="请输入街道、小区、办公楼名称"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item prop="houseNumber">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeh placeholder="单元楼、门牌号"></el-input>
+                  <el-form-item prop="detailAddress">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.detailAddress" placeh placeholder="单元楼、门牌号"></el-input>
                   </el-form-item>
                 </el-col>							
 					</el-form-item>				
@@ -201,7 +206,13 @@ import {
   deleteCus, //删除客户
   saveCus, //保存客户（新增）
   getCus, //客户（编辑）
-  upCus //保存客户（编辑）
+  upCus, //保存客户（编辑）
+  listDataAddress,//地址管理
+  saveDataAddress,// 新增地址保存
+  formDataAddress,//编辑地址
+  upDataAddress,// 编辑地址保存
+  deleteDataAddress,//删除地址
+  setDefaultAddress,// 设置默认地址
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
 
@@ -298,13 +309,15 @@ export default {
         addrLatitude: ""
       },
       ruleFormAddress: {
-        name: "",
-        phone: "",
-        address: "",
-        houseNumber:'',
-        provinceCode: "",
-        cityCode: "",
-        areaCode: "",
+        id:'',
+        customerId:'',
+        addressName:'',
+        addressPhone:'',
+        provinceCode:'',
+        cityCode:'',
+        areaCode:'',
+        placename:'',
+        detailAddress:'',
         areaCodes: []
       },
       rules: {
@@ -314,9 +327,9 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {
-        name: [{ required: true, validator: checkName, trigger: "blur" }],
-        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        addressName: [{ required: true, validator: checkName, trigger: "blur" }],
+        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        placename: [{ required: true, validator: checkAddress, trigger: "blur" }],
         areaCodes: [
           {
             type: "array",
@@ -325,26 +338,13 @@ export default {
             trigger: "change"
           }
         ],
-        houseNumber:[{ required: true, validator: checkAddressa, trigger: "blur" }],
+        detailAddress:[{ required: true, validator: checkAddressa, trigger: "blur" }],
       },
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
       tableData: [],
-      tableDataAddress: [
-        {
-          id: "ab",
-          name: "jack",
-          phone: "13426345690",
-          address: "天津天津市和平区1222222"
-        },
-        {
-          id: "abc",
-          name: "king",
-          phone: "13426345678",
-          address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff"
-        }
-      ],
+      tableDataAddress: [],
       //全局搜索下拉选项
       organizationOptions: [],
       // organizationName:'',//服务机构
@@ -357,18 +357,57 @@ export default {
       testFlag: undefined,
       radio: "",
       serviceAddressVisible: false,
-      addAddrssDialogShow: false
+      addAddrssDialogShow: false,
+      userIdSave:'',
     };
   },
   methods: {
     //单选改变
     getCurrentRow(value) {
       this.radio=value
+      //设置默认地址   
+      var obj = {
+        customerId:this.userIdSave,
+        id:this.radio
+      };
+      setDefaultAddress(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.$message({
+              type: "success",
+              message: "默认地址设置成功!"
+            });            
+          }
+        })
+        .catch(() => {
+        });      
     },
     //服务地址管理弹窗按钮打开
-    ChangeAdress(row,status) {
+    ChangeAdress(id) {
       this.radio = "";
+      this.userIdSave=id;
       this.serviceAddressVisible = true;
+          var obj = {
+            customerId: id
+          };
+          listDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                if(res.data.data != undefined){
+                  this.tableDataAddress=res.data.data
+                  for(var a=0;a<this.tableDataAddress.length;a++){
+                      if(this.tableDataAddress[a].defaultType == 'yes'){
+                        this.radio=this.tableDataAddress[a].id;
+                      }
+                  }
+                }else{
+                  this.tableDataAddress=[]
+                }
+
+              }
+            })
+            .catch(() => {
+            });      
     },
     //服务地址管理弹窗关闭
     colseAddress() {
@@ -386,20 +425,21 @@ export default {
             type: "success",
             message: "删除成功!"
           });          
-          // var obj = {
-          //   id: row.id
-          // };
-          // deleteCus(obj)
-          //   .then(res => {
-          //     if (res.data.code === 1) {
-          //       this.$message({
-          //         type: "success",
-          //         message: "删除成功!"
-          //       });
-          //     }
-          //   })
-          //   .catch(() => {
-          //   });
+          var obj = {
+            id: row.id
+          };
+          deleteDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                this.ChangeAdress(row.customerId)
+              }
+            })
+            .catch(() => {
+            });
         })
         .catch(() => {
           this.$message({
@@ -413,9 +453,28 @@ export default {
       this.AddressStatus=status;
       this.areaOptionsAddress = this.$store.state.user.area;
       if(status == 'up'){
+        this.ruleFormAddress.id=row.id
         this.titlevarAddress="编辑服务地址";
         this.addAddrssDialogShow = true;
+          var obj = {
+            id: row.id
+          };
+          formDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.ruleFormAddress=res.data.data;
+                //区域代码回显
+                var arr = [];
+                arr.push(res.data.data.provinceCode);
+                arr.push(res.data.data.cityCode);
+                arr.push(res.data.data.areaCode);
+                this.ruleFormAddress.areaCodes = arr;                
+              }
+            })
+            .catch(() => {
+            });
       }else{
+        this.ruleFormAddress.id='';
         this.titlevarAddress="新增服务地址"
         if(this.tableDataAddress.length < 6){
           this.addAddrssDialogShow = true;
@@ -426,17 +485,64 @@ export default {
             message: "最多可添加6个服务地址"
           });
         }        
-      }
-      
-      
+      }      
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName, status) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //status=='add'时是新增地址，status=='up'时是编辑地址          
-          this.addAddrssDialogShow = false;
-          this.$refs["ruleFormAddress"].resetFields();
+          //status=='add'时是新增地址，status=='up'时是编辑地址
+          this.ruleFormAddress.customerId=this.userIdSave;
+          //省、市、区三级ID          
+          this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
+          this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
+          this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];           
+          if(status=='add'){         
+          var obj=this.ruleFormAddress
+          saveDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "新增地址成功!"
+                });
+                this.addAddrssDialogShow = false;
+                this.ChangeAdress(this.userIdSave)
+                this.$refs["ruleFormAddress"].resetFields();                
+              }
+            })
+            .catch(() => {
+            });              
+          }else{
+            var obj1=this.ruleFormAddress
+            upDataAddress(obj1)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "编辑地址成功!"
+                  });
+                  this.addAddrssDialogShow = false;
+                  this.ChangeAdress(this.userIdSave)
+                  this.$refs["ruleFormAddress"].resetFields();                
+                }
+              })
+              .catch(() => {
+              });
+          }
+        }else{
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;          
         }
       });
     },
