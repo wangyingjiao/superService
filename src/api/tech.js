@@ -200,10 +200,23 @@ export function serviceTechnicianInfo() {
   })
 }
 
-// 排期管理，机构和服务站
+// ----------------------------排----期----管-------理----------------
+
+//机构和服务站
 export function mechanismService(){
   return new Promise((resolve,reject)=>{
     instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/orgList`).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//列表
+export function scheduleList(obj,pageNumber,pageSize){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/scheduleList?pageNo=${pageNumber}&pageSize=${pageSize}`,obj).then(data=>{
       resolve(data)
     }).catch(error=>{
       reject(error)
