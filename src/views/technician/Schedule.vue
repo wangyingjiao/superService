@@ -16,16 +16,17 @@
 	                		</el-option>
 	              		</el-select>
 	          		</el-input>
-	          		<el-select style="width:20%" v-model="search.skilId" multiple placeholder="请选择技能" class="searchRight" filterable >
-		                <el-option v-for="(item,index) in skils" :key="index" :label="item.name" :value="item.id">
+					<el-select class="searchRight select-width" clearable v-model="search.skilId" placeholder="请选择技能">
+						<el-option v-for="(item,index) in skils" :key="index" :label="item.name" :value="item.id">
 		                </el-option>
-	              	</el-select>
+					</el-select>
 	              	<button class="search-button el-icon-search btn_search btn-color serch-btn" @click="searchClick(search)"> 搜索</button>
 				</div>
 				<div>
 					<el-date-picker
+						@change="pickerChange"
 						style="width:15%"
-				      	v-model="value1"
+				      	v-model="search.beginTime"
 				      	type="date"
 				      	placeholder="选择日期"
 				      	>
@@ -34,94 +35,64 @@
 			</div>
 			<!-- 搜索完成 -->
 			<!-- 表格 -->
-			<div class="schedule-table">
-				<el-table :data="tableData" stripe border style="width: 100%">
-					<!-- 技师 -->
-						<el-table-column label="技师" align="center">
-							<el-table-column align="center">
-								<template scope="scope">
-									<div class="schedule-tech">
-										<div>{{scope.row.name}}</div>
-										<div>{{scope.row.phone}}</div>
-										<div>{{scope.row.stationName}}</div>
-									</div>
-								</template>
-							</el-table-column>
-							<el-table-column className="work" align="center" width='100'>
-								<template scope="scope">
-									<div style="height:100%">
-										<div class="work-time">工作时间</div>
-										<div class="time-arrange-whole">
-											<div class="time-arrange-content">
-												<div class="work-arrange">工作安排</div>
+			<div class="schedule-table" v-loading="listLoading">
+				<div v-if="tableData.length">
+					<el-table :data="tableData" stripe border style="width: 100%">
+						<!-- 技师 -->
+							<el-table-column label="技师" align="center">
+								<el-table-column align="center">
+									<template scope="scope">
+										<div class="schedule-tech">
+											<div>{{scope.row.name}}</div>
+											<div>{{scope.row.phone}}</div>
+											<div>{{scope.row.stationName}}</div>
+										</div>
+									</template>
+								</el-table-column>
+								<el-table-column className="work" align="center" width='100'>
+									<template scope="scope">
+										<div style="height:100%">
+											<div class="work-time-bor">工作时间</div>
+											<div class="time-arrange-whole">
+												<div class="time-arrange-content">
+													<div class="work-arrange">工作安排</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								</template>
+									</template>
+								</el-table-column>
 							</el-table-column>
-						</el-table-column>
-					<!-- 技师结束 -->
-					<!-- 时间 -->
-						<!-- <el-table-column v-for="(item,index) in tableData[0].date" :key="index" :label="item" align="center" className="work">
-							<template scope="scope">
-								<div class="work-bo" v-if="scope.row.arr[index].start">
-									<div class="work-time">{{scope.row.arr[index].start+'~'+scope.row.arr[index].end}}</div>
-									<div class="work-add-bo">
-										<div v-for="(data,key) in scope.row.arr[index].arrange" :key="key">
-											{{data}}
-										</div>
-									</div>
-								</div>
-								<div v-else class="no-orders">
-									<div>全天不可接单</div>
-								</div>
-							</template>
-						</el-table-column> -->
-
+						<!-- 技师结束 -->
+						<!-- 时间 -->
 							<el-table-column v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
 								<template scope="scope">
-									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime">
-										<div class="work-time">{{scope.row.scheduleDateInfos[index].workBeginTime+'~'+scope.row.scheduleDateInfos[index].workEndTime}}</div>
+									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
+										<div :class="['work-time',{'bor-time':scope.row.scheduleDateInfos[index].workBeginTime || !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)}]">
+											{{workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime)}}
+										</div>
 										<div class="work-add-bo">
 											<div class="time-arrange-content">
-												<div :class="{'order':item.type!='holiday'}" v-for="(item,index) in scope.row.scheduleDateInfos[index].techScheduleInfos" :key="index">
-													{{item.startTime+'~'+item.endTime}}
-													<span>{{item.type=='holiday'?'休假':'订单'}}</span>
+												<div v-if="scope.row.scheduleDateInfos[index].workBeginTime || ((scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos) && data.type!='holiday')" 
+													:class="{'order':data.type!='holiday'}" v-for="(data,i) in scope.row.scheduleDateInfos[index].techScheduleInfos" :key="i"
+													@click="schedulePath(data)">
+													<!-- {{data.scheduleDateStr+'~'+data.endTimeStr}} -->
+													{{tableDataTime(data.scheduleDateStr,data.endTimeStr)}}
+													<span>{{data.type=='holiday'?'休假':'订单'}}</span>
 												</div>
 											</div>
 										</div>
 									</div>
-									<div v-else class="no-orders">
+									<div class="no-orders" v-if="noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos) && !scope.row.scheduleDateInfos[index].workBeginTime">
 										<div>全天不可接单</div>
 									</div>
 								</template>
 							</el-table-column>
-
-
-
-						<!-- <el-table-column prop="time" :label="store" align="center" className="work">
-							<template scope="scope">
-								<div style="height:100%" v-if="scope.row.time">
-									<div class="work-time">{{scope.row.time}}</div>
-									<div class="time-arrange-whole">
-										<div class="time-arrange-content">
-											<div v-for="(item,index) in scope.row.arrange" :key="index">{{item}}</div>
-										</div>
-									</div>
-								</div>
-								<div v-else class="no-orders">
-									<div class="time-arrange-content">
-										<div>全天不可接单</div>
-									</div>
-								</div>
-							</template>
-						</el-table-column> -->
-					<!--时间结束 -->
-					<!-- 过渡时间 -->
-					<!-- 过渡结束 -->
-					<!-- 结束时间 -->
-					<!-- 结束时间结束 -->
- 				 </el-table>
+						<!-- 结束时间 -->
+					</el-table>
+				</div>
+				<div v-if="!tableData.length && !listLoading" class="nodata">
+					  暂无数据
+				</div>
  				 <div class="schedult-pagin">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageSync"
                         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
@@ -135,12 +106,18 @@
 
 <script>
 	import {
-		mechanismService
+		mechanismService,
+		scheduleList
 	} from "@/api/tech";
 
-	var getData = function(obj,size,page){
+	var getData = function(obj,page,size){
 		return new Promise((res,rej)=>{
-			res(2)
+			scheduleList(obj,page,size)
+				.then(data=>{
+					res(data)
+				}).catch(error=>{
+					rej(error)
+				})
 		})
 	}
 
@@ -155,8 +132,8 @@
 				workEndTime:'',
 				techScheduleInfos: [{
 						scheduleDate: '',
-						startTime: '08:00',
-						endTime: '12:00',
+						scheduleDateStr: '08:00',
+						endTimeStr: '12:00',
 						typeId: '',
 						type: 'holiday',
 						scheduleWeek: '',
@@ -165,8 +142,8 @@
 					},
 					{
 						scheduleDate: '',
-						startTime: '09:00',
-						endTime: '12:00',
+						scheduleDateStr: '09:00',
+						endTimeStr: '12:00',
 						typeId: '',
 						type: 'holiday',
 						scheduleWeek: '',
@@ -175,8 +152,8 @@
 					},
 					{
 						scheduleDate: '',
-						startTime: '10:00',
-						endTime: '12:00',
+						scheduleDateStr: '10:00',
+						endTimeStr: '12:00',
 						typeId: '',
 						type: 'order',
 						scheduleWeek: '',
@@ -186,12 +163,10 @@
 				]
 			},
 			{	sevenDate: '2015-01-02',
-				workBeginTime:'10:00',
-				workEndTime:'14:34',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -205,8 +180,8 @@
 				workEndTime:'45:43',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
@@ -220,8 +195,8 @@
 				workEndTime:'22:10',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -235,8 +210,8 @@
 				workEndTime:'03:33',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -250,8 +225,8 @@
 				workEndTime:'11:89',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
@@ -265,8 +240,8 @@
 				workEndTime:'93:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -275,8 +250,8 @@
 				},
 				{
 					scheduleDate: '',
-					startTime: '09:00',
-					endTime: '24:00',
+					scheduleDateStr: '09:00',
+					endTimeStr: '24:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
@@ -293,13 +268,23 @@
 		scheduleDateInfos: [{
 				sevenDate: '0000-01-01',
 				workBeginTime:'',
-				workEndTime:'93:03',
+				workEndTime:'',
 				techScheduleInfos: [{
 						scheduleDate: '',
-						startTime: '09:00',
-						endTime: '22:00',
+						scheduleDateStr: '09:00',
+						endTimeStr: '22:00',
 						typeId: '',
-						type: 'order',
+						type: 'holiday',
+						scheduleWeek: '',
+						scheduleDate: '',
+						techId: ''
+					},
+					{
+						scheduleDate: '',
+						scheduleDateStr: '09:00',
+						endTimeStr: '22:00',
+						typeId: '',
+						type: 'holiday',
 						scheduleWeek: '',
 						scheduleDate: '',
 						techId: ''
@@ -311,8 +296,8 @@
 				workEndTime:'20:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '24:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '24:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
@@ -321,14 +306,25 @@
 				},
 				{
 					scheduleDate: '',
-					startTime: '11:00',
-					endTime: '25:00',
+					scheduleDateStr: '11:00',
+					endTimeStr: '25:00',
+					typeId: '',
+					type: 'holiday',
+					scheduleWeek: '',
+					scheduleDate: '',
+					techId: ''
+				},
+				{
+					scheduleDate: '',
+					scheduleDateStr: '11:00',
+					endTimeStr: '25:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
 					scheduleDate: '',
 					techId: ''
-				}]
+				}
+				]
 			},
 			{
 				sevenDate: '2015-01-03',
@@ -336,14 +332,25 @@
 				workEndTime:'93:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'order',
 					scheduleWeek: '',
 					scheduleDate: '',
 					techId: ''
-				}]
+				},
+				{
+					scheduleDate: '',
+					scheduleDateStr: '11:00',
+					endTimeStr: '25:00',
+					typeId: '',
+					type: 'holiday',
+					scheduleWeek: '',
+					scheduleDate: '',
+					techId: ''
+				},
+				]
 			},
 			{
 				sevenDate: '2015-01-04',
@@ -351,8 +358,8 @@
 				workEndTime:'11:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -366,8 +373,8 @@
 				workEndTime:'22:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -381,8 +388,8 @@
 				workEndTime:'44:03',
 				techScheduleInfos: [{
 					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
+					scheduleDateStr: '08:00',
+					endTimeStr: '12:00',
 					typeId: '',
 					type: 'holiday',
 					scheduleWeek: '',
@@ -394,366 +401,16 @@
 				sevenDate: '2015-01-07',
 				workBeginTime:'',
 				workEndTime:'93:03',
-				techScheduleInfos: [{
-					scheduleDate: '',
-					startTime: '08:00',
-					endTime: '12:00',
-					typeId: '',
-					type: 'holiday',
-					scheduleWeek: '',
-					scheduleDate: '',
-					techId: ''
-				},
-				{
-					scheduleDate: '',
-					startTime: '23:00',
-					endTime: '24:00',
-					typeId: '',
-					type: 'holiday',
-					scheduleWeek: '',
-					scheduleDate: '',
-					techId: ''
-				}]
 			}
 		]
 	}
 	]
 		
-		
-
-	// let tableData = [
-	// 	{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎1',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			arr:[
-	// 				{
-	// 					start:'',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'13:00',
-	// 					end:'18:00',
-	// 					arrange:[],
-	// 				}
-	// 			],
-	// 		},
-	// 		{
-	// 			date: ['2016-06-02','2016-06-03','2016-05-04','2016-06-05','2016-06-06','2016-06-07','2016-06-08'],
-	// 			name: '曹居伟',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			arr:[
-	// 				{
-	// 					start:'01:00',
-	// 					end:'11:00',
-	// 					arrange:['01:00~11:00   订单','02:00~22:00   订单','03:00~33:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'02:00',
-	// 					end:'22:00',
-	// 					arrange:['04:00~44:00   订单','05:00~55:00   订单','06:00~66:00   订单','07:00~77:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'03:00',
-	// 					end:'33:00',
-	// 					arrange:['08:00~88:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'04:00',
-	// 					end:'44:00',
-	// 					arrange:['09:00~99:00   订单','10:00~00:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'05:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'07:00',
-	// 					end:'18:00',
-	// 					arrange:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 				},
-	// 				{
-	// 					start:'08:00',
-	// 					end:'18:00',
-	// 					arrange:[],
-	// 				}
-	// 			],
-	// 		}
-	// ]
-
-	// let tableData = [
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎1',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'08:00~18:00',
-	// 			arrange0:['08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:{
-	// 				start:'13:00',
-	// 				end:'18:00'
-	// 			},
-	// 			arrange6:['08:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		},
-	// 		{
-	// 			date: ['2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-06','2016-05-07','2016-05-08'],
-	// 			name: '王小虎12',
-	// 			phone:'15711445668',
-	// 			address: '上海市普陀区金',
-	// 			time0:'01:00~18:00',
-	// 			arrange0:['11:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单','08:00~12:00   订单'],
-	// 			time1:'02:00~18:00',
-	// 			arrange1:['08:10~12:00   订单','10:00~12:00   订单'],
-	// 			time2:'03:00~18:00',
-	// 			arrange2:['08:20~12:00   订单'],
-	// 			time3:'',
-	// 			arrange3:['08:30~12:00   订单'],
-	// 			time4:'05:00~18:00',
-	// 			arrange4:['08:00~12:00   订单'],
-	// 			time5:'06:00~18:00',
-	// 			arrange5:['08:40~12:00   订单'],
-	// 			time6:'07:00~18:00',
-	// 			arrange6:['24:50~12:00   订单'],
-	// 		}
-	// 	]
 	export default{
 		data(){
 			return{
-				total:100,
+				listLoading:false,
+				total:0,
 				pageSync:1,
 				pageSize:10,
 				organizations:[],
@@ -763,7 +420,8 @@
 				search:{
 					orgId:'',
 					stationId:'',
-					skilId:[]
+					skilId:'',
+					beginTime:''
 				},
 				choose: [
 					{
@@ -777,34 +435,74 @@
 				],
 				chooContent:'',
 				value1:'',
-				tableData:tableData
+				tableData:[]
 			}
 		},
 		computed:{
 			// table开始和结束时间
 			store(){ return this.GetDateStr(0) },
 			end(){ return this.GetDateStr(6) },
-			//table一星期内的时间和工作安排的字段，为了循环tr
-			tableDataTime(){
-				let arr = ["time0","time1","time2","time3","time4","time5","time6"]
-				return arr
-			},
-			tableDataAdd(){
-				let arr = ["arrange0","arrange1","arrange2","arrange3","arrange4","arrange5","arrange6"]
-				return arr
-			}
 		},
 		methods:{
+			schedulePath(item){
+				//判断是订单还是休假
+				if(item.type == "order"){
+					this.$router.push({ path: "/clean/orderinfo", query: { id: item.typeId } });
+				}else{
+					return
+				}
+			},
+			//工作安排截取年月份和秒
+			tableDataTime(val,item){
+				var val = val.split(" ")[1].substring(0,5)
+				var item = item.split(" ")[1].substring(0,5)
+				return val+'~'+item
+			},
+			//判断全天不可接单
+			noOrders(item){
+				if(item!=undefined){
+					var bol;
+					for( var i = 0; i<item.length; i++){
+						if(item[i].type == "order"){
+							return false
+						}else{
+							bol = true
+						}
+					}
+					return bol
+				}else{
+					return true
+				}
+			},
+			//工作时间拼接，否则会渲染 ~ 符号
+			workTimeMosaic(data,item){
+				let str = data+'~'+item;
+				if(data && item){
+					return str
+				}else{
+					return
+				}
+			},
+			pickerChange(val){
+				this.search.beginTime = val
+			},
 			//搜索框清空
 			searchEmpty(){
 				this.service.orgId = ''
 				this.service.stationId = ''
-				this.service.skilId = []
+				this.service.skilId = ''
+				this.search.beginTime = ''
 			},
 			//搜索
 			searchClick(item){
-				item[this.chooses] = this.chooContent
-				this.getList()
+				if(this.chooses){
+					item[this.chooses] = this.chooContent
+				}
+				if(this.pageSync != 1){
+					this.pageSync = 1
+				}else{
+					this.getList()
+				}
 			},
 			handleSizeChange(page){
 				this.pageSize = page;
@@ -815,13 +513,22 @@
 				this.getList()
 			},
 			getList(){
+				this.listLoading = true
 				console.log(this.search,this.pageSync,this.pageSize)
 				getData(this.search,this.pageSync,this.pageSize)
-					.then(data=>{
-						console.log(data)
+					.then(({data})=>{
+						if(data.code){
+							this.listLoading = false
+							this.tableData = data.data.list || []
+							this.total = data.data.count
+						}else{
+							this.listLoading = false
+						}
+						console.log(data,"data-----")
 					})
 					.catch(error=>{
-						console.log(error)
+						this.listLoading = false
+						console.log(error,"error----")
 					})
 			},
 			// table开始和结束时间
@@ -853,18 +560,26 @@
 				.catch(error=>{
 					console.log(error)
 				})
-			this.getList()
+			// this.getList()
 		}
 	}
 </script>
 
 <style>
+	.schedule-table .el-loading-mask{
+		padding: 50px 0;
+	}
+	.nodata{
+		text-align: center;
+		color:#5e7382;
+		padding: 30px 0;
+	}
 	.order{
 		color: #4c70e8;
 		cursor: pointer;
 	}
 	.schedule-table td.work{
-		vertical-align:text-bottom;
+		vertical-align:top;
 		position: relative;
 	}
 	#app .schedule-table .el-table td{
@@ -882,10 +597,21 @@
 		justify-content: center;
 		align-items: center;
 		color: red;
+		z-index: 100;
+	}
+	.work-time-bor{
+		height: 45px;
+		line-height: 45px;
+		border-bottom: 1px solid #dfe6ec;
 	}
 	.work-time{
+		/* border-bottom: 1px solid #dfe6ec; */
+		/* padding: 10px 0; */
+		height: 45px;
+		line-height: 45px;
+	}
+	.bor-time{
 		border-bottom: 1px solid #dfe6ec;
-		padding: 10px 0;
 	}
 	.schedule-table .el-table th{
 		border-right: none;
