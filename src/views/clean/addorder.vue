@@ -599,9 +599,9 @@ export default {
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
       tableDataAddress: [],
-      radioSave:'',
       defaultAddress:[],
-      defaultAddress1:[],	  
+      defaultAddress1:[],
+      defaultRadio:''	  
     };
   },
   computed: {
@@ -619,7 +619,6 @@ export default {
     //单选改变
     getCurrentRow(row) {
       this.radio=row.id
-      this.form.radiovalue=row.id
       this.defaultAddress=Object.assign({},row)
     },
     //服务地址管理弹窗按钮打开
@@ -632,19 +631,19 @@ export default {
             .then(res => {
               if (res.data.code === 1) {
                 if(res.data.data != undefined){
-                  this.tableDataAddress=res.data.data
+                  this.tableDataAddress=res.data.data                  
                   for(var a=0;a<this.tableDataAddress.length;a++){
-                      if(this.tableDataAddress[a].defaultType == 'yes'){                        
-                        this.radio=this.tableDataAddress[a].id;
-                        this.form.radiovalue=this.tableDataAddress[a].id;                                                                      
-                        this.radioSave=this.tableDataAddress[a].id                        
-                        this.defaultAddress1=Object.assign({},this.tableDataAddress[a])
-                        this.defaultAddress=Object.assign({},this.tableDataAddress[a])
+                      if(this.tableDataAddress[a].defaultType == 'yes'){                       
+                          this.defaultRadio=this.tableDataAddress[a].id;
+                          this.defaultAddress1=Object.assign({},this.tableDataAddress[a])
                       }
                   }
+                  if(this.radio == '' || this.radio == undefined){
+                     this.radio=this.defaultRadio
+                     this.defaultAddress=Object.assign({},this.defaultAddress1)
+                  }                 
                 }else{
                   this.tableDataAddress=[]
-                  this.radioSave=''
                 }
 
               }
@@ -652,18 +651,13 @@ export default {
             .catch(() => {
             });      
     },
-    //服务地址管理弹窗取消
-    // colseAddress() {
-    //   this.radio=this.radioSave;
-    //   this.form.radiovalue=this.radioSave;
-    //   this.form.address=Object.assign({}, this.defaultAddress1);
-    //   this.serviceAddressVisible = false;
-    // },
     //服务地址管理弹窗保存
     submitAddress(){
-      this.form.address=Object.assign({}, this.defaultAddress);       
-      this.radio=this.defaultAddress.id;
-      this.form.radiovalue=this.defaultAddress.id;
+      if(this.defaultAddress.length !=0){
+        this.form.address=Object.assign({}, this.defaultAddress);       
+        this.radio=this.defaultAddress.id;
+        this.form.radiovalue=this.defaultAddress.id
+      }
       this.serverStation1='';
       this.form.serverStation1='';           
       this.serviceAddressVisible = false;
@@ -994,6 +988,7 @@ export default {
                 this.form = res.data.data;
                 if(res.data.data.address.id != undefined){
                   this.form.radiovalue=res.data.data.address.id
+                  this.radio=res.data.data.address.id
                 }                
                 this.customKeyFlag = true;
               }
@@ -1095,6 +1090,7 @@ export default {
                 this.form = res.data.data;
                 if(res.data.data.address.id != undefined){
                   this.form.radiovalue=res.data.data.address.id
+                  this.radio=res.data.data.address.id
                 }               
                 this.customPhone = res.data.data.phone;
                 this.customKeyFlag = true;
