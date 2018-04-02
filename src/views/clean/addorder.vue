@@ -261,12 +261,11 @@
 			</div>
 		</el-dialog>	
 	  <!--技师选择弹窗结束-->
-    <!--服务地址管理弹窗结束-->
+        <!--服务地址管理弹窗结束-->
 		<el-dialog title="选择服务地址" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
 				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
-            empty-text='此用户暂无服务地址'
 					  style="width:100%;"
 						>          
             <el-table-column align="center" label="选择地址" width="100">
@@ -576,7 +575,7 @@ export default {
             trigger: "change"
           }
         ]
-      },
+      },	  
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
@@ -596,28 +595,29 @@ export default {
       customId: "", //客户ID
       areaCode: "",
       middleB: [],
-      addressBefore: "",
-      ideaserverTime: "",
-      ideaPersonNum: "",
+      addressBefore:'',
+      ideaserverTime:'',
+      ideaPersonNum:'',
       radio: "",
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
       tableDataAddress: [
         {
           id: "ab",
+                   
           name: "jack",
           phone: "13426345690",
           address: "天津天津市和平区1222222",
-          moren: "1"
+		      moren:'1'
         },
         {
           id: "abc",
           name: "king",
           phone: "13426345678",
           address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff",
-          moren: "0"
+		      moren:'0'
         }
-      ]
+      ],	  
     };
   },
   computed: {
@@ -630,11 +630,11 @@ export default {
       val = Number(val);
       return val.toFixed(2);
     }
-  },
+  }, 
   methods: {
     //单选改变
     getCurrentRow(value) {
-      this.radio = value;
+      
     },
     //服务地址管理弹窗按钮打开
     changeuserAddress() {
@@ -645,28 +645,19 @@ export default {
     colseAddress() {
       this.serviceAddressVisible = false;
     },
-    //服务地址管理弹窗保存
-    submitAddress() {
-      this.serviceAddressVisible = false;
-    },
+	//服务地址管理弹窗保存
+	submitAddress(){
+	  this.serviceAddressVisible = false;
+	},
     //服务地址管理新增地址
     addAddressFun(status) {
       this.areaOptionsAddress = this.$store.state.user.area;
-      if (this.tableDataAddress.length < 6) {
-        this.addAddrssDialogShow = true;
-      } else {
-        this.addAddrssDialogShow = false;
-        this.$message({
-          type: "warning",
-          message: "最多可添加6个服务地址"
-        });
-      }
+      this.addAddrssDialogShow = true;
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName, status) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.submitFlag = true;
           this.addAddrssDialogShow = false;
           this.$refs["ruleFormAddress"].resetFields();
         }
