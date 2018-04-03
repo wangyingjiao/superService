@@ -82,7 +82,7 @@
                    <p class="contentLine">
                       <span class="lineTitle">取消原因:</span>
                       <span class="lineContent">
-                          <span v-if="otherInfo.cancelReason =='customer'">客户来电取消</span>
+                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
                           <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
                           <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
                       </span>
@@ -300,9 +300,9 @@
             </div>                     		
 		    </div>
         <!--技师信息结束-->
-        <!--客户备注开始-->
+        <!--用户备注开始-->
         <div class="thrid-bar marginTop15">
-            <div class="custom-action">客户备注</div>
+            <div class="custom-action">用户备注</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea" style="width:100%;">
@@ -323,7 +323,7 @@
                  
             </div>                                     		
 		    </div>
-        <!--客户备注结束-->
+        <!--用户备注结束-->
         <!--订单备注开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">订单备注</div>

@@ -4,7 +4,7 @@
 			<!--步骤条开始-->
 			<div class="stepControl">				
 				<el-steps :space="400" :active="active"  align-center >
-					<el-step title="选择客户"></el-step>
+					<el-step title="选择用户"></el-step>
 					<el-step title="服务信息"></el-step>
 					<el-step title="选择技师与服务时间"></el-step>
 				</el-steps>
@@ -17,7 +17,7 @@
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
 						    <span class="selfLabelStyle">*</span>
-						    <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
+						    <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="customPhone"></el-input>
 			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
 							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
@@ -153,7 +153,7 @@
                  <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
 							</div>														
 						</el-form-item>									
-						<el-form-item label="客户备注:" prop="textarea" class="fontSize12">
+						<el-form-item label="用户备注:" prop="textarea" class="fontSize12">
 							<el-input
 								type="textarea"
 								:rows="3"
@@ -178,11 +178,11 @@
 			<!--步骤显示区域结束-->
 
 	</div>
-	<!--新增客户弹窗开始-->
+	<!--新增用户弹窗开始-->
 	<el-dialog title="新增用户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
 			<el-form-item label="姓名:" prop="name" >
-				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
+				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入用户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
 				<el-select clearable style='width: 100%;' v-model="ruleForm.sex" placeholder="请选择性别" >
@@ -202,7 +202,7 @@
 				<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 		</div>
 	</el-dialog>
-	<!--新增客户弹窗结束-->		
+	<!--新增用户弹窗结束-->		
 	<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
@@ -295,7 +295,7 @@
 					  </el-table-column>					  
 					</el-table>				
 					<div slot="footer" class="dialog-footer" style="text-align:center;">
-							<button class="button-large"   @click="submitAddress()">关闭</button>
+							<button class="button-cancel"   @click="submitAddress()">关闭</button>
 							<!-- <button class="button-cancel"  @click="colseAddress()">取消</button> -->
 					</div>
 		</el-dialog>
@@ -310,7 +310,7 @@
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
 					<el-form-item label="联系人:" prop="addressName"  >
-						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位联系人姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
 					<el-form-item label="联系电话:"  prop="addressPhone">
                 <el-input  v-model="ruleFormAddress.addressPhone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
@@ -349,8 +349,8 @@
 
 <script>
 import {
-  findCustomerByPhone, //根据手机号查找客户
-  findCustomerById, //根据ID查找客户
+  findCustomerByPhone, //根据手机号查找用户
+  findCustomerById, //根据ID查找用户
   findItemList, //获取服务项目列表
   findGoodsListByItem, //获取服务项目下的商品列表
   findTechListByGoods, //获取商品的技师列表
@@ -359,7 +359,7 @@ import {
   findGoodsNeedTech //获取建议服务时长
 } from "@/api/order";
 import {
-  saveCus, //保存客户（新增）
+  saveCus, //保存用户（新增）
   listDataAddress,//地址管理
   saveDataAddress,// 新增地址保存  
 } from "@/api/customer";
@@ -393,18 +393,30 @@ export default {
         }
       }
     };
-    //客户名验证规则
+    //用户名验证规则
     var checkName = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入2-15位客户姓名"));
+        callback(new Error("请输入2-15位用户姓名"));
       } else {
         if (value.length >= 2 && value.length <= 15) {
           callback();
         } else {
-          callback(new Error("请输入2-15位客户姓名"));
+          callback(new Error("请输入2-15位用户姓名"));
         }
       }
     };
+    //联系人验证规则
+    var checkAddressName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入2-15位联系人姓名"));
+      } else {
+        if (value.length >= 2 && value.length <= 15) {
+          callback();
+        } else {
+          callback(new Error("请输入2-15位联系人姓名"));
+        }
+      }
+    };    
     var checkAddress = (rule, value, callback) => {
       if (!value) {
         callback(new Error("长度在1-100个字符"));
@@ -416,6 +428,17 @@ export default {
         }
       }
     };
+    var checkPlacename = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入1-100位详细地址"));
+      } else {
+        if (value.length >= 1 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入1-100位详细地址"));
+        }
+      }
+    };    
     var checkDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请选择日期"));
@@ -426,12 +449,12 @@ export default {
     //门牌号验证
     var checkAddressa = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("长度在1-50个字符"));
+        callback(new Error("请输入1-50位门牌号"));
       } else {
         if (value.length >= 1 && value.length <= 50) {
           callback();
         } else {
-          callback(new Error("长度在1-50个字符"));
+          callback(new Error("请输入1-50位门牌号"));
         }
       }
     };
@@ -550,7 +573,7 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: "请输入客户姓名", trigger: "blur" },
+          { required: true, message: "请输入用户姓名", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
@@ -558,9 +581,9 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {       
-        addressName: [{ required: true, validator: checkName, trigger: "blur" }],
+        addressName: [{ required: true, validator: checkAddressName, trigger: "blur" }],
         addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        placename: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        placename: [{ required: true, validator: checkPlacename, trigger: "blur" }],
         detailAddress: [
           { required: true, validator: checkAddressa, trigger: "blur" }
         ],
@@ -579,17 +602,17 @@ export default {
       select: "date",
       tabOptions: [], //tabName
       serverOptions: [], //服务类型下拉
-      textarea: "", //客户备注
-      customName: "李四", //当前客户姓名
+      textarea: "", //用户备注
+      customName: "李四", //当前用户姓名
       serverAddress: "北京市朝阳区关东街11呼家楼",
       serverStation: "呼家楼服务站",
       dialogTableVisible: false, //选择技师弹窗开关
-      dialogTableVisible1: false, //选择客户弹窗开关
+      dialogTableVisible1: false, //选择用户弹窗开关
       technicianName: "", //技师姓名
-      //当前客户
+      //当前用户
       custom: "",
-      customKeyFlag: false, //客户信息展示标志
-      customId: "", //客户ID
+      customKeyFlag: false, //用户信息展示标志
+      customId: "", //用户ID
       areaCode: "",
       middleB: [],
       addressBefore:'',
@@ -857,7 +880,7 @@ export default {
               this.active = 1;
               this.$message({
                 type: "error",
-                message: "请输入客户电话，查询客户"
+                message: "请输入用户电话，查询用户"
               });
             }
           } else {
@@ -974,7 +997,7 @@ export default {
         })
         .catch(res => {});
     },
-    //客户查询事件
+    //用户查询事件
     changeCustom() {
       this.serverStation1 = "";
       //根据手机号查询
@@ -1007,7 +1030,7 @@ export default {
         this.customKeyFlag = false;
         this.$message({
           type: "warning",
-          message: "客户电话不能为空！"
+          message: "用户电话不能为空！"
         });
       }
     },
@@ -1027,7 +1050,7 @@ export default {
         })
         .catch(res => {});
     },
-    //新增客户保存
+    //新增用户保存
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -1066,7 +1089,7 @@ export default {
         }
       });
     },
-    //新增客户弹窗取消
+    //新增用户弹窗取消
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.ruleForm.provinceCode = "";
@@ -1075,7 +1098,7 @@ export default {
       this.ruleForm.sex = "";
       this.dialogTableVisible1 = false;
     },
-    //获取按客户ID客户数据
+    //获取按用户ID用户数据
     getcustomerList() {
       var coustomerId = this.$route.query.coustomerId;
       if (coustomerId != undefined) {
@@ -1273,7 +1296,7 @@ export default {
                 .then(() => {
                   this.submitFlag1 = true;
                   var obj = {
-                    customerId: this.customId, //客户ID
+                    customerId: this.customId, //用户ID
                     serviceTime: this.changTime + " " + time + ":00", //服务时间
                     customerRemark: this.form2.textarea, //备注
                     techList: this.tabOptions, //技师对象
@@ -1311,7 +1334,7 @@ export default {
             } else {
               this.submitFlag1 = true;
               var obj = {
-                customerId: this.customId, //客户ID
+                customerId: this.customId, //用户ID
                 serviceTime: this.changTime + " " + time + ":00", //服务时间
                 customerRemark: this.form2.textarea, //备注
                 techList: this.tabOptions, //技师对象
