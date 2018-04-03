@@ -234,14 +234,14 @@
             </el-row>
         </el-form-item>
 
-        <el-form-item label="客户信息：" >
+        <el-form-item label="客户信息:" >
             <el-switch
               v-model="temp.visable"
-              :width="100"
-              on-text="模糊"
-              off-text="不模糊"
-              on-value="no"
-              off-value="yes">
+              :width="90"
+              on-text="不模糊"
+              off-text="模糊"
+              on-value="yes"
+              off-value="no">
             </el-switch>
         </el-form-item>
 
@@ -1031,6 +1031,7 @@ export default {
         dockType: "",
         basicOrganizationEshops: [],
         jointEshopCode: "",
+        visable:"",
         scopeType: "store",
         remark: ""
       };
