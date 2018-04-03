@@ -480,9 +480,9 @@
 					return true
 				}
 			},
-			//工作时间拼接，否则会渲染 ~ 符号
+			//工作时间拼接，否则会渲染 ~ 符号 ,截取掉秒
 			workTimeMosaic(data,item){
-				let str = data+'~'+item;
+				let str = data.substring(0,5)+'~'+item.substring(0,5);
 				if(data && item){
 					return str
 				}else{
