@@ -207,12 +207,12 @@ import {
   saveCus, //保存客户（新增）
   getCus, //客户（编辑）
   upCus, //保存客户（编辑）
-  listDataAddress,//地址管理
-  saveDataAddress,// 新增地址保存
-  formDataAddress,//编辑地址
-  upDataAddress,// 编辑地址保存
-  deleteDataAddress,//删除地址
-  setDefaultAddress,// 设置默认地址
+  listDataAddress, //地址管理
+  saveDataAddress, // 新增地址保存
+  formDataAddress, //编辑地址
+  upDataAddress, // 编辑地址保存
+  deleteDataAddress, //删除地址
+  setDefaultAddress // 设置默认地址
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
 
@@ -283,9 +283,9 @@ export default {
           callback(new Error("长度在1-50个字符"));
         }
       }
-    };    
+    };
     return {
-      AddressStatus:'add',
+      AddressStatus: "add",
       titlevar: "新增用户",
       titlevarAddress: "新增服务地址",
       submitFlag: false,
@@ -299,7 +299,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        email: "",        
+        email: "",
         sex: "",
         provinceCode: "",
         cityCode: "",
@@ -309,15 +309,15 @@ export default {
         addrLatitude: ""
       },
       ruleFormAddress: {
-        id:'',
-        customerId:'',
-        addressName:'',
-        addressPhone:'',
-        provinceCode:'',
-        cityCode:'',
-        areaCode:'',
-        placename:'',
-        detailAddress:'',
+        id: "",
+        customerId: "",
+        addressName: "",
+        addressPhone: "",
+        provinceCode: "",
+        cityCode: "",
+        areaCode: "",
+        placename: "",
+        detailAddress: "",
         areaCodes: []
       },
       rules: {
@@ -327,9 +327,15 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {
-        addressName: [{ required: true, validator: checkName, trigger: "blur" }],
-        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        placename: [{ required: true, validator: checkAddress, trigger: "blur" }],
+        addressName: [
+          { required: true, validator: checkName, trigger: "blur" }
+        ],
+        addressPhone: [
+          { required: true, validator: checkPhone, trigger: "blur" }
+        ],
+        placename: [
+          { required: true, validator: checkAddress, trigger: "blur" }
+        ],
         areaCodes: [
           {
             type: "array",
@@ -338,7 +344,9 @@ export default {
             trigger: "change"
           }
         ],
-        detailAddress:[{ required: true, validator: checkAddressa, trigger: "blur" }],
+        detailAddress: [
+          { required: true, validator: checkAddressa, trigger: "blur" }
+        ]
       },
       dict: require("../../../static/dict.json"),
       sex: "",
@@ -358,17 +366,17 @@ export default {
       radio: "",
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
-      userIdSave:'',
+      userIdSave: ""
     };
   },
   methods: {
     //单选改变
     getCurrentRow(value) {
-      this.radio=value
-      //设置默认地址   
+      this.radio = value;
+      //设置默认地址
       var obj = {
-        customerId:this.userIdSave,
-        id:this.radio
+        customerId: this.userIdSave,
+        id: this.radio
       };
       setDefaultAddress(obj)
         .then(res => {
@@ -376,38 +384,35 @@ export default {
             this.$message({
               type: "success",
               message: "默认地址设置成功!"
-            });            
+            });
           }
         })
-        .catch(() => {
-        });      
+        .catch(() => {});
     },
     //服务地址管理弹窗按钮打开
     ChangeAdress(id) {
       this.radio = "";
-      this.userIdSave=id;
+      this.userIdSave = id;
       this.serviceAddressVisible = true;
-          var obj = {
-            customerId: id
-          };
-          listDataAddress(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                if(res.data.data != undefined){
-                  this.tableDataAddress=res.data.data
-                  for(var a=0;a<this.tableDataAddress.length;a++){
-                      if(this.tableDataAddress[a].defaultType == 'yes'){
-                        this.radio=this.tableDataAddress[a].id;
-                      }
-                  }
-                }else{
-                  this.tableDataAddress=[]
+      var obj = {
+        customerId: id
+      };
+      listDataAddress(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.tableDataAddress = res.data.data;
+              for (var a = 0; a < this.tableDataAddress.length; a++) {
+                if (this.tableDataAddress[a].defaultType == "yes") {
+                  this.radio = this.tableDataAddress[a].id;
                 }
-
               }
-            })
-            .catch(() => {
-            });      
+            } else {
+              this.tableDataAddress = [];
+            }
+          }
+        })
+        .catch(() => {});
     },
     //服务地址管理弹窗关闭
     colseAddress() {
@@ -424,7 +429,7 @@ export default {
           this.$message({
             type: "success",
             message: "删除成功!"
-          });          
+          });
           var obj = {
             id: row.id
           };
@@ -435,86 +440,83 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.ChangeAdress(row.customerId)
+                this.ChangeAdress(row.customerId);
               }
             })
-            .catch(() => {
-            });
+            .catch(() => {});
         })
         .catch(() => {
           this.$message({
             type: "warning",
             message: "已取消删除"
           });
-        });      
+        });
     },
     //服务地址管理新增地址/服务地址管理编辑
-    addAddressFun(row,status) {
-      this.AddressStatus=status;
+    addAddressFun(row, status) {
+      this.AddressStatus = status;
       this.areaOptionsAddress = this.$store.state.user.area;
-      if(status == 'up'){
-        this.ruleFormAddress.id=row.id
-        this.titlevarAddress="编辑服务地址";
+      if (status == "up") {
+        this.ruleFormAddress.id = row.id;
+        this.titlevarAddress = "编辑服务地址";
         this.addAddrssDialogShow = true;
-          var obj = {
-            id: row.id
-          };
-          formDataAddress(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.ruleFormAddress=res.data.data;
-                //区域代码回显
-                var arr = [];
-                arr.push(res.data.data.provinceCode);
-                arr.push(res.data.data.cityCode);
-                arr.push(res.data.data.areaCode);
-                this.ruleFormAddress.areaCodes = arr;                
-              }
-            })
-            .catch(() => {
-            });
-      }else{
-        this.ruleFormAddress.id='';
-        this.titlevarAddress="新增服务地址"
-        if(this.tableDataAddress.length < 6){
+        var obj = {
+          id: row.id
+        };
+        formDataAddress(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.ruleFormAddress = res.data.data;
+              //区域代码回显
+              var arr = [];
+              arr.push(res.data.data.provinceCode);
+              arr.push(res.data.data.cityCode);
+              arr.push(res.data.data.areaCode);
+              this.ruleFormAddress.areaCodes = arr;
+            }
+          })
+          .catch(() => {});
+      } else {
+        this.ruleFormAddress.id = "";
+        this.titlevarAddress = "新增服务地址";
+        if (this.tableDataAddress.length < 6) {
           this.addAddrssDialogShow = true;
-        }else{
+        } else {
           this.addAddrssDialogShow = false;
           this.$message({
             type: "warning",
             message: "最多可添加6个服务地址"
           });
-        }        
-      }      
+        }
+      }
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName, status) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //status=='add'时是新增地址，status=='up'时是编辑地址
-          this.ruleFormAddress.customerId=this.userIdSave;
-          //省、市、区三级ID          
+          this.ruleFormAddress.customerId = this.userIdSave;
+          //省、市、区三级ID
           this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
           this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
-          this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];           
-          if(status=='add'){         
-          var obj=this.ruleFormAddress
-          saveDataAddress(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: "新增地址成功!"
-                });
-                this.addAddrssDialogShow = false;
-                this.ChangeAdress(this.userIdSave)
-                this.$refs["ruleFormAddress"].resetFields();                
-              }
-            })
-            .catch(() => {
-            });              
-          }else{
-            var obj1=this.ruleFormAddress
+          this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];
+          if (status == "add") {
+            var obj = this.ruleFormAddress;
+            saveDataAddress(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "新增地址成功!"
+                  });
+                  this.addAddrssDialogShow = false;
+                  this.ChangeAdress(this.userIdSave);
+                  this.$refs["ruleFormAddress"].resetFields();
+                }
+              })
+              .catch(() => {});
+          } else {
+            var obj1 = this.ruleFormAddress;
             upDataAddress(obj1)
               .then(res => {
                 if (res.data.code === 1) {
@@ -523,14 +525,13 @@ export default {
                     message: "编辑地址成功!"
                   });
                   this.addAddrssDialogShow = false;
-                  this.ChangeAdress(this.userIdSave)
-                  this.$refs["ruleFormAddress"].resetFields();                
+                  this.ChangeAdress(this.userIdSave);
+                  this.$refs["ruleFormAddress"].resetFields();
                 }
               })
-              .catch(() => {
-              });
+              .catch(() => {});
           }
-        }else{
+        } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
@@ -542,7 +543,7 @@ export default {
             type: "error",
             message: errMes[0]
           });
-          return false;          
+          return false;
         }
       });
     },
