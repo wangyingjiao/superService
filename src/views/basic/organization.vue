@@ -234,6 +234,17 @@
             </el-row>
         </el-form-item>
 
+        <el-form-item label="客户信息:" >
+            <el-switch
+              v-model="temp.visable"
+              :width="90"
+              on-text="不模糊"
+              off-text="模糊"
+              on-value="yes"
+              off-value="no">
+            </el-switch>
+        </el-form-item>
+
         <el-form-item label="机构网址:" prop="url">
           <el-input 
             class="form_item"
@@ -404,7 +415,7 @@ export default {
         remark: "",
         areaCodes: [],
         scopeType: "store",
-        visable: "1"
+        visable: ""
       },
       province: "",
       importanceOptions: [
@@ -863,7 +874,8 @@ export default {
         remark: this.temp.remark, //备注
         provinceCode: this.temp.areaCodes[0], //省
         cityCode: this.temp.areaCodes[1], //市
-        areaCode: this.temp.areaCodes[2] //区
+        areaCode: this.temp.areaCodes[2], //区
+        visable: this.temp.visable //模糊
       };
       if (obj.dockType == "select") {
         obj.dockType = "";
@@ -942,7 +954,8 @@ export default {
         remark: this.temp.remark, //备注
         provinceCode: this.temp.areaCodes[0], //省
         cityCode: this.temp.areaCodes[1], //市
-        areaCode: this.temp.areaCodes[2] //区
+        areaCode: this.temp.areaCodes[2], //区
+        visable: this.temp.visable //市
       };
       if (obj.dockType == "" || obj.dockType == "select") {
         obj.dockType = "";
@@ -1018,6 +1031,7 @@ export default {
         dockType: "",
         basicOrganizationEshops: [],
         jointEshopCode: "",
+        visable:"",
         scopeType: "store",
         remark: ""
       };

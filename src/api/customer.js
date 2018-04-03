@@ -20,3 +20,27 @@ export function getCus(obj) {
 export function upCus(obj) {
   return instance.post(`/apiservice/a/service/order/orderCustomInfo/upData`, obj)
 }
+// 地址管理
+export function listDataAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/listDataAddress`, obj)
+}
+// 新增地址保存
+export function saveDataAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/saveDataAddress`, obj)
+}
+// 编辑地址
+export function formDataAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/formDataAddress`, obj)
+}
+// 编辑地址保存
+export function upDataAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/upDataAddress`, obj)
+}
+// 删除地址
+export function deleteDataAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/deleteDataAddress`, obj)
+}
+// 设置默认地址
+export function setDefaultAddress(obj) {
+  return instance.post(`/apiservice/a/service/order/orderCustomInfo/setDefaultAddress`, obj)
+}
