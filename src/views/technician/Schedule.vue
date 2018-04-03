@@ -29,6 +29,7 @@
 				      	v-model="search.beginTime"
 				      	type="date"
 				      	placeholder="选择日期"
+						:picker-options="pickerOptions0"
 				      	>
 				    </el-date-picker>
 				</div>
@@ -63,7 +64,7 @@
 								</el-table-column>
 							</el-table-column>
 						<!-- 技师结束 -->
-						<!-- 时间 -->
+						<!-- 7天时间 -->
 							<el-table-column v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
 								<template scope="scope">
 									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
@@ -409,6 +410,11 @@
 	export default{
 		data(){
 			return{
+				pickerOptions0:{
+					disabledDate(time){
+						return time.getTime() > Date.now()+691200000;
+					}
+				},
 				listLoading:false,
 				total:0,
 				pageSync:1,
@@ -495,6 +501,12 @@
 			},
 			//搜索
 			searchClick(item){
+				if('name' in item || 'phone' in item){
+					if(!this.chooContent){
+						delete item.name
+						delete item.phone
+					}
+				}
 				if(this.chooses){
 					item[this.chooses] = this.chooContent
 				}
@@ -506,7 +518,12 @@
 			},
 			handleSizeChange(page){
 				this.pageSize = page;
-				this.getList()
+				if(this.pageSync == 1){
+					this.getList()
+				}else{
+					this.pageSync = 1
+				}
+				// this.getList()
 			},
 			handleCurrentChange(val){
 				this.pageSync = val
