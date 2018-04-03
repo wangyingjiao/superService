@@ -94,7 +94,7 @@
               
              
             </div>
-            <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
+            <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1 && item.jobStatus!='leave'" class="mousehover"  @click="vacation(item)">
               <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">

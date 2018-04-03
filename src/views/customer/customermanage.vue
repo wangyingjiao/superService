@@ -9,7 +9,7 @@
 		<!--搜索结束-->
 		<div class="second-bar">
 		  <button type="button" class="add-button selfPosi3 marginTop20"  v-if="btnShow.indexOf('customer_insert') != -1" @click="selectBut('')">新增</button>
-			<!--客户数据表格开始-->
+			<!--用户数据表格开始-->
 			<div class="tableWarp">			      
 				    <el-table
 					  :data="tableData"
@@ -57,17 +57,17 @@
 						  </template>
 					  </el-table-column>					  
 					</el-table>
-					<!--客户数据表格结束-->
-					<!--客户数据表格分页器开始-->
+					<!--用户数据表格结束-->
+					<!--用户数据表格分页器开始-->
 					<div v-if="!listLoading" class="selfStyle">
 					  <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync='jumpPage'
 						:page-sizes="[5, 10, 15, 20]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper" :total="pagetotal1">
 					  </el-pagination>
 					</div>
-					<!--客户数据表格分页器结束-->										
+					<!--用户数据表格分页器结束-->										
 			</div>
 		</div>
-		<!--新增客户弹窗开始-->
+		<!--新增用户弹窗开始-->
 		<el-dialog :title="titlevar" :visible.sync="dialogTableVisible" :show-close="false" :close-on-click-modal="false">	
 				<el-form 
 				  :model="ruleForm" 
@@ -77,7 +77,7 @@
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
 					<el-form-item label="姓名:" prop="name"  >
-						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位用户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
 					<el-form-item label="性别:"  prop="sex">
 							<el-select  class="filter-item " style='width: 100%;' v-model="ruleForm.sex" placeholder="请选择性别" >
@@ -98,7 +98,7 @@
 						<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 				</div>
 		</el-dialog>
-		<!--新增客户弹窗结束-->
+		<!--新增用户弹窗结束-->
         <!--服务地址管理弹窗结束-->
 		<el-dialog title="服务地址管理" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
 				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('','add')"  value="新增地址"></div>
@@ -163,7 +163,7 @@
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
 					<el-form-item label="联系人:" prop="addressName"  >
-						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位联系人姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
 					<el-form-item label="联系电话:"  prop="addressPhone">
                 <el-input  v-model="ruleFormAddress.addressPhone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
@@ -202,17 +202,17 @@
 
 <script>
 import {
-  getCusTable, // 获取客户表格信息
-  deleteCus, //删除客户
-  saveCus, //保存客户（新增）
-  getCus, //客户（编辑）
-  upCus, //保存客户（编辑）
-  listDataAddress, //地址管理
-  saveDataAddress, // 新增地址保存
-  formDataAddress, //编辑地址
-  upDataAddress, // 编辑地址保存
-  deleteDataAddress, //删除地址
-  setDefaultAddress // 设置默认地址
+  getCusTable, // 获取用户表格信息
+  deleteCus, //删除用户
+  saveCus, //保存用户（新增）
+  getCus, //用户（编辑）
+  upCus, //保存用户（编辑）
+  listDataAddress,//地址管理
+  saveDataAddress,// 新增地址保存
+  formDataAddress,//编辑地址
+  upDataAddress,// 编辑地址保存
+  deleteDataAddress,//删除地址
+  setDefaultAddress,// 设置默认地址
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
 
@@ -248,18 +248,30 @@ export default {
         }
       }
     };
-    //客户名验证规则
+    //用户名验证规则
     var checkName = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入2-15位客户姓名"));
+        callback(new Error("请输入2-15位用户姓名"));
       } else {
         if (value.length >= 2 && value.length <= 15) {
           callback();
         } else {
-          callback(new Error("请输入2-15位客户姓名"));
+          callback(new Error("请输入2-15位用户姓名"));
         }
       }
     };
+     //联系人名验证规则
+    var checkAddressName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入2-15位联系人姓名"));
+      } else {
+        if (value.length >= 2 && value.length <= 15) {
+          callback();
+        } else {
+          callback(new Error("请输入2-15位联系人姓名"));
+        }
+      }
+    };   
     //详细地址验证
     var checkAddress = (rule, value, callback) => {
       if (!value) {
@@ -272,15 +284,26 @@ export default {
         }
       }
     };
+    var checkPlacename = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入1-100位详细地址"));
+      } else {
+        if (value.length >= 1 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入1-100位详细地址"));
+        }
+      }
+    };    
     //门牌号验证
     var checkAddressa = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("长度在1-50个字符"));
+        callback(new Error("请输入1-50位门牌号"));
       } else {
         if (value.length >= 1 && value.length <= 50) {
           callback();
         } else {
-          callback(new Error("长度在1-50个字符"));
+          callback(new Error("请输入1-50位门牌号"));
         }
       }
     };
@@ -327,15 +350,9 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {
-        addressName: [
-          { required: true, validator: checkName, trigger: "blur" }
-        ],
-        addressPhone: [
-          { required: true, validator: checkPhone, trigger: "blur" }
-        ],
-        placename: [
-          { required: true, validator: checkAddress, trigger: "blur" }
-        ],
+        addressName: [{ required: true, validator: checkAddressName, trigger: "blur" }],
+        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
+        placename: [{ required: true, validator: checkPlacename, trigger: "blur" }],
         areaCodes: [
           {
             type: "array",
@@ -357,8 +374,8 @@ export default {
       organizationOptions: [],
       // organizationName:'',//服务机构
       dialogTableVisible: false, //新增弹窗开关
-      customName: "", //客户姓名
-      customPhone: "", //客户电话
+      customName: "", //用户姓名
+      customPhone: "", //用户电话
       pagetotal1: 0, //表格总页数
       pageSize1: 10, //表格每页条数
       pageNumber: 1,
@@ -643,7 +660,7 @@ export default {
         }
       });
     },
-    //新增客户弹窗取消
+    //新增用户弹窗取消
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.ruleForm.provinceCode = "";
