@@ -67,22 +67,30 @@
 						<!-- 7天时间 -->
 							<el-table-column v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
 								<template scope="scope">
+									<!-- 
+										1：有工资时间
+										2：没有工作时间但是有工资安排
+									 -->
 									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
+										<!-- 判断有没有border-bottom, -->
 										<div :class="['work-time',{'bor-time':scope.row.scheduleDateInfos[index].workBeginTime || !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)}]">
 											{{workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime)}}
 										</div>
 										<div class="work-add-bo">
 											<div class="time-arrange-content">
+												 <!-- 有工作时间直接渲染  没有工作时间判断有没有工作安排，有工作安排是否有订单数据 -->
 												<div v-if="scope.row.scheduleDateInfos[index].workBeginTime || ((scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos) && data.type!='holiday')" 
 													:class="{'order':data.type!='holiday'}" v-for="(data,i) in scope.row.scheduleDateInfos[index].techScheduleInfos" :key="i"
 													@click="schedulePath(data)">
-													<!-- {{data.scheduleDateStr+'~'+data.endTimeStr}} -->
 													{{tableDataTime(data.scheduleDateStr,data.endTimeStr)}}
 													<span>{{data.type=='holiday'?'休假':'订单'}}</span>
 												</div>
 											</div>
 										</div>
 									</div>
+									<!-- 没有工作时间和没有工作安排 或 没有工作时间工作安排都是休假数据没有订单数据 
+										noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos //工作安排有没有订单数据
+									-->
 									<div class="no-orders" v-if="noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos) && !scope.row.scheduleDateInfos[index].workBeginTime">
 										<div>全天不可接单</div>
 									</div>
@@ -501,6 +509,7 @@
 			},
 			//搜索
 			searchClick(item){
+				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
 				if('name' in item || 'phone' in item){
 					if(!this.chooContent){
 						delete item.name
@@ -510,6 +519,7 @@
 				if(this.chooses){
 					item[this.chooses] = this.chooContent
 				}
+				//防止二次渲染
 				if(this.pageSync != 1){
 					this.pageSync = 1
 				}else{
@@ -523,7 +533,6 @@
 				}else{
 					this.pageSync = 1
 				}
-				// this.getList()
 			},
 			handleCurrentChange(val){
 				this.pageSync = val
@@ -583,6 +592,11 @@
 </script>
 
 <style>
+	#app .schedule-table tr td:hover{
+		-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+		-moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+		box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset
+	}
 	.schedule-table .el-loading-mask{
 		padding: 50px 0;
 	}
@@ -617,15 +631,15 @@
 		z-index: 100;
 	}
 	.work-time-bor{
-		height: 45px;
-		line-height: 45px;
+		height: 30px;
+		line-height: 30px;
 		border-bottom: 1px solid #dfe6ec;
 	}
 	.work-time{
 		/* border-bottom: 1px solid #dfe6ec; */
 		/* padding: 10px 0; */
-		height: 45px;
-		line-height: 45px;
+		height: 30px;
+		line-height: 30px;
 	}
 	.bor-time{
 		border-bottom: 1px solid #dfe6ec;
@@ -671,6 +685,6 @@
 	}
 	.work-arrange{
 		/*box-sizing: border-box;*/
-		padding: 10px 0;
+		padding: 10px 0 110px 0;
 	}
 </style>
