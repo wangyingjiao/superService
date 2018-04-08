@@ -131,7 +131,7 @@
             class="form_item"
               type="textarea" 
               :rows="2" 
-              placeholder="请输入0 - 100 字休假未通过原因"
+              placeholder="请输入1 - 100 位未通过原因"
               v-model="temp.failReason"></el-input>
           </el-form-item>
 
@@ -200,7 +200,7 @@ export default {
           { required: true, message: "请选择审核状态", trigger: "change" }
         ],
         failReason: [
-          { required: true, message: "请填写休假未通过原因", trigger: "blur" },
+          { required: true, message: "请输入1 - 100位未通过原因", trigger: "blur" },
           {
             min: 0,
             max: 100,
