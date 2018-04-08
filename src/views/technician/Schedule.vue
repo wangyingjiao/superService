@@ -38,7 +38,7 @@
 			<!-- 表格 -->
 			<div class="schedule-table" v-loading="listLoading">
 				<div v-if="tableData.length">
-					<el-table :data="tableData" stripe border style="width: 100%">
+					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->
 							<el-table-column label="技师" align="center">
 								<el-table-column align="center">
@@ -82,7 +82,7 @@
 												<div v-if="scope.row.scheduleDateInfos[index].workBeginTime || ((scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos) && data.type!='holiday')" 
 													:class="{'order':data.type!='holiday'}" v-for="(data,i) in scope.row.scheduleDateInfos[index].techScheduleInfos" :key="i"
 													@click="schedulePath(data)">
-													{{tableDataTime(data.scheduleDateStr,data.endTimeStr)}}
+													{{tableDataTime(data.startTimeStr,data.endTimeStr)}}
 													<span>{{data.type=='holiday'?'休假':'订单'}}</span>
 												</div>
 											</div>
@@ -510,14 +510,18 @@
 			//搜索
 			searchClick(item){
 				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
-				if('name' in item || 'phone' in item){
-					if(!this.chooContent){
-						delete item.name
-						delete item.phone
-					}
-				}
+				console.log(this.chooses,"-------this.this.chooses------")
+				// if('name' in item || 'phone' in item){
+				// 	if(!this.chooContent){
+				// 		delete item.name
+				// 		delete item.phone
+				// 	}
+				// }
 				if(this.chooses){
 					item[this.chooses] = this.chooContent
+				}else{
+					delete item.name
+					delete item.phone
 				}
 				//防止二次渲染
 				if(this.pageSync != 1){
