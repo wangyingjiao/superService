@@ -234,14 +234,14 @@
             </el-row>
         </el-form-item>
 
-        <el-form-item label="客户信息:" >
+        <el-form-item label="服务地址:" >
             <el-switch
               v-model="temp.visable"
               :width="90"
-              on-text="不模糊"
-              off-text="模糊"
-              on-value="yes"
-              off-value="no">
+              on-text="模糊"
+              off-text="不模糊"
+              on-value="no"
+              off-value="yes">
             </el-switch>
         </el-form-item>
 
@@ -708,6 +708,7 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false;
+      this.temp.visable = "no";
       this.temp.dockType = "select";
     },
     //点击编辑
@@ -810,11 +811,15 @@ export default {
     },
     //删除E店
     delEshop(val) {
-      this.$confirm("解除对接E店，会解除商品的对接，无法撤销，您确定要解除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
+      this.$confirm(
+        "解除对接E店，会解除商品的对接，无法撤销，您确定要解除吗？",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          closeOnClickModal: false
+        }
+      )
         .then(() => {
           if (val.id != undefined) {
             var obj = {
@@ -831,9 +836,7 @@ export default {
             this.temp.basicOrganizationEshops.remove(val);
           }
         })
-        .catch(() => {
-          
-        });
+        .catch(() => {});
     },
     //取消
     resetForm(formName) {
@@ -1031,7 +1034,7 @@ export default {
         dockType: "",
         basicOrganizationEshops: [],
         jointEshopCode: "",
-        visable:"",
+        visable: "",
         scopeType: "store",
         remark: ""
       };
