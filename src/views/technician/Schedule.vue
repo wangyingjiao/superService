@@ -74,7 +74,7 @@
 									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
 										<!-- 判断有没有border-bottom, -->
 										<div :class="['work-time',{'bor-time':scope.row.scheduleDateInfos[index].workBeginTime || !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)}]">
-											{{workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime)}}
+											{{scope.row.scheduleDateInfos[index].workBeginTime?workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime):''}}
 										</div>
 										<div class="work-add-bo">
 											<div class="time-arrange-content">
