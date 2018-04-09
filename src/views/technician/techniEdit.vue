@@ -1044,7 +1044,8 @@ export default {
       this.familyFlag = false;
       this.$refs["personalEDit"].resetFields();
       this.$refs["perServer"].resetFields();
-      this.isB = false;
+      this.addtimeno()
+      // this.isB = false;
     },
     //其他信息保存
     sumitFormSub(formName) {
