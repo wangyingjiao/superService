@@ -218,6 +218,11 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
+        for (var a = 0; a < res.data.data.list.length; a++) {
+          if (res.data.data.list[a].id == 0) {
+            res.data.data.list.remove(res.data.data.list[a]);
+          }
+        }        
         this.mechanismOptions = res.data.data.list;
       });
     },
