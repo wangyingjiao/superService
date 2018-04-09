@@ -37,14 +37,12 @@
 					  </el-table-column>
 
 					  <el-table-column align="center" label="姓名">
-								<template scope="scope">
-										
-										         <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-															  <el-tooltip  placement="left" :disabled="item.techName.length< 8 " :content="item.techName">
-															      <div class="techNameStyle1">{{item.techName}}</div>
-															  </el-tooltip>
-														 </div>										
-																
+								<template scope="scope">										
+                  <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
+                    <el-tooltip  placement="left" :disabled="item.techName.length < 6 " :content="item.techName">
+                        <div class="techNameStyle1">{{item.techName}}</div>
+                    </el-tooltip>
+                  </div>																										
 								</template>
 					  </el-table-column>
 
