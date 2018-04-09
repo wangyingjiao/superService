@@ -2287,7 +2287,7 @@ hr {
   margin-left: 5px;
 }
 .systemLabel ul {
-  width: 23%;
+  width: 22%;
   float: left;
   height: 300px;
   overflow-y: auto;
@@ -2321,7 +2321,7 @@ hr {
   overflow-y: auto;
   float: left;
   border: 1px solid #e8e8e8;
-  width: 31%;
+  width: 34%;
   height: 300px;
   border-left: 0;
 }
