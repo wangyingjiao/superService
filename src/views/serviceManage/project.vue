@@ -493,7 +493,6 @@ import {
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
-// import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];

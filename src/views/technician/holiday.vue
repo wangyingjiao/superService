@@ -85,9 +85,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="150">
+      <el-table-column align="center" label="操作" min-width="160">
         <template scope="scope">
-          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.reviewStatus != 'yes'" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -160,6 +160,7 @@ import {
 } from "@/api/tech";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import imgService from "../../components/upload/upload.vue";
 
 export default {
   name: "holiday",
@@ -169,6 +170,7 @@ export default {
   data() {
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
+      checkState:true,//审核按钮状态
       list: [],
       total: null,
       listLoading: true,
@@ -268,7 +270,6 @@ export default {
       if (obj.reviewStatus == "all") {
         obj.reviewStatus = "";
       }
-      console.log(obj);
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -371,12 +372,10 @@ export default {
         });
     },
     create(formName) {
-      console.log(this.temp);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.btnState = true;
           if (this.temp.reviewStatus == "yes") {
-            console.log("yessssssssssssssssss");
             this.$confirm(
               "审核通过后不可再修改其审核状态，是否继续？",
               "提示",
@@ -403,8 +402,7 @@ export default {
                         type: "success",
                         message: "审核成功"
                       });
-                      this.resetSearch();
-                      this.handleFilter();
+                      this.getList();
                       this.dialogForm = false;
                     } else {
                     }
@@ -415,16 +413,13 @@ export default {
               })
               .catch(() => {
                 this.btnState = false;
-                console.log(111111);
               });
           } else {
-            console.log(222222);
             var obj = {
               id: this.temp.rowId,
               reviewStatus: this.temp.reviewStatus,
               failReason: this.temp.failReason
             };
-            // if()
             reviewedHoliday(obj)
               .then(res => {
                 this.btnState = false;
@@ -435,8 +430,7 @@ export default {
                     type: "success",
                     message: "审核成功"
                   });
-                  this.resetSearch();
-                  this.handleFilter();
+                  this.getList();
                   this.dialogForm = false;
                 } else {
                 }
@@ -465,7 +459,6 @@ export default {
       this.getList();
     },
     resetForm(formName) {
-      //console.log(this.holidayState)
       this.holidayState = [
         { label: "通过", value: "yes" },
         { label: "不通过", value: "no" }
@@ -489,6 +482,9 @@ export default {
         time: ""
       };
     }
+  },
+  components: {
+    imgService,
   }
 };
 </script>

@@ -74,7 +74,7 @@
 									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
 										<!-- 判断有没有border-bottom, -->
 										<div :class="['work-time',{'bor-time':scope.row.scheduleDateInfos[index].workBeginTime || !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)}]">
-											{{scope.row.scheduleDateInfos[index].workBeginTime?workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime):''}}
+											{{scope.row.scheduleDateInfos[index].workBeginTime ? workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime):''}}
 										</div>
 										<div class="work-add-bo">
 											<div class="time-arrange-content">
@@ -510,19 +510,16 @@
 			//搜索
 			searchClick(item){
 				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
-				console.log(this.chooses,"-------this.this.chooses------")
-				// if('name' in item || 'phone' in item){
-				// 	if(!this.chooContent){
-				// 		delete item.name
-				// 		delete item.phone
-				// 	}
-				// }
-				if(this.chooses){
-					item[this.chooses] = this.chooContent
-				}else{
-					delete item.name
-					delete item.phone
+				let obj = Object.assign({},item)
+				if('name' in obj || 'phone' in obj){
+					delete obj.name
+					delete obj.phone
 				}
+				if(this.chooses){
+					obj[this.chooses] = this.chooContent
+				}
+				this.search = obj
+
 				//防止二次渲染
 				if(this.pageSync != 1){
 					this.pageSync = 1
