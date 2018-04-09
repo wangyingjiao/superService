@@ -87,7 +87,7 @@
 
       <el-table-column align="center" label="操作" min-width="160">
         <template scope="scope">
-          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.reviewStatus != 'yes'" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -160,6 +160,7 @@ import {
 } from "@/api/tech";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import imgService from "../../components/upload/upload.vue";
 
 export default {
   name: "holiday",
@@ -169,6 +170,7 @@ export default {
   data() {
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
+      checkState:true,//审核按钮状态
       list: [],
       total: null,
       listLoading: true,
@@ -400,7 +402,7 @@ export default {
                         type: "success",
                         message: "审核成功"
                       });
-                      this.handleFilter();
+                      this.getList();
                       this.dialogForm = false;
                     } else {
                     }
@@ -428,7 +430,7 @@ export default {
                     type: "success",
                     message: "审核成功"
                   });
-                  this.handleFilter();
+                  this.getList();
                   this.dialogForm = false;
                 } else {
                 }
@@ -480,6 +482,9 @@ export default {
         time: ""
       };
     }
+  },
+  components: {
+    imgService,
   }
 };
 </script>
