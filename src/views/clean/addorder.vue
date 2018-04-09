@@ -465,11 +465,9 @@ export default {
       areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
       options2: [],
-      submitFlag1: false,
       timeObj: [],
       middleA: [],
       techSaveFlag: false,
-      submitFlag1: false,
       form2: {
         selectTech: "",
         severTime: "",
