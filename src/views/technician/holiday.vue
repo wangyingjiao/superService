@@ -100,6 +100,7 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <!-- <roleDialog></roleDialog> -->
     <!-- 弹窗 -->
     <el-dialog 
       title="审核休假"
@@ -160,12 +161,15 @@ import {
 } from "@/api/tech";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-import imgService from "../../components/upload/upload.vue";
+import roleDialog from "../staff/roleDialog.vue";
 
 export default {
   name: "holiday",
   directives: {
     waves
+  },
+  components: {
+    roleDialog,
   },
   data() {
     return {
@@ -482,9 +486,6 @@ export default {
         time: ""
       };
     }
-  },
-  components: {
-    imgService,
   }
 };
 </script>
