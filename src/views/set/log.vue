@@ -84,7 +84,7 @@
         </template> 
       </el-table-column>
 
-      <el-table-column align="center" width="150px" label="提交数据" prop="params">    
+      <el-table-column align="center" width="180px" label="提交数据" prop="params">    
           <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.params.length < 10" :content="scope.row.params">
              <div class="tool" >{{scope.row.params}}</div>

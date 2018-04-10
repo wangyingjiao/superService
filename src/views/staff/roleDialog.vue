@@ -37,7 +37,7 @@
         <el-form-item label="权限:" class="treecss" prop="check" >
             <el-tree
             class="scrollBox form_item"
-              :data="data2"
+              :data=treeData
               :indent= 30
               show-checkbox
               node-key="id"    
@@ -108,7 +108,7 @@ export default {
         update: "编辑岗位",
         create: "新增岗位"
       },
-      data2: [], //树状图数据
+      // treeData: [], //树状图数据
       defaultProps: {
         //树形结构参数
         children: "subMenus",
@@ -118,13 +118,14 @@ export default {
   },
   computed: {},
 
-  props: [],
+  props: ["treeData"],
   methods: {
     nodeClick(a, b, c) {},
     currentChange(a, b) {},
     nodeExpand(a, b, c) {},
     nodeCollapse(a, b, c) {},
     handTreechange(a, b, c) {
+      
       if (b) {
         // 处理订单里的查看详情
         if (
@@ -136,13 +137,14 @@ export default {
           ].indexOf(a.permission) > -1
         ) {
           var arr = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].permission == "order") {
+          for (var i = 0; i < this.treeData.length; i++) {
+            
+            if (this.treeData[i].subMenus != undefined) {
+              for (var j = 0; j < this.treeData[i].subMenus.length; j++) {
+                if (this.treeData[i].subMenus[j].permission == "order") {
                   this.$refs.domTree.setChecked(
-                    this.data2[i].subMenus[j].subMenus[
-                      this.data2[i].subMenus[j].subMenus.length - 2
+                    this.treeData[i].subMenus[j].subMenus[
+                      this.treeData[i].subMenus[j].subMenus.length - 2
                     ].id,
                     true
                   );
@@ -156,12 +158,12 @@ export default {
         //自动勾选列表权限
         if (a.subMenus == undefined) {
           var arr = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].id == arr[3]) {
-                  var str = this.data2[i].subMenus[j].subMenus[
-                    this.data2[i].subMenus[j].subMenus.length - 1
+          for (var i = 0; i < this.treeData.length; i++) {
+            if (this.treeData[i].subMenus != undefined) {
+              for (var j = 0; j < this.treeData[i].subMenus.length; j++) {
+                if (this.treeData[i].subMenus[j].id == arr[3]) {
+                  var str = this.treeData[i].subMenus[j].subMenus[
+                    this.treeData[i].subMenus[j].subMenus.length - 1
                   ];
                   if (str.permission != undefined) {
                     var per = str.permission;
@@ -183,15 +185,15 @@ export default {
         //订单的查看详情不可取消
 
         if (a.permission == "order_info") {
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].permission == "order") {
-                  var orderarr = this.data2[i].subMenus[j];
+          for (var i = 0; i < this.treeData.length; i++) {
+            if (this.treeData[i].subMenus != undefined) {
+              for (var j = 0; j < this.treeData[i].subMenus.length; j++) {
+                if (this.treeData[i].subMenus[j].permission == "order") {
+                  var orderarr = this.treeData[i].subMenus[j];
                   for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
                     if (this.temp.check.indexOf(orderarr.subMenus[k].id) > -1) {
                       this.$refs.domTree.setChecked(
-                        this.data2[i].subMenus[j].subMenus[
+                        this.treeData[i].subMenus[j].subMenus[
                           orderarr.subMenus.length - 2
                         ].id,
                         true
@@ -214,23 +216,23 @@ export default {
           ) == "view"
         ) {
           var arr1 = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].id == arr1[3]) {
+          for (var i = 0; i < this.treeData.length; i++) {
+            if (this.treeData[i].subMenus != undefined) {
+              for (var j = 0; j < this.treeData[i].subMenus.length; j++) {
+                if (this.treeData[i].subMenus[j].id == arr1[3]) {
                   for (
                     var k = 0;
-                    k < this.data2[i].subMenus[j].subMenus.length - 1;
+                    k < this.treeData[i].subMenus[j].subMenus.length - 1;
                     k++
                   ) {
                     if (
                       this.temp.check.indexOf(
-                        this.data2[i].subMenus[j].subMenus[k].id
+                        this.treeData[i].subMenus[j].subMenus[k].id
                       ) > -1
                     ) {
                       this.$refs.domTree.setChecked(
-                        this.data2[i].subMenus[j].subMenus[
-                          this.data2[i].subMenus[j].subMenus.length - 1
+                        this.treeData[i].subMenus[j].subMenus[
+                          this.treeData[i].subMenus[j].subMenus.length - 1
                         ].id,
                         true
                       );
@@ -246,11 +248,51 @@ export default {
       }
 
       this.temp.check = this.$refs.domTree.getCheckedKeys();
+    },
+    resetForm() {
+      this.dialogFormVisible = false;
     }
   }
 };
 </script>
 
 <style>
+.treecss
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: left;
+}
+.treecss
+  .el-tree-node
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: left;
+}
+/* .el-tree-node:nth-child(1)
+  .el-tree-node__children
+  .el-tree-node__children
+  .el-tree-node {
+  float: none;
+} */
+.ceshi {
+  height: 25px;
+  width: 80px;
+}
 
+.dialog-footer {
+  text-align: center;
+}
+.scrollBox {
+  height: 400px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.diasize .el-dialog {
+  width: 60%;
+}
 </style>
