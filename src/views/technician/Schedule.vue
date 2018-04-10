@@ -44,7 +44,7 @@
 								<el-table-column align="center">
 									<template scope="scope">
 										<div class="schedule-tech">
-											<div>{{scope.row.name}}</div>
+											<div>{{scope.row.name}}<span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
 											<div>{{scope.row.phone}}</div>
 											<div>{{scope.row.stationName}}</div>
 										</div>
@@ -74,7 +74,9 @@
 									<div class="work-bo" v-if="scope.row.scheduleDateInfos[index].workBeginTime || scope.row.scheduleDateInfos[index].techScheduleInfos">
 										<!-- 判断有没有border-bottom, -->
 										<div :class="['work-time',{'bor-time':scope.row.scheduleDateInfos[index].workBeginTime || !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)}]">
-											{{scope.row.scheduleDateInfos[index].workBeginTime ? workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime):''}}
+											<!-- {{scope.row.scheduleDateInfos[index].workBeginTime ? workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime):''}} -->
+											<span v-if="scope.row.scheduleDateInfos[index].workBeginTime">{{workTimeMosaic(scope.row.scheduleDateInfos[index].workBeginTime,scope.row.scheduleDateInfos[index].workEndTime)}}</span>
+											<span class="color-red" v-if="!scope.row.scheduleDateInfos[index].workBeginTime && !noOrders(scope.row.scheduleDateInfos[index].techScheduleInfos)">全天不可接单</span>
 										</div>
 										<div class="work-add-bo">
 											<div class="time-arrange-content">
@@ -416,6 +418,7 @@
 	]
 		
 	export default{
+		name:"schedule",
 		data(){
 			return{
 				pickerOptions0:{
@@ -590,6 +593,9 @@
 </script>
 
 <style>
+	.color-red{
+		color: red;
+	}
 	#app .schedule-table tr td:hover{
 		-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 		-moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;

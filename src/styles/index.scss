@@ -809,3 +809,6 @@ body {
 .el-step__title.is-finish{
   color:#4c70e8;
 }
+.time-select-item.selected:not(.disabled){
+  background-color: #4c70e8;
+}
