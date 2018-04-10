@@ -218,13 +218,13 @@ export default {
     };
   },
   methods: {
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     //全局搜索按钮
     search() {
@@ -345,7 +345,7 @@ export default {
       this.ruleForm2.technicians = this.tabOptions;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.saveFlag = true;
           var obj = {
             id: this.id,
@@ -410,7 +410,7 @@ export default {
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
-                }else{
+                } else {
                   loading.close();
                 }
               })
@@ -860,8 +860,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
-  margin-top:5px;
-  margin-bottom:5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   margin-left: 10px;
   font-size: 12px;
   display: inline-block;
