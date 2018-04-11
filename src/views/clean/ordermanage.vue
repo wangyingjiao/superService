@@ -240,20 +240,21 @@ export default {
         this.active1 = tab.name;
       }
       this.payStus = "";
-      this.mechanism = "";
-      this.payType = "";
-      this.sevicerStustas = "";
-      this.orderNumber = "";
-      this.startTime = "";
-      this.endTime = "";
-      this.severTime = "";
-      this.severEndTime = "";
-      var obj = {
-        orderStatus: this.active1
-      };
-      this.pageNumber = 1;
-      this.jumpPage = 1;
-      this.getTableData(obj, this.pageNumber, this.size);
+      // this.mechanism = "";
+      // this.payType = "";
+      // this.sevicerStustas = "";
+      // this.orderNumber = "";
+      // this.startTime = "";
+      // this.endTime = "";
+      // this.severTime = "";
+      // this.severEndTime = "";
+      // var obj = {
+      //   orderStatus: this.active1
+      // };
+      // this.pageNumber = 1;
+      // this.jumpPage = 1;
+      // this.getTableData(obj, this.pageNumber, this.size);
+      this.localSearch()
     },
     //全局search按钮
     localSearch() {
