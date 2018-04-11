@@ -630,7 +630,6 @@ export default {
 
       this.btnShow = JSON.parse(localStorage.getItem("btn"))
     }
-    console.log(this.btnShow)
   },
   computed: {
     areaOptions: function() {

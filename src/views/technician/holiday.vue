@@ -242,7 +242,7 @@ export default {
   },
   methods: {
     aaa(obj){
-      console.log(obj,'aaa')
+      //console.log(obj,'aaa')
     },
     //请求列表数据
     getList() {
