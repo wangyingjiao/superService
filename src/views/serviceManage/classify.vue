@@ -120,7 +120,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       btnState: false,
       selectState: false,
       active: true,
@@ -182,6 +182,9 @@ export default {
   },
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     // 字典表中获取分类
     var dict = require("../../../static/dict.json");
     this.majorSorts = dict.order_majorSort;

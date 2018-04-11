@@ -174,7 +174,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       checkState: true, //审核按钮状态
       list: [],
       total: null,
@@ -236,6 +236,9 @@ export default {
   created() {
     this.getList();
     this.activeName = "all";
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });

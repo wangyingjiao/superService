@@ -155,7 +155,7 @@ export default {
   name: "dispatchmanage",
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       techSaveFlag: false,
       listTech: [],
       techName: "",
@@ -182,6 +182,11 @@ export default {
       techPhone1: "",
       orderNumber1: ""
     };
+  },
+  created(){
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
     //跳转改派记录页
