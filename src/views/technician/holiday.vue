@@ -100,7 +100,7 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <!-- <roleDialog></roleDialog> -->
+    <!-- <roleDialog :treeData = 'data2' @checkchange = 'aaa'></roleDialog> -->
     <!-- 弹窗 -->
     <el-dialog 
       title="审核休假"
@@ -159,6 +159,7 @@ import {
   getHolidayById,
   reviewedHoliday
 } from "@/api/tech";
+import { getMenudata } from "@/api/staff"; //接口调用
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import roleDialog from "../staff/roleDialog.vue";
@@ -169,12 +170,12 @@ export default {
     waves
   },
   components: {
-    roleDialog,
+    roleDialog
   },
   data() {
     return {
       btnShow: JSON.parse(localStorage.getItem("btn")),
-      checkState:true,//审核按钮状态
+      checkState: true, //审核按钮状态
       list: [],
       total: null,
       listLoading: true,
@@ -191,6 +192,7 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      data2:[],
       search: {
         type: "techName",
         val: "",
@@ -206,7 +208,11 @@ export default {
           { required: true, message: "请选择审核状态", trigger: "change" }
         ],
         failReason: [
-          { required: true, message: "请输入1 - 100位未通过原因", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入1 - 100位未通过原因",
+            trigger: "blur"
+          },
           {
             min: 0,
             max: 100,
@@ -230,8 +236,14 @@ export default {
   created() {
     this.getList();
     this.activeName = "all";
+    getMenudata().then(res => {
+      this.data2 = res.data.data;
+    });
   },
   methods: {
+    aaa(obj){
+      console.log(obj,'aaa')
+    },
     //请求列表数据
     getList() {
       var obj = {

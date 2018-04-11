@@ -19,7 +19,7 @@
 						    <span class="selfLabelStyle">*</span>
 						    <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="customPhone"></el-input>
 			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
 							<el-form-item label="服务地址:" prop='radiovalue'>                  
@@ -474,7 +474,7 @@ export default {
         severTime1: "",
         textarea: ""
       },
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       //服务站下拉选项
       options: [],
       techName: "",
@@ -624,6 +624,13 @@ export default {
       defaultAddress1:[],
       defaultRadio:''	  
     };
+  },
+  created(){
+    if(JSON.parse(localStorage.getItem("btn"))){
+
+      this.btnShow = JSON.parse(localStorage.getItem("btn"))
+    }
+    console.log(this.btnShow)
   },
   computed: {
     areaOptions: function() {

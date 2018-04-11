@@ -25,6 +25,7 @@ var arr = []
 
 // 拦截响应
 instance.interceptors.response.use(res => {
+  console.log(',,,,,,,,,,,,,,,,,,,,,,,')
   if (res.data.code !== undefined) {
     if (res.data.code === 2) {
       arr.push(res.data.code)

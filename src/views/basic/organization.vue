@@ -234,7 +234,7 @@
             </el-row>
         </el-form-item>
 
-        <el-form-item label="服务地址:" >
+        <el-form-item label="用户信息:" >
             <el-switch
               v-model="temp.visable"
               :width="90"
