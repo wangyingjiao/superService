@@ -64,7 +64,7 @@
       <div slot="footer" class="dialog-footer">
         <!-- v-if判断当前是编辑还是新增 -->
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate"  @click="update('temp')">保 存</button>    
-        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
+        <button class="button-large btn-color" :disabled="btnState" @click="create('temp')">保 存</button>    
         <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
@@ -73,6 +73,17 @@
 
 <script>
 import Cookies from "js-cookie";
+import {
+  getStationPage,
+  addStation,
+  upStation,
+  delStation,
+  getPower,
+  getMenudata,
+  getSList,
+  chkName,
+  chkNameUp
+} from "@/api/staff"; //接口调用
 import { getSign } from "@/api/sign";
 export default {
   name: "role-dialog",
@@ -83,6 +94,7 @@ export default {
       selsctState: false, //下拉框状态，是否禁用
       myselfUpdate: true, //判断是否编辑自己
       officeIds: [],
+      treeData:[],
       temp: {
         name: "",
         dataScope: "10",
@@ -117,8 +129,17 @@ export default {
     };
   },
   computed: {},
-
-  props: ["treeData"],
+  created() {
+    //获取权限列表
+    getMenudata().then(res => {
+      this.treeData = res.data.data;
+    });
+    //获取机构
+    getSList({}).then(res => {
+      this.officeIds = res.data.data.list;
+    });
+  },
+  props: [],
   methods: {
     nodeClick(a, b, c) {},
     currentChange(a, b) {},
@@ -248,6 +269,71 @@ export default {
       }
 
       this.temp.check = this.$refs.domTree.getCheckedKeys();
+    },
+    create(formName) {
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+      //return;
+      var obj = {
+        name: this.temp.name,
+        //dataScope: this.temp.dataScope,
+        dataScope: "10",
+        menuIds: str,
+        useable: "1", //状态
+        organization: {
+          id: this.temp.officeId
+        }
+      };
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.btnState = true;
+          addStation(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                this.resetTemp();
+                this.$refs[formName].resetFields();
+                this.$refs.domTree.setCheckedKeys([]);
+                this.$message({
+                  type: "success",
+                  message: "添加成功"
+                });
+                this.dialogFormVisible = false;
+                
+              } else {
+                
+              }
+            })
+            .catch(err => {
+             
+              this.btnState = false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
+        }
+      });
+    },
+    resetTemp() {
+      this.temp = {
+        officeId: "",
+        name: "",
+        dataScope: "10",
+        check: []
+      };
     },
     resetForm() {
       this.dialogFormVisible = false;

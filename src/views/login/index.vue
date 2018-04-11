@@ -82,15 +82,15 @@ export default {
     handleLogin() {
       //登录
       //登录时先清空，防止非正常直接渲染
-      localStorage.removeItem("name");
-      localStorage.removeItem("dataScope");
-      localStorage.removeItem("orgId");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("menu");
-      localStorage.removeItem("station");
-      localStorage.removeItem("btn");
-      localStorage.removeItem("roleId");
-      localStorage.removeItem("roleId");
+      // localStorage.removeItem("name");
+      // localStorage.removeItem("dataScope");
+      // localStorage.removeItem("orgId");
+      // localStorage.removeItem("userId");
+      // localStorage.removeItem("menu");
+      // localStorage.removeItem("station");
+      // localStorage.removeItem("btn");
+      // localStorage.removeItem("roleId");
+      // localStorage.removeItem("roleId");
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;

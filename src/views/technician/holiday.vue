@@ -236,11 +236,14 @@ export default {
   created() {
     this.getList();
     this.activeName = "all";
-    // getMenudata().then(res => {
-    //   this.data2 = res.data.data;
-    // });
+    getMenudata().then(res => {
+      this.data2 = res.data.data;
+    });
   },
   methods: {
+    aaa(obj){
+      console.log(obj,'aaa')
+    },
     //请求列表数据
     getList() {
       var obj = {
