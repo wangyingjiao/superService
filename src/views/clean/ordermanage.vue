@@ -55,10 +55,14 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="220"  label="服务机构" prop="orgName">
+					<el-table-column  align="center" width="220"  label="服务机构">
+            <template scope="rowObj">
+              <p>{{rowObj.row.orgName}}</p>
+              <p>{{rowObj.row.stationName}}</p>
+            </template>
 					</el-table-column>
-					<el-table-column  align="center" width="150" label="服务站" prop="stationName">
-					</el-table-column>
+					<!-- <el-table-column  align="center" width="150" label="服务站" prop="stationName">
+					</el-table-column> -->
 					<el-table-column  align="center" width="150"  label="订单来源">
 						<template scope="scope">
 							<span v-if="scope.row.orderSource =='own'">本机构</span>
