@@ -84,7 +84,7 @@ export default {
   },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       list: [],
       total: null,
       listLoading: true,
@@ -109,6 +109,9 @@ export default {
   },
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
     getList() {

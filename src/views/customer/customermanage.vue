@@ -207,12 +207,12 @@ import {
   saveCus, //保存用户（新增）
   getCus, //用户（编辑）
   upCus, //保存用户（编辑）
-  listDataAddress,//地址管理
-  saveDataAddress,// 新增地址保存
-  formDataAddress,//编辑地址
-  upDataAddress,// 编辑地址保存
-  deleteDataAddress,//删除地址
-  setDefaultAddress,// 设置默认地址
+  listDataAddress, //地址管理
+  saveDataAddress, // 新增地址保存
+  formDataAddress, //编辑地址
+  upDataAddress, // 编辑地址保存
+  deleteDataAddress, //删除地址
+  setDefaultAddress // 设置默认地址
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
 
@@ -260,7 +260,7 @@ export default {
         }
       }
     };
-     //联系人名验证规则
+    //联系人名验证规则
     var checkAddressName = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请输入2-15位联系人姓名"));
@@ -271,7 +271,7 @@ export default {
           callback(new Error("请输入2-15位联系人姓名"));
         }
       }
-    };   
+    };
     //详细地址验证
     var checkAddress = (rule, value, callback) => {
       if (!value) {
@@ -294,7 +294,7 @@ export default {
           callback(new Error("请输入1-100位详细地址"));
         }
       }
-    };    
+    };
     //门牌号验证
     var checkAddressa = (rule, value, callback) => {
       if (!value) {
@@ -313,7 +313,7 @@ export default {
       titlevarAddress: "新增服务地址",
       submitFlag: false,
       jumpPage: 1,
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       testvalue: "",
       areaOptions: this.$store.state.user.area,
       areaOptionsAddress: this.$store.state.user.area,
@@ -350,9 +350,15 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {
-        addressName: [{ required: true, validator: checkAddressName, trigger: "blur" }],
-        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        placename: [{ required: true, validator: checkPlacename, trigger: "blur" }],
+        addressName: [
+          { required: true, validator: checkAddressName, trigger: "blur" }
+        ],
+        addressPhone: [
+          { required: true, validator: checkPhone, trigger: "blur" }
+        ],
+        placename: [
+          { required: true, validator: checkPlacename, trigger: "blur" }
+        ],
         areaCodes: [
           {
             type: "array",
@@ -385,6 +391,11 @@ export default {
       addAddrssDialogShow: false,
       userIdSave: ""
     };
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
     //单选改变

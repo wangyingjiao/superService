@@ -359,7 +359,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       btnState: false, //按钮禁用
       officeState: false, //机构禁用
       statStatte: false, //服务站禁用
@@ -515,6 +515,9 @@ export default {
   },
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     getSList({}).then(res => {
       // 服务机构
       this.mechanismCheck = res.data.data.list;

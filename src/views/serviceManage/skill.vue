@@ -167,7 +167,7 @@ export default {
       submitFlag: false,
       jumpPage: 1,
       title: "新增技能",
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       promShow: false,
       promShow1: false,
       checkAll: false,
@@ -216,6 +216,11 @@ export default {
       middleC: [],
       middleD: []
     };
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
     loadingClick() {

@@ -139,7 +139,7 @@ export default {
   name: "ordermanage",
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       severTime: "",
       severEndTime: "",
       dict: require("../../../static/dict.json"),
@@ -168,6 +168,11 @@ export default {
       listLoading: false,
       active1: ""
     };
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   methods: {
     //机构变化事件
@@ -222,7 +227,7 @@ export default {
           if (res.data.data.list[a].id == 0) {
             res.data.data.list.remove(res.data.data.list[a]);
           }
-        }        
+        }
         this.mechanismOptions = res.data.data.list;
       });
     },
@@ -235,20 +240,21 @@ export default {
         this.active1 = tab.name;
       }
       this.payStus = "";
-      this.mechanism = "";
-      this.payType = "";
-      this.sevicerStustas = "";
-      this.orderNumber = "";
-      this.startTime = "";
-      this.endTime = "";
-      this.severTime = "";
-      this.severEndTime = "";
-      var obj = {
-        orderStatus: this.active1
-      };
-      this.pageNumber = 1;
-      this.jumpPage = 1;
-      this.getTableData(obj, this.pageNumber, this.size);
+      // this.mechanism = "";
+      // this.payType = "";
+      // this.sevicerStustas = "";
+      // this.orderNumber = "";
+      // this.startTime = "";
+      // this.endTime = "";
+      // this.severTime = "";
+      // this.severEndTime = "";
+      // var obj = {
+      //   orderStatus: this.active1
+      // };
+      // this.pageNumber = 1;
+      // this.jumpPage = 1;
+      // this.getTableData(obj, this.pageNumber, this.size);
+      this.localSearch()
     },
     //全局search按钮
     localSearch() {

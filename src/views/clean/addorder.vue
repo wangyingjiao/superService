@@ -360,8 +360,8 @@ import {
 } from "@/api/order";
 import {
   saveCus, //保存用户（新增）
-  listDataAddress,//地址管理
-  saveDataAddress,// 新增地址保存  
+  listDataAddress, //地址管理
+  saveDataAddress // 新增地址保存
 } from "@/api/customer";
 
 var loading;
@@ -416,7 +416,7 @@ export default {
           callback(new Error("请输入2-15位联系人姓名"));
         }
       }
-    };    
+    };
     var checkAddress = (rule, value, callback) => {
       if (!value) {
         callback(new Error("长度在1-100个字符"));
@@ -438,7 +438,7 @@ export default {
           callback(new Error("请输入1-100位详细地址"));
         }
       }
-    };    
+    };
     var checkDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error("请选择日期"));
@@ -497,7 +497,7 @@ export default {
       selectCommidty: [],
       form: {
         name: "",
-        radiovalue:'',
+        radiovalue: "",
         address: {},
         stationList: [],
         serverStation1: ""
@@ -517,7 +517,7 @@ export default {
         serverStation1: [
           { required: true, message: "请选择服务站", trigger: "change" }
         ],
-        radiovalue:[
+        radiovalue: [
           { required: true, message: "请选择服务地址", trigger: "change" }
         ]
       },
@@ -554,13 +554,13 @@ export default {
         addrLatitude: ""
       },
       ruleFormAddress: {
-        addressName:'',
-        addressPhone:'',
-        provinceCode:'',
-        cityCode:'',
-        areaCode:'',
-        placename:'',
-        detailAddress:'',
+        addressName: "",
+        addressPhone: "",
+        provinceCode: "",
+        cityCode: "",
+        areaCode: "",
+        placename: "",
+        detailAddress: "",
         areaCodes: []
       },
       formtest: {},
@@ -578,10 +578,16 @@ export default {
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
-      rulesAddress: {       
-        addressName: [{ required: true, validator: checkAddressName, trigger: "blur" }],
-        addressPhone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        placename: [{ required: true, validator: checkPlacename, trigger: "blur" }],
+      rulesAddress: {
+        addressName: [
+          { required: true, validator: checkAddressName, trigger: "blur" }
+        ],
+        addressPhone: [
+          { required: true, validator: checkPhone, trigger: "blur" }
+        ],
+        placename: [
+          { required: true, validator: checkPlacename, trigger: "blur" }
+        ],
         detailAddress: [
           { required: true, validator: checkAddressa, trigger: "blur" }
         ],
@@ -593,7 +599,7 @@ export default {
             trigger: "change"
           }
         ]
-      },	  
+      },
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
@@ -613,24 +619,22 @@ export default {
       customId: "", //用户ID
       areaCode: "",
       middleB: [],
-      addressBefore:'',
-      ideaserverTime:'',
-      ideaPersonNum:'',
+      addressBefore: "",
+      ideaserverTime: "",
+      ideaPersonNum: "",
       radio: "",
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
       tableDataAddress: [],
-      defaultAddress:[],
-      defaultAddress1:[],
-      defaultRadio:''	  
+      defaultAddress: [],
+      defaultAddress1: [],
+      defaultRadio: ""
     };
   },
-  created(){
-    if(JSON.parse(localStorage.getItem("btn"))){
-
-      this.btnShow = JSON.parse(localStorage.getItem("btn"))
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
-    console.log(this.btnShow)
   },
   computed: {
     areaOptions: function() {
@@ -642,92 +646,92 @@ export default {
       val = Number(val);
       return val.toFixed(2);
     }
-  }, 
-  methods: {    
+  },
+  methods: {
     //单选改变
     getCurrentRow(row) {
-      this.radio=row.id
-      this.defaultAddress=Object.assign({},row)
+      this.radio = row.id;
+      this.defaultAddress = Object.assign({}, row);
     },
     //服务地址管理弹窗按钮打开
     changeuserAddress() {
       this.serviceAddressVisible = true;
-          var obj = {
-            customerId: this.customId
-          };
-          listDataAddress(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                if(res.data.data != undefined){
-                  this.tableDataAddress=res.data.data                  
-                  for(var a=0;a<this.tableDataAddress.length;a++){
-                      if(this.tableDataAddress[a].defaultType == 'yes'){                       
-                          this.defaultRadio=this.tableDataAddress[a].id;
-                          this.defaultAddress1=Object.assign({},this.tableDataAddress[a])
-                      }
-                  }
-                  if(this.radio == '' || this.radio == undefined){
-                     this.radio=this.defaultRadio
-                     this.defaultAddress=Object.assign({},this.defaultAddress1)
-                  }                 
-                }else{
-                  this.tableDataAddress=[]
+      var obj = {
+        customerId: this.customId
+      };
+      listDataAddress(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.tableDataAddress = res.data.data;
+              for (var a = 0; a < this.tableDataAddress.length; a++) {
+                if (this.tableDataAddress[a].defaultType == "yes") {
+                  this.defaultRadio = this.tableDataAddress[a].id;
+                  this.defaultAddress1 = Object.assign(
+                    {},
+                    this.tableDataAddress[a]
+                  );
                 }
-
               }
-            })
-            .catch(() => {
-            });      
+              if (this.radio == "" || this.radio == undefined) {
+                this.radio = this.defaultRadio;
+                this.defaultAddress = Object.assign({}, this.defaultAddress1);
+              }
+            } else {
+              this.tableDataAddress = [];
+            }
+          }
+        })
+        .catch(() => {});
     },
     //服务地址管理弹窗保存
-    submitAddress(){
-      if(this.defaultAddress.length !=0){
-        this.form.address=Object.assign({}, this.defaultAddress);       
-        this.radio=this.defaultAddress.id;
-        this.form.radiovalue=this.defaultAddress.id
+    submitAddress() {
+      if (this.defaultAddress.length != 0) {
+        this.form.address = Object.assign({}, this.defaultAddress);
+        this.radio = this.defaultAddress.id;
+        this.form.radiovalue = this.defaultAddress.id;
       }
-      this.serverStation1='';
-      this.form.serverStation1='';           
+      this.serverStation1 = "";
+      this.form.serverStation1 = "";
       this.serviceAddressVisible = false;
     },
     //服务地址管理新增地址
     addAddressFun() {
       this.areaOptionsAddress = this.$store.state.user.area;
-        if(this.tableDataAddress.length < 6){
-          this.addAddrssDialogShow = true;
-        }else{
-          this.addAddrssDialogShow = false;
-          this.$message({
-            type: "warning",
-            message: "最多可添加6个服务地址"
-          });
-        }      
+      if (this.tableDataAddress.length < 6) {
+        this.addAddrssDialogShow = true;
+      } else {
+        this.addAddrssDialogShow = false;
+        this.$message({
+          type: "warning",
+          message: "最多可添加6个服务地址"
+        });
+      }
     },
     //服务地址管理新增地址保存
     submitFormAddress(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-            this.ruleFormAddress.customerId=this.customId;
-            //省、市、区三级ID          
-            this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
-            this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
-            this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];                   
-            var obj=this.ruleFormAddress
-            saveDataAddress(obj)
-              .then(res => {
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "新增地址成功!"
-                  });
-                  this.addAddrssDialogShow = false;
-                  this.changeuserAddress()
-                  this.$refs["ruleFormAddress"].resetFields();                
-                }
-              })
-              .catch(() => {
-              });        
-        }else{
+          this.ruleFormAddress.customerId = this.customId;
+          //省、市、区三级ID
+          this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
+          this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
+          this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];
+          var obj = this.ruleFormAddress;
+          saveDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "新增地址成功!"
+                });
+                this.addAddrssDialogShow = false;
+                this.changeuserAddress();
+                this.$refs["ruleFormAddress"].resetFields();
+              }
+            })
+            .catch(() => {});
+        } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
@@ -739,7 +743,7 @@ export default {
             type: "error",
             message: errMes[0]
           });
-          return false;           
+          return false;
         }
       });
     },
@@ -1014,10 +1018,10 @@ export default {
               if (res.data.data != undefined) {
                 this.customId = res.data.data.id;
                 this.form = res.data.data;
-                if(res.data.data.address.id != undefined){
-                  this.form.radiovalue=res.data.data.address.id
-                  this.radio=res.data.data.address.id
-                }                
+                if (res.data.data.address.id != undefined) {
+                  this.form.radiovalue = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;
+                }
                 this.customKeyFlag = true;
               }
             } else if (res.data.code === 3) {
@@ -1116,10 +1120,10 @@ export default {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.form = res.data.data;
-                if(res.data.data.address.id != undefined){
-                  this.form.radiovalue=res.data.data.address.id
-                  this.radio=res.data.data.address.id
-                }               
+                if (res.data.data.address.id != undefined) {
+                  this.form.radiovalue = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;
+                }
                 this.customPhone = res.data.data.phone;
                 this.customKeyFlag = true;
               }
@@ -1307,7 +1311,7 @@ export default {
                     techList: this.tabOptions, //技师对象
                     goodsInfoList: this.middleB, //商品对象
                     stationId: this.serverStation1,
-                    customerAddressId:this.form.radiovalue
+                    customerAddressId: this.form.radiovalue
                   };
                   createOrder(obj)
                     .then(res => {
@@ -1345,7 +1349,7 @@ export default {
                 techList: this.tabOptions, //技师对象
                 goodsInfoList: this.middleB, //商品对象
                 stationId: this.serverStation1,
-                customerAddressId:this.form.radiovalue
+                customerAddressId: this.form.radiovalue
               };
               createOrder(obj)
                 .then(res => {

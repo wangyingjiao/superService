@@ -546,27 +546,27 @@
 
 <script>
 import {
-  getOrderInf,//用订单ID获取页面相关信息
-  addTechData,//服务技师获取
-  ChangeTimeData,//请求服务时间下拉菜单值
-  dispatchTechData,//改派技师获取
-  addTechSave,//新增技师保存
-  dispatchTechSave,//改派技师保存
-  saveTime,//更换服务时间保存
-  orderCancelFun//取消订单保存
+  getOrderInf, //用订单ID获取页面相关信息
+  addTechData, //服务技师获取
+  ChangeTimeData, //请求服务时间下拉菜单值
+  dispatchTechData, //改派技师获取
+  addTechSave, //新增技师保存
+  dispatchTechSave, //改派技师保存
+  saveTime, //更换服务时间保存
+  orderCancelFun //取消订单保存
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
-var loading
+var loading;
 export default {
   name: "orderinfo",
   data() {
     return {
       dict: require("../../../static/dict.json"),
-      becaussOptions:[],
-      cancelOrderFlag:false,
+      becaussOptions: [],
+      cancelOrderFlag: false,
       options2: [],
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       timeSaveFlag: false,
       techSaveFlag: false,
       pickerOptions0: {
@@ -581,15 +581,17 @@ export default {
           }
         }
       },
-      Orderform:{
-        becouss:"",
-        beizhu:''
+      Orderform: {
+        becouss: "",
+        beizhu: ""
       },
-      orderrules:{
+      orderrules: {
         becouss: [
           { required: true, message: "请选择取消原因", trigger: "change" }
         ],
-        beizhu: [{ min: 0, max: 100, message: '长度在0-100个字符', trigger: 'blur' }]        
+        beizhu: [
+          { min: 0, max: 100, message: "长度在0-100个字符", trigger: "blur" }
+        ]
       },
       formInline1rules: {
         Date: [
@@ -629,17 +631,22 @@ export default {
       bb: "",
       orderId: "",
       nowTime: "",
-      addressInf:[],
+      addressInf: []
     };
   },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
+  },
   methods: {
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     //用订单ID获取页面相关信息
     getOrderAllInf(orderId) {
@@ -655,7 +662,7 @@ export default {
             var severtime = new Date(AllInfo.serviceTime);
             this.nowTime = severtime.getTime() - nowtime.getTime();
             this.otherInfo = AllInfo; //所有其他信息变量
-            this.addressInf=AllInfo.addressInfo
+            this.addressInf = AllInfo.addressInfo;
             this.otherInfo.serviceHour = this.formatDuring(
               AllInfo.serviceHour * 3600000
             );
@@ -701,7 +708,7 @@ export default {
             closeOnClickModal: false
           })
             .then(() => {
-              this.loadingClick()
+              this.loadingClick();
               //更换时间的保存
               var obj = {
                 id: this.orderId,
@@ -726,21 +733,21 @@ export default {
                     var nowtime = new Date();
                     var severtime = new Date(this.otherInfo.serviceTime);
                     this.nowTime = severtime.getTime() - nowtime.getTime();
-                    loading.close();                     
-                  } else {                      
+                    loading.close();
+                  } else {
                     this.timeObj = [];
                     this.timeSaveFlag = false;
                     this.dateChange(this.formInline.Date);
-                    loading.close();                   
+                    loading.close();
                   }
                 })
                 .catch(res => {
                   this.timeSaveFlag = false;
                   this.timeObj = [];
-                  loading.close();                  
+                  loading.close();
                 });
             })
-            .catch(() => {              
+            .catch(() => {
               this.$message({
                 type: "warning",
                 message: "已取消更换时间"
@@ -748,7 +755,7 @@ export default {
               this.timeSaveFlag = false;
               this.timeObj = [];
               this.dateChange(this.formInline.Date);
-              this.formInline.Time=''
+              this.formInline.Time = "";
             });
         } else {
           var errArr = this.$refs[formName]._data.fields;
@@ -1003,42 +1010,38 @@ export default {
       }
     },
     //取消订单
-    cancelOrder(){
-      this.cancelOrderFlag=true;
+    cancelOrder() {
+      this.cancelOrderFlag = true;
     },
     //取消订单确认
-    submitOrder(formName){
+    submitOrder(formName) {
       this.$refs[formName].validate(valid => {
-        if(valid){
-        var obj = {
-          id: this.orderId,
-          cancelReason:this.Orderform.becouss,
-          cancelReasonRemark:this.Orderform.beizhu
-        };
-        orderCancelFun(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "取消成功!"
-              });
-              this.getOrderAllInf(this.orderId)
-              this.cancelOrderFlag=false;
-
-            }
-          })
-          .catch(res => {});           
-           
-        }else{
-
+        if (valid) {
+          var obj = {
+            id: this.orderId,
+            cancelReason: this.Orderform.becouss,
+            cancelReasonRemark: this.Orderform.beizhu
+          };
+          orderCancelFun(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "取消成功!"
+                });
+                this.getOrderAllInf(this.orderId);
+                this.cancelOrderFlag = false;
+              }
+            })
+            .catch(res => {});
+        } else {
         }
-      })
-      
+      });
     },
     //取消订单取消
-    unOrder(formName){
+    unOrder(formName) {
       this.$refs[formName].resetFields();
-      this.cancelOrderFlag=false;
+      this.cancelOrderFlag = false;
     },
     //改变服务时间按钮
     changeTime() {
@@ -1166,8 +1169,8 @@ export default {
 .width120 {
   width: 120px;
 }
-.marginBottom20{
-  margin-bottom:20px;
+.marginBottom20 {
+  margin-bottom: 20px;
 }
 .selfPromINF {
   font-size: 12px;

@@ -376,7 +376,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       btnState: false,
       typeState: false,
       list: [],
@@ -571,6 +571,9 @@ export default {
   },
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     this.eshopList = dict.dock_platform;

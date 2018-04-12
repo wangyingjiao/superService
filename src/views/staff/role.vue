@@ -189,7 +189,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")), //按钮权限
+      btnShow: [], //按钮权限
       btnState: false, //按钮状态，是否禁用
       selsctState: false, //下拉框状态，是否禁用
       myselfUpdate: true, //判断是否编辑自己
@@ -293,6 +293,9 @@ export default {
   created() {
     //获取列表
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     //获取权限列表
     getMenudata().then(res => {
       this.data2 = res.data.data;
