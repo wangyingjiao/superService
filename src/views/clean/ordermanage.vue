@@ -55,7 +55,7 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="220"  label="服务机构">
+					<el-table-column  align="center" width="220"  label="服务机构与服务站">
             <template scope="rowObj">
               <p>{{rowObj.row.orgName}}</p>
               <p>{{rowObj.row.stationName}}</p>

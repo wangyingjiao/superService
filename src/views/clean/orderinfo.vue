@@ -3,7 +3,9 @@
        <!--订单信息开始-->
         <div class="thrid-bar">
             <div class="custom-action orderOneBar">订单信息
+              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
+              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
             </div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -540,7 +542,72 @@
               <button class="button-cancel"  @click="unOrder('Orderform')">取 消</button>
             </div>
         </el-dialog>
-        <!--取消订单弹窗结束-->                 
+        <!--取消订单弹窗结束--> 
+        <!--退款详情弹窗开始-->
+        <el-dialog
+          title="退款详情"
+          :visible.sync="orderRefundFlag"
+          :close-on-click-modal="false"
+          class="selfDialogWidth1"
+          >
+          <div class="selfTableWrapONE1">
+              <div class="table-d1">
+                <table  class="selfTable">
+                    <tr class="tableHeader">
+                      <td  class="selfTableHEADTD" align="center" width="73px">选择</td>
+                      <td  class="selfTableHEADTD" align="center" width="206px">商品名称</td>
+                      <td  class="selfTableHEADTD" align="center" width="131px">交易单价</td>
+                      <td  class="selfTableHEADTD" align="center" width="103px">数量</td>
+                      <td  class="selfTableHEADTD" align="center" width="111px">单位</td>							
+                    </tr>
+                    <div class="orderinfoTechTablePadding">
+                        <tr v-for="item in orderRefundObj" :key="item.commidyId"  ref="tableItem1" class="selfTdStyle2">
+                          <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.commidySelect" @change="ChangeCommidty(item)"></el-checkbox></td>
+                          <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.commidyName}}</div></td>
+                          <td width="132px" class="fontSize12" align="center">￥{{item.commidyPrice}}</td>
+                          <td  width="102px" class="fontSize12" align="center">{{item.commidyNum}}</td>
+                          <td width="110px" class="fontSize12"  align="center">{{item.commidyUnit}}</td>							
+                        </tr>
+                    </div>
+                </table>
+              </div>  
+            </div>
+            <div class="selfTableWrapONE1">
+              <div class="marginTop20" >支付总额：<span class="refundSpan" >￥440</span></div>
+              <div class="marginTop20" >支付方式：<span class="refundSpan" >现金</span></div>
+              <div class="marginTop20" >退款方式：<span class="refundSpan" ><el-radio label="1" v-model="radio" >现金</el-radio></span></div>
+              <div class="marginTop20" >退款金额：<span class="refundSpan" >￥400</span></div>
+              <div class="marginTop20" >退款差额：
+                <span class="refundSpan" >
+                      <el-input v-model.trim ="chaE" placeholder="0" class="search searchHeader">
+                        <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
+                          <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                          </el-option>
+                        </el-select>
+                    </el-input>
+                </span>
+              </div>
+              <div class="marginTop20" >
+                <div style="display:inline-block;margin-top:25px;float:left;">退款原因：</div>
+                <span class="refundSpan" style="display:inline-block;" >
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    placeholder="请输入内容"
+                    v-model="refundScource"
+                    style="width:380px;"
+                    >
+                  </el-input>	                  
+                </span>
+              </div>               
+            </div>
+                     
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundFlag = false">退款</button>
+              <button class="button-cancel"  @click="orderRefundFlag = false">取 消</button>
+            </div>
+        </el-dialog>
+        <!--退款详情弹窗结束-->                          
   </div>
 </template>
 
@@ -562,9 +629,44 @@ export default {
   name: "orderinfo",
   data() {
     return {
+      refundScource:'',
+      choose:[
+        {value:'1',label:'多退'},
+        {value:'2',label:'少退'}
+      ],
+      chaE:'',
+      chooses:'',
+      radio:'',
+      orderRefundObj:[
+        {
+          commidyId:'a',
+          commidySelect:false,
+          commidyName:'kkkkkkkkkk',
+          commidyPrice:'210',
+          commidyNum:'20',
+          commidyUnit:'个'
+        },
+        {
+          commidyId:'b',
+          commidySelect:false,
+          commidyName:'wwwwwwwwwwwww',
+          commidyPrice:'110',
+          commidyNum:'10',
+          commidyUnit:'个'
+        },
+        {
+          commidyId:'c',
+          commidySelect:false,
+          commidyName:'yyyyyyyyyyyyyyywwwwwwwwwwwww',
+          commidyPrice:'140',
+          commidyNum:'15',
+          commidyUnit:'个'
+        }        
+      ],
       dict: require("../../../static/dict.json"),
       becaussOptions: [],
       cancelOrderFlag: false,
+      orderRefundFlag:false,
       options2: [],
       btnShow: [],
       timeSaveFlag: false,
@@ -898,6 +1000,14 @@ export default {
         }
       }
     },
+    //存储退款选择商品
+    ChangeCommidty(obj) {
+      if (obj.commidySelect) {
+        console.log("llll")
+      } else {
+        console.log("aaaaa")
+      }
+    },    
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -1013,6 +1123,10 @@ export default {
     cancelOrder() {
       this.cancelOrderFlag = true;
     },
+    //
+    orderRefund(){
+      this.orderRefundFlag=true;
+    },
     //取消订单确认
     submitOrder(formName) {
       this.$refs[formName].validate(valid => {
@@ -1084,6 +1198,16 @@ export default {
 };
 </script>
 <style   scoped>
+.searchHeader .el-input-group__prepend .el-input__inner {
+  width: 200px;
+  text-align: center;
+}
+.searchHeader .el-select{
+  width:180px;
+}
+.searchHeader {
+  width: 380px;
+}
 .selfToolTip {
   width: 180px;
   overflow: hidden;
@@ -1099,12 +1223,23 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.selfComdityNameStyle {
+  width: 185px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .tableHeader {
   position: absolute;
   top: 0px;
   z-index: 9999;
 }
 .selfTdStyle1 {
+  vertical-align: middle;
+  height: 70px;
+  line-height: 70px;
+}
+.selfTdStyle2 {
   vertical-align: middle;
   height: 70px;
   line-height: 70px;
@@ -1172,6 +1307,13 @@ export default {
 .marginBottom20 {
   margin-bottom: 20px;
 }
+.marginTop20{
+  margin-top:20px;
+  padding-left:25px;
+}
+.refundSpan{
+  padding-left:20px;
+}
 .selfPromINF {
   font-size: 12px;
   margin-top: 10px;
@@ -1195,6 +1337,24 @@ export default {
   overflow-y: scroll;
   height: 276px;
   margin-left: 15px;
+}
+.selfTableWrapONE1 {
+  margin-top: 20px;
+  position: relative;
+}
+.table-d1 {
+  width: 677px;
+  padding-left:25px;
+}
+.selfTable1,
+.selfTable1 tr th,
+.selfTable1 tr td {
+  border: 1px solid #eee;
+}
+.selfTable1 {
+  text-align: center;
+  border-collapse: collapse;
+  padding: 2px;
 }
 .selfpromMessageTab {
   position: relative;
