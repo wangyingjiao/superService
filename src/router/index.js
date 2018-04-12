@@ -87,7 +87,8 @@ export const constantRouterMap = [
       { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
       { path: 'orderinfo', name: '订单详情', component: _import('clean/orderinfo') },
       { path: 'dispatchReass', name: '改派记录', component: _import('clean/dispatchReass') },
-      { path: 'refund', name:'退款管理', component:_import('clean/refund') },
+      { path: 'refund', name: '退款管理', component: _import('clean/refund') },
+      { path: 'pay', name: '收款管理', component: _import('clean/pay') }
     ]
   },
   {

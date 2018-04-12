@@ -9,21 +9,7 @@
         </el-select>
       </el-input>
 
-      <el-date-picker
-      v-model="search.startTime"
-      style="width:20%"
-      type="date"
-      placeholder="选择日期">
-    </el-date-picker>
-    至
-
-      <el-date-picker
-      v-model="search.endTime"
-      style="width:20%"
-      class="search"
-      type="date"
-      placeholder="选择日期">
-    </el-date-picker>
+     
 
        <button class="button-large el-icon-search btn_search" @click="handleFilter"> 搜索</button>
     </div>
@@ -47,50 +33,35 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column align="center" label="ID" prop="id">      
+      <el-table-column align="center" label="订单编号" prop="id">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求方式" width="100" prop="method">      
+      <el-table-column align="center" label="支付编号" width="100" prop="method">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求地址" prop="requestUri">      
+      <el-table-column align="center" label="支付金额" prop="requestUri">      
       </el-table-column>
 
-      <el-table-column align="center" label="请求内容" min-width="200">
-        <template scope="scope">
+      <el-table-column align="center" label="支付状态" >
+        <!-- <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
            </el-tooltip>
-        </template>
+        </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间" prop="createDate">      
+      <el-table-column align="center" label="收款人" prop="createDate">      
       </el-table-column>
 
-      <el-table-column align="center" label="操作IP地址" prop="remoteAddr">      
-      </el-table-column>
-
-      <el-table-column align="center" label="日志标题" prop="title">      
-      </el-table-column>
-
-      <el-table-column align="center" label="日志类型" prop="type">      
-      </el-table-column>
-
-      <el-table-column align="center" label="异常信息" prop="exceptions">     
-        <template scope="scope">
+      <el-table-column align="center" label="支付时间" prop="exceptions">     
+        <!-- <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
              <div class="tool" >{{scope.row.exceptions}}</div>
            </el-tooltip>
-        </template> 
+        </template>  -->
       </el-table-column>
 
-      <el-table-column align="center" width="180px" label="提交数据" prop="params">    
-          <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.params.length < 10" :content="scope.row.params">
-             <div class="tool" >{{scope.row.params}}</div>
-           </el-tooltip>
-        </template>
-      </el-table-column>
+      
 
     </el-table>
 
