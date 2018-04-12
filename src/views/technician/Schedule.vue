@@ -510,6 +510,9 @@
 			},
 			//搜索
 			searchClick(item){
+				if(!item.stationId){
+					return
+				}
 				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
 				let obj = Object.assign({},item)
 				if('name' in obj || 'phone' in obj){
