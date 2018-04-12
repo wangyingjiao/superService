@@ -94,7 +94,7 @@
               
              
             </div>
-            <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1" class="mousehover"  @click="vacation(item)">
+            <div v-on:mouseover.prevent="dataDetails2" v-on:mouseout.prevent="hiddenDetail2" v-if="item.jobName=='全职' && btnShow.indexOf('techni_holiday') > -1 && item.jobStatus!='leave'" class="mousehover"  @click="vacation(item)">
               <div class="flip-container" v-on:mouse="this.classList.toggle('hover');">
                 <div class="flipper">
                   <div class="front">
@@ -1699,8 +1699,13 @@ export default {
             }else{
               this.sexTypeo = data.data.data.skillInfos;
               this.infoname = data.data.data.page.list || [];
-              this.server = data.data.data.stations;
-              this.servery = data.data.data.stations;
+              if(data.data.data.stations[0].id=='0'){
+                this.server = data.data.data.stations.slice(1)
+                this.servery = data.data.data.stations.slice(1)
+              }else{
+                this.server = data.data.data.stations;
+                this.servery = data.data.data.stations;
+              }
             }
             var i = 0,
               len = this.infoname.length,

@@ -121,7 +121,9 @@ export default {
   watch: {},
   computed: {
     btnShow() {
-      return JSON.parse(localStorage.getItem("btn"));
+      if (JSON.parse(localStorage.getItem("btn"))) {
+        return JSON.parse(localStorage.getItem("btn"));
+      }
     }
   },
   methods: {
@@ -434,7 +436,7 @@ export default {
   color: red;
   margin-top: 10px;
 }
-.e-prompt{
+.e-prompt {
   margin-left: 6%;
   color: #b7b5b5;
 }

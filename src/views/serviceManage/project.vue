@@ -493,7 +493,6 @@ import {
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
-// import imgService from './returnvisit.vue'
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];
@@ -2287,7 +2286,7 @@ hr {
   margin-left: 5px;
 }
 .systemLabel ul {
-  width: 23%;
+  width: 22%;
   float: left;
   height: 300px;
   overflow-y: auto;
@@ -2321,7 +2320,7 @@ hr {
   overflow-y: auto;
   float: left;
   border: 1px solid #e8e8e8;
-  width: 31%;
+  width: 34%;
   height: 300px;
   border-left: 0;
 }

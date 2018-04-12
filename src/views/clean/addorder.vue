@@ -4,7 +4,7 @@
 			<!--步骤条开始-->
 			<div class="stepControl">				
 				<el-steps :space="400" :active="active"  align-center >
-					<el-step title="选择客户"></el-step>
+					<el-step title="选择用户"></el-step>
 					<el-step title="服务信息"></el-step>
 					<el-step title="选择技师与服务时间"></el-step>
 				</el-steps>
@@ -17,16 +17,16 @@
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
 						<el-form-item label="联系电话:">
 						    <span class="selfLabelStyle">*</span>
-						    <el-input  class="severChangeStyle"   placeholder="请输入客户手机号" :maxlength='11' v-model="customPhone"></el-input>
-                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') != -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+						    <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="customPhone"></el-input>
+			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
+							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
-							<el-form-item label="服务地址:" prop="address">
-                <span class="selfLabelStyle">*</span>
-                <span class="fontSize12">{{form.name}}</span><span style="margin-left:50px;"class="fontSize12">{{form.phone}}</span><br>
-								<span class="fontSize12">{{form.address}}</span><br/>	
-								<div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+							<el-form-item label="服务地址:" prop='radiovalue'>                  
+							    <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
+								  <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
+								  <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+                  <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
 							</el-form-item>
 							<el-form-item label="所属服务站:" prop='serverStation1'>
 								<el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
@@ -153,7 +153,7 @@
                  <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
 							</div>														
 						</el-form-item>									
-						<el-form-item label="客户备注:" prop="textarea" class="fontSize12">
+						<el-form-item label="用户备注:" prop="textarea" class="fontSize12">
 							<el-input
 								type="textarea"
 								:rows="3"
@@ -178,11 +178,11 @@
 			<!--步骤显示区域结束-->
 
 	</div>
-	<!--新增客户弹窗开始-->
+	<!--新增用户弹窗开始-->
 	<el-dialog title="新增用户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
 			<el-form-item label="姓名:" prop="name" >
-				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入客户姓名"></el-input>
+				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入用户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
 				<el-select clearable style='width: 100%;' v-model="ruleForm.sex" placeholder="请选择性别" >
@@ -193,18 +193,6 @@
 			<el-form-item label="手机号:"  prop="phone">
 		    <el-input  v-model="ruleForm.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 			</el-form-item>
-			<!--<el-form-item label="所在区域:" prop="areaCodes">
-				<el-cascader
-					:options="areaOptions"
-					ref="allDeress"
-					:show-all-levels="true"
-					v-model="ruleForm.areaCodes"
-					style='width: 100%;' 
-				></el-cascader>								
-			</el-form-item>
-			<el-form-item label="详细地址:" prop="address">
-				<el-input class="selfAddressStyle"  style='width: 100%;' v-model.trim="ruleForm.address" placeholder="输入详细地址"></el-input>       		
-			</el-form-item>-->
 			<el-form-item label="邮箱:" prop="email" class="marginLeft10">
 				<el-input  v-model.trim="ruleForm.email" class="selfEmailStyle" style='width: 100%;'  placeholder="请输入常用邮箱"></el-input>
 			</el-form-item>					
@@ -214,7 +202,7 @@
 				<button class="button-cancel"  @click="resetForm('ruleForm')">取 消</button>
 		</div>
 	</el-dialog>
-	<!--新增客户弹窗结束-->		
+	<!--新增用户弹窗结束-->		
 	<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
@@ -263,34 +251,37 @@
 	  <!--技师选择弹窗结束-->
     <!--服务地址管理弹窗结束-->
 		<el-dialog title="选择服务地址" class="selfCustomerDialog" :visible.sync="serviceAddressVisible" :show-close="false" :close-on-click-modal="false">							    
-				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun('add')"  value="新增地址"></div>
+				    <div class="selfPromInfStyle1">* 最多可添加6个服务地址 <input type="button"   class="button-cancel height25" style="float:right;" @click="addAddressFun"  value="新增地址"></div>
             <el-table
 					  :data="tableDataAddress"
-            empty-text='此用户暂无服务地址'
 					  style="width:100%;"
 						>          
             <el-table-column align="center" label="选择地址" width="100">
               <template scope="scope">
-                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row.id)">&nbsp;</el-radio>
+                <el-radio :label="scope.row.id" v-model="radio" @change.native="getCurrentRow(scope.row)">&nbsp;</el-radio>
               </template>
             </el-table-column> 
 					  <el-table-column
 					    align="center"
-						prop="name"    
+						prop="addressName"    
 						label="联系人"
 						>
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="phone"         
+						prop="addressPhone"         
 						label="联系电话">
 					  </el-table-column>
 						<el-table-column
 						align="center"				
 						label="服务地址"
-						width="300"
-                        prop="address"					
-						>						            
+						width="300"					
+						>	
+              <template scope='scope'>
+                  <el-tooltip placement="left" :disabled="scope.row.detailAddress.length < 28" :content="scope.row.detailAddress">
+                  <div class="selfToolTip">{{scope.row.detailAddress}}</div>
+                  </el-tooltip>
+              </template>            					            
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
@@ -298,17 +289,17 @@
             width="100"
 						>
 						  <template scope="scope">
-              <span v-if="scope.row.moren =='0'">否</span>
-							 <span v-if="scope.row.moren =='1'">是</span>
+              <span v-if="scope.row.defaultType =='no'">否</span>
+							 <span v-if="scope.row.defaultType =='yes'">是</span>
 						  </template>
 					  </el-table-column>					  
 					</el-table>				
 					<div slot="footer" class="dialog-footer" style="text-align:center;">
-							<button class="button-large"   @click="submitAddress()">确定</button>
-							<button class="button-cancel"  @click="colseAddress()">取消</button>
+							<button class="button-cancel"   @click="submitAddress()">关闭</button>
+							<!-- <button class="button-cancel"  @click="colseAddress()">取消</button> -->
 					</div>
 		</el-dialog>
-        <!--服务地址管理弹窗结束-->
+    <!--服务地址管理弹窗结束-->
 		<!--新增服务地址管理弹窗开始-->
 		<el-dialog :title="titlevarAddress" :visible.sync="addAddrssDialogShow" :show-close="false" :close-on-click-modal="false">	
 				<el-form 
@@ -318,11 +309,11 @@
 					label-width="160px" 
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
-					<el-form-item label="联系人:" prop="name"  >
-						<el-input v-model.trim="ruleFormAddress.name"  placeholder="请输入2-15位客户姓名"  style='width: 100%;' ></el-input>
+					<el-form-item label="联系人:" prop="addressName"  >
+						<el-input v-model.trim="ruleFormAddress.addressName"  placeholder="请输入2-15位联系人姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
-					<el-form-item label="联系电话:"  prop="phone">
-                <el-input  v-model="ruleFormAddress.phone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
+					<el-form-item label="联系电话:"  prop="addressPhone">
+                <el-input  v-model="ruleFormAddress.addressPhone" style='width: 100%;' placeholder="请输入11位手机号"></el-input>
 					</el-form-item>
 					<el-form-item label="所在区域:" prop="areaCodes">
 					  <!-- 省市区 -->
@@ -335,21 +326,20 @@
 					</el-form-item>
 					<el-form-item label="详细地址:" required>
                 <el-col :span="12">
-                  <el-form-item prop="address">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.address" placeholder="请输入街道、小区、办公楼名称"></el-input>
+                  <el-form-item prop="placename">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.placename" placeholder="请输入街道、小区、办公楼名称"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item prop="houseNumber">
-                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.houseNumber" placeholder="单元楼、门牌号"></el-input>
+                  <el-form-item prop="detailAddress">
+                    <el-input   style='width: 100%;'  v-model.trim="ruleFormAddress.detailAddress" placeholder="单元楼、门牌号"></el-input>
                   </el-form-item>
                 </el-col>							
 					</el-form-item>				
 				</el-form>						    
 				<div slot="footer" class="dialog-footer" style="text-align:center;">
-					    <button class="button-large"  :disabled="submitFlag"  @click="submitFormAddress('ruleFormAddress','add')">保存</button>
-						<!-- <button class="button-large"    @click="submitForm('ruleForm','up')">确 定</button> -->
-						<button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
+					    <button class="button-large"  :disabled="submitFlag"  @click="submitFormAddress('ruleFormAddress')">保存</button>
+						  <button class="button-cancel"  @click="resetFormAddress('ruleFormAddress')">取 消</button>
 				</div>
 		</el-dialog>
 		<!--新增服务地址管理弹窗结束--> 	  
@@ -359,8 +349,8 @@
 
 <script>
 import {
-  findCustomerByPhone, //根据手机号查找客户
-  findCustomerById, //根据ID查找客户
+  findCustomerByPhone, //根据手机号查找用户
+  findCustomerById, //根据ID查找用户
   findItemList, //获取服务项目列表
   findGoodsListByItem, //获取服务项目下的商品列表
   findTechListByGoods, //获取商品的技师列表
@@ -369,7 +359,9 @@ import {
   findGoodsNeedTech //获取建议服务时长
 } from "@/api/order";
 import {
-  saveCus //保存客户（新增）
+  saveCus, //保存用户（新增）
+  listDataAddress, //地址管理
+  saveDataAddress // 新增地址保存
 } from "@/api/customer";
 
 var loading;
@@ -390,12 +382,10 @@ export default {
       if (!value) {
         callback();
       } else {
-        if (
-          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)
-        ) {
+        if (!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value)) {
           callback(new Error("请输入正确的邮箱"));
         } else {
-           if (value.length >= 5 && value.length <= 50) {
+          if (value.length >= 5 && value.length <= 50) {
             callback();
           } else {
             callback(new Error("请输入5-50位邮箱地址"));
@@ -403,18 +393,30 @@ export default {
         }
       }
     };
-    //客户名验证规则
+    //用户名验证规则
     var checkName = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入2-15位客户姓名"));
+        callback(new Error("请输入2-15位用户姓名"));
       } else {
         if (value.length >= 2 && value.length <= 15) {
           callback();
         } else {
-          callback(new Error("请输入2-15位客户姓名"));
+          callback(new Error("请输入2-15位用户姓名"));
         }
       }
-    };	
+    };
+    //联系人验证规则
+    var checkAddressName = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入2-15位联系人姓名"));
+      } else {
+        if (value.length >= 2 && value.length <= 15) {
+          callback();
+        } else {
+          callback(new Error("请输入2-15位联系人姓名"));
+        }
+      }
+    };
     var checkAddress = (rule, value, callback) => {
       if (!value) {
         callback(new Error("长度在1-100个字符"));
@@ -426,8 +428,19 @@ export default {
         }
       }
     };
+    var checkPlacename = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error("请输入1-100位详细地址"));
+      } else {
+        if (value.length >= 1 && value.length <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入1-100位详细地址"));
+        }
+      }
+    };
     var checkDate = (rule, value, callback) => {
-      if (!value) {        
+      if (!value) {
         callback(new Error("请选择日期"));
       } else {
         callback();
@@ -436,32 +449,32 @@ export default {
     //门牌号验证
     var checkAddressa = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("长度在1-50个字符"));
+        callback(new Error("请输入1-50位门牌号"));
       } else {
         if (value.length >= 1 && value.length <= 50) {
           callback();
         } else {
-          callback(new Error("长度在1-50个字符"));
+          callback(new Error("请输入1-50位门牌号"));
         }
       }
-    };    
+    };
     return {
       submitFlag: false,
       submitFlag1: false,
       titlevarAddress: "新增服务地址",
-	    areaOptionsAddress: this.$store.state.user.area,
+      areaOptionsAddress: this.$store.state.user.area,
       changTime: "",
       options2: [],
       timeObj: [],
       middleA: [],
       techSaveFlag: false,
       form2: {
-        selectTech: '',
+        selectTech: "",
         severTime: "",
         severTime1: "",
-        textarea:''
+        textarea: ""
       },
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       //服务站下拉选项
       options: [],
       techName: "",
@@ -484,16 +497,17 @@ export default {
       selectCommidty: [],
       form: {
         name: "",
-        address: "",
+        radiovalue: "",
+        address: {},
         stationList: [],
         serverStation1: ""
       },
       customPhone: "",
       serverStation1: "",
       form1: {
-        serverPro: '',
+        serverPro: "",
         sumPrice: 0,
-        servercommidty:'',
+        servercommidty: ""
       },
       form3: {
         date: ""
@@ -502,6 +516,9 @@ export default {
       forma: {
         serverStation1: [
           { required: true, message: "请选择服务站", trigger: "change" }
+        ],
+        radiovalue: [
+          { required: true, message: "请选择服务地址", trigger: "change" }
         ]
       },
       rules2: {
@@ -519,8 +536,8 @@ export default {
         severTime1: [
           { required: true, message: "请选择服务时间", trigger: "change" }
         ],
-        textarea:[
-          { min: 0, max: 200, message: '长度在0-200个字符', trigger: 'blur' }
+        textarea: [
+          { min: 0, max: 200, message: "长度在0-200个字符", trigger: "blur" }
         ]
       },
       ruleForm: {
@@ -537,38 +554,43 @@ export default {
         addrLatitude: ""
       },
       ruleFormAddress: {
-        name: "",
-        phone: "",
-        address: "",
-        houseNumber:'',
+        addressName: "",
+        addressPhone: "",
         provinceCode: "",
         cityCode: "",
         areaCode: "",
+        placename: "",
+        detailAddress: "",
         areaCodes: []
-      },	  
-      formtest:{
-
       },
-      rulesTest:{          
+      formtest: {},
+      rulesTest: {
         serverPro: [
-          { required: true,message: "请选择服务项目", trigger: "change"}
+          { required: true, message: "请选择服务项目", trigger: "change" }
         ]
-       
       },
       rules: {
         name: [
-          { required: true, message: "请输入客户姓名", trigger: "blur" },
+          { required: true, message: "请输入用户姓名", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
         ],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
       },
       rulesAddress: {
-        name: [{ required: true, validator: checkName, trigger: "blur" }],
-        phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
-        address: [{ required: true, validator: checkAddress, trigger: "blur" }],
-        houseNumber:[{ required: true, validator: checkAddressa, trigger: "blur" }],
+        addressName: [
+          { required: true, validator: checkAddressName, trigger: "blur" }
+        ],
+        addressPhone: [
+          { required: true, validator: checkPhone, trigger: "blur" }
+        ],
+        placename: [
+          { required: true, validator: checkPlacename, trigger: "blur" }
+        ],
+        detailAddress: [
+          { required: true, validator: checkAddressa, trigger: "blur" }
+        ],
         areaCodes: [
           {
             type: "array",
@@ -577,99 +599,151 @@ export default {
             trigger: "change"
           }
         ]
-      },	  
+      },
       dict: require("../../../static/dict.json"),
       sex: "",
       sexName: "",
       select: "date",
       tabOptions: [], //tabName
       serverOptions: [], //服务类型下拉
-      textarea: "", //客户备注
-      customName: "李四", //当前客户姓名
+      textarea: "", //用户备注
+      customName: "李四", //当前用户姓名
       serverAddress: "北京市朝阳区关东街11呼家楼",
       serverStation: "呼家楼服务站",
       dialogTableVisible: false, //选择技师弹窗开关
-      dialogTableVisible1: false, //选择客户弹窗开关
+      dialogTableVisible1: false, //选择用户弹窗开关
       technicianName: "", //技师姓名
-      //当前客户
+      //当前用户
       custom: "",
-      customKeyFlag: false, //客户信息展示标志
-      customId: "", //客户ID
+      customKeyFlag: false, //用户信息展示标志
+      customId: "", //用户ID
       areaCode: "",
       middleB: [],
-      addressBefore:'',
-      ideaserverTime:'',
-      ideaPersonNum:'',
+      addressBefore: "",
+      ideaserverTime: "",
+      ideaPersonNum: "",
       radio: "",
       serviceAddressVisible: false,
       addAddrssDialogShow: false,
-      tableDataAddress: [
-        {
-          id: "ab",                  
-          name: "jack",
-          phone: "13426345690",
-          address: "天津天津市和平区1222222",
-		      moren:'1'
-        },
-        {
-          id: "abc",
-          name: "king",
-          phone: "13426345678",
-          address: "蒙古自治区赤峰市阿鲁科尔沁旗ffffffffffffffffffffffffffff",
-		      moren:'0'
-        }
-      ],	  
+      tableDataAddress: [],
+      defaultAddress: [],
+      defaultAddress1: [],
+      defaultRadio: ""
     };
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
   },
   computed: {
     areaOptions: function() {
       return this.$store.state.user.area;
     }
   },
-  filters:{
-    keepTwoNum:function(val){
-      val=Number(val);
-      return val.toFixed(2)
+  filters: {
+    keepTwoNum: function(val) {
+      val = Number(val);
+      return val.toFixed(2);
     }
-  }, 
+  },
   methods: {
     //单选改变
-    getCurrentRow(value) {
-      this.radio = value;
+    getCurrentRow(row) {
+      this.radio = row.id;
+      this.defaultAddress = Object.assign({}, row);
     },
     //服务地址管理弹窗按钮打开
     changeuserAddress() {
-      this.radio = "";
       this.serviceAddressVisible = true;
-    },
-    //服务地址管理弹窗取消
-    colseAddress() {
-      this.serviceAddressVisible = false;
+      var obj = {
+        customerId: this.customId
+      };
+      listDataAddress(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.tableDataAddress = res.data.data;
+              for (var a = 0; a < this.tableDataAddress.length; a++) {
+                if (this.tableDataAddress[a].defaultType == "yes") {
+                  this.defaultRadio = this.tableDataAddress[a].id;
+                  this.defaultAddress1 = Object.assign(
+                    {},
+                    this.tableDataAddress[a]
+                  );
+                }
+              }
+              if (this.radio == "" || this.radio == undefined) {
+                this.radio = this.defaultRadio;
+                this.defaultAddress = Object.assign({}, this.defaultAddress1);
+              }
+            } else {
+              this.tableDataAddress = [];
+            }
+          }
+        })
+        .catch(() => {});
     },
     //服务地址管理弹窗保存
-    submitAddress(){
+    submitAddress() {
+      if (this.defaultAddress.length != 0) {
+        this.form.address = Object.assign({}, this.defaultAddress);
+        this.radio = this.defaultAddress.id;
+        this.form.radiovalue = this.defaultAddress.id;
+      }
+      this.serverStation1 = "";
+      this.form.serverStation1 = "";
       this.serviceAddressVisible = false;
     },
     //服务地址管理新增地址
-    addAddressFun(status) {
-        this.areaOptionsAddress = this.$store.state.user.area;
-        if(this.tableDataAddress.length < 6){
-          this.addAddrssDialogShow = true;
-        }else{
-          this.addAddrssDialogShow = false;
-          this.$message({
-            type: "warning",
-            message: "最多可添加6个服务地址"
-          });
-        }
+    addAddressFun() {
+      this.areaOptionsAddress = this.$store.state.user.area;
+      if (this.tableDataAddress.length < 6) {
+        this.addAddrssDialogShow = true;
+      } else {
+        this.addAddrssDialogShow = false;
+        this.$message({
+          type: "warning",
+          message: "最多可添加6个服务地址"
+        });
+      }
     },
     //服务地址管理新增地址保存
-    submitFormAddress(formName, status) {         
+    submitFormAddress(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.submitFlag = true; 
-          this.addAddrssDialogShow = false;
-          this.$refs["ruleFormAddress"].resetFields();
+          this.ruleFormAddress.customerId = this.customId;
+          //省、市、区三级ID
+          this.ruleFormAddress.provinceCode = this.ruleFormAddress.areaCodes[0];
+          this.ruleFormAddress.cityCode = this.ruleFormAddress.areaCodes[1];
+          this.ruleFormAddress.areaCode = this.ruleFormAddress.areaCodes[2];
+          var obj = this.ruleFormAddress;
+          saveDataAddress(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.$message({
+                  type: "success",
+                  message: "新增地址成功!"
+                });
+                this.addAddrssDialogShow = false;
+                this.changeuserAddress();
+                this.$refs["ruleFormAddress"].resetFields();
+              }
+            })
+            .catch(() => {});
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
         }
       });
     },
@@ -677,14 +751,14 @@ export default {
     resetFormAddress(formName) {
       this.$refs[formName].resetFields();
       this.addAddrssDialogShow = false;
-    },    
-     loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    },
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     seerchange(val) {
       this.form.serverStation1 = val;
@@ -705,21 +779,22 @@ export default {
       }
     },
     //调取建议服务时间与技师人数
-    getPersonAndTime(){
+    getPersonAndTime() {
       var obj = {
-        goodsInfoList: this.middleB,
+        goodsInfoList: this.middleB
       };
       findGoodsNeedTech(obj)
         .then(res => {
           if (res.data.code === 1) {
-              this.ideaserverTime=this.formatDuring(res.data.data.serviceHour * 3600000)
-              this.ideaPersonNum=res.data.data.dispatchNum
-          }else {
+            this.ideaserverTime = this.formatDuring(
+              res.data.data.serviceHour * 3600000
+            );
+            this.ideaPersonNum = res.data.data.dispatchNum;
+          } else {
           }
         })
-        .catch(res => {});      
-
-    },    
+        .catch(res => {});
+    },
     //存储选择技师对象
     ChangeTech(obj) {
       if (obj.techChecked) {
@@ -735,31 +810,33 @@ export default {
     //选中行改变
     rowChange(item) {
       if (item.goodsChecked) {
-        this.form1.servercommidty=item.goodsId
+        this.form1.servercommidty = item.goodsId;
         this.form1.sumPrice = this.form1.sumPrice + item.payPriceSum * 1;
       } else {
         this.form1.sumPrice = this.form1.sumPrice - item.payPriceSum * 1;
       }
-      var flag=0
-      for(var a=0;a<this.selectCommidty.length;a++){
-        if(this.selectCommidty[a].goodsChecked){
-            flag=1;
+      var flag = 0;
+      for (var a = 0; a < this.selectCommidty.length; a++) {
+        if (this.selectCommidty[a].goodsChecked) {
+          flag = 1;
         }
       }
-      if(flag == 0){
-        this.form1.servercommidty='';
-        if(this.form1.serverPro !=''){
-          this.$refs.addrulesStyle.style.display='block'
+      if (flag == 0) {
+        this.form1.servercommidty = "";
+        if (this.form1.serverPro != "") {
+          this.$refs.addrulesStyle.style.display = "block";
         }
-      }else{
-          this.$refs.addrulesStyle.style.display='none'        
-      }      
+      } else {
+        this.$refs.addrulesStyle.style.display = "none";
+      }
     },
     //计数器改变
-    numberChange(item,index) {      
+    numberChange(item, index) {
       this.$nextTick(() => {
-        item.goodsNum=parseInt(item.goodsNum)
-        this.$refs[index][0].currentValue=parseInt(this.$refs[index][0].currentValue)
+        item.goodsNum = parseInt(item.goodsNum);
+        this.$refs[index][0].currentValue = parseInt(
+          this.$refs[index][0].currentValue
+        );
         item.payPriceSum = item.goodsNum * item.payPrice * 1;
       });
       if (item.goodsChecked) {
@@ -775,19 +852,19 @@ export default {
     },
     //居室改变
     roomChange(item, name) {
-      var aa=0;
-      if(item.houseId != undefined){
-          for(var a=0;a<item.houses.length;a++){
-            if(item.houses[a].id == item.houseId){
-                item.goodsNum=item.houses[a].goodsNum;
-                item.payPrice=item.houses[a].payPrice;
-                item.minPurchase=item.houses[a].minPurchase;
-                aa=item.houses[a].payPrice*item.goodsNum
-            }
+      var aa = 0;
+      if (item.houseId != undefined) {
+        for (var a = 0; a < item.houses.length; a++) {
+          if (item.houses[a].id == item.houseId) {
+            item.goodsNum = item.houses[a].goodsNum;
+            item.payPrice = item.houses[a].payPrice;
+            item.minPurchase = item.houses[a].minPurchase;
+            aa = item.houses[a].payPrice * item.goodsNum;
           }
-          this.$nextTick(() => {
-             item.payPriceSum = aa * 1;                         
-          });
+        }
+        this.$nextTick(() => {
+          item.payPriceSum = aa * 1;
+        });
       }
       if (item.goodsChecked) {
         this.$nextTick(() => {
@@ -803,16 +880,16 @@ export default {
     //下一步
     next(formName) {
       if (this.active++ >= 3) this.active = 1;
-      if(formName == 'form'){
+      if (formName == "form") {
         this.$refs[formName].validate(valid => {
           if (valid) {
             if (this.serverStation1 != "") {
               this.findItemListFun();
-            }else{
+            } else {
               this.active = 1;
               this.$message({
                 type: "error",
-                message: "请输入客户电话，查询客户"
+                message: "请输入用户电话，查询用户"
               });
             }
           } else {
@@ -830,66 +907,65 @@ export default {
             });
             return false;
           }
-        });        
+        });
       }
-      if(formName == 'form1'){ 
-        if(this.form1.serverPro !='' && this.form1.servercommidty ==''){
-          this.$refs.addrulesStyle.style.display='block'
+      if (formName == "form1") {
+        if (this.form1.serverPro != "" && this.form1.servercommidty == "") {
+          this.$refs.addrulesStyle.style.display = "block";
         }
-        if(this.form1.serverPro !='' && this.form1.servercommidty =='' && this.selectCommidty.length == 0){
-          this.$refs.addrulesStyle.style.display='none'
-        }        
-        if(this.form1.serverPro ==''){
-          this.$refs.addrulesStyle.style.display='none'
-        }           
-        var arr=[];
-        for(var a=0;a<this.selectCommidty.length;a++){
-          if(this.selectCommidty[a].goodsChecked){
-             arr.push(this.selectCommidty[a])
+        if (
+          this.form1.serverPro != "" &&
+          this.form1.servercommidty == "" &&
+          this.selectCommidty.length == 0
+        ) {
+          this.$refs.addrulesStyle.style.display = "none";
+        }
+        if (this.form1.serverPro == "") {
+          this.$refs.addrulesStyle.style.display = "none";
+        }
+        var arr = [];
+        for (var a = 0; a < this.selectCommidty.length; a++) {
+          if (this.selectCommidty[a].goodsChecked) {
+            arr.push(this.selectCommidty[a]);
           }
         }
-        this.middleB=Object.assign([], arr);
-        if(this.form1.serverPro !='' && this.form1.servercommidty == ''){
-           this.active = 2;
-           if(this.selectCommidty.length == 0){
-              this.$message({
-                type: "error",
-                message:'请更换服务项目，并选择商品'
-              });
-           }else{
-              this.$message({
-                type: "error",
-                message:'请选择商品'
-              });
-           }
-
-        }else{
-            this.tabOptions=[];
-            this.middleA=[];          
-            this.findTimeListByTechFun();
-            this.getPersonAndTime();//建议时长与技师人数 
-            this.$refs[formName].validate(valid => {
-              if (valid) {
-                  
-              } else {           
-                this.active = 2;            
-                var errArr = this.$refs[formName]._data.fields;
-                var errMes = [];
-                for (var i = 0; i < errArr.length; i++) {
-                  if (errArr[i].validateMessage != "") {
-                    errMes.push(errArr[i].validateMessage);
-                  }
-                }            
-                this.$message({
-                  type: "error",
-                  message: errMes[0]
-                }); 
-
+        this.middleB = Object.assign([], arr);
+        if (this.form1.serverPro != "" && this.form1.servercommidty == "") {
+          this.active = 2;
+          if (this.selectCommidty.length == 0) {
+            this.$message({
+              type: "error",
+              message: "请更换服务项目，并选择商品"
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: "请选择商品"
+            });
+          }
+        } else {
+          this.tabOptions = [];
+          this.middleA = [];
+          this.findTimeListByTechFun();
+          this.getPersonAndTime(); //建议时长与技师人数
+          this.$refs[formName].validate(valid => {
+            if (valid) {
+            } else {
+              this.active = 2;
+              var errArr = this.$refs[formName]._data.fields;
+              var errMes = [];
+              for (var i = 0; i < errArr.length; i++) {
+                if (errArr[i].validateMessage != "") {
+                  errMes.push(errArr[i].validateMessage);
+                }
               }
-            });          
-
+              this.$message({
+                type: "error",
+                message: errMes[0]
+              });
+            }
+          });
         }
-
       }
     },
     //上一步
@@ -913,10 +989,10 @@ export default {
                 this.form2.severTime = this.options2[0].value;
                 this.dateChange(this.form2.severTime);
               }
-            }else{
-              this.options2=[];
-              this.form2.severTime = '';
-              this.dateChange(this.form2.severTime);              
+            } else {
+              this.options2 = [];
+              this.form2.severTime = "";
+              this.dateChange(this.form2.severTime);
             }
           } else if (res.data.code === 3) {
             this.options2 = [];
@@ -930,11 +1006,11 @@ export default {
         })
         .catch(res => {});
     },
-    //客户查询事件
+    //用户查询事件
     changeCustom() {
-      this.serverStation1='';
+      this.serverStation1 = "";
       //根据手机号查询
-      if(this.customPhone != ''){
+      if (this.customPhone != "") {
         var obj = { phone: this.customPhone };
         findCustomerByPhone(obj)
           .then(res => {
@@ -942,6 +1018,10 @@ export default {
               if (res.data.data != undefined) {
                 this.customId = res.data.data.id;
                 this.form = res.data.data;
+                if (res.data.data.address.id != undefined) {
+                  this.form.radiovalue = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;
+                }
                 this.customKeyFlag = true;
               }
             } else if (res.data.code === 3) {
@@ -955,14 +1035,13 @@ export default {
             }
           })
           .catch(res => {});
-      }else{
+      } else {
         this.customKeyFlag = false;
         this.$message({
           type: "warning",
-          message: '客户电话不能为空！'
+          message: "用户电话不能为空！"
         });
       }
-
     },
     //服务项目下拉获取
     findItemListFun() {
@@ -980,12 +1059,11 @@ export default {
         })
         .catch(res => {});
     },
-    //新增客户保存
+    //新增用户保存
     submitForm(formName) {
-
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()          
+          this.loadingClick();
           var obj = this.ruleForm;
           saveCus(obj)
             .then(res => {
@@ -1020,7 +1098,7 @@ export default {
         }
       });
     },
-    //新增客户弹窗取消
+    //新增用户弹窗取消
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.ruleForm.provinceCode = "";
@@ -1029,7 +1107,7 @@ export default {
       this.ruleForm.sex = "";
       this.dialogTableVisible1 = false;
     },
-    //获取按客户ID客户数据
+    //获取按用户ID用户数据
     getcustomerList() {
       var coustomerId = this.$route.query.coustomerId;
       if (coustomerId != undefined) {
@@ -1042,7 +1120,11 @@ export default {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.form = res.data.data;
-                this.customPhone=res.data.data.phone
+                if (res.data.data.address.id != undefined) {
+                  this.form.radiovalue = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;
+                }
+                this.customPhone = res.data.data.phone;
                 this.customKeyFlag = true;
               }
             } else if (res.data.code === 3) {
@@ -1067,29 +1149,29 @@ export default {
       this.ruleForm.sex = "";
     },
     //服务类型下拉改变
-    serverchange(value) {     
-      this.form1.servercommidty='';     
+    serverchange(value) {
+      this.form1.servercommidty = "";
       this.form1.sumPrice = 0;
-      if(this.form1.serverPro ==''){
-        this.$refs.addrulesStyle.style.display='none'
-      }       
+      if (this.form1.serverPro == "") {
+        this.$refs.addrulesStyle.style.display = "none";
+      }
       var obj = { itemId: value };
       findGoodsListByItem(obj)
         .then(res => {
-          if (res.data.code === 1) {            
+          if (res.data.code === 1) {
             if (res.data.data != undefined) {
               this.selectCommidty = res.data.data;
-              if(this.form1.serverPro !=''){
-                this.$refs.addrulesStyle.style.display='block'
-              }                           
+              if (this.form1.serverPro != "") {
+                this.$refs.addrulesStyle.style.display = "block";
+              }
             } else {
               this.selectCommidty = [];
               this.form1.sumPrice = 0;
             }
           } else if (res.data.code === 3) {
             this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display='none'
-          
+            this.$refs.addrulesStyle.style.display = "none";
+
             this.form1.sumPrice = 0;
             this.$message({
               type: "warning",
@@ -1097,12 +1179,11 @@ export default {
             });
           } else {
             this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display='none'
+            this.$refs.addrulesStyle.style.display = "none";
             this.form1.sumPrice = 0;
           }
         })
         .catch(res => {});
-
     },
     //技师选择按钮点击
     technicianSel() {
@@ -1115,7 +1196,7 @@ export default {
           if (res.data.code === 1) {
             this.dialogTableVisible = true;
             if (res.data.data != undefined) {
-              this.listTech = res.data.data;           
+              this.listTech = res.data.data;
               if (this.middleA.length != 0) {
                 for (var a = 0; a < this.listTech.length; a++) {
                   this.listTech[a].techChecked = false;
@@ -1125,13 +1206,13 @@ export default {
                     }
                   }
                 }
-              }else{
+              } else {
                 for (var a1 = 0; a1 < this.listTech.length; a1++) {
-                      this.listTech[a1].techChecked = false;
+                  this.listTech[a1].techChecked = false;
                 }
               }
-            }else{
-              this.listTech=[];
+            } else {
+              this.listTech = [];
             }
           } else if (res.data.code === 3) {
             this.$message({
@@ -1145,9 +1226,9 @@ export default {
     //选择技师弹出层保存
     submitForm2() {
       //先遍历数据中选中的再保存
-      this.techName='';
+      this.techName = "";
       var arr = [];
-      if (this.middleA.length !=0) {
+      if (this.middleA.length != 0) {
         for (let a = 0; a < this.middleA.length; a++) {
           if (this.middleA[a].techChecked == true) {
             arr.push(this.middleA[a]);
@@ -1155,10 +1236,10 @@ export default {
         }
       }
       this.tabOptions = arr;
-      if(this.middleA.length != 0){
-          this.form2.selectTech=this.middleA[0].techId;
-      }else{
-        this.form2.selectTech='';
+      if (this.middleA.length != 0) {
+        this.form2.selectTech = this.middleA[0].techId;
+      } else {
+        this.form2.selectTech = "";
       }
       this.findTimeListByTechFun();
       this.dialogTableVisible = false;
@@ -1175,7 +1256,7 @@ export default {
     //叉号点击关闭TAB
     errorClose(obj) {
       //是否是删除就调取时间
-         this.findTimeListByTechFun()        
+      this.findTimeListByTechFun();
       if (this.tabOptions != undefined && this.tabOptions.length != 0) {
         for (var a = 0; a < this.listTech.length; a++) {
           if (obj.techId == this.listTech[a].techId) {
@@ -1186,20 +1267,18 @@ export default {
           if (obj.techId == this.middleA[b].techId) {
             this.middleA.remove(this.middleA[b]);
           }
-        }       
-        this.tabOptions.remove(obj);
-        if(this.middleA.length != 0){
-           this.form2.selectTech=this.middleA[0].techId;
-        }else{
-          this.form2.selectTech='';
         }
-        
+        this.tabOptions.remove(obj);
+        if (this.middleA.length != 0) {
+          this.form2.selectTech = this.middleA[0].techId;
+        } else {
+          this.form2.selectTech = "";
+        }
       }
     },
     //确认下单按钮点击
-    confirmOrder(formName) {                
+    confirmOrder(formName) {
       this.$refs[formName].validate(valid => {
-        
         if (valid) {
           var time = "";
           for (var a = 0; a < this.timeObj.length; a++) {
@@ -1207,63 +1286,71 @@ export default {
               time = this.timeObj[a].serviceTimeStr;
             }
           }
-          if(time == ''){
-            this.form2.severTime1 = '';
-          }else{
-              if((this.tabOptions.length != 0) && (this.tabOptions.length != this.ideaPersonNum)){
-                  this.$confirm("已选技师人数与建议派单人数不一致，您确定要下单吗？", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    closeOnClickModal: false
-                  })
-                  .then(() => {
-                      this.submitFlag1 = true;                     
-                      var obj = {
-                        customerId: this.customId, //客户ID
-                        serviceTime: this.changTime + " " + time + ":00", //服务时间
-                        customerRemark: this.form2.textarea, //备注
-                        techList: this.tabOptions, //技师对象
-                        goodsInfoList: this.middleB, //商品对象
-                        stationId: this.serverStation1
-                      };          
-                      createOrder(obj)
-                        .then(res => {
-                          this.submitFlag1 = false; 
-                          if (res.data.code === 1) {
-                            this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
-                            this.$message({
-                              type: "success",
-                              message: "下单成功!"
-                            });                
-                          } else if (res.data.code === 3) {
-                            this.$message({
-                              type: "warning",
-                              message: res.data.data
-                            });
-                          }
-                        })
-                        .catch(res => {
-                          this.submitFlag1 = false;
-                        });                               
-
-                  })
-                  .catch(() => {
+          if (time == "") {
+            this.form2.severTime1 = "";
+          } else {
+            if (
+              this.tabOptions.length != 0 &&
+              this.tabOptions.length != this.ideaPersonNum
+            ) {
+              this.$confirm(
+                "已选技师人数与建议派单人数不一致，您确定要下单吗？",
+                "提示",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  closeOnClickModal: false
+                }
+              )
+                .then(() => {
+                  this.submitFlag1 = true;
+                  var obj = {
+                    customerId: this.customId, //用户ID
+                    serviceTime: this.changTime + " " + time + ":00", //服务时间
+                    customerRemark: this.form2.textarea, //备注
+                    techList: this.tabOptions, //技师对象
+                    goodsInfoList: this.middleB, //商品对象
+                    stationId: this.serverStation1,
+                    customerAddressId: this.form.radiovalue
+                  };
+                  createOrder(obj)
+                    .then(res => {
                       this.submitFlag1 = false;
-                      this.$message({
-                        type: "warning",
-                        message: "已取消下单"
-                      });                    
+                      if (res.data.code === 1) {
+                        this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                        this.$message({
+                          type: "success",
+                          message: "下单成功!"
+                        });
+                      } else if (res.data.code === 3) {
+                        this.$message({
+                          type: "warning",
+                          message: res.data.data
+                        });
+                      }
+                    })
+                    .catch(res => {
+                      this.submitFlag1 = false;
+                    });
+                })
+                .catch(() => {
+                  this.submitFlag1 = false;
+                  this.$message({
+                    type: "warning",
+                    message: "已取消下单"
                   });
-              }else{
-              this.submitFlag1 = true; 
+                });
+            } else {
+              this.submitFlag1 = true;
               var obj = {
-                customerId: this.customId, //客户ID
+                customerId: this.customId, //用户ID
                 serviceTime: this.changTime + " " + time + ":00", //服务时间
                 customerRemark: this.form2.textarea, //备注
                 techList: this.tabOptions, //技师对象
                 goodsInfoList: this.middleB, //商品对象
-                stationId: this.serverStation1
-              };          
+                stationId: this.serverStation1,
+                customerAddressId: this.form.radiovalue
+              };
               createOrder(obj)
                 .then(res => {
                   this.submitFlag1 = false;
@@ -1272,7 +1359,7 @@ export default {
                     this.$message({
                       type: "success",
                       message: "新增成功!"
-                    });                
+                    });
                   } else if (res.data.code === 3) {
                     this.$message({
                       type: "warning",
@@ -1282,11 +1369,9 @@ export default {
                 })
                 .catch(res => {
                   this.submitFlag1 = false;
-                });                 
-
-              }
+                });
+            }
           }
-
         } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
@@ -1299,7 +1384,6 @@ export default {
             type: "error",
             message: errMes[0]
           });
-         
         }
       });
     },
@@ -1307,19 +1391,19 @@ export default {
     dateChange(val) {
       this.form2.severTime = val;
       var that = this;
-      if(this.form2.severTime == ''){
-          this.timeObj=[];
-      }else{
-          for (var b = 0; b < this.options2.length; b++) {
-            if (val == this.options2[b].value) {
-              if (this.options2[b].serviceTime != undefined) {
-                this.timeObj = this.options2[b].serviceTime;
-              }
-              if (this.options2[b].label != undefined) {
-                this.changTime = this.options2[b].label;
-              }
+      if (this.form2.severTime == "") {
+        this.timeObj = [];
+      } else {
+        for (var b = 0; b < this.options2.length; b++) {
+          if (val == this.options2[b].value) {
+            if (this.options2[b].serviceTime != undefined) {
+              this.timeObj = this.options2[b].serviceTime;
+            }
+            if (this.options2[b].label != undefined) {
+              this.changTime = this.options2[b].label;
             }
           }
+        }
       }
 
       if (this.timeObj != undefined && this.timeObj.length != 0) {
@@ -1364,10 +1448,10 @@ export default {
         .then(res => {
           if (res.data.code === 1) {
             if (res.data.data != undefined) {
-               this.listTech=res.data.data;
-            }else{
-               this.listTech=[];
-            }           
+              this.listTech = res.data.data;
+            } else {
+              this.listTech = [];
+            }
             for (var b = 0; b < this.middleA.length; b++) {
               for (var a = 0; a < this.listTech.length; a++) {
                 if (this.listTech[a].techId == this.middleA[b].techId) {
@@ -1392,11 +1476,15 @@ export default {
 };
 </script>
 <style  lang="scss" scoped>
-.selfAddressGao1{
-   width:332px;max-height:290px;overflow:hidden;
+.selfAddressGao1 {
+  width: 332px;
+  max-height: 290px;
+  overflow: hidden;
 }
-.selfpanel1{
-   width:350px;max-height:290px;overflow-y:auto
+.selfpanel1 {
+  width: 350px;
+  max-height: 290px;
+  overflow-y: auto;
 }
 .selfTabProm {
   width: 100%;
@@ -1523,7 +1611,7 @@ export default {
 .selfPromInfStyle1 {
   heihgt: 30px;
   line-height: 30px;
-  margin-top:20px;
+  margin-top: 20px;
   color: #8391a5;
   font-size: 12px;
 }
@@ -1628,8 +1716,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
-  margin-top:5px;
-  margin-bottom:5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-size: 12px;
   display: inline-block;
   height: 25px;
@@ -1795,6 +1883,13 @@ export default {
   border-collapse: collapse;
   padding: 2px;
 }
+.selfToolTip {
+  width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .height70 {
   height: 70px;
 }
@@ -1820,14 +1915,14 @@ export default {
   width: 100%;
   padding: 0 10%;
 }
-.addrulesStyle{
-    display:none;
-    color: #ff4949;
-    font-size: 12px;
-    line-height: 1;
-    padding-top: 4px;
-    position: absolute;
-    top: 100%;
-    left: 0;
+.addrulesStyle {
+  display: none;
+  color: #ff4949;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 4px;
+  position: absolute;
+  top: 100%;
+  left: 0;
 }
 </style>

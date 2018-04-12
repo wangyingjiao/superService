@@ -254,7 +254,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       btnState: false,
       list: [],
       total: null,
@@ -372,6 +372,9 @@ export default {
 
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     // 加载字典量
     var dict = require("../../../static/dict.json");
     this.stationType = dict.service_station_type;

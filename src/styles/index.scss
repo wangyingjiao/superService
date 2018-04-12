@@ -119,6 +119,7 @@ input, button{
   border: none;
   outline: none;
   height: 30px;
+  line-height: 30px;
   font-size: 12px;
   text-align: center;
   width: 80px;
@@ -807,4 +808,7 @@ body {
 }
 .el-step__title.is-finish{
   color:#4c70e8;
+}
+.time-select-item.selected:not(.disabled){
+  background-color: #4c70e8;
 }

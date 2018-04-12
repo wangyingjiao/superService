@@ -234,6 +234,17 @@
             </el-row>
         </el-form-item>
 
+        <el-form-item label="用户信息:" >
+            <el-switch
+              v-model="temp.visable"
+              :width="90"
+              on-text="模糊"
+              off-text="不模糊"
+              on-value="no"
+              off-value="yes">
+            </el-switch>
+        </el-form-item>
+
         <el-form-item label="机构网址:" prop="url">
           <el-input 
             class="form_item"
@@ -365,7 +376,7 @@ export default {
       }
     };
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       btnState: false,
       typeState: false,
       list: [],
@@ -404,7 +415,7 @@ export default {
         remark: "",
         areaCodes: [],
         scopeType: "store",
-        visable: "1"
+        visable: ""
       },
       province: "",
       importanceOptions: [
@@ -560,6 +571,9 @@ export default {
   },
   created() {
     this.getList();
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     var dict = require("../../../static/dict.json");
     this.scopeType = dict.service_area_type;
     this.eshopList = dict.dock_platform;
@@ -697,6 +711,7 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.typeState = false;
+      this.temp.visable = "no";
       this.temp.dockType = "select";
     },
     //点击编辑
@@ -799,11 +814,15 @@ export default {
     },
     //删除E店
     delEshop(val) {
-      this.$confirm("解除对接E店，会解除商品的对接，无法撤销，您确定要解除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
+      this.$confirm(
+        "解除对接E店，会解除商品的对接，无法撤销，您确定要解除吗？",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          closeOnClickModal: false
+        }
+      )
         .then(() => {
           if (val.id != undefined) {
             var obj = {
@@ -820,9 +839,7 @@ export default {
             this.temp.basicOrganizationEshops.remove(val);
           }
         })
-        .catch(() => {
-          
-        });
+        .catch(() => {});
     },
     //取消
     resetForm(formName) {
@@ -863,7 +880,8 @@ export default {
         remark: this.temp.remark, //备注
         provinceCode: this.temp.areaCodes[0], //省
         cityCode: this.temp.areaCodes[1], //市
-        areaCode: this.temp.areaCodes[2] //区
+        areaCode: this.temp.areaCodes[2], //区
+        visable: this.temp.visable //模糊
       };
       if (obj.dockType == "select") {
         obj.dockType = "";
@@ -942,7 +960,8 @@ export default {
         remark: this.temp.remark, //备注
         provinceCode: this.temp.areaCodes[0], //省
         cityCode: this.temp.areaCodes[1], //市
-        areaCode: this.temp.areaCodes[2] //区
+        areaCode: this.temp.areaCodes[2], //区
+        visable: this.temp.visable //市
       };
       if (obj.dockType == "" || obj.dockType == "select") {
         obj.dockType = "";
@@ -1018,6 +1037,7 @@ export default {
         dockType: "",
         basicOrganizationEshops: [],
         jointEshopCode: "",
+        visable: "",
         scopeType: "store",
         remark: ""
       };

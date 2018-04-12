@@ -85,9 +85,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="150">
+      <el-table-column align="center" label="操作" min-width="160">
         <template scope="scope">
-          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.reviewStatus != 'yes'" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -100,6 +100,7 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <!-- <roleDialog :treeData = 'data2' @checkchange = 'aaa'></roleDialog> -->
     <!-- 弹窗 -->
     <el-dialog 
       title="审核休假"
@@ -116,20 +117,22 @@
             label-position="left" 
             label-width="100px"
             >
-
+          <el-form-item v-if="failReasonState" label="未通过原因:">
+            <p style="width:100%;word-wrap:break-word;font-size: 12px;color: #8391a5;">{{temp.failReason}}</p>
+          </el-form-item>
           <el-form-item label="审核休假:" prop="reviewStatus">
-            <el-select class="form_item"  v-model="temp.reviewStatus">
+            <el-select class="form_item"  v-model="temp.reviewStatus" >
               <el-option v-for="item in holidayState" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="temp.reviewStatus == 'no'" label="未通过原因:" prop="failReason">
+          <el-form-item v-if="temp.reviewStatus == 'no'&& !failReasonState" label="未通过原因:" prop="failReason">
             <el-input 
             class="form_item"
               type="textarea" 
               :rows="2" 
-              placeholder="请输入0 - 100 字休假未通过原因"
+              placeholder="请输入1 - 100 位未通过原因"
               v-model="temp.failReason"></el-input>
           </el-form-item>
 
@@ -156,22 +159,29 @@ import {
   getHolidayById,
   reviewedHoliday
 } from "@/api/tech";
+import { getMenudata } from "@/api/staff"; //接口调用
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import roleDialog from "../staff/roleDialog.vue";
 
 export default {
   name: "holiday",
   directives: {
     waves
   },
+  components: {
+    roleDialog
+  },
   data() {
     return {
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
+      checkState: true, //审核按钮状态
       list: [],
       total: null,
       listLoading: true,
       dialogForm: false,
       btnState: false,
+      failReasonState: false,
       activeName: "",
       listQuery: {
         page: 1,
@@ -182,6 +192,7 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      data2:[],
       search: {
         type: "techName",
         val: "",
@@ -197,7 +208,11 @@ export default {
           { required: true, message: "请选择审核状态", trigger: "change" }
         ],
         failReason: [
-          { required: true, message: "请填写休假未通过原因", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入1 - 100位未通过原因",
+            trigger: "blur"
+          },
           {
             min: 0,
             max: 100,
@@ -221,8 +236,17 @@ export default {
   created() {
     this.getList();
     this.activeName = "all";
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
+    getMenudata().then(res => {
+      this.data2 = res.data.data;
+    });
   },
   methods: {
+    aaa(obj){
+      //console.log(obj,'aaa')
+    },
     //请求列表数据
     getList() {
       var obj = {
@@ -265,7 +289,6 @@ export default {
       if (obj.reviewStatus == "all") {
         obj.reviewStatus = "";
       }
-      console.log(obj);
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
@@ -308,18 +331,28 @@ export default {
       this.getList();
     },
     handleCheck(row) {
-      this.dialogForm = true;
       this.temp.rowId = row.id;
       if (row.reviewStatus == "yes") {
         this.temp.reviewStatus = "yes";
-      }
-      if (row.reviewStatus == "no") {
-        this.temp.reviewStatus = "no";
-        getHolidayById({ id: row.id }).then(res => {
-          if (res.data.code == "1") {
-            this.temp.failReason = res.data.data.failReason;
-          }
-        });
+        this.dialogForm = true;
+      } else if (row.reviewStatus == "no") {
+        this.listLoading = true;
+        this.temp.reviewStatus = "";
+        getHolidayById({ id: row.id })
+          .then(res => {
+            this.listLoading = false;
+            if (res.data.code == "1") {
+              this.holidayState = [{ label: "通过", value: "yes" }];
+              this.temp.failReason = res.data.data.failReason;
+              this.failReasonState = true;
+              this.dialogForm = true;
+            }
+          })
+          .catch(err => {
+            this.listLoading = false;
+          });
+      } else {
+        this.dialogForm = true;
       }
     },
     // 删除
@@ -383,14 +416,12 @@ export default {
                   .then(res => {
                     this.btnState = false;
                     if (res.data.code === 1) {
-                      this.resetTemp();
-                      this.$refs[formName].resetFields();
+                      this.resetForm(formName);
                       this.$message({
                         type: "success",
                         message: "审核成功"
                       });
-                      this.resetSearch();
-                      this.handleFilter();
+                      this.getList();
                       this.dialogForm = false;
                     } else {
                     }
@@ -400,7 +431,7 @@ export default {
                   });
               })
               .catch(() => {
-                return;
+                this.btnState = false;
               });
           } else {
             var obj = {
@@ -408,7 +439,6 @@ export default {
               reviewStatus: this.temp.reviewStatus,
               failReason: this.temp.failReason
             };
-            // if()
             reviewedHoliday(obj)
               .then(res => {
                 this.btnState = false;
@@ -419,8 +449,7 @@ export default {
                     type: "success",
                     message: "审核成功"
                   });
-                  this.resetSearch();
-                  this.handleFilter();
+                  this.getList();
                   this.dialogForm = false;
                 } else {
                 }
@@ -449,9 +478,14 @@ export default {
       this.getList();
     },
     resetForm(formName) {
-      this.dialogForm = false;
+      this.holidayState = [
+        { label: "通过", value: "yes" },
+        { label: "不通过", value: "no" }
+      ];
       this.resetTemp();
       this.$refs[formName].resetFields();
+      this.failReasonState = false;
+      this.dialogForm = false;
     },
     resetTemp() {
       this.temp = {

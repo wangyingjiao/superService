@@ -113,7 +113,7 @@
                           </tr>                
                         <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                            <td   width="72px" align="center"><el-checkbox   v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
+                            <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
                             <td  width="152px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
                             <td  width="73px" align="center">
@@ -167,7 +167,7 @@ export default {
       submitFlag: false,
       jumpPage: 1,
       title: "新增技能",
-      btnShow: JSON.parse(localStorage.getItem("btn")),
+      btnShow: [],
       promShow: false,
       promShow1: false,
       checkAll: false,
@@ -217,14 +217,19 @@ export default {
       middleD: []
     };
   },
+  created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
+  },
   methods: {
-    loadingClick(){
-        loading = this.$loading({
-          lock: true,
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)',
-          target: document.querySelector('.el-dialog__body')
-        })
+    loadingClick() {
+      loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+        target: document.querySelector(".el-dialog__body")
+      });
     },
     //全局搜索按钮
     search() {
@@ -345,7 +350,7 @@ export default {
       this.ruleForm2.technicians = this.tabOptions;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.loadingClick()
+          this.loadingClick();
           this.saveFlag = true;
           var obj = {
             id: this.id,
@@ -410,7 +415,7 @@ export default {
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
-                }else{
+                } else {
                   loading.close();
                 }
               })
@@ -860,8 +865,8 @@ export default {
 .tabWrap {
   width: 100px;
   margin-right: 20px;
-  margin-top:5px;
-  margin-bottom:5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   margin-left: 10px;
   font-size: 12px;
   display: inline-block;
