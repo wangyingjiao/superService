@@ -1,5 +1,5 @@
 <template>
-    <div class="refundInformation">
+    <div id="refundInformation">
         <!-- <el-dialog title="退款详情" :close-on-click-modal="false" :visible.sync="dialogvisible"> -->
             <!-- 退款信息 -->
                 <div class="refund-infor">
@@ -86,7 +86,7 @@
 </script>
 
 <style scoped>
-    .refundInformation{
+    #refundInformation{
         font-size: 12px;
     }
     .infor{
@@ -99,7 +99,7 @@
         padding-top:10px; 
         color: #333333;
     }
-    .refundInformation .refund-infor,.refundInformation .order-infor{
+    #refundInformation .refund-infor,#refundInformation .order-infor{
         font-size: 12px;
         color: #333333;
         padding: 10px 30px;
@@ -118,7 +118,7 @@
         /* margin-left: 20%; */
     }
     .refund-left div,.refund-right div{
-        padding: 10px 0 15px 0;
+        padding: 10px 0 14px 0;
     }
     .refund-left div span,.refund-right div span{
         padding-left: 40px;

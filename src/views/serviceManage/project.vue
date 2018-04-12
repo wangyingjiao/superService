@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="project">
   <div class="filter-container tabStyle">
     <el-tabs v-model="tabs" @tab-click="handleClick">
       <el-tab-pane label="全部" name="all"></el-tab-pane>
@@ -2421,6 +2421,9 @@ hr {
 .joCode .cell {
   padding: 0 10px;
   white-space: nowrap;
+}
+.project .diatable .el-upload{
+  text-align: center;
 }
 /* .deleteEd{
   text-align: left;
