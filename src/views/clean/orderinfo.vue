@@ -195,7 +195,8 @@
                    <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
-                   </p>                                                                           
+                   </p>
+                   <p  v-if="true" class="contentLine" style="color:#3a5fcd;cursor:pointer;" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</p>                                                                           
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -204,12 +205,14 @@
                       <span class="selfMarLeft70"  v-if="nowTime >= 5400000" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
                    </p>                                     
                 </div> 
-            </div>
-            <div class="selfTableWrapStyle">
+            </div>            
+            <div class="selfTableWrapStyle" >                    
                     <el-table
                       :data="tableData"
                       border
-                      class="self-table-style">
+                      class="self-table-style"
+                      style="margin-top:-10px;"
+                      >
                       <el-table-column
                         align="center"
                         label="服务项目"
@@ -763,15 +766,12 @@ export default {
       var refundPirce=0;
       if(this.chooses == '1'){
          refundPirce=this.refundSum+this.chaE
-         console.log(this.refundSum+this.chaE)
       }
       if(this.chooses == '2'){
         refundPirce=this.refundSum-this.chaE
-        console.log(this.refundSum-this.chaE)
       } 
       if(this.chooses == ''){
         refundPirce=this.refundSum
-        console.log(this.refundSum-this.chaE)
       }
       refundPirce=Number(refundPirce).toFixed(2); 
       const h = this.$createElement;
@@ -811,6 +811,10 @@ export default {
       this.radio='';
       this.chooses='';      
       this.orderRefundFlag = false;
+    },
+    //跳转退款详情页
+    gotoRefund(orderNumber){
+      this.$router.push({ path: "/clean/refund/", query: { orderNumber: orderNumber } });
     },
     loadingClick() {
       loading = this.$loading({
