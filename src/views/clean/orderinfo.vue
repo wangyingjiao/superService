@@ -5,7 +5,8 @@
             <div class="custom-action orderOneBar">订单信息
               
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <input type="button" v-if="true"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <!-- otherInfo.orderStatus =='success' && otherInfo.orderSource =='own' && otherInfo.payStatus =='payed' -->
             </div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -562,7 +563,7 @@
                     </tr>
                     <div class="orderinfoTechTablePadding">
                         <tr v-for="item in orderRefundObj" :key="item.commidyId"  ref="tableItem1" class="selfTdStyle2">
-                          <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.commidySelect" @change="ChangeCommidty(item)"></el-checkbox></td>
+                          <td width="72px" class="fontSize12"  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.commidySelect" ></el-checkbox></td>
                           <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.commidyName}}</div></td>
                           <td width="132px" class="fontSize12" align="center">￥{{item.commidyPrice}}</td>
                           <td  width="102px" class="fontSize12" align="center">{{item.commidyNum}}</td>
@@ -576,10 +577,10 @@
               <div class="marginTop20" >支付总额：<span class="refundSpan" >￥440</span></div>
               <div class="marginTop20" >支付方式：<span class="refundSpan" >现金</span></div>
               <div class="marginTop20" >退款方式：<span class="refundSpan" ><el-radio label="1" v-model="radio" >现金</el-radio></span></div>
-              <div class="marginTop20" >退款金额：<span class="refundSpan" >￥400</span></div>
+              <div class="marginTop20" >退款金额：<span class="refundSpan" >￥{{refundSum | keepTwoNum }}</span></div>
               <div class="marginTop20" >退款差额：
                 <span class="refundSpan" >
-                      <el-input v-model.trim ="chaE" placeholder="0" class="search searchHeader">
+                      <el-input v-model.number="chaE" placeholder="0" class="search searchHeader">
                         <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
                           <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
                           </el-option>
@@ -603,8 +604,8 @@
             </div>
                      
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundFlag = false">退款</button>
-              <button class="button-cancel"  @click="orderRefundFlag = false">取 消</button>
+              <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundOk">退款</button>
+              <button class="button-cancel"  @click="orderRefundCancel">取 消</button>
             </div>
         </el-dialog>
         <!--退款详情弹窗结束-->                          
@@ -634,7 +635,7 @@ export default {
         {value:'1',label:'多退'},
         {value:'2',label:'少退'}
       ],
-      chaE:'',
+      chaE:0,
       chooses:'',
       radio:'',
       orderRefundObj:[
@@ -642,24 +643,24 @@ export default {
           commidyId:'a',
           commidySelect:false,
           commidyName:'kkkkkkkkkk',
-          commidyPrice:'210',
-          commidyNum:'20',
+          commidyPrice:210,
+          commidyNum:20,
           commidyUnit:'个'
         },
         {
           commidyId:'b',
           commidySelect:false,
           commidyName:'wwwwwwwwwwwww',
-          commidyPrice:'110',
-          commidyNum:'10',
+          commidyPrice:110,
+          commidyNum:10,
           commidyUnit:'个'
         },
         {
           commidyId:'c',
           commidySelect:false,
           commidyName:'yyyyyyyyyyyyyyywwwwwwwwwwwww',
-          commidyPrice:'140',
-          commidyNum:'15',
+          commidyPrice:140,
+          commidyNum:15,
           commidyUnit:'个'
         }        
       ],
@@ -733,7 +734,8 @@ export default {
       bb: "",
       orderId: "",
       nowTime: "",
-      addressInf: []
+      addressInf: [],
+      refundSum:0
     };
   },
   created() {
@@ -741,7 +743,75 @@ export default {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
   },
+  filters: {
+    keepTwoNum: function(val) {
+      val = Number(val);
+      return val.toFixed(2);
+    }
+  }, 
   methods: {
+    //计算退款总额
+    rowChange(rowObj){
+      if (rowObj.commidySelect) {
+        this.refundSum = this.refundSum + rowObj.commidyPrice * 1*rowObj.commidyNum;
+      } else {
+        this.refundSum = this.refundSum - rowObj.commidyPrice * 1*rowObj.commidyNum;
+      }       
+    },
+    //确认退款
+    orderRefundOk(){
+      var refundPirce=0;
+      if(this.chooses == '1'){
+         refundPirce=this.refundSum+this.chaE
+         console.log(this.refundSum+this.chaE)
+      }
+      if(this.chooses == '2'){
+        refundPirce=this.refundSum-this.chaE
+        console.log(this.refundSum-this.chaE)
+      } 
+      if(this.chooses == ''){
+        refundPirce=this.refundSum
+        console.log(this.refundSum-this.chaE)
+      }
+      refundPirce=Number(refundPirce).toFixed(2); 
+      const h = this.$createElement;
+      this.$msgbox({
+        title: '提示',
+        message: h('p', null, [
+          h('span', null, '实际退款金额为：￥'),
+          h('span', { style: 'color: teal' }, refundPirce),
+          h('span', null, '，确定退款吗？'),
+        ]),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+          this.refundSum=0;
+          this.chaE=0;
+          this.radio='';
+          this.chooses='';
+          this.orderRefundFlag = false;
+      }).catch(() => {
+            this.$message({
+              type: "warning",
+              message: "已取消退款"
+            });
+      })               
+      //this.refundScource
+      // console.log(this.refundSum)
+      // console.log(this.chaE)
+      // console.log(this.chooses)
+      //console.log(this.radio)
+
+    },
+    //取消退款
+    orderRefundCancel(){
+      this.refundSum=0;
+      this.chaE=0;
+      this.radio='';
+      this.chooses='';      
+      this.orderRefundFlag = false;
+    },
     loadingClick() {
       loading = this.$loading({
         lock: true,
@@ -999,15 +1069,7 @@ export default {
           }
         }
       }
-    },
-    //存储退款选择商品
-    ChangeCommidty(obj) {
-      if (obj.commidySelect) {
-        console.log("llll")
-      } else {
-        console.log("aaaaa")
-      }
-    },    
+    },   
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -1123,8 +1185,12 @@ export default {
     cancelOrder() {
       this.cancelOrderFlag = true;
     },
-    //
+    //退款按钮
     orderRefund(){
+      this.refundSum=0;
+      this.chaE=0;
+      this.radio='';
+      this.chooses='';
       this.orderRefundFlag=true;
     },
     //取消订单确认
