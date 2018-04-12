@@ -2422,7 +2422,7 @@ hr {
   padding: 0 10px;
   white-space: nowrap;
 }
-.project .diatable .el-upload{
+#project .diatable .el-upload{
   text-align: center;
 }
 /* .deleteEd{
