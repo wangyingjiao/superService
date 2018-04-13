@@ -28,6 +28,13 @@
 								  <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
 							</el-form-item>
+							<el-form-item v-if="true" label="所属机构:" prop='mechanism'>
+								<el-input type="hidden" value='' v-model='form.mechanism'></el-input>
+								<el-select clearable  style="float:left;margin-top:-36px;" class="severChangeStyle" filterable v-model="mechanism" @change="masimaChange" placeholder="请选择">
+								  <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+								  </el-option>
+								</el-select>                
+							</el-form-item>	              
 							<el-form-item label="所属服务站:" prop='serverStation1'>
 								<el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
 								<el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
@@ -363,7 +370,7 @@ import {
   listDataAddress, //地址管理
   saveDataAddress // 新增地址保存
 } from "@/api/customer";
-
+import { getSList } from "@/api/staff";
 var loading;
 export default {
   data() {
@@ -459,6 +466,8 @@ export default {
       }
     };
     return {
+      mechanismOptions:[],
+      mechanism:'',
       submitFlag: false,
       submitFlag1: false,
       titlevarAddress: "新增服务地址",
@@ -500,7 +509,8 @@ export default {
         radiovalue: "",
         address: {},
         stationList: [],
-        serverStation1: ""
+        serverStation1: "",
+        mechanism:''
       },
       customPhone: "",
       serverStation1: "",
@@ -519,6 +529,9 @@ export default {
         ],
         radiovalue: [
           { required: true, message: "请选择服务地址", trigger: "change" }
+        ],
+        mechanism:[
+          { required: true, message: "请选择服务机构", trigger: "change" }
         ]
       },
       rules2: {
@@ -648,6 +661,17 @@ export default {
     }
   },
   methods: {
+    // 服务机构
+    getoffice() {
+      getSList({}).then(res => {
+        for (var a = 0; a < res.data.data.list.length; a++) {
+          if (res.data.data.list[a].id == 0) {
+            res.data.data.list.remove(res.data.data.list[a]);
+          }
+        }
+        this.mechanismOptions = res.data.data.list;
+      });
+    },    
     //单选改变
     getCurrentRow(row) {
       this.radio = row.id;
@@ -763,6 +787,10 @@ export default {
     seerchange(val) {
       this.form.serverStation1 = val;
     },
+    masimaChange(val) {
+      this.form.mechanism = val;
+      console.log(this.form.mechanism)
+    },    
     //时间转化成xx小时XX分钟
     formatDuring(mss) {
       var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1018,6 +1046,7 @@ export default {
               if (res.data.data != undefined) {
                 this.customId = res.data.data.id;
                 this.form = res.data.data;
+                this.getoffice()
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
@@ -1120,6 +1149,7 @@ export default {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.form = res.data.data;
+                this.getoffice()
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
@@ -1472,6 +1502,7 @@ export default {
   mounted() {
     this.getcustomerList();
     this.sex = this.dict.sex;
+    
   }
 };
 </script>

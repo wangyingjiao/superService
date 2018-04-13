@@ -822,7 +822,6 @@ export default {
           if (res.data.code === 1) {
             this.pagetotal1 = res.data.data.page.count;
             this.tableData = res.data.data.page.list;
-            console.log( this.tableData)
             this.pageNumber = res.data.data.page.pageNo;
             this.jumpPage = res.data.data.page.pageNo;
             this.pageSize1 = res.data.data.page.pageSize;
