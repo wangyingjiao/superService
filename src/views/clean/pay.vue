@@ -2,17 +2,22 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-       <el-select filterable  class="search" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
+       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.officeId" placeholder="请选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
        
-      <el-select filterable class="search" clearable  v-model="search.stationId" placeholder="选择服务站">
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="请选择服务站">
         <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
 
-      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="请选择支付状态">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+
+      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入要搜索的内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
@@ -47,6 +52,13 @@
       </el-table-column>
 
       <el-table-column align="center" label="支付编号" width="100" prop="method">      
+      </el-table-column>
+
+      <el-table-column  align="center" width="220" :render-header="renderHeader"  >
+            <!-- <template scope="rowObj">
+              <p>{{rowObj.row.orgName}}</p>
+              <p>{{rowObj.row.stationName}}</p>
+            </template>                     -->
       </el-table-column>
 
       <el-table-column align="center" label="支付金额" prop="requestUri">      
@@ -114,10 +126,8 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "日志类型",
-        title: "日志标题",
-        requestUri: "请求地址",
-        params: "提交数据"
+        type: "订单编号",
+        title: "支付编号"
       },
       //搜索数据
       search: {
@@ -138,6 +148,9 @@ export default {
     });
   },
   methods: {
+    renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
     // 获取列表
     getList() {
       this.listLoading = true;
