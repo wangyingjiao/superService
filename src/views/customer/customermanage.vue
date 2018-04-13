@@ -2,6 +2,10 @@
     <div class="addorder-container">
 		<!--搜索开始-->
 		<div class="fist-bar">
+      <el-select clearable class="search"  v-model="organizationName" filterable placeholder="选择机构">
+          <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+      </el-select>
 		  <el-input  class="search"   placeholder="请输入用户的手机号" v-model="customPhone"></el-input>
 			<el-input  class="search"   placeholder="请输入用户的姓名" v-model="customName"></el-input>
 		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
@@ -31,6 +35,11 @@
 						label="姓名"
 						>
 					  </el-table-column>
+					  <el-table-column
+						align="center"
+						prop="orgName"         
+						label="服务机构">
+					  </el-table-column>            
 					  <el-table-column
 						align="center"
 						prop="phone"         
@@ -215,7 +224,7 @@ import {
   setDefaultAddress // 设置默认地址
 } from "@/api/customer";
 import { getMech } from "@/api/basic";
-
+import { getSList } from "@/api/staff";
 var loading;
 export default {
   name: "customermanage",
@@ -309,6 +318,7 @@ export default {
     };
     return {
       AddressStatus: "add",
+      mechanismOptions: [],
       titlevar: "新增用户",
       titlevarAddress: "新增服务地址",
       submitFlag: false,
@@ -378,7 +388,7 @@ export default {
       tableDataAddress: [],
       //全局搜索下拉选项
       organizationOptions: [],
-      // organizationName:'',//服务机构
+      organizationName:'',//服务机构
       dialogTableVisible: false, //新增弹窗开关
       customName: "", //用户姓名
       customPhone: "", //用户电话
@@ -398,6 +408,17 @@ export default {
     }
   },
   methods: {
+    // 服务机构
+    getoffice() {
+      getSList({}).then(res => {
+        for (var a = 0; a < res.data.data.list.length; a++) {
+          if (res.data.data.list[a].id == 0) {
+            res.data.data.list.remove(res.data.data.list[a]);
+          }
+        }
+        this.mechanismOptions = res.data.data.list;
+      });
+    },     
     //单选改变
     getCurrentRow(value) {
       this.radio = value;
@@ -612,7 +633,7 @@ export default {
                   this.$refs["ruleForm"].resetFields();
                   this.customName = "";
                   this.customPhone = "";
-                  // this.organizationName='';
+                  this.organizationName='';
                   this.dialogTableVisible = false;
                   var obj = {};
                   this.pageNumber = 1;
@@ -684,8 +705,8 @@ export default {
     localSearch() {
       var obj = {
         name: this.customName,
-        phone: this.customPhone
-        // orgId:this.organizationName,
+        phone: this.customPhone,
+        orgId:this.organizationName,
       };
       this.pageNumber = 1;
       this.jumpPage = 1;
@@ -698,8 +719,8 @@ export default {
       this.pageSize1 = val;
       var obj = {
         name: this.customName,
-        phone: this.customPhone
-        // orgId:this.organizationName,
+        phone: this.customPhone,
+        orgId:this.organizationName,
       };
       this.getData(obj, this.pageNumber, this.pageSize1);
     },
@@ -708,8 +729,8 @@ export default {
       this.pageNumber = val;
       var obj = {
         name: this.customName,
-        phone: this.customPhone
-        // orgId:this.organizationName,
+        phone: this.customPhone,
+        orgId:this.organizationName,
       };
       this.getData(obj, this.pageNumber, this.pageSize1);
     },
@@ -775,8 +796,8 @@ export default {
                 });
                 var obj1 = {
                   name: this.customName,
-                  phone: this.customPhone
-                  // orgId:this.organizationName,
+                  phone: this.customPhone,
+                  orgId:this.organizationName,
                 };
                 this.getData(obj1, this.pageNumber, this.pageSize1);
               }
@@ -823,6 +844,7 @@ export default {
   mounted() {
     this.getData({}, 1, 10);
     this.sex = this.dict.sex;
+    this.getoffice()
   }
 };
 </script>

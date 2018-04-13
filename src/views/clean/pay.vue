@@ -2,7 +2,22 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.officeId" placeholder="请选择机构">
+        <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+       
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="请选择服务站">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="请选择支付状态">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+
+      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入要搜索的内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
@@ -37,6 +52,13 @@
       </el-table-column>
 
       <el-table-column align="center" label="支付编号" width="100" prop="method">      
+      </el-table-column>
+
+      <el-table-column  align="center" width="220" :render-header="renderHeader"  >
+            <!-- <template scope="rowObj">
+              <p>{{rowObj.row.orgName}}</p>
+              <p>{{rowObj.row.stationName}}</p>
+            </template>                     -->
       </el-table-column>
 
       <el-table-column align="center" label="支付金额" prop="requestUri">      
@@ -77,7 +99,8 @@
 </template>
 
 <script>
-import { getLog } from "@/api/set";
+import { getPay } from "@/api/order";
+import { getSList, getFuwu } from "@/api/staff";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
@@ -97,21 +120,21 @@ export default {
         title: undefined,
         type: undefined
       },
+      mechanismCheck: "",
+      servicestationSearch: "",
       pageNumber: 1,
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "日志类型",
-        title: "日志标题",
-        requestUri: "请求地址",
-        params: "提交数据"
+        type: "订单编号",
+        title: "支付编号"
       },
       //搜索数据
       search: {
         type: "",
         val: "",
-        startTime: "",
-        endTime: ""
+        officeId: "",
+        stationId: ""
       },
       tableKey: 0,
       isIndeterminate: true
@@ -119,33 +142,20 @@ export default {
   },
   created() {
     this.getList();
+    getSList({}).then(res => {
+      // 服务机构
+      this.mechanismCheck = res.data.data.list;
+    });
   },
   methods: {
+    renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
     // 获取列表
     getList() {
       this.listLoading = true;
       // 事件类型转换
-       var obj = {};
-      if (this.search.startTime) {
-        var startTime = util.formatDate.format(
-          new Date(this.search.startTime),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-        var start = {
-          startTime: startTime
-        };
-        obj = Object.assign(obj, start);
-      }
-      if (this.search.endTime) {
-        var endTime = util.formatDate.format(
-          new Date(this.search.endTime),
-          "yyyy-MM-dd 23:59:59"
-        );
-        var end = {
-          endTime: endTime
-        };
-        obj = Object.assign(obj, end);
-      }
+      var obj = {};
 
       if (this.search.type == "type") {
         var type = {
@@ -168,7 +178,7 @@ export default {
         };
         obj = Object.assign(obj, params);
       }
-      getLog(obj, this.pageNumber, this.pageSize)
+      getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
             this.total = res.data.data.count;
@@ -194,19 +204,33 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.pageNumber = 1;
-     this.getList()
+      this.getList();
     },
     //切换条数
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.pageNumber = 1;
       this.pageSize = val;
-     this.getList()
+      this.getList();
     },
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.getList()
+      this.getList();
+    },
+    searchOffice(val) {
+      // 搜索时机构改变
+      this.search.stationId = "";
+      this.servicestationSearch = [];
+      if (val) {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站列表
+          this.servicestationSearch = res.data.data;
+        });
+      }
     },
     //删除
     handleDelete(row) {

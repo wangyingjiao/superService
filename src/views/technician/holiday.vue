@@ -192,7 +192,7 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
-      data2:[],
+      data2: [],
       search: {
         type: "techName",
         val: "",
@@ -244,7 +244,7 @@ export default {
     });
   },
   methods: {
-    aaa(obj){
+    aaa(obj) {
       //console.log(obj,'aaa')
     },
     //请求列表数据
