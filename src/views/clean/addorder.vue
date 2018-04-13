@@ -22,26 +22,28 @@
 							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
 						</el-form-item>            
 						<div v-if="customKeyFlag">
-							<el-form-item label="服务地址:" prop='radiovalue'>                  
-							    <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
-								  <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
-								  <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>
+							<el-form-item label="服务地址:" prop='radiovalue'>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
-							</el-form-item>
-							<el-form-item v-if="true" label="所属机构:" prop='mechanism'>
-								<el-input type="hidden" value='' v-model='form.mechanism'></el-input>
-								<el-select clearable  style="float:left;margin-top:-36px;" class="severChangeStyle" filterable v-model="mechanism" @change="masimaChange" placeholder="请选择">
-								  <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
-								  </el-option>
-								</el-select>                
-							</el-form-item>	              
-							<el-form-item label="所属服务站:" prop='serverStation1'>
-								<el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
-								<el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
-								  <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
-								  </el-option>
-								</el-select>                
-							</el-form-item>	
+                  <div style="margin-top:-36px;">
+                      <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
+                      <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
+                      <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
+                  </div>                                   
+							</el-form-item> 
+                <el-form-item v-if="true" label="所属机构:" prop='mechanism'>
+                  <el-input type="hidden" value='' v-model='form.mechanism'></el-input>
+                  <el-select clearable  style="float:left;margin-top:-36px;" class="severChangeStyle" filterable v-model="mechanism" @change="masimaChange" placeholder="请选择">
+                    <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                  </el-select>                
+                </el-form-item>	              
+                <el-form-item label="所属服务站:" prop='serverStation1'>
+                  <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
+                  <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
+                    <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                  </el-select>                
+                </el-form-item>              	
 						</div>																										
 					</el-form>						
 				</div>
