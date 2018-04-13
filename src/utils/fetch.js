@@ -38,6 +38,9 @@ instance.interceptors.response.use(res => {
           }, 2500)
         })
       }
+      setTimeout(() => {
+        arr = []
+      }, 3000)
     }
     if (res.data.code === 0) {
       if (typeof res.data.data === 'string') {
