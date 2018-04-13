@@ -140,7 +140,7 @@
             type="password"
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
-        </el-form-item>
+        </el-form-item >
 
         <el-form-item label="角色:"  prop="officeId">
           <el-select  filterable :disabled="officeState" class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
