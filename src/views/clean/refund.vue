@@ -1,5 +1,5 @@
 <template>
-    <div class="refund">
+    <div id="refund">
         <div class="refund-search">
            	<el-select class="select-width" v-model="search.orgId" placeholder="选择机构">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.label" :value="item.id"></el-option>	
@@ -118,7 +118,7 @@ import information from './refundInformation.vue'
         color: black;
         background: #eef1f6;
     }
-    .refund .el-dialog--small{
+    #refund .el-dialog--small{
         width: 60%;
     }
     .refund-search,.refund-table{
