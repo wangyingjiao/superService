@@ -306,6 +306,42 @@
             </div>                     		
 		    </div>
         <!--技师信息结束-->
+        <!--下单用户信息开始-->
+        <div class="thrid-bar marginTop15" >
+            <div class="custom-action">下单用户信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">用户姓名:</span>
+                      <span class="lineContent">{{otherInfo.businessName}}</span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">
+                        {{otherInfo.businessRemark}}
+                      </span>
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle"></span>
+                      <span class="lineContent width1000">
+                        <div class="picWrap marginLeft82">
+                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
+                              <img :src="imgSrc+item+picWidth250"/>
+                            </div>
+                        </div>
+                      </span>
+                   </p>                                                        
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">用户电话:</span>
+                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
+                   </p>                    
+                </div> 
+            </div>                                     		
+		    </div>
+        <!--下单用户信息结束-->        
         <!--用户备注开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">用户备注</div>
@@ -581,33 +617,32 @@
               <div class="marginTop20" >支付方式：<span class="refundSpan" >现金</span></div>
               <div class="marginTop20" >退款方式：<span class="refundSpan" ><el-radio label="1" v-model="radio" >现金</el-radio></span></div>
               <div class="marginTop20" >退款金额：<span class="refundSpan" >￥{{refundSum | keepTwoNum }}</span></div>
-              <div class="marginTop20" >退款差额：
-                <span class="refundSpan" >
-                      <el-input v-model.number="chaE" placeholder="0" class="search searchHeader">
-                        <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
-                          <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
-                          </el-option>
-                        </el-select>
-                    </el-input>
-                </span>
+              <div class="marginTop20" style="margin-left:-10px;">
+                  <el-form  :model="formInline" :rules="rules" ref="ruleForm" class="demo-form-inline">
+                      <el-form-item label="退款差额:" prop="chaE">
+                        <el-input v-model="formInline.chaE" placeholder="0" class="search searchHeader">
+                            <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
+                              <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                              </el-option>
+                            </el-select>
+                        </el-input>   
+                      </el-form-item>
+                      <el-form-item label="退款原因:" prop="refundScource">
+                          <el-input
+                            type="textarea"
+                            :rows="3"
+                            placeholder="请输入内容"
+                            v-model="formInline.refundScource"
+                            style="width:380px;"
+                            >
+                          </el-input>	
+                      </el-form-item>
+                  </el-form>
               </div>
-              <div class="marginTop20" >
-                <div style="display:inline-block;margin-top:25px;float:left;">退款原因：</div>
-                <span class="refundSpan" style="display:inline-block;" >
-                  <el-input
-                    type="textarea"
-                    :rows="3"
-                    placeholder="请输入内容"
-                    v-model="refundScource"
-                    style="width:380px;"
-                    >
-                  </el-input>	                  
-                </span>
-              </div>               
             </div>
                      
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundOk">退款</button>
+              <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundOk('ruleForm')">退款</button>
               <button class="button-cancel"  @click="orderRefundCancel">取 消</button>
             </div>
         </el-dialog>
@@ -632,13 +667,55 @@ var loading;
 export default {
   name: "orderinfo",
   data() {
+    //退款差价验证规则
+    var checkChaE = (rule, value, callback) => {
+      if (!value) {   
+        callback();
+      } else {
+        if(!/^[0-9]+.?[0-9]*/.test(value)){
+           callback(new Error("只能输入整数或一至两位小数"));
+        }else{
+          if (!/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
+              callback(new Error("只能输入整数或一至两位小数"));
+          }else{
+            callback();
+          }
+        }
+
+          
+      }
+    };
+    //退款原因验证规则
+    var checkrefundScource = (rule, value, callback) => {
+      if (!value) {   
+        callback();
+      } else {
+        if (value.length >= 0 && value.length <= 500) {
+          callback();
+        } else {
+          callback(new Error("请输入500位以内的退款原因"));
+        }
+          
+      }
+    };        
     return {
+      formInline: {
+        chaE: '',
+        refundScource:''
+      },
+      rules: {
+          chaE: [
+            { validator: checkChaE, trigger: 'blur' },
+          ],
+          refundScource: [
+            { validator: checkrefundScource, trigger: 'blur' },
+          ]          
+      },
       refundScource:'',
       choose:[
         {value:'1',label:'多退'},
         {value:'2',label:'少退'}
       ],
-      chaE:0,
       chooses:'',
       radio:'',
       orderRefundObj:[
@@ -762,44 +839,62 @@ export default {
       }       
     },
     //确认退款
-    orderRefundOk(){
-      var refundPirce=0;
-      if(this.chooses == '1'){
-         refundPirce=this.refundSum+this.chaE
-      }
-      if(this.chooses == '2'){
-        refundPirce=this.refundSum-this.chaE
-      } 
-      if(this.chooses == ''){
-        refundPirce=this.refundSum
-      }
-      refundPirce=Number(refundPirce).toFixed(2); 
-      const h = this.$createElement;
-      this.$msgbox({
-        title: '提示',
-        message: h('p', null, [
-          h('span', null, '实际退款金额为：￥'),
-          h('span', { style: 'color: teal' }, refundPirce),
-          h('span', null, '，确定退款吗？'),
-        ]),
-        showCancelButton: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-          this.refundSum=0;
-          this.chaE=0;
-          this.radio='';
-          this.chooses='';
-          this.orderRefundFlag = false;
-      }).catch(() => {
-            this.$message({
-              type: "warning",
-              message: "已取消退款"
-            });
-      })               
-      //this.refundScource
+    orderRefundOk(formName){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var refundPirce=0;
+          if(this.chooses == '1'){
+            refundPirce=this.refundSum+Number(this.formInline.chaE)
+          }
+          if(this.chooses == '2'){
+            refundPirce=this.refundSum-Number(this.formInline.chaE)
+          } 
+          if(this.chooses == ''){
+            refundPirce=this.refundSum
+          }
+          refundPirce=Number(refundPirce).toFixed(2); 
+          const h = this.$createElement;
+          this.$msgbox({
+            title: '提示',
+            message: h('p', null, [
+              h('span', null, '实际退款金额为：￥'),
+              h('span', { style: 'color: teal' }, refundPirce),
+              h('span', null, '，确定退款吗？'),
+            ]),
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(() => {
+              this.refundSum=0;
+              this.$refs['ruleForm'].resetFields();
+              this.radio='';
+              this.chooses='';
+              this.orderRefundFlag = false;
+          }).catch(() => {
+                this.$message({
+                  type: "warning",
+                  message: "已取消退款"
+                });
+          })  
+        }else{
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
+        }
+      })      
+             
+      //this.formInline.refundScource
       // console.log(this.refundSum)
-      // console.log(this.chaE)
+      // console.log(this.formInline.chaE)
       // console.log(this.chooses)
       //console.log(this.radio)
 
@@ -807,7 +902,7 @@ export default {
     //取消退款
     orderRefundCancel(){
       this.refundSum=0;
-      this.chaE=0;
+      this.$refs['ruleForm'].resetFields();
       this.radio='';
       this.chooses='';      
       this.orderRefundFlag = false;
@@ -1192,7 +1287,7 @@ export default {
     //退款按钮
     orderRefund(){
       this.refundSum=0;
-      this.chaE=0;
+      this.formInline.chaE='';
       this.radio='';
       this.chooses='';
       this.orderRefundFlag=true;
@@ -1268,6 +1363,9 @@ export default {
 };
 </script>
 <style   scoped>
+.demo-form-inline .el-form-item__error{
+  left: 254px;
+}
 .searchHeader .el-input-group__prepend .el-input__inner {
   width: 200px;
   text-align: center;
@@ -1380,9 +1478,10 @@ export default {
 .marginTop20{
   margin-top:20px;
   padding-left:25px;
+  font-size:12px;
 }
 .refundSpan{
-  padding-left:20px;
+  padding-left:10px;
 }
 .selfPromINF {
   font-size: 12px;

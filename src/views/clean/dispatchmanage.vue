@@ -2,6 +2,14 @@
     <div class="addorder-container">
 		<!-- 搜索开始 -->
 		<div class="filter-container bgWhite">
+      <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
+          <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+      </el-select>
+      <el-select clearable class="search"  v-model="payType" filterable placeholder="选择服务站">
+          <el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+      </el-select>      
 			<el-input  style="width:30%" placeholder="请输入搜索内容" v-model.trim="techName">
         <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
@@ -21,6 +29,12 @@
 								</div>
 							</template>
 						</el-table-column>
+            <el-table-column  align="center" width="150" :render-header="renderHeader"  >
+                  <template scope="rowObj">
+                    <p>{{rowObj.row.orgName}}</p>
+                    <p>{{rowObj.row.stationName}}</p>
+                  </template>                    
+            </el-table-column>
 					  <el-table-column align="center"  width="160px" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
@@ -151,10 +165,15 @@ import {
   dispatchTechSave1,
   Reassignment
 } from "@/api/order";
+import { getFuwu, getSList } from "@/api/staff";
 export default {
   name: "dispatchmanage",
   data() {
     return {
+      mechanismOptions: [],
+      mechanism: "",
+      payTypeOptions: [],
+      payType: "",            
       btnShow: [],
       techSaveFlag: false,
       listTech: [],
@@ -189,6 +208,39 @@ export default {
     }
   },
   methods: {
+    renderHeader (h) {
+      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+    },
+    //机构变化事件
+    orgChange(val) {
+      this.payType = "";
+      this.payTypeOptions = [];
+      if (val != "") {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data[0].id == 0) {
+              res.data.data.remove(res.data.data[0]);
+            }
+            this.payTypeOptions = res.data.data;
+          } else {
+          }
+        });
+      }
+    }, 
+    // 服务机构
+    getoffice() {
+      getSList({}).then(res => {
+        for (var a = 0; a < res.data.data.list.length; a++) {
+          if (res.data.data.list[a].id == 0) {
+            res.data.data.list.remove(res.data.data.list[a]);
+          }
+        }
+        this.mechanismOptions = res.data.data.list;
+      });
+    },           
     //跳转改派记录页
     godispatchReass(id) {
       window.localStorage.setItem("orderId1", id);
@@ -373,7 +425,9 @@ export default {
       var obj = {
         techName: this.techName1,
         techPhone: this.techPhone1,
-        orderNumber: this.orderNumber1
+        orderNumber: this.orderNumber1,
+        orgId: this.mechanism,
+        stationId: this.payType        
       };
       this.pageNumber = 1;
       this.jumpPage = 1;
@@ -404,7 +458,9 @@ export default {
       var obj = {
         techName: this.techName1,
         techPhone: this.techPhone1,
-        orderNumber: this.orderNumber1
+        orderNumber: this.orderNumber1,
+        orgId: this.mechanism,
+        stationId: this.payType         
       };
       this.reassList(obj, this.pageNumber, this.pageSize1);
     },
@@ -431,13 +487,16 @@ export default {
       var obj = {
         techName: this.techName1,
         techPhone: this.techPhone1,
-        orderNumber: this.orderNumber1
+        orderNumber: this.orderNumber1,
+        orgId: this.mechanism,
+        stationId: this.payType         
       };
       this.reassList(obj, this.pageNumber, this.pageSize1);
     }
   },
   mounted() {
     this.reassList({}, 1, 10);
+    this.getoffice();
   }
 };
 </script>

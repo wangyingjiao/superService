@@ -2,6 +2,10 @@
   <div class="box">
     <!-- 技能搜索开始 -->
     <div class="filter-container bgWhite padBot20">
+      <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" >
+          <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+      </el-select>      
       <el-input  class="search" placeholder="请输入搜索的技能名称" v-model="localSearch"></el-input>
       <button @click="search" class="search-button btn_search el-icon-search btn-color"> 搜索</button>
     </div>
@@ -19,6 +23,11 @@
                             {{scope.row.index+(pageNumber-1)*pageSize}}
                           </template>
                       </el-table-column>
+                      <el-table-column
+                      align="center"
+                      prop="orgName"         
+                      label="服务机构">
+                      </el-table-column>                       
                       <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
                       <el-table-column align="center" label="操作" min-width="100px">
@@ -146,6 +155,7 @@ import {
   editTech,
   upDataTech
 } from "@/api/serviceManage";
+import { getSList } from "@/api/staff";
 //挂载数据
 var loading;
 export default {
@@ -163,6 +173,8 @@ export default {
       }
     };
     return {
+      mechanismOptions: [],
+      mechanism: "",      
       Options2: [],
       submitFlag: false,
       jumpPage: 1,
@@ -223,6 +235,17 @@ export default {
     }
   },
   methods: {
+    // 服务机构
+    getoffice() {
+      getSList({}).then(res => {
+        for (var a = 0; a < res.data.data.list.length; a++) {
+          if (res.data.data.list[a].id == 0) {
+            res.data.data.list.remove(res.data.data.list[a]);
+          }
+        }
+        this.mechanismOptions = res.data.data.list;
+      });
+    },    
     loadingClick() {
       loading = this.$loading({
         lock: true,
@@ -234,7 +257,8 @@ export default {
     //全局搜索按钮
     search() {
       var obj = {
-        name: this.localSearch
+        name: this.localSearch,
+        orgId: this.mechanism
       };
       this.pageNumber = 1;
       this.jumpPage = 1;
@@ -375,6 +399,7 @@ export default {
                   this.middleB = [];
                   this.middleD = [];
                   this.localSearch = "";
+                  this.mechanism='';
                   var obj1 = {};
                   this.dialogVisible = false;
                   this.listLoading = false;
@@ -411,7 +436,8 @@ export default {
                   this.middleD = [];
                   this.dialogVisible = false;
                   var obj1 = {
-                    name: this.localSearch
+                    name: this.localSearch,
+                    orgId: this.mechanism
                   };
                   this.listLoading = false;
                   this.getList(obj1, this.pageNumber, this.pageSize);
@@ -564,7 +590,8 @@ export default {
       this.jumpPage = 1;
       this.pageSize = val;
       var obj = {
-        name: this.localSearch
+        name: this.localSearch,
+        orgId: this.mechanism
       };
       this.getList(obj, this.pageNumber, this.pageSize);
     },
@@ -572,7 +599,8 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       var obj = {
-        name: this.localSearch
+        name: this.localSearch,
+        orgId: this.mechanism
       };
       this.getList(obj, this.pageNumber, this.pageSize);
     },
@@ -595,7 +623,8 @@ export default {
                   message: "删除成功!"
                 });
                 var obj = {
-                  name: this.localSearch
+                  name: this.localSearch,
+                  orgId: this.mechanism
                 };
                 this.getList(obj, this.pageNumber, this.pageSize);
               }
@@ -698,6 +727,7 @@ export default {
   },
   mounted() {
     this.getList({}, 1, 10);
+    this.getoffice()
   }
 };
 </script>
