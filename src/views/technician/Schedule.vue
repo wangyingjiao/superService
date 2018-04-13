@@ -545,7 +545,6 @@
 			},
 			getList(){
 				this.listLoading = true
-				// console.log(this.search,this.pageSync,this.pageSize)
 				getData(this.search,this.pageSync,this.pageSize)
 					.then(({data})=>{
 						if(data.code){
@@ -555,11 +554,9 @@
 						}else{
 							this.listLoading = false
 						}
-						// console.log(data,"data-----")
 					})
 					.catch(error=>{
 						this.listLoading = false
-						// console.log(error,"error----")
 					})
 			},
 		},
@@ -585,10 +582,10 @@
 					}
 					// var obj = data.data.data
 					// if(data.data){}
-					// console.log(data)
+					
 				})
 				.catch(error=>{
-					// console.log(error)
+					
 				})
 			// this.getList()
 		}
