@@ -48,23 +48,23 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column align="center" label="订单编号" prop="id">      
+      <el-table-column align="center" label="订单编号" prop="orderNumber">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付编号" width="100" prop="method">      
+      <el-table-column align="center" label="支付编号" prop="payNumber">      
       </el-table-column>
 
       <el-table-column  align="center" width="220" :render-header="renderHeader"  >
-            <!-- <template scope="rowObj">
+            <template scope="rowObj">
               <p>{{rowObj.row.orgName}}</p>
               <p>{{rowObj.row.stationName}}</p>
-            </template>                     -->
+            </template>                    
       </el-table-column>
 
-      <el-table-column align="center" label="支付金额" prop="requestUri">      
+      <el-table-column align="center" label="支付金额" prop="payNumber">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付状态" >
+      <el-table-column align="center" label="支付状态" prop="payStatus" >
         <!-- <template scope="scope">
            <el-tooltip placement="left"  :content="scope.row.requestContent">
              <div class="tool" >{{scope.row.requestContent}}</div>
@@ -72,10 +72,10 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column align="center" label="收款人" prop="createDate">      
+      <el-table-column align="center" label="收款人" prop="payTechName">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" prop="exceptions">     
+      <el-table-column align="center" label="支付时间" prop="payTime">     
         <!-- <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
              <div class="tool" >{{scope.row.exceptions}}</div>
