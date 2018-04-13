@@ -417,7 +417,35 @@
               <!-- 服务信息 -->
               <h3 class="tech-tc-prson">服务信息</h3>
               <ul class="tech-ul tech-service">
-                <el-row :gutter="60">
+                <div style="overflow:hidden">
+                  <div class="server-left">
+                      <el-form-item label="所属服务站：" prop="stationId">
+                        <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+                      </el-form-item>
+                  </div>
+                  <div class="server-right">
+                      <el-form-item label="岗位状态：" prop="jobStatus">
+                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                  </div>
+                  <div class="server-left">
+                      <el-form-item label="工作年限：" prop="workTime">
+                            <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                            </el-select>
+                      </el-form-item>
+                  </div>
+                </div>
+
+
+                <!-- <el-row :gutter="60">
                     <el-col :span="12">
                       <el-form-item label="所属服务站：" prop="stationId">
                             <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
@@ -444,7 +472,7 @@
                           </el-select>
                         </el-form-item>
                     </el-col>
-                </el-row>
+                </el-row> -->
                 <el-row>
                   <el-col :span="17">
                       <el-form-item label="选择技能：" prop="skillIds">
@@ -1692,6 +1720,7 @@ export default {
         .then(data => {
           if (data.data.code == 1) {
             this.listLoadingTech = false;
+            console.log(data.data.data.cityCodes,"data.data.data.cityCodes;")
             this.Choose = data.data.data.cityCodes;
             this.total = data.data.data.page.count;
             if(str == 'sear'){
@@ -1791,6 +1820,14 @@ export default {
 };
 </script>
 <style>
+.server-left{
+  width: 47%;
+  float: left;
+}
+.server-right{
+  width: 47%;
+  float: right;
+}
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateY(20px);

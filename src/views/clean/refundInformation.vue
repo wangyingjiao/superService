@@ -1,19 +1,18 @@
 <template>
     <div id="refundInformation">
-        <!-- <el-dialog title="退款详情" :close-on-click-modal="false" :visible.sync="dialogvisible"> -->
             <!-- 退款信息 -->
                 <div class="refund-infor">
                     <div class="refund-header infor">退款信息</div>
                     <div class="over-flow">
                         <div class="refund-left">
-                            <div>退款编号：<span>{{open.id}}</span></div>
-                            <div>退款状态：<span>awdawdawd</span></div>
-                            <div>退款编号：<span>awdawdawd</span></div>
+                            <div>退款编号：<span>{{infor.refundNumber}}</span></div>
+                            <div>退款状态：<span>{{infor.refundStatus}}</span></div>
+                            <div>退款时间：<span>{{infor.finishTime}}</span></div>
                         </div>
                        <div class="refund-right">
-                            <div>订单编号：<span>11111111111111</span></div>
-                            <div>退款方式：<span>awdawdawd</span></div>
-                            <div>退款原因：<span>awdawdawd</span></div>
+                            <div>订单编号：<span>{{infor.orderNumber}}</span></div>
+                            <div>退款方式：<span>{{infor.refundMethod}}</span></div>
+                            <div>退款原因：<span>{{infor.refundReason}}</span></div>
                        </div>
                     </div>
                 </div>
@@ -24,62 +23,43 @@
                    <div class="refund-header infor">退款商品信息</div>
                     <div class="over-flow">
                         <div class="refund-left">
-                            <div>退款金额：<span>￥388</span></div>
+                            <div>退款金额：<span>{{'￥'+infor.refundAccountReality}}</span></div>
                         </div>
                        <div class="refund-right">
-                            <div>退款差额：<span>多退 ￥30</span></div>
+                            <div>退款差额：<span>{{infor.refundDifferenceType+'￥'+infor.refundDifference}}</span></div>
                        </div>
                     </div>
-                    <el-table :data="tableData" border style="width: 100%">
-                        <el-table-column align="center" prop="serviceItems" label="服务项目"> </el-table-column>
-                        <el-table-column align="center" prop="name" label="商品名称"> </el-table-column>
-                        <el-table-column align="center" prop="num" label="退货数量"> </el-table-column>
-                        <el-table-column align="center" prop="company" label="单位"> </el-table-column>
-                        <el-table-column align="center" prop="unitPrice" label="交易单价"> </el-table-column>
-                        <el-table-column align="center" prop="subtotal" label="小计"> </el-table-column>
+                    <el-table :data="infor.refundGoodsList" border style="width: 100%">
+                        <el-table-column align="center" prop="itemName" label="服务项目"> </el-table-column>
+                        <el-table-column align="center" prop="goodsName" label="商品名称"> </el-table-column>
+                        <el-table-column align="center" prop="goodsNum" label="退货数量"> </el-table-column>
+                        <el-table-column align="center" prop="goodsUnit" label="单位"> </el-table-column>
+                        <el-table-column align="center" prop="payPrice" label="交易单价"> </el-table-column>
+                        <el-table-column align="center" prop="payPriceSum" label="小计"> </el-table-column>
                     </el-table>
                 </div>
             <!-- 退货商品信息完成 -->
-        <!-- </el-dialog> -->
     </div>
 </template>
 
 <script>
-    let tableData=[
-        {serviceItems:'灯具清洁',name:'大灯',num:'3',company:'个',unitPrice:'￥200',subtotal:'￥900'},
-        {serviceItems:'灯具清洁',name:'小灯',num:'4',company:'个',unitPrice:'￥100',subtotal:'￥900'},
-        {serviceItems:'居室保洁',name:'一居室',num:'1',company:'接',unitPrice:'￥300',subtotal:'￥900'},
-    ]
+
     export default{
         data(){
             return{
-                tableData:tableData,
-                id:null
+
             }
         },
         methods:{
-            resetForm(){
-                this.$emit('close')
-            },
-            had(id){
-              
-            }
-        },
-        watch:{
-            // refundid(val){
-            //     console.log(val,"opopopop")
-            // }
+        
         },
         computed:{
-            open(){
-               return this.informationdata
-            }
+            infor:() => this.informationdata.data.data
         },
         mounted(){
-            this.opd
+
         },
         props:[
-            'dialogvisible',
             'informationdata'
         ]
     }

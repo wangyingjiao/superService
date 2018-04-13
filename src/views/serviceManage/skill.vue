@@ -53,6 +53,17 @@
              label-width="160px" 
              class="demo-ruleForm dia_form" 
              label-position="left">
+            <el-form-item v-if="true" label="选择机构"  prop="mechanism">
+              <el-select v-model="ruleForm2.mechanism" :disabled='mechanismFlag' filterable placeholder="请选择机构"  class="kill form_item">  
+                <el-option
+                  v-for="item in mechanismOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                  >
+                </el-option>
+              </el-select>
+            </el-form-item>              
             <el-form-item label="技能名称" prop="name">
               <el-input  v-model.trim="ruleForm2.name"  class="form_item"  placeholder="请输入2-15位技能名称"></el-input>
             </el-form-item>
@@ -173,6 +184,7 @@ export default {
       }
     };
     return {
+      mechanismFlag:false,
       mechanismOptions: [],
       mechanism: "",      
       Options2: [],
@@ -190,6 +202,7 @@ export default {
       techStationId: "",
       rules: {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
+        mechanism:[{required: true, message: "请选择机构", trigger: "change"}],
         staffClass: [
           {
             required: true,
@@ -202,7 +215,8 @@ export default {
       ruleForm2: {
         name: "",
         staffClass: [], //选择分类下拉对象
-        technicians: []
+        technicians: [],
+        mechanism:'',
       },
       commodityse: {},
       options: [],
@@ -297,11 +311,13 @@ export default {
       this.middleA = [];
       this.middleB = [];
       this.middleD = [];
+      this.ruleForm2.mechanism='';
       this.listLoading = true;
       this.dialogStatus = status;
       this.tabOptions = [];
       if (this.dialogStatus == "add") {
         this.title = "新增技能";
+        this.mechanismFlag=false;
         //新增操作
         this.id = "";
         this.listLoading = false;
@@ -325,6 +341,7 @@ export default {
           });
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
+        this.mechanismFlag=true;        
         //编辑操作
         this.id = row.id;
         var obj = {
@@ -339,6 +356,7 @@ export default {
               this.listLoading = false;
               this.dialogVisible = true;
               this.ruleForm2.name = res.data.data.info.name;
+              this.ruleForm2.mechanism ='998737d802a14dea88b187aae3b77191';              
               if (res.data.data.info.sortIds != undefined) {
                 this.ruleForm2.staffClass = res.data.data.info.sortIds;
               }
