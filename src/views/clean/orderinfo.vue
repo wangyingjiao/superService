@@ -17,7 +17,7 @@
                           <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
                           <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
                           <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
-                          <!-- <span v-if="otherInfo.orderStatus =='started'">已上门</span> -->
+                          <span v-if="otherInfo.orderStatus =='close'">已关闭</span>
                           <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
                           <span v-if="otherInfo.orderStatus =='success'">已成功</span>
                           <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
@@ -196,7 +196,8 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p  v-if="true" class="contentLine" style="color:#3a5fcd;cursor:pointer;" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</p>                                                                           
+                   <p class="contentLine"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>
+                   <!-- <p  v-if="false" class="contentLine" style="color:#3a5fcd;cursor:pointer;" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</p>                                                                            -->
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -696,6 +697,7 @@ export default {
       }
     };        
     return {
+      jumpUrl:'',
       ruleForm: {
         refundId:'',
         chaE: '',
@@ -910,7 +912,11 @@ export default {
     },
     //跳转退款详情页
     gotoRefund(orderNumber){
-      this.$router.push({ path: "/clean/refund/", query: { orderNumber: orderNumber } });
+      var src=window.location.href;
+      var end=src.indexOf('#')+1;
+      var url=src.substring(0,end)
+      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber
+      // this.$router.push({ path: "/clean/refund/", query: { orderNumber: orderNumber } });
     },
     loadingClick() {
       loading = this.$loading({

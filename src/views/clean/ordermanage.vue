@@ -58,12 +58,14 @@
 					</el-table-column>
 					<el-table-column  align="center" width="220" :render-header="renderHeader"  >
                 <template scope="rowObj">
-                  <p>{{rowObj.row.orgName}}</p>
-                  <p>{{rowObj.row.stationName}}</p>
+                  <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                     <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                  </el-tooltip>
+                  <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                    <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                  </el-tooltip>
                 </template>                    
 					</el-table-column>
-					<!-- <el-table-column  align="center" width="150" label="服务站" prop="stationName">
-					</el-table-column> -->
 					<el-table-column  align="center" width="150"  label="订单来源">
 						<template scope="scope">
 							<span v-if="scope.row.orderSource =='own'">本机构</span>
@@ -181,7 +183,7 @@ export default {
   },
   methods: {
     renderHeader (h) {
-      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
     },
     //机构变化事件
     orgChange(val) {
@@ -459,6 +461,14 @@ export default {
 <style lang="scss" scoped>
 .selfToolTip {
   width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+.selfToolTip1 {
+  margin:0 auto;
+  width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

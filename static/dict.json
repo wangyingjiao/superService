@@ -114,6 +114,7 @@
         "success": "已成功",
         "waitdispatch": "待派单",
         "cancel": "已取消",
+        "close":"已关闭",
         "whole": "全部"
     },
     "order_type": {
