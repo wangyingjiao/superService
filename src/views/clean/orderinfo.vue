@@ -868,8 +868,7 @@ export default {
               h('span', { style: 'color: teal' }, refundPirce),
               h('span', null, '，确定退款吗？'),
             ]),
-            showCancelButton: true,
-            
+            showCancelButton: true,            
             confirmButtonText: '确定',
             cancelButtonText: '取消'
           }).then(() => {
