@@ -10,6 +10,8 @@
 				<div class="searchs">
 			  	<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
+            <!-- <el-option key="1" label="请选择" value="">
+            </el-option> -->
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
@@ -56,7 +58,7 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="220" :render-header="renderHeader"  >
+					<el-table-column  align="center" width="156" :render-header="renderHeader"  >
                 <template scope="rowObj">
                   <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                      <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
@@ -66,6 +68,13 @@
                   </el-tooltip>
                 </template>                    
 					</el-table-column>
+					<el-table-column v-if="false"  align="center" width="156" label="服务站名称"  >
+                <template scope="rowObj">
+                  <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                    <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                  </el-tooltip>
+                </template>                    
+					</el-table-column>          
 					<el-table-column  align="center" width="150"  label="订单来源">
 						<template scope="scope">
 							<span v-if="scope.row.orderSource =='own'">本机构</span>
@@ -187,6 +196,7 @@ export default {
     },
     //机构变化事件
     orgChange(val) {
+      console.log(val)
       this.payType = "";
       this.payTypeOptions = [];
       if (val != "") {

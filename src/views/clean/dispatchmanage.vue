@@ -41,6 +41,14 @@
                       </el-tooltip>
                   </template>                    
             </el-table-column>
+            <el-table-column  v-if="false" align="center" width="150" label="服务站名称"   >
+                  <template scope="rowObj">
+                      <el-tooltip placement="left"  :content="rowObj.row.stationName">
+                        <!-- :disabled="rowObj.row.stationName.length < 10" -->
+                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>
+                  </template>                    
+            </el-table-column>            
 					  <el-table-column align="center"  width="160px" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
