@@ -17,7 +17,7 @@
                           <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
                           <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
                           <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
-                          <!-- <span v-if="otherInfo.orderStatus =='started'">已上门</span> -->
+                          <span v-if="otherInfo.orderStatus =='close'">已关闭</span>
                           <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
                           <span v-if="otherInfo.orderStatus =='success'">已成功</span>
                           <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
@@ -196,7 +196,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p  v-if="true" class="contentLine" style="color:#3a5fcd;cursor:pointer;" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</p>                                                                           
+                   <p class="contentLine"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -618,12 +618,12 @@
                       </el-form-item>
                      <el-form-item label="支付总额:" prop="paySum">￥{{ruleForm.paySum | keepTwoNum}}元</el-form-item>
                      <el-form-item label="支付方式:" prop="payMethod"><span>{{ruleForm.payMethod}}</span></el-form-item>
-                     <el-form-item label="退款方式:" prop="refundMethod">{{ruleForm.refundMethod}}</el-form-item> 
+                     <el-form-item label="退款方式:" prop="refundMethod"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
                      <el-form-item label="退款金额:" prop="refundSum">￥{{ruleForm.refundSum | keepTwoNum }}元</el-form-item>
                       <el-form-item label="退款差额:" prop="chaE">
                         <el-input v-model="ruleForm.chaE" placeholder="0" class="search searchHeader">
-                            <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
-                              <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                            <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend" @change="ChangerefundType">
+                              <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
                               </el-option>
                             </el-select>
                         </el-input>   
@@ -696,12 +696,13 @@ export default {
       }
     };        
     return {
+      jumpUrl:'#',
       ruleForm: {
         refundId:'',
         chaE: '',
         refundScource:'',
         refundSum:0,
-        refundMethod:'现金',
+        refundMethod:'cash',
         payMethod:'现金',
         paySum:'440',
         orderRefundObj:[
@@ -742,10 +743,7 @@ export default {
             { required: true,message:'请选择退款商品', trigger: 'change' },
           ]  
       },
-      choose:[
-        {value:'1',label:'多退'},
-        {value:'2',label:'少退'}
-      ],
+      choose:[],
       chooses:'',
       dict: require("../../../static/dict.json"),
       becaussOptions: [],
@@ -832,6 +830,12 @@ export default {
     }
   }, 
   methods: {
+    //多少退款改变
+    ChangerefundType(value){
+      if(value == ''){
+        this.ruleForm.chaE='';
+      }
+    },
     //计算退款总额
     rowChange(rowObj){     
       if (rowObj.commidySelect) {          
@@ -850,10 +854,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           var refundPirce=0;
-          if(this.chooses == '1'){
+          if(this.chooses == 'many'){
             refundPirce=this.ruleForm.refundSum+Number(this.ruleForm.chaE)
           }
-          if(this.chooses == '2'){
+          if(this.chooses == 'less'){
             refundPirce=this.ruleForm.refundSum-Number(this.ruleForm.chaE)
           } 
           if(this.chooses == ''){
@@ -868,8 +872,7 @@ export default {
               h('span', { style: 'color: teal' }, refundPirce),
               h('span', null, '，确定退款吗？'),
             ]),
-            showCancelButton: true,
-            
+            showCancelButton: true,            
             confirmButtonText: '确定',
             cancelButtonText: '取消'
           }).then(() => {
@@ -911,7 +914,10 @@ export default {
     },
     //跳转退款详情页
     gotoRefund(orderNumber){
-      this.$router.push({ path: "/clean/refund/", query: { orderNumber: orderNumber } });
+      var src=window.location.href;
+      var end=src.indexOf('#')+1;
+      var url=src.substring(0,end)
+      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber
     },
     loadingClick() {
       loading = this.$loading({
@@ -1354,6 +1360,7 @@ export default {
     }
   },
   mounted() {
+    this.choose = this.dict.refund_type;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
     if (this.$route.query.id == undefined) {

@@ -31,10 +31,24 @@
 						</el-table-column>
             <el-table-column  align="center" width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                    <p>{{rowObj.row.orgName}}</p>
-                    <p>{{rowObj.row.stationName}}</p>
+                      <el-tooltip placement="left"  :content="rowObj.row.orgName">
+                        <!-- :disabled="rowObj.row.orgName.length < 10" -->
+                        <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                      </el-tooltip>
+                      <el-tooltip placement="left"  :content="rowObj.row.stationName">
+                        <!-- :disabled="rowObj.row.stationName.length < 10" -->
+                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>
                   </template>                    
             </el-table-column>
+            <el-table-column  v-if="false" align="center" width="150" label="服务站名称"   >
+                  <template scope="rowObj">
+                      <el-tooltip placement="left"  :content="rowObj.row.stationName">
+                        <!-- :disabled="rowObj.row.stationName.length < 10" -->
+                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>
+                  </template>                    
+            </el-table-column>            
 					  <el-table-column align="center"  width="160px" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
@@ -209,7 +223,7 @@ export default {
   },
   methods: {
     renderHeader (h) {
-      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
     },
     //机构变化事件
     orgChange(val) {
@@ -501,6 +515,14 @@ export default {
 };
 </script>
 <style scoped>
+.selfToolTip1 {
+  margin:0 auto;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .dispatchNumberStyle {
   cursor: pointer;
   padding-left: 18px;
