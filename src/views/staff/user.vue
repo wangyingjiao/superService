@@ -140,6 +140,13 @@
             type="password"
             v-model="temp.password2"
             placeholder="再次填写密码"></el-input>
+        </el-form-item >
+
+        <el-form-item label="角色:"  prop="officeId">
+          <el-select  filterable :disabled="officeState" class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
+            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="服务机构:"  prop="officeId">

@@ -52,35 +52,62 @@ export function dispatchTechSave1(obj) {
 export function findCustomerByPhone(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findCustomerByPhone`, obj)
 }
-//根据ID查找客户
+// 根据ID查找客户
 export function findCustomerById(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findCustomerById`, obj)
 }
-//获取服务项目列表
+// 获取服务项目列表
 export function findItemList(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findItemList`, obj)
 }
-//获取服务项目下的商品列表
+// 获取服务项目下的商品列表
 export function findGoodsListByItem(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findGoodsListByItem`, obj)
 }
-//获取商品的技师列表
+// 获取商品的技师列表
 export function findTechListByGoods(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findTechListByGoods`, obj)
 }
-//获取技师的时间列表
+// 获取技师的时间列表
 export function findTimeListByTech(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findTimeListByTech`, obj)
 }
-//新增订单保存
+// 新增订单保存
 export function createOrder(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/createOrder`, obj)
 }
-//获取建议服务时长
+// 获取建议服务时长
 export function findGoodsNeedTech(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/findGoodsNeedTech`, obj)
 }
-//取消订单
+// 取消订单
 export function orderCancelFun(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/orderCancel`, obj)
+}
+
+//退款列表
+export function listDataRefund(obj, pageNumber, pageSize){
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/order/orderInfo/listDataRefund?pageNo=${pageNumber}&pageSize=${pageSize}`, obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+//退款详情
+export function formDataRefund(obj){
+  console.log(obj,"obj")
+  return new Promise((resolve, reject)=>{
+    instance.post(`apiservice/a/service/order/orderInfo/formDataRefund`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+// 收款列表
+export function getPay(obj, pageNumber, pageSize) {
+  return instance.post(`apiservice/a/service/order/orderInfo/listDataPay?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }

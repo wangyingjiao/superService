@@ -492,6 +492,10 @@ body {
   margin-right: 2%;
   
 }
+.search-min{
+  width: 17%;
+  margin-right: 1%;
+}
 // 头部选项卡
 .tabs-view-container .el-tag .el-tag__close:hover{
   background-color: red;
@@ -566,9 +570,8 @@ body {
 .orderTab .el-tabs__item{
   text-align: center;
 }
-
-.orderTab .el-tabs__active-bar{
-  // width: 42px !important;
+.selfTableWrapONE1 .el-form-item__error{
+  left: 254px;
 }
 .orderTab .el-tabs__header .el-tabs__nav-wrap{
   padding: 15px 20px 0 20px;
@@ -578,6 +581,8 @@ body {
 }
 //自定义弹窗大小
 .selfDialogWidth .el-dialog {width:700px}
+//自定义弹窗大小
+.selfDialogWidth1 .el-dialog {width:720px}
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
   line-height:23px;

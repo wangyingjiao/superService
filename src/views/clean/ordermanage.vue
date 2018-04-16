@@ -48,6 +48,7 @@
 				<el-table 
 					:data="tabDataList"
 					fixed
+          class="selfOrderTable"
 					v-loading="listLoading" 
 					element-loading-text="正在加载" 
 					highlight-current-row
@@ -55,10 +56,14 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="220"  label="服务机构" prop="orgName">
+					<el-table-column  align="center" width="220" :render-header="renderHeader"  >
+                <template scope="rowObj">
+                  <p>{{rowObj.row.orgName}}</p>
+                  <p>{{rowObj.row.stationName}}</p>
+                </template>                    
 					</el-table-column>
-					<el-table-column  align="center" width="150" label="服务站" prop="stationName">
-					</el-table-column>
+					<!-- <el-table-column  align="center" width="150" label="服务站" prop="stationName">
+					</el-table-column> -->
 					<el-table-column  align="center" width="150"  label="订单来源">
 						<template scope="scope">
 							<span v-if="scope.row.orderSource =='own'">本机构</span>
@@ -175,6 +180,9 @@ export default {
     }
   },
   methods: {
+    renderHeader (h) {
+      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+    },
     //机构变化事件
     orgChange(val) {
       this.payType = "";
