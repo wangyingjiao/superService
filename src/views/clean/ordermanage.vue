@@ -196,7 +196,6 @@ export default {
     },
     //机构变化事件
     orgChange(val) {
-      console.log(val)
       this.payType = "";
       this.payTypeOptions = [];
       if (val != "") {
