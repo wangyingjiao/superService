@@ -163,11 +163,11 @@
 
         <el-form-item label="服务机构:"  prop="officeId">
           <el-select  filterable :disabled="officeState" class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
-            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+            <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="服务站:" prop="stationId" >
+        <el-form-item label="服务站:" prop="stationId">
           <el-select  filterable :disabled="statStatte" class="form_item" @change="stationChange" v-model="temp.stationId" placeholder="请选择">
             <el-option v-for="item in servicestationCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -221,7 +221,7 @@
         
         <el-form-item label=" 所属机构:"  prop="officeId2">
           <el-select style='width: 100%;' filterable v-model="temp2.officeId2" placeholder="请选择">
-            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+            <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -229,13 +229,6 @@
         <el-form-item label="岗位名称:" prop="name">
           <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="等级:" prop="dataScope">
-          <el-select style='width: 100%;' disabled  v-model="temp2.dataScope" placeholder="请选择">
-            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
-            </el-option>
-          </el-select>
-           <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check">
            <el-tree
@@ -286,6 +279,7 @@ import {
   delStaff,
   getMenudata,
   getOrgByTypeOrgId,
+  listStationByOrgId,
   chkName,
   hanleUpuser,
   addStation
@@ -439,6 +433,7 @@ export default {
         stationState: ""
       },
       stationState: "",
+      orgList: "",
       stationCheck: [], // 岗位
       useableCheck: [{ id: "1", name: "可用" }, { id: "0", name: "不可用" }],
       stationName: "",
@@ -462,7 +457,6 @@ export default {
 
       dialogFormVisible: false,
       dialogFormStation: false,
-
       dialogStatus: "",
       textMap: {
         update: "编辑员工",
@@ -900,9 +894,12 @@ export default {
     typeChange(val) {
       console.log(val);
       if (val != "") {
-        getOrgByTypeOrgId({type:val}).then(res=>{
-          console.log(res,'机构')
-        })
+        this.temp.officeId = ""
+        this.temp.stationId = "";
+        getOrgByTypeOrgId({ type: val }).then(res => {
+          console.log(res, "机构");
+          this.orgList = res.data.data;
+        });
       }
     },
     mechChange(val) {
@@ -914,9 +911,10 @@ export default {
         this.servicestationCheck = [];
         this.stationCheck = [];
         var obj = {
+          type: this.temp.type,
           orgId: val
         };
-        getFuwu(obj).then(res => {
+        listStationByOrgId(obj).then(res => {
           // 请求服务站
           this.servicestationCheck = res.data.data;
         });
