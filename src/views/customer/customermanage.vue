@@ -85,6 +85,17 @@
 					label-width="160px" 
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
+          <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
+            <el-select v-model="ruleForm.orgId" :disabled='mechanismFlag' filterable placeholder="请选择机构"  style="width:100%">  
+              <el-option
+                v-for="item in mechanismOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                >
+              </el-option>
+            </el-select>
+          </el-form-item>          
 					<el-form-item label="姓名:" prop="name"  >
 						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位用户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
@@ -317,6 +328,8 @@ export default {
       }
     };
     return {
+      userType:'',
+      mechanismFlag:false,
       AddressStatus: "add",
       mechanismOptions: [],
       titlevar: "新增用户",
@@ -339,7 +352,8 @@ export default {
         areaCode: "",
         areaCodes: [],
         addrLongitude: "",
-        addrLatitude: ""
+        addrLatitude: "",
+        orgId:'',
       },
       ruleFormAddress: {
         id: "",
@@ -357,7 +371,8 @@ export default {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        orgId:[{ required: true, message: "请选择服务机构", trigger: "change" }]
       },
       rulesAddress: {
         addressName: [
@@ -741,12 +756,14 @@ export default {
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
         this.titlevar = "新增用户";
+        this.mechanismFlag=false;
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
         this.titlevar = "编辑用户";
+        this.mechanismFlag=true;
         var obj = {
           id: row.id
         };
@@ -846,6 +863,7 @@ export default {
     this.getData({}, 1, 10);
     this.sex = this.dict.sex;
     this.getoffice()
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>

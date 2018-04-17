@@ -58,7 +58,7 @@
 					>
 					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  align="center" width="156" :render-header="renderHeader"  >
+					<el-table-column  v-if="userType == 'sys' || userType =='platform'" align="center" width="156" :render-header="renderHeader"  >
                 <template scope="rowObj">
                   <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                      <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
@@ -68,7 +68,7 @@
                   </el-tooltip>
                 </template>                    
 					</el-table-column>
-					<el-table-column v-if="false"  align="center" width="156" label="服务站名称"  >
+					<el-table-column v-if=" userType == 'org'"  align="center" width="156" label="服务站名称"  >
                 <template scope="rowObj">
                   <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                     <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
@@ -155,6 +155,7 @@ export default {
   name: "ordermanage",
   data() {
     return {
+      userType:'',
       btnShow: [],
       severTime: "",
       severEndTime: "",
@@ -259,20 +260,6 @@ export default {
         this.active1 = tab.name;
       }
       this.payStus = "";
-      // this.mechanism = "";
-      // this.payType = "";
-      // this.sevicerStustas = "";
-      // this.orderNumber = "";
-      // this.startTime = "";
-      // this.endTime = "";
-      // this.severTime = "";
-      // this.severEndTime = "";
-      // var obj = {
-      //   orderStatus: this.active1
-      // };
-      // this.pageNumber = 1;
-      // this.jumpPage = 1;
-      // this.getTableData(obj, this.pageNumber, this.size);
       this.localSearch()
     },
     //全局search按钮
@@ -464,6 +451,7 @@ export default {
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
     this.sevicerStustasOptions = this.dict.service_status;
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>

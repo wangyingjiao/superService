@@ -189,7 +189,18 @@
 	<!--新增用户弹窗开始-->
 	<el-dialog title="新增用户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
-			<el-form-item label="姓名:" prop="name" >
+      <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
+        <el-select v-model="ruleForm.orgId"  filterable placeholder="请选择机构"  style="width:100%">  
+          <el-option
+            v-for="item in mechanismOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            >
+          </el-option>
+        </el-select>
+      </el-form-item> 			
+      <el-form-item label="姓名:" prop="name" >
 				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入用户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
@@ -569,7 +580,8 @@ export default {
         areaCode: "",
         areaCodes: [],
         addrLongitude: "",
-        addrLatitude: ""
+        addrLatitude: "",
+        orgId:''
       },
       ruleFormAddress: {
         addressName: "",
@@ -594,7 +606,8 @@ export default {
         ],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        orgId:[{ required: true, message: "请选择服务机构", trigger: "change" }]
       },
       rulesAddress: {
         addressName: [

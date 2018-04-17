@@ -29,22 +29,20 @@
 								</div>
 							</template>
 						</el-table-column>
-            <el-table-column  align="center" width="150" :render-header="renderHeader"  >
+            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                      <el-tooltip placement="left"  :content="rowObj.row.orgName">
-                        <!-- :disabled="rowObj.row.orgName.length < 10" -->
+                      <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                         <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
                       </el-tooltip>
-                      <el-tooltip placement="left"  :content="rowObj.row.stationName">
-                        <!-- :disabled="rowObj.row.stationName.length < 10" -->
+                      <el-tooltip placement="left"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
+                        <!--  -->
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
             </el-table-column>
-            <el-table-column  v-if="false" align="center" width="150" label="服务站名称"   >
+            <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
                   <template scope="rowObj">
-                      <el-tooltip placement="left"  :content="rowObj.row.stationName">
-                        <!-- :disabled="rowObj.row.stationName.length < 10" -->
+                      <el-tooltip placement="left"  :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
@@ -184,6 +182,7 @@ export default {
   name: "dispatchmanage",
   data() {
     return {
+      userType:'',
       mechanismOptions: [],
       mechanism: "",
       payTypeOptions: [],
@@ -511,6 +510,7 @@ export default {
   mounted() {
     this.reassList({}, 1, 10);
     this.getoffice();
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>
