@@ -3,6 +3,9 @@
     <div class="tech-index">
       <div class="serch-box">
         <div class="serch-input">
+			<el-select class="search" v-model="techniSearch.orgId" placeholder="选择机构">
+                <el-option v-for="item in organizations" :key="item.id" :label="item.label" :value="item.id"></el-option>	
+            </el-select>
           <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
             <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
             </el-option>
@@ -604,6 +607,10 @@ import techniEdit from "./techniEdit.vue";
 // import { Whether } from "@/api/serviceManage";
 import Cookies from "js-cookie";
 
+let organizations = [
+	{id:0,label:'本机构'}
+]
+
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -725,8 +732,10 @@ export default {
         stationId: "",
         jobNature: "",
         skillIds: [],
-        chooses: "name"
-      },
+		chooses: "name",
+		orgId:0
+	  },
+	  organizations:organizations,
       ruleForm: {
         startTime: "",
         startDate: "",
@@ -1867,7 +1876,7 @@ export default {
   margin-top: 10px;
 }
 .tech-index .serch-ski .search {
-  width: 102%;
+  width: 99%;
 }
 .tech-index .serch-ski .search .el-input {
   /* width: 42%; */
@@ -2185,8 +2194,8 @@ export default {
   width: 100px;
   text-align: center;
 }
-.searchHeader {
-  width: 30%;
+.tech .searchHeader {
+  width: 25%;
 }
 .searchHeader .el-input__inner {
   /* width: 250px; */
