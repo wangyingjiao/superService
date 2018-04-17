@@ -42,6 +42,10 @@ export function delStation(obj) {
 export function getPower(str) {
   return instance.get(`/apiservice/a/sys/role/getRoleDetail?id=` + str)
 }
+// 根据角色获取机构
+export function getOrgByTypeOrgId(obj) {
+  return instance.post(`/apiservice/a/sys/organization/getOrgByTypeOrgId`, obj)
+}
 // 获取机构列表
 export function getSList(obj) {
   return instance.post(`/apiservice/a/sys/organization/listDataAll`, obj)

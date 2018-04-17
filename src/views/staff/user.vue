@@ -57,8 +57,20 @@
            </el-tooltip>
          </template>
       </el-table-column>
+      
+      <el-table-column  align="center"  :render-header="renderHeader"  >
+            <template scope="rowObj">
+              <!-- <p>{{rowObj.row.organization.name}}</p> -->
+               <el-tooltip  placement="left" :disabled="rowObj.row.organization.name.length < 10" :content="rowObj.row.organization.name">
+                 <div class="overheidden">{{rowObj.row.organization.name}}</div>
+               </el-tooltip>
+              <p v-if="rowObj.row.organization.id != 0&&rowObj.row.station.id == 0">本机构</p>
+              <p v-else>{{rowObj.row.station.name}}</p>
+        
+            </template>                    
+      </el-table-column>
 
-      <el-table-column  align="center" label="服务机构" prop="organization.name">
+      <!-- <el-table-column  align="center" label="服务机构" prop="organization.name">
         <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.organization.name.length < 10" :content="scope.row.organization.name">
              <div class="overheidden">{{scope.row.organization.name}}</div>
@@ -71,7 +83,7 @@
               <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
               <span v-else>{{scope.row.station.name}}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column class-name="status-col" label="状态" align="center" prop="useable">
          <template scope="scope">
           <span v-if="scope.row.useable =='1'">可用</span>
@@ -142,9 +154,9 @@
             placeholder="再次填写密码"></el-input>
         </el-form-item >
 
-        <el-form-item label="角色:"  prop="officeId">
-          <el-select  filterable :disabled="officeState" class="form_item" @change="mechChange" v-model="temp.officeId" placeholder="请选择">
-            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        <el-form-item label="角色:"  prop="type">
+          <el-select  filterable :disabled="officeState" class="form_item" @change="typeChange"  v-model="temp.type" placeholder="请选择">
+            <el-option v-for="(val,key,index) in typeList" :key="key" :label="val" :value="key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -273,6 +285,7 @@ import {
   getFuwu,
   delStaff,
   getMenudata,
+  getOrgByTypeOrgId,
   chkName,
   hanleUpuser,
   addStation
@@ -393,6 +406,7 @@ export default {
         officeId: "",
         stationId: ""
       },
+      typeList: [], //角色
       mechanismCheck: [], //服务机构
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
@@ -403,6 +417,7 @@ export default {
         password: "",
         password2: "",
         password3: "",
+        type: "",
         officeId: "",
         stationId: "",
         roles: "",
@@ -476,6 +491,7 @@ export default {
         password3: [
           { required: true, validator: validatePass3, trigger: "blur" }
         ],
+        type: [{ required: true, message: "角色不能为空", trigger: "change" }],
         officeId: [
           { required: true, message: "机构不能为空", trigger: "change" }
         ],
@@ -525,10 +541,40 @@ export default {
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
-    getSList({}).then(res => {
-      // 服务机构
-      this.mechanismCheck = res.data.data.list;
-    });
+    //获取角色
+    console.log(localStorage.getItem("type"));
+    var type = localStorage.getItem("type");
+    if (type == "sys") {
+      this.typeList = {
+        sys: "系统员工",
+        platform: "平台员工",
+        org: "机构员工",
+        station: "服务站员工"
+      };
+    }
+    if (type == "platform") {
+      this.typeList = {
+        platform: "平台员工",
+        org: "机构员工",
+        station: "服务站员工"
+      };
+    }
+    if (type == "org") {
+      this.typeList = {
+        org: "机构员工",
+        station: "服务站员工"
+      };
+    }
+    if (type == "station") {
+      this.typeList = {
+        station: "服务站员工"
+      };
+    }
+
+    // getSList({}).then(res => {
+    //   // 服务机构
+    //   this.mechanismCheck = res.data.data.list;
+    // });
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
@@ -546,6 +592,9 @@ export default {
     }
   },
   methods: {
+    renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
     loadingClick() {
       loading = this.$loading({
         lock: true,
@@ -848,6 +897,14 @@ export default {
         });
       }
     },
+    typeChange(val) {
+      console.log(val);
+      if (val != "") {
+        getOrgByTypeOrgId({type:val}).then(res=>{
+          console.log(res,'机构')
+        })
+      }
+    },
     mechChange(val) {
       if (val != "") {
         // 机构发生改变
@@ -1109,6 +1166,7 @@ export default {
         password: "",
         password2: "",
         password3: "",
+        type: "",
         officeId: "",
         stationId: "",
         role: "",

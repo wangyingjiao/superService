@@ -50,6 +50,9 @@ const user = {
             if (response.data.data.user.name) {
               localStorage.setItem('name', response.data.data.user.name)
             }
+            if (response.data.data.user.type) {
+              localStorage.setItem('type', response.data.data.user.type)
+            }
             if (response.data.data.user.role.dataScope) {
               localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
             }

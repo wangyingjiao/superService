@@ -224,5 +224,12 @@
     "dock_platform": {
         "select":"请选择",
         "gasq": "国安社区"
-    }
+    },
+    "refund_type": {
+        "many":"多退",
+        "less": "少退"
+    },
+    "refund_method":{
+        "cash":"现金"
+    }    
 }
