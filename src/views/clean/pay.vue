@@ -2,7 +2,7 @@
 <div>
   <!-- 搜索开始 -->
     <div class="filter-container bgWhite">
-       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.officeId" placeholder="请选择机构">
+       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.orgId" placeholder="请选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -12,8 +12,8 @@
         </el-option>
       </el-select>
 
-      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="请选择支付状态">
-        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+      <el-select filterable class="search-min" clearable  v-model="search.payStatus" placeholder="请选择支付状态">
+        <el-option v-for="(val,key,index) in payState" :key="key" :label="val" :value="key">
         </el-option>
       </el-select>
 
@@ -48,42 +48,34 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column align="center" label="订单编号" prop="orderNumber">      
+      <el-table-column align="center" label="订单编号" min-width="130" prop="orderNumber">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付编号" prop="payNumber">      
+      <el-table-column align="center" label="支付编号" min-width="130" prop="payNumber">      
       </el-table-column>
 
-      <el-table-column  align="center" width="220" :render-header="renderHeader"  >
+      <el-table-column  align="center" width="220" :render-header="renderHeader">
             <template scope="rowObj">
               <p>{{rowObj.row.orgName}}</p>
               <p>{{rowObj.row.stationName}}</p>
             </template>                    
       </el-table-column>
 
-      <el-table-column align="center" label="支付金额" prop="payNumber">      
+      <el-table-column align="center" label="支付金额" prop="payAccount">      
       </el-table-column>
 
       <el-table-column align="center" label="支付状态" prop="payStatus" >
-        <!-- <template scope="scope">
-           <el-tooltip placement="left"  :content="scope.row.requestContent">
-             <div class="tool" >{{scope.row.requestContent}}</div>
-           </el-tooltip>
-        </template> -->
+        <template scope="scope">
+           <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
+           <span v-if="scope.row.payStatus=='payed'">已支付</span>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" label="收款人" prop="payTechName">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" prop="payTime">     
-        <!-- <template scope="scope">
-           <el-tooltip placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
-             <div class="tool" >{{scope.row.exceptions}}</div>
-           </el-tooltip>
-        </template>  -->
+      <el-table-column align="center" label="支付时间" prop="payTime">
       </el-table-column>
-
-      
 
     </el-table>
 
@@ -126,14 +118,19 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        type: "订单编号",
-        title: "支付编号"
+        orderNumber: "订单编号",
+        payNumber: "支付编号"
+      },
+      payState: {
+        waitpay: "待支付",
+        payed: "已支付"
       },
       //搜索数据
       search: {
         type: "",
         val: "",
-        officeId: "",
+        orgId: "",
+        payStatus:"",
         stationId: ""
       },
       tableKey: 0,
@@ -156,28 +153,26 @@ export default {
       this.listLoading = true;
       // 事件类型转换
       var obj = {};
-
-      if (this.search.type == "type") {
-        var type = {
-          type: this.search.val
-        };
-        obj = Object.assign(obj, type);
-      } else if (this.search.type == "title") {
-        var title = {
-          title: this.search.val
-        };
-        obj = Object.assign(obj, title);
-      } else if (this.search.type == "requestUri") {
-        var requestUri = {
-          requestUri: this.search.val
-        };
-        obj = Object.assign(obj, requestUri);
-      } else if (this.search.type == "params") {
-        var params = {
-          params: this.search.val
-        };
-        obj = Object.assign(obj, params);
+      if(this.search.payStatus){
+        obj = Object.assign(obj,{payStatus:this.search.payStatus})
       }
+      if(this.search.orgId){
+        obj = Object.assign(obj,{orgId:this.search.orgId})
+      }
+      if(this.search.stationId){
+        obj = Object.assign(obj,{stationId:this.search.stationId})
+      }
+      if (this.search.type == "orderNumber") {
+        var orderNumber = {
+          orderNumber: this.search.val
+        };
+        obj = Object.assign(obj, orderNumber);
+      } else if (this.search.type == "payNumber") {
+        var payNumber = {
+          payNumber: this.search.val
+        };
+        obj = Object.assign(obj, payNumber);
+      } 
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
