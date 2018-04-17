@@ -894,6 +894,7 @@ export default {
     typeChange(val) {
       console.log(val);
       if (val != "") {
+        this.orgList = []
         this.temp.officeId = ""
         this.temp.stationId = "";
         getOrgByTypeOrgId({ type: val }).then(res => {
