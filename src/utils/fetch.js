@@ -35,7 +35,7 @@ instance.interceptors.response.use(res => {
             arr = []
             router.push({ path: '/login' })
             location.reload()
-          }, 2500)
+          }, 1100)
         })
       }
       setTimeout(() => {
@@ -60,9 +60,9 @@ instance.interceptors.response.use(res => {
       if (arr.length === 1) {
         Message.error('服务器断开！')
       }
-      if (arr.length === 2) {
-        arr = ['1']
-      }
+      setTimeout(() => {
+        arr = []
+      }, 1100)
     }
   }
   return Promise.reject(error)
