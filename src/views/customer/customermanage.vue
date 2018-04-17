@@ -771,9 +771,10 @@ export default {
     //表格下单操作按钮
     lookInf(obj) {
       var id = obj.id;
+      var orgid=obj.orgId
       this.$router.push({
         path: "/clean/addorder",
-        query: { coustomerId: id }
+        query: { coustomerId: id ,orgId:orgid}
       });
     },
     //表格删除操作按钮
