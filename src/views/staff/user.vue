@@ -894,6 +894,7 @@ export default {
     typeChange(val) {
       console.log(val);
       if (val != "") {
+        this.orgList = []
         this.temp.officeId = ""
         this.temp.stationId = "";
         getOrgByTypeOrgId({ type: val }).then(res => {
@@ -952,6 +953,7 @@ export default {
         mobile: this.temp.mobile,
         name: this.temp.name,
         newPassword: this.temp.password,
+        type:this.temp.type,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
@@ -1070,6 +1072,7 @@ export default {
         mobile: this.temp.mobile,
         name: this.temp.name,
         newPassword: this.temp.password,
+        type:this.temp.type,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
