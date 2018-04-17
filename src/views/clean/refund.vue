@@ -161,21 +161,22 @@ var refundDetails = (id)=>{
             handleCurrentChange(){},
             //点击查看退款详情
             handleRead(id){
-                this.loading = false
+                this.loading = true
+                this.dialogvisible = true
                 let refund = async (id) => {
                     try{
                         let refundDate = await refundDetails(id)
                         console.log(refundDate,"refundDate----")
                         if(refundDate.data.code == 1){
                             this.informationData = refundDate
-                            this.loading = true
+                            this.loading = false
                             this.dialogvisible = true
                         }else{
-                            this.loading = true
+                            this.loading = false
                         }
                     }
                     catch(error){
-                        this.loading = true
+                        this.loading = false
                     }
                 }
                 return refund(id)
@@ -188,8 +189,7 @@ var refundDetails = (id)=>{
            information
         },
         mounted(){
-            console.log(this.$route.query.orderNumber)
-            let orderNumber =  this.$route.query.orderNumber
+            let orderNumber =  this.$route.query.ordernumber
             if(orderNumber){
                 this.chooses = "orderNumber"
                 this.chooContent = orderNumber;
