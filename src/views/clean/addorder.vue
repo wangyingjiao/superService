@@ -1524,6 +1524,7 @@ export default {
         this.customKeyFlag = false;      
     }else{
       this.customKeyFlag = true;
+      this.getcustomerList();
     }        
   }
 };
