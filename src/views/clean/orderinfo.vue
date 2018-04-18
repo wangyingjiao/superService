@@ -314,19 +314,19 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户姓名:</span>
-                      <span class="lineContent">{{otherInfo.businessName}}</span>
+                      <span class="lineContent">{{otherInfo.customerName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
                       <span class="selfbeizhu1">
-                        {{otherInfo.businessRemark}}
+                        {{otherInfo.customerRemark}}
                       </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPic" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -336,7 +336,7 @@
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户电话:</span>
-                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
+                      <span class="lineContent">{{otherInfo.customerPhone}}</span>
                    </p>                    
                 </div> 
             </div>                                     		

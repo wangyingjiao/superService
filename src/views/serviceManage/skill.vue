@@ -53,8 +53,8 @@
              label-width="160px" 
              class="demo-ruleForm dia_form" 
              label-position="left">
-            <el-form-item v-if="true" label="选择机构"  prop="mechanism">
-              <el-select v-model="ruleForm2.mechanism" :disabled='mechanismFlag' filterable placeholder="请选择机构"  class="kill form_item">  
+            <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
+              <el-select v-model="ruleForm2.orgId" :disabled='mechanismFlag' filterable placeholder="请选择机构"  class="kill form_item">  
                 <el-option
                   v-for="item in mechanismOptions"
                   :key="item.id"
@@ -184,6 +184,7 @@ export default {
       }
     };
     return {
+      userType:'',
       mechanismFlag:false,
       mechanismOptions: [],
       mechanism: "",      
@@ -202,7 +203,7 @@ export default {
       techStationId: "",
       rules: {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
-        mechanism:[{required: true, message: "请选择机构", trigger: "change"}],
+        orgId:[{required: true, message: "请选择机构", trigger: "change"}],
         staffClass: [
           {
             required: true,
@@ -216,7 +217,7 @@ export default {
         name: "",
         staffClass: [], //选择分类下拉对象
         technicians: [],
-        mechanism:'',
+        orgId:'',
       },
       commodityse: {},
       options: [],
@@ -311,7 +312,7 @@ export default {
       this.middleA = [];
       this.middleB = [];
       this.middleD = [];
-      this.ruleForm2.mechanism='';
+      this.ruleForm2.orgId='';
       this.listLoading = true;
       this.dialogStatus = status;
       this.tabOptions = [];
@@ -356,7 +357,7 @@ export default {
               this.listLoading = false;
               this.dialogVisible = true;
               this.ruleForm2.name = res.data.data.info.name;
-              this.ruleForm2.mechanism ='998737d802a14dea88b187aae3b77191';              
+              this.ruleForm2.orgId =res.data.data.info.orgId;              
               if (res.data.data.info.sortIds != undefined) {
                 this.ruleForm2.staffClass = res.data.data.info.sortIds;
               }
@@ -398,7 +399,8 @@ export default {
             id: this.id,
             name: this.ruleForm2.name,
             technicians: this.ruleForm2.technicians,
-            sortIds: this.ruleForm2.staffClass
+            sortIds: this.ruleForm2.staffClass,
+            orgId: this.ruleForm2.orgId
           };
           if (this.dialogStatus == "add") {
             saveServer(obj)
@@ -745,7 +747,8 @@ export default {
   },
   mounted() {
     this.getList({}, 1, 10);
-    this.getoffice()
+    this.getoffice();
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>
