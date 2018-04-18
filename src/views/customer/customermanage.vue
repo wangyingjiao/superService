@@ -47,6 +47,7 @@
 					  </el-table-column>
 					  <el-table-column
 						align="center"
+            width="65"
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>
@@ -55,7 +56,7 @@
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
-                        width="360"
+            width="360"
 						label="操作"
 						>
 						  <template scope="scope">

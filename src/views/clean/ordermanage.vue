@@ -60,17 +60,17 @@
 					</el-table-column>
 					<el-table-column  v-if="userType == 'sys' || userType =='platform'" align="center" width="156" :render-header="renderHeader"  >
                 <template scope="rowObj">
-                  <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                  <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                      <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
                   </el-tooltip>
-                  <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                     <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                   </el-tooltip>
                 </template>                    
 					</el-table-column>
 					<el-table-column v-if=" userType == 'org'"  align="center" width="156" label="服务站名称"  >
                 <template scope="rowObj">
-                  <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                     <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                   </el-tooltip>
                 </template>                    
@@ -83,7 +83,7 @@
 					</el-table-column>	          							
 					<el-table-column  align="center"  width="150" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="left" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
+							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
 								<div class="selfToolTip">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
@@ -108,7 +108,7 @@
 							<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
 							<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
 							<span v-if="scope.row.orderStatus =='finish'">已完成</span>
-							<!-- <span v-if="scope.row.orderStatus =='started'">已上门</span> -->
+							<span v-if="scope.row.orderStatus =='close'">已关闭</span>
 							<span v-if="scope.row.orderStatus =='stop'">已暂停</span>
 							<span v-if="scope.row.orderStatus =='success'">已成功</span>
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
@@ -116,7 +116,7 @@
 					</el-table-column>
                     <el-table-column   align="center" width="150" label="对接订单ID">
 						<template scope="scope">
-							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length< 20 " :content="scope.row.jointOrderId">
+							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length< 20" :content="scope.row.jointOrderId">
 								<div class="selfToolTip">{{scope.row.jointOrderId}}</div>
 							</el-tooltip>
 						</template>						
@@ -226,11 +226,11 @@ export default {
             this.pageNumber = res.data.data.page.pageNo;
             this.jumpPage = res.data.data.page.pageNo;
             this.size = res.data.data.page.pageSize;
-            for (var a = 0; a < res.data.data.orgList.length; a++) {
-              if (res.data.data.orgList[a].id == 0) {
-                res.data.data.orgList.remove(res.data.data.orgList[a]);
-              }
-            }
+            // for (var a = 0; a < res.data.data.orgList.length; a++) {
+            //   if (res.data.data.orgList[a].id == 0) {
+            //     res.data.data.orgList.remove(res.data.data.orgList[a]);
+            //   }
+            // }
             this.listLoading = false;
           } else {
             this.listLoading = false;
