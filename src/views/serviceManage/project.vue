@@ -7,7 +7,7 @@
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <el-select clearable class="search" filterable  v-model="search.orgName" placeholder="选择机构">
-        <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.label" :value="item.id">
+        <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类">
@@ -49,6 +49,8 @@
         <template scope="scope" >
           <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+picWidth60" class="imgList"/></span>
         </template>
+      </el-table-column>
+       <el-table-column  label="服务机构" align="center" prop="orgName">
       </el-table-column>
 
       <el-table-column  label="项目名称" align="center" prop="name">
@@ -139,9 +141,15 @@
                 label-width="90px" 
                  ref="basic" 
                 :rules="basicRles" >
+                <el-form-item label="所属机构：" class="seize" prop="orgId" v-if="techUserType=='sys'">
+                    <el-select :disabled="textMap[dialogStatus]=='编辑服务项目'" filterable v-model="basicForm.orgId" style="width:100%" class="form_item">
+                      <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item">
+                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="sortIdChange(basicForm.sortId)">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -383,7 +391,7 @@
                      <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="折算时长:" prop="convertHours" class="doubtf">
+                <el-form-item v-if="sortIdFlag" label="折算时长:" prop="convertHours" class="doubtf">
                   <el-input v-model="goods_info.convertHours" style="width:100%" >
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
@@ -396,14 +404,14 @@
                    <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
                 </el-form-item>
              
-                <el-form-item label="起步人数:" class="seize" prop="startPerNum">
+                <el-form-item v-if="sortIdFlag" label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
                     placeholder="请输入起步人数(默认为1)"
                    
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
-                <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
+                <el-form-item v-if="sortIdFlag" label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
                     
@@ -480,6 +488,7 @@ import {
   delProject,
   getInfoPic
 } from "@/api/serviceManage";
+import { listDataAll } from "@/api/tech"
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
@@ -723,11 +732,13 @@ export default {
       }
     };
     return {
+      sortIdFlag:true,
       orgStatus: "",
       pageNumber: 1,
       addCommodityFlag: false,
       editName: {},
       customArr: [],
+      orgList:[],
       jointCode: false,
       dockingData: [],
       alreadyArr: [],
@@ -810,7 +821,8 @@ export default {
         majorSort: "all",
         commoditys: [],
         sysTags: [],
-        customTags: []
+        customTags: [],
+        orgId:''
       },
       basicRles: {
         name: [
@@ -826,6 +838,7 @@ export default {
         sortId: [
           { required: true, message: "请选择所属分类", trigger: "blur" }
         ],
+        orgId:[{ required: true, message: "请选择所属机构", trigger: "blur" }],
         info: [
           { required: true, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
@@ -899,6 +912,9 @@ export default {
     this.sign; //获取签名
   },
   computed: {
+    techUserType(){
+      return userType()
+    },
     sign: function() {
       return getSign();
     },
@@ -907,6 +923,15 @@ export default {
     }
   },
   methods: {
+    //获取分类id
+    sortIdChange(id){
+      if(id < 100){
+        this.sortIdFlag = false
+        this.measure= {num:'按数量'}
+      }else{
+        this.sortIdFlag = true
+      }
+    },
     //删除商品
     deletGood(item) {
       this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
@@ -1157,9 +1182,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = Object.assign({}, this.goods_info);
-          obj.startPerNum = this.goods_info.startPerNum;
+          obj.startPerNum = this.goods_info.startPerNum || 0;
           obj.minPurchase = this.goods_info.minPurchase;
-          obj.cappingPerNum = this.goods_info.cappingPerNum;
+          obj.cappingPerNum = this.goods_info.cappingPerNum || 0;
+          obj.convertHours = this.goods_info.convertHours || 0;
           obj.price = this.returnFloat(this.goods_info.price);
           if (this.handleEditFlag) {
             this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
@@ -1361,6 +1387,10 @@ export default {
                 dataUpdate.commoditys[i].price
               );
             }
+            console.log(dataUpdate.sortId,"sortId-----")
+            if(dataUpdate.sortId < 100){
+              this.sortIdChange(dataUpdate.sortId)
+            }
             // }
             this.listLoading = false;
             this.dialogFormVisible = true;
@@ -1453,8 +1483,8 @@ export default {
     },
     handleClick(tab, event) {
       this.search.sortId = "";
-      this.search.name = "";
-      this.search.goodsName = "";
+      // this.search.name = "";
+      // this.search.goodsName = "";
       // this.search.sortIdandGoodsId = "";
       var size = this.pageSize;
       this.pageNumber = 1;
@@ -1672,8 +1702,15 @@ export default {
   mounted(){
     let _userType = userType();
     if(_userType=='org' || _userType=='station'){
-      this.orgNameList = [{label:'本机构',id:''}]
-      this.search.orgName = ''
+      this.orgNameList = [{name:'本机构',id:''}]
+      this.search.orgId = ''
+    }else{
+      listDataAll({}).then(data=>{
+        if(data.data.code==1){
+          this.orgList = data.data.data.list
+          this.orgNameList = this.orgList
+        }
+      })
     }
   }
 };

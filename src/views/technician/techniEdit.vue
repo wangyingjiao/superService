@@ -149,27 +149,27 @@
                       </el-form-item>
                   </div>
                   <div  class="tech-edit-width">
-                      <el-form-item label="工作年限:" prop="workTime">
-                          <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
-                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                              </el-option>
-                          </el-select>
-                        </el-form-item>
-                  </div>
-                 <div style="float:right;width:47%">
-                        <el-form-item label="所属服务站:" prop="stationId">
+                       <el-form-item label="所属服务站:" prop="stationId">
                           <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
                             <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
                             </el-option>
                           </el-select>
                         </el-form-item>
                   </div>
-                  <div class="tech-edit-width">
-                       <el-form-item label="岗位状态:" prop="jobStatus">
+                 <div style="float:right;width:47%">
+                        <el-form-item label="岗位状态:" prop="jobStatus">
                             <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
                                 <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
                                 </el-option>
                             </el-select>
+                        </el-form-item>
+                  </div>
+                  <div class="tech-edit-width">
+                        <el-form-item label="工作年限:" prop="workTime">
+                          <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                          </el-select>
                         </el-form-item>
                   </div>
                 </div>
@@ -291,7 +291,7 @@
                           <li v-for="(item,index) in perServer.workTimes" :key="index">
                           <div>
                             <div class="woking-div">
-                            <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
+                            <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
                             <div class="time">{{item.startTimeStr+"~"+item.endTimeStr}}</div>
                             </div>
                           </div>
