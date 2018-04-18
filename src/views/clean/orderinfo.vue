@@ -199,7 +199,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
