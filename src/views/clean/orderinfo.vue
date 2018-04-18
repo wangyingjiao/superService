@@ -890,7 +890,8 @@ export default {
                             this.$message({
                               type: "success",
                               message: "退款成功"
-                            });                      
+                            });
+                            this.getOrderAllInf(this.orderId)                      
                             this.$refs['ruleForm'].resetFields();
                             this.orderRefundFlag = false;
                         }
