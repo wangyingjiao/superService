@@ -139,7 +139,41 @@
           <h3 class="tech-tc-prson">服务信息</h3>
           <el-form :model="perServer" :rules="rulesServer" ref="perServer" label-width="100px" class="demo-ruleForm">
               <ul class="tech-ul">
-                <el-row :gutter="60">
+                <div style="overflow:hidden;width:100%">
+                  <div class="tech-edit-width" style="margin-right:6%" v-if="techUserType=='sys'">
+                      <el-form-item label="所属机构:" prop="stationId">
+                          <el-select :disabled="dialogvisibleedit" v-model="perServer.orgId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in organizations" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                          </el-select>
+                      </el-form-item>
+                  </div>
+                  <div  class="tech-edit-width">
+                      <el-form-item label="工作年限:" prop="workTime">
+                          <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                          </el-select>
+                        </el-form-item>
+                  </div>
+                 <div style="float:right;width:47%">
+                        <el-form-item label="所属服务站:" prop="stationId">
+                          <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                          </el-select>
+                        </el-form-item>
+                  </div>
+                  <div class="tech-edit-width">
+                       <el-form-item label="岗位状态:" prop="jobStatus">
+                            <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
+                                <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                  </div>
+                </div>
+                <!-- <el-row :gutter="60">
                       <el-col :span="12">
                         <el-form-item label="所属服务站:" prop="stationId">
                           <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
@@ -166,7 +200,7 @@
                           </el-select>
                         </el-form-item>
                       </el-col>  
-                    </el-row>
+                    </el-row> -->
                     <el-row :gutter="60">
                       <el-col :span="12">
                       </el-col>
@@ -566,7 +600,7 @@ import {
   familyAdd,
   familyDelete
 } from "@/api/tech";
-
+import { userType} from '../../utils/auth'
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
 
@@ -794,7 +828,8 @@ export default {
         jobStatus: "",
         workTime: "",
         skillIds: "",
-        workTimes: []
+        workTimes: [],
+        orgId:''
       },
       rulesServer: {
         stationCityCode: [
@@ -931,7 +966,8 @@ export default {
         ** 服务信息
         ** 
         **/
-
+        console.log(val.stationId,"val.stationId----")
+        this.perServer.orgId = val.orgId;
         this.perServer.stationId = val.stationId;
         this.perServer.jobNature = val.jobNature;
         this.perServer.jobStatus = val.jobStatus;
@@ -1006,7 +1042,9 @@ export default {
     "education",
     "relation",
     "servery",
-    "startend"
+    "startend",
+    "organizations",
+    "dialogvisibleedit"
   ],
   methods: {
     endEmpty() {
@@ -1599,6 +1637,9 @@ export default {
     });
   },
   computed: {
+    techUserType(){
+      return userType()
+    },
     sign() {
       return getSign();
     },
@@ -2332,5 +2373,9 @@ export default {
 .techniFooter .button-large-fourth {
   display: inline-block;
   width: 20%;
+}
+.tech-edit-width{
+  width:47%;
+  float:left;
 }
 </style>
