@@ -848,7 +848,8 @@ export default {
               if(this.refundDifferenceType == 'less'){
                 refundPirce=this.ruleForm.refundAccount-Number(this.ruleForm.refundDifference)
               } 
-              if(this.refundDifferenceType == ''){
+              if(this.refundDifferenceType == '' || this.refundDifferenceType == null){
+                this.refundDifferenceType=null
                 refundPirce=this.ruleForm.refundAccount
               }
               refundPirce=Number(refundPirce).toFixed(2); 
