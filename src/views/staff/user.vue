@@ -806,9 +806,10 @@ export default {
     },
     handleUpdate(row) {
       //点击编辑
-      getSList({}).then(res => {
+      console.log(row,'1111')
+      getOrgByTypeOrgId({type:row.type}).then(res => {
         // 服务机构
-        this.mechanismCheck = res.data.data.list;
+        this.orgList = res.data.data;
         hanleUpuser({ id: row.id }).then(res => {
           if (res.data.code === 1) {
             var user = res.data.data;
@@ -817,6 +818,7 @@ export default {
               name: user.name,
               mobile: user.mobile,
               password: "",
+              type:user.type,
               officeId: user.organization.id,
               stationId: user.station.id,
               role: user.role.id,

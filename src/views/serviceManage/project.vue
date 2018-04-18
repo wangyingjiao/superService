@@ -6,6 +6,10 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
+      <el-select clearable class="search" filterable  v-model="search.orgName" placeholder="选择机构">
+        <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.label" :value="item.id">
+        </el-option>
+      </el-select>
       <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
@@ -479,6 +483,7 @@ import {
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { userType} from '../../utils/auth'
 import { parseTime } from "@/utils";
 import {
   Taxonomy,
@@ -727,6 +732,7 @@ export default {
       dockingData: [],
       alreadyArr: [],
       labelClickArr: [],
+      orgNameList:[],
       systemClickId: null,
       systemClick2Id: null,
       systemClick3Id: null,
@@ -846,7 +852,8 @@ export default {
         sortId: "",
         name: "",
         // sortIdandGoodsId: "",
-        goodsName: ""
+        goodsName: "",
+        orgName:''
       },
       pageSize: 10,
       fileList: [],
@@ -1265,6 +1272,9 @@ export default {
         if (this.search.goodsName) {
           obj.goodsName = this.search.goodsName;
         }
+        if(this.search.orgName){
+          obj.orgName = this.search.orgName
+        }
         // if (this.search.sortIdandGoodsId) {
         //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
         // }
@@ -1658,6 +1668,13 @@ export default {
   components: {
     imgService,
     addCommodity
+  },
+  mounted(){
+    let _userType = userType();
+    if(_userType=='org' || _userType=='station'){
+      this.orgNameList = [{label:'本机构',id:''}]
+      this.search.orgName = ''
+    }
   }
 };
 </script>
