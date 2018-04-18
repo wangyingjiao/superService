@@ -47,6 +47,7 @@
 					  </el-table-column>
 					  <el-table-column
 						align="center"
+            width="65"
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>
@@ -55,7 +56,7 @@
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
-                        width="360"
+            width="360"
 						label="操作"
 						>
 						  <template scope="scope">
@@ -432,6 +433,8 @@ export default {
           }
         }
         this.mechanismOptions = res.data.data.list;
+        this.organizationName=this.mechanismOptions[0].id
+        this.localSearch()
       });
     },     
     //单选改变
@@ -860,7 +863,7 @@ export default {
     }
   },
   mounted() {
-    this.getData({}, 1, 10);
+    //this.getData({}, 1, 10);
     this.sex = this.dict.sex;
     this.getoffice()
     this.userType=localStorage.getItem("type")

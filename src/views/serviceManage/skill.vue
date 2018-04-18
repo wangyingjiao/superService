@@ -259,6 +259,8 @@ export default {
           }
         }
         this.mechanismOptions = res.data.data.list;
+        this.mechanism=this.mechanismOptions[0].id;
+        this.search()
       });
     },    
     loadingClick() {
@@ -746,7 +748,7 @@ export default {
     }
   },
   mounted() {
-    this.getList({}, 1, 10);
+    //this.getList({}, 1, 10);
     this.getoffice();
     this.userType=localStorage.getItem("type")
   }
