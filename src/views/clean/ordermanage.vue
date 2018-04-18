@@ -205,11 +205,21 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            if (res.data.data[0].id == 0) {
-              res.data.data.remove(res.data.data[0]);
+            if(res.data.data){
+              if (res.data.data[0].id == 0) {
+                res.data.data.remove(res.data.data[0]);
+              }
+              this.payTypeOptions = res.data.data;
+              if(this.userType =='station'){
+                this.payType=this.payTypeOptions[0].id
+                this.localSearch()
+              }else{
+                this.localSearch()
+              }
             }
-            this.payTypeOptions = res.data.data;
+
           } else {
+
           }
         });
       }
@@ -226,11 +236,6 @@ export default {
             this.pageNumber = res.data.data.page.pageNo;
             this.jumpPage = res.data.data.page.pageNo;
             this.size = res.data.data.page.pageSize;
-            // for (var a = 0; a < res.data.data.orgList.length; a++) {
-            //   if (res.data.data.orgList[a].id == 0) {
-            //     res.data.data.orgList.remove(res.data.data.orgList[a]);
-            //   }
-            // }
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -249,6 +254,7 @@ export default {
           }
         }
         this.mechanismOptions = res.data.data.list;
+        this.mechanism=this.mechanismOptions[0].id;
       });
     },
     //tabs操作需要请求表格数据
@@ -446,8 +452,8 @@ export default {
     }
   },
   mounted() {
-    this.getTableData({ orderStatus: "dispatched" }, 1, 10);
-    this.getoffice();
+    // this.getTableData({ orderStatus: "dispatched" }, 1, 10);    
+    this.getoffice();        
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
     this.sevicerStustasOptions = this.dict.service_status;

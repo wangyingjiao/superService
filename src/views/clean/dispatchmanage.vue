@@ -234,11 +234,21 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            if (res.data.data[0].id == 0) {
-              res.data.data.remove(res.data.data[0]);
+            if(res.data.data){
+              if (res.data.data[0].id == 0) {
+                res.data.data.remove(res.data.data[0]);
+              }
+              this.payTypeOptions = res.data.data;
+              if(this.userType =='station'){
+                this.payType=this.payTypeOptions[0].id
+                this.localSearch()
+              }else{
+                this.localSearch()
+              }
             }
-            this.payTypeOptions = res.data.data;
+
           } else {
+
           }
         });
       }
@@ -252,6 +262,7 @@ export default {
           }
         }
         this.mechanismOptions = res.data.data.list;
+        this.mechanism=this.mechanismOptions[0].id
       });
     },           
     //跳转改派记录页
@@ -508,7 +519,7 @@ export default {
     }
   },
   mounted() {
-    this.reassList({}, 1, 10);
+    //this.reassList({}, 1, 10);
     this.getoffice();
     this.userType=localStorage.getItem("type")
   }
