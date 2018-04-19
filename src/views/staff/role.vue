@@ -314,22 +314,24 @@ export default {
   },
   watch: {
     filterText(val) {
+      console.log(this.filterText, "watch");
       this.$refs.domTree.filter(val);
     }
   },
   methods: {
     filterNode(value, data) {
-      console.log(value);
-      console.log(data.type);
       if (!value) return true;
       return data.type.indexOf(value) !== -1;
     },
     orgChange(val) {
-      console.log(val);
       if (val == "sys") {
-        this.filterText = "";
+        this.$nextTick(() => {
+          this.filterText = "";
+        });
       } else {
-        this.filterText = "business";
+        this.$nextTick(() => {
+          this.filterText = "business";
+        });
       }
     },
     //点击时loading状态
@@ -558,6 +560,9 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
+              this.$nextTick(() => {
+                this.filterText = "business";
+              });
               this.listLoading = false;
               if (this.officeIds.length == 1) {
                 this.temp.officeId = this.officeIds[0].id;
@@ -644,7 +649,9 @@ export default {
           this.dialogFormVisible = true;
           var a = res.data.data;
           this.roleId = a.id;
-          this.temp.officeId = a.organization.id;
+          setTimeout(() => {
+            this.temp.officeId = a.organization.id;
+          }, 50);
           this.temp.name = a.name;
           //this.temp.dataScope = a.dataScope;
           //一期默认10级
@@ -710,6 +717,24 @@ export default {
           });
         });
     },
+    forOfTree() {
+      var sysArr = [];
+      for (var i of this.data2) {
+        if (i.type == "sys") {
+          sysArr.push(i.id);
+          for (var j of i.subMenus) {
+            sysArr.push(j.id);
+            if (j.subMenus) {
+              for (var k of j.subMenus) {
+                sysArr.push(k.id);
+              }
+            }
+          }
+        }
+      }
+      console.log(sysArr, "11111111");
+      return sysArr;
+    },
     getLv() {
       // for (var i = 0; i < this.stationLv.length; i++) {
       //   if ("2" == this.stationLv[i].id) {
@@ -734,7 +759,15 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-      //return;
+      console.log(this.filterText, "ccccc");
+      if (this.filterText == "business") {
+        var sys = this.forOfTree();
+        for (var i of sys) {
+          arr.remove(i);
+        }
+      }
+      console.log(arr);
+      // return;
       var obj = {
         name: this.temp.name,
         //dataScope: this.temp.dataScope,
@@ -801,6 +834,13 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
+      if (this.filterText == "business") {
+        var sys = this.forOfTree();
+        for (var i of sys) {
+          arr.remove(i);
+        }
+      }
+      console.log(arr);
       var obj = {
         id: this.roleId,
         name: this.temp.name,
