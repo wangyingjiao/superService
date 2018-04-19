@@ -73,7 +73,7 @@
         >
 
         <el-form-item label="所属机构:"  prop="officeId">
-          <el-select :disabled="selsctState" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
+          <el-select :disabled="selsctState" @change="orgChange" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -100,6 +100,7 @@
               node-key="id"    
               v-model="temp.check"
               ref="domTree"
+              :filter-node-method="filterNode"
               @check-change="handTreechange"
               @node-click="nodeClick"
               @current-change="currentChange"
@@ -219,6 +220,7 @@ export default {
         officeId: ""
       },
       checkNode: [],
+      filterText: "", //测试数据
       roleId: "",
       checked: [],
       station: "",
@@ -310,7 +312,26 @@ export default {
       this.roleLv.push(this.stationLv[i]);
     }
   },
+  watch: {
+    filterText(val) {
+      this.$refs.domTree.filter(val);
+    }
+  },
   methods: {
+    filterNode(value, data) {
+      console.log(value);
+      console.log(data.type);
+      if (!value) return true;
+      return data.type.indexOf(value) !== -1;
+    },
+    orgChange(val) {
+      console.log(val);
+      if (val == "sys") {
+        this.filterText = "";
+      } else {
+        this.filterText = "business";
+      }
+    },
     //点击时loading状态
     loadingClick() {
       loading = this.$loading({
@@ -554,26 +575,25 @@ export default {
     handleUpdate(row) {
       this.myselfUpdate = true;
       this.listLoading = true;
-        getPower(row.id).then(res => {
-          this.listLoading = false;
-          if (res.data.code == 1) {
-            //处理权限位置
-            //处理订单的查看详情
-            var arr = res.data.data.menuListUnion;
-            for (var i = 0; i < arr.length; i++) {
-              if (arr[i].subMenus != undefined) {
-                var arri = arr[i].subMenus;
-                for (var j = 0; j < arri.length; j++) {
-                  if (arri[j].subMenus != undefined) {
-                    var arrj = arri[j].subMenus;
-                    for (var k = 0; k < arrj.length; k++) {
-                      var arrk = arrj[k];
-                      if (arrk.permission != undefined) {
-                        if (arrk.permission == "order_info") {
-                          if (arrk.disabled == undefined) {
-                            arrj.remove(arrk);
-                            arrj.push(arrk);
-                          }
+      getPower(row.id).then(res => {
+        this.listLoading = false;
+        if (res.data.code == 1) {
+          //处理权限位置
+          //处理订单的查看详情
+          var arr = res.data.data.menuListUnion;
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      if (arrk.permission == "order_info") {
+                        if (arrk.disabled == undefined) {
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
                         }
                       }
                     }
@@ -581,82 +601,82 @@ export default {
                 }
               }
             }
-            //处理所有列表权限
-            for (var i = 0; i < arr.length; i++) {
-              if (arr[i].subMenus != undefined) {
-                var arri = arr[i].subMenus;
-                for (var j = 0; j < arri.length; j++) {
-                  if (arri[j].subMenus != undefined) {
-                    var arrj = arri[j].subMenus;
-                    for (var k = 0; k < arrj.length; k++) {
-                      var arrk = arrj[k];
-                      if (arrk.permission != undefined) {
-                        if (
-                          arrk.permission.substring(
-                            arrk.permission.length - 4,
-                            arrk.permission.length
-                          ) == "view"
-                        ) {
-                          if (arrk.disabled == undefined) {
-                            var obj = arrk;
-                            arrj.remove(arrk);
-                            arrj.push(arrk);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            this.data2 = arr;
-            if (res.data.data.updateOwnFlag == "yes") {
-              this.myselfUpdate = false;
-            }
-            if (res.data.data.flagRoleId) {
-              this.myselfUpdate = false;
-              this.$nextTick(() => {
-                this.myselfUpdate = false;
-              });
-            }
-            this.dialogStatus = "update";
-            this.dialogFormVisible = true;
-            var a = res.data.data;
-            this.roleId = a.id;
-            this.temp.officeId = a.organization.id;
-            this.temp.name = a.name;
-            //this.temp.dataScope = a.dataScope;
-            //一期默认10级
-            this.temp.dataScope = "10";
-
-            //this.temp.check = a.menuIdList;
-            this.temp.check = a.menuIdListEdit;
-
-            if (res.data.data.flag) {
-              this.selsctState = true;
-            }
-            for (let i = 0; i < this.data2.length; i++) {
-              //特殊首页处理
-              if (this.data2[i].permission == "index") {
-              } else {
-                this.temp.check.remove(this.data2[i].id);
-              }
-
-              if (this.data2[i].subMenus != undefined) {
-                var child = this.data2[i];
-                for (let j = 0; j < child.subMenus.length; j++) {
-                  this.temp.check.remove(child.subMenus[j].id);
-                }
-              }
-            }
-            this.$nextTick(() => {
-              this.$refs.domTree.setCheckedKeys(this.temp.check);
-            });
-          } else {
-            this.listLoading = false;
           }
-        });
-    
+          //处理所有列表权限
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      if (
+                        arrk.permission.substring(
+                          arrk.permission.length - 4,
+                          arrk.permission.length
+                        ) == "view"
+                      ) {
+                        if (arrk.disabled == undefined) {
+                          var obj = arrk;
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          this.data2 = arr;
+          if (res.data.data.updateOwnFlag == "yes") {
+            this.myselfUpdate = false;
+          }
+          if (res.data.data.flagRoleId) {
+            this.myselfUpdate = false;
+            this.$nextTick(() => {
+              this.myselfUpdate = false;
+            });
+          }
+          this.dialogStatus = "update";
+          this.dialogFormVisible = true;
+          var a = res.data.data;
+          this.roleId = a.id;
+          this.temp.officeId = a.organization.id;
+          this.temp.name = a.name;
+          //this.temp.dataScope = a.dataScope;
+          //一期默认10级
+          this.temp.dataScope = "10";
+
+          //this.temp.check = a.menuIdList;
+          this.temp.check = a.menuIdListEdit;
+
+          if (res.data.data.flag) {
+            this.selsctState = true;
+          }
+          for (let i = 0; i < this.data2.length; i++) {
+            //特殊首页处理
+            if (this.data2[i].permission == "index") {
+            } else {
+              this.temp.check.remove(this.data2[i].id);
+            }
+
+            if (this.data2[i].subMenus != undefined) {
+              var child = this.data2[i];
+              for (let j = 0; j < child.subMenus.length; j++) {
+                this.temp.check.remove(child.subMenus[j].id);
+              }
+            }
+          }
+          this.$nextTick(() => {
+            this.$refs.domTree.setCheckedKeys(this.temp.check);
+          });
+        } else {
+          this.listLoading = false;
+        }
+      });
     },
     //删除数据
     handleDelete(row) {
