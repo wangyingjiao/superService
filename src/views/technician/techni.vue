@@ -3,7 +3,7 @@
     <div class="tech-index">
       <div class="serch-box">
         <div class="serch-input">
-			<el-select class="search" v-model="techniSearch.orgId" placeholder="选择机构" @change="orgNameChange(techniSearch.orgId)">
+			<el-select class="search" v-model="techniSearch.orgId" filterable placeholder="选择机构" @change="orgNameChange(techniSearch.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
           <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
@@ -431,12 +431,12 @@
                       </el-form-item>
                   </div>
                   <div class="server-left">
-                       <el-form-item label="工作年限：" prop="workTime">
-                            <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
-                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                        <el-form-item label="所属服务站：" prop="stationId">
+                          <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,index) in serveryAdd" :key="index" :label="item.name" :value="item.id">
                               </el-option>
-                            </el-select>
-                      </el-form-item>
+                          </el-select>
+                        </el-form-item>
                   </div>
                   <div class="server-right">
                       <el-form-item label="岗位状态：" prop="jobStatus">
@@ -447,11 +447,11 @@
                       </el-form-item>
                   </div>
                   <div class="server-left">
-					   <el-form-item label="所属服务站：" prop="stationId">
-                        <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
-                            </el-option>
-                        </el-select>
+					            <el-form-item label="工作年限：" prop="workTime">
+                            <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                            </el-select>
                       </el-form-item>
                   </div>
                 </div>
@@ -490,7 +490,7 @@
                       <el-form-item label="选择技能：" prop="skillIds">
                         <el-select v-model="personal.skillIds" multiple placeholder="请选择技能" style="width:100%" filterable >
                           <el-option
-                          v-for="(item,index) in sexTypeo"
+                          v-for="(item,index) in sexTypeoAdd"
                           :key="index"
                           :label="item.name"
                           :value="item.id">
@@ -741,6 +741,7 @@ export default {
     };
 
     return {
+      serveryAdd:[],
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
       timeFlag: true,
@@ -899,6 +900,7 @@ export default {
       technicianData: [],
       sexTypes: {},
       sexTypeo: [],
+      sexTypeoAdd:[],
       sexDay: [
         {
           name: "星期一",
@@ -1069,29 +1071,48 @@ export default {
   },
   methods: {
     listByOrgIdData(item){
-      listByOrgIdData(item).then(data=>{
-        this.server = data.stations
-        this.sexTypeo = data.skils
-        this.servery = data.stations
-      }).catch(error=>{
-        console.log(error)
+      return new Promise((res,rej)=>{
+          listByOrgIdData(item).then(data=>{
+            res(data)
+          }).catch(error=>{
+            rej(error)
+          })
       })
     },
     orderChange(item){
       this.personal.stationId = ''
-      this.personal.skillIds = []
-      this.listByOrgIdData(item)
+      if(this.personal.skillIds.length>0){
+        this.personal.skillIds = []
+      }
+      if(item){
+        this.listByOrgIdData(item).then(data=>{
+          this.serveryAdd = data.stations
+          this.sexTypeoAdd =  data.skils
+        })
+      }
     },
     orgNameChange(item){
+      // if(this.techUserType=='station' || this.techUserType=='org'){
+      //    return
+      // }
       this.techniSearch.stationId = ''
       this.roomSel2Arr = []
-      this.listByOrgIdData(item)
+      this.listByOrgIdData(item).then(data=>{
+            this.server = data.stations
+            this.sexTypeo = data.skils
+            this.servery = data.stations
+      })
     },
     //机构
     listDataAll(){
       return new Promise((resolve,reject)=>{
          listDataAll({}).then(({data})=>{
-          resolve(data.data.list)
+           console.log(data.data,"data------")
+            let list = data.data.list
+            if(list[0].id=='0'){
+              list = list.slice(1)
+            }
+          resolve(list)
         }).catch(error=>{
           resolve(error)
         })
@@ -1531,7 +1552,7 @@ export default {
       ) {
         delete this.techniSearch.skillIds;
       }
-      this.orderChange(obj.orgId)
+      // obj.orgId?this.orderChange(obj.orgId):''
       this.getList(val, this.listQuery.limit, obj);
     },
     handleSizeChange(val) {
@@ -1802,14 +1823,21 @@ export default {
               this.infoname = data.data.data.page.list || [];
             }else{
               this.infoname = data.data.data.page.list || [];
-              if(this.techUserType=='org' ||this.techUserType=='station'){
+              if(this.techUserType){
                 this.sexTypeo = data.data.data.skillInfos;
+                this.sexTypeoAdd = data.data.data.skillInfos;
                 if(data.data.data.stations[0].id=='0'){
                   this.server = data.data.data.stations.slice(1)
                   this.servery = data.data.data.stations.slice(1)
+                  this.serveryAdd = data.data.data.stations.slice(1)
                 }else{
                   this.server = data.data.data.stations;
                   this.servery = data.data.data.stations;
+                  this.serveryAdd = data.data.data.stations;
+                }
+                if(this.techUserType=='station'){
+                  this.techniSearch.stationId = this.server[0].id
+                  this.personal.stationId =  this.server[0].id
                 }
               }
             }
@@ -1864,13 +1892,15 @@ export default {
       }
     }
     if(this.techUserType=='org' ||this.techUserType=='station'){
-      this.organizations = [{name:'本机构',id:''}]
-      this.techniSearch.orgId = ''
-      this.getList(1, 12, {});
+      this.listDataAll().then(data=>{
+        this.organizations = data
+        this.techniSearch.orgId = this.organizations[0].id
+        this.getList(1, 12, {});
+      })
     }else{
       tabData()
     }
-
+    // tabData()
     this.sign; //获取签名
     // this.getList(1, 12, {});
     //性别,工作年限,岗位性质，岗位状态

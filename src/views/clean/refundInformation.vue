@@ -6,12 +6,22 @@
                     <div class="over-flow">
                         <div class="refund-left">
                             <div>退款编号：<span>{{infor.refundNumber}}</span></div>
-                            <div>退款状态：<span>{{infor.refundStatus}}</span></div>
+                            <div>退款状态：
+                                <span v-if="infor.refundStatus=='refunding'">申请退款中</span>
+                                <span v-if="infor.refundStatus=='cancel'">已取消</span>
+                                <span v-if="infor.refundStatus=='refunded'">退款成功</span>
+                                <span v-if="infor.refundStatus=='failure'">退款失败</span>
+                            </div>
                             <div>退款时间：<span>{{infor.finishTime}}</span></div>
                         </div>
                        <div class="refund-right">
                             <div>订单编号：<span>{{infor.orderNumber}}</span></div>
-                            <div>退款方式：<span>{{infor.refundMethod}}</span></div>
+                            <div>退款方式：
+                                <span v-if="infor.refundMethod=='cash'">现金</span>
+                                <span v-if="infor.refundMethod=='weixin'">微信</span>
+                                <span v-if="infor.refundMethod=='alipay'">支付宝</span>
+                                <span v-if="infor.refundMethod=='bank_card'">银行卡</span>
+                            </div>
                             <div>退款原因：<span>{{infor.refundReason}}</span></div>
                        </div>
                     </div>
@@ -26,7 +36,7 @@
                             <div>退款金额：<span>{{'￥'+infor.refundAccountReality}}</span></div>
                         </div>
                        <div class="refund-right">
-                            <div>退款差额：<span>{{infor.refundDifferenceType+'￥'+infor.refundDifference}}</span></div>
+                            <div>退款差额：<span v-if="infor.refundDifferenceType">{{infor.refundDifferenceType=='less'?'少退':'多退'}} {{'￥'+infor.refundDifference}}</span></div>
                        </div>
                     </div>
                     <el-table :data="infor.refundGoodsList" border style="width: 100%">
@@ -54,7 +64,9 @@
         
         },
         computed:{
-            infor:() => this.informationdata.data.data
+            infor(){
+                return this.informationdata.data.data
+            }
         },
         mounted(){
 

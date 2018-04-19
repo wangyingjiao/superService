@@ -58,7 +58,7 @@
          </template>
       </el-table-column>
       
-      <el-table-column  align="center"  :render-header="renderHeader"  >
+      <el-table-column v-if="userType =='sys'||userType =='platform'"  align="center"  :render-header="renderHeader"  >
             <template scope="rowObj">
               <!-- <p>{{rowObj.row.organization.name}}</p> -->
                <el-tooltip  placement="left" :disabled="rowObj.row.organization.name.length < 10" :content="rowObj.row.organization.name">
@@ -76,14 +76,14 @@
              <div class="overheidden">{{scope.row.organization.name}}</div>
            </el-tooltip>
          </template>
-      </el-table-column>
+      </el-table-column> -->
 
-      <el-table-column   align="center" label="服务站" >
+      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" >
         <template scope="scope">
               <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
               <span v-else>{{scope.row.station.name}}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column class-name="status-col" label="状态" align="center" prop="useable">
          <template scope="scope">
           <span v-if="scope.row.useable =='1'">可用</span>
@@ -221,7 +221,7 @@
         
         <el-form-item label=" 所属机构:"  prop="officeId2">
           <el-select style='width: 100%;' filterable v-model="temp2.officeId2" placeholder="请选择">
-            <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
+            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -382,6 +382,7 @@ export default {
       useableState: false, //可用状态禁用
       list: null,
       total: null,
+      userType:localStorage.getItem('type'),
       listLoading: true,
       listQuery: {
         page: 1,
@@ -565,10 +566,10 @@ export default {
       };
     }
 
-    // getSList({}).then(res => {
-    //   // 服务机构
-    //   this.mechanismCheck = res.data.data.list;
-    // });
+    getSList({}).then(res => {
+      // 服务机构
+      this.mechanismCheck = res.data.data.list;
+    });
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
@@ -667,13 +668,10 @@ export default {
     },
     handleCreate() {
       // 点击新增时
-      getSList({}).then(res => {
-        // 服务机构
-        this.mechanismCheck = res.data.data.list;
+      
         this.dialogStatus = "create";
         this.dialogFormVisible = true;
         this.resetTemp();
-      });
     },
     // addstation() {
     //   this.resetTemptwo();
@@ -899,6 +897,9 @@ export default {
         this.orgList = []
         this.temp.officeId = ""
         this.temp.stationId = "";
+        this.temp.role = "";
+        this.servicestationCheck = [];
+        this.stationCheck = [];
         getOrgByTypeOrgId({ type: val }).then(res => {
           console.log(res, "机构");
           this.orgList = res.data.data;
