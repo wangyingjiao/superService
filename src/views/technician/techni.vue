@@ -1828,7 +1828,7 @@ export default {
               this.infoname = data.data.data.page.list || [];
             }else{
               this.infoname = data.data.data.page.list || [];
-              if(this.techUserType){
+              if(this.techUserType=="station" || this.techUserType=="org"){
                 this.sexTypeo = data.data.data.skillInfos;
                 this.sexTypeoAdd = data.data.data.skillInfos;
                 if(data.data.data.stations[0].id=='0'){

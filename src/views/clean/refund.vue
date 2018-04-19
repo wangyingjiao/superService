@@ -18,10 +18,10 @@
         <div class="refund-table" v-loading.body="loading">
             <div>
                 <el-table :data="tableData" border  stripe style="width: 100%">
-                    <el-table-column align="center" :render-header="renderHeader">
+                    <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader">
                         <template scope="scope">
                             <div>
-                                <div v-if="!techUserType">{{scope.row.orgName}}</div>
+                                <div v-if="techUserType!='org'">{{scope.row.orgName}}</div>
                                 <div>{{scope.row.stationName}}</div> 
                             </div>
                         </template>
@@ -162,8 +162,11 @@ var refundDetails = (id)=>{
                 })
             },
             renderHeader(h){
-                let a = true
-                return [!this.techUserType?h('p',['机构名称']):'', a ? h('p',['服务站名称']) : '']
+                if(this.techUserType=='station'){
+                    return
+                }else{
+                    return [this.techUserType!='org'?h('p',['机构名称']):'',  h('p',['服务站名称']) ]
+                }
             },
             //搜索
             searchClick(item){
@@ -236,12 +239,13 @@ var refundDetails = (id)=>{
         },
         computed: {
             techUserType(){
-                let _user = userType()
-                if(_user=='org' || _user=='station'){
-                    return true
-                }else{
-                    return false
-                }
+                return  userType()
+                // let _user = userType()
+                // if(_user=='org' || _user=='station'){
+                //     return true
+                // }else{
+                //     return false
+                // }
                
             }
         },
