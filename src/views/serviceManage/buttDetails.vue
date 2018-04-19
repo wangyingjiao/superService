@@ -9,8 +9,8 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="选择机构">
-                    <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
+                <el-select class="butt-search" v-if="userType" clearable v-model="search.orgId" placeholder="选择机构">
+                    <el-option v-for="(item,key) in orgList" :key="key" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
                 <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
@@ -97,10 +97,12 @@ import {
   JonitGoods,
   buttedList
 } from "@/api/serviceManage";
-
+import { userType} from '../../utils/auth'
+import { listDataAll } from "@/api/tech";
 export default {
   data() {
     return {
+      orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: true,
       dockingEName: {},
@@ -115,6 +117,7 @@ export default {
       total: 1,
       thisType: {},
       search: {
+        orgId:'',
         eshopCode: "",
         majorSort: "",
         sortId: "",
@@ -128,6 +131,14 @@ export default {
     btnShow() {
       if (JSON.parse(localStorage.getItem("btn"))) {
         return JSON.parse(localStorage.getItem("btn"));
+      }
+    },
+    userType(){
+      let _userType = userType()
+      if(_userType=='org' || _userType=='station'){
+        return false
+      }else{
+        return true
       }
     }
   },
@@ -365,6 +376,25 @@ export default {
     }
   },
   mounted() {
+    let listData = ()=>{
+      return new Promise((resolve,reject)=>{
+        listDataAll({}).then(data=>{
+          console.log(data,"++++_______")
+          let _data = data.data.data.list
+          if(data.data.code==1){
+            if(_data[0].id=="0"){
+              _data = _data.slice(1)
+            }
+            this.orgList = _data
+            this.search.orgId = this.orgList[0].id
+            resolve(_data)
+          }
+        }).catch(error=>{
+          reject(error)
+          console.log(error,"------++++++")
+        })
+      })
+    }
     //默认已对接商品数据
     // this.handleClick()
     //check默认选中第一个
@@ -374,35 +404,50 @@ export default {
     delete this.thisType.all;
     //对接E店默认选中第一个
     //先请求E店列表获取第一条数据的id，在请求table列表数据，
-    let promise = new Promise((resolve, reject) => {
-      buttedList()
-        .then(data => {
-          if (data.data.code == 1) {
-            this.listLoading = false;
-            if (data.data.data) {
-              this.options = data.data.data || [];
-              this.search.eshopCode = data.data.data[0].eshopCode || "";
-              resolve(this.search);
-              this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+    let promise = () => {
+      return new Promise((resolve, reject)=>{
+        buttedList()
+          .then(data => {
+            if (data.data.code == 1) {
+              this.listLoading = false;
+              if (data.data.data) {
+                this.options = data.data.data || [];
+                this.search.eshopCode = data.data.data[0].eshopCode || "";
+                resolve(this.search);
+                this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+              } else {
+                this.dockingEName = { name: "" };
+              }
             } else {
-              this.dockingEName = { name: "" };
+              this.listLoading = false;
+              // this.$message({
+              //     type: "warning",
+              //     message: data.data.data
+              // });
             }
-          } else {
+          })
+          .catch(error => {
             this.listLoading = false;
-            // this.$message({
-            //     type: "warning",
-            //     message: data.data.data
-            // });
-          }
-        })
-        .catch(error => {
-          this.listLoading = false;
-        });
-    });
+          });
+      });
+    }
     //获取E店数据请求table列表
-    promise.then(success => {
-      this.buttedConnListApi(success);
-    });
+    let tabData = async ()=>{
+      try{
+        if(this.userType){
+          await listData()
+        }
+        let _promise = await promise()
+        this.buttedConnListApi(_promise);
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+    tabData()
+    // promise.then(success => {
+    //   this.buttedConnListApi(success);
+    // });
   },
   filters: {
     capitalize(value) {

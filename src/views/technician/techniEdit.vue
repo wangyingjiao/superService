@@ -151,7 +151,7 @@
                   <div  class="tech-edit-width">
                        <el-form-item label="所属服务站:" prop="stationId">
                           <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                            <el-option v-for="(item,index) in serveryEdit" :key="index" :label="item.name" :value="item.id">
                             </el-option>
                           </el-select>
                         </el-form-item>
@@ -210,7 +210,7 @@
                         <el-form-item label="选择技能:" prop="skillIds">
                           <el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
                             <el-option
-                            v-for="item in sextypeo"
+                            v-for="item in sextypeoEdit"
                             :key="item.id"
                             :label="item.name"
                             :value="item.id">
@@ -598,7 +598,8 @@ import {
   technicianPlus,
   technicianOther,
   familyAdd,
-  familyDelete
+  familyDelete,
+  listByOrgId
 } from "@/api/tech";
 import { userType} from '../../utils/auth'
 import { getSign } from "@/api/sign";
@@ -710,6 +711,8 @@ export default {
     };
 
     return {
+      sextypeoEdit:[],
+      serveryEdit:[],
       roomSelNum: [],
       techniEditId: "",
       roomSel1Arr: [],
@@ -966,12 +969,23 @@ export default {
         ** 服务信息
         ** 
         **/
-        console.log(val.stationId,"val.stationId----")
         this.perServer.orgId = val.orgId;
-        this.perServer.stationId = val.stationId;
+        /*
+        **  编辑的服务站和技能不能和搜索同步
+        **  否则搜索切换机构，编辑的服务站和技能渲染Id
+        */
+        listByOrgId({orgId:this.perServer.orgId}).then(data=>{
+          this.serveryEdit = data.data.data.stations
+          this.perServer.stationId = val.stationId;
+          this.sextypeoEdit = data.data.data.skils;
+          this.perServer.skillIds = val.skillIds || [];
+        }).catch(error=>{
+          console.log(error,"error--------")
+        })
+        // this.perServer.stationId = val.stationId;
         this.perServer.jobNature = val.jobNature;
         this.perServer.jobStatus = val.jobStatus;
-        this.perServer.skillIds = val.skillIds || [];
+        // this.perServer.skillIds = val.skillIds || [];
         this.perServer.workTime = val.workTime + "";
         this.perServer.workTimes = val.workTimes;
         // //工作时间默认选中

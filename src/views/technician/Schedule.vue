@@ -260,6 +260,7 @@
 			},
 			getList(){
 				this.listLoading = true
+				// console.log(this.search,this.pageSync,this.pageSize)
 				getData(this.search,this.pageSync,this.pageSize)
 					.then(({data})=>{
 						if(data.code){
@@ -269,9 +270,11 @@
 						}else{
 							this.listLoading = false
 						}
+						// console.log(data,"data-----")
 					})
 					.catch(error=>{
 						this.listLoading = false
+						// console.log(error,"error----")
 					})
 			},
 		},
@@ -280,10 +283,17 @@
 				.then(({data})=>{
 					if(data.code==1){
 						if(data.data.organizations[0].id=='0'){
-							this.organizations = data.data.organizations.slice(1)
-						}else{
-							this.organizations = data.data.organizations
+							this.organizations = data.data.organizations.remove(0)
 						}
+						if(data.data.organizations[1].id=='0'){
+							this.organizations = data.data.organizations.remove(1)
+							this.organizations = data.data.organizations.remove(0)
+						}
+						// if(data.data.organizations[0].id=='0'){
+						// 	this.organizations = data.data.organizations.slice(1)
+						// }else{
+						// 	this.organizations = data.data.organizations
+						// }
 						this.search.orgId = this.organizations[0].id
 						if(data.data.stations[0].id=='0'){
 							this.stations = data.data.stations.slice(1)
@@ -297,10 +307,10 @@
 					}
 					// var obj = data.data.data
 					// if(data.data){}
-					
+					// console.log(data)
 				})
 				.catch(error=>{
-					
+					// console.log(error)
 				})
 			// this.getList()
 		}

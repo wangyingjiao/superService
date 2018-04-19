@@ -10,8 +10,6 @@
 				<div class="searchs">
 			  	<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
-            <!-- <el-option key="1" label="请选择" value="">
-            </el-option> -->
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
