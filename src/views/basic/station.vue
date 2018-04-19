@@ -2,6 +2,11 @@
   <div>
     <!-- 搜索 -->
     <div class="filter-container bgWhite">
+       <el-select filterable  class="search" clearable  v-model="search.officeId" placeholder="选择机构">
+        <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+
       <el-input @keyup.enter.native="handleFilter" class="search" placeholder="请输入搜索站点名" v-model="search.name">
       </el-input>
         <!-- 分组搜索 -->
@@ -232,6 +237,7 @@ import {
   setStore,
   setScope
 } from "@/api/basic";
+import { getSList } from "@/api/staff";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
 var loading;
@@ -267,6 +273,7 @@ export default {
       pageSize: 10,
       total: 0,
       search: {
+        officeId:"",
         name: "",
         cityCode: ""
       },
@@ -299,6 +306,7 @@ export default {
       },
       importanceOptions: [],
       stationType: [],
+      mechanismCheck: [],
       stationState: [{ id: "yes", value: "启用" }, { id: "no", value: "停用" }],
       dialogFormVisible: false, //表格
       dialogMasterVisible: false, //店长
@@ -371,7 +379,6 @@ export default {
   },
 
   created() {
-    this.getList();
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
@@ -380,6 +387,12 @@ export default {
     this.stationType = dict.service_station_type;
     // setTimeout(function() {}, 30);
     //this.areaOptions = this.$store.state.user.area;
+    getSList({}).then(res => {
+      // 服务机构
+      this.mechanismCheck = res.data.data.list;
+      this.search.officeId = this.mechanismCheck[0].id
+      this.handleFilter()
+    });
   },
   methods: {
     //loading
@@ -396,7 +409,8 @@ export default {
       this.listLoading = true;
       var obj = {
         name: this.search.name,
-        cityCode: this.search.cityCode
+        cityCode: this.search.cityCode,
+        orgId:this.search.officeId
       };
       getSite(obj, this.pageNumber, this.pageSize)
         .then(res => {
