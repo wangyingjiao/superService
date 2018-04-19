@@ -1270,7 +1270,7 @@ export default {
       console.log(2)
       var _page = typeof page == "string" ? page : this.listQuery.page;
       var _size = size || this.listQuery.limit;
-      this.listQuery.sync = 1;
+      // this.listQuery.sync = 1;
       var obj = {};
       console.log(this.techniSearch.orgId,"this.techniSearch.orgName----")
       if(this.techniSearch.orgId){
@@ -1288,7 +1288,12 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
-      this.getList(_page, _size, obj,'sear');
+      if(this.listQuery.sync == 1){
+        this.getList(_page, _size, obj,'sear');
+      }else{
+        this.listQuery.sync = 1
+      }
+      // this.getList(_page, _size, obj,'sear');
     },
     startDateChange(val) {
       this.storeEnd.storeDate = val;
@@ -1823,7 +1828,7 @@ export default {
               this.infoname = data.data.data.page.list || [];
             }else{
               this.infoname = data.data.data.page.list || [];
-              if(this.techUserType){
+              if(this.techUserType=="station" || this.techUserType=="org"){
                 this.sexTypeo = data.data.data.skillInfos;
                 this.sexTypeoAdd = data.data.data.skillInfos;
                 if(data.data.data.stations[0].id=='0'){

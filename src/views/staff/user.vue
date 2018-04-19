@@ -220,7 +220,7 @@
         style='width: 100%;padding:0 6%;'>
         
         <el-form-item label=" 所属机构:"  prop="officeId2">
-          <el-select style='width: 100%;' filterable v-model="temp2.officeId2" placeholder="请选择">
+          <el-select style='width: 100%;' filterable @change="orgChange" v-model="temp2.officeId2" placeholder="请选择">
             <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -239,6 +239,7 @@
               node-key="id"
               v-model="temp2.check"
               ref="domTree"
+              :filter-node-method="filterNode"
               style='width: 100%;'
               @check-change="handTreechange"
               :default-expand-all = "true"
@@ -382,7 +383,7 @@ export default {
       useableState: false, //可用状态禁用
       list: null,
       total: null,
-      userType:localStorage.getItem('type'),
+      userType: localStorage.getItem("type"),
       listLoading: true,
       listQuery: {
         page: 1,
@@ -401,6 +402,7 @@ export default {
         officeId: "",
         stationId: ""
       },
+      filterText: "", //测试数据
       typeList: [], //角色
       mechanismCheck: [], //服务机构
       servicestationCheck: [], // 服务站
@@ -531,6 +533,12 @@ export default {
       return statusMap[status];
     }
   },
+  watch: {
+    filterText(val) {
+      console.log(this.filterText, "watch");
+      this.$refs.domTree.filter(val);
+    }
+  },
   created() {
     this.getList();
     if (JSON.parse(localStorage.getItem("btn"))) {
@@ -589,6 +597,21 @@ export default {
   methods: {
     renderHeader(h) {
       return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.type.indexOf(value) !== -1;
+    },
+    orgChange(val) {
+      if (val == "sys") {
+        this.$nextTick(() => {
+          this.filterText = "";
+        });
+      } else {
+        this.$nextTick(() => {
+          this.filterText = "business";
+        });
+      }
     },
     loadingClick() {
       loading = this.$loading({
@@ -651,6 +674,9 @@ export default {
     addRole() {
       // 新增岗位
       this.dialogFormStation = true;
+      this.$nextTick(() => {
+        this.filterText = "business";
+      });
       if (this.mechanismCheck.length == 1) {
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
@@ -668,10 +694,10 @@ export default {
     },
     handleCreate() {
       // 点击新增时
-      
-        this.dialogStatus = "create";
-        this.dialogFormVisible = true;
-        this.resetTemp();
+
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.resetTemp();
     },
     // addstation() {
     //   this.resetTemptwo();
@@ -804,8 +830,8 @@ export default {
     },
     handleUpdate(row) {
       //点击编辑
-      console.log(row,'1111')
-      getOrgByTypeOrgId({type:row.type}).then(res => {
+      console.log(row, "1111");
+      getOrgByTypeOrgId({ type: row.type }).then(res => {
         // 服务机构
         this.orgList = res.data.data;
         hanleUpuser({ id: row.id }).then(res => {
@@ -816,7 +842,7 @@ export default {
               name: user.name,
               mobile: user.mobile,
               password: "",
-              type:user.type,
+              type: user.type,
               officeId: user.organization.id,
               stationId: user.station.id,
               role: user.role.id,
@@ -894,8 +920,8 @@ export default {
     typeChange(val) {
       console.log(val);
       if (val != "") {
-        this.orgList = []
-        this.temp.officeId = ""
+        this.orgList = [];
+        this.temp.officeId = "";
         this.temp.stationId = "";
         this.temp.role = "";
         this.servicestationCheck = [];
@@ -956,7 +982,7 @@ export default {
         mobile: this.temp.mobile,
         name: this.temp.name,
         newPassword: this.temp.password,
-        type:this.temp.type,
+        type: this.temp.type,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],
@@ -1017,6 +1043,12 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
+      if (this.filterText == "business") {
+        var sys = this.forOfTree();
+        for (var i of sys) {
+          arr.remove(i);
+        }
+      }
       var obj = {
         name: this.temp2.name,
         //dataScope: this.temp2.dataScope,
@@ -1075,7 +1107,7 @@ export default {
         mobile: this.temp.mobile,
         name: this.temp.name,
         newPassword: this.temp.password,
-        type:this.temp.type,
+        type: this.temp.type,
         officeId: this.temp.officeId,
         stationId: this.temp.stationId,
         roles: [this.temp.role],

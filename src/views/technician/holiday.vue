@@ -9,6 +9,7 @@
       <el-tab-pane label="审核通过" name="yes"></el-tab-pane>
       <el-tab-pane label="审核未通过" name="no"></el-tab-pane>
     </el-tabs>
+
       
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
@@ -19,12 +20,21 @@
 
     <el-date-picker
       v-model="search.time"
-      style="width:20%"
+      class="search-min"
       type="daterange"
       placeholder="选择日期">
     </el-date-picker>
       
     </el-date-picker>
+    <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
+        <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+       
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="选择服务站">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
        <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
@@ -159,7 +169,7 @@ import {
   getHolidayById,
   reviewedHoliday
 } from "@/api/tech";
-import { getMenudata } from "@/api/staff"; //接口调用
+import { getMenudata, getSList, getStation, getFuwu } from "@/api/staff"; //接口调用
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import roleDialog from "../staff/roleDialog.vue";
@@ -192,11 +202,15 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      mechanismCheck: [], //服务机构
+      servicestationSearch: [], // 服务站
       data2: [],
       search: {
         type: "techName",
         val: "",
-        time: ""
+        time: "",
+        officeId:"",
+        stationId:""
       },
       temp: {
         rowId: "",
@@ -234,7 +248,6 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.activeName = "all";
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
@@ -242,10 +255,40 @@ export default {
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
+    getSList({}).then(res => {
+      // 服务机构
+      if (res.data.data.list[0].id == "0") {
+        res.data.data.list.remove(res.data.data.list[0]);
+      }
+      if (res.data.data.list[1].id == "0") {
+        res.data.data.list.remove(res.data.data.list[1]);
+        res.data.data.list.remove(res.data.data.list[0]);
+      }
+      this.mechanismCheck = res.data.data.list;
+      if (this.mechanismCheck) {
+        this.search.officeId = this.mechanismCheck[0].id;
+      }
+    });
   },
   methods: {
     aaa(obj) {
       //console.log(obj,'aaa')
+    },
+    searchOffice(val) {
+      // 搜索时机构改变
+      this.search.stationId = "";
+      this.servicestationSearch = [];
+      if (val) {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站列表
+          this.servicestationSearch = res.data.data;
+          this.search.stationId = this.servicestationSearch[0].id;
+          this.handleFilter();
+        });
+      }
     },
     //请求列表数据
     getList() {
@@ -289,6 +332,7 @@ export default {
       if (obj.reviewStatus == "all") {
         obj.reviewStatus = "";
       }
+      obj = Object.assign(obj,{orgId:this.search.officeId,stationId:this.search.stationId})
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {

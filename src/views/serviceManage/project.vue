@@ -6,7 +6,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable class="search" filterable  v-model="search.orgName" placeholder="选择机构">
+      <el-select clearable class="search" filterable  v-model="search.orgId" placeholder="选择机构">
         <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -862,11 +862,11 @@ export default {
         page: 1
       },
       search: {
+        orgId:'',
         sortId: "",
         name: "",
         // sortIdandGoodsId: "",
         goodsName: "",
-        orgName:''
       },
       pageSize: 10,
       fileList: [],
@@ -890,7 +890,7 @@ export default {
   },
   created() {
     //所属分类
-    this.handleClick({ name: "all" });
+    // this.handleClick({ name: "all" });
     //系统标签
     serGasqSort()
       .then(data => {
@@ -1298,8 +1298,8 @@ export default {
         if (this.search.goodsName) {
           obj.goodsName = this.search.goodsName;
         }
-        if(this.search.orgName){
-          obj.orgName = this.search.orgName
+        if(this.search.orgId){
+          obj.orgId = this.search.orgId
         }
         // if (this.search.sortIdandGoodsId) {
         //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
@@ -1335,25 +1335,25 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {};
-      if (this.basicForm.majorSort) {
-        obj.majorSort = this.tabs;
-      }
-      if (this.search.sortId) {
-        obj.sortId = this.search.sortId;
-      }
-      if (this.search.name) {
-        obj.name = this.search.name;
-      }
-      if (this.search.goodsName) {
-        obj.goodsName = this.search.goodsName;
-      }
+      // var obj = {};
+      // if (this.basicForm.majorSort) {
+      //   obj.majorSort = this.tabs;
+      // }
+      // if (this.search.sortId) {
+      //   obj.sortId = this.search.sortId;
+      // }
+      // if (this.search.name) {
+      //   obj.name = this.search.name;
+      // }
+      // if (this.search.goodsName) {
+      //   obj.goodsName = this.search.goodsName;
+      // }
       // if (this.search.sortIdandGoodsId) {
       //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
       // }
 
       this.listLoading = true;
-      this.getList(this.pageNumber, this.pageSize, obj);
+      this.getList(this.pageNumber, this.pageSize);
     },
     handleCreate(formName) {
       this.basicForm.sortId = "";
@@ -1700,18 +1700,30 @@ export default {
     addCommodity
   },
   mounted(){
-    let _userType = userType();
-    if(_userType=='org' || _userType=='station'){
-      this.orgNameList = [{name:'本机构',id:''}]
-      this.search.orgId = ''
-    }else{
-      listDataAll({}).then(data=>{
+     listDataAll({}).then(data=>{
         if(data.data.code==1){
-          this.orgList = data.data.data.list
-          this.orgNameList = this.orgList
+          let _data = data.data.data.list
+          if(_data[0].id=='0'){
+           _data = _data.slice(1)
+          }
+          this.orgList = _data
+          this.orgNameList = _data
+          this.search.orgId = this.orgNameList[0].id
+          this.handleClick({ name: "all" });
         }
       })
-    }
+    // let _userType = userType();
+    // if(_userType=='org' || _userType=='station'){
+    //   this.orgNameList = [{name:'本机构',id:''}]
+    //   this.search.orgId = ''
+    // }else{
+    //   listDataAll({}).then(data=>{
+    //     if(data.data.code==1){
+    //       this.orgList = data.data.data.list
+    //       this.orgNameList = this.orgList
+    //     }
+    //   })
+    // }
   }
 };
 </script>
