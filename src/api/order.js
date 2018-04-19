@@ -84,7 +84,14 @@ export function findGoodsNeedTech(obj) {
 export function orderCancelFun(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/orderCancel`, obj)
 }
-
+// 退款
+export function orderRefundInit(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/orderRefundInit`, obj)
+}
+// 退款保存
+export function orderRefundSave(obj) {
+  return instance.post(`/apiservice/a/service/order/orderInfo/orderRefundSave`, obj)
+}
 //退款列表
 export function listDataRefund(obj, pageNumber, pageSize){
   return new Promise((resolve, reject) => {

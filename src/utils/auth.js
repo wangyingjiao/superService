@@ -13,3 +13,7 @@ export function setToken(token) {
 export function removeToken() {
   return sessionStorage.removeItem(TokenKey)
 }
+
+export function userType(){
+  return localStorage.getItem('type')
+}

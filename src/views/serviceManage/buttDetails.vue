@@ -9,6 +9,10 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
+                <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="选择机构">
+                    <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
+                    </el-option>
+                </el-select>
                 <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
@@ -102,6 +106,7 @@ export default {
       dockingEName: {},
       eshopStatus: null,
       options: [],
+      selfCodeNo:'',
       tableData3: [],
       multipleSelection: [],
       typeOptions: [],
@@ -221,11 +226,12 @@ export default {
     },
     // 搜索框清空
     searchEmpty() {
-      // this.search.eshopCode = ''
-      this.search.majorSort = "";
-      this.search.sortId = "";
-      this.search.goodsName = "";
-      this.search.selfCode = "";
+      if(this.activeName == 'noDocking'){
+        this.selfCodeNo = this.search.selfCode
+        delete this.search.selfCode
+      }else{
+         this.search.selfCode = this.selfCodeNo
+      }
     },
     //切换，page，size判断当前是已对接还是未对接
     tablePageSize(obj, page, size) {

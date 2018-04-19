@@ -1,11 +1,11 @@
 <template>
     <div id="refund">
         <div class="refund-search">
-           	<el-select class="select-width" v-model="search.orgId" placeholder="选择机构">
-                <el-option v-for="item in organizations" :key="item.id" :label="item.label" :value="item.id"></el-option>	
+           	<el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
+                <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
-            <el-select class="search-right select-width" v-model="search.stationId" placeholder="选择服务站">
-                <el-option v-for="item in organizations" :key="item.id" :label="item.label" :value="item.id"></el-option>	
+            <el-select class="search-right select-width" filterable clearable v-model="search.stationId" placeholder="选择服务站">
+                <el-option v-for="item in server" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
             <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search-right search-width">
 	              		<el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
@@ -21,7 +21,7 @@
                     <el-table-column align="center" :render-header="renderHeader">
                         <template scope="scope">
                             <div>
-                                <div>{{scope.row.orgName}}</div>
+                                <div v-if="!techUserType">{{scope.row.orgName}}</div>
                                 <div>{{scope.row.stationName}}</div> 
                             </div>
                         </template>
@@ -34,7 +34,7 @@
                     <el-table-column align="center" prop="refundPhone" label="用户电话"></el-table-column>
                     <el-table-column align="center" label="操作">
                         <template scope="scope">
-                            <el-button class="ceshi3" type="button" @click="handleRead(scope.row.orderNumber)">查看</el-button> 
+                            <el-button class="ceshi3" type="button" @click="handleRead(scope.row.id)">查看</el-button> 
                         </template>    
                     </el-table-column>
                 </el-table>
@@ -58,6 +58,8 @@
 <script>
 import { listDataRefund,formDataRefund } from "@/api/order";
 import information from './refundInformation.vue'
+import { userType} from '../../utils/auth'
+import {listDataAll,listByOffice} from "@/api/tech";
 
 //列表数据
 var getData = (obj,page,size)=>{
@@ -110,6 +112,7 @@ var refundDetails = (id)=>{
     export default{
         data(){
             return{
+                server:[],
                 organizations:organizations,
                 search:{
                     orgId:'',
@@ -117,21 +120,50 @@ var refundDetails = (id)=>{
                 },
                 chooContent:'',
                 choose:choose,
-                loading:true,
+                loading:false,
                 chooses:'',
-                tableData:tableData,
+                tableData:[],
                 informationData:{},
                 pageSync:1,
                 pageSize:10,
-                total:100,
+                total:null,
                 dialogvisible:false,
                 refundId:null
             }
         },
         methods:{
+            orgChange(id){
+                this.search.stationId = ''
+                listByOffice({orgId:id}).then(data=>{
+                    console.log(data,"---+++++")
+                    let dataList = data.data.data
+                    if(data.data.code=='1'){
+                        this.server = dataList
+                        if(userType()=='station'){
+                            this.search.stationId = dataList[0].id
+                        }
+                    }
+                }).catch(error=>{
+                    console.log(error,"-00000000")
+                })
+            },
+            //机构
+            listDataAll(){
+                return new Promise((res,rej)=>{
+                    listDataAll({}).then(data=>{
+                        let list = data.data.data.list
+                        if(list[0].id=='0'){
+                            list = list.slice(1)
+                        }
+                        res(list)
+                    }).catch(error=>{
+                        rej(error)
+                    })
+                })
+            },
             renderHeader(h){
                 let a = true
-                return [ h('p',['机构名称']), a ? h('p',['服务站名称']) : '']
+                return [!this.techUserType?h('p',['机构名称']):'', a ? h('p',['服务站名称']) : '']
             },
             //搜索
             searchClick(item){
@@ -149,20 +181,34 @@ var refundDetails = (id)=>{
                 this.loading = true
                 getData(this.search,this.pageSync,this.pageSize)
                     .then(data=>{
-                        this.loading = false
-                        console.log(data)
+                        if(data.data.code=='1'){
+                            this.loading = false
+                            let dataList = data.data.data
+                            this.tableData = dataList.list
+                            this.total = dataList.count
+                        }else{
+                            this.loading = false
+                        }
                     })
                     .catch(error=>{
                         this.loading = false
-                        console.log(error)
                     })
             },
-            handleSizeChange(){},
-            handleCurrentChange(){},
+            handleSizeChange(val){
+                this.pageSize = val;
+				if(this.pageSync == 1){
+					this.searchData()
+				}else{
+					this.pageSync = 1
+				}
+            },
+            handleCurrentChange(val){
+                this.pageSync = val
+				this.searchData()
+            },
             //点击查看退款详情
             handleRead(id){
                 this.loading = true
-                this.dialogvisible = true
                 let refund = async (id) => {
                     try{
                         let refundDate = await refundDetails(id)
@@ -188,13 +234,31 @@ var refundDetails = (id)=>{
         components: {
            information
         },
-        mounted(){
-            let orderNumber =  this.$route.query.ordernumber
-            if(orderNumber){
-                this.chooses = "orderNumber"
-                this.chooContent = orderNumber;
+        computed: {
+            techUserType(){
+                let _user = userType()
+                if(_user=='org' || _user=='station'){
+                    return true
+                }else{
+                    return false
+                }
+               
             }
-            this.searchClick()
+        },
+        mounted(){
+            let list = async ()=>{
+                try{
+                    let _listDataAll = await this.listDataAll()
+                    this.organizations = _listDataAll
+                    this.search.orgId = this.organizations[0].id
+                    this.searchClick()
+                }
+                catch(error){
+                    console.log(error)
+                }
+                
+            }
+            list()
         }
     }
 </script>

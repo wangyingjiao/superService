@@ -31,10 +31,10 @@
 						</el-table-column>
             <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                      <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                         <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
                       </el-tooltip>
-                      <el-tooltip placement="left"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
                         <!--  -->
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
@@ -42,7 +42,7 @@
             </el-table-column>
             <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
                   <template scope="rowObj">
-                      <el-tooltip placement="left"  :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
@@ -65,7 +65,7 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" :disabled="item.techName.length < 6 " :content="item.techName">
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
                         <div class="techNameStyle1">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
@@ -234,11 +234,21 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            if (res.data.data[0].id == 0) {
-              res.data.data.remove(res.data.data[0]);
+            if(res.data.data){
+              if (res.data.data[0].id == 0) {
+                res.data.data.remove(res.data.data[0]);
+              }
+              this.payTypeOptions = res.data.data;
+              if(this.userType =='station'){
+                this.payType=this.payTypeOptions[0].id
+                this.localSearch()
+              }else{
+                this.localSearch()
+              }
             }
-            this.payTypeOptions = res.data.data;
+
           } else {
+
           }
         });
       }
@@ -252,6 +262,7 @@ export default {
           }
         }
         this.mechanismOptions = res.data.data.list;
+        this.mechanism=this.mechanismOptions[0].id
       });
     },           
     //跳转改派记录页
@@ -508,7 +519,7 @@ export default {
     }
   },
   mounted() {
-    this.reassList({}, 1, 10);
+    //this.reassList({}, 1, 10);
     this.getoffice();
     this.userType=localStorage.getItem("type")
   }
