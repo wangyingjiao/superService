@@ -540,7 +540,6 @@ export default {
     }
   },
   created() {
-    this.getList();
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
@@ -576,7 +575,13 @@ export default {
 
     getSList({}).then(res => {
       // 服务机构
-      this.mechanismCheck = res.data.data.list;
+      if (res.data.data.list != undefined) {
+        this.mechanismCheck = res.data.data.list;
+        this.search.officeId = this.mechanismCheck[0].id;
+        if (localStorage.getItem("type") != "station") {
+          this.handleFilter();
+        }
+      }
     });
     getMenudata().then(res => {
       this.data2 = res.data.data;
@@ -914,6 +919,11 @@ export default {
         getFuwu(obj).then(res => {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
+          if (localStorage.getItem("type") == "station") {
+            console.log(localStorage.getItem("type"))
+            this.search.stationId = this.servicestationSearch[0].id;
+            this.handleFilter();
+          }
         });
       }
     },
@@ -975,6 +985,24 @@ export default {
           return this.objOptions[i].id;
         }
       }
+    },
+    forOfTree() {
+      var sysArr = [];
+      for (var i of this.data2) {
+        if (i.type == "sys") {
+          sysArr.push(i.id);
+          for (var j of i.subMenus) {
+            sysArr.push(j.id);
+            if (j.subMenus) {
+              for (var k of j.subMenus) {
+                sysArr.push(k.id);
+              }
+            }
+          }
+        }
+      }
+      console.log(sysArr, "11111111");
+      return sysArr;
     },
     create(formName) {
       //新增保存

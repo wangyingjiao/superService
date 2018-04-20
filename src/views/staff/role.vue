@@ -294,7 +294,6 @@ export default {
   },
   created() {
     //获取列表
-    this.getList();
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
@@ -304,7 +303,20 @@ export default {
     });
     //获取机构
     getSList({}).then(res => {
-      this.officeIds = res.data.data.list;
+      if (res.data.data.list != undefined) {
+        // if (res.data.data.list[0].id == "0") {
+        //   res.data.data.list.remove(res.data.data.list[0]);
+        // }
+        // if (res.data.data.list.length >= 2) {
+        //   if (res.data.data.list[1].id == "0") {
+        //     res.data.data.list.remove(res.data.data.list[1]);
+        //     res.data.data.list.remove(res.data.data.list[0]);
+        //   }
+        // }
+        this.officeIds = res.data.data.list;
+        this.search.officeId = this.officeIds[0].id;
+        this.handleFilter();
+      }
     });
     //获取用户等级
     var lv = localStorage.getItem("dataScope");
@@ -314,7 +326,7 @@ export default {
   },
   watch: {
     filterText(val) {
-      console.log(this.filterText, "watch");
+      console.log(this.filterText, "watch1");
       this.$refs.domTree.filter(val);
     }
   },
@@ -560,6 +572,7 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
+              this.filterText = ""
               this.$nextTick(() => {
                 this.filterText = "business";
               });
@@ -652,6 +665,10 @@ export default {
           setTimeout(() => {
             this.temp.officeId = a.organization.id;
           }, 50);
+          this.filterText = ""
+          this.$nextTick(() => {
+                this.filterText = "business";
+              });
           this.temp.name = a.name;
           //this.temp.dataScope = a.dataScope;
           //一期默认10级
@@ -732,7 +749,6 @@ export default {
           }
         }
       }
-      console.log(sysArr, "11111111");
       return sysArr;
     },
     getLv() {
@@ -759,14 +775,14 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-      console.log(this.filterText, "ccccc");
+
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
         }
       }
-      console.log(arr);
+
       // return;
       var obj = {
         name: this.temp.name,
