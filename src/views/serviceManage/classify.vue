@@ -44,8 +44,8 @@
 
       <el-table-column align="center" label="操作">
          <template scope="scope">
-            <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('class_update') != -1"  @click="handleUpdate(scope.row)"></el-button>
-            <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('class_delete') != -1"  @click="handleDelete(scope.row)"></el-button>
+            <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('class_update') != -1 && scope.row.id.length >= 3"  @click="handleUpdate(scope.row)"></el-button>
+            <el-button class="el-icon-delete ceshi3"  v-if="btnShow.indexOf('class_delete') != -1 && scope.row.id.length >= 3"  @click="handleDelete(scope.row)"></el-button>
           </template>
       </el-table-column>
 

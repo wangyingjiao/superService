@@ -253,13 +253,19 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
-        for (var a = 0; a < res.data.data.list.length; a++) {
-          if (res.data.data.list[a].id == 0) {
-            res.data.data.list.remove(res.data.data.list[a]);
-          }
+        if(res.data.data.list != undefined){        
+          if (res.data.data.list[0].id == '0' ) {
+            res.data.data.list.remove(res.data.data.list[0]);
+          } 
+          if(res.data.data.list.length >= 2){
+            if(res.data.data.list[1].id == '0'){
+              res.data.data.list.remove(res.data.data.list[1]);
+              res.data.data.list.remove(res.data.data.list[0]);
+            }
+          }         
+            this.mechanismOptions = res.data.data.list;
+            this.mechanism=this.mechanismOptions[0].id;
         }
-        this.mechanismOptions = res.data.data.list;
-        this.mechanism=this.mechanismOptions[0].id;
         this.search()
       });
     },    

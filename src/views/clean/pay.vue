@@ -54,11 +54,15 @@
       <el-table-column align="center" label="支付编号" min-width="130" prop="payNumber">      
       </el-table-column>
 
-      <el-table-column  align="center" width="220" :render-header="renderHeader">
+      <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
             <template scope="rowObj">
               <p>{{rowObj.row.orgName}}</p>
               <p>{{rowObj.row.stationName}}</p>
             </template>                    
+      </el-table-column>
+
+      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" prop="stationName">
+       
       </el-table-column>
 
       <el-table-column align="center" label="支付金额" prop="payAccount">      
@@ -115,6 +119,8 @@ export default {
       mechanismCheck: "",
       servicestationSearch: "",
       pageNumber: 1,
+      userType: localStorage.getItem("type"),
+      listLoading: true,
       pageSize: 10,
       total: 1,
       seOptions: {
@@ -130,7 +136,7 @@ export default {
         type: "",
         val: "",
         orgId: "",
-        payStatus:"",
+        payStatus: "",
         stationId: ""
       },
       tableKey: 0,
@@ -138,10 +144,26 @@ export default {
     };
   },
   created() {
-    this.getList();
     getSList({}).then(res => {
       // 服务机构
-      this.mechanismCheck = res.data.data.list;
+      if (res.data.data.list != undefined) {
+        if (res.data.data.list[0].id == "0") {
+          res.data.data.list.remove(res.data.data.list[0]);
+        }
+        if (res.data.data.list.length >= 2) {
+          if (res.data.data.list[1].id == "0") {
+            res.data.data.list.remove(res.data.data.list[1]);
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+        }
+       
+        this.mechanismCheck = res.data.data.list;
+        this.search.orgId = this.mechanismCheck[0].id;
+         
+        if (localStorage.getItem("type") != "station") {
+          this.handleFilter();
+        }
+      }
     });
   },
   methods: {
@@ -151,16 +173,15 @@ export default {
     // 获取列表
     getList() {
       this.listLoading = true;
-      // 事件类型转换
       var obj = {};
-      if(this.search.payStatus){
-        obj = Object.assign(obj,{payStatus:this.search.payStatus})
+      if (this.search.payStatus) {
+        obj = Object.assign(obj, { payStatus: this.search.payStatus });
       }
-      if(this.search.orgId){
-        obj = Object.assign(obj,{orgId:this.search.orgId})
+      if (this.search.orgId) {
+        obj = Object.assign(obj, { orgId: this.search.orgId });
       }
-      if(this.search.stationId){
-        obj = Object.assign(obj,{stationId:this.search.stationId})
+      if (this.search.stationId) {
+        obj = Object.assign(obj, { stationId: this.search.stationId });
       }
       if (this.search.type == "orderNumber") {
         var orderNumber = {
@@ -172,10 +193,11 @@ export default {
           payNumber: this.search.val
         };
         obj = Object.assign(obj, payNumber);
-      } 
+      }
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
+            console.log(res.data.data.list)
             this.total = res.data.data.count;
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
@@ -224,6 +246,10 @@ export default {
         getFuwu(obj).then(res => {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
+          if (localStorage.getItem("type") == "station") {
+            this.search.stationId = this.servicestationSearch[0].id;
+            this.handleFilter();
+          }
         });
       }
     },
