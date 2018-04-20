@@ -679,6 +679,7 @@ export default {
     addRole() {
       // 新增岗位
       this.dialogFormStation = true;
+      this.filterText = "";
       this.$nextTick(() => {
         this.filterText = "business";
       });
