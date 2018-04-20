@@ -682,12 +682,14 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
-        for (var a = 0; a < res.data.data.list.length; a++) {
-          if (res.data.data.list[a].id == 0) {
-            res.data.data.list.remove(res.data.data.list[a]);
-          }
+        if(res.data.data.list !=undefined){
+            for (var a = 0; a < res.data.data.list.length; a++) {
+              if (res.data.data.list[a].id == 0) {
+                res.data.data.list.remove(res.data.data.list[a]);
+              }
+            }
+            this.mechanismOptions = res.data.data.list;
         }
-        this.mechanismOptions = res.data.data.list;
         if(this.$route.query.orgId != undefined && this.$route.query.orgId != ''){
            this.form.mechanism=this.$route.query.orgId;
            this.mechanism=this.$route.query.orgId;

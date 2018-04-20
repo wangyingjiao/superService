@@ -214,7 +214,7 @@
                       :data="tableData"
                       border
                       class="self-table-style"
-                      style="margin-top:-10px;"
+                      style="margin-top:-1px;"
                       >
                       <el-table-column
                         align="center"
@@ -346,7 +346,7 @@
 		    </div>
         <!--下单用户信息结束-->        
         <!--用户备注开始-->
-        <div class="thrid-bar marginTop15">
+        <!-- <div class="thrid-bar marginTop15">
             <div class="custom-action">用户备注</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -367,7 +367,7 @@
                 </div>
                  
             </div>                                     		
-		    </div>
+		    </div> -->
         <!--用户备注结束-->
         <!--订单备注开始-->
         <div class="thrid-bar marginTop15">
