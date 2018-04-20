@@ -93,7 +93,7 @@
     "meterage": {
         "house": "按居室",
         "area": "按面积",
-        "num": "按数量"
+        "num": "按时长或数量"
     },
     "order_majorSort": {
         "clean": "保洁",

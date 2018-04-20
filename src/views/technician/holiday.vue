@@ -59,10 +59,19 @@
       <el-table-column align="center" label="姓名" prop="techName">      
       </el-table-column>
       
+
+
       <el-table-column align="center" label="手机号" prop="techPhone">      
       </el-table-column>
+
+      <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
+            <template scope="rowObj">
+              <p>{{rowObj.row.orgName}}</p>
+              <p>{{rowObj.row.stationName}}</p>
+            </template>                    
+      </el-table-column>
       
-      <el-table-column align="center" label="服务站" prop="techStationName">      
+      <el-table-column  v-if="userType == 'org'" align="center" label="服务站" prop="techStationName">      
       </el-table-column>
 
       
@@ -255,24 +264,32 @@ export default {
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
-    getSList({}).then(res => {
+   getSList({}).then(res => {
       // 服务机构
-      if (res.data.data.list[0].id == "0") {
-        res.data.data.list.remove(res.data.data.list[0]);
-      }
-      if (res.data.data.list[1].id == "0") {
-        res.data.data.list.remove(res.data.data.list[1]);
-        res.data.data.list.remove(res.data.data.list[0]);
-      }
-      this.mechanismCheck = res.data.data.list;
-      if (this.mechanismCheck) {
+      if (res.data.data.list != undefined) {
+        if (res.data.data.list[0].id == "0") {
+          res.data.data.list.remove(res.data.data.list[0]);
+        }
+        if (res.data.data.list.length >= 2) {
+          if (res.data.data.list[1].id == "0") {
+            res.data.data.list.remove(res.data.data.list[1]);
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+        }
+        this.mechanismCheck = res.data.data.list;
         this.search.officeId = this.mechanismCheck[0].id;
+        if (localStorage.getItem("type") != "station") {
+          this.handleFilter();
+        }
       }
     });
   },
   methods: {
     aaa(obj) {
       //console.log(obj,'aaa')
+    },
+     renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
     },
     searchOffice(val) {
       // 搜索时机构改变
@@ -285,8 +302,10 @@ export default {
         getFuwu(obj).then(res => {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
-          this.search.stationId = this.servicestationSearch[0].id;
-          this.handleFilter();
+          if (localStorage.getItem("type") == "station") {
+            this.search.stationId = this.servicestationSearch[0].id;
+            this.handleFilter();
+          }
         });
       }
     },
