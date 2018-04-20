@@ -61,11 +61,8 @@
             </template>                    
       </el-table-column>
 
-      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" >
-        <template scope="scope">
-              <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
-              <span v-else>{{scope.row.station.name}}</span>
-        </template>
+      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" prop="stationName">
+       
       </el-table-column>
 
       <el-table-column align="center" label="支付金额" prop="payAccount">      
@@ -159,8 +156,10 @@ export default {
             res.data.data.list.remove(res.data.data.list[0]);
           }
         }
+       
         this.mechanismCheck = res.data.data.list;
         this.search.orgId = this.mechanismCheck[0].id;
+         
         if (localStorage.getItem("type") != "station") {
           this.handleFilter();
         }
@@ -198,6 +197,7 @@ export default {
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
+            console.log(res.data.data.list)
             this.total = res.data.data.count;
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;

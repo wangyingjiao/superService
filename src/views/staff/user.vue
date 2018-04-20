@@ -921,7 +921,7 @@ export default {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
-            console.log(localStorage.getItem("type"))
+            console.log(localStorage.getItem("type"));
             this.search.stationId = this.servicestationSearch[0].id;
             this.handleFilter();
           }

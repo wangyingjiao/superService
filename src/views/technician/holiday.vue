@@ -202,6 +202,7 @@ export default {
       btnState: false,
       failReasonState: false,
       activeName: "",
+      userType: localStorage.getItem("type"),
       listQuery: {
         page: 1,
         limit: 10,
