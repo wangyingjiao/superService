@@ -629,7 +629,8 @@
                               <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
                               </el-option>
                             </el-select>
-                        </el-input>   
+                        </el-input>
+                        <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>   
                       </el-form-item>
                       <el-form-item label="退款原因:" prop="refundReason">
                           <el-input
@@ -706,6 +707,7 @@ export default {
       ruleForm: {
         refundId:'',
         refundDifference: '',
+        orderNowRefundStatus:'',
         refundReason:'',
         refundAccount:0,
         refundMethod:'cash',
@@ -1316,8 +1318,15 @@ export default {
       orderRefundInit(obj1)
         .then(res => {
           if (res.data.code === 1) {
-              this.ruleForm.payPrice=res.data.data.payPrice
-              this.ruleForm.orderRefundObj=res.data.data.goodsInfoList
+              if(res.data.data != undefined){
+                this.ruleForm.payPrice=res.data.data.payPrice;
+                this.ruleForm.orderRefundObj=res.data.data.goodsInfoList;
+                if(res.data.data.orderNowRefundStatus != undefined){
+                   this.ruleForm.orderNowRefundStatus=res.data.data.orderNowRefundStatus;
+                }
+                
+              }
+
           }
         })
         .catch(res => {});      
@@ -1394,6 +1403,10 @@ export default {
 };
 </script>
 <style   scoped>
+.refundStatusStyle{
+    color: #8391a5;
+    font-size: 12px;
+}
 .searchHeader .el-input-group__prepend .el-input__inner {
   width: 200px;
   text-align: center;
