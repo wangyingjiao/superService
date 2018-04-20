@@ -4,8 +4,8 @@
            	<!-- <el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select> -->
-            <orgSearch ref="orgSearch" @orgsearch="orgSearch"></orgSearch>
-            <el-select class="search-right select-width" filterable clearable v-model="search.stationId" placeholder="选择服务站">
+            <orgSearch :widths="'17%'" ref="orgSearch" @orgsearch="orgSearch" :refundflag="refundflag"></orgSearch>
+            <el-select class="search-right" filterable clearable v-model="search.stationId" placeholder="选择服务站">
                 <el-option v-for="item in server" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
             <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search-right search-width">
@@ -114,6 +114,7 @@ var refundDetails = (id)=>{
     export default{
         data(){
             return{
+                refundflag:true,
                 server:[],
                 organizations:organizations,
                 search:{
@@ -263,6 +264,7 @@ var refundDetails = (id)=>{
                     if(this.$router.currentRoute.query.ordernumber){
                         this.chooContent = this.$router.currentRoute.query.ordernumber
                         this.chooses = 'orderNumber'
+                        this.refundflag = false
                     }
                     // let _listDataAll = await this.listDataAll()
                     await this.$refs['orgSearch'].listDataAll()
@@ -299,6 +301,7 @@ var refundDetails = (id)=>{
     }
     .search-right{
         margin-left: 1%;
+        width:17%;
     }
     .search-width{
         width: 30%;

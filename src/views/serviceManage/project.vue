@@ -6,7 +6,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <orgSearch @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
+      <orgSearch :widths="'20%'" @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
       <!-- <el-select clearable class="search" filterable  v-model="search.orgId" placeholder="选择机构">
         <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
         </el-option>
@@ -1362,6 +1362,7 @@ export default {
       this.getList(this.pageNumber, this.pageSize);
     },
     handleCreate(formName) {
+      this.sortIdFlag = true;
       this.basicForm.sortId = "";
       this.imgNumber = 0;
       this.tableProject({ majorSort: "clean" });
