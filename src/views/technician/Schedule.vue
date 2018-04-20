@@ -4,9 +4,10 @@
 			<!-- 搜索 -->
 			<div class="schedult-search">
 				<div>
-					<el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
-					<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
-					</el-select>
+					<orgSearch @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
+					<!-- <el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
+						<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
+					</el-select> -->
 					<el-select class="searchRight select-width" v-model="search.stationId" placeholder="选择服务站">
 						<el-option v-for="item in stations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
 					</el-select>
@@ -116,11 +117,13 @@
 </template>
 
 <script>
+	import orgSearch from '../../components/Hamburger/orgSearch.vue'
 	import {
 		mechanismService,
-		scheduleList
+		scheduleList,
+		listByOrgId
 	} from "@/api/tech";
-
+	import { userType} from '../../utils/auth'
 	var getData = function(obj,page,size){
 		return new Promise((res,rej)=>{
 			scheduleList(obj,page,size)
@@ -171,9 +174,39 @@
 			}
 		},
 		computed:{
-			
+			techUserType(){
+				return userType()
+			},
+		},
+		components:{
+			orgSearch
 		},
 		methods:{
+			orgSearch(item){
+				this.search.orgId = item
+				this.search.stationId = ''
+				this.search.skilId = ''
+				listByOrgId({orgId:item}).then(data=>{
+					console.log(data,"data--------+++++")
+					this.stations = data.data.data.stations
+					this.skils = data.data.data.skils
+					if(this.stations.length>0){
+						this.search.stationId = this.stations[0].id
+					}
+				})
+			},
+			listByOrgId(item){
+				return new Promise((rej,res)=>{
+					listByOrgId({orgId:item}).then(data=>{
+						console.log(data,"data--------+++++")
+						if(data.data.code==1){
+							res(data.data.data)
+						}
+					}).catch(error=>{
+						console.log(error)
+					})
+				})
+			},
 			schedulePath(item){
 				//判断是订单还是休假
 				if(item.type == "order"){
@@ -279,39 +312,44 @@
 			},
 		},
 		mounted(){
-			mechanismService()
-				.then(({data})=>{
-					if(data.code==1){
-						if(data.data.organizations[0].id=='0'){
-							this.organizations = data.data.organizations.remove(0)
-						}
-						if(data.data.organizations[1].id=='0'){
-							this.organizations = data.data.organizations.remove(1)
-							this.organizations = data.data.organizations.remove(0)
-						}
-						// if(data.data.organizations[0].id=='0'){
-						// 	this.organizations = data.data.organizations.slice(1)
-						// }else{
-						// 	this.organizations = data.data.organizations
-						// }
-						this.search.orgId = this.organizations[0].id
-						if(data.data.stations[0].id=='0'){
-							this.stations = data.data.stations.slice(1)
-						}else{
-							this.stations = data.data.stations
-						}
-						this.search.stationId = this.stations[0].id
-						this.skils = data.data.skils
-					}else{
+				// this.stations = data.data.data.stations
+				// 		this.skils = data.data.data.skils
+				// 		this.search.stationId = this.stations[0].id
+			let list = async ()=>{
+				try{
+					let _list = await this.$refs['orgSearch'].listDataAll()
+				}
+				catch(error){
+					console.log(error)
+				}
+			}
+			list()
+			// mechanismService()
+			// 	.then(({data})=>{
+			// 		if(data.code==1){
+			// 			if(data.data.organizations[0].id=='0'){
+			// 				this.organizations = data.data.organizations.slice(1)
+			// 			}else{
+			// 				this.organizations = data.data.organizations
+			// 			}
+			// 			this.search.orgId = this.organizations[0].id
+			// 			if(data.data.stations[0].id=='0'){
+			// 				this.stations = data.data.stations.slice(1)
+			// 			}else{
+			// 				this.stations = data.data.stations
+			// 			}
+			// 			this.search.stationId = this.stations[0].id
+			// 			this.skils = data.data.skils
+			// 		}else{
 
-					}
-					// var obj = data.data.data
-					// if(data.data){}
-					// console.log(data)
-				})
-				.catch(error=>{
-					// console.log(error)
-				})
+			// 		}
+			// 		// var obj = data.data.data
+			// 		// if(data.data){}
+			// 		// console.log(data)
+			// 	})
+			// 	.catch(error=>{
+			// 		// console.log(error)
+			// 	})
 			// this.getList()
 		}
 	}

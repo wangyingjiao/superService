@@ -6,10 +6,11 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
-      <el-select clearable class="search" filterable  v-model="search.orgId" placeholder="选择机构">
+      <orgSearch @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
+      <!-- <el-select clearable class="search" filterable  v-model="search.orgId" placeholder="选择机构">
         <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
         </el-option>
-      </el-select>
+      </el-select> -->
       <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
@@ -50,7 +51,7 @@
           <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+picWidth60" class="imgList"/></span>
         </template>
       </el-table-column>
-       <el-table-column  label="服务机构" align="center" prop="orgName">
+       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName">
       </el-table-column>
 
       <el-table-column  label="项目名称" align="center" prop="name">
@@ -494,6 +495,7 @@ import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { userType} from '../../utils/auth'
 import { parseTime } from "@/utils";
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import {
   Taxonomy,
   Orienteering,
@@ -923,6 +925,10 @@ export default {
     }
   },
   methods: {
+    orgSearch(item){
+      this.search.orgId = item
+      console.log(item,"___________________________")
+    },
     //获取分类id
     sortIdChange(id){
       if(id < 100){
@@ -1697,21 +1703,37 @@ export default {
   },
   components: {
     imgService,
-    addCommodity
+    addCommodity,
+    orgSearch
   },
   mounted(){
-     listDataAll({}).then(data=>{
-        if(data.data.code==1){
-          let _data = data.data.data.list
-          if(_data[0].id=='0'){
-           _data = _data.slice(1)
-          }
-          this.orgList = _data
-          this.orgNameList = _data
-          this.search.orgId = this.orgNameList[0].id
-          this.handleClick({ name: "all" });
-        }
-      })
+
+    let list = async ()=>{
+      try{
+        let _list = await this.$refs['orgSearch'].listDataAll()
+        this.orgList = _list
+        this.handleClick({ name: "all" });
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+
+    list()
+    //  listDataAll({}).then(data=>{
+    //     if(data.data.code==1){
+    //       let _data = data.data.data.list
+    //       if(_data[0].id=='0'){
+    //        _data = _data.slice(1)
+    //       }
+    //       this.orgList = _data
+    //       this.orgNameList = _data
+    //       this.search.orgId = this.orgNameList[0].id
+    //       this.handleClick({ name: "all" });
+    //     }
+    //   })
+
+
     // let _userType = userType();
     // if(_userType=='org' || _userType=='station'){
     //   this.orgNameList = [{name:'本机构',id:''}]

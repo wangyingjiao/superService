@@ -1,9 +1,10 @@
 <template>
     <div id="refund">
         <div class="refund-search">
-           	<el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
+           	<!-- <el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
-            </el-select>
+            </el-select> -->
+            <orgSearch ref="orgSearch" @orgsearch="orgSearch"></orgSearch>
             <el-select class="search-right select-width" filterable clearable v-model="search.stationId" placeholder="选择服务站">
                 <el-option v-for="item in server" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
@@ -57,6 +58,7 @@
 
 <script>
 import { listDataRefund,formDataRefund } from "@/api/order";
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import information from './refundInformation.vue'
 import { userType} from '../../utils/auth'
 import {listDataAll,listByOffice} from "@/api/tech";
@@ -132,6 +134,10 @@ var refundDetails = (id)=>{
             }
         },
         methods:{
+            orgSearch(item){
+                this.search.orgId = item
+                console.log(item,"___________________________")
+            },
             orgChange(id){
                 this.search.stationId = ''
                 listByOffice({orgId:id}).then(data=>{
@@ -235,7 +241,8 @@ var refundDetails = (id)=>{
             }
         },
         components: {
-           information
+           information,
+           orgSearch
         },
         computed: {
             techUserType(){
@@ -252,9 +259,14 @@ var refundDetails = (id)=>{
         mounted(){
             let list = async ()=>{
                 try{
-                    let _listDataAll = await this.listDataAll()
-                    this.organizations = _listDataAll
-                    this.search.orgId = this.organizations[0].id
+                    if(this.$router.currentRoute.query.ordernumber){
+                        this.chooContent = this.$router.currentRoute.query.ordernumber
+                        this.chooses = 'orderNumber'
+                    }
+                    // let _listDataAll = await this.listDataAll()
+                    await this.$refs['orgSearch'].listDataAll()
+                    // this.organizations = _listDataAll
+                    // this.search.orgId = this.organizations[0].id
                     this.searchClick()
                 }
                 catch(error){

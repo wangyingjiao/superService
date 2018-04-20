@@ -3,9 +3,10 @@
     <div class="tech-index">
       <div class="serch-box">
         <div class="serch-input">
-			<el-select class="search" v-model="techniSearch.orgId" filterable placeholder="选择机构" @change="orgNameChange(techniSearch.orgId)">
+			      <!-- <el-select class="search" v-model="techniSearch.orgId" filterable placeholder="选择机构" @change="orgNameChange(techniSearch.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
-            </el-select>
+            </el-select> -->
+          <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true"></orgSearch>
           <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
             <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
             </el-option>
@@ -614,6 +615,7 @@ import {
   listByOffice,
   listByOrgId
 } from "@/api/tech";
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import { getSign } from "@/api/sign";
 import techniEdit from "./techniEdit.vue";
 import { userType} from '../../utils/auth'
@@ -992,7 +994,8 @@ export default {
     };
   },
   components: {
-    techniEdit
+    techniEdit,
+    orgSearch
   },
   computed: {
     pickerOptions0() {
@@ -1070,6 +1073,10 @@ export default {
     }
   },
   methods: {
+    orgSearch(item){
+      this.techniSearch.orgId = item
+      this.orgNameChange(item)
+    },
     listByOrgIdData(item){
       return new Promise((res,rej)=>{
           listByOrgIdData(item).then(data=>{
@@ -1097,10 +1104,20 @@ export default {
       // }
       this.techniSearch.stationId = ''
       this.roomSel2Arr = []
+      if(!item){
+        return
+      }
       this.listByOrgIdData(item).then(data=>{
+        console.log(data,"data-----")
             this.server = data.stations
             this.sexTypeo = data.skils
             this.servery = data.stations
+            if(this.techUserType=='station'){
+              this.serveryAdd = data.stations
+              this.personal.stationId = data.stations[0].id
+              this.techniSearch.stationId = data.stations[0].id
+              this.sexTypeoAdd =  data.skils
+            }
       })
     },
     //机构
@@ -1888,24 +1905,26 @@ export default {
     //根据服务机构获取的第一条数据请求列表
     let tabData = async ()=>{
       try{
-        let organizations = await this.listDataAll()
-        this.organizations = organizations
-        this.techniSearch.orgId = this.organizations[0].id
+        let _list = await this.$refs['orgSearch'].listDataAll()
+        this.organizations = _list
+        if(this.techUserType=='station'){
+          // this.personal.stationId = this.organizations[0].id
+        }
         this.techniSearchs()
       }
       catch(error){
       }
     }
-    if(this.techUserType=='org' ||this.techUserType=='station'){
-      this.listDataAll().then(data=>{
-        this.organizations = data
-        this.techniSearch.orgId = this.organizations[0].id
-        this.getList(1, 12, {});
-      })
-    }else{
-      tabData()
-    }
-    // tabData()
+    // if(this.techUserType=='org' ||this.techUserType=='station'){
+    //   this.listDataAll().then(data=>{
+    //     this.organizations = data
+    //     this.techniSearch.orgId = this.organizations[0].id
+    //     this.getList(1, 12, {});
+    //   })
+    // }else{
+    //   tabData()
+    // }
+    tabData()
     this.sign; //获取签名
     // this.getList(1, 12, {});
     //性别,工作年限,岗位性质，岗位状态
