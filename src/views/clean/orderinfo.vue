@@ -214,7 +214,7 @@
                       :data="tableData"
                       border
                       class="self-table-style"
-                      style="margin-top:-10px;"
+                      style="margin-top:-1px;"
                       >
                       <el-table-column
                         align="center"
