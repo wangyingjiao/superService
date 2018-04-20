@@ -537,18 +537,18 @@ export default {
       },
       active: 1,
       forma: {
-        serverStation1: [
-          { required: true, message: "请选择服务站", trigger: "change" }
-        ],
+        mechanism:[
+          { required: true, message: "请选择服务机构", trigger: "change" }
+        ],        
         radiovalue: [
           { required: true, message: "请选择服务地址", trigger: "change" }
         ],
-        mechanism:[
-          { required: true, message: "请选择服务机构", trigger: "change" }
-        ],
         customPhone:[
           { required: true, validator: checkPhone, trigger: "change" }
-        ] ,
+        ] ,                
+        serverStation1: [
+          { required: true, message: "请选择服务站", trigger: "change" }
+        ],
       },
       rules2: {
         // selectTech: [
@@ -683,11 +683,15 @@ export default {
     getoffice() {
       getSList({}).then(res => {
         if(res.data.data.list !=undefined){
-            for (var a = 0; a < res.data.data.list.length; a++) {
-              if (res.data.data.list[a].id == 0) {
-                res.data.data.list.remove(res.data.data.list[a]);
+          if (res.data.data.list[0].id == '0' ) {
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+          if(res.data.data.list.length >=2){
+              if(res.data.data.list[1].id == '0'){
+                res.data.data.list.remove(res.data.data.list[1]);
+                res.data.data.list.remove(res.data.data.list[0]);
               }
-            }
+          } 
             this.mechanismOptions = res.data.data.list;
         }
         if(this.$route.query.orgId != undefined && this.$route.query.orgId != ''){
@@ -962,6 +966,7 @@ export default {
               type: "error",
               message: errMes[0]
             });
+
             return false;
           }
         });
