@@ -136,6 +136,7 @@ var refundDetails = (id)=>{
         methods:{
             orgSearch(item){
                 this.search.orgId = item
+                this.orgChange(item)
                 console.log(item,"___________________________")
             },
             orgChange(id){

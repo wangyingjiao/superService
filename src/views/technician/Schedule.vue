@@ -4,7 +4,7 @@
 			<!-- 搜索 -->
 			<div class="schedult-search">
 				<div>
-					<orgSearch @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
+					<orgSearch @orgsearch="orgSearch" ref="orgSearch" :schedule="true"></orgSearch>
 					<!-- <el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
 						<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
 					</el-select> -->
@@ -186,6 +186,11 @@
 				this.search.orgId = item
 				this.search.stationId = ''
 				this.search.skilId = ''
+				if(!item){
+					this.stations = []
+					this.skils = []
+					return
+				}
 				listByOrgId({orgId:item}).then(data=>{
 					console.log(data,"data--------+++++")
 					this.stations = data.data.data.stations
