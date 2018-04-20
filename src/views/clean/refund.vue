@@ -4,7 +4,7 @@
            	<!-- <el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select> -->
-            <orgSearch ref="orgSearch" @orgsearch="orgSearch"></orgSearch>
+            <orgSearch ref="orgSearch" @orgsearch="orgSearch" :refundflag="refundflag"></orgSearch>
             <el-select class="search-right select-width" filterable clearable v-model="search.stationId" placeholder="选择服务站">
                 <el-option v-for="item in server" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select>
@@ -114,6 +114,7 @@ var refundDetails = (id)=>{
     export default{
         data(){
             return{
+                refundflag:true,
                 server:[],
                 organizations:organizations,
                 search:{
@@ -263,6 +264,7 @@ var refundDetails = (id)=>{
                     if(this.$router.currentRoute.query.ordernumber){
                         this.chooContent = this.$router.currentRoute.query.ordernumber
                         this.chooses = 'orderNumber'
+                        this.refundflag = false
                     }
                     // let _listDataAll = await this.listDataAll()
                     await this.$refs['orgSearch'].listDataAll()

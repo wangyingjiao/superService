@@ -18,7 +18,8 @@
         props:[
             'searchorgid',
             "flag",
-            "schedule"
+            "schedule",
+            "refundflag"
         ],
         methods:{
             orgChange(){
@@ -27,22 +28,33 @@
             listDataAll(){
                 return new Promise((res,rej)=>{
                     listDataAll({}).then(data=>{
+                        console.log(data,"datayyyyyyy")
                         let _data = data.data.data.list
-                        if(_data.length>0){
-                            if(_data[0].id=='0'){
-                                 _data.remove(_data[0])
-                            }
-                            if(_data[1]!==undefined){
-                                if(_data[1].id=='0'){
-                                      _data.remove(_data[1])
-                                      _data.remove(_data[0])
+                        if(data.data.code==1){
+                            if(_data.length>0){
+                                if(_data[0].id=='0'){
+                                     _data.remove(_data[0])
                                 }
+                                if(_data[1]!==undefined){
+                                    if(_data[1].id=='0'){
+                                          _data.remove(_data[1])
+                                          _data.remove(_data[0])
+                                    }
+                                }
+                                if(this.refundflag!=undefined){
+                                    if(this.refundflag){
+                                        this.orgId = _data[0].id
+                                    }
+                                }else{
+                                    this.orgId = _data[0].id
+                                }
+                            }else{
                             }
-                            this.orgId = _data[0].id
+                            this.orgNameList = _data
+                            res(this.orgNameList)
                         }else{
+
                         }
-                        this.orgNameList = _data
-                        res(this.orgNameList)
                     }).catch(error=>{
                         rej(error)
                         console.log(error,"error____+++++++")
