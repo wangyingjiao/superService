@@ -212,7 +212,6 @@ export default {
                 this.payType=this.payTypeOptions[0].id
                 this.localSearch()
               }else{
-                this.localSearch()
               }
             }
 

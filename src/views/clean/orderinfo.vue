@@ -345,30 +345,6 @@
             </div>                                     		
 		    </div>
         <!--下单用户信息结束-->        
-        <!--用户备注开始-->
-        <!-- <div class="thrid-bar marginTop15">
-            <div class="custom-action">用户备注</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea" style="width:100%;">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
-                   </p> 
-                   <p class="contentLine">
-                      <span class="lineContent2 width900">
-                        <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth250"/>
-                            </div>                           
-                        </div>
-                      </span>
-                   </p>                                                                         
-                </div>
-                 
-            </div>                                     		
-		    </div> -->
-        <!--用户备注结束-->
         <!--订单备注开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">订单备注</div>
@@ -893,6 +869,7 @@ export default {
                               type: "success",
                               message: "退款成功"
                             });
+                            this.refundDifferenceType=''
                             this.getOrderAllInf(this.orderId)                      
                             this.$refs['ruleForm'].resetFields();
                             this.orderRefundFlag = false;
@@ -927,6 +904,7 @@ export default {
     },
     //取消退款
     orderRefundCancel(){
+      this.refundDifferenceType=''
       this.$refs['ruleForm'].resetFields();     
       this.orderRefundFlag = false;
     },
