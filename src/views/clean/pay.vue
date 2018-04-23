@@ -109,7 +109,7 @@ export default {
     return {
       list: [],
       total: null,
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 10,
@@ -156,15 +156,17 @@ export default {
             res.data.data.list.remove(res.data.data.list[0]);
           }
         }
-       
+
         this.mechanismCheck = res.data.data.list;
-        this.search.orgId = this.mechanismCheck[0].id;
-         
-        if (localStorage.getItem("type") != "station") {
-          this.handleFilter();
+        if (
+          localStorage.getItem("type") == "station" ||
+          localStorage.getItem("type") == "org"
+        ) {
+          this.search.orgId = this.mechanismCheck[0].id;
         }
       }
     });
+    this.getList()
   },
   methods: {
     renderHeader(h) {
@@ -197,7 +199,7 @@ export default {
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
-            console.log(res.data.data.list)
+            console.log(res.data.data.list);
             this.total = res.data.data.count;
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
@@ -248,7 +250,6 @@ export default {
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
             this.search.stationId = this.servicestationSearch[0].id;
-            this.handleFilter();
           }
         });
       }
