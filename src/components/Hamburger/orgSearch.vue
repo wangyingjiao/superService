@@ -1,12 +1,14 @@
 <template>
         <el-select :style="{'width':widths}" :class="[{'search':flag},{'schedule':schedule}]" 
-                    :clearable="!flag" filterable  v-model="orgId" placeholder="选择机构" @change="orgChange">
+                    clearable filterable  v-model="orgId" placeholder="选择机构" @change="orgChange">
             <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
             </el-option>
       </el-select>
 </template>
 
 <script>
+// :clearable="!flag"
+    import { userType} from '../../utils/auth'
     import { listDataAll } from "@/api/tech"
 
     export default{
@@ -43,12 +45,15 @@
                                           _data.remove(_data[0])
                                     }
                                 }
-                                if(this.refundflag!=undefined){
-                                    if(this.refundflag){
+                                // 判断退款列表是否的hash值
+                                if(this.techUserType=='org' || this.techUserType=='station'){
+                                    if(this.refundflag!=undefined){
+                                        if(this.refundflag){
+                                            this.orgId = _data[0].id
+                                        }
+                                    }else{
                                         this.orgId = _data[0].id
                                     }
-                                }else{
-                                    this.orgId = _data[0].id
                                 }
                             }else{
                             }
@@ -65,7 +70,9 @@
             }
         },
         computed:{
-         
+            techUserType(){
+                return  userType()
+            },
         },
         mounted(){
         }

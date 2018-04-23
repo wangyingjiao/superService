@@ -270,6 +270,8 @@ export default {
         }
         if(window.sessionStorage.getItem('orderStatus') != null){
             this.activeName=window.sessionStorage.getItem('orderStatus')
+            this.active1=this.activeName
+            this.localSearch()
         }
         if(window.sessionStorage.getItem('mechanism') != null){
             this.mechanism=window.sessionStorage.getItem('mechanism')
@@ -312,7 +314,7 @@ export default {
       //服务时间格式化
       var severstartTime,severEndTime
       if(this.severTime != undefined){
-          if (this.severTime[0] != undefined) {
+          if (this.severTime[0] != undefined && this.severTime[0] != '') {
             severstartTime = util.formatDate.format(
               new Date(this.severTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -320,7 +322,7 @@ export default {
           } else {
             severstartTime = null;
           }
-          if (this.severTime[1] != undefined) {
+          if (this.severTime[1] != undefined && this.severTime[1] != '') {
             severEndTime = util.formatDate.format(
               new Date(this.severTime[1]),
               "yyyy-MM-dd 23:59:59"
@@ -335,7 +337,7 @@ export default {
       //开始时间格式化
       var startTime,endTime
       if(this.startTime != undefined){                   
-          if (this.startTime[0] != undefined) {
+          if (this.startTime[0] != undefined && this.startTime[0] != '') {
              startTime = util.formatDate.format(
               new Date(this.startTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -344,7 +346,7 @@ export default {
             startTime = null;
           }
           //结束时间格式化
-          if (this.startTime[1] != undefined) {
+          if (this.startTime[1] != undefined  && this.startTime[1] != '') {
             endTime = util.formatDate.format(
               new Date(this.startTime[1]),
               "yyyy-MM-dd 23:59:59"
@@ -398,15 +400,23 @@ export default {
         }
         if(this.severTime[1] != undefined && this.severTime[1] != null){
           window.sessionStorage.setItem('serviceTimeEnd',this.severTime[1])
-        }        
+        }       
+      }else{
+        window.sessionStorage.setItem('serviceTimeStart','')
+        window.sessionStorage.setItem('serviceTimeEnd','')
+        this.severTime=[]
       }
       if(this.startTime != undefined){
         if(this.startTime[0] != undefined && this.startTime[0] != null ){
-          window.sessionStorage.setItem('startTime',this.startTime[0])
+            window.sessionStorage.setItem('startTime',this.startTime[0])
         }
         if(this.startTime[1] != undefined && this.startTime[1] != null ){
             window.sessionStorage.setItem('endTime',this.startTime[1])
         }
+      }else{
+        window.sessionStorage.setItem('startTime','')
+        window.sessionStorage.setItem('endTime','')
+        this.startTime=[];
       }            
       this.$router.push({ path: "/clean/orderinfo", query: { id: id } });
     },
@@ -418,7 +428,7 @@ export default {
       //服务时间格式化
       var severstartTime,severEndTime
       if(this.severTime != undefined){
-          if (this.severTime[0]) {
+          if (this.severTime[0] != undefined && this.severTime[0] != '') {
             severstartTime = util.formatDate.format(
               new Date(this.severTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -426,7 +436,7 @@ export default {
           } else {
             severstartTime = null;
           }
-          if (this.severTime[1] != undefined) {
+          if (this.severTime[1] != undefined && this.severTime[1] != '') {
             severEndTime = util.formatDate.format(
               new Date(this.severTime[1]),
               "yyyy-MM-dd 23:59:59"
@@ -441,7 +451,7 @@ export default {
       //开始时间格式化
       var startTime,endTime
       if(this.startTime != undefined){
-          if (this.startTime[0]) {
+          if (this.startTime[0] != undefined && this.startTime[0] != '') {
              startTime = util.formatDate.format(
               new Date(this.startTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -450,7 +460,7 @@ export default {
             startTime = null;
           }
           //结束时间格式化
-          if (this.startTime[1] != undefined) {
+          if (this.startTime[1] != undefined   && this.startTime[1] != '') {
             endTime = util.formatDate.format(
               new Date(this.startTime[1]),
               "yyyy-MM-dd 23:59:59"
@@ -486,8 +496,8 @@ export default {
       this.pageNumber = val;
       //服务时间格式化
       var severstartTime,severEndTime
-      if(this.severTime != undefined){
-          if (this.severTime[0]) {
+      if(this.severTime != undefined ){
+          if (this.severTime[0]  && this.severTime[0] != '') {
             severstartTime = util.formatDate.format(
               new Date(this.severTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -495,7 +505,7 @@ export default {
           } else {
             severstartTime = null;
           }
-          if (this.severTime[1] != undefined) {
+          if (this.severTime[1] != undefined   && this.severTime[1] != '') {
             severEndTime = util.formatDate.format(
               new Date(this.severTime[1]),
               "yyyy-MM-dd 23:59:59"
@@ -510,7 +520,7 @@ export default {
       //开始时间格式化
       var startTime,endTime
       if(this.startTime != undefined){
-          if (this.startTime[0]) {
+          if (this.startTime[0]   && this.startTime[0] != '') {
              startTime = util.formatDate.format(
               new Date(this.startTime[0]),
               "yyyy-MM-dd hh:mm:ss"
@@ -519,7 +529,7 @@ export default {
             startTime = null;
           }
           //结束时间格式化
-          if (this.startTime[1] != undefined) {
+          if (this.startTime[1] != undefined  && this.startTime[1] != '') {
             endTime = util.formatDate.format(
               new Date(this.startTime[1]),
               "yyyy-MM-dd 23:59:59"

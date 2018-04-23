@@ -54,7 +54,7 @@
              class="demo-ruleForm dia_form" 
              label-position="left">
             <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
-              <el-select v-model="ruleForm2.orgId" :disabled='mechanismFlag' filterable placeholder="请选择机构"  class="kill form_item">  
+              <el-select v-model="ruleForm2.orgId" :disabled='mechanismFlag' filterable placeholder="请选择机构"  class="kill form_item" @change="mechChage">  
                 <el-option
                   v-for="item in mechanismOptions"
                   :key="item.id"
@@ -250,6 +250,18 @@ export default {
     }
   },
   methods: {
+    //
+    mechChage(val){
+      if(this.mechanismFlag){
+
+      }else{
+        this.tabOptions=[];
+        this.middleA=[];
+        this.listTech=[];
+        this.ruleForm2.technicians=[]; 
+      }
+      
+    },
     // 服务机构
     getoffice() {
       getSList({}).then(res => {

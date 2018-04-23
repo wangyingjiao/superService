@@ -35,7 +35,7 @@
                     <el-table-column align="center" prop="refundPhone" label="用户电话"></el-table-column>
                     <el-table-column align="center" label="操作">
                         <template scope="scope">
-                            <el-button class="ceshi3" type="button" @click="handleRead(scope.row.id)">查看</el-button> 
+                            <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('refund_info') > -1" @click="handleRead(scope.row.id)">查看</el-button> 
                         </template>    
                     </el-table-column>
                 </el-table>
@@ -249,14 +249,10 @@ var refundDetails = (id)=>{
         computed: {
             techUserType(){
                 return  userType()
-                // let _user = userType()
-                // if(_user=='org' || _user=='station'){
-                //     return true
-                // }else{
-                //     return false
-                // }
-               
-            }
+            },
+            btnShow() {
+                return JSON.parse(localStorage.getItem("btn"));
+            },
         },
         mounted(){
             let list = async ()=>{

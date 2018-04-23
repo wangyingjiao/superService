@@ -9,11 +9,12 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" v-if="userType" clearable v-model="search.orgId" placeholder="选择机构">
+                <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch"></orgSearch>
+                <!-- <el-select class="butt-search" v-if="userType" clearable v-model="search.orgId" placeholder="选择机构">
                     <el-option v-for="(item,key) in orgList" :key="key" :label="item.name" :value="item.id">
                     </el-option>
-                </el-select>
-                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
+                </el-select> -->
+                <el-select class="butt-search" clearable filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>
@@ -98,6 +99,7 @@ import {
   buttedList
 } from "@/api/serviceManage";
 import { userType} from '../../utils/auth'
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import { listDataAll } from "@/api/tech";
 export default {
   data() {
@@ -142,7 +144,13 @@ export default {
       }
     }
   },
+  components: {
+      orgSearch
+  },
   methods: {
+    orgSearch(item){
+      this.search.orgId = item
+    },
     //已对接api
     buttedConnListApi(obj, page, size) {
       this.listLoading = true;
@@ -376,25 +384,27 @@ export default {
     }
   },
   mounted() {
-    let listData = ()=>{
-      return new Promise((resolve,reject)=>{
-        listDataAll({}).then(data=>{
-          console.log(data,"++++_______")
-          let _data = data.data.data.list
-          if(data.data.code==1){
-            if(_data[0].id=="0"){
-              _data = _data.slice(1)
-            }
-            this.orgList = _data
-            this.search.orgId = this.orgList[0].id
-            resolve(_data)
-          }
-        }).catch(error=>{
-          reject(error)
-          console.log(error,"------++++++")
-        })
-      })
-    }
+    // if(this.userType){}
+    // this.$refs['orgSearch'].listDataAll()
+    // let listData = ()=>{
+    //   return new Promise((resolve,reject)=>{
+    //     listDataAll({}).then(data=>{
+    //       console.log(data,"++++_______")
+    //       let _data = data.data.data.list
+    //       if(data.data.code==1){
+    //         if(_data[0].id=="0"){
+    //           _data = _data.slice(1)
+    //         }
+    //         this.orgList = _data
+    //         this.search.orgId = this.orgList[0].id
+    //         resolve(_data)
+    //       }
+    //     }).catch(error=>{
+    //       reject(error)
+    //       console.log(error,"------++++++")
+    //     })
+    //   })
+    // }
     //默认已对接商品数据
     // this.handleClick()
     //check默认选中第一个
@@ -435,7 +445,7 @@ export default {
     let tabData = async ()=>{
       try{
         if(this.userType){
-          await listData()
+          this.$refs['orgSearch'].listDataAll()
         }
         let _promise = await promise()
         this.buttedConnListApi(_promise);

@@ -4,8 +4,9 @@
         <div class="thrid-bar">
             <div class="custom-action orderOneBar">订单信息              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
             </div>
+            <!--  -->
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
@@ -199,7 +200,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -329,7 +330,7 @@
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPic" :key="item"> 
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -564,7 +565,7 @@
         <!--取消订单弹窗结束--> 
         <!--退款详情弹窗开始-->
         <el-dialog
-          title="退款详情"
+          title="退款"
           :visible.sync="orderRefundFlag"
           :close-on-click-modal="false"
           class="selfDialogWidth1"
@@ -584,7 +585,7 @@
                                 </tr>
                                 <div class="orderinfoTechTablePadding">
                                     <tr v-for="item in ruleForm.orderRefundObj" :key="item.goodsId"  ref="tableItem1" class="selfTdStyle2">
-                                      <td width="72px" class="fontSize12"  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.commidySelect" ></el-checkbox></td>
+                                      <td width="72px" class="fontSize12"  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked" ></el-checkbox></td>
                                       <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.goodsName}}</div></td>
                                       <td width="132px" class="fontSize12" align="center">￥{{item.payPrice}}</td>
                                       <td  width="102px" class="fontSize12" align="center">{{item.goodsNum}}</td>
@@ -798,7 +799,7 @@ export default {
     },
     //计算退款总额
     rowChange(rowObj){    
-      if (rowObj.commidySelect) {          
+      if (rowObj.goodsChecked) {          
            this.ruleForm.refundAccount = this.ruleForm.refundAccount + rowObj.payPrice * 1*rowObj.goodsNum;        
       } else { 
         this.ruleForm.refundAccount = this.ruleForm.refundAccount - rowObj.payPrice * 1*rowObj.goodsNum;  
@@ -813,6 +814,13 @@ export default {
     orderRefundOk(formName){
       this.$refs[formName].validate(valid => {
         if (valid) {
+          if((this.refundDifferenceType == '' && this.ruleForm.refundDifference >0 )|| (this.refundDifferenceType == null && this.ruleForm.refundDifference >0)){
+              this.$message({
+                type: "warning",
+                message: "请退款差额类型！"
+              });
+              return false            
+          }
           if(this.ruleForm.refundDifference >= this.ruleForm.refundAccount){
               this.$message({
                 type: "warning",
@@ -845,7 +853,7 @@ export default {
               }).then(() => {
                 var arr = [];
                 for (var a = 0; a < this.ruleForm.orderRefundObj.length; a++) {
-                  if (this.ruleForm.orderRefundObj[a].commidySelect) {
+                  if (this.ruleForm.orderRefundObj[a].goodsChecked) {
                     arr.push(this.ruleForm.orderRefundObj[a]);
                   }
                 }
@@ -903,7 +911,7 @@ export default {
       })      
     },
     //取消退款
-    orderRefundCancel(){
+    orderRefundCancel(){      
       this.refundDifferenceType=''
       this.$refs['ruleForm'].resetFields();     
       this.orderRefundFlag = false;
@@ -912,8 +920,9 @@ export default {
     gotoRefund(orderNumber){
       var src=window.location.href;
       var end=src.indexOf('#')+1;
-      var url=src.substring(0,end)
-      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber
+      var url=src.substring(0,end)      
+      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber;
+      window.open(this.jumpUrl)
     },
     loadingClick() {
       loading = this.$loading({

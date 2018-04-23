@@ -11,7 +11,15 @@
             <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
-          <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
+          <el-select style="width:40%" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                <el-option
+                v-for="(item,index) in sexTypeo"
+                :key="index"
+                :label="item.name"
+                :value="item.id">
+                </el-option>
+              </el-select>
+          <!-- <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
               <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
               </el-option>
           </el-select>
@@ -21,7 +29,7 @@
                 <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-select>
-          </el-input>
+          </el-input> -->
 
            <button class="search-button el-icon-search btn_search btn-color serch-btn" @click="techniSearchs"> 搜索</button>
       </div>
@@ -31,24 +39,34 @@
       </div>
       <div class="serch-ski">
         <!-- <el-form-item label="选择技能：" prop="skillIds"> -->
-          <el-row>
-            <el-col :span="10">
-              <el-select v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+         
+              <!-- <el-select v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
                 <el-option
                 v-for="(item,index) in sexTypeo"
                 :key="index"
                 :label="item.name"
                 :value="item.id">
                 </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
+              </el-select> -->
+               <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
+                  <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+                  </el-option>
+                </el-select>
+
+                <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search searchHeader">
+                    <el-select  v-model="techniSearch.chooses" clearable placeholder="请选择"  slot="prepend">
+                      <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                      </el-option>
+                    </el-select>
+                </el-input>
+           
       </div>
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
         <button class="button-small  btn_pad btn-color" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
+    <div style="color:#929496" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构查询数据</div>
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech"
     element-loading-text="正在加载"  class="projectTabel listTechni">
@@ -424,7 +442,49 @@
               <ul class="tech-ul tech-service">
                 <div style="overflow:hidden">
 					<div class="server-left" style="margin-right:6%">
-                      <el-form-item v-if="techUserType=='sys'" label="所属机构：" prop="orgId">
+                       <el-form-item label="岗位性质：" prop="jobNature">
+                            <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
+                                <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+                                </el-option>
+                            </el-select>
+                      </el-form-item>
+                      <!-- <el-form-item v-if="techUserType=='sys'" label="所属机构：" prop="orgId">
+                        <el-select v-model="personal.orgId" filterable clearable placeholder="请选择" style="width:100%" @change="orderChange(personal.orgId)">
+                            <el-option v-for="(item,index) in organizations" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+                      </el-form-item> -->
+                  </div>
+                  <div class="server-left">
+                    <el-form-item label="岗位状态：" prop="jobStatus">
+                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                        <!-- <el-form-item label="所属服务站：" prop="stationId">
+                          <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,index) in serveryAdd" :key="index" :label="item.name" :value="item.id">
+                              </el-option>
+                          </el-select>
+                        </el-form-item> -->
+                  </div>
+                  <div class="server-right">
+                     <el-form-item label="工作年限：" prop="workTime">
+                            <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
+                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
+                              </el-option>
+                            </el-select>
+                      </el-form-item>
+                      <!-- <el-form-item label="岗位状态：" prop="jobStatus">
+                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
+                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
+                          </el-option>
+                        </el-select>
+                      </el-form-item> -->
+                  </div>
+                  <div class="server-left">
+                    <el-form-item v-if="techUserType=='sys'" label="所属机构：" prop="orgId">
                         <el-select v-model="personal.orgId" filterable clearable placeholder="请选择" style="width:100%" @change="orderChange(personal.orgId)">
                             <el-option v-for="(item,index) in organizations" :key="index" :label="item.name" :value="item.id">
                             </el-option>
@@ -432,29 +492,13 @@
                       </el-form-item>
                   </div>
                   <div class="server-left">
-                        <el-form-item label="所属服务站：" prop="stationId">
+                     <el-form-item label="所属服务站：" prop="stationId">
                           <el-select v-model="personal.stationId" filterable clearable placeholder="请选择" style="width:100%">
                               <el-option v-for="(item,index) in serveryAdd" :key="index" :label="item.name" :value="item.id">
                               </el-option>
                           </el-select>
-                        </el-form-item>
-                  </div>
-                  <div class="server-right">
-                      <el-form-item label="岗位状态：" prop="jobStatus">
-                        <el-select v-model="personal.jobStatus" clearable placeholder="请选择" style="width:100%">
-                          <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
-                          </el-option>
-                        </el-select>
                       </el-form-item>
-                  </div>
-                  <div class="server-left">
-					            <el-form-item label="工作年限：" prop="workTime">
-                            <el-select v-model="personal.workTime" clearable placeholder="请选择" style="width:100%">
-                              <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
-                              </el-option>
-                            </el-select>
-                      </el-form-item>
-                  </div>
+                    </div>
                 </div>
 
 
@@ -500,7 +544,7 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row>
+                <!-- <el-row>
                   <el-col :span="17">
                       <el-form-item label="岗位性质：" prop="jobNature">
                             <el-select v-model="personal.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobNatureTable">
@@ -509,7 +553,7 @@
                             </el-select>
                       </el-form-item>
                   </el-col>
-                </el-row>
+                </el-row> -->
                 <el-row v-if="personal.jobNature!='part_time'">
                   <el-col :span="17" class="addTime">
                     <el-form-item label="工作时间：" prop="workTimes">
@@ -964,7 +1008,7 @@ export default {
       position: false,
       listLoading: false,
       picFile: [],
-      listLoadingTech: true,
+      listLoadingTech: false,
       list: [1, 2, 3],
       total: null,
       listLoading: false,
@@ -1112,6 +1156,10 @@ export default {
             this.server = data.stations
             this.sexTypeo = data.skils
             this.servery = data.stations
+            if(this.techUserType == 'org'){
+              this.serveryAdd = data.stations
+              this.sexTypeoAdd =  data.skils
+            }
             if(this.techUserType=='station'){
               this.serveryAdd = data.stations
               this.personal.stationId = data.stations[0].id
@@ -1284,7 +1332,16 @@ export default {
     },
     //搜索
     techniSearchs(page, size) {
-      console.log(2)
+      //全系统时判断   搜索有没有机构
+      if(this.techUserType=='sys'){
+        if(!this.techniSearch.orgId){
+          this.$message({
+              message: '请选择服务机构;',
+              type: 'warning'
+          });
+          return
+        }
+      }
       var _page = typeof page == "string" ? page : this.listQuery.page;
       var _size = size || this.listQuery.limit;
       // this.listQuery.sync = 1;
@@ -1902,6 +1959,11 @@ export default {
     }
   },
   mounted() {
+    if(this.techUserType=='sys'){
+
+    }else{
+      this.techniSearchs()
+    }
     //根据服务机构获取的第一条数据请求列表
     let tabData = async ()=>{
       try{
@@ -1910,7 +1972,6 @@ export default {
         if(this.techUserType=='station'){
           // this.personal.stationId = this.organizations[0].id
         }
-        this.techniSearchs()
       }
       catch(error){
       }
@@ -2004,12 +2065,7 @@ export default {
 .tech-index .serch-ski {
   margin-top: 10px;
 }
-.tech-index .serch-ski .search {
-  width: 99%;
-}
-.tech-index .serch-ski .search .el-input {
-  /* width: 42%; */
-}
+
 
 .tech {
   position: relative;

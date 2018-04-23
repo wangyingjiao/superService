@@ -27,7 +27,12 @@
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    <span v-if="techUserType=='sys'">
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1" style="width:80px" @click="buttDetails">对接详情</button>
+    </span>
+    <span v-else>
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    </span>
     <!-- btnShow.indexOf('project_send')>-1 && -->
     <el-table 
     :key='tableKey' 
@@ -150,7 +155,7 @@
                 </el-form-item>
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="sortIdChange(basicForm.sortId)">
+                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item">
                     <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                   </el-select>
@@ -216,7 +221,7 @@
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
                     <template scope="scope">
-                      <span v-show="scope.row.type=='num'">按数量</span>
+                      <span v-show="scope.row.type=='num'">按时长或数量</span>
                       <span v-show="scope.row.type=='area'">按面积</span>
                       <span v-show="scope.row.type=='house'">按居室</span>
                     </template>
@@ -226,17 +231,17 @@
                       <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
                     </template>  
                   </el-table-column>
-                  <el-table-column prop="convertHours" align="center" label="折算时长">
+                  <el-table-column v-if="sordFlag" prop="convertHours" align="center" label="折算时长">
                     <template scope="scope">
                       <span>{{scope.row.convertHours+'小时 / '+scope.row.unit}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column align="center" label="起步人数">
+                  <el-table-column v-if="sordFlag" align="center" label="起步人数">
                     <template scope="scope">
                       <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> 
+                  <el-table-column v-if="sordFlag" prop="cappingPerNum" align="center" label="封顶人数"> 
                     <template scope="scope">
                       <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
                     </template>
@@ -392,7 +397,7 @@
                      <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item v-if="sortIdFlag" label="折算时长:" prop="convertHours" class="doubtf">
+                <el-form-item v-if="sordFlag" label="折算时长:" prop="convertHours" class="doubtf">
                   <el-input v-model="goods_info.convertHours" style="width:100%" >
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
@@ -405,14 +410,14 @@
                    <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
                 </el-form-item>
              
-                <el-form-item v-if="sortIdFlag" label="起步人数:" class="seize" prop="startPerNum">
+                <el-form-item v-if="sordFlag" label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
                     placeholder="请输入起步人数(默认为1)"
                    
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="sortIdFlag" label="封顶人数:" class="seize" prop="cappingPerNum">
+                <el-form-item v-if="sordFlag" label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
                     
@@ -425,6 +430,7 @@
                     
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
+                <div v-if="dialogStatus != 'update'" class="pro-wing">通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数、封顶人数自动保存为0</div>
               </el-form>
 			   <div slot="footer" class="dialog-footer" style="text-align:center">
 				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
@@ -734,7 +740,7 @@ export default {
       }
     };
     return {
-      sortIdFlag:true,
+      sordFlag:true,
       orgStatus: "",
       pageNumber: 1,
       addCommodityFlag: false,
@@ -927,16 +933,6 @@ export default {
   methods: {
     orgSearch(item){
       this.search.orgId = item
-      console.log(item,"___________________________")
-    },
-    //获取分类id
-    sortIdChange(id){
-      if(id < 100){
-        this.sortIdFlag = false
-        this.measure= {num:'按数量'}
-      }else{
-        this.sortIdFlag = true
-      }
     },
     //删除商品
     deletGood(item) {
@@ -1362,7 +1358,7 @@ export default {
       this.getList(this.pageNumber, this.pageSize);
     },
     handleCreate(formName) {
-      this.sortIdFlag = true;
+      this.sordFlag = true;
       this.basicForm.sortId = "";
       this.imgNumber = 0;
       this.tableProject({ majorSort: "clean" });
@@ -1395,9 +1391,13 @@ export default {
               );
             }
             console.log(dataUpdate.sortId,"sortId-----")
-            if(dataUpdate.sortId < 100){
-              this.sortIdChange(dataUpdate.sortId)
-            }
+              if(dataUpdate.sortId < 100){
+               this.sordFlag = false
+               this.measure = { "num": "按时长或数量"}
+               this.goods_info.type = "num"
+              }else{
+                this.sordFlag = true
+              }
             // }
             this.listLoading = false;
             this.dialogFormVisible = true;
@@ -1751,6 +1751,10 @@ export default {
 };
 </script>
 <style>
+.pro-wing{
+  font-size:12px;
+  color:#929496;
+}
 .selfTitle1 {
   display: inline-block;
   float: left;
