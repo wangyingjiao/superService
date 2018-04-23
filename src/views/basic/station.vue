@@ -377,7 +377,6 @@ export default {
       return statusMap[status];
     }
   },
-
   created() {
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
@@ -390,9 +389,14 @@ export default {
     getSList({}).then(res => {
       // 服务机构
       this.mechanismCheck = res.data.data.list;
-      this.search.officeId = this.mechanismCheck[0].id
-      this.handleFilter()
+      if (
+          localStorage.getItem("type") == "station" ||
+          localStorage.getItem("type") == "org"
+        ) {
+          this.search.officeId = this.mechanismCheck[0].id;
+        }
     });
+    this.getList()
   },
   methods: {
     //loading
