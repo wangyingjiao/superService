@@ -384,7 +384,7 @@ export default {
       list: null,
       total: null,
       userType: localStorage.getItem("type"),
-      listLoading: true,
+      listLoading: false,
       listQuery: {
         page: 1,
         limit: 10,
@@ -562,6 +562,7 @@ export default {
       };
     }
     if (type == "org") {
+      
       this.typeList = {
         org: "机构员工",
         station: "服务站员工"
@@ -577,9 +578,8 @@ export default {
       // 服务机构
       if (res.data.data.list != undefined) {
         this.mechanismCheck = res.data.data.list;
-        this.search.officeId = this.mechanismCheck[0].id;
-        if (localStorage.getItem("type") != "station") {
-          this.handleFilter();
+        if(localStorage.getItem('type') =='org' || localStorage.getItem("type") == "station"){
+          this.search.officeId = this.mechanismCheck[0].id
         }
       }
     });
@@ -598,6 +598,7 @@ export default {
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
+    this.getList()
   },
   methods: {
     renderHeader(h) {
@@ -629,6 +630,7 @@ export default {
     searchChange(val) {},
     //获取列表
     getList() {
+      this.listLoading = true;
       if (this.search.type == "name") {
         var obj = {
           name: this.search.val,
@@ -650,7 +652,6 @@ export default {
       } else {
         var obj = {};
       }
-      this.listLoading = true;
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
           this.total = res.data.data.count;
@@ -664,7 +665,9 @@ export default {
             }
           }
           //this.pageSize = res.data.data.pageSize;
-          this.listLoading = false;
+          
+            this.listLoading = false;
+          
         } else {
           this.listLoading = false;
         }
@@ -831,12 +834,10 @@ export default {
 
         //列表处理完毕
       }
-
       this.temp2.check = this.$refs.domTree.getCheckedKeys();
     },
     handleUpdate(row) {
       //点击编辑
-      console.log(row, "1111");
       getOrgByTypeOrgId({ type: row.type }).then(res => {
         // 服务机构
         this.orgList = res.data.data;
@@ -923,7 +924,6 @@ export default {
           if (localStorage.getItem("type") == "station") {
             console.log(localStorage.getItem("type"));
             this.search.stationId = this.servicestationSearch[0].id;
-            this.handleFilter();
           }
         });
       }

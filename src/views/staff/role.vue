@@ -304,18 +304,13 @@ export default {
     //获取机构
     getSList({}).then(res => {
       if (res.data.data.list != undefined) {
-        // if (res.data.data.list[0].id == "0") {
-        //   res.data.data.list.remove(res.data.data.list[0]);
-        // }
-        // if (res.data.data.list.length >= 2) {
-        //   if (res.data.data.list[1].id == "0") {
-        //     res.data.data.list.remove(res.data.data.list[1]);
-        //     res.data.data.list.remove(res.data.data.list[0]);
-        //   }
-        // }
         this.officeIds = res.data.data.list;
-        this.search.officeId = this.officeIds[0].id;
-        this.handleFilter();
+        if (
+          localStorage.getItem("type") == "org" ||
+          localStorage.getItem("type") == "station"
+        ) {
+          this.search.officeId = this.officeIds[0].id;
+        }
       }
     });
     //获取用户等级
@@ -323,9 +318,14 @@ export default {
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
+    this.getList();
   },
   watch: {
     filterText(val) {
+      console.log(this.filterText, "watch1");
+      this.$refs.domTree.filter(val);
+    },
+    filterText2(val) {
       console.log(this.filterText, "watch1");
       this.$refs.domTree.filter(val);
     }
@@ -377,9 +377,7 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-            setTimeout(() => {
-              this.listLoading = false;
-            }, 500);
+            this.listLoading = false;
           } else {
             this.listLoading = false;
           }
@@ -572,7 +570,7 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
-              this.filterText = ""
+              this.filterText = "";
               this.$nextTick(() => {
                 this.filterText = "business";
               });
@@ -665,10 +663,10 @@ export default {
           setTimeout(() => {
             this.temp.officeId = a.organization.id;
           }, 50);
-          this.filterText = ""
+          this.filterText = "";
           this.$nextTick(() => {
-                this.filterText = "business";
-              });
+            this.filterText = "business";
+          });
           this.temp.name = a.name;
           //this.temp.dataScope = a.dataScope;
           //一期默认10级

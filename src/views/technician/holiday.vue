@@ -67,7 +67,7 @@
       <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
             <template scope="rowObj">
               <p>{{rowObj.row.orgName}}</p>
-              <p>{{rowObj.row.stationName}}</p>
+              <p>{{rowObj.row.techStationName}}</p>
             </template>                    
       </el-table-column>
       
@@ -219,8 +219,8 @@ export default {
         type: "techName",
         val: "",
         time: "",
-        officeId:"",
-        stationId:""
+        officeId: "",
+        stationId: ""
       },
       temp: {
         rowId: "",
@@ -265,7 +265,7 @@ export default {
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
-   getSList({}).then(res => {
+    getSList({}).then(res => {
       // 服务机构
       if (res.data.data.list != undefined) {
         if (res.data.data.list[0].id == "0") {
@@ -278,18 +278,21 @@ export default {
           }
         }
         this.mechanismCheck = res.data.data.list;
-        this.search.officeId = this.mechanismCheck[0].id;
-        if (localStorage.getItem("type") != "station") {
-          this.handleFilter();
+        if (
+          localStorage.getItem("type") == "station" ||
+          localStorage.getItem("type") == "org"
+        ) {
+          this.search.officeId = this.mechanismCheck[0].id;
         }
       }
     });
+    this.getList();
   },
   methods: {
     aaa(obj) {
       //console.log(obj,'aaa')
     },
-     renderHeader(h) {
+    renderHeader(h) {
       return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
     },
     searchOffice(val) {
@@ -305,7 +308,6 @@ export default {
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
             this.search.stationId = this.servicestationSearch[0].id;
-            this.handleFilter();
           }
         });
       }
@@ -352,7 +354,10 @@ export default {
       if (obj.reviewStatus == "all") {
         obj.reviewStatus = "";
       }
-      obj = Object.assign(obj,{orgId:this.search.officeId,stationId:this.search.stationId})
+      obj = Object.assign(obj, {
+        orgId: this.search.officeId,
+        stationId: this.search.stationId
+      });
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {

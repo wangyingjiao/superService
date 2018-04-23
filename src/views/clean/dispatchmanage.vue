@@ -241,7 +241,6 @@ export default {
               this.payTypeOptions = res.data.data;
               if(this.userType =='station'){
                 this.payType=this.payTypeOptions[0].id
-                this.localSearch()
               }else{
               }
             }
@@ -266,7 +265,9 @@ export default {
               }
           }                    
             this.mechanismOptions = res.data.data.list;
-            this.mechanism=this.mechanismOptions[0].id
+            if(this.userType == 'org' || this.userType == 'station'){
+               this.mechanism=this.mechanismOptions[0].id
+            }
         }
       });
     },           
@@ -524,7 +525,7 @@ export default {
     }
   },
   mounted() {
-    //this.reassList({}, 1, 10);
+    this.reassList({}, 1, 10);
     this.getoffice();
     this.userType=localStorage.getItem("type")
   }

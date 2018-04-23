@@ -23,14 +23,14 @@
 			  </el-select>						  
 			  <button type="button" class="search-button floatRight btn_search btn-color"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
 			  <div class="second-input">
-				        <el-date-picker
+				    <el-date-picker
 						v-model="startTime"
 						class="search"
 						style="width:20%"
 						type="daterange"
 						placeholder="选择下单时间">
 						</el-date-picker>					
-				        <el-date-picker
+				    <el-date-picker
 						class="search"
 						v-model="severTime"
 						style="width:20%;"
@@ -155,7 +155,7 @@ export default {
     return {
       userType:'',
       btnShow: [],
-      severTime: "",
+      severTime: [],
       severEndTime: "",
       dict: require("../../../static/dict.json"),
       payTypeOptions: [],
@@ -173,7 +173,7 @@ export default {
       orderNumber: "",
       orderContent: "",
       activeName: "dispatched", //当前tabs
-      startTime: "", //开始时间
+      startTime: [], //开始时间
       endTime: "", //结束时间
       tabDataList: [], //表格数据
       size: 10,
@@ -208,9 +208,11 @@ export default {
                 res.data.data.remove(res.data.data[0]);
               }
               this.payTypeOptions = res.data.data;
+              if(window.sessionStorage.getItem('stationId') != null){
+                  this.payType=window.sessionStorage.getItem('stationId')
+              }              
               if(this.userType =='station'){
                 this.payType=this.payTypeOptions[0].id
-                this.localSearch()
               }else{
               }
             }
@@ -256,8 +258,44 @@ export default {
               }
           }                    
             this.mechanismOptions = res.data.data.list;
-            this.mechanism=this.mechanismOptions[0].id
+            if(this.userType == 'org' || this.userType == 'station'){
+              this.mechanism=this.mechanismOptions[0].id
+            }            
         }
+        if(window.sessionStorage.getItem('orderNumber') != null){
+            this.orderNumber=window.sessionStorage.getItem('orderNumber')
+        }
+        if(window.sessionStorage.getItem('sevicerStustas') != null){
+            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
+        }
+        if(window.sessionStorage.getItem('orderStatus') != null){
+            this.activeName=window.sessionStorage.getItem('orderStatus')
+            this.active1=this.activeName
+            this.localSearch()
+        }
+        if(window.sessionStorage.getItem('mechanism') != null){
+            this.mechanism=window.sessionStorage.getItem('mechanism')
+        }
+        if(this.severTime != undefined){ 
+          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
+              var arr=[];
+              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
+              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
+              this.severTime=arr
+          }                   
+        }else{
+           this.severTime=[]
+        }
+        if(this.startTime != undefined){
+            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
+                var arr1=[];
+                arr1.push(window.sessionStorage.getItem('startTime'));
+                arr1.push(window.sessionStorage.getItem('endTime'))           
+                this.startTime=arr1
+            } 
+        }else{
+          this.startTime=[]
+        }                                            
       });
     },
     //tabs操作需要请求表格数据
@@ -274,41 +312,53 @@ export default {
     //全局search按钮
     localSearch() {
       //服务时间格式化
-      if (this.severTime[0]) {
-        var severstartTime = util.formatDate.format(
-          new Date(this.severTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var severstartTime,severEndTime
+      if(this.severTime != undefined){
+          if (this.severTime[0] != undefined && this.severTime[0] != '') {
+            severstartTime = util.formatDate.format(
+              new Date(this.severTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            severstartTime = null;
+          }
+          if (this.severTime[1] != undefined && this.severTime[1] != '') {
+            severEndTime = util.formatDate.format(
+              new Date(this.severTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            severEndTime = null;
+          }
+      }else{
         severstartTime = null;
-      }
-      if (this.severTime[1]) {
-        var severEndTime = util.formatDate.format(
-          new Date(this.severTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         severEndTime = null;
       }
-
       //开始时间格式化
-      if (this.startTime[0]) {
-        var startTime = util.formatDate.format(
-          new Date(this.startTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var startTime,endTime
+      if(this.startTime != undefined){                   
+          if (this.startTime[0] != undefined && this.startTime[0] != '') {
+             startTime = util.formatDate.format(
+              new Date(this.startTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            startTime = null;
+          }
+          //结束时间格式化
+          if (this.startTime[1] != undefined  && this.startTime[1] != '') {
+            endTime = util.formatDate.format(
+              new Date(this.startTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            endTime = null;
+          }
+      }else{
         startTime = null;
-      }
-      //结束时间格式化
-      if (this.startTime[1]) {
-        var endTime = util.formatDate.format(
-          new Date(this.startTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         endTime = null;
       }
+
       if (this.activeName == "whole") {
         this.active1 = "";
       } else {
@@ -334,7 +384,40 @@ export default {
     exportOrder() {},
     //查看跳转到订单详情页
     lookInf(id) {
-      window.localStorage.setItem("orderId", id);
+      window.localStorage.setItem("orderId", id); 
+      window.sessionStorage.setItem('orderNumber',this.orderNumber)
+      window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
+      if(this.active1 == ''){
+         window.sessionStorage.setItem('orderStatus','whole')
+      }else{
+         window.sessionStorage.setItem('orderStatus',this.active1)
+      }
+      window.sessionStorage.setItem('mechanism',this.mechanism)
+      window.sessionStorage.setItem('stationId',this.payType)
+      if(this.severTime != undefined){
+        if(this.severTime[0] != undefined && this.severTime[0] != null ){
+            window.sessionStorage.setItem('serviceTimeStart',this.severTime[0])
+        }
+        if(this.severTime[1] != undefined && this.severTime[1] != null){
+          window.sessionStorage.setItem('serviceTimeEnd',this.severTime[1])
+        }       
+      }else{
+        window.sessionStorage.setItem('serviceTimeStart','')
+        window.sessionStorage.setItem('serviceTimeEnd','')
+        this.severTime=[]
+      }
+      if(this.startTime != undefined){
+        if(this.startTime[0] != undefined && this.startTime[0] != null ){
+            window.sessionStorage.setItem('startTime',this.startTime[0])
+        }
+        if(this.startTime[1] != undefined && this.startTime[1] != null ){
+            window.sessionStorage.setItem('endTime',this.startTime[1])
+        }
+      }else{
+        window.sessionStorage.setItem('startTime','')
+        window.sessionStorage.setItem('endTime','')
+        this.startTime=[];
+      }            
       this.$router.push({ path: "/clean/orderinfo", query: { id: id } });
     },
     //每页条数多少改变
@@ -343,38 +426,50 @@ export default {
       this.jumpPage = 1;
       this.size = val;
       //服务时间格式化
-      if (this.severTime[0]) {
-        var severstartTime = util.formatDate.format(
-          new Date(this.severTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var severstartTime,severEndTime
+      if(this.severTime != undefined){
+          if (this.severTime[0] != undefined && this.severTime[0] != '') {
+            severstartTime = util.formatDate.format(
+              new Date(this.severTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            severstartTime = null;
+          }
+          if (this.severTime[1] != undefined && this.severTime[1] != '') {
+            severEndTime = util.formatDate.format(
+              new Date(this.severTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            severEndTime = null;
+          }
+      }else{
         severstartTime = null;
-      }
-      if (this.severTime[1]) {
-        var severEndTime = util.formatDate.format(
-          new Date(this.severTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         severEndTime = null;
       }
       //开始时间格式化
-      if (this.startTime[0]) {
-        var startTime = util.formatDate.format(
-          new Date(this.startTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var startTime,endTime
+      if(this.startTime != undefined){
+          if (this.startTime[0] != undefined && this.startTime[0] != '') {
+             startTime = util.formatDate.format(
+              new Date(this.startTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            startTime = null;
+          }
+          //结束时间格式化
+          if (this.startTime[1] != undefined   && this.startTime[1] != '') {
+            endTime = util.formatDate.format(
+              new Date(this.startTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            endTime = null;
+          }
+      }else{
         startTime = null;
-      }
-      //结束时间格式化
-      if (this.startTime[1]) {
-        var endTime = util.formatDate.format(
-          new Date(this.startTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         endTime = null;
       }
       if (this.activeName == "whole") {
@@ -400,38 +495,50 @@ export default {
     handleCurrentChange(val) {
       this.pageNumber = val;
       //服务时间格式化
-      if (this.severTime[0]) {
-        var severstartTime = util.formatDate.format(
-          new Date(this.severTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var severstartTime,severEndTime
+      if(this.severTime != undefined ){
+          if (this.severTime[0]  && this.severTime[0] != '') {
+            severstartTime = util.formatDate.format(
+              new Date(this.severTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            severstartTime = null;
+          }
+          if (this.severTime[1] != undefined   && this.severTime[1] != '') {
+            severEndTime = util.formatDate.format(
+              new Date(this.severTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            severEndTime = null;
+          }
+      }else{
         severstartTime = null;
-      }
-      if (this.severTime[1]) {
-        var severEndTime = util.formatDate.format(
-          new Date(this.severTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         severEndTime = null;
       }
       //开始时间格式化
-      if (this.startTime[0]) {
-        var startTime = util.formatDate.format(
-          new Date(this.startTime[0]),
-          "yyyy-MM-dd hh:mm:ss"
-        );
-      } else {
+      var startTime,endTime
+      if(this.startTime != undefined){
+          if (this.startTime[0]   && this.startTime[0] != '') {
+             startTime = util.formatDate.format(
+              new Date(this.startTime[0]),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+          } else {
+            startTime = null;
+          }
+          //结束时间格式化
+          if (this.startTime[1] != undefined  && this.startTime[1] != '') {
+            endTime = util.formatDate.format(
+              new Date(this.startTime[1]),
+              "yyyy-MM-dd 23:59:59"
+            );
+          } else {
+            endTime = null;
+          }
+      }else{
         startTime = null;
-      }
-      //结束时间格式化
-      if (this.startTime[1]) {
-        var endTime = util.formatDate.format(
-          new Date(this.startTime[1]),
-          "yyyy-MM-dd 23:59:59"
-        );
-      } else {
         endTime = null;
       }
       if (this.activeName == "whole") {
@@ -455,7 +562,7 @@ export default {
     }
   },
   mounted() {
-    // this.getTableData({ orderStatus: "dispatched" }, 1, 10);    
+    this.getTableData({ orderStatus: "dispatched" }, 1, 10);    
     this.getoffice();        
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
