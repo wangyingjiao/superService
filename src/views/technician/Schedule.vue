@@ -38,6 +38,7 @@
 			<!-- 搜索完成 -->
 			<!-- 表格 -->
 			<div class="schedule-table" v-loading="listLoading">
+				<div style="color:#929496" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构、服务站查询数据</div>
 				<div v-if="tableData.length">
 					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->
@@ -195,7 +196,7 @@
 					console.log(data,"data--------+++++")
 					this.stations = data.data.data.stations
 					this.skils = data.data.data.skils
-					if(this.stations.length>0){
+					if(this.stations.length>0 && this.techUserType=='station'){
 						this.search.stationId = this.stations[0].id
 					}
 				})
@@ -263,7 +264,12 @@
 			},
 			//搜索
 			searchClick(item){
+				// console.log('________')
 				if(!item.stationId){
+					 this.$message({
+						message: '请选择服务机构与服务站;',
+						type: 'warning'
+					});
 					return
 				}
 				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
@@ -320,6 +326,9 @@
 				// this.stations = data.data.data.stations
 				// 		this.skils = data.data.data.skils
 				// 		this.search.stationId = this.stations[0].id
+			if(this.techUserType=='station' || this.techUserType=='org'){
+				this.getList()
+			}
 			let list = async ()=>{
 				try{
 					let _list = await this.$refs['orgSearch'].listDataAll()
