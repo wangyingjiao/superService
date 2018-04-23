@@ -438,9 +438,10 @@ export default {
           }
         }          
           this.mechanismOptions = res.data.data.list;
-          this.organizationName=this.mechanismOptions[0].id
+          if(this.userType == 'org' || this.userType == 'station'){
+            this.organizationName=this.mechanismOptions[0].id
+          }
         }
-        this.localSearch()
       });
     },     
     //单选改变
@@ -869,7 +870,7 @@ export default {
     }
   },
   mounted() {
-    //this.getData({}, 1, 10);
+    this.getData({}, 1, 10);
     this.sex = this.dict.sex;
     this.getoffice()
     this.userType=localStorage.getItem("type")
