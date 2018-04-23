@@ -200,7 +200,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -330,7 +330,7 @@
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPic" :key="item"> 
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -565,7 +565,7 @@
         <!--取消订单弹窗结束--> 
         <!--退款详情弹窗开始-->
         <el-dialog
-          title="退款详情"
+          title="退款"
           :visible.sync="orderRefundFlag"
           :close-on-click-modal="false"
           class="selfDialogWidth1"
@@ -920,8 +920,9 @@ export default {
     gotoRefund(orderNumber){
       var src=window.location.href;
       var end=src.indexOf('#')+1;
-      var url=src.substring(0,end)
-      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber
+      var url=src.substring(0,end)      
+      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber;
+      window.open(this.jumpUrl)
     },
     loadingClick() {
       loading = this.$loading({
