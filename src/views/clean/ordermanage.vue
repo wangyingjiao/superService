@@ -270,6 +270,8 @@ export default {
         }
         if(window.sessionStorage.getItem('orderStatus') != null){
             this.activeName=window.sessionStorage.getItem('orderStatus')
+            this.active1=this.activeName
+            this.localSearch()
         }
         if(window.sessionStorage.getItem('mechanism') != null){
             this.mechanism=window.sessionStorage.getItem('mechanism')
