@@ -1845,23 +1845,23 @@ export default {
               this.infoname = data.data.data.page.list || [];
             }else{
               this.infoname = data.data.data.page.list || [];
-              if(this.techUserType=="station" || this.techUserType=="org"){
-                this.sexTypeo = data.data.data.skillInfos;
-                this.sexTypeoAdd = data.data.data.skillInfos;
-                if(data.data.data.stations[0].id=='0'){
-                  this.server = data.data.data.stations.slice(1)
-                  this.servery = data.data.data.stations.slice(1)
-                  this.serveryAdd = data.data.data.stations.slice(1)
-                }else{
-                  this.server = data.data.data.stations;
-                  this.servery = data.data.data.stations;
-                  this.serveryAdd = data.data.data.stations;
-                }
-                if(this.techUserType=='station'){
-                  this.techniSearch.stationId = this.server[0].id
-                  this.personal.stationId =  this.server[0].id
-                }
-              }
+              // if(this.techUserType=="station" || this.techUserType=="org"){
+              //   this.sexTypeo = data.data.data.skillInfos;
+              //   this.sexTypeoAdd = data.data.data.skillInfos;
+              //   if(data.data.data.stations[0].id=='0'){
+              //     this.server = data.data.data.stations.slice(1)
+              //     this.servery = data.data.data.stations.slice(1)
+              //     this.serveryAdd = data.data.data.stations.slice(1)
+              //   }else{
+              //     this.server = data.data.data.stations;
+              //     this.servery = data.data.data.stations;
+              //     this.serveryAdd = data.data.data.stations;
+              //   }
+              //   if(this.techUserType=='station'){
+              //     this.techniSearch.stationId = this.server[0].id
+              //     this.personal.stationId =  this.server[0].id
+              //   }
+              // }
             }
             var i = 0,
               len = this.infoname.length,

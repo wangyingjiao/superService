@@ -328,6 +328,10 @@ export default {
     filterText(val) {
       console.log(this.filterText, "watch1");
       this.$refs.domTree.filter(val);
+    },
+    filterText2(val) {
+      console.log(this.filterText, "watch1");
+      this.$refs.domTree.filter(val);
     }
   },
   methods: {
