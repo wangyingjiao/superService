@@ -49,8 +49,19 @@
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
         </el-table-column>
-
-        <el-table-column label="服务站名称" align="center">
+        
+        <el-table-column v-if="userType =='sys'||userType =='platform'"  align="center"  :render-header="renderHeader"  >
+            <template scope="rowObj">
+              <!-- <p>{{rowObj.row.organization.name}}</p> -->
+               <!-- <el-tooltip  placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName"> -->
+                 <div class="overheidden">{{rowObj.row.orgName}}</div>
+    <!--            </el-tooltip> -->
+              <p>{{rowObj.row.name}}</p>
+        
+            </template>                    
+      </el-table-column>
+      
+        <el-table-column  v-if="userType == 'org'" label="服务站名称" align="center">
            <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.name.length < 5" :content="scope.row.name">
              <div class="overheidden" >{{scope.row.name}}</div>
@@ -118,6 +129,12 @@
            label-position="left" 
            label-width="160px" 
            >
+          <el-form-item label=" 所属机构:" v-if="userType =='sys' || userType == 'platform'"  prop="orgId">
+            <el-select class="form_item" :disabled="dialogStatus=='update'" filterable  v-model="temp.orgId" placeholder="请选择所属机构">
+              <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
           <el-form-item label="服务站名称:" prop="name">
             <el-input  v-model.trim="temp.name" placeholder="请输入2-15位的服务站名称"></el-input>
@@ -272,8 +289,9 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 0,
+      userType: localStorage.getItem("type"),
       search: {
-        officeId:"",
+        officeId: "",
         name: "",
         cityCode: ""
       },
@@ -286,6 +304,7 @@ export default {
         servicePoint: ""
       },
       temp: {
+        orgId:"",
         name: "",
         type: "",
         address: "",
@@ -319,6 +338,13 @@ export default {
       tableKey: 0,
       master: [],
       rules: {
+        orgId: [
+          {
+            required: true,
+            message: "所属机构不能为空",
+            trigger: "change"
+          }
+        ],
         name: [
           {
             required: true,
@@ -390,15 +416,18 @@ export default {
       // 服务机构
       this.mechanismCheck = res.data.data.list;
       if (
-          localStorage.getItem("type") == "station" ||
-          localStorage.getItem("type") == "org"
-        ) {
-          this.search.officeId = this.mechanismCheck[0].id;
-        }
+        localStorage.getItem("type") == "station" ||
+        localStorage.getItem("type") == "org"
+      ) {
+        this.search.officeId = this.mechanismCheck[0].id;
+      }
     });
-    this.getList()
+    this.getList();
   },
   methods: {
+    renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
     //loading
     loadingClick() {
       loading = this.$loading({
@@ -414,7 +443,7 @@ export default {
       var obj = {
         name: this.search.name,
         cityCode: this.search.cityCode,
-        orgId:this.search.officeId
+        orgId: this.search.officeId
       };
       getSite(obj, this.pageNumber, this.pageSize)
         .then(res => {
@@ -540,6 +569,7 @@ export default {
     handleUpdate(row) {
       //点击编辑
       this.temp = {
+        orgId:row.orgId,
         id: row.id,
         name: row.name,
         type: row.type,
@@ -589,6 +619,7 @@ export default {
     create(formName) {
       //新增保存时
       var obj = {
+        orgId:this.temp.orgId,
         name: this.temp.name,
         type: this.temp.type,
         address: this.temp.address,
@@ -742,6 +773,7 @@ export default {
     update(formName) {
       //编辑保存
       var obj = {
+        orgId:this.temp.orgId,
         id: this.rowInfo.id,
         name: this.temp.name,
         type: this.temp.type,
@@ -798,6 +830,7 @@ export default {
     resetTemp() {
       //清空v-m绑定的对象
       this.temp = {
+        orgId:"",
         name: "",
         type: "",
         address: "",
