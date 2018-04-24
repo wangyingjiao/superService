@@ -817,7 +817,7 @@ export default {
           if((this.refundDifferenceType == '' && this.ruleForm.refundDifference >0 )|| (this.refundDifferenceType == null && this.ruleForm.refundDifference >0)){
               this.$message({
                 type: "warning",
-                message: "请退款差额类型！"
+                message: "请选择退款差额类型！"
               });
               return false            
           }
