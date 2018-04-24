@@ -36,11 +36,11 @@ router.beforeEach((to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      store.dispatch('LogOut').then(() => {
-        next({ path: '/login' })
-      }).catch(() => {
-        next({ path: '/login' })
-      })
+      // store.dispatch('LogOut').then(() => {
+      next({ path: '/login' })
+      // }).catch(() => {
+      //   next({ path: '/login' })
+      // })
       NProgress.done()
     }
   }

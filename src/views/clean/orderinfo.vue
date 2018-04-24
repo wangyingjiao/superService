@@ -5,6 +5,7 @@
             <div class="custom-action orderOneBar">订单信息              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
               <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 -->
             </div>
             <!--  -->
             <div class="hr-style"></div>
@@ -77,6 +78,130 @@
             </div>                                     		
 		    </div>
         <!--订单信息结束-->
+        <!--服务信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">服务信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">建议服务时长:</span>
+                      <span  class="lineContent">{{otherInfo.serviceHour}}</span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
+                      <span class="lineTitle">实际完成时间:</span>
+                      <span class="lineContent">{{otherInfo.finishTime}}</span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
+                </div>
+                <div class="rightArea width390">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务时间:</span>
+                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
+                      <span class="selfMarLeft70"  v-if="nowTime >= 5400000" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
+                   </p>                                     
+                </div> 
+            </div>            
+            <div class="selfTableWrapStyle" >                    
+                    <el-table
+                      :data="tableData"
+                      border
+                      class="self-table-style"
+                      style="margin-top:-1px;"
+                      >
+                      <el-table-column
+                        align="center"
+                        label="服务项目"
+                        prop="itemName"
+                        > 
+                      </el-table-column>                      
+                      <el-table-column
+                        align="center"
+                        label="商品名称"
+                        prop="goodsName"
+                        > 
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="服务数量"
+                        prop="goodsNum">                    
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="单位"
+                        prop="goodsUnit">                    
+                      </el-table-column>                      
+                      <el-table-column
+                        align="center"
+                        label="单价">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPrice}}</span>
+                          </template>	                                           
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="小计">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPriceSum}}</span>
+                          </template>	                                           
+                      </el-table-column>                      
+                    </el-table>
+            </div>                                     		
+		    </div>
+        <!--服务信息结束-->
+        <!--技师信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">技师信息</div>
+            <div class="hr-style"></div>
+            <div class="techTabWrap">
+                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
+                  <span class="plusComb">&#10010</span>
+                  <span class="plusComtent">增加技师</span>
+                </div>
+                <div class="selfTableWrapStyle1">                
+                    <el-table
+                      :data="tableData1"
+                      border                  
+                      class="orderInfoHeaderPic">
+                      <el-table-column
+                        align="center"
+                        label="头像"
+                        >
+                        <template scope="scope">
+                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                        </template>
+                      </el-table-column>
+                      <el-table-column
+                        prop="techName"
+                        align="center"
+                        label="姓名"
+                        >
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="性别">
+                          <template scope="scope">
+                              <span v-if="scope.row.techSex =='male'">男</span>
+                            <span v-if="scope.row.techSex =='female'">女</span>
+                          </template>	                    
+                      </el-table-column>
+                      <el-table-column
+                        prop="techPhone"
+                        align="center"
+                        label="手机号">
+                      </el-table-column>                  
+                      <el-table-column
+                        align="center"
+                        label="操作">
+                          <template scope="scope">
+                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
+                          </template>                    
+                      </el-table-column>                  
+                    </el-table>
+                </div>
+            </div>                     		
+		    </div>
+        <!--技师信息结束-->        
         <!--订单取消开始-->
         <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
             <div class="custom-action">订单取消信息</div>
@@ -186,130 +311,6 @@
             </div>                                     		
 		    </div>
         <!--支付信息结束-->
-        <!--服务信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">服务信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">建议服务时长:</span>
-                      <span  class="lineContent">{{otherInfo.serviceHour}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
-                      <span class="lineTitle">实际完成时间:</span>
-                      <span class="lineContent">{{otherInfo.finishTime}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a :href="jumpUrl" style="color:#3a5fcd;cursor:pointer;" target="view_window" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</a></p>                                                                            
-                </div>
-                <div class="rightArea width390">
-                   <p class="contentLine">
-                      <span class="lineTitle">服务时间:</span>
-                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70"  v-if="nowTime >= 5400000" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
-                   </p>                                     
-                </div> 
-            </div>            
-            <div class="selfTableWrapStyle" >                    
-                    <el-table
-                      :data="tableData"
-                      border
-                      class="self-table-style"
-                      style="margin-top:-1px;"
-                      >
-                      <el-table-column
-                        align="center"
-                        label="服务项目"
-                        prop="itemName"
-                        > 
-                      </el-table-column>                      
-                      <el-table-column
-                        align="center"
-                        label="商品名称"
-                        prop="goodsName"
-                        > 
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="服务数量"
-                        prop="goodsNum">                    
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="单位"
-                        prop="goodsUnit">                    
-                      </el-table-column>                      
-                      <el-table-column
-                        align="center"
-                        label="单价">
-                          <template scope="scope">
-                              <span>￥{{scope.row.payPrice}}</span>
-                          </template>	                                           
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="小计">
-                          <template scope="scope">
-                              <span>￥{{scope.row.payPriceSum}}</span>
-                          </template>	                                           
-                      </el-table-column>                      
-                    </el-table>
-            </div>                                     		
-		    </div>
-        <!--服务信息结束-->
-        <!--技师信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">技师信息</div>
-            <div class="hr-style"></div>
-            <div class="techTabWrap">
-                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
-                  <span class="plusComb">&#10010</span>
-                  <span class="plusComtent">增加技师</span>
-                </div>
-                <div class="selfTableWrapStyle1">                
-                    <el-table
-                      :data="tableData1"
-                      border                  
-                      class="orderInfoHeaderPic">
-                      <el-table-column
-                        align="center"
-                        label="头像"
-                        >
-                        <template scope="scope">
-                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        prop="techName"
-                        align="center"
-                        label="姓名"
-                        >
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="性别">
-                          <template scope="scope">
-                              <span v-if="scope.row.techSex =='male'">男</span>
-                            <span v-if="scope.row.techSex =='female'">女</span>
-                          </template>	                    
-                      </el-table-column>
-                      <el-table-column
-                        prop="techPhone"
-                        align="center"
-                        label="手机号">
-                      </el-table-column>                  
-                      <el-table-column
-                        align="center"
-                        label="操作">
-                          <template scope="scope">
-                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
-                          </template>                    
-                      </el-table-column>                  
-                    </el-table>
-                </div>
-            </div>                     		
-		    </div>
-        <!--技师信息结束-->
         <!--下单用户信息开始-->
         <div class="thrid-bar marginTop15" >
             <div class="custom-action">下单用户信息</div>
@@ -330,7 +331,7 @@
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPic" :key="item"> 
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -565,7 +566,7 @@
         <!--取消订单弹窗结束--> 
         <!--退款详情弹窗开始-->
         <el-dialog
-          title="退款详情"
+          title="退款"
           :visible.sync="orderRefundFlag"
           :close-on-click-modal="false"
           class="selfDialogWidth1"
@@ -596,20 +597,20 @@
                             <el-input type="hidden" value='' v-model='ruleForm.refundId'></el-input> 
                           </div>                                                 
                       </el-form-item>
-                     <el-form-item label="支付总额:" prop="payPrice">￥{{ruleForm.payPrice | keepTwoNum}}元</el-form-item>
+                     <el-form-item label="支付总额:" prop="payPrice">￥{{ruleForm.payPrice | keepTwoNum}}</el-form-item>
                      <el-form-item label="支付方式:" prop="payMethod"><span>{{ruleForm.payMethod}}</span></el-form-item>
                      <el-form-item label="退款方式:" prop="refundMethod"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
-                     <el-form-item label="退款金额:" prop="refundAccount">￥{{ruleForm.refundAccount | keepTwoNum }}元</el-form-item>
+                     <el-form-item label="退款金额:" prop="refundAccount">￥{{ruleForm.refundAccount | keepTwoNum }}</el-form-item>
                       <el-form-item label="退款差额:" prop="refundDifference">
                         <el-input v-model="ruleForm.refundDifference" placeholder="0" class="search searchHeader">
                             <el-select  v-model="refundDifferenceType" clearable placeholder="请选择"  slot="prepend" @change="ChangerefundType">
                               <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
                               </el-option>
                             </el-select>
-                        </el-input>
-                        <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>   
+                        </el-input>                           
                       </el-form-item>
-                      <el-form-item label="退款原因:" prop="refundReason">
+                      <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>
+                      <el-form-item label="退款原因:" prop="refundReason" style="margin-top:10px;">
                           <el-input
                             type="textarea"
                             :rows="3"
@@ -655,10 +656,10 @@ export default {
       if (!value) {   
         callback();
       } else {
-        if(!/^[0-9]+.?[0-9]*/.test(value)){
+        if(!/^[0-9]+\.?[0-9]*/.test(value)){
            callback(new Error("请输入整数或一至两位小数"));
         }else{
-          if (!/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
+          if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(value)) {
               callback(new Error("请输入整数或一至两位小数"));
           }else{
             callback();
@@ -817,7 +818,7 @@ export default {
           if((this.refundDifferenceType == '' && this.ruleForm.refundDifference >0 )|| (this.refundDifferenceType == null && this.ruleForm.refundDifference >0)){
               this.$message({
                 type: "warning",
-                message: "请退款差额类型！"
+                message: "请选择退款差额类型！"
               });
               return false            
           }
@@ -920,8 +921,9 @@ export default {
     gotoRefund(orderNumber){
       var src=window.location.href;
       var end=src.indexOf('#')+1;
-      var url=src.substring(0,end)
-      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber
+      var url=src.substring(0,end)      
+      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber;
+      window.open(this.jumpUrl)
     },
     loadingClick() {
       loading = this.$loading({
@@ -1391,6 +1393,8 @@ export default {
 <style   scoped>
 .refundStatusStyle{
     color: #8391a5;
+    margin-left:75px;
+    margin-top:-20px;
     font-size: 12px;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {

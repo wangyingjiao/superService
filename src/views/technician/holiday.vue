@@ -104,7 +104,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="160">
+      <el-table-column align="center" label="操作" min-width="180">
         <template scope="scope">
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
@@ -305,6 +305,9 @@ export default {
         };
         getFuwu(obj).then(res => {
           // 请求服务站列表
+          if(res.data.data[0].id == '0'){
+            res.data.data.remove(res.data.data[0])
+          }
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
             this.search.stationId = this.servicestationSearch[0].id;

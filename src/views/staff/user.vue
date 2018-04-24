@@ -562,7 +562,6 @@ export default {
       };
     }
     if (type == "org") {
-      
       this.typeList = {
         org: "机构员工",
         station: "服务站员工"
@@ -578,8 +577,11 @@ export default {
       // 服务机构
       if (res.data.data.list != undefined) {
         this.mechanismCheck = res.data.data.list;
-        if(localStorage.getItem('type') =='org' || localStorage.getItem("type") == "station"){
-          this.search.officeId = this.mechanismCheck[0].id
+        if (
+          localStorage.getItem("type") == "org" ||
+          localStorage.getItem("type") == "station"
+        ) {
+          this.search.officeId = this.mechanismCheck[0].id;
         }
       }
     });
@@ -598,7 +600,7 @@ export default {
     for (var i = 0; i < lv; i++) {
       this.roleLv.push(this.stationLv[i]);
     }
-    this.getList()
+    this.getList();
   },
   methods: {
     renderHeader(h) {
@@ -665,9 +667,8 @@ export default {
             }
           }
           //this.pageSize = res.data.data.pageSize;
-          
-            this.listLoading = false;
-          
+
+          this.listLoading = false;
         } else {
           this.listLoading = false;
         }
@@ -703,7 +704,9 @@ export default {
     },
     handleCreate() {
       // 点击新增时
-
+      this.orgList = [];
+      this.servicestationCheck = [];
+      this.stationCheck = [];
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.resetTemp();
@@ -1069,14 +1072,17 @@ export default {
       // 岗位保存
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
         }
+      }
+      if (arr.length == 0) {
+        this.temp.check = [];
+      }
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
       }
       var obj = {
         name: this.temp2.name,
