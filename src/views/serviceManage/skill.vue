@@ -78,19 +78,23 @@
                 </el-option>
               </el-select>
             </el-form-item>            
-            <el-form-item label="选择技师" prop="technicians" class="selfst3">
-             <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
-                  <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
-            </div>
+            <el-form-item v-if=" userType == 'org' || userType == 'station'" label="选择技师" prop="technicians" class="selfst3">
+              <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+              </div>
             </el-form-item>
-            <el-form-item label="">
+            <el-form-item v-if=" (userType == 'sys' && mechanism1 !='' ) || (userType == 'platform'  && mechanism1 !='' )" label="选择技师" prop="technicians" class="selfst3">
+              <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+              </div>
+            </el-form-item>            
+            <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
                         <div class="techNameStyle">{{item.techName}}</div>
                         <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
                       </div>                     
-                  </div> 
-             
+                  </div>              
             </el-form-item>           
           </el-form>    
           <div slot="footer" class="dialog-footer" style="text-align:center;">
@@ -166,7 +170,7 @@ import {
   editTech,
   upDataTech
 } from "@/api/serviceManage";
-import { getSList } from "@/api/staff";
+import {getFuwu,getSList } from "@/api/staff";
 //挂载数据
 var loading;
 export default {
@@ -187,7 +191,8 @@ export default {
       userType:'',
       mechanismFlag:false,
       mechanismOptions: [],
-      mechanism: "",      
+      mechanism: "",
+      mechanism1: "",       
       Options2: [],
       submitFlag: false,
       jumpPage: 1,
@@ -250,8 +255,12 @@ export default {
     }
   },
   methods: {
-    //
+    //服务机构变换
     mechChage(val){
+      if(val !=''){
+        this.mechanism1=val
+        this.getseverStion(val)
+      }
       if(this.mechanismFlag){
 
       }else{
@@ -327,9 +336,40 @@ export default {
         }
       }
     },
+    //技师列表中服务站下拉列表获取
+    getseverStion(val){
+        if(val != ''){
+          var obj1 = {
+            orgId: val
+          };
+        }else{
+          var obj1={ }
+        }
+        getFuwu(obj1).then(res => {
+          if (res.data.code === 1) {
+            if(res.data.data){
+              if (res.data.data[0].id == 0) {
+                res.data.data.remove(res.data.data[0]);
+              }
+              this.options=res.data.data;           
+            }
+
+          } else {
+
+          }
+        });       
+    },
     //全局新增按钮
     add(status, row) {
-      var obj = {};
+      this.mechanism1='';
+      if(this.userType =='org' || this.userType == 'station'){
+        this.getseverStion('')
+        var obj = {};
+      }else{
+        var obj ={
+          orgId:this.mechanism1
+        }
+      }      
       this.middleA = [];
       this.middleB = [];
       this.middleD = [];
@@ -339,7 +379,7 @@ export default {
       this.tabOptions = [];
       if (this.dialogStatus == "add") {
         this.title = "新增技能";
-        this.mechanismFlag=false;
+        this.mechanismFlag=false;       
         //新增操作
         this.id = "";
         this.listLoading = false;
@@ -348,8 +388,8 @@ export default {
         orderServer(obj)
           .then(res => {
             if (res.data.code === 1) {
-              this.Options2 = res.data.data.list;
-              this.options = res.data.data.stations;
+              this.Options2 = res.data.data.list;              
+              //this.options = res.data.data.stations;
               this.listTech = res.data.data.techs;
               this.dialogVisible = true;
               this.listLoading = false;
@@ -366,19 +406,20 @@ export default {
         this.mechanismFlag=true;        
         //编辑操作
         this.id = row.id;
-        var obj = {
+        var obj1 = {
           id: this.id
         };
-        editTech(obj)
+        editTech(obj1)
           .then(res => {
             if (res.data.code === 1) {
               this.listTech = res.data.data.techs;
-              this.options = res.data.data.stations;
+              //this.options = res.data.data.stations;
               this.Options2 = res.data.data.list;
               this.listLoading = false;
               this.dialogVisible = true;
               this.ruleForm2.name = res.data.data.info.name;
-              this.ruleForm2.orgId =res.data.data.info.orgId;              
+              this.ruleForm2.orgId =res.data.data.info.orgId;
+              this.mechanism1=res.data.data.info.orgId;              
               if (res.data.data.info.sortIds != undefined) {
                 this.ruleForm2.staffClass = res.data.data.info.sortIds;
               }
@@ -681,10 +722,20 @@ export default {
     },
     //选择技师按钮
     orderTech() {
-      var obj = {
-        techName: "",
-        techStationId: ""
-      };
+      if(this.userType =='org' || this.userType == 'station'){
+        this.getseverStion('')
+        var obj = {
+          techName: "",
+          techStationId: ""
+        };
+      }else{
+        var obj = {
+          techName: "",
+          techStationId: "",
+          orgId:this.mechanism1
+        };
+        this.getseverStion(this.mechanism1)        
+      }       
       //服务技师获取
       orderServer(obj)
         .then(res => {
@@ -736,7 +787,8 @@ export default {
     searchTeh() {
       var obj = {
         techName: this.techName,
-        techStationId: this.techStationId
+        techStationId: this.techStationId,
+        orgId:this.mechanism1
       };
       //服务技师获取
       orderServer(obj)
