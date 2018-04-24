@@ -77,115 +77,6 @@
             </div>                                     		
 		    </div>
         <!--订单信息结束-->
-        <!--订单取消开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
-            <div class="custom-action">订单取消信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea marginBottom20">
-                   <p class="contentLine">
-                      <span class="lineTitle">取消原因:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
-                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
-                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
-                      </span>
-                   </p>                                                                                             
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
-                   </p>                   
-                </div>
-            </div>                                     		
-		    </div>
-        <!--订单取消结束-->
-        <!--服务地址信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">服务地址信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea marginBottom20">
-                   <p class="contentLine">
-                      <span class="lineTitle">联系人:</span>
-                      <span class="lineContent">
-                          <span>{{addressInf.name}}</span>
-                      </span>
-                   </p>                                                        
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">服务地址:</span>
-                      <span class="selfbeizhu1">
-                        <span>{{addressInf.detailAddress}}</span>
-                      </span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" >
-                      <span class="lineTitle">联系电话:</span>
-                      <span class="lineContent" >
-                        <span>{{addressInf.phone}}</span>                                                                        
-                      </span>
-                   </p>
-                </div>
-            </div>                                     		
-		    </div>
-        <!--服务地址信息结束-->                
-        <!--支付信息开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
-            <div class="custom-action">支付信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">交易单号:</span>
-                      <span class="lineContent">{{payInfo.payNumber}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
-                       <span class="lineTitle">支付状态:</span>
-                       <span>待支付</span> 
-                   </p>                                                                           
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付总额:</span>
-                      <span class="lineContent">{{payInfo.payAccount}}元</span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付状态:</span>
-                      <span class="lineContent" >
-                        <span>已支付</span>                                                                        
-                      </span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付平台:</span>
-                      <span class="lineContent">
-                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
-                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
-                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
-                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
-                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
-                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
-                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
-                      </span>
-                   </p>                                       
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付方式:</span>
-                      <span class="lineContent">
-                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
-                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
-                      </span>
-                   </p> 
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付时间:</span>
-                      <span class="lineContent">{{payInfo.payTime}}</span>
-                   </p>                                       
-                </div>                  
-            </div>                                     		
-		    </div>
-        <!--支付信息结束-->
         <!--服务信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">服务信息</div>
@@ -309,7 +200,116 @@
                 </div>
             </div>                     		
 		    </div>
-        <!--技师信息结束-->
+        <!--技师信息结束-->        
+        <!--订单取消开始-->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
+            <div class="custom-action">订单取消信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">取消原因:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
+                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
+                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
+                      </span>
+                   </p>                                                                                             
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
+                   </p>                   
+                </div>
+            </div>                                     		
+		    </div>
+        <!--订单取消结束-->
+        <!--服务地址信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">服务地址信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">联系人:</span>
+                      <span class="lineContent">
+                          <span>{{addressInf.name}}</span>
+                      </span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">服务地址:</span>
+                      <span class="selfbeizhu1">
+                        <span>{{addressInf.detailAddress}}</span>
+                      </span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" >
+                      <span class="lineTitle">联系电话:</span>
+                      <span class="lineContent" >
+                        <span>{{addressInf.phone}}</span>                                                                        
+                      </span>
+                   </p>
+                </div>
+            </div>                                     		
+		    </div>
+        <!--服务地址信息结束-->                
+        <!--支付信息开始-->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
+            <div class="custom-action">支付信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">交易单号:</span>
+                      <span class="lineContent">{{payInfo.payNumber}}</span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
+                       <span class="lineTitle">支付状态:</span>
+                       <span>待支付</span> 
+                   </p>                                                                           
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付总额:</span>
+                      <span class="lineContent">{{payInfo.payAccount}}元</span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付状态:</span>
+                      <span class="lineContent" >
+                        <span>已支付</span>                                                                        
+                      </span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付平台:</span>
+                      <span class="lineContent">
+                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
+                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
+                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
+                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
+                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
+                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
+                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
+                      </span>
+                   </p>                                       
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付方式:</span>
+                      <span class="lineContent">
+                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
+                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
+                      </span>
+                   </p> 
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付时间:</span>
+                      <span class="lineContent">{{payInfo.payTime}}</span>
+                   </p>                                       
+                </div>                  
+            </div>                                     		
+		    </div>
+        <!--支付信息结束-->
         <!--下单用户信息开始-->
         <div class="thrid-bar marginTop15" >
             <div class="custom-action">下单用户信息</div>
