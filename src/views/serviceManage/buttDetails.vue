@@ -40,11 +40,17 @@
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
                 </div>
+                <div style="color:#929496;margin-top:20px;" v-if="userType">请选择搜索条件：服务机构、对接E店查询数据</div>
                 <div>
                   <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                 </div>
+                <!-- v-if="tableFlag || tableData3.length>0" -->
                 <div>
                     <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                        <div slot="empty">
+                          <span v-if="!tableFlag"></span>
+                          <span v-else>暂无数据</span>
+                        </div>
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="newName" label="对接商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
@@ -106,7 +112,8 @@ export default {
     return {
       orgList:[],
       activeName: "yesDocking", //tab切换
-      listLoading: true,
+      listLoading: false,
+      tableFlag:false,
       dockingEName: {},
       eshopStatus: null,
       options: [],
@@ -150,6 +157,9 @@ export default {
   methods: {
     orgSearch(item){
       this.search.orgId = item
+      this.search.eshopCode = ''
+      this.options = []
+      this.promise({orgId:item})
     },
     //已对接api
     buttedConnListApi(obj, page, size) {
@@ -223,6 +233,15 @@ export default {
     },
     //搜索
     searchBtt() {
+      if(this.userType){
+        if(!(this.search.orgId && this.search.eshopCode)){
+          this.$message({
+            message: '请选择服务机构与对接E店；',
+            type: 'warning'
+          });
+          return
+        }
+      }
       //改变当前查询的E店：
       if (this.search.eshopCode) {
         var i,
@@ -237,6 +256,7 @@ export default {
         this.dockingEName = { name: "" };
       }
       //--改变当前查询的E店------------------：
+      this.tableFlag = true
       if (this.pageSync == 1) {
         this.tablePageSize(this.search, this.pageSync, this.pageSize);
       } else {
@@ -381,6 +401,33 @@ export default {
       } else {
         this.typeOptions = [];
       }
+    },
+    promise(obj){
+       return new Promise((resolve, reject)=>{
+        buttedList(obj)
+          .then(data => {
+            if (data.data.code == 1) {
+              this.listLoading = false;
+              if (data.data.data) {
+                this.options = data.data.data || [];
+                if(!this.userType){
+                  this.search.eshopCode = data.data.data[0].eshopCode || "";
+                  this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+                }
+                // this.search.eshopCode = data.data.data[0].eshopCode || "";
+                resolve(this.search);
+                // this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+              } else {
+                this.dockingEName = { name: "" };
+              }
+            } else {
+              this.listLoading = false;
+            }
+          })
+          .catch(error => {
+            this.listLoading = false;
+          });
+      });
     }
   },
   mounted() {
@@ -414,41 +461,38 @@ export default {
     delete this.thisType.all;
     //对接E店默认选中第一个
     //先请求E店列表获取第一条数据的id，在请求table列表数据，
-    let promise = () => {
-      return new Promise((resolve, reject)=>{
-        buttedList()
-          .then(data => {
-            if (data.data.code == 1) {
-              this.listLoading = false;
-              if (data.data.data) {
-                this.options = data.data.data || [];
-                this.search.eshopCode = data.data.data[0].eshopCode || "";
-                resolve(this.search);
-                this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
-              } else {
-                this.dockingEName = { name: "" };
-              }
-            } else {
-              this.listLoading = false;
-              // this.$message({
-              //     type: "warning",
-              //     message: data.data.data
-              // });
-            }
-          })
-          .catch(error => {
-            this.listLoading = false;
-          });
-      });
-    }
+    // let promise = () => {
+    //   return new Promise((resolve, reject)=>{
+    //     buttedList({})
+    //       .then(data => {
+    //         if (data.data.code == 1) {
+    //           this.listLoading = false;
+    //           if (data.data.data) {
+    //             this.options = data.data.data || [];
+    //             this.search.eshopCode = data.data.data[0].eshopCode || "";
+    //             resolve(this.search);
+    //             this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+    //           } else {
+    //             this.dockingEName = { name: "" };
+    //           }
+    //         } else {
+    //           this.listLoading = false;
+    //         }
+    //       })
+    //       .catch(error => {
+    //         this.listLoading = false;
+    //       });
+    //   });
+    // }
     //获取E店数据请求table列表
     let tabData = async ()=>{
       try{
         if(this.userType){
           this.$refs['orgSearch'].listDataAll()
+        }else{
+          let _promise = await this.promise({orgId:''})
+          this.buttedConnListApi(_promise);
         }
-        let _promise = await promise()
-        this.buttedConnListApi(_promise);
       }
       catch(error){
         console.log(error)

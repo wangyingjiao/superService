@@ -4,7 +4,7 @@
         <div class="thrid-bar">
             <div class="custom-action orderOneBar">订单信息              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 "  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
               <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 -->
             </div>
             <!--  -->
@@ -597,10 +597,10 @@
                             <el-input type="hidden" value='' v-model='ruleForm.refundId'></el-input> 
                           </div>                                                 
                       </el-form-item>
-                     <el-form-item label="支付总额:" prop="payPrice">￥{{ruleForm.payPrice | keepTwoNum}}元</el-form-item>
+                     <el-form-item label="支付总额:" prop="payPrice">￥{{ruleForm.payPrice | keepTwoNum}}</el-form-item>
                      <el-form-item label="支付方式:" prop="payMethod"><span>{{ruleForm.payMethod}}</span></el-form-item>
                      <el-form-item label="退款方式:" prop="refundMethod"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
-                     <el-form-item label="退款金额:" prop="refundAccount">￥{{ruleForm.refundAccount | keepTwoNum }}元</el-form-item>
+                     <el-form-item label="退款金额:" prop="refundAccount">￥{{ruleForm.refundAccount | keepTwoNum }}</el-form-item>
                       <el-form-item label="退款差额:" prop="refundDifference">
                         <el-input v-model="ruleForm.refundDifference" placeholder="0" class="search searchHeader">
                             <el-select  v-model="refundDifferenceType" clearable placeholder="请选择"  slot="prepend" @change="ChangerefundType">

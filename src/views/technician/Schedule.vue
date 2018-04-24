@@ -104,7 +104,8 @@
 					</el-table>
 				</div>
 				<div v-if="!tableData.length && !listLoading" class="nodata">
-					  暂无数据
+					  <span v-if="!scheduleFlag"></span>
+					  <span v-else>暂无数据</span>
 				</div>
  				 <div class="schedult-pagin">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageSync"
@@ -145,6 +146,7 @@
 						return time.getTime() > Date.now()+691200000;
 					}
 				},
+				scheduleFlag:false,
 				listLoading:false,
 				total:0,
 				pageSync:1,
@@ -194,7 +196,11 @@
 				}
 				listByOrgId({orgId:item}).then(data=>{
 					console.log(data,"data--------+++++")
-					this.stations = data.data.data.stations
+					let list  = data.data.data.stations
+					if(list[0].id=='0'){
+						list = list.slice(1)
+					}
+					this.stations = list
 					this.skils = data.data.data.skils
 					if(this.stations.length>0 && this.techUserType=='station'){
 						this.search.stationId = this.stations[0].id
@@ -304,6 +310,7 @@
 			},
 			getList(){
 				this.listLoading = true
+				this.scheduleFlag = true
 				// console.log(this.search,this.pageSync,this.pageSize)
 				getData(this.search,this.pageSync,this.pageSize)
 					.then(({data})=>{
