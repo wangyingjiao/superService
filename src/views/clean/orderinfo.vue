@@ -4,7 +4,8 @@
         <div class="thrid-bar">
             <div class="custom-action orderOneBar">订单信息              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 "  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 -->
             </div>
             <!--  -->
             <div class="hr-style"></div>
@@ -606,10 +607,10 @@
                               <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
                               </el-option>
                             </el-select>
-                        </el-input>
-                        <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>   
+                        </el-input>                           
                       </el-form-item>
-                      <el-form-item label="退款原因:" prop="refundReason">
+                      <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>
+                      <el-form-item label="退款原因:" prop="refundReason" style="margin-top:10px;">
                           <el-input
                             type="textarea"
                             :rows="3"
@@ -655,10 +656,10 @@ export default {
       if (!value) {   
         callback();
       } else {
-        if(!/^[0-9]+.?[0-9]*/.test(value)){
+        if(!/^[0-9]+\.?[0-9]*/.test(value)){
            callback(new Error("请输入整数或一至两位小数"));
         }else{
-          if (!/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
+          if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(value)) {
               callback(new Error("请输入整数或一至两位小数"));
           }else{
             callback();
@@ -817,7 +818,7 @@ export default {
           if((this.refundDifferenceType == '' && this.ruleForm.refundDifference >0 )|| (this.refundDifferenceType == null && this.ruleForm.refundDifference >0)){
               this.$message({
                 type: "warning",
-                message: "请退款差额类型！"
+                message: "请选择退款差额类型！"
               });
               return false            
           }
@@ -1392,6 +1393,8 @@ export default {
 <style   scoped>
 .refundStatusStyle{
     color: #8391a5;
+    margin-left:75px;
+    margin-top:-20px;
     font-size: 12px;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {
