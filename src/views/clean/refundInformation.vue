@@ -22,7 +22,10 @@
                                 <span v-if="infor.refundMethod=='alipay'">支付宝</span>
                                 <span v-if="infor.refundMethod=='bank_card'">银行卡</span>
                             </div>
-                            <div>退款原因：<span>{{infor.refundReason}}</span></div>
+                            <div class="refundReason">
+                                <div>退款原因：</div>
+                                <div>{{infor.refundReason}}</div>
+                            </div>
                        </div>
                     </div>
                 </div>
@@ -87,6 +90,14 @@
 </script>
 
 <style scoped>
+    .refundReason div{
+        float:left;
+    }
+    .refundReason div:nth-child(2){
+        width:80%;
+        padding-left:20px;
+         text-indent:2em;
+    }
     #refundInformation{
         font-size: 12px;
     }
@@ -111,7 +122,7 @@
     }
     .refund-left,.refund-right{
         float: left;
-        width: 40%;
+        width: 50%;
     }
     .refund-left{
     }

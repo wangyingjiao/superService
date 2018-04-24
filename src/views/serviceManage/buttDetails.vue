@@ -123,7 +123,7 @@ export default {
       typeOptions: [],
       pageSync: 1,
       pageSize: 10,
-      total: 1,
+      total: 0,
       thisType: {},
       search: {
         orgId:'',

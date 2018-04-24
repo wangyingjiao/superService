@@ -99,8 +99,15 @@
               class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-                <span v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
-                <span v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
+              <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
+              </span>
+              <!-- 全系统用户不需要判断是否有对接E店 -->
+              <span v-if="techUserType=='sys'">
+                <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+              <span v-else>
+                <button v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
             </div>
           </template>
         </el-table-column>
