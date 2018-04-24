@@ -770,17 +770,23 @@ export default {
     create(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
 
+      console.log(this.temp.check, "测试");
+      console.log(arr, "1111");
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
+          
         }
       }
-
+      if(arr.length == 0){
+        this.temp.check = []
+      }
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+      console.log(arr, "2222");
       // return;
       var obj = {
         name: this.temp.name,
@@ -845,16 +851,16 @@ export default {
     update(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
+
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
         }
       }
-
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
       var obj = {
         id: this.roleId,
         name: this.temp.name,
