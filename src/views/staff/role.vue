@@ -365,23 +365,27 @@ export default {
       };
       if (obj.name != "" || obj.organization.id != "") {
         this.listLoading = true;
-        getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
-          if (res.data.code === 1) {
-            this.total = res.data.data.count;
-            this.list = res.data.data.list;
-            this.pageNumber = res.data.data.pageNo;
-            this.pageSize = res.data.data.pageSize;
-            this.listQuery.page = res.data.data.pageNo;
-            if (this.list != undefined) {
-              for (var i = 0; i < this.list.length; i++) {
-                this.list[i].index = i + 1;
+        getStationPage(obj, this.pageNumber, this.pageSize)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.total = res.data.data.count;
+              this.list = res.data.data.list;
+              this.pageNumber = res.data.data.pageNo;
+              this.pageSize = res.data.data.pageSize;
+              this.listQuery.page = res.data.data.pageNo;
+              if (this.list != undefined) {
+                for (var i = 0; i < this.list.length; i++) {
+                  this.list[i].index = i + 1;
+                }
               }
+              this.listLoading = false;
+            } else {
+              this.listLoading = false;
             }
+          })
+          .catch(() => {
             this.listLoading = false;
-          } else {
-            this.listLoading = false;
-          }
-        });
+          });
       } else {
         var obj = {};
         getStationPage(obj, this.pageNumber, this.pageSize).then(res => {
@@ -562,18 +566,18 @@ export default {
     //点击新增时
     handleCreate() {
       this.listLoading = true;
-      getSList({}).then(res => {
-        this.officeIds = res.data.data.list;
-        getMenudata()
-          .then(res => {
+      getSList({})
+        .then(res => {
+          this.officeIds = res.data.data.list;
+          getMenudata().then(res => {
             this.data2 = res.data.data;
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
-              this.filterText = "";
-              this.$nextTick(() => {
-                this.filterText = "business";
-              });
+              // this.filterText = "";
+              // this.$nextTick(() => {
+              //   this.filterText = "business";
+              // });
               this.listLoading = false;
               if (this.officeIds.length == 1) {
                 this.temp.officeId = this.officeIds[0].id;
@@ -581,11 +585,11 @@ export default {
             } else {
               this.listLoading = false;
             }
-          })
-          .catch(() => {
-            this.listLoading = false;
           });
-      });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
     },
     //点击编辑时
     handleUpdate(row) {
@@ -770,17 +774,19 @@ export default {
     create(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
-
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
         }
       }
-
+      if (arr.length == 0) {
+        this.temp.check = [];
+      }
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+      console.log(arr, "2222");
       // return;
       var obj = {
         name: this.temp.name,
@@ -845,16 +851,19 @@ export default {
     update(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
+
       if (this.filterText == "business") {
         var sys = this.forOfTree();
         for (var i of sys) {
           arr.remove(i);
         }
       }
-
+      if (arr.length == 0) {
+        this.temp.check = [];
+      }
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
       var obj = {
         id: this.roleId,
         name: this.temp.name,

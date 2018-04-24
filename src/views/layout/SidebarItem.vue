@@ -8,13 +8,12 @@
     </div>
      <template>
        <el-menu :default-openeds='itemArr' :unique-opened='true'>
-        <el-submenu v-for="item in menu" :index="item.id" :key="item.id" >        
+        <el-submenu v-for="item in menu" v-if="item.subMenus" :index="item.id" :key="item.id" >        
               <template slot="title">
                 <img v-if="item.icon != ''" :src="'../../../static/icon/'+item.icon+'.png'" alt="" class="side-img">
-              
                 {{item.name}}          
               </template>    
-              <el-menu-item v-for="child in item.subMenus" :index="child.id" :key="child.id">
+              <el-menu-item  v-for="child in item.subMenus" :index="child.id" :key="child.id">
                   <router-link  class="menu-indent" :to="{path:child.href}">
                     <span style="display:inline-block;width:160px;">{{child.name}}</span>
                   </router-link>  
@@ -39,7 +38,7 @@ export default {
       for (var i = 0; i < this.menu.length; i++) {
         arr.push(this.menu[i].id);
       }
-      return arr
+      return arr;
     }
   },
   props: {
@@ -49,7 +48,7 @@ export default {
   },
   mounted() {},
   methods: {
-    show() {},
+    show() {}
   }
 };
 </script>

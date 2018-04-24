@@ -304,7 +304,7 @@ export default {
         servicePoint: ""
       },
       temp: {
-        orgId:"",
+        orgId: "",
         name: "",
         type: "",
         address: "",
@@ -414,12 +414,23 @@ export default {
     //this.areaOptions = this.$store.state.user.area;
     getSList({}).then(res => {
       // 服务机构
-      this.mechanismCheck = res.data.data.list;
-      if (
-        localStorage.getItem("type") == "station" ||
-        localStorage.getItem("type") == "org"
-      ) {
-        this.search.officeId = this.mechanismCheck[0].id;
+      if (res.data.data.list != undefined) {
+        if (res.data.data.list[0].id == "0") {
+          res.data.data.list.remove(res.data.data.list[0]);
+        }
+        if (res.data.data.list.length >= 2) {
+          if (res.data.data.list[1].id == "0") {
+            res.data.data.list.remove(res.data.data.list[1]);
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+        }
+        this.mechanismCheck = res.data.data.list;
+        if (
+          localStorage.getItem("type") == "station" ||
+          localStorage.getItem("type") == "org"
+        ) {
+          this.search.officeId = this.mechanismCheck[0].id;
+        }
       }
     });
     this.getList();
@@ -569,7 +580,7 @@ export default {
     handleUpdate(row) {
       //点击编辑
       this.temp = {
-        orgId:row.orgId,
+        orgId: row.orgId,
         id: row.id,
         name: row.name,
         type: row.type,
@@ -619,7 +630,7 @@ export default {
     create(formName) {
       //新增保存时
       var obj = {
-        orgId:this.temp.orgId,
+        orgId: this.temp.orgId,
         name: this.temp.name,
         type: this.temp.type,
         address: this.temp.address,
@@ -773,7 +784,7 @@ export default {
     update(formName) {
       //编辑保存
       var obj = {
-        orgId:this.temp.orgId,
+        orgId: this.temp.orgId,
         id: this.rowInfo.id,
         name: this.temp.name,
         type: this.temp.type,
@@ -830,7 +841,7 @@ export default {
     resetTemp() {
       //清空v-m绑定的对象
       this.temp = {
-        orgId:"",
+        orgId: "",
         name: "",
         type: "",
         address: "",
