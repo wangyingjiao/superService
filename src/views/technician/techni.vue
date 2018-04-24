@@ -6,19 +6,21 @@
 			      <!-- <el-select class="search" v-model="techniSearch.orgId" filterable placeholder="选择机构" @change="orgNameChange(techniSearch.orgId)">
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
             </el-select> -->
-          <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true"></orgSearch>
-          <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
-            <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-          <el-select style="width:40%" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
-                <el-option
-                v-for="(item,index) in sexTypeo"
-                :key="index"
-                :label="item.name"
-                :value="item.id">
-                </el-option>
-              </el-select>
+          <div class="serch-server" style="width:80%">
+            <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true"></orgSearch>
+            <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+              <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+            <el-select style="width:46%" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                  <el-option
+                  v-for="(item,index) in sexTypeo"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.id">
+                  </el-option>
+            </el-select>
+          </div>
           <!-- <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
               <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
               </el-option>
@@ -1119,8 +1121,10 @@ export default {
   methods: {
     orgSearch(item){
       this.techniSearch.orgId = item
+      //机构改变触发change获取服务站和技能
       this.orgNameChange(item)
     },
+    //获取服务站和技能
     listByOrgIdData(item){
       return new Promise((res,rej)=>{
           listByOrgIdData(item).then(data=>{
@@ -1153,17 +1157,22 @@ export default {
       }
       this.listByOrgIdData(item).then(data=>{
         console.log(data,"data-----")
-            this.server = data.stations
+            let list = data.stations
+            if(list[0].id=="0"){
+              list = list.slice(1)
+            }
+            this.server = list
             this.sexTypeo = data.skils
-            this.servery = data.stations
+            this.servery = list
             if(this.techUserType == 'org'){
-              this.serveryAdd = data.stations
+              this.serveryAdd = list
               this.sexTypeoAdd =  data.skils
             }
+            //服务站用户机构和服务站默认选中,新增服务站默认选中
             if(this.techUserType=='station'){
-              this.serveryAdd = data.stations
-              this.personal.stationId = data.stations[0].id
-              this.techniSearch.stationId = data.stations[0].id
+              this.serveryAdd = list
+              this.personal.stationId = list[0].id
+              this.techniSearch.stationId = list[0].id
               this.sexTypeoAdd =  data.skils
             }
       })
@@ -2019,6 +2028,25 @@ export default {
 };
 </script>
 <style>
+
+.tech-index .serch-box .serch-input{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 20px 5px 10px;
+}
+.tech-index .serch-box .serch-input .serch-server{
+  padding:10px;
+  /* background:#eef1f6; */
+  border:1px dashed #bbb9b9;
+  /* border-radius:10px; */
+}
+.tech-index .serch-box .serch-input .serch-server .search{
+  width:25%;
+}
+
+
+
+
 .server-left{
   width: 47%;
   float: left;
@@ -2041,7 +2069,7 @@ export default {
 .tech-index {
   border-bottom: 1px solid #e8e8e8;
   background: #fff;
-  padding: 20px;
+  /* padding: 20px; */
   margin-top: 20px;
   overflow: hidden;
   /* display: flex; */
@@ -2064,6 +2092,7 @@ export default {
 
 .tech-index .serch-ski {
   margin-top: 10px;
+  padding: 0px 20px 20px;
 }
 
 

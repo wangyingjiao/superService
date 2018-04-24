@@ -169,9 +169,9 @@ export function alreadyButted(obj){
 }
 
 //对接详情E店列表
-export function buttedList(){
+export function buttedList(obj){
   return new Promise((resolve,reject)=>{
-    instance.post(`apiservice/a/service/item/serItemInfo/getGoodsCode`).then(data=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/getGoodsCode`,obj).then(data=>{
       resolve(data)
     }).catch(error=>{
       reject(error)

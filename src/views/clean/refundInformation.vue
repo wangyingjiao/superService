@@ -45,8 +45,16 @@
                         <el-table-column align="center" prop="goodsName" label="商品名称"> </el-table-column>
                         <el-table-column align="center" prop="goodsNum" label="退货数量"> </el-table-column>
                         <el-table-column align="center" prop="goodsUnit" label="单位"> </el-table-column>
-                        <el-table-column align="center" prop="payPrice" label="交易单价"> </el-table-column>
-                        <el-table-column align="center" prop="payPriceSum" label="小计"> </el-table-column>
+                        <el-table-column align="center" label="交易单价">
+                            <template scope="scope">
+                                <span>{{'￥'+scope.row.payPrice}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column align="center" label="小计">
+                            <template scope="scope">
+                                <span>{{'￥'+scope.row.payPriceSum}}</span>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </div>
             <!-- 退货商品信息完成 -->
