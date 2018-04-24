@@ -150,6 +150,9 @@ var refundDetails = (id)=>{
                     console.log(data,"---+++++")
                     let dataList = data.data.data
                     if(data.data.code=='1'){
+                        if(dataList[0].id=="0"){
+                            dataList = dataList.slice(1)
+                        }
                         this.server = dataList
                         if(userType()=='station'){
                             this.search.stationId = dataList[0].id

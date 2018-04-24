@@ -975,7 +975,11 @@ export default {
         **  否则搜索切换机构，编辑的服务站和技能渲染Id
         */
         listByOrgId({orgId:this.perServer.orgId}).then(data=>{
-          this.serveryEdit = data.data.data.stations
+          let stations = data.data.data.stations
+          if(stations[0].id=="0"){
+            stations = stations.slice(1)
+          }
+          this.serveryEdit = stations
           this.perServer.stationId = val.stationId;
           this.sextypeoEdit = data.data.data.skils;
           this.perServer.skillIds = val.skillIds || [];
