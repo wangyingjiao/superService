@@ -515,6 +515,7 @@ import {
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
+import dict from "../../../static/dict.json"
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];
@@ -906,7 +907,7 @@ export default {
       })
       .catch(error => {});
     //是否 计量方式 全部 保洁 家修
-    var dict = require("../../../static/dict.json");
+    // var dict = require("../../../static/dict.json");
     this.measure = dict.meterage;
     this.whole = dict.ser_sort;
 
@@ -1358,6 +1359,7 @@ export default {
       this.getList(this.pageNumber, this.pageSize);
     },
     handleCreate(formName) {
+      this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
       this.sordFlag = true;
       this.basicForm.sortId = "";
       this.imgNumber = 0;
@@ -1397,6 +1399,7 @@ export default {
                this.goods_info.type = "num"
               }else{
                 this.sordFlag = true
+                this.measure = dict.meterage;
               }
             // }
             this.listLoading = false;

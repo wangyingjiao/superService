@@ -29,7 +29,11 @@
                     </el-table-column>
                     <el-table-column align="center" prop="orderNumber"  label="订单编号"></el-table-column>
                     <el-table-column align="center" prop="refundNumber" label="退款编号"></el-table-column>
-                    <el-table-column align="center" prop="refundAccountReality" label="退款金额"></el-table-column>
+                    <el-table-column align="center" label="退款金额">
+                        <template scope="scope">
+                            <span>{{'￥'+scope.row.refundAccountReality}}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column align="center" prop="finishTime" label="退款时间"></el-table-column>
                     <el-table-column align="center" prop="refundName" label="用户姓名"></el-table-column>
                     <el-table-column align="center" prop="refundPhone" label="用户电话"></el-table-column>
