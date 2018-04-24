@@ -333,13 +333,6 @@ export default {
   methods: {
     filterNode(value, data) {
       if (!value) return true;
-      console.log(data)
-      console.log(data.type)
-      // if(data.type == undefined){
-      //   console.log(111111111)
-      //   data.type = "business"
-      // }
-      console.log(data)
       return data.type.indexOf(value) !== -1;
     },
     orgChange(val) {
@@ -861,7 +854,7 @@ export default {
           arr.remove(i);
         }
       }
-      console.log(arr);
+
       var obj = {
         id: this.roleId,
         name: this.temp.name,
