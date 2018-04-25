@@ -271,9 +271,9 @@
 			//搜索
 			searchClick(item){
 				// console.log('________')
-				if(!item.stationId){
+				if(!item.orgId){
 					 this.$message({
-						message: '请选择服务机构与服务站;',
+						message: '请选择服务机构查询数据',
 						type: 'warning'
 					});
 					return

@@ -437,7 +437,7 @@
                     
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
-                <div v-if="dialogStatus != 'update'" class="pro-wing">通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数、封顶人数自动保存为0</div>
+                <div v-if="dialogStatus != 'update'" class="pro-wing">通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数自动保存为0</div>
               </el-form>
 			   <div slot="footer" class="dialog-footer" style="text-align:center">
 				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">

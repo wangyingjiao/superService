@@ -9,12 +9,12 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch"></orgSearch>
+                <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
                 <!-- <el-select class="butt-search" v-if="userType" clearable v-model="search.orgId" placeholder="选择机构">
                     <el-option v-for="(item,key) in orgList" :key="key" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select> -->
-                <el-select class="butt-search" clearable filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
+                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>
@@ -236,7 +236,7 @@ export default {
       if(this.userType){
         if(!(this.search.orgId && this.search.eshopCode)){
           this.$message({
-            message: '请选择服务机构与对接E店；',
+            message: '请选择服务机构与对接E店',
             type: 'warning'
           });
           return
