@@ -1139,6 +1139,8 @@ export default {
       this.personal.stationId = ''
       if(this.techUserType=='sys'){
         this.workFlag = true
+        this.teachArr = []
+        this.disbArr = []
       }
       if(this.personal.skillIds.length>0){
         this.personal.skillIds = []
