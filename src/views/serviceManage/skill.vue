@@ -389,7 +389,6 @@ export default {
           .then(res => {
             if (res.data.code === 1) {
               this.Options2 = res.data.data.list;              
-              //this.options = res.data.data.stations;
               this.listTech = res.data.data.techs;
               this.dialogVisible = true;
               this.listLoading = false;
@@ -413,7 +412,6 @@ export default {
           .then(res => {
             if (res.data.code === 1) {
               this.listTech = res.data.data.techs;
-              //this.options = res.data.data.stations;
               this.Options2 = res.data.data.list;
               this.listLoading = false;
               this.dialogVisible = true;
@@ -741,6 +739,7 @@ export default {
         .then(res => {
           if (res.data.code === 1) {
             this.listTech = res.data.data.techs;
+            this.ordertech = true;
             if (this.dialogStatus == "add") {
               for (var b = 0; b < this.middleA.length; b++) {
                 for (var a = 0; a < this.listTech.length; a++) {
@@ -762,26 +761,26 @@ export default {
           }
         })
         .catch(res => {});
-      if (this.dialogStatus == "edit") {
-        this.middleC = Object.assign([], this.middleB);
-        for (var b = 0; b < this.middleB.length; b++) {
-          for (var a = 0; a < this.listTech.length; a++) {
-            if (this.listTech[a].techId == this.middleB[b].techId) {
-              this.listTech[a].techChecked = true;
+        if (this.dialogStatus == "edit") {
+          this.middleC = Object.assign([], this.middleB);
+          for (var b = 0; b < this.middleB.length; b++) {
+            for (var a = 0; a < this.listTech.length; a++) {
+              if (this.listTech[a].techId == this.middleB[b].techId) {
+                this.listTech[a].techChecked = true;
+              }
             }
           }
         }
-      }
-      if (this.dialogStatus == "add") {
-        for (var d = 0; d < this.middleA.length; d++) {
-          for (var e = 0; e < this.listTech.length; e++) {
-            if (this.listTech[e].techId == this.middleA[d].techId) {
-              this.listTech[e].techChecked = true;
+        if (this.dialogStatus == "add") {
+          for (var d = 0; d < this.middleA.length; d++) {
+            for (var e = 0; e < this.listTech.length; e++) {
+              if (this.listTech[e].techId == this.middleA[d].techId) {
+                this.listTech[e].techChecked = true;
+              }
             }
           }
         }
-      }
-      this.ordertech = true;
+      
     },
     //选择技师弹出层查询按钮
     searchTeh() {
