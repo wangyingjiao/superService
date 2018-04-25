@@ -36,7 +36,7 @@
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
 							</el-form-item> 	              
-                <el-form-item label="所属服务站:" prop='serverStation1'>
+                <el-form-item label="所属服务站:" v-if='form.address.addressName != ""' prop='serverStation1'>
                   <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
                   <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                     <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
@@ -825,6 +825,7 @@ export default {
       this.form.address.addressName='';
       this.form.address.detailAddress=''; 
       this.form.serverStation1='';
+      this.form1.serverPro='';
       this.serverStation1='';      
       this.customKeyFlag = true;      
     },    
@@ -1072,6 +1073,7 @@ export default {
     //用户查询事件
     changeCustom() {
       this.serverStation1 = "";
+      this.form.radiovalue='';
       //根据手机号查询
         var obj = { phone: this.form.customPhone,orgId:this.form.mechanism };
         findCustomerByPhone(obj)
