@@ -305,8 +305,8 @@ export default {
         };
         getFuwu(obj).then(res => {
           // 请求服务站列表
-          if(res.data.data[0].id == '0'){
-            res.data.data.remove(res.data.data[0])
+          if (res.data.data[0].id == "0") {
+            res.data.data.remove(res.data.data[0]);
           }
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
@@ -359,7 +359,7 @@ export default {
       }
       obj = Object.assign(obj, {
         orgId: this.search.officeId,
-        stationId: this.search.stationId
+        techStationId: this.search.stationId
       });
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {

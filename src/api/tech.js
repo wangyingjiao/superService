@@ -190,9 +190,9 @@ export function getHolidayById(obj) {
 }
 
 // 获取用户机构时间
-export function serviceTechnicianInfo() {
+export function serviceTechnicianInfo(obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`,obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)

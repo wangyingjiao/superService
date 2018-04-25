@@ -556,7 +556,7 @@
                       </el-form-item>
                   </el-col>
                 </el-row> -->
-                <el-row v-if="personal.jobNature!='part_time'">
+                <el-row v-if="personal.jobNature=='full_time' && workFlag">
                   <el-col :span="17" class="addTime">
                     <el-form-item label="工作时间：" prop="workTimes">
                           <div class="tech-order-jn" style="width:100%">
@@ -790,6 +790,7 @@ export default {
 
     return {
       serveryAdd:[],
+      workFlag:true,
       startEnd: { start: "09:00", end: "18:00" },
       btnState: false,
       timeFlag: true,
@@ -1136,6 +1137,11 @@ export default {
     },
     orderChange(item){
       this.personal.stationId = ''
+      if(this.techUserType=='sys'){
+        this.workFlag = true
+        this.teachArr = []
+        this.disbArr = []
+      }
       if(this.personal.skillIds.length>0){
         this.personal.skillIds = []
       }
@@ -1148,6 +1154,7 @@ export default {
           this.serveryAdd = stations
           this.sexTypeoAdd =  data.skils
         })
+        this.serviceTech({orgId:item})
       }
     },
     orgNameChange(item){
@@ -1253,10 +1260,15 @@ export default {
     },
     //新增按钮
     handleCreate() {
+      if(this.techUserType == 'sys'){
+        this.workFlag = false
+      }
       this.dialogVisible = true;
       this.personal.status = "yes";
       //服务时间
-      this.serviceTech();
+      if(this.techUserType!='sys'){
+        this.serviceTech({});
+      }
       //所属服务站
       var stationLocal = localStorage.getItem("station");
       var stationObj = JSON.parse(stationLocal);
@@ -1440,7 +1452,11 @@ export default {
     },
     //休假
     vacation(item) {
-      serviceTechnicianInfo()
+      let obj = {}
+      if(this.techUserType=='sys'){
+        obj.orgId = item.orgId
+      }
+      serviceTechnicianInfo(obj)
         .then(data => {
           this.startEnd = data.data.data;
           if (this.startEnd.end == "23:59") {
@@ -1519,8 +1535,8 @@ export default {
     },
 
     // 服务机构时间
-    serviceTech() {
-      serviceTechnicianInfo()
+    serviceTech(obj) {
+      serviceTechnicianInfo(obj)
         .then(data => {
           this.startEnd = data.data.data;
           if (this.startEnd.end == "23:59") {
@@ -1552,6 +1568,11 @@ export default {
           if (data.data.code == 1) {
             this.listLoadingTech = false;
             this.technicianData = data.data.data;
+            if(this.techUserType=='sys'){
+              this.serviceTech({orgId:this.technicianData.orgId});
+            }else{
+              this.serviceTech({});
+            }
             this.dialogVisibleEdit = true;
           } else {
             this.listLoadingTech = false;
@@ -1565,8 +1586,7 @@ export default {
           this.listLoadingTech = false;
           return false;
         });
-
-      this.serviceTech();
+      // this.serviceTech({orgId:});
 
       //所属服务站
       // serviceStation({})

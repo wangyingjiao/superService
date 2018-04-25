@@ -1,6 +1,6 @@
 <template>
         <el-select :style="{'width':widths}" :class="[{'search':flag},{'schedule':schedule}]" 
-                    clearable filterable  v-model="orgId" placeholder="选择机构" @change="orgChange">
+                    :clearable="!clearable" filterable  v-model="orgId" placeholder="选择机构" @change="orgChange">
             <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
             </el-option>
       </el-select>
@@ -23,7 +23,8 @@
             "flag",
             "schedule",
             "refundflag",
-            "widths"
+            "widths",
+            'clearable'
         ],
         methods:{
             orgChange(){
