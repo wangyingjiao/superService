@@ -12,7 +12,7 @@
               <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-            <el-select style="width:46%" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+            <el-select style="width:47%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
                   <el-option
                   v-for="(item,index) in sexTypeo"
                   :key="index"
@@ -66,9 +66,9 @@
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
+        <!-- <div style="color:#929496;" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构查询数据</div> -->
         <button class="button-small  btn_pad btn-color" style="margin:0px" v-if="btnShow.indexOf('techni_insert') > -1"  @click="handleCreate">新增</button>
       </div>
-    <div style="color:#929496" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构查询数据</div>
     <p class="p-show" v-show="techniList.length<=0 && !listLoadingTech">暂无数据</p>
     <div v-loading="listLoadingTech"
     element-loading-text="正在加载"  class="projectTabel listTechni">
@@ -1012,7 +1012,7 @@ export default {
       picFile: [],
       listLoadingTech: false,
       list: [1, 2, 3],
-      total: null,
+      total: 0,
       listLoading: false,
       roomSel1Arr: [],
       disbArr: [],
@@ -1141,7 +1141,11 @@ export default {
       }
       if(item){
         this.listByOrgIdData(item).then(data=>{
-          this.serveryAdd = data.stations
+          let stations = data.stations
+          if(stations[0].id == '0'){
+            stations = stations.slice(1)
+          }
+          this.serveryAdd = stations
           this.sexTypeoAdd =  data.skils
         })
       }
@@ -1342,15 +1346,15 @@ export default {
     //搜索
     techniSearchs(page, size) {
       //全系统时判断   搜索有没有机构
-      if(this.techUserType=='sys'){
-        if(!this.techniSearch.orgId){
-          this.$message({
-              message: '请选择服务机构;',
-              type: 'warning'
-          });
-          return
-        }
-      }
+      // if(this.techUserType=='sys'){
+      //   if(!this.techniSearch.orgId){
+      //     this.$message({
+      //         message: '请选择服务机构;',
+      //         type: 'warning'
+      //     });
+      //     return
+      //   }
+      // }
       var _page = typeof page == "string" ? page : this.listQuery.page;
       var _size = size || this.listQuery.limit;
       // this.listQuery.sync = 1;
@@ -1644,9 +1648,12 @@ export default {
       this.getList(val, this.listQuery.limit, obj);
     },
     handleSizeChange(val) {
-      this.listQuery.sync = 1;
+      // this.listQuery.sync = 1;
       this.listQuery.limit = val;
       var obj = {};
+      if(this.techniSearch.orgId){
+        obj.orgId = this.techniSearch.orgId
+      }
       if (this.techniSearch.stationId) {
         obj.stationId = this.techniSearch.stationId;
       }
@@ -1659,7 +1666,11 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
-      this.getList(this.listQuery.page, val, obj);
+      if( this.listQuery.sync == 1){
+        this.getList(this.listQuery.page, val, obj);
+      }else{
+        this.listQuery.sync = 1
+      }
     },
     order() {
       this.position = true;
@@ -1896,6 +1907,16 @@ export default {
       this.dialogVisibleEdit = false;
     },
     getList(num, size, obj,str) {
+       //全系统时判断   搜索有没有机构
+      // if(this.techUserType=='sys'){
+      //   if(!this.techniSearch.orgId){
+      //     this.$message({
+      //         message: '请选择服务机构;',
+      //         type: 'warning'
+      //     });
+      //     return
+      //   }
+      // }
       //技师编辑获取ID
 
       //选择城市
@@ -1968,11 +1989,12 @@ export default {
     }
   },
   mounted() {
-    if(this.techUserType=='sys'){
+    // if(this.techUserType=='sys'){
 
-    }else{
-      this.techniSearchs()
-    }
+    // }else{
+    //   this.techniSearchs()
+    // }
+    this.techniSearchs()
     //根据服务机构获取的第一条数据请求列表
     let tabData = async ()=>{
       try{
@@ -2036,8 +2058,8 @@ export default {
 }
 .tech-index .serch-box .serch-input .serch-server{
   padding:10px;
-  /* background:#eef1f6; */
-  border:1px dashed #bbb9b9;
+  background:#f8fafd;
+  /* border:1px dashed #bbb9b9; */
   /* border-radius:10px; */
 }
 .tech-index .serch-box .serch-input .serch-server .search{

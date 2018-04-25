@@ -683,10 +683,10 @@ export default {
     addRole() {
       // 新增岗位
       this.dialogFormStation = true;
-      this.filterText = "";
-      this.$nextTick(() => {
-        this.filterText = "business";
-      });
+      // this.filterText = "";
+      // this.$nextTick(() => {
+      //   this.filterText = "business";
+      // });
       if (this.mechanismCheck.length == 1) {
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
