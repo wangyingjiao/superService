@@ -1377,7 +1377,6 @@ export default {
       var _size = size || this.listQuery.limit;
       // this.listQuery.sync = 1;
       var obj = {};
-      console.log(this.techniSearch.orgId,"this.techniSearch.orgName----")
       if(this.techniSearch.orgId){
         obj.orgId = this.techniSearch.orgId
       }
@@ -1393,6 +1392,7 @@ export default {
       if (!(this.roomSel2Arr === undefined || this.roomSel2Arr.length == 0)) {
         obj.skillIds = this.roomSel2Arr;
       }
+
       if(this.listQuery.sync == 1){
         this.getList(_page, _size, obj,'sear');
       }else{
@@ -1875,6 +1875,10 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
+                if(this.techUserType=='sys'){
+                  this.$refs['orgSearch'].orgEmpty()
+                  this.orgSearch()
+                }
                 if (this.listQuery.sync != 1) {
                   this.listQuery.sync = 1;
                 } else {
