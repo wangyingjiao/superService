@@ -23,8 +23,8 @@
               </el-select>                
             </el-form-item>
             <div v-if="customKeyFlag">						
-              <el-form-item label="联系电话:" prop="customPhone">
-                  <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="form.customPhone"></el-input>
+              <el-form-item label="联系电话:" prop="phone">
+                  <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="form.phone" ></el-input>
                   <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
                   <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
               </el-form-item>            						
@@ -36,7 +36,7 @@
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
 							</el-form-item> 	              
-                <el-form-item label="所属服务站:" prop='serverStation1'>
+                <el-form-item label="所属服务站:" v-if='form.address.addressName != ""' prop='serverStation1'>
                   <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
                   <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                     <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
@@ -524,7 +524,7 @@ export default {
         stationList: [],
         serverStation1: "",
         mechanism:'',
-        customPhone: ""
+        phone: ""
       },
       serverStation1: "",
       form1: {
@@ -543,7 +543,7 @@ export default {
         radiovalue: [
           { required: true, message: "请选择服务地址", trigger: "change" }
         ],
-        customPhone:[
+        phone:[
           { required: true, validator: checkPhone, trigger: "change" }
         ] ,                
         serverStation1: [
@@ -697,8 +697,8 @@ export default {
         if(this.$route.query.orgId != undefined && this.$route.query.orgId != ''){
            this.form.mechanism=this.$route.query.orgId;
            this.mechanism=this.$route.query.orgId;
-        }
-        this.getcustomerList();                 
+           this.getcustomerList();
+        }                 
       });
     },    
     //单选改变
@@ -817,16 +817,20 @@ export default {
       this.form.serverStation1 = val;
     },
     masimaChange(val) {
-      this.form.mechanism = val;
-      this.form.customPhone='';
-      this.form.radiovalue='';
+      this.customKeyFlag = true; 
+      if(val ==''){
+           this.form.phone=''; 
+      }               
+      this.form.radiovalue=''; 
       this.radio='';
       this.form.address.addressPhone='';
       this.form.address.addressName='';
       this.form.address.detailAddress=''; 
       this.form.serverStation1='';
-      this.serverStation1='';      
-      this.customKeyFlag = true;      
+      this.form1.serverPro='';
+      this.serverStation1=''; 
+      this.form.mechanism = val;     
+     
     },    
     //时间转化成xx小时XX分钟
     formatDuring(mss) {
@@ -1072,8 +1076,23 @@ export default {
     //用户查询事件
     changeCustom() {
       this.serverStation1 = "";
+      this.form.radiovalue='';
+      if((this.userType == 'sys' && this.form.mechanism == "") || (this.userType == 'platform'  && this.form.mechanism == "")){
+             this.$message({
+              type: "warning",
+              message: "请先选择服务机构"
+            });
+            return false       
+      }
+      if(this.form.phone == ''){
+             this.$message({
+              type: "warning",
+              message: "联系电话不能为空"
+            });
+            return false         
+      }
       //根据手机号查询
-        var obj = { phone: this.form.customPhone,orgId:this.form.mechanism };
+        var obj = { phone: this.form.phone,orgId:this.form.mechanism };
         findCustomerByPhone(obj)
           .then(res => {
             if (res.data.code === 1) {
@@ -1082,7 +1101,7 @@ export default {
                 this.form = res.data.data;
                 this.form.mechanism=res.data.data.orgId;
                 this.mechanism=res.data.data.orgId;
-                this.form.customPhone = res.data.data.phone;
+                this.form.phone = res.data.data.phone;
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
@@ -1186,14 +1205,15 @@ export default {
           .then(res => {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
-                this.form = res.data.data;
+                //this.form =  Object.assign({}, res.data.data);;
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
                 }
-                this.form.customPhone = res.data.data.phone;
+                this.mechanism=res.data.data.orgId;
+                this.form.phone = res.data.data.phone;
                 this.form.mechanism=res.data.data.orgId;
-                this.mechanism=res.data.data.orgId;                
+                this.changeCustom();                
               }
             } else if (res.data.code === 3) {
               this.$message({
@@ -1384,6 +1404,16 @@ export default {
                     .then(res => {
                       this.submitFlag1 = false;
                       if (res.data.code === 1) {
+                        window.sessionStorage.removeItem('orderNumber')
+                        window.sessionStorage.removeItem('sevicerStustas')
+                        window.sessionStorage.removeItem('orderStatus')
+                        window.sessionStorage.removeItem('mechanism')
+                        window.sessionStorage.removeItem('stationId')
+                        window.sessionStorage.removeItem('serviceTimeStart')
+                        window.sessionStorage.removeItem('serviceTimeEnd')
+                        window.sessionStorage.removeItem('startTime')
+                        window.sessionStorage.removeItem('endTime')
+                        window.sessionStorage.setItem('orderStatus','dispatched')                          
                         this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                         this.$message({
                           type: "success",
