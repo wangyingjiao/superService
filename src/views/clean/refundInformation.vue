@@ -39,8 +39,12 @@
                             <div>退款金额：<span>{{'￥'+infor.refundAccountReality}}</span></div>
                         </div>
                        <div class="refund-right">
-                            <div>退款差额：<p class="type-p" v-if="infor.refundDifferenceType">{{infor.refundDifferenceType=='less'?'少退':'多退'}}</p> 
-                                          <p class="type-p" v-if="infor.refundDifference">{{'￥'+infor.refundDifference}}</p></div>
+                            <div>退款差额：
+                                <div style="display:inline-block;padding-left:40px;">
+                                    <p class="type-p" v-if="infor.refundDifferenceType">{{infor.refundDifferenceType=='less'?'少退':'多退'}}</p> 
+                                    <p class="type-p" v-if="infor.refundDifference">{{'￥'+infor.refundDifference}}</p>
+                                </div>
+                            </div>
                        </div>
                     </div>
                     <el-table :data="infor.refundGoodsList" border style="width: 100%">

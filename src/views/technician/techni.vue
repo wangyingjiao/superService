@@ -1155,15 +1155,21 @@ export default {
           this.sexTypeoAdd =  data.skils
         })
         this.serviceTech({orgId:item})
+      }else{
+        this.serveryAdd = []
+        this.sexTypeoAdd = []
       }
     },
     orgNameChange(item){
       // if(this.techUserType=='station' || this.techUserType=='org'){
       //    return
       // }
+      console.log(item,"item----")
       this.techniSearch.stationId = ''
       this.roomSel2Arr = []
       if(!item){
+        this.server = []
+        this.sexTypeo = []
         return
       }
       this.listByOrgIdData(item).then(data=>{

@@ -146,6 +146,10 @@ var refundDetails = (id)=>{
             },
             orgChange(id){
                 this.search.stationId = ''
+                if(!id){
+                    this.server = []
+                    return
+                }
                 listByOffice({orgId:id}).then(data=>{
                     console.log(data,"---+++++")
                     let dataList = data.data.data
