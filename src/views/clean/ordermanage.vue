@@ -310,7 +310,7 @@ export default {
       this.localSearch()
     },
     //全局search按钮
-    localSearch() {
+    localSearch() {      
       //服务时间格式化
       var severstartTime,severEndTime
       if(this.severTime != undefined){
@@ -375,16 +375,48 @@ export default {
         orderTimeEnd: endTime,
         serviceTimeStart: severstartTime,
         serviceTimeEnd: severEndTime
-      };
+      }; 
+      window.sessionStorage.setItem('orderNumber',this.orderNumber)
+      window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
+      if(this.active1 == ''){
+         window.sessionStorage.setItem('orderStatus','whole')
+      }else{
+         window.sessionStorage.setItem('orderStatus',this.active1)
+      }
+      window.sessionStorage.setItem('mechanism',this.mechanism)
+      window.sessionStorage.setItem('stationId',this.payType)
+      if(this.severTime != undefined){
+        if(this.severTime[0] != undefined && this.severTime[0] != null ){
+            window.sessionStorage.setItem('serviceTimeStart',this.severTime[0])
+        }
+        if(this.severTime[1] != undefined && this.severTime[1] != null){
+          window.sessionStorage.setItem('serviceTimeEnd',this.severTime[1])
+        }       
+      }else{
+        window.sessionStorage.setItem('serviceTimeStart','')
+        window.sessionStorage.setItem('serviceTimeEnd','')
+        this.severTime=[]
+      }
+      if(this.startTime != undefined){
+        if(this.startTime[0] != undefined && this.startTime[0] != null ){
+            window.sessionStorage.setItem('startTime',this.startTime[0])
+        }
+        if(this.startTime[1] != undefined && this.startTime[1] != null ){
+            window.sessionStorage.setItem('endTime',this.startTime[1])
+        }
+      }else{
+        window.sessionStorage.setItem('startTime','')
+        window.sessionStorage.setItem('endTime','')
+        this.startTime=[];
+      }
       this.pageNumber = 1;
       this.jumpPage = 1;
-      this.getTableData(obj, this.pageNumber, this.size);
+      this.getTableData(obj, this.pageNumber, this.size);             
     },
     //导出订单按钮
     exportOrder() {},
     //查看跳转到订单详情页
     lookInf(id) {
-      window.localStorage.setItem("orderId", id); 
       window.sessionStorage.setItem('orderNumber',this.orderNumber)
       window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
       if(this.active1 == ''){
