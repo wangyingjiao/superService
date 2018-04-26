@@ -38,6 +38,7 @@
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column>
+      <!-- <el-table-column label="id" prop="id"></el-table-column> -->
 
       <el-table-column align="center" label="姓名" >
          <template scope="scope">
@@ -652,7 +653,10 @@ export default {
           stationId: this.search.stationId
         };
       } else {
-        var obj = {};
+        var obj = {
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
       }
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
@@ -683,10 +687,12 @@ export default {
     addRole() {
       // 新增岗位
       this.dialogFormStation = true;
-      // this.filterText = "";
-      // this.$nextTick(() => {
-      //   this.filterText = "business";
-      // });
+      if (localStorage.getItem("type") == "platform") {
+        this.filterText = "";
+        this.$nextTick(() => {
+          this.filterText = "business";
+        });
+      }
       if (this.mechanismCheck.length == 1) {
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }

@@ -574,10 +574,12 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
-              // this.filterText = "";
-              // this.$nextTick(() => {
-              //   this.filterText = "business";
-              // });
+              if (localStorage.getItem("type") == "platform") {
+                this.filterText = "";
+                this.$nextTick(() => {
+                  this.filterText = "business";
+                });
+              }
               this.listLoading = false;
               if (this.officeIds.length == 1) {
                 this.temp.officeId = this.officeIds[0].id;
@@ -667,10 +669,12 @@ export default {
           setTimeout(() => {
             this.temp.officeId = a.organization.id;
           }, 50);
-          this.filterText = "";
-          this.$nextTick(() => {
-            this.filterText = "business";
-          });
+          if (localStorage.getItem("type") == "platform") {
+            this.filterText = "";
+            this.$nextTick(() => {
+              this.filterText = "business";
+            });
+          }
           this.temp.name = a.name;
           //this.temp.dataScope = a.dataScope;
           //一期默认10级
