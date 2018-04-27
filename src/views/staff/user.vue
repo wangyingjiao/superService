@@ -536,7 +536,6 @@ export default {
   },
   watch: {
     filterText(val) {
-      console.log(this.filterText, "watch");
       this.$refs.domTree.filter(val);
     }
   },
@@ -545,7 +544,6 @@ export default {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
     //获取角色
-    console.log(localStorage.getItem("type"));
     var type = localStorage.getItem("type");
     if (type == "sys") {
       this.typeList = {
@@ -931,14 +929,12 @@ export default {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
-            console.log(localStorage.getItem("type"));
             this.search.stationId = this.servicestationSearch[0].id;
           }
         });
       }
     },
     typeChange(val) {
-      console.log(val);
       if (val != "") {
         this.orgList = [];
         this.temp.officeId = "";
@@ -947,7 +943,6 @@ export default {
         this.servicestationCheck = [];
         this.stationCheck = [];
         getOrgByTypeOrgId({ type: val }).then(res => {
-          console.log(res, "机构");
           this.orgList = res.data.data;
         });
       }
@@ -1011,7 +1006,6 @@ export default {
           }
         }
       }
-      console.log(sysArr, "11111111");
       return sysArr;
     },
     create(formName) {

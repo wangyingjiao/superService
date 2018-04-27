@@ -322,11 +322,6 @@ export default {
   },
   watch: {
     filterText(val) {
-      console.log(this.filterText, "watch1");
-      this.$refs.domTree.filter(val);
-    },
-    filterText2(val) {
-      console.log(this.filterText, "watch1");
       this.$refs.domTree.filter(val);
     }
   },
@@ -790,7 +785,6 @@ export default {
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-      console.log(arr, "2222");
       // return;
       var obj = {
         name: this.temp.name,
