@@ -1,9 +1,6 @@
 <template>
     <div id="refund">
         <div class="refund-search">
-           	<!-- <el-select class="select-width" filterable clearable v-model="search.orgId" placeholder="选择机构" @change="orgChange(search.orgId)">
-                <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
-            </el-select> -->
             <orgSearch :widths="'17%'" ref="orgSearch" @orgsearch="orgSearch" :refundflag="refundflag"></orgSearch>
             <el-select class="search-right" filterable clearable v-model="search.stationId" placeholder="选择服务站">
                 <el-option v-for="item in server" :key="item.id" :label="item.name" :value="item.id"></el-option>	
@@ -93,26 +90,11 @@ var refundDetails = (id)=>{
     }) 
 }
 
-    let organizations = [
-        {label:'选择退款状态',id:'1'},
-        {label:'退款成功',id:'2'},
-        {label:'已取消',id:'3'},
-        {label:'退款中',id:'4'}
-    ]
     let choose = [
         {label:'订单编号',value:'orderNumber'},
         {label:'退款编号',value:'refundNumber'},
         {label:'用户姓名',value:'refundName'},
         {label:'用户电话',value:'refundPhone'}
-    ]
-    let tableData = [
-        {orderNumber:'10170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'张三',refundPhone:'15801655090'},
-        {orderNumber:'20170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'利索',refundPhone:'15801655090'},
-        {orderNumber:'30170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'玛瑙',refundPhone:'15801655090'},
-        {orderNumber:'40170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'李娇',refundPhone:'15801655090'},
-        {orderNumber:'50170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'呼叫',refundPhone:'15801655090'},
-        {orderNumber:'60170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'咯考',refundPhone:'15801655090'},
-        {orderNumber:'70170829144443318882',refundNumber:'20170829144443318882',refundAccountReality:'￥300',orgName:'机构mm',stationName:'服务站MM',finishTime:'2017-10-17 18:00:09',refundName:'胡凯',refundPhone:'15801655090'},
     ]
 
     export default{
@@ -120,7 +102,6 @@ var refundDetails = (id)=>{
             return{
                 refundflag:true,
                 server:[],
-                organizations:organizations,
                 search:{
                     orgId:'',
                     stationId:''
@@ -142,7 +123,6 @@ var refundDetails = (id)=>{
             orgSearch(item){
                 this.search.orgId = item
                 this.orgChange(item)
-                console.log(item,"___________________________")
             },
             orgChange(id){
                 this.search.stationId = ''
@@ -151,7 +131,6 @@ var refundDetails = (id)=>{
                     return
                 }
                 listByOffice({orgId:id}).then(data=>{
-                    console.log(data,"---+++++")
                     let dataList = data.data.data
                     if(data.data.code=='1'){
                         if(dataList[0].id=="0"){
@@ -163,7 +142,6 @@ var refundDetails = (id)=>{
                         }
                     }
                 }).catch(error=>{
-                    console.log(error,"-00000000")
                 })
             },
             //机构
@@ -234,7 +212,6 @@ var refundDetails = (id)=>{
                 let refund = async (id) => {
                     try{
                         let refundDate = await refundDetails(id)
-                        console.log(refundDate,"refundDate----")
                         if(refundDate.data.code == 1){
                             this.informationData = refundDate
                             this.loading = false
@@ -273,14 +250,10 @@ var refundDetails = (id)=>{
                         this.chooses = 'orderNumber'
                         this.refundflag = false
                     }
-                    // let _listDataAll = await this.listDataAll()
                     await this.$refs['orgSearch'].listDataAll()
-                    // this.organizations = _listDataAll
-                    // this.search.orgId = this.organizations[0].id
                     this.searchClick()
                 }
                 catch(error){
-                    console.log(error)
                 }
                 
             }

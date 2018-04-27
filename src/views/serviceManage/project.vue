@@ -7,10 +7,6 @@
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
       <orgSearch :widths="'20%'" @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
-      <!-- <el-select clearable class="search" filterable  v-model="search.orgId" placeholder="选择机构">
-        <el-option v-for="(item,index) in orgNameList" :key="index" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select> -->
       <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
@@ -20,8 +16,6 @@
       </el-input> 
 	  <el-input class="search" placeholder="请输入搜索的商品名称" v-model="search.goodsName">
       </el-input> 
-	  <!-- <el-input class="search" placeholder="请输入搜索的对接编码" v-model="search.sortIdandGoodsId">
-      </el-input>  -->
       <button class="button-large el-icon-search btn_search btn-color" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
@@ -100,7 +94,6 @@
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
               <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
-              </span>
               <!-- 全系统用户不需要判断是否有对接E店 -->
               <span v-if="techUserType=='sys'">
                 <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
@@ -1345,22 +1338,6 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      // var obj = {};
-      // if (this.basicForm.majorSort) {
-      //   obj.majorSort = this.tabs;
-      // }
-      // if (this.search.sortId) {
-      //   obj.sortId = this.search.sortId;
-      // }
-      // if (this.search.name) {
-      //   obj.name = this.search.name;
-      // }
-      // if (this.search.goodsName) {
-      //   obj.goodsName = this.search.goodsName;
-      // }
-      // if (this.search.sortIdandGoodsId) {
-      //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-      // }
 
       this.listLoading = true;
       this.getList(this.pageNumber, this.pageSize);
@@ -1399,7 +1376,6 @@ export default {
                 dataUpdate.commoditys[i].price
               );
             }
-            console.log(dataUpdate.sortId,"sortId-----")
               if(dataUpdate.sortId < 100){
                this.sordFlag = false
                this.measure = { "num": "按时长或数量"}
@@ -1730,37 +1706,10 @@ export default {
         this.handleClick({ name: "all" });
       }
       catch(error){
-        console.log(error)
       }
     }
 
     list()
-    //  listDataAll({}).then(data=>{
-    //     if(data.data.code==1){
-    //       let _data = data.data.data.list
-    //       if(_data[0].id=='0'){
-    //        _data = _data.slice(1)
-    //       }
-    //       this.orgList = _data
-    //       this.orgNameList = _data
-    //       this.search.orgId = this.orgNameList[0].id
-    //       this.handleClick({ name: "all" });
-    //     }
-    //   })
-
-
-    // let _userType = userType();
-    // if(_userType=='org' || _userType=='station'){
-    //   this.orgNameList = [{name:'本机构',id:''}]
-    //   this.search.orgId = ''
-    // }else{
-    //   listDataAll({}).then(data=>{
-    //     if(data.data.code==1){
-    //       this.orgList = data.data.data.list
-    //       this.orgNameList = this.orgList
-    //     }
-    //   })
-    // }
   }
 };
 </script>
