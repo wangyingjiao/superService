@@ -26,7 +26,9 @@
                       <el-table-column
                       align="center"
                       prop="orgName"         
-                      label="服务机构">
+                      label="服务机构"
+                      v-if=" userType != 'org'"
+                      >
                       </el-table-column>                       
                       <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
                       <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
@@ -260,6 +262,21 @@ export default {
       if(val !=''){
         this.mechanism1=val
         this.getseverStion(val)
+        var obj={
+          orgId:this.mechanism1
+        }
+        orderServer(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.Options2 = res.data.data.list;                           
+              this.listTech = res.data.data.techs;
+              this.dialogVisible = true;
+            } else {
+              this.dialogVisible = false;
+            }
+          })
+          .catch(res => {
+          });        
       }
       if(this.mechanismFlag){
 
@@ -361,15 +378,7 @@ export default {
     },
     //全局新增按钮
     add(status, row) {
-      this.mechanism1='';
-      if(this.userType =='org' || this.userType == 'station'){
-        this.getseverStion('')
-        var obj = {};
-      }else{
-        var obj ={
-          orgId:this.mechanism1
-        }
-      }      
+      this.mechanism1='';      
       this.middleA = [];
       this.middleB = [];
       this.middleD = [];
@@ -385,10 +394,13 @@ export default {
         this.listLoading = false;
         this.dialogVisible = true;
         //服务技师与分类、服务站获取
+      if(this.userType =='org' || this.userType == 'station'){
+        this.getseverStion('')
+        var obj = {};
         orderServer(obj)
           .then(res => {
             if (res.data.code === 1) {
-              this.Options2 = res.data.data.list;              
+              this.Options2 = res.data.data.list;                           
               this.listTech = res.data.data.techs;
               this.dialogVisible = true;
               this.listLoading = false;
@@ -399,7 +411,13 @@ export default {
           })
           .catch(res => {
             this.listLoading = false;
-          });
+          });        
+      }else{
+        // var obj ={
+        //   orgId:this.mechanism1
+        // }
+      }        
+
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
         this.mechanismFlag=true;        
@@ -552,6 +570,7 @@ export default {
       if (this.dialogStatus == "add") {
         this.$refs[formName].resetFields();
         this.ruleForm2.name = "";
+        this.Options2=[];
         this.ruleForm2.staffClass = [];
       }
       if (this.dialogStatus == "edit") {

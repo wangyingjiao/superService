@@ -36,7 +36,7 @@
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
 							</el-form-item> 	              
-                <el-form-item label="所属服务站:" v-if='form.address.addressName != ""' prop='serverStation1'>
+                <el-form-item label="所属服务站:" v-if='adressFlagShow' prop='serverStation1'>
                   <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
                   <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                     <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
@@ -496,6 +496,7 @@ export default {
         severTime1: "",
         textarea: ""
       },
+      adressFlagShow:true,
       btnShow: [],
       //服务站下拉选项
       options: [],
@@ -544,7 +545,7 @@ export default {
           { required: true, message: "请选择服务地址", trigger: "change" }
         ],
         phone:[
-          { required: true, validator: checkPhone, trigger: "change" }
+          { required: true, validator: checkPhone, trigger: "blur" }
         ] ,                
         serverStation1: [
           { required: true, message: "请选择服务站", trigger: "change" }
@@ -819,8 +820,9 @@ export default {
     masimaChange(val) {
       this.customKeyFlag = true; 
       if(val ==''){
-           this.form.phone=''; 
-      }               
+           this.form.phone='';           
+      }
+      this.adressFlagShow=false;                
       this.form.radiovalue=''; 
       this.radio='';
       this.form.address.addressPhone='';
@@ -828,6 +830,9 @@ export default {
       this.form.address.detailAddress=''; 
       this.form.serverStation1='';
       this.form1.serverPro='';
+      this.form1.servercommidty = "";
+      this.form1.sumPrice = 0;
+      this.selectCommidty=[];      
       this.serverStation1=''; 
       this.form.mechanism = val;     
      
@@ -952,6 +957,12 @@ export default {
       if (formName == "form") {
         this.$refs[formName].validate(valid => {
           if (valid) {
+            if(this.form.mechanism != '' && this.form.phone !='' && this.form.radiovalue =='' && this.form.serverStation1 == ""){
+              this.$message({
+                type: "warning",
+                message: '请输入用户电话，查询用户'
+              });
+            }
             if (this.serverStation1 != "") {
               this.findItemListFun();
             } else {
@@ -1105,11 +1116,13 @@ export default {
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
-                }                
+                }
+                this.adressFlagShow=true;                
               }
             } else if (res.data.code === 3) {             
               this.form.radiovalue='';
               this.radio='';
+              this.adressFlagShow=false;
               this.form.address.addressPhone='';
               this.form.address.addressName='';
               this.form.address.detailAddress=''; 
@@ -1241,35 +1254,37 @@ export default {
       if (this.form1.serverPro == "") {
         this.$refs.addrulesStyle.style.display = "none";
       }
-      var obj = { itemId: value };
-      findGoodsListByItem(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            if (res.data.data != undefined) {
-              this.selectCommidty = res.data.data;
-              if (this.form1.serverPro != "") {
-                this.$refs.addrulesStyle.style.display = "block";
-              }
-            } else {
-              this.selectCommidty = [];
-              this.form1.sumPrice = 0;
-            }
-          } else if (res.data.code === 3) {
-            this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display = "none";
-
-            this.form1.sumPrice = 0;
-            this.$message({
-              type: "warning",
-              message: res.data.data
-            });
-          } else {
-            this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display = "none";
-            this.form1.sumPrice = 0;
-          }
-        })
-        .catch(res => {});
+      if(value != ''){
+          var obj = { itemId: value };
+            findGoodsListByItem(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  if (res.data.data != undefined) {
+                    this.selectCommidty = res.data.data;
+                    if (this.form1.serverPro != "") {
+                      this.$refs.addrulesStyle.style.display = "block";
+                    }
+                  } else {
+                    this.selectCommidty = [];
+                    this.form1.sumPrice = 0;
+                  }
+                } else if (res.data.code === 3) {
+                  this.selectCommidty = [];
+                  this.$refs.addrulesStyle.style.display = "none";
+                  this.form1.sumPrice = 0;
+                  this.$message({
+                    type: "warning",
+                    message: res.data.data
+                  });
+                } else {
+                  this.selectCommidty = [];
+                  this.$refs.addrulesStyle.style.display = "none";
+                  this.form1.sumPrice = 0;
+                }
+              })
+              .catch(res => {});
+      }
+ 
     },
     //技师选择按钮点击
     technicianSel() {
