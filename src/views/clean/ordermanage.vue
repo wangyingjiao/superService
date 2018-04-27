@@ -389,10 +389,10 @@ export default {
       }; 
       window.sessionStorage.setItem('orderNumber',this.orderNumber)
       window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
-      if(this.active1 == ''){
+      if(this.activeName == ''){
          window.sessionStorage.setItem('orderStatus','whole')
       }else{
-         window.sessionStorage.setItem('orderStatus',this.active1)
+         window.sessionStorage.setItem('orderStatus',this.activeName)
       }
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
