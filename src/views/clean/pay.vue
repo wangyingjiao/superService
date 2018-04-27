@@ -199,7 +199,6 @@ export default {
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
-            console.log(res.data.data.list);
             this.total = res.data.data.count;
             this.list = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;

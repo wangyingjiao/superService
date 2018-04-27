@@ -195,7 +195,6 @@
 					return
 				}
 				listByOrgId({orgId:item}).then(data=>{
-					console.log(data,"data--------+++++")
 					let list  = data.data.data.stations
 					if(list[0].id=='0'){
 						list = list.slice(1)
@@ -210,12 +209,10 @@
 			listByOrgId(item){
 				return new Promise((rej,res)=>{
 					listByOrgId({orgId:item}).then(data=>{
-						console.log(data,"data--------+++++")
 						if(data.data.code==1){
 							res(data.data.data)
 						}
 					}).catch(error=>{
-						console.log(error)
 					})
 				})
 			},
@@ -270,7 +267,6 @@
 			},
 			//搜索
 			searchClick(item){
-				// console.log('________')
 				if(!item.orgId){
 					 this.$message({
 						message: '请选择服务机构查询数据',
@@ -311,7 +307,6 @@
 			getList(){
 				this.listLoading = true
 				this.scheduleFlag = true
-				// console.log(this.search,this.pageSync,this.pageSize)
 				getData(this.search,this.pageSync,this.pageSize)
 					.then(({data})=>{
 						if(data.code){
@@ -321,18 +316,13 @@
 						}else{
 							this.listLoading = false
 						}
-						// console.log(data,"data-----")
 					})
 					.catch(error=>{
 						this.listLoading = false
-						// console.log(error,"error----")
 					})
 			},
 		},
 		mounted(){
-				// this.stations = data.data.data.stations
-				// 		this.skils = data.data.data.skils
-				// 		this.search.stationId = this.stations[0].id
 			if(this.techUserType=='station' || this.techUserType=='org'){
 				this.getList()
 			}
@@ -341,37 +331,9 @@
 					let _list = await this.$refs['orgSearch'].listDataAll()
 				}
 				catch(error){
-					console.log(error)
 				}
 			}
 			list()
-			// mechanismService()
-			// 	.then(({data})=>{
-			// 		if(data.code==1){
-			// 			if(data.data.organizations[0].id=='0'){
-			// 				this.organizations = data.data.organizations.slice(1)
-			// 			}else{
-			// 				this.organizations = data.data.organizations
-			// 			}
-			// 			this.search.orgId = this.organizations[0].id
-			// 			if(data.data.stations[0].id=='0'){
-			// 				this.stations = data.data.stations.slice(1)
-			// 			}else{
-			// 				this.stations = data.data.stations
-			// 			}
-			// 			this.search.stationId = this.stations[0].id
-			// 			this.skils = data.data.skils
-			// 		}else{
-
-			// 		}
-			// 		// var obj = data.data.data
-			// 		// if(data.data){}
-			// 		// console.log(data)
-			// 	})
-			// 	.catch(error=>{
-			// 		// console.log(error)
-			// 	})
-			// this.getList()
 		}
 	}
 </script>

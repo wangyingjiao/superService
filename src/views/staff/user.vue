@@ -38,6 +38,7 @@
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column>
+      <!-- <el-table-column label="id" prop="id"></el-table-column> -->
 
       <el-table-column align="center" label="姓名" >
          <template scope="scope">
@@ -535,7 +536,6 @@ export default {
   },
   watch: {
     filterText(val) {
-      console.log(this.filterText, "watch");
       this.$refs.domTree.filter(val);
     }
   },
@@ -544,7 +544,6 @@ export default {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
     }
     //获取角色
-    console.log(localStorage.getItem("type"));
     var type = localStorage.getItem("type");
     if (type == "sys") {
       this.typeList = {
@@ -652,7 +651,10 @@ export default {
           stationId: this.search.stationId
         };
       } else {
-        var obj = {};
+        var obj = {
+          orgId: this.search.officeId,
+          stationId: this.search.stationId
+        };
       }
       getStaff(obj, this.pageNumber, this.pageSize).then(res => {
         if (res.data.code == 1) {
@@ -683,10 +685,12 @@ export default {
     addRole() {
       // 新增岗位
       this.dialogFormStation = true;
-      // this.filterText = "";
-      // this.$nextTick(() => {
-      //   this.filterText = "business";
-      // });
+      if (localStorage.getItem("type") == "platform") {
+        this.filterText = "";
+        this.$nextTick(() => {
+          this.filterText = "business";
+        });
+      }
       if (this.mechanismCheck.length == 1) {
         this.temp2.officeId2 = this.mechanismCheck[0].id;
       }
@@ -925,14 +929,12 @@ export default {
           // 请求服务站列表
           this.servicestationSearch = res.data.data;
           if (localStorage.getItem("type") == "station") {
-            console.log(localStorage.getItem("type"));
             this.search.stationId = this.servicestationSearch[0].id;
           }
         });
       }
     },
     typeChange(val) {
-      console.log(val);
       if (val != "") {
         this.orgList = [];
         this.temp.officeId = "";
@@ -941,7 +943,6 @@ export default {
         this.servicestationCheck = [];
         this.stationCheck = [];
         getOrgByTypeOrgId({ type: val }).then(res => {
-          console.log(res, "机构");
           this.orgList = res.data.data;
         });
       }
@@ -1005,7 +1006,6 @@ export default {
           }
         }
       }
-      console.log(sysArr, "11111111");
       return sysArr;
     },
     create(formName) {

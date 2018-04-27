@@ -27,13 +27,15 @@
             'clearable'
         ],
         methods:{
+            orgEmpty(){
+                this.orgId = ''
+            },
             orgChange(){
                 this.$emit("orgsearch",this.orgId)
             },
             listDataAll(){
                 return new Promise((res,rej)=>{
                     listDataAll({}).then(data=>{
-                        console.log(data,"datayyyyyyy")
                         let _data = data.data.data.list
                         if(data.data.code==1){
                             if(_data.length>0){
@@ -65,7 +67,6 @@
                         }
                     }).catch(error=>{
                         rej(error)
-                        console.log(error,"error____+++++++")
                     })
                 })
             }
