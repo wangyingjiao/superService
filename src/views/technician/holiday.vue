@@ -290,7 +290,6 @@ export default {
   },
   methods: {
     aaa(obj) {
-      //console.log(obj,'aaa')
     },
     renderHeader(h) {
       return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
