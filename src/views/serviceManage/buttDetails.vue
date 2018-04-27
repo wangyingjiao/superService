@@ -321,6 +321,9 @@ export default {
       }
       obj.goodIds = arrPost;
       obj.eshopCode = this.search.eshopCode;
+      if(this.userType){
+        obj.orgId = this.search.orgId
+      }
       return obj;
     },
     //移除对接按钮
@@ -351,7 +354,7 @@ export default {
     //设置对接按钮
     toggleSetUp() {
       var obj = this.setUpDelete("id");
-
+      console.log(obj,"ibj-----")
       if (obj.goodIds.length <= 0) {
         return;
       }
