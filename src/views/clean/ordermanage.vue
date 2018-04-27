@@ -271,11 +271,16 @@ export default {
         if(window.sessionStorage.getItem('orderStatus') != null){
             this.activeName=window.sessionStorage.getItem('orderStatus')
             this.active1=this.activeName
-            this.localSearch()
+            
         }
         if(window.sessionStorage.getItem('mechanism') != null){
             this.mechanism=window.sessionStorage.getItem('mechanism')
         }
+        if(window.sessionStorage.getItem('stationId') != null){
+            this.payType=window.sessionStorage.getItem('stationId')
+        }          
+        
+
         if(this.severTime != undefined){ 
           if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
               var arr=[];
@@ -295,6 +300,12 @@ export default {
             } 
         }else{
           this.startTime=[]
+        }
+        if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != ''){
+          console.log(this.activeName)
+          this.localSearch()
+        }else{
+          this.getTableData({ orderStatus: "dispatched" }, 1, 10); 
         }                                            
       });
     },
@@ -378,10 +389,10 @@ export default {
       }; 
       window.sessionStorage.setItem('orderNumber',this.orderNumber)
       window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
-      if(this.active1 == ''){
+      if(this.activeName == ''){
          window.sessionStorage.setItem('orderStatus','whole')
       }else{
-         window.sessionStorage.setItem('orderStatus',this.active1)
+         window.sessionStorage.setItem('orderStatus',this.activeName)
       }
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
@@ -417,12 +428,13 @@ export default {
     exportOrder() {},
     //查看跳转到订单详情页
     lookInf(id) {
+      window.localStorage.setItem("orderId", id);
       window.sessionStorage.setItem('orderNumber',this.orderNumber)
       window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
-      if(this.active1 == ''){
+      if(this.activeName == ''){
          window.sessionStorage.setItem('orderStatus','whole')
       }else{
-         window.sessionStorage.setItem('orderStatus',this.active1)
+         window.sessionStorage.setItem('orderStatus',this.activeName)
       }
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
@@ -594,7 +606,6 @@ export default {
     }
   },
   mounted() {
-    this.getTableData({ orderStatus: "dispatched" }, 1, 10);    
     this.getoffice();        
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;

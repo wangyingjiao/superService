@@ -10,10 +10,6 @@
         <!-- 搜索 -->
             <div class="searchBox">
                 <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
-                <!-- <el-select class="butt-search" v-if="userType" clearable v-model="search.orgId" placeholder="选择机构">
-                    <el-option v-for="(item,key) in orgList" :key="key" :label="item.name" :value="item.id">
-                    </el-option>
-                </el-select> -->
                 <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
@@ -325,6 +321,9 @@ export default {
       }
       obj.goodIds = arrPost;
       obj.eshopCode = this.search.eshopCode;
+      if(this.userType){
+        obj.orgId = this.search.orgId
+      }
       return obj;
     },
     //移除对接按钮
@@ -355,7 +354,7 @@ export default {
     //设置对接按钮
     toggleSetUp() {
       var obj = this.setUpDelete("id");
-
+      console.log(obj,"ibj-----")
       if (obj.goodIds.length <= 0) {
         return;
       }
@@ -431,59 +430,10 @@ export default {
     }
   },
   mounted() {
-    // if(this.userType){}
-    // this.$refs['orgSearch'].listDataAll()
-    // let listData = ()=>{
-    //   return new Promise((resolve,reject)=>{
-    //     listDataAll({}).then(data=>{
-    //       console.log(data,"++++_______")
-    //       let _data = data.data.data.list
-    //       if(data.data.code==1){
-    //         if(_data[0].id=="0"){
-    //           _data = _data.slice(1)
-    //         }
-    //         this.orgList = _data
-    //         this.search.orgId = this.orgList[0].id
-    //         resolve(_data)
-    //       }
-    //     }).catch(error=>{
-    //       reject(error)
-    //       console.log(error,"------++++++")
-    //     })
-    //   })
-    // }
-    //默认已对接商品数据
-    // this.handleClick()
-    //check默认选中第一个
-    // this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]);
     //所属类型select
     this.thisType = dict.ser_sort;
     delete this.thisType.all;
-    //对接E店默认选中第一个
-    //先请求E店列表获取第一条数据的id，在请求table列表数据，
-    // let promise = () => {
-    //   return new Promise((resolve, reject)=>{
-    //     buttedList({})
-    //       .then(data => {
-    //         if (data.data.code == 1) {
-    //           this.listLoading = false;
-    //           if (data.data.data) {
-    //             this.options = data.data.data || [];
-    //             this.search.eshopCode = data.data.data[0].eshopCode || "";
-    //             resolve(this.search);
-    //             this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
-    //           } else {
-    //             this.dockingEName = { name: "" };
-    //           }
-    //         } else {
-    //           this.listLoading = false;
-    //         }
-    //       })
-    //       .catch(error => {
-    //         this.listLoading = false;
-    //       });
-    //   });
-    // }
+   
     //获取E店数据请求table列表
     let tabData = async ()=>{
       try{
@@ -495,13 +445,9 @@ export default {
         }
       }
       catch(error){
-        console.log(error)
       }
     }
     tabData()
-    // promise.then(success => {
-    //   this.buttedConnListApi(success);
-    // });
   },
   filters: {
     capitalize(value) {
