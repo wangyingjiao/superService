@@ -38,7 +38,7 @@
 			<!-- 搜索完成 -->
 			<!-- 表格 -->
 			<div class="schedule-table" v-loading="listLoading">
-				<div style="color:#929496" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构、服务站查询数据</div>
+				<div style="color:#929496" v-if="techUserType=='sys' || techUserType=='org'">请选择搜索条件：服务机构查询数据</div>
 				<div v-if="tableData.length">
 					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->

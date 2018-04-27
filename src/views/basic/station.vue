@@ -658,7 +658,7 @@ export default {
                 });
                 this.search.name = "";
                 this.search.cityCode = "";
-                this.search.officeId = ""
+                this.search.officeId = "";
                 this.handleFilter();
                 this.dialogFormVisible = false;
               } else {
