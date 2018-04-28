@@ -83,15 +83,15 @@ const user = {
     // 获取用户信息
     GetUserInfo({ commit, userInfo }) {
       if (JSON.parse(localStorage.getItem('menu'))) {
-        commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
-        commit('SET_NAME', localStorage.getItem('name'))
+        commit('SET_MENU', JSON.parse(sessionStorage.getItem('menu')))
+        commit('SET_NAME', sessionStorage.getItem('name'))
       } else {
         return new Promise((resolve, reject) => {
           getUserInfo().then(response => {
             const data = response.data
-            localStorage.setItem('menu', JSON.stringify(data.data))
+            sessionStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
-            commit('SET_NAME', localStorage.getItem('name'))
+            commit('SET_NAME', sessionStorage.getItem('name'))
             resolve(response)
           }).catch(error => {
             reject(error)
