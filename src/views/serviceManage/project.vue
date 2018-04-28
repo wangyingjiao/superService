@@ -1596,10 +1596,9 @@ export default {
                   this.search.name = "";
                   this.search.goodsName = "";
                   // this.search.sortIdandGoodsId = "";
-                  if(this.techUserType=='sys'){
-                    this.$refs['orgSearch'].orgEmpty()
-                    this.orgSearch()
-                  }
+  
+                  this.$refs['orgSearch'].orgEmpty()
+                  this.orgSearch()
                   this.tabs = "all";
                   this.listQuery.page = 1;
                   this.getList(1, this.pageSize);
