@@ -31,12 +31,12 @@
         <!-- table列表 分页-->
             <div class="btton-table">
                 <div>
-                    <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
+                    <span v-if="nameFlag" style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
                     <span class="e-prompt">对接相关的请求的交互结果非实时数据，最终的交互结果需耐心等待一段时间</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
                 </div>
-                <div style="color:#929496;margin-top:20px;" v-if="userType">请选择搜索条件：服务机构、对接E店查询数据</div>
+                <div style="color:#b7b5b5;margin-top:20px;font-size:13px;" v-if="userType">请选择搜索条件：服务机构、对接E店查询数据</div>
                 <div>
                   <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                 </div>
@@ -117,6 +117,7 @@ export default {
       tableData3: [],
       multipleSelection: [],
       typeOptions: [],
+      nameFlag:false,
       pageSync: 1,
       pageSize: 10,
       total: 0,
@@ -169,8 +170,10 @@ export default {
             this.total = data.data.data.count;
             if ("list" in data.data.data) {
               this.tableData3 = data.data.data.list;
+              this.nameFlag = true
             } else {
               this.tableData3 = [];
+              this.nameFlag = false
             }
             // this.listLoading = false
             // var arr = data.data.data.list
@@ -186,10 +189,12 @@ export default {
             // this.total = data.data.data.count
           } else {
             this.listLoading = false;
+            this.nameFlag = false
           }
         })
         .catch(error => {
           this.listLoading = false;
+          this.nameFlag = false
         });
     },
     //未对接api
@@ -202,15 +207,22 @@ export default {
           if (data.data.code) {
             this.listLoading = false;
             this.tableData3 = data.data.data.page.list;
+            if(this.tableData3.length>0){
+              this.nameFlag = true
+            }else{
+              this.nameFlag = false
+            }
             this.total = data.data.data.page.count;
             this.eshopStatus = data.data.data.eshopStatus;
           } else {
             this.listLoading = false;
+            this.nameFlag = false
             this.tableData3 = [];
           }
         })
         .catch(error => {
           this.listLoading = false;
+          this.nameFlag = false
         });
     },
     //当前查询的E店
@@ -227,18 +239,7 @@ export default {
         return true;
       }
     },
-    //搜索
-    searchBtt() {
-      if(this.userType){
-        if(!(this.search.orgId && this.search.eshopCode)){
-          this.$message({
-            message: '请选择服务机构与对接E店',
-            type: 'warning'
-          });
-          return
-        }
-      }
-      //改变当前查询的E店：
+    eshopCodeData(){
       if (this.search.eshopCode) {
         var i,
           options = this.options;
@@ -251,6 +252,20 @@ export default {
       } else {
         this.dockingEName = { name: "" };
       }
+    },
+    //搜索
+    searchBtt() {
+      if(this.userType){
+        if(!(this.search.orgId && this.search.eshopCode)){
+          this.$message({
+            message: '请选择服务机构与对接E店',
+            type: 'warning'
+          });
+          return
+        }
+      }
+      //改变当前查询的E店：
+      this.eshopCodeData()
       //--改变当前查询的E店------------------：
       this.tableFlag = true
       if (this.pageSync == 1) {
@@ -284,15 +299,16 @@ export default {
     //tabs切换
     handleClick(tab, event) {
       // debugger;
-      if (this.options[0]) {
-        this.search.eshopCode = this.options[0].eshopCode;
-      } else {
-        this.search.eshopCode = "";
-      }
-      this.pageSize = 10;
-      this.dockingEName = this.options[0] || { name: "" };
+      // if (this.options[0]) {
+      //   this.search.eshopCode = this.options[0].eshopCode;
+      // } else {
+      //   this.search.eshopCode = "";
+      // }
+      // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.eshopCodeData()
+      this.pageSize = 10;
       if (this.pageSync == 1) {
         this.tablePageSize(this.search);
       } else {
@@ -488,7 +504,7 @@ export default {
   margin-top: 10px;
 }
 .e-prompt {
-  margin-left: 6%;
+  font-size: 13px;
   color: #b7b5b5;
 }
 .buttBox .el-table .cell {
