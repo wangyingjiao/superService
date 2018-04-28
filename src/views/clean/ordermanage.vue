@@ -261,51 +261,7 @@ export default {
             if(this.userType == 'org' || this.userType == 'station'){
               this.mechanism=this.mechanismOptions[0].id
             }            
-        }
-        if(window.sessionStorage.getItem('orderNumber') != null){
-            this.orderNumber=window.sessionStorage.getItem('orderNumber')
-        }
-        if(window.sessionStorage.getItem('sevicerStustas') != null){
-            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
-        }
-        if(window.sessionStorage.getItem('orderStatus') != null){
-            this.activeName=window.sessionStorage.getItem('orderStatus')
-            this.active1=this.activeName
-            
-        }
-        if(window.sessionStorage.getItem('mechanism') != null){
-            this.mechanism=window.sessionStorage.getItem('mechanism')
-        }
-        if(window.sessionStorage.getItem('stationId') != null){
-            this.payType=window.sessionStorage.getItem('stationId')
-        }          
-        
-
-        if(this.severTime != undefined){ 
-          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
-              var arr=[];
-              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
-              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
-              this.severTime=arr
-          }                   
-        }else{
-           this.severTime=[]
-        }
-        if(this.startTime != undefined){
-            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
-                var arr1=[];
-                arr1.push(window.sessionStorage.getItem('startTime'));
-                arr1.push(window.sessionStorage.getItem('endTime'))           
-                this.startTime=arr1
-            } 
-        }else{
-          this.startTime=[]
-        }
-        if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != ''){
-          this.localSearch()
-        }else{
-          this.getTableData({ orderStatus: "dispatched" }, 1, 10); 
-        }                                            
+        }                                           
       });
     },
     //tabs操作需要请求表格数据
@@ -605,7 +561,48 @@ export default {
     }
   },
   mounted() {
-    this.getoffice();        
+    this.getoffice();
+          if(window.sessionStorage.getItem('orderNumber') != null){
+            this.orderNumber=window.sessionStorage.getItem('orderNumber')
+        }
+        if(window.sessionStorage.getItem('sevicerStustas') != null){
+            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
+        }
+        if(window.sessionStorage.getItem('orderStatus') != null){
+              this.activeName=window.sessionStorage.getItem('orderStatus')
+              this.active1=this.activeName                      
+        }
+        if(window.sessionStorage.getItem('mechanism') != null){
+            this.mechanism=window.sessionStorage.getItem('mechanism')
+        }
+        if(window.sessionStorage.getItem('stationId') != null){
+            this.payType=window.sessionStorage.getItem('stationId')
+        }          
+        if(this.severTime != undefined){ 
+          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
+              var arr=[];
+              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
+              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
+              this.severTime=arr
+          }                   
+        }else{
+           this.severTime=[]
+        }
+        if(this.startTime != undefined){
+            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
+                var arr1=[];
+                arr1.push(window.sessionStorage.getItem('startTime'));
+                arr1.push(window.sessionStorage.getItem('endTime'))           
+                this.startTime=arr1
+            } 
+        }else{
+          this.startTime=[]
+        }  
+    if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != ''){
+      this.localSearch()
+    }else{
+      this.getTableData({ orderStatus: "dispatched" }, 1, 10); 
+    }             
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
     this.sevicerStustasOptions = this.dict.service_status;

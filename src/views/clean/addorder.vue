@@ -28,7 +28,7 @@
                   <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
                   <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
               </el-form-item>            						
-							<el-form-item label="服务地址:" prop='radiovalue' v-if='form.address.addressName != ""'>
+							<el-form-item label="服务地址:" prop='radiovalue' v-if='form.address.addressName != "" && stationFlag'>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
                   <div style="margin-top:-36px;">
                       <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
@@ -36,7 +36,7 @@
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
 							</el-form-item> 	              
-                <el-form-item label="所属服务站:" v-if='adressFlagShow' prop='serverStation1'>
+                <el-form-item label="所属服务站:" v-if='adressFlagShow && stationFlag' prop='serverStation1'>
                   <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
                   <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                     <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
@@ -478,6 +478,7 @@ export default {
       }
     };
     return {
+      stationFlag:true,
       userType:'',
       mechanismOptions:[],
       mechanism:'',
@@ -1115,12 +1116,17 @@ export default {
                 this.form.phone = res.data.data.phone;
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
-                  this.radio = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;                 
+                }else{
+
                 }
-                this.adressFlagShow=true;                
+                this.stationFlag=true;
+                this.adressFlagShow=true; 
+                               
               }
             } else if (res.data.code === 3) {             
               this.form.radiovalue='';
+              this.stationFlag=false;
               this.radio='';
               this.adressFlagShow=false;
               this.form.address.addressPhone='';
@@ -1226,7 +1232,8 @@ export default {
                 this.mechanism=res.data.data.orgId;
                 this.form.phone = res.data.data.phone;
                 this.form.mechanism=res.data.data.orgId;
-                this.changeCustom();                
+                this.changeCustom();
+                this.stationFlag=true;                
               }
             } else if (res.data.code === 3) {
               this.$message({
@@ -1237,6 +1244,8 @@ export default {
             }
           })
           .catch(res => {});
+      }else{
+        this.stationFlag=false;
       }
     },
     //新增按钮
@@ -1427,7 +1436,7 @@ export default {
                         window.sessionStorage.removeItem('serviceTimeStart')
                         window.sessionStorage.removeItem('serviceTimeEnd')
                         window.sessionStorage.removeItem('startTime')
-                        window.sessionStorage.removeItem('endTime')
+                        window.sessionStorage.removeItem('endTime') 
                         window.sessionStorage.setItem('orderStatus','dispatched')                          
                         this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                         this.$message({
@@ -1467,6 +1476,16 @@ export default {
                 .then(res => {
                   this.submitFlag1 = false;
                   if (res.data.code === 1) {
+                    window.sessionStorage.removeItem('orderNumber')
+                    window.sessionStorage.removeItem('sevicerStustas')
+                    window.sessionStorage.removeItem('orderStatus')
+                    window.sessionStorage.removeItem('mechanism')
+                    window.sessionStorage.removeItem('stationId')
+                    window.sessionStorage.removeItem('serviceTimeStart')
+                    window.sessionStorage.removeItem('serviceTimeEnd')
+                    window.sessionStorage.removeItem('startTime')
+                    window.sessionStorage.removeItem('endTime') 
+                    window.sessionStorage.setItem('orderStatus','dispatched')                      
                     this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                     this.$message({
                       type: "success",
@@ -1586,9 +1605,10 @@ export default {
     this.userType=localStorage.getItem("type")
     if(this.userType == 'sys' || this.userType == 'platform'){
         this.getoffice()
-        this.customKeyFlag = false;      
+        this.customKeyFlag = false;
+            
     }else{
-      this.customKeyFlag = true;
+      this.customKeyFlag = true;     
       this.getcustomerList();
     }        
   }
