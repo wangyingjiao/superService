@@ -14,6 +14,6 @@ export function removeToken() {
   return sessionStorage.removeItem(TokenKey)
 }
 
-export function userType(){
+export function userType() {
   return localStorage.getItem('type')
 }
