@@ -172,16 +172,16 @@
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
 					</div>
+				<div class="pro-hint">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
                 </el-form-item>
-				<div class="el-upload__tip prompt-img">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
 
 				<el-form-item label="图文详情：">
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture'" :min='0' :max='8'></imgService>
 					</div>
                    
+				 <div class="pro-hint">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
                 </el-form-item>
-				 <div class="el-upload__tip prompt-img">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
@@ -198,8 +198,8 @@
                         </div>                        
                     </div>
                     
+				            <div class="pro-hint">* 最多设置3个系统标签</div>
                 </el-form-item>
-				<div class="el-upload__tip prompt-img">* 最多设置3个系统标签</div>
 
                 <el-form-item label="自定义标签：" class="labelDav">
                     <div class="custom">
@@ -210,7 +210,7 @@
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
-					<div style="margin-top:20px" class="el-upload__tip">* 最多设置3个自定义标签</div>
+					          <div class="pro-hint">* 最多设置3个自定义标签</div>
                 </el-form-item> 
             
               </el-form>
@@ -430,7 +430,7 @@
                     
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
-                <div v-if="dialogStatus != 'update'" class="pro-wing">通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数自动保存为0</div>
+                <div v-if="dialogStatus != 'update'" class="pro-wing">*注意事项：通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数自动保存为0</div>
               </el-form>
 			   <div slot="footer" class="dialog-footer" style="text-align:center">
 				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
@@ -1713,9 +1713,15 @@ export default {
 };
 </script>
 <style>
+.pro-hint{
+  color:#b7b5b5;
+  font-size:13px;
+}
 .pro-wing{
-  font-size:12px;
-  color:#929496;
+  font-size:13px;
+  color:#b7b5b5;
+  margin-left: 100px;
+  line-height: 20px;
 }
 .selfTitle1 {
   display: inline-block;
