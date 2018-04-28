@@ -302,7 +302,6 @@ export default {
           this.startTime=[]
         }
         if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != ''){
-          console.log(this.activeName)
           this.localSearch()
         }else{
           this.getTableData({ orderStatus: "dispatched" }, 1, 10); 
