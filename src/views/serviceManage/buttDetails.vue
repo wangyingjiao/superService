@@ -227,18 +227,7 @@ export default {
         return true;
       }
     },
-    //搜索
-    searchBtt() {
-      if(this.userType){
-        if(!(this.search.orgId && this.search.eshopCode)){
-          this.$message({
-            message: '请选择服务机构与对接E店',
-            type: 'warning'
-          });
-          return
-        }
-      }
-      //改变当前查询的E店：
+    eshopCodeData(){
       if (this.search.eshopCode) {
         var i,
           options = this.options;
@@ -251,6 +240,20 @@ export default {
       } else {
         this.dockingEName = { name: "" };
       }
+    },
+    //搜索
+    searchBtt() {
+      if(this.userType){
+        if(!(this.search.orgId && this.search.eshopCode)){
+          this.$message({
+            message: '请选择服务机构与对接E店',
+            type: 'warning'
+          });
+          return
+        }
+      }
+      //改变当前查询的E店：
+      this.eshopCodeData()
       //--改变当前查询的E店------------------：
       this.tableFlag = true
       if (this.pageSync == 1) {
@@ -284,15 +287,16 @@ export default {
     //tabs切换
     handleClick(tab, event) {
       // debugger;
-      if (this.options[0]) {
-        this.search.eshopCode = this.options[0].eshopCode;
-      } else {
-        this.search.eshopCode = "";
-      }
-      this.pageSize = 10;
-      this.dockingEName = this.options[0] || { name: "" };
+      // if (this.options[0]) {
+      //   this.search.eshopCode = this.options[0].eshopCode;
+      // } else {
+      //   this.search.eshopCode = "";
+      // }
+      // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.eshopCodeData()
+      this.pageSize = 10;
       if (this.pageSync == 1) {
         this.tablePageSize(this.search);
       } else {

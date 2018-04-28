@@ -1743,10 +1743,8 @@ export default {
                   message: "保存成功",
                   type: "success"
                 });
-                if(this.techUserType=='sys'){
-                  this.$refs['orgSearch'].orgEmpty()
-                  this.orgSearch()
-                }
+                this.$refs['orgSearch'].orgEmpty()
+                this.orgSearch()
                 this.techniSearch.stationId = ''
                 this.roomSel2Arr = []
                 this.techniSearch.jobNature = ''
