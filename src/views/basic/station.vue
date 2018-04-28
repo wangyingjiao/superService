@@ -61,7 +61,7 @@
             </template>                    
       </el-table-column>
       
-        <el-table-column  v-if="userType == 'org'" label="服务站名称" align="center">
+        <el-table-column  v-else label="服务站名称" align="center">
            <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.name.length < 5" :content="scope.row.name">
              <div class="overheidden" >{{scope.row.name}}</div>
