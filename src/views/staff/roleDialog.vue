@@ -114,7 +114,7 @@ export default {
         { id: "10", value: "十级" }
       ],
       roleLv: [],
-      dialogFormVisible: true,
+      dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         update: "编辑岗位",
@@ -128,8 +128,13 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    // diaState(){
+    //     console.log(this.diaState,'nnn')
+    // }
+  },
   created() {
+    console.log(this.diaState,'111111222')
     //获取权限列表
     getMenudata().then(res => {
       this.treeData = res.data.data;
@@ -139,7 +144,9 @@ export default {
       this.officeIds = res.data.data.list;
     });
   },
-  props: [],
+  props: [
+    'diaState'
+  ],
   methods: {
     nodeClick(a, b, c) {},
     currentChange(a, b) {},

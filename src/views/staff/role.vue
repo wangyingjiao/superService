@@ -126,6 +126,7 @@
         <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
+    <roleDialog :treeData = 'data2' :diaState = 'roleDiaState'></roleDialog>
 <!-- 弹框结束-->
   </div>
   </div>
@@ -146,6 +147,7 @@ import {
 } from "@/api/staff"; //接口调用
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 import { parseTime } from "@/utils";
+import roleDialog from "../staff/roleDialog.vue";
 var data = [];
 const state = [{ value: "可用", key: "1" }, { value: "不可用", key: "0" }];
 var loading;
@@ -153,6 +155,9 @@ export default {
   name: "role",
   directives: {
     waves
+  },
+  components: {
+    roleDialog
   },
   data() {
     //表单验证
@@ -194,6 +199,7 @@ export default {
       btnState: false, //按钮状态，是否禁用
       selsctState: false, //下拉框状态，是否禁用
       myselfUpdate: true, //判断是否编辑自己
+      roleDiaState: false, //子组件，控制弹窗显示隐藏
       list: [], //列表数据
       officeIds: [],
       total: null,
@@ -569,6 +575,7 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
+              this.roleDiaState = true;
               if (localStorage.getItem("type") == "platform") {
                 this.filterText = "";
                 this.$nextTick(() => {
