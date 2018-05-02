@@ -38,7 +38,7 @@
 					  <el-table-column
 						align="center"
 						prop="orgName"
-            v-if=" userType != 'org'"         
+            v-if=" userType != 'org'  && userType != 'station'"         
 						label="服务机构">
 					  </el-table-column>            
 					  <el-table-column

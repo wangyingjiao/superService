@@ -27,11 +27,13 @@
 						v-model="startTime"
 						class="search"
 						style="width:20%"
+            @change="downOrder"
 						type="daterange"
 						placeholder="选择下单时间">
 						</el-date-picker>					
 				    <el-date-picker
 						class="search"
+            @change="changeStime"
 						v-model="severTime"
 						style="width:20%;"
 						type="daterange"
@@ -190,6 +192,34 @@ export default {
     }
   },
   methods: {
+    downOrder(val){
+      if(val != undefined){
+        if(this.startTime[0] != undefined && this.startTime[0] != null ){
+            window.sessionStorage.setItem('startTime',this.startTime[0])
+        }
+        if(this.startTime[1] != undefined && this.startTime[1] != null ){
+            window.sessionStorage.setItem('endTime',this.startTime[1])
+        }
+      }else{
+        window.sessionStorage.setItem('startTime','')
+        window.sessionStorage.setItem('endTime','')
+        this.startTime=[];
+      }      
+    },
+    changeStime(val){
+      if(val != undefined){
+        if(this.severTime[0] != undefined && this.severTime[0] != null ){
+            window.sessionStorage.setItem('serviceTimeStart',this.severTime[0])
+        }
+        if(this.severTime[1] != undefined && this.severTime[1] != null){
+          window.sessionStorage.setItem('serviceTimeEnd',this.severTime[1])
+        }       
+      }else{
+        window.sessionStorage.setItem('serviceTimeStart','')
+        window.sessionStorage.setItem('serviceTimeEnd','')
+        this.severTime=[]
+      }
+    },
     renderHeader (h) {
       return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
     },
@@ -258,9 +288,10 @@ export default {
               }
           }                    
             this.mechanismOptions = res.data.data.list;
-            if(this.userType == 'org' || this.userType == 'station'){
+            console.log(window.sessionStorage.getItem('mechanism'))
+            if((this.userType == 'org' && window.sessionStorage.getItem('mechanism') != '') || (this.userType == 'station'  && window.sessionStorage.getItem('mechanism') != '')){
               this.mechanism=this.mechanismOptions[0].id
-            }            
+            }                        
         }                                           
       });
     },
@@ -351,6 +382,8 @@ export default {
       }
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
+      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageSize',this.size)      
       if(this.severTime != undefined){
         if(this.severTime[0] != undefined && this.severTime[0] != null ){
             window.sessionStorage.setItem('serviceTimeStart',this.severTime[0])
@@ -391,6 +424,8 @@ export default {
       }else{
          window.sessionStorage.setItem('orderStatus',this.activeName)
       }
+      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageSize',this.size)
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
       if(this.severTime != undefined){
@@ -489,6 +524,8 @@ export default {
         serviceTimeEnd: severEndTime
       };
       this.getTableData(obj, this.pageNumber, this.size);
+      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageSize',this.size)
     },
     //分页器改变当前页
     handleCurrentChange(val) {
@@ -558,13 +595,21 @@ export default {
         serviceTimeEnd: severEndTime
       };
       this.getTableData(obj, this.pageNumber, this.size);
+      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageSize',this.size)
     }
   },
   mounted() {
-    this.getoffice();
-          if(window.sessionStorage.getItem('orderNumber') != null){
+     
+        if(window.sessionStorage.getItem('orderNumber') != null){
             this.orderNumber=window.sessionStorage.getItem('orderNumber')
         }
+        // if(window.sessionStorage.getItem('pageNumber')!= null){
+        //     this.pageNumber=window.sessionStorage.getItem('pageNumber')
+        // } 
+        if( window.sessionStorage.getItem('pageSize') != null){
+            this.size=window.sessionStorage.getItem('pageSize')
+        }               
         if(window.sessionStorage.getItem('sevicerStustas') != null){
             this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
         }
@@ -575,6 +620,7 @@ export default {
         if(window.sessionStorage.getItem('mechanism') != null){
             this.mechanism=window.sessionStorage.getItem('mechanism')
         }
+
         if(window.sessionStorage.getItem('stationId') != null){
             this.payType=window.sessionStorage.getItem('stationId')
         }          
@@ -598,11 +644,14 @@ export default {
         }else{
           this.startTime=[]
         }  
-    if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != ''){
+    if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
       this.localSearch()
     }else{
-      this.getTableData({ orderStatus: "dispatched" }, 1, 10); 
-    }             
+      this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
+    }
+    this.getoffice();
+  
+                
     this.payStusOptions = this.dict.pay_status;
     this.orderTest = this.dict.order_status;
     this.sevicerStustasOptions = this.dict.service_status;

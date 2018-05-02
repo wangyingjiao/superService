@@ -149,6 +149,7 @@ const user = {
           window.sessionStorage.removeItem('serviceTimeEnd')
           window.sessionStorage.removeItem('startTime')
           window.sessionStorage.removeItem('endTime')
+          window.sessionStorage.removeItem('pageSize')
           resolve()
         }).catch(error => {
           reject(error)
