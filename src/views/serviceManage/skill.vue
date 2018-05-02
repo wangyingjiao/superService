@@ -27,7 +27,7 @@
                       align="center"
                       prop="orgName"         
                       label="服务机构"
-                      v-if=" userType != 'org'"
+                      v-if=" userType != 'org' && userType != 'station'"
                       >
                       </el-table-column>                       
                       <el-table-column label="技能名称" align="center" prop="name"></el-table-column>

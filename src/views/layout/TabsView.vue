@@ -32,7 +32,8 @@ export default {
           window.sessionStorage.removeItem('serviceTimeStart')
           window.sessionStorage.removeItem('serviceTimeEnd')
           window.sessionStorage.removeItem('startTime')
-          window.sessionStorage.removeItem('endTime')          
+          window.sessionStorage.removeItem('endTime')
+          window.sessionStorage.removeItem('pageSize')         
         }
         if (this.isActive(view.path)) {
           const latestView = views.slice(-1)[0];
