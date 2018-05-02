@@ -31,18 +31,17 @@
 						</el-table-column>
             <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 9" :content="rowObj.row.orgName">
                         <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
                       </el-tooltip>
-                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
-                        <!--  -->
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9"  :content="rowObj.row.stationName">
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
             </el-table-column>
             <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
                   <template scope="rowObj">
-                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
