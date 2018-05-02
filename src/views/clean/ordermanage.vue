@@ -289,63 +289,59 @@ export default {
               }
           }                    
           this.mechanismOptions = res.data.data.list;
-        if(window.sessionStorage.getItem('mechanism') != null){
-            this.mechanism=window.sessionStorage.getItem('mechanism')
-        }
-        if((this.userType == 'org' && this.$route.query.mechanism !='1' ) || (this.userType == 'station' && this.$route.query.mechanism !='1')){
-          this.mechanism=this.mechanismOptions[0].id
-        }
-        if((this.userType == 'org' && this.$route.query.mechanism == undefined ) || (this.userType == 'station' && this.$route.query.mechanism == undefined)){
-          this.mechanism=this.mechanismOptions[0].id
-        } 
-        if(window.sessionStorage.getItem('orderNumber') != null){
-            this.orderNumber=window.sessionStorage.getItem('orderNumber')
-        }
-        if( window.sessionStorage.getItem('pageSize') != null){
-            this.size=window.sessionStorage.getItem('pageSize')
-        }               
-        if(window.sessionStorage.getItem('sevicerStustas') != null){
-            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
-        }
-        if(window.sessionStorage.getItem('orderStatus') != null){
-              this.activeName=window.sessionStorage.getItem('orderStatus')
-              this.active1=this.activeName                      
-        }
-        if(window.sessionStorage.getItem('stationId') != null){
-            this.payType=window.sessionStorage.getItem('stationId')
-        }          
-        if(this.severTime != undefined){ 
-          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
-              var arr=[];
-              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
-              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
-              this.severTime=arr
-          }                   
-        }else{
-           this.severTime=[]
-        }
-        if(this.startTime != undefined){
-            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
-                var arr1=[];
-                arr1.push(window.sessionStorage.getItem('startTime'));
-                arr1.push(window.sessionStorage.getItem('endTime'))           
-                this.startTime=arr1
-            } 
-        }else{
-          this.startTime=[]
-        }  
-        if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
-          this.localSearch()
-        }else{
-          this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
-        }            
-            
-
-
-
-
-
-
+          if(window.sessionStorage.getItem('mechanism') != null){
+              this.mechanism=window.sessionStorage.getItem('mechanism')
+          }
+          if((this.userType == 'org' && this.$route.query.mechanism !='1' ) || (this.userType == 'station' && this.$route.query.mechanism !='1')){
+            this.mechanism=this.mechanismOptions[0].id
+          }
+          if((this.userType == 'org' && this.$route.query.mechanism == undefined ) || (this.userType == 'station' && this.$route.query.mechanism == undefined)){
+            this.mechanism=this.mechanismOptions[0].id
+          } 
+          if(window.sessionStorage.getItem('orderNumber') != null){
+              this.orderNumber=window.sessionStorage.getItem('orderNumber')
+          }
+          if( window.sessionStorage.getItem('pageSize') != null){
+              this.size=window.sessionStorage.getItem('pageSize')
+          }
+          if( window.sessionStorage.getItem('pageNumber') != null){
+              this.pageNumber=window.sessionStorage.getItem('pageNumber')
+          }                                   
+          if(window.sessionStorage.getItem('sevicerStustas') != null){
+              this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
+          }
+          if(window.sessionStorage.getItem('orderStatus') != null){
+                this.activeName=window.sessionStorage.getItem('orderStatus')
+                this.active1=this.activeName                      
+          }
+          if(window.sessionStorage.getItem('stationId') != null){
+              this.payType=window.sessionStorage.getItem('stationId')
+          }          
+          if(this.severTime != undefined){ 
+            if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
+                var arr=[];
+                arr.push(window.sessionStorage.getItem('serviceTimeStart'));
+                arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
+                this.severTime=arr
+            }                   
+          }else{
+            this.severTime=[]
+          }
+          if(this.startTime != undefined){
+              if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
+                  var arr1=[];
+                  arr1.push(window.sessionStorage.getItem('startTime'));
+                  arr1.push(window.sessionStorage.getItem('endTime'))           
+                  this.startTime=arr1
+              } 
+          }else{
+            this.startTime=[]
+          }  
+          if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
+            this.localSearch()
+          }else{
+            this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
+          }            
         }                                           
       });
     },
@@ -436,7 +432,7 @@ export default {
       }
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
-      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageNumber',this.pageNumber)
       window.sessionStorage.setItem('pageSize',this.size)      
       if(this.severTime != undefined){
         if(this.severTime[0] != undefined && this.severTime[0] != null ){
@@ -462,8 +458,8 @@ export default {
         window.sessionStorage.setItem('endTime','')
         this.startTime=[];
       }
-      this.pageNumber = 1;
-      this.jumpPage = 1;
+      // this.pageNumber = 1;
+      // this.jumpPage = 1;
       this.getTableData(obj, this.pageNumber, this.size);             
     },
     //导出订单按钮
@@ -478,7 +474,7 @@ export default {
       }else{
          window.sessionStorage.setItem('orderStatus',this.activeName)
       }
-      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageNumber',this.pageNumber)
       window.sessionStorage.setItem('pageSize',this.size)
       window.sessionStorage.setItem('mechanism',this.mechanism)
       window.sessionStorage.setItem('stationId',this.payType)
@@ -578,7 +574,7 @@ export default {
         serviceTimeEnd: severEndTime
       };
       this.getTableData(obj, this.pageNumber, this.size);
-      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageNumber',this.pageNumber)
       window.sessionStorage.setItem('pageSize',this.size)
     },
     //分页器改变当前页
@@ -649,7 +645,7 @@ export default {
         serviceTimeEnd: severEndTime
       };
       this.getTableData(obj, this.pageNumber, this.size);
-      //window.sessionStorage.setItem('pageNumber',this.pageNumber)
+      window.sessionStorage.setItem('pageNumber',this.pageNumber)
       window.sessionStorage.setItem('pageSize',this.size)
     }
   },

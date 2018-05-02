@@ -150,6 +150,7 @@ const user = {
           window.sessionStorage.removeItem('startTime')
           window.sessionStorage.removeItem('endTime')
           window.sessionStorage.removeItem('pageSize')
+          window.sessionStorage.removeItem('pageNumber')
           resolve()
         }).catch(error => {
           reject(error)
