@@ -52,16 +52,16 @@
         
         <el-table-column v-if="userType =='sys'||userType =='platform'"  align="center"  :render-header="renderHeader"  >
             <template scope="rowObj">
-              <!-- <p>{{rowObj.row.organization.name}}</p> -->
-               <!-- <el-tooltip  placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName"> -->
+               <el-tooltip  placement="left" :disabled="rowObj.row.orgName.length < 8" :content="rowObj.row.orgName">
                  <div class="overheidden">{{rowObj.row.orgName}}</div>
-    <!--            </el-tooltip> -->
-              <p>{{rowObj.row.name}}</p>
-        
-            </template>                    
+               </el-tooltip>
+               <el-tooltip  placement="left" :disabled="rowObj.row.name.length < 8" :content="rowObj.row.name">
+                 <div class="overheidden">{{rowObj.row.name}}</div>
+               </el-tooltip>
+            </template>
       </el-table-column>
       
-        <el-table-column  v-if="userType == 'org'" label="服务站名称" align="center">
+        <el-table-column  v-else label="服务站名称" align="center">
            <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.name.length < 5" :content="scope.row.name">
              <div class="overheidden" >{{scope.row.name}}</div>
