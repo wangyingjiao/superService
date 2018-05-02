@@ -1438,7 +1438,7 @@ export default {
                         window.sessionStorage.removeItem('startTime')
                         window.sessionStorage.removeItem('endTime')
                         window.sessionStorage.removeItem('pageSize')
-                        //window.sessionStorage.setItem('mechanism','1')
+                        window.sessionStorage.removeItem('pageNumber')
                         window.sessionStorage.setItem('orderStatus','dispatched')                          
                         this.$router.push({ path: "/clean/ordermanage", query: { mechanism: '1' } }); //跳转到订单管理
                         this.$message({
@@ -1488,7 +1488,7 @@ export default {
                     window.sessionStorage.removeItem('startTime')
                     window.sessionStorage.removeItem('endTime')
                     window.sessionStorage.removeItem('pageSize')
-                    //window.sessionStorage.setItem('mechanism','1')
+                    window.sessionStorage.removeItem('pageNumber')
                     window.sessionStorage.setItem('orderStatus','dispatched')                      
                     this.$router.push({ path: "/clean/ordermanage", query: { mechanism: '1' } }); //跳转到订单管理
                     this.$message({
