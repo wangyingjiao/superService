@@ -227,6 +227,7 @@ export default {
     orgChange(val) {
       this.payType = "";
       this.payTypeOptions = [];
+      window.sessionStorage.setItem('mechanism',val)
       if (val != "") {
         var obj = {
           orgId: val
@@ -287,11 +288,64 @@ export default {
                 res.data.data.list.remove(res.data.data.list[0]);
               }
           }                    
-            this.mechanismOptions = res.data.data.list;
-            console.log(window.sessionStorage.getItem('mechanism'))
-            if((this.userType == 'org' && window.sessionStorage.getItem('mechanism') != '') || (this.userType == 'station'  && window.sessionStorage.getItem('mechanism') != '')){
-              this.mechanism=this.mechanismOptions[0].id
-            }                        
+          this.mechanismOptions = res.data.data.list;
+        if(window.sessionStorage.getItem('mechanism') != null){
+            this.mechanism=window.sessionStorage.getItem('mechanism')
+        }
+        if((this.userType == 'org' && this.$route.query.mechanism !='1' ) || (this.userType == 'station' && this.$route.query.mechanism !='1')){
+          this.mechanism=this.mechanismOptions[0].id
+        }
+        if((this.userType == 'org' && this.$route.query.mechanism == undefined ) || (this.userType == 'station' && this.$route.query.mechanism == undefined)){
+          this.mechanism=this.mechanismOptions[0].id
+        } 
+        if(window.sessionStorage.getItem('orderNumber') != null){
+            this.orderNumber=window.sessionStorage.getItem('orderNumber')
+        }
+        if( window.sessionStorage.getItem('pageSize') != null){
+            this.size=window.sessionStorage.getItem('pageSize')
+        }               
+        if(window.sessionStorage.getItem('sevicerStustas') != null){
+            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
+        }
+        if(window.sessionStorage.getItem('orderStatus') != null){
+              this.activeName=window.sessionStorage.getItem('orderStatus')
+              this.active1=this.activeName                      
+        }
+        if(window.sessionStorage.getItem('stationId') != null){
+            this.payType=window.sessionStorage.getItem('stationId')
+        }          
+        if(this.severTime != undefined){ 
+          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
+              var arr=[];
+              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
+              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
+              this.severTime=arr
+          }                   
+        }else{
+           this.severTime=[]
+        }
+        if(this.startTime != undefined){
+            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
+                var arr1=[];
+                arr1.push(window.sessionStorage.getItem('startTime'));
+                arr1.push(window.sessionStorage.getItem('endTime'))           
+                this.startTime=arr1
+            } 
+        }else{
+          this.startTime=[]
+        }  
+        if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
+          this.localSearch()
+        }else{
+          this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
+        }            
+            
+
+
+
+
+
+
         }                                           
       });
     },
@@ -600,62 +654,13 @@ export default {
     }
   },
   mounted() {
-     
-        if(window.sessionStorage.getItem('orderNumber') != null){
-            this.orderNumber=window.sessionStorage.getItem('orderNumber')
-        }
-        // if(window.sessionStorage.getItem('pageNumber')!= null){
-        //     this.pageNumber=window.sessionStorage.getItem('pageNumber')
-        // } 
-        if( window.sessionStorage.getItem('pageSize') != null){
-            this.size=window.sessionStorage.getItem('pageSize')
-        }               
-        if(window.sessionStorage.getItem('sevicerStustas') != null){
-            this.sevicerStustas=window.sessionStorage.getItem('sevicerStustas')
-        }
-        if(window.sessionStorage.getItem('orderStatus') != null){
-              this.activeName=window.sessionStorage.getItem('orderStatus')
-              this.active1=this.activeName                      
-        }
-        if(window.sessionStorage.getItem('mechanism') != null){
-            this.mechanism=window.sessionStorage.getItem('mechanism')
-        }
+        this.payStusOptions = this.dict.pay_status;
+        this.orderTest = this.dict.order_status;
+        this.sevicerStustasOptions = this.dict.service_status;
+        this.userType=localStorage.getItem("type") 
+        this.getoffice();       
 
-        if(window.sessionStorage.getItem('stationId') != null){
-            this.payType=window.sessionStorage.getItem('stationId')
-        }          
-        if(this.severTime != undefined){ 
-          if(this.severTime.length == 0 && window.sessionStorage.getItem('serviceTimeStart') != null && window.sessionStorage.getItem('serviceTimeEnd') != null){            
-              var arr=[];
-              arr.push(window.sessionStorage.getItem('serviceTimeStart'));
-              arr.push(window.sessionStorage.getItem('serviceTimeEnd'))           
-              this.severTime=arr
-          }                   
-        }else{
-           this.severTime=[]
-        }
-        if(this.startTime != undefined){
-            if(this.startTime.length ==0 && window.sessionStorage.getItem('startTime') != null && window.sessionStorage.getItem('endTime') != null){            
-                var arr1=[];
-                arr1.push(window.sessionStorage.getItem('startTime'));
-                arr1.push(window.sessionStorage.getItem('endTime'))           
-                this.startTime=arr1
-            } 
-        }else{
-          this.startTime=[]
-        }  
-    if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
-      this.localSearch()
-    }else{
-      this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
-    }
-    this.getoffice();
-  
-                
-    this.payStusOptions = this.dict.pay_status;
-    this.orderTest = this.dict.order_status;
-    this.sevicerStustasOptions = this.dict.service_status;
-    this.userType=localStorage.getItem("type")
+                   
   }
 };
 </script>

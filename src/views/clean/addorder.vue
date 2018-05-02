@@ -1440,7 +1440,7 @@ export default {
                         window.sessionStorage.removeItem('pageSize')
                         //window.sessionStorage.setItem('mechanism','1')
                         window.sessionStorage.setItem('orderStatus','dispatched')                          
-                        this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                        this.$router.push({ path: "/clean/ordermanage", query: { mechanism: '1' } }); //跳转到订单管理
                         this.$message({
                           type: "success",
                           message: "下单成功!"
@@ -1490,7 +1490,7 @@ export default {
                     window.sessionStorage.removeItem('pageSize')
                     //window.sessionStorage.setItem('mechanism','1')
                     window.sessionStorage.setItem('orderStatus','dispatched')                      
-                    this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
+                    this.$router.push({ path: "/clean/ordermanage", query: { mechanism: '1' } }); //跳转到订单管理
                     this.$message({
                       type: "success",
                       message: "新增成功!"
