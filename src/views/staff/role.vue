@@ -575,7 +575,7 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
-              this.roleDiaState = true;
+              // this.roleDiaState = true;
               if (localStorage.getItem("type") == "platform") {
                 this.filterText = "";
                 this.$nextTick(() => {
