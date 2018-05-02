@@ -17,6 +17,11 @@
                   <router-link  class="menu-indent" :to="{path:child.href}">
                     <span style="display:inline-block;width:160px;">{{child.name}}</span>
                   </router-link>  
+                  <!-- <keep-alive>
+                    <router-link  class="menu-indent" :to="{path:child.href}">
+                      <span style="display:inline-block;width:160px;">{{child.name}}</span>
+                    </router-link>  
+                  </keep-alive> -->
               </el-menu-item>         
         </el-submenu>
         </el-menu>

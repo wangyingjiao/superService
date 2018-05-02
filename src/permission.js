@@ -9,6 +9,8 @@ const whiteList = ['/login', '/download'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
+    console.log(from, 'form')
+    console.log(to, 'to')
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
