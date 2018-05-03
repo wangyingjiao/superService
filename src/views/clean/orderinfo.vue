@@ -92,7 +92,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag && btnShow.indexOf('refund_view') > -1"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -927,11 +927,19 @@ export default {
     },
     //跳转退款详情页
     gotoRefund(orderNumber) {
-      var src = window.location.href;
-      var end = src.indexOf("#") + 1;
-      var url = src.substring(0, end);
-      this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
-      window.open(this.jumpUrl);
+      if(this.btnShow.indexOf('refund_view') > -1){
+        var src = window.location.href;
+        var end = src.indexOf("#") + 1;
+        var url = src.substring(0, end);
+        this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
+        window.open(this.jumpUrl);
+      }else{
+          this.$message({
+            type: "warning",
+            message: "无查看退款权限!"
+          });        
+      }
+
     },
     loadingClick() {
       loading = this.$loading({
