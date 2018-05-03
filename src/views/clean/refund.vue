@@ -24,8 +24,8 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="orderNumber" min-width="105" label="订单编号"></el-table-column>
-                    <el-table-column align="center" prop="refundNumber"  min-width="105" label="退款编号"></el-table-column>
+                    <el-table-column align="center" prop="orderNumber" min-width="130" label="订单编号"></el-table-column>
+                    <el-table-column align="center" prop="refundNumber"  min-width="130" label="退款编号"></el-table-column>
                     <el-table-column align="center" label="退款金额">
                         <template scope="scope">
                             <span>{{'￥'+scope.row.refundAccountReality}}</span>
