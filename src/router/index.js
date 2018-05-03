@@ -34,8 +34,17 @@ export const constantRouterMap = [
     redirect: 'sys',
     name: '员工管理',
     children: [
-      { path: 'user/index', component: _import('staff/user'), name: '员工列表' },
-      { path: 'role/list', component: _import('staff/role'), name: '岗位管理' }
+      { path: 'user/index', meta: { keepAlive: true }, component: _import('staff/user'), name: '员工列表' },
+      { path: 'role/list', meta: { keepAlive: true }, component: _import('staff/role'), name: '岗位管理' }
+    ]
+  },
+  {
+    path: '/c',
+    component: Layout,
+    redirect: 'c',
+    name: '测试',
+    children: [
+      { path: 'c', meta: { keepAlive: true }, component: _import('staff/c'), name: '测试' }
     ]
   },
 
@@ -81,7 +90,7 @@ export const constantRouterMap = [
     redirect: 'base',
     name: '保洁订单',
     children: [
-      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage') },
+      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage'), meta: { keepAlive: true } },
       { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
       { path: 'dispatchmanage', name: '工单管理', component: _import('clean/dispatchmanage') },
       { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
