@@ -185,7 +185,7 @@ export default {
       listLoading: false,
       active1: ""
     };
-  },
+  },  
   created() {
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
@@ -291,6 +291,7 @@ export default {
     },
     // 服务机构
     getoffice() {
+      
       getSList({}).then(res => {
         if(res.data.data.list != undefined){
           if (res.data.data.list[0].id == '0' ) {

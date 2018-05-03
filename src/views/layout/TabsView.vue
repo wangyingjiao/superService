@@ -34,7 +34,7 @@ export default {
           window.sessionStorage.removeItem('startTime')
           window.sessionStorage.removeItem('endTime')
           window.sessionStorage.removeItem('pageSize')
-          window.sessionStorage.removeItem('pageNumber')         
+          window.sessionStorage.removeItem('pageNumber')        
         }
         if (this.isActive(view.path)) {
           const latestView = views.slice(-1)[0];

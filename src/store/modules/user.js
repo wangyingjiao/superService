@@ -9,7 +9,7 @@ const user = {
     roles: [],
     menu: [],
     buttonshow: [],
-    area: []
+    area: [],
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -17,7 +17,7 @@ const user = {
     },
     SET_NAME: (state, name) => {
       state.name = name
-    },
+    },  
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
@@ -46,7 +46,7 @@ const user = {
         }
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
-            commit('SET_NAME', response.data.data.user.name)
+            commit('SET_NAME', response.data.data.user.name)             
             if (response.data.data.user.name) {
               localStorage.setItem('name', response.data.data.user.name)
             }
