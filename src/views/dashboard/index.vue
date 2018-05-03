@@ -23,9 +23,6 @@ export default {
     return {
       show: true
     };
-  },
-  created(){
-    console.log('首页')
   }
 };
 </script>
