@@ -12,17 +12,13 @@
               <template slot="title">
                 <img v-if="item.icon != ''" :src="'../../../static/icon/'+item.icon+'.png'" alt="" class="side-img">
                 {{item.name}}          
-              </template>    
+              </template>
               <el-menu-item  v-for="child in item.subMenus" :index="child.id" :key="child.id">
                   <router-link  class="menu-indent" :to="{path:child.href}">
                     <span style="display:inline-block;width:160px;">{{child.name}}</span>
                   </router-link>  
-                  <!-- <keep-alive>
-                    <router-link  class="menu-indent" :to="{path:child.href}">
-                      <span style="display:inline-block;width:160px;">{{child.name}}</span>
-                    </router-link>  
-                  </keep-alive> -->
-              </el-menu-item>         
+              </el-menu-item>  
+                  
         </el-submenu>
         </el-menu>
     </template>     	  
