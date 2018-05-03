@@ -675,6 +675,12 @@ body {
 .hideSidebar .sidebar .slde-bcak-log{
   display: none;
 }
+//文字提示样式
+.el-tooltip__popper.is-dark{
+  background-color: #DFE4ED !important;
+  color: #666666 !important;
+  font-size: 12px !important;
+}
 //提示信息滚动
 .el-tooltip__popper{
   max-width: 300px;
@@ -687,7 +693,7 @@ body {
 }
 // 嵌套表格样式
 .el-table__expanded-cell {
-  padding: 10px 0 0px 50px;
+  padding: 10px 0 20px 50px;
   background-color: #fbfdff;
   box-shadow: inset 0 2px 0 #f4f4f4;
 }

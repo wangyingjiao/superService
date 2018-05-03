@@ -1,10 +1,20 @@
 <template>
-<div>1111111</div>
-</template>
 
+  <div>
+    <Layout class="margin1"></Layout>
+    <div class="margin2">
+      1111111
+     <el-input></el-input>
+     </div>
+  </div>
+</template>
 <script>
+import Layout from '../../views/layout/Layout'
 export default {
-  name: "log",
+  name: "log1",
+  components:{
+   Layout
+  },
   data() {
     return {};
   },
@@ -23,28 +33,7 @@ export default {
 };
 </script>
 <style>
-.btn_right {
-  float: right;
-  width: 100px;
-}
-.btn_left {
-  width: 100px;
-}
-.ele-date {
-  margin: 0 10px;
-}
-.bottom0 {
-  margin-bottom: 0px;
-}
-.bgWhite {
-  background-color: #ffffff;
-  padding: 20px 20px 20px 20px;
-}
-.tool {
-  width: 155px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.margin2{
+  margin-left: 300px;
 }
 </style>
