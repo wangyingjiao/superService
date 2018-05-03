@@ -66,7 +66,6 @@ export const constantRouterMap = [
     component: Layout,
     name: '保洁订单',
     children: [
-<<<<<<< HEAD
       { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage'), meta: { keepAlive: true } },
       { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
       { path: 'dispatchmanage', name: '工单管理', component: _import('clean/dispatchmanage')},
@@ -75,16 +74,6 @@ export const constantRouterMap = [
       { path: 'dispatchReass', name: '改派记录', component: _import('clean/dispatchReass') },
       { path: 'refund', name: '退款管理', component: _import('clean/refund') },
       { path: 'pay', name: '收款管理', component: _import('clean/pay') }
-=======
-      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage'), meta: { keepAlive: true }},
-      { path: 'addorder', meta: { keepAlive: false }, name: '新增订单', component: _import('clean/addorder') },
-      { path: 'dispatchmanage', meta: { keepAlive: false }, name: '工单管理', component: _import('clean/dispatchmanage') },
-      { path: 'returnvisit', meta: { keepAlive: false }, name: '回访记录', component: _import('clean/returnvisit') },
-      { path: 'orderinfo', meta: { keepAlive: false }, name: '订单详情', component: _import('clean/orderinfo') },
-      { path: 'dispatchReass', meta: { keepAlive: false }, name: '改派记录', component: _import('clean/dispatchReass') },
-      { path: 'refund', meta: { keepAlive: false }, name: '退款管理', component: _import('clean/refund') },
-      { path: 'pay', meta: { keepAlive: false }, name: '收款管理', component: _import('clean/pay') }
->>>>>>> 3e1b914fb6e04fc2d7ea091b6ef5e1930df38f30
     ]
   },
   {
