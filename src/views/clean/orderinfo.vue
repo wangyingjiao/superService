@@ -653,64 +653,59 @@ export default {
   data() {
     //退款差价验证规则
     var checkChaE = (rule, value, callback) => {
-      if (!value) {   
+      if (!value) {
         callback();
       } else {
-        if(!/^[0-9]+\.?[0-9]*/.test(value)){
-           callback(new Error("请输入整数或一至两位小数"));
-        }else{
+        if (!/^[0-9]+\.?[0-9]*/.test(value)) {
+          callback(new Error("请输入整数或一至两位小数"));
+        } else {
           if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(value)) {
-              callback(new Error("请输入整数或一至两位小数"));
-          }else{
+            callback(new Error("请输入整数或一至两位小数"));
+          } else {
             callback();
           }
-        }         
+        }
       }
     };
     //退款原因验证规则
     var checkrefundReason = (rule, value, callback) => {
-      if (!value) {   
+      if (!value) {
         callback();
       } else {
         if (value.length >= 0 && value.length <= 500) {
           callback();
         } else {
           callback(new Error("请输入500位以内的退款原因"));
-        }          
+        }
       }
-    };        
+    };
     return {
-      jumpUrl:'#',
-      middleB:[],
+      jumpUrl: "#",
+      middleB: [],
       ruleForm: {
-        refundId:'',
-        refundDifference: '',
-        orderNowRefundStatus:'',
-        refundReason:'',
-        refundAccount:0,
-        refundMethod:'cash',
-        payMethod:'现金',
-        payPrice:'',
-        orderRefundObj:[      
-        ],                
+        refundId: "",
+        refundDifference: "",
+        orderNowRefundStatus: "",
+        refundReason: "",
+        refundAccount: 0,
+        refundMethod: "cash",
+        payMethod: "现金",
+        payPrice: "",
+        orderRefundObj: []
       },
       rules: {
-          refundDifference: [
-            { validator: checkChaE, trigger: 'blur' },
-          ],
-          refundReason: [
-            { validator: checkrefundReason, trigger: 'blur' },
-          ],
-          refundId:[
-            { required: true,message:'请选择退款商品', trigger: 'change' },
-          ]  
+        refundDifference: [{ validator: checkChaE, trigger: "blur" }],
+        refundReason: [{ validator: checkrefundReason, trigger: "blur" }],
+        refundId: [
+          { required: true, message: "请选择退款商品", trigger: "change" }
+        ]
       },
-      choose:[],
-      refundDifferenceType:'',
+      choose: [],
+      refundDifferenceType: "",
       dict: require("../../../static/dict.json"),
       becaussOptions: [],
       cancelOrderFlag: false,
-      orderRefundFlag:false,
+      orderRefundFlag: false,
       options2: [],
       btnShow: [],
       timeSaveFlag: false,
@@ -790,68 +785,83 @@ export default {
       val = Number(val);
       return val.toFixed(2);
     }
-  }, 
+  },
   methods: {
     //多少退款改变
-    ChangerefundType(value){
-      if(value == ''){
-        this.ruleForm.refundDifference='';
+    ChangerefundType(value) {
+      if (value == "") {
+        this.ruleForm.refundDifference = "";
       }
     },
     //计算退款总额
-    rowChange(rowObj){    
-      if (rowObj.goodsChecked) {          
-           this.ruleForm.refundAccount = this.ruleForm.refundAccount + rowObj.payPrice * 1*rowObj.goodsNum;        
-      } else { 
-        this.ruleForm.refundAccount = this.ruleForm.refundAccount - rowObj.payPrice * 1*rowObj.goodsNum;  
+    rowChange(rowObj) {
+      if (rowObj.goodsChecked) {
+        this.ruleForm.refundAccount =
+          this.ruleForm.refundAccount + rowObj.payPrice * 1 * rowObj.goodsNum;
+      } else {
+        this.ruleForm.refundAccount =
+          this.ruleForm.refundAccount - rowObj.payPrice * 1 * rowObj.goodsNum;
       }
-      if(this.ruleForm.refundAccount == '0'){
-           this.ruleForm.refundId='' 
-      }else{
-           this.ruleForm.refundId='1'
-      }       
+      if (this.ruleForm.refundAccount == "0") {
+        this.ruleForm.refundId = "";
+      } else {
+        this.ruleForm.refundId = "1";
+      }
     },
     //确认退款
-    orderRefundOk(formName){
+    orderRefundOk(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if((this.refundDifferenceType == '' && this.ruleForm.refundDifference >0 )|| (this.refundDifferenceType == null && this.ruleForm.refundDifference >0)){
-              this.$message({
-                type: "warning",
-                message: "请选择退款差额类型！"
-              });
-              return false            
+          if (
+            (this.refundDifferenceType == "" &&
+              this.ruleForm.refundDifference > 0) ||
+            (this.refundDifferenceType == null &&
+              this.ruleForm.refundDifference > 0)
+          ) {
+            this.$message({
+              type: "warning",
+              message: "请选择退款差额类型！"
+            });
+            return false;
           }
-          if(this.ruleForm.refundDifference >= this.ruleForm.refundAccount){
-              this.$message({
-                type: "warning",
-                message: "退款差额应小于退款金额！"
-              });
-          }else{
-              var refundPirce=0;
-              if(this.refundDifferenceType == 'many'){
-                refundPirce=this.ruleForm.refundAccount+Number(this.ruleForm.refundDifference)
-              }
-              if(this.refundDifferenceType == 'less'){
-                refundPirce=this.ruleForm.refundAccount-Number(this.ruleForm.refundDifference)
-              } 
-              if(this.refundDifferenceType == '' || this.refundDifferenceType == null){
-                this.refundDifferenceType=null
-                refundPirce=this.ruleForm.refundAccount
-              }
-              refundPirce=Number(refundPirce).toFixed(2); 
-              const h = this.$createElement;
-              this.$msgbox({
-                title: '提示',
-                message: h('p', null, [
-                  h('span', null, '实际退款金额为：￥'),
-                  h('span', { style: 'color: teal' }, refundPirce),
-                  h('span', null, '，确定退款吗？'),
-                ]),
-                showCancelButton: true,            
-                confirmButtonText: '确定',
-                cancelButtonText: '取消'
-              }).then(() => {
+          if (this.ruleForm.refundDifference >= this.ruleForm.refundAccount) {
+            this.$message({
+              type: "warning",
+              message: "退款差额应小于退款金额！"
+            });
+          } else {
+            var refundPirce = 0;
+            if (this.refundDifferenceType == "many") {
+              refundPirce =
+                this.ruleForm.refundAccount +
+                Number(this.ruleForm.refundDifference);
+            }
+            if (this.refundDifferenceType == "less") {
+              refundPirce =
+                this.ruleForm.refundAccount -
+                Number(this.ruleForm.refundDifference);
+            }
+            if (
+              this.refundDifferenceType == "" ||
+              this.refundDifferenceType == null
+            ) {
+              this.refundDifferenceType = null;
+              refundPirce = this.ruleForm.refundAccount;
+            }
+            refundPirce = Number(refundPirce).toFixed(2);
+            const h = this.$createElement;
+            this.$msgbox({
+              title: "提示",
+              message: h("p", null, [
+                h("span", null, "实际退款金额为：￥"),
+                h("span", { style: "color: teal" }, refundPirce),
+                h("span", null, "，确定退款吗？")
+              ]),
+              showCancelButton: true,
+              confirmButtonText: "确定",
+              cancelButtonText: "取消"
+            })
+              .then(() => {
                 var arr = [];
                 for (var a = 0; a < this.ruleForm.orderRefundObj.length; a++) {
                   if (this.ruleForm.orderRefundObj[a].goodsChecked) {
@@ -859,43 +869,41 @@ export default {
                   }
                 }
                 this.middleB = Object.assign([], arr);
-                var orderRefundInfo={};
-                    orderRefundInfo.refundMethod=this.ruleForm.refundMethod;
-                    orderRefundInfo.refundAccount=this.ruleForm.refundAccount;
-                    orderRefundInfo.refundDifferenceType=this.refundDifferenceType;
-                    orderRefundInfo.refundDifference=this.ruleForm.refundDifference;
-                    orderRefundInfo.refundAccountReality=refundPirce;
-                    orderRefundInfo.refundReason=this.ruleForm.refundReason;
-                    var obj1 = {
-                      id: this.orderId,
-                      goodsInfoList:this.middleB,
-                      orderRefundInfo:orderRefundInfo    
-                    };
-                    orderRefundSave(obj1)
-                      .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                              type: "success",
-                              message: "退款成功"
-                            });
-                            this.refundDifferenceType=''
-                            this.getOrderAllInf(this.orderId)                      
-                            this.$refs['ruleForm'].resetFields();
-                            this.orderRefundFlag = false;
-                        }
-                      })
-                      .catch(res => {});            
-                  
-
-              }).catch(() => {
-                    this.$message({
-                      type: "warning",
-                      message: "已取消退款"
-                    });
+                var orderRefundInfo = {};
+                orderRefundInfo.refundMethod = this.ruleForm.refundMethod;
+                orderRefundInfo.refundAccount = this.ruleForm.refundAccount;
+                orderRefundInfo.refundDifferenceType = this.refundDifferenceType;
+                orderRefundInfo.refundDifference = this.ruleForm.refundDifference;
+                orderRefundInfo.refundAccountReality = refundPirce;
+                orderRefundInfo.refundReason = this.ruleForm.refundReason;
+                var obj1 = {
+                  id: this.orderId,
+                  goodsInfoList: this.middleB,
+                  orderRefundInfo: orderRefundInfo
+                };
+                orderRefundSave(obj1)
+                  .then(res => {
+                    if (res.data.code === 1) {
+                      this.$message({
+                        type: "success",
+                        message: "退款成功"
+                      });
+                      this.refundDifferenceType = "";
+                      this.getOrderAllInf(this.orderId);
+                      this.$refs["ruleForm"].resetFields();
+                      this.orderRefundFlag = false;
+                    }
+                  })
+                  .catch(res => {});
               })
+              .catch(() => {
+                this.$message({
+                  type: "warning",
+                  message: "已取消退款"
+                });
+              });
           }
-  
-        }else{
+        } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
@@ -909,21 +917,21 @@ export default {
           });
           return false;
         }
-      })      
+      });
     },
     //取消退款
-    orderRefundCancel(){      
-      this.refundDifferenceType=''
-      this.$refs['ruleForm'].resetFields();     
+    orderRefundCancel() {
+      this.refundDifferenceType = "";
+      this.$refs["ruleForm"].resetFields();
       this.orderRefundFlag = false;
     },
     //跳转退款详情页
-    gotoRefund(orderNumber){
-      var src=window.location.href;
-      var end=src.indexOf('#')+1;
-      var url=src.substring(0,end)      
-      this.jumpUrl=url+'/clean/refund?ordernumber='+orderNumber;
-      window.open(this.jumpUrl)
+    gotoRefund(orderNumber) {
+      var src = window.location.href;
+      var end = src.indexOf("#") + 1;
+      var url = src.substring(0, end);
+      this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
+      window.open(this.jumpUrl);
     },
     loadingClick() {
       loading = this.$loading({
@@ -1180,7 +1188,7 @@ export default {
           }
         }
       }
-    },   
+    },
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -1294,11 +1302,11 @@ export default {
       this.cancelOrderFlag = true;
     },
     //退款按钮
-    orderRefund(){
-      this.ruleForm.refundAccount=0;
-      this.ruleForm.refundDifference='';
-      this.ruleForm.refundDifferenceType='';
-      this.orderRefundFlag=true;       
+    orderRefund() {
+      this.ruleForm.refundAccount = 0;
+      this.ruleForm.refundDifference = "";
+      this.ruleForm.refundDifferenceType = "";
+      this.orderRefundFlag = true;
       //退款按钮
       var obj1 = {
         id: this.orderId
@@ -1306,18 +1314,17 @@ export default {
       orderRefundInit(obj1)
         .then(res => {
           if (res.data.code === 1) {
-              if(res.data.data != undefined){
-                this.ruleForm.payPrice=res.data.data.payPrice;
-                this.ruleForm.orderRefundObj=res.data.data.goodsInfoList;
-                if(res.data.data.orderNowRefundStatus != undefined){
-                   this.ruleForm.orderNowRefundStatus=res.data.data.orderNowRefundStatus;
-                }
-                
+            if (res.data.data != undefined) {
+              this.ruleForm.payPrice = res.data.data.payPrice;
+              this.ruleForm.orderRefundObj = res.data.data.goodsInfoList;
+              if (res.data.data.orderNowRefundStatus != undefined) {
+                this.ruleForm.orderNowRefundStatus =
+                  res.data.data.orderNowRefundStatus;
               }
-
+            }
           }
         })
-        .catch(res => {});      
+        .catch(res => {});
     },
     //取消订单确认
     submitOrder(formName) {
@@ -1379,6 +1386,7 @@ export default {
     }
   },
   mounted() {
+    console.log(window.localStorage.getItem("orderId"),'111111')
     this.choose = this.dict.refund_type;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
@@ -1391,18 +1399,18 @@ export default {
 };
 </script>
 <style   scoped>
-.refundStatusStyle{
-    color: #8391a5;
-    margin-left:75px;
-    margin-top:-20px;
-    font-size: 12px;
+.refundStatusStyle {
+  color: #8391a5;
+  margin-left: 75px;
+  margin-top: -20px;
+  font-size: 12px;
 }
 .searchHeader .el-input-group__prepend .el-input__inner {
   width: 200px;
   text-align: center;
 }
-.searchHeader .el-select{
-  width:180px;
+.searchHeader .el-select {
+  width: 180px;
 }
 .searchHeader {
   width: 380px;
@@ -1506,13 +1514,13 @@ export default {
 .marginBottom20 {
   margin-bottom: 20px;
 }
-.marginTop20{
-  margin-top:-20px;
-  padding-left:25px;
-  font-size:12px;
+.marginTop20 {
+  margin-top: -20px;
+  padding-left: 25px;
+  font-size: 12px;
 }
-.refundSpan{
-  padding-left:10px;
+.refundSpan {
+  padding-left: 10px;
 }
 .selfPromINF {
   font-size: 12px;
@@ -1544,7 +1552,6 @@ export default {
 }
 .table-d1 {
   width: 677px;
- 
 }
 .selfTable1,
 .selfTable1 tr th,
