@@ -66,7 +66,7 @@ export const constantRouterMap = [
     component: Layout,
     name: '保洁订单',
     children: [
-      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage'), meta: { keepAlive: true } },
+      { path: 'ordermanage', name: '订单管理', component: _import('clean/ordermanage') },
       { path: 'addorder', name: '新增订单', component: _import('clean/addorder') },
       { path: 'dispatchmanage', name: '工单管理', component: _import('clean/dispatchmanage')},
       { path: 'returnvisit', name: '回访记录', component: _import('clean/returnvisit') },
