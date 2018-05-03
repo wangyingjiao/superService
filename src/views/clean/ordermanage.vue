@@ -354,6 +354,7 @@ export default {
         this.active1 = tab.name;
       }
       this.payStus = "";
+      this.pageNumber = 1;
       this.localSearch()
     },
     //全局search按钮
@@ -654,9 +655,7 @@ export default {
         this.orderTest = this.dict.order_status;
         this.sevicerStustasOptions = this.dict.service_status;
         this.userType=localStorage.getItem("type") 
-        this.getoffice();       
-
-                   
+        this.getoffice();                          
   }
 };
 </script>
