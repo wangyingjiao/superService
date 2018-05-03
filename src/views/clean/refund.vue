@@ -15,7 +15,7 @@
         </div>
         <div class="refund-table" v-loading.body="loading">
             <div>
-                <el-table :data="tableData" border  stripe style="width: 100%">
+                <el-table :data="tableData"  stripe style="width: 100%">
                     <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader">
                         <template scope="scope">
                             <div>
@@ -24,8 +24,8 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="orderNumber"  label="订单编号"></el-table-column>
-                    <el-table-column align="center" prop="refundNumber" label="退款编号"></el-table-column>
+                    <el-table-column align="center" prop="orderNumber" min-width="105" label="订单编号"></el-table-column>
+                    <el-table-column align="center" prop="refundNumber"  min-width="105" label="退款编号"></el-table-column>
                     <el-table-column align="center" label="退款金额">
                         <template scope="scope">
                             <span>{{'￥'+scope.row.refundAccountReality}}</span>
