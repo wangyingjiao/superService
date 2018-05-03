@@ -87,7 +87,26 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <!-- 商品 -->
-        <el-table-column align="center" label="" min-width="250">
+        <!-- 删除商品与已对接E店的一列
+        element无法根据内容大小，所以判断两种，有E店和无E店 -->
+        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?250:100">
+             <template scope="scope">
+            <div
+              class="branch"  
+              v-for="(item,index) in scope.row.commoditys" 
+              :key="index">
+              <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
+              <!-- 全系统用户不需要判断是否有对接E店 -->
+              <span v-if="techUserType=='sys'">
+                <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+              <span v-else>
+                <button v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="" v-if="techUserType!='sys'" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?250:100">
              <template scope="scope">
             <div
               class="branch"  

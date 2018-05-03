@@ -336,6 +336,19 @@
 				}
 			}
 			list()
+		},
+		beforeRouteLeave(to,from,next){
+			if(to.path == '/clean/orderinfo'){
+				if(!from.meta.keepAlive){
+					from.meta.keepAlive = true	
+				}
+				next();
+			}else{
+				from.meta.keepAlive = false
+				to.meta.keepAlive = true
+				this.$destroy();
+				next()
+			}
 		}
 	}
 </script>
