@@ -5,7 +5,7 @@
             <div class="custom-action orderOneBar">订单信息              
               <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
               <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
-              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1 -->
+              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1-->
             </div>
             <!--  -->
             <div class="hr-style"></div>
@@ -572,8 +572,8 @@
           class="selfDialogWidth1"
           >
             <div class="selfTableWrapONE1">
-              <div class="marginTop20" style="margin-left:-10px;">
-                  <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-form-inline">
+              <div  >
+                  <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" >
                       <el-form-item prop="refundId">
                           <div class="table-d1">
                             <table  class="selfTable">
@@ -586,22 +586,22 @@
                                 </tr>
                                 <div class="orderinfoTechTablePadding">
                                     <tr v-for="item in ruleForm.orderRefundObj" :key="item.goodsId"  ref="tableItem1" class="selfTdStyle2">
-                                      <td width="72px" class="fontSize12"  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked" ></el-checkbox></td>
+                                      <td width="72px"   align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked" ></el-checkbox></td>
                                       <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.goodsName}}</div></td>
-                                      <td width="132px" class="fontSize12" align="center">￥{{item.payPrice}}</td>
-                                      <td  width="102px" class="fontSize12" align="center">{{item.goodsNum}}</td>
-                                      <td width="110px" class="fontSize12"  align="center">{{item.goodsUnit}}</td>							
+                                      <td width="132px"  align="center">￥{{item.payPrice}}</td>
+                                      <td  width="102px" align="center">{{item.goodsNum}}</td>
+                                      <td width="110px"  align="center">{{item.goodsUnit}}</td>							
                                     </tr>
                                 </div>
                             </table>
                             <el-input type="hidden" value='' v-model='ruleForm.refundId'></el-input> 
                           </div>                                                 
                       </el-form-item>
-                     <el-form-item label="支付总额:" prop="payPrice">￥{{ruleForm.payPrice | keepTwoNum}}</el-form-item>
-                     <el-form-item label="支付方式:" prop="payMethod"><span>{{ruleForm.payMethod}}</span></el-form-item>
-                     <el-form-item label="退款方式:" prop="refundMethod"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
-                     <el-form-item label="退款金额:" prop="refundAccount">￥{{ruleForm.refundAccount | keepTwoNum }}</el-form-item>
-                      <el-form-item label="退款差额:" prop="refundDifference">
+                     <el-form-item label="支付总额:" prop="payPrice" style="margin-top:-50px;">￥{{ruleForm.payPrice | keepTwoNum}}</el-form-item>
+                     <el-form-item label="支付方式:" prop="payMethod" style="margin-top:-22px;"><span>{{ruleForm.payMethod}}</span></el-form-item>
+                     <el-form-item label="退款方式:" prop="refundMethod" style="margin-top:-22px;"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
+                     <el-form-item label="退款金额:" prop="refundAccount" style="margin-top:-22px;">￥{{ruleForm.refundAccount | keepTwoNum }}</el-form-item>
+                      <el-form-item label="退款差额:" prop="refundDifference" style="margin-top:-22px;">
                         <el-input v-model="ruleForm.refundDifference" placeholder="0" class="search searchHeader">
                             <el-select  v-model="refundDifferenceType" clearable placeholder="请选择"  slot="prepend" @change="ChangerefundType">
                               <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
@@ -1539,12 +1539,12 @@ export default {
   margin-left: 15px;
 }
 .selfTableWrapONE1 {
-  margin-top: 20px;
+  margin: 0 20px;
   position: relative;
 }
 .table-d1 {
   width: 677px;
-  padding-left:10px;
+ 
 }
 .selfTable1,
 .selfTable1 tr th,

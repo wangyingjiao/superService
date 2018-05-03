@@ -572,7 +572,8 @@ body {
 //自定义弹窗大小
 .selfDialogWidth .el-dialog {width:700px}
 //自定义弹窗大小
-.selfDialogWidth1 .el-dialog {width:720px}
+.selfDialogWidth1 .el-dialog {width:734px}
+.selfDialogWidth1 .el-dialog .el-form-item__label{font-size:14px;}
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
   line-height:23px;
@@ -674,6 +675,12 @@ body {
 .hideSidebar .sidebar .slde-bcak-log{
   display: none;
 }
+//文字提示样式
+.el-tooltip__popper.is-dark{
+  background-color: #DFE4ED !important;
+  color: #666666 !important;
+  font-size: 12px !important;
+}
 //提示信息滚动
 .el-tooltip__popper{
   max-width: 300px;
@@ -686,7 +693,7 @@ body {
 }
 // 嵌套表格样式
 .el-table__expanded-cell {
-  padding: 10px 0 0px 50px;
+  padding: 10px 0 20px 50px;
   background-color: #fbfdff;
   box-shadow: inset 0 2px 0 #f4f4f4;
 }
