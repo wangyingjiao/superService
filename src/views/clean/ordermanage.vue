@@ -8,16 +8,16 @@
 				<!--选项卡结束-->
 				<!--搜索条件选择开始-->
 				<div class="searchs">
-			  	<el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber"></el-input>	
+			  <el-input   class="search"  placeholder="请输入订单编号" v-model="orderNumber" @blur="orderNumChange"></el-input>	
 			  <el-select clearable class="search"  v-model="mechanism" filterable placeholder="选择机构" @change="orgChange">
 						<el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>
-			  <el-select clearable class="search"  v-model="payType" filterable placeholder="选择服务站">
+			  <el-select clearable class="search"  v-model="payType" filterable placeholder="选择服务站"  @change="stationChange" >
 						<el-option v-for="item in payTypeOptions" :key="item.id" :label="item.name" :value="item.id">
 						</el-option>
 			  </el-select>				
-			  <el-select clearable class="search"  v-model="sevicerStustas" placeholder="请选择服务状态">
+			  <el-select clearable class="search"  v-model="sevicerStustas" placeholder="请选择服务状态"  @change="sevicerStustasChange">
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>						  
@@ -192,6 +192,19 @@ export default {
     }
   },
   methods: {
+    //订单编号变更
+    orderNumChange(){
+        window.sessionStorage.setItem('orderNumber',this.orderNumber)
+    },
+    //服务站变更
+    stationChange(val){
+       window.sessionStorage.setItem('stationId',val)
+    },
+    //服务状态变更
+    sevicerStustasChange(val){
+       window.sessionStorage.setItem('sevicerStustas',val)
+    },
+    //下单时间变更
     downOrder(val){
       if(val != undefined){
         if(this.startTime[0] != undefined && this.startTime[0] != null ){
@@ -206,6 +219,7 @@ export default {
         this.startTime=[];
       }      
     },
+    //服务时间变更
     changeStime(val){
       if(val != undefined){
         if(this.severTime[0] != undefined && this.severTime[0] != null ){
@@ -292,12 +306,12 @@ export default {
           if(window.sessionStorage.getItem('mechanism') != null){
               this.mechanism=window.sessionStorage.getItem('mechanism')
           }
-          if((this.userType == 'org' && this.$route.query.mechanism !='1' ) || (this.userType == 'station' && this.$route.query.mechanism !='1')){
-            this.mechanism=this.mechanismOptions[0].id
-          }
-          if((this.userType == 'org' && this.$route.query.mechanism == undefined ) || (this.userType == 'station' && this.$route.query.mechanism == undefined)){
-            this.mechanism=this.mechanismOptions[0].id
-          } 
+          // if((this.userType == 'org' && this.$route.query.mechanism !='1' ) || (this.userType == 'station' && this.$route.query.mechanism !='1')){
+          //   //this.mechanism=this.mechanismOptions[0].id
+          // }
+          // if((this.userType == 'org' && this.$route.query.mechanism == undefined ) || (this.userType == 'station' && this.$route.query.mechanism == undefined)){
+          //   //this.mechanism=this.mechanismOptions[0].id
+          // } 
           if(window.sessionStorage.getItem('orderNumber') != null){
               this.orderNumber=window.sessionStorage.getItem('orderNumber')
           }
@@ -338,7 +352,72 @@ export default {
             this.startTime=[]
           }  
           if(this.orderNumber !='' || this.sevicerStustas != '' || this.mechanism != '' || this.severTime.length !=0 || this.startTime.length != 0 || this.payType != '' || this.size != ''){
-            this.localSearch()
+            //this.localSearch()
+            //服务时间格式化
+            var severstartTime,severEndTime
+            if(this.severTime != undefined){
+                if (this.severTime[0] != undefined && this.severTime[0] != '') {
+                  severstartTime = util.formatDate.format(
+                    new Date(this.severTime[0]),
+                    "yyyy-MM-dd hh:mm:ss"
+                  );
+                } else {
+                  severstartTime = null;
+                }
+                if (this.severTime[1] != undefined && this.severTime[1] != '') {
+                  severEndTime = util.formatDate.format(
+                    new Date(this.severTime[1]),
+                    "yyyy-MM-dd 23:59:59"
+                  );
+                } else {
+                  severEndTime = null;
+                }
+            }else{
+              severstartTime = null;
+              severEndTime = null;
+            }
+            //开始时间格式化
+            var startTime,endTime
+            if(this.startTime != undefined){                   
+                if (this.startTime[0] != undefined && this.startTime[0] != '') {
+                  startTime = util.formatDate.format(
+                    new Date(this.startTime[0]),
+                    "yyyy-MM-dd hh:mm:ss"
+                  );
+                } else {
+                  startTime = null;
+                }
+                //结束时间格式化
+                if (this.startTime[1] != undefined  && this.startTime[1] != '') {
+                  endTime = util.formatDate.format(
+                    new Date(this.startTime[1]),
+                    "yyyy-MM-dd 23:59:59"
+                  );
+                } else {
+                  endTime = null;
+                }
+            }else{
+              startTime = null;
+              endTime = null;
+            }
+
+            if (this.activeName == "whole") {
+              this.active1 = "";
+            } else {
+              this.active1 = this.activeName;
+            }
+            var obj = {
+              orderStatus: this.active1,
+              serviceStatus: this.sevicerStustas, //服务状态
+              orgId: this.mechanism,
+              stationId: this.payType,
+              orderNumber: this.orderNumber,
+              orderTimeStart: startTime,
+              orderTimeEnd: endTime,
+              serviceTimeStart: severstartTime,
+              serviceTimeEnd: severEndTime
+            }; 
+            this.getTableData(obj, this.pageNumber, this.size);             
           }else{
             this.getTableData({ orderStatus: "dispatched"}, 1, 10); 
           }            
@@ -354,6 +433,7 @@ export default {
         this.active1 = tab.name;
       }
       this.payStus = "";
+      this.pageNumber = 1;
       this.localSearch()
     },
     //全局search按钮
@@ -423,6 +503,8 @@ export default {
         serviceTimeStart: severstartTime,
         serviceTimeEnd: severEndTime
       }; 
+      this.pageNumber = 1;
+      this.jumpPage = 1;
       window.sessionStorage.setItem('orderNumber',this.orderNumber)
       window.sessionStorage.setItem('sevicerStustas',this.sevicerStustas)
       if(this.activeName == ''){
@@ -458,8 +540,6 @@ export default {
         window.sessionStorage.setItem('endTime','')
         this.startTime=[];
       }
-      // this.pageNumber = 1;
-      // this.jumpPage = 1;
       this.getTableData(obj, this.pageNumber, this.size);             
     },
     //导出订单按钮
@@ -654,9 +734,7 @@ export default {
         this.orderTest = this.dict.order_status;
         this.sevicerStustasOptions = this.dict.service_status;
         this.userType=localStorage.getItem("type") 
-        this.getoffice();       
-
-                   
+        this.getoffice();                          
   }
 };
 </script>
