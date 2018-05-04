@@ -1576,6 +1576,7 @@ export default {
       var obj = {
         techName: this.techName,
         stationId: this.serverStation1,
+        orgId:this.form.mechanism,
         goodsInfoList: this.middleB
       };
       //服务技师获取
