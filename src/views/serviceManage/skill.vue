@@ -238,7 +238,7 @@ export default {
       total: null,
       pageSize: 10,
       pageNumber: 1,
-      listLoading: false,
+      listLoading: true,
       dialogVisible: false,
       flagserver: false,
       dialogFormVisible: false,
