@@ -9,8 +9,8 @@ import Layout from '../views/layout/Layout'
 Vue.use(Router)
 
 export const constantRouterMap = [
-  { path: '/login', component: _import('login/index'), meta: { keepAlive: false }},
-  { path: '/download', component: _import('login/download'), meta: { keepAlive: false }},
+  { path: '/login', component: _import('login/index'), meta: { keepAlive: false } },
+  { path: '/download', component: _import('login/download'), meta: { keepAlive: false } },
   { path: '/404', component: _import('404') },
   {
     path: '/',
@@ -66,14 +66,14 @@ export const constantRouterMap = [
     component: Layout,
     name: '保洁订单',
     children: [
-      { path: 'ordermanage', name: '订单管理',meta: { keepAlive: false }, component: _import('clean/ordermanage') },
-      { path: 'addorder', name: '新增订单',meta: { keepAlive: false }, component: _import('clean/addorder') },
-      { path: 'dispatchmanage', name: '工单管理',meta: { keepAlive: false }, component: _import('clean/dispatchmanage')},
-      { path: 'returnvisit', name: '回访记录',meta: { keepAlive: false }, component: _import('clean/returnvisit') },
-      { path: 'orderinfo', name: '订单详情', meta: { keepAlive: false },component: _import('clean/orderinfo') },
-      { path: 'dispatchReass', name: '改派记录',meta: { keepAlive: false }, component: _import('clean/dispatchReass') },
-      { path: 'refund', name: '退款管理',meta: { keepAlive: false }, component: _import('clean/refund') },
-      { path: 'pay', name: '收款管理',meta: { keepAlive: false }, component: _import('clean/pay') }
+      { path: 'ordermanage', name: '订单管理', meta: { keepAlive: false }, component: _import('clean/ordermanage') },
+      { path: 'addorder', name: '新增订单', meta: { keepAlive: false }, component: _import('clean/addorder') },
+      { path: 'dispatchmanage', name: '工单管理', meta: { keepAlive: false }, component: _import('clean/dispatchmanage') },
+      { path: 'returnvisit', name: '回访记录', meta: { keepAlive: false }, component: _import('clean/returnvisit') },
+      { path: 'orderinfo', name: '订单详情', meta: { keepAlive: false }, component: _import('clean/orderinfo') },
+      { path: 'dispatchReass', name: '改派记录', meta: { keepAlive: false }, component: _import('clean/dispatchReass') },
+      { path: 'refund', name: '退款管理', meta: { keepAlive: false }, component: _import('clean/refund') },
+      { path: 'pay', name: '收款管理', meta: { keepAlive: false }, component: _import('clean/pay') }
     ]
   },
   {
