@@ -336,25 +336,6 @@
 				}
 			}
 			list()
-		},
-		beforeRouteEnter: (to, from, next) => {
-			console.log(to,"to----++++-")
-			console.log(from,"from--+++++--")
-			// if(to.path=='/technician/Schedule'){
-			// 	if(from.path == '/clean/orderinfo'){
-			// 		to.meta.keepAlive = true
-			// 	}else{
-			// 		to.meta.keepAlive = false
-			// 	}
-			// }
-			//to.meta.keepAlive = true
-			if(from.path == '/clean/orderinfo'){
-				to.meta.keepAlive = true
-			}else{
-				to.meta.keepAlive = false
-				
-			}
-			next()
 		}
 	}
 </script>
