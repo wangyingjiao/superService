@@ -8,7 +8,7 @@
 					<!-- <el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
 						<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
 					</el-select> -->
-					<el-select class="searchRight select-width" v-model="search.stationId" placeholder="选择服务站">
+					<el-select class="searchRight select-width" clearable v-model="search.stationId" placeholder="选择服务站">
 						<el-option v-for="item in stations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
 					</el-select>
 					<el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="searchRight search-width">
@@ -325,6 +325,7 @@
 			},
 		},
 		mounted(){
+			console.log(this.$route.meta,",meta---++++++---")
 			if(this.techUserType=='station' || this.techUserType=='org'){
 				this.getList()
 			}
@@ -336,7 +337,30 @@
 				}
 			}
 			list()
-		}
+		},
+		// beforeRouteEnter(to, from, next){
+		// 	if(from.path == '/clean/orderinfo'){
+		// 		to.meta.keepAlive = true
+		// 	}else{
+		// 		to.meta.keepAlive = false
+		// 	}
+		// 	console.log(to,"to----")
+		// 	console.log(from,"from----")
+		// 	next()
+		// },
+		// beforeRouteLeave(to, from, next){
+
+		// 	if(to.path == '/clean/orderinfo'){
+		// 		console.log(1)
+		// 		from.meta.keepAlive = true
+		// 	}else{
+		// 		console.log(2)
+		// 		from.meta.keepAlive = false
+		// 	}
+		// 	console.log(to,"to----")
+		// 	console.log(from,"from----")
+		// 	next()
+		// }
 	}
 </script>
 
