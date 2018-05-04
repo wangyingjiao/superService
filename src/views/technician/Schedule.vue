@@ -347,11 +347,12 @@
 			// 		to.meta.keepAlive = false
 			// 	}
 			// }
-			to.meta.keepAlive = true
+			//to.meta.keepAlive = true
 			if(from.path == '/clean/orderinfo'){
-				// to.meta.keepAlive = true
+				to.meta.keepAlive = true
 			}else{
 				to.meta.keepAlive = false
+				
 			}
 			next()
 		}
