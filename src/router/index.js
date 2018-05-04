@@ -45,7 +45,7 @@ export const constantRouterMap = [
     children: [
       { path: 'holiday', meta: { keepAlive: false }, name: '休假管理', component: _import('technician/holiday') },
       { path: 'techni', meta: { keepAlive: false }, name: '技师管理', component: _import('technician/techni') },
-      { path: 'Schedule', meta: { keepAlive: false }, name: '排期管理', component: _import('technician/Schedule') }
+      { path: 'Schedule', meta: { keepAlive: true }, name: '排期管理', component: _import('technician/Schedule') }
     ]
   },
 

@@ -337,18 +337,23 @@
 			}
 			list()
 		},
-		beforeRouteLeave(to,from,next){
-			if(to.path == '/clean/orderinfo'){
-				if(!from.meta.keepAlive){
-					from.meta.keepAlive = true	
-				}
-				next();
+		beforeRouteEnter: (to, from, next) => {
+			console.log(to,"to----++++-")
+			console.log(from,"from--+++++--")
+			// if(to.path=='/technician/Schedule'){
+			// 	if(from.path == '/clean/orderinfo'){
+			// 		to.meta.keepAlive = true
+			// 	}else{
+			// 		to.meta.keepAlive = false
+			// 	}
+			// }
+			to.meta.keepAlive = true
+			if(from.path == '/clean/orderinfo'){
+				// to.meta.keepAlive = true
 			}else{
-				from.meta.keepAlive = false
-				to.meta.keepAlive = true
-				this.$destroy();
-				next()
+				to.meta.keepAlive = false
 			}
+			next()
 		}
 	}
 </script>
