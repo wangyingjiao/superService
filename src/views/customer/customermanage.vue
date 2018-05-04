@@ -342,7 +342,7 @@ export default {
       testvalue: "",
       areaOptions: this.$store.state.user.area,
       areaOptionsAddress: this.$store.state.user.area,
-      listLoading: false,
+      listLoading: true,
       ruleForm: {
         name: "",
         phone: "",
