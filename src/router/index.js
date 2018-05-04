@@ -9,8 +9,8 @@ import Layout from '../views/layout/Layout'
 Vue.use(Router)
 
 export const constantRouterMap = [
-  { path: '/login', component: _import('login/index'), meta: { keepAlive: false } },
-  { path: '/download', component: _import('login/download'), meta: { keepAlive: false } },
+  { path: '/login', component: _import('login/index'), meta: { keepAlive: false }},
+  { path: '/download', component: _import('login/download'), meta: { keepAlive: false }},
   { path: '/404', component: _import('404') },
   {
     path: '/',

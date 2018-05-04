@@ -365,7 +365,6 @@ export default {
         organization: { id: this.search.officeId }
       };
       if (obj.name != "" || obj.organization.id != "") {
-        this.listLoading = true;
         getStationPage(obj, this.pageNumber, this.pageSize)
           .then(res => {
             if (res.data.code === 1) {
