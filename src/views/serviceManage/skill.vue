@@ -238,7 +238,7 @@ export default {
       total: null,
       pageSize: 10,
       pageNumber: 1,
-      listLoading: false,
+      listLoading: true,
       dialogVisible: false,
       flagserver: false,
       dialogFormVisible: false,
@@ -259,6 +259,17 @@ export default {
   methods: {
     //服务机构变换
     mechChage(val){
+      if(this.mechanismFlag){
+
+      }else{
+        this.tabOptions=[];
+        this.middleA=[];
+        this.listTech=[];
+        this.ruleForm2.technicians=[];
+        this.Options2=[];
+        this.ruleForm2.staffClass=[]         
+      }      
+
       if(val !=''){
         this.mechanism1=val
         this.getseverStion(val)
@@ -270,7 +281,7 @@ export default {
             if (res.data.code === 1) {
               this.Options2 = res.data.data.list;                           
               this.listTech = res.data.data.techs;
-              this.dialogVisible = true;
+              // this.dialogVisible = true;
             } else {
               this.dialogVisible = false;
             }
@@ -278,14 +289,7 @@ export default {
           .catch(res => {
           });        
       }
-      if(this.mechanismFlag){
 
-      }else{
-        this.tabOptions=[];
-        this.middleA=[];
-        this.listTech=[];
-        this.ruleForm2.technicians=[]; 
-      }
       
     },
     // 服务机构
@@ -385,9 +389,10 @@ export default {
       this.ruleForm2.orgId='';
       this.listLoading = true;
       this.dialogStatus = status;
-      this.tabOptions = [];
+      this.tabOptions = [];      
       if (this.dialogStatus == "add") {
         this.title = "新增技能";
+        this.Options2=[];
         this.mechanismFlag=false;       
         //新增操作
         this.id = "";

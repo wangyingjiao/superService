@@ -207,7 +207,7 @@ export default {
       jumpPage: 1,
       aa: "",
       orderId: "",
-      listLoading: false,
+      listLoading: true,
       techName1: "",
       techName2: "",
       techPhone1: "",
