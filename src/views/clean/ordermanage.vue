@@ -182,7 +182,7 @@ export default {
       total: null,
       jumpPage: 1,
       pageNumber: 1,
-      listLoading: false,
+      listLoading: true,
       active1: ""
     };
   },  
