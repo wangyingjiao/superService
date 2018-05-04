@@ -392,6 +392,7 @@ export default {
       this.tabOptions = [];      
       if (this.dialogStatus == "add") {
         this.title = "新增技能";
+        this.Options2=[];
         this.mechanismFlag=false;       
         //新增操作
         this.id = "";
