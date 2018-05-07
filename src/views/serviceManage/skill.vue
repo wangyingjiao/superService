@@ -118,7 +118,7 @@
                 </el-select>
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
-              <div style="color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;">当前选择标签：</div> 
+              <div class="NowTabs">当前选择标签：</div> 
               <el-collapse-transition>
                 <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
                     <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -861,6 +861,9 @@ export default {
   text-align: center;
   height: 200px;
   line-height: 200px;
+}
+.NowTabs{
+  color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
   width: 74px;
