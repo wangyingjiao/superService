@@ -677,8 +677,8 @@ body {
 }
 //文字提示样式
 .el-tooltip__popper.is-dark{
-  background-color: #DFE4ED !important;
-  color: #666666 !important;
+  background-color: rgba(40, 40, 40, 0.65) !important;
+  color: #fff !important;
   font-size: 12px !important;
 }
 //提示信息滚动
@@ -688,8 +688,8 @@ body {
   word-break: break-all; 
   word-wrap:break-word;
   // overflow-y: scroll;
-  overflow: auto;
-  overflow-x: hidden;
+  // overflow: auto;
+  // overflow-x: hidden;
 }
 // 嵌套表格样式
 .el-table__expanded-cell {
