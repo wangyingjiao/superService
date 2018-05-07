@@ -9,7 +9,8 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择" @change="searchEd(search.eshopCode)">
+                <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
+                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
                     <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
                     </el-option>
                 </el-select>
@@ -30,16 +31,22 @@
         <!-- table列表 分页-->
             <div class="btton-table">
                 <div>
-                    <span style="line-height:25px">当前查询的E店为：{{dockingEName.name}}</span>
+                    <span v-if="nameFlag" style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
                     <span class="e-prompt">对接相关的请求的交互结果非实时数据，最终的交互结果需耐心等待一段时间</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
                 </div>
+                <div style="color:#b7b5b5;margin-top:20px;font-size:13px;" v-if="userType">请选择搜索条件：服务机构、对接E店查询数据</div>
                 <div>
                   <span v-if="activeName=='noDocking' && (btnShow.indexOf('project_butt')==-1 || eshopStatus =='no')" class="notice">*对接平台未开启对接设置或者E店状态有误，请联系对接平台查找原因！</span>
                 </div>
+                <!-- v-if="tableFlag || tableData3.length>0" -->
                 <div>
                     <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                        <div slot="empty">
+                          <span v-if="!tableFlag"></span>
+                          <span v-else>暂无数据</span>
+                        </div>
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="newName" label="对接商品名称" align="center"></el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
@@ -93,23 +100,30 @@ import {
   JonitGoods,
   buttedList
 } from "@/api/serviceManage";
-
+import { userType} from '../../utils/auth'
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
+import { listDataAll } from "@/api/tech";
 export default {
   data() {
     return {
+      orgList:[],
       activeName: "yesDocking", //tab切换
-      listLoading: true,
+      listLoading: false,
+      tableFlag:false,
       dockingEName: {},
       eshopStatus: null,
       options: [],
+      selfCodeNo:'',
       tableData3: [],
       multipleSelection: [],
       typeOptions: [],
+      nameFlag:false,
       pageSync: 1,
       pageSize: 10,
-      total: 1,
+      total: 0,
       thisType: {},
       search: {
+        orgId:'',
         eshopCode: "",
         majorSort: "",
         sortId: "",
@@ -124,9 +138,26 @@ export default {
       if (JSON.parse(localStorage.getItem("btn"))) {
         return JSON.parse(localStorage.getItem("btn"));
       }
+    },
+    userType(){
+      let _userType = userType()
+      if(_userType=='org' || _userType=='station'){
+        return false
+      }else{
+        return true
+      }
     }
   },
+  components: {
+      orgSearch
+  },
   methods: {
+    orgSearch(item){
+      this.search.orgId = item
+      this.search.eshopCode = ''
+      this.options = []
+      this.promise({orgId:item})
+    },
     //已对接api
     buttedConnListApi(obj, page, size) {
       this.listLoading = true;
@@ -139,8 +170,10 @@ export default {
             this.total = data.data.data.count;
             if ("list" in data.data.data) {
               this.tableData3 = data.data.data.list;
+              this.nameFlag = true
             } else {
               this.tableData3 = [];
+              this.nameFlag = false
             }
             // this.listLoading = false
             // var arr = data.data.data.list
@@ -156,10 +189,12 @@ export default {
             // this.total = data.data.data.count
           } else {
             this.listLoading = false;
+            this.nameFlag = false
           }
         })
         .catch(error => {
           this.listLoading = false;
+          this.nameFlag = false
         });
     },
     //未对接api
@@ -172,15 +207,22 @@ export default {
           if (data.data.code) {
             this.listLoading = false;
             this.tableData3 = data.data.data.page.list;
+            if(this.tableData3.length>0){
+              this.nameFlag = true
+            }else{
+              this.nameFlag = false
+            }
             this.total = data.data.data.page.count;
             this.eshopStatus = data.data.data.eshopStatus;
           } else {
             this.listLoading = false;
+            this.nameFlag = false
             this.tableData3 = [];
           }
         })
         .catch(error => {
           this.listLoading = false;
+          this.nameFlag = false
         });
     },
     //当前查询的E店
@@ -197,9 +239,7 @@ export default {
         return true;
       }
     },
-    //搜索
-    searchBtt() {
-      //改变当前查询的E店：
+    eshopCodeData(){
       if (this.search.eshopCode) {
         var i,
           options = this.options;
@@ -212,7 +252,22 @@ export default {
       } else {
         this.dockingEName = { name: "" };
       }
+    },
+    //搜索
+    searchBtt() {
+      if(this.userType){
+        if(!(this.search.orgId && this.search.eshopCode)){
+          this.$message({
+            message: '请选择服务机构与对接E店',
+            type: 'warning'
+          });
+          return
+        }
+      }
+      //改变当前查询的E店：
+      this.eshopCodeData()
       //--改变当前查询的E店------------------：
+      this.tableFlag = true
       if (this.pageSync == 1) {
         this.tablePageSize(this.search, this.pageSync, this.pageSize);
       } else {
@@ -221,11 +276,12 @@ export default {
     },
     // 搜索框清空
     searchEmpty() {
-      // this.search.eshopCode = ''
-      this.search.majorSort = "";
-      this.search.sortId = "";
-      this.search.goodsName = "";
-      this.search.selfCode = "";
+      if(this.activeName == 'noDocking'){
+        this.selfCodeNo = this.search.selfCode
+        delete this.search.selfCode
+      }else{
+         this.search.selfCode = this.selfCodeNo
+      }
     },
     //切换，page，size判断当前是已对接还是未对接
     tablePageSize(obj, page, size) {
@@ -243,15 +299,16 @@ export default {
     //tabs切换
     handleClick(tab, event) {
       // debugger;
-      if (this.options[0]) {
-        this.search.eshopCode = this.options[0].eshopCode;
-      } else {
-        this.search.eshopCode = "";
-      }
-      this.pageSize = 10;
-      this.dockingEName = this.options[0] || { name: "" };
+      // if (this.options[0]) {
+      //   this.search.eshopCode = this.options[0].eshopCode;
+      // } else {
+      //   this.search.eshopCode = "";
+      // }
+      // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.eshopCodeData()
+      this.pageSize = 10;
       if (this.pageSync == 1) {
         this.tablePageSize(this.search);
       } else {
@@ -280,6 +337,9 @@ export default {
       }
       obj.goodIds = arrPost;
       obj.eshopCode = this.search.eshopCode;
+      if(this.userType){
+        obj.orgId = this.search.orgId
+      }
       return obj;
     },
     //移除对接按钮
@@ -310,7 +370,7 @@ export default {
     //设置对接按钮
     toggleSetUp() {
       var obj = this.setUpDelete("id");
-
+      console.log(obj,"ibj-----")
       if (obj.goodIds.length <= 0) {
         return;
       }
@@ -356,47 +416,54 @@ export default {
       } else {
         this.typeOptions = [];
       }
+    },
+    promise(obj){
+       return new Promise((resolve, reject)=>{
+        buttedList(obj)
+          .then(data => {
+            if (data.data.code == 1) {
+              this.listLoading = false;
+              if (data.data.data) {
+                this.options = data.data.data || [];
+                if(!this.userType){
+                  this.search.eshopCode = data.data.data[0].eshopCode || "";
+                  this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+                }
+                // this.search.eshopCode = data.data.data[0].eshopCode || "";
+                resolve(this.search);
+                // this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
+              } else {
+                this.dockingEName = { name: "" };
+              }
+            } else {
+              this.listLoading = false;
+            }
+          })
+          .catch(error => {
+            this.listLoading = false;
+          });
+      });
     }
   },
   mounted() {
-    //默认已对接商品数据
-    // this.handleClick()
-    //check默认选中第一个
-    // this.$refs.multipleTable.toggleRowSelection(this.tableData3[0]);
     //所属类型select
     this.thisType = dict.ser_sort;
     delete this.thisType.all;
-    //对接E店默认选中第一个
-    //先请求E店列表获取第一条数据的id，在请求table列表数据，
-    let promise = new Promise((resolve, reject) => {
-      buttedList()
-        .then(data => {
-          if (data.data.code == 1) {
-            this.listLoading = false;
-            if (data.data.data) {
-              this.options = data.data.data || [];
-              this.search.eshopCode = data.data.data[0].eshopCode || "";
-              resolve(this.search);
-              this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
-            } else {
-              this.dockingEName = { name: "" };
-            }
-          } else {
-            this.listLoading = false;
-            // this.$message({
-            //     type: "warning",
-            //     message: data.data.data
-            // });
-          }
-        })
-        .catch(error => {
-          this.listLoading = false;
-        });
-    });
+   
     //获取E店数据请求table列表
-    promise.then(success => {
-      this.buttedConnListApi(success);
-    });
+    let tabData = async ()=>{
+      try{
+        if(this.userType){
+          this.$refs['orgSearch'].listDataAll()
+        }else{
+          let _promise = await this.promise({orgId:''})
+          this.buttedConnListApi(_promise);
+        }
+      }
+      catch(error){
+      }
+    }
+    tabData()
   },
   filters: {
     capitalize(value) {
@@ -437,7 +504,7 @@ export default {
   margin-top: 10px;
 }
 .e-prompt {
-  margin-left: 6%;
+  font-size: 13px;
   color: #b7b5b5;
 }
 .buttBox .el-table .cell {

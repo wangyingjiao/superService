@@ -9,7 +9,7 @@ const user = {
     roles: [],
     menu: [],
     buttonshow: [],
-    area: []
+    area: [],
   },
   mutations: {
     SET_TOKEN: (state, token) => {
@@ -17,7 +17,7 @@ const user = {
     },
     SET_NAME: (state, name) => {
       state.name = name
-    },
+    },  
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
@@ -46,9 +46,12 @@ const user = {
         }
         loginByUsername(obj).then(response => {
           if (response.data.code === 1) {
-            commit('SET_NAME', response.data.data.user.name)
+            commit('SET_NAME', response.data.data.user.name)             
             if (response.data.data.user.name) {
               localStorage.setItem('name', response.data.data.user.name)
+            }
+            if (response.data.data.user.type) {
+              localStorage.setItem('type', response.data.data.user.type)
             }
             if (response.data.data.user.role.dataScope) {
               localStorage.setItem('dataScope', response.data.data.user.role.dataScope)
@@ -80,13 +83,13 @@ const user = {
     // 获取用户信息
     GetUserInfo({ commit, userInfo }) {
       if (JSON.parse(localStorage.getItem('menu'))) {
-        commit('SET_MENU', JSON.parse(localStorage.getItem('menu')))
+        commit('SET_MENU', JSON.parse(sessionStorage.getItem('menu')))
         commit('SET_NAME', localStorage.getItem('name'))
       } else {
         return new Promise((resolve, reject) => {
           getUserInfo().then(response => {
             const data = response.data
-            localStorage.setItem('menu', JSON.stringify(data.data))
+            sessionStorage.setItem('menu', JSON.stringify(data.data))
             commit('SET_MENU', data.data)
             commit('SET_NAME', localStorage.getItem('name'))
             resolve(response)
@@ -137,6 +140,17 @@ const user = {
           localStorage.removeItem('station')
           localStorage.removeItem('btn')
           localStorage.removeItem('roleId')
+          window.sessionStorage.removeItem('orderNumber')
+          window.sessionStorage.removeItem('sevicerStustas')
+          window.sessionStorage.removeItem('orderStatus')
+          window.sessionStorage.removeItem('mechanism')
+          window.sessionStorage.removeItem('stationId')
+          window.sessionStorage.removeItem('serviceTimeStart')
+          window.sessionStorage.removeItem('serviceTimeEnd')
+          window.sessionStorage.removeItem('startTime')
+          window.sessionStorage.removeItem('endTime')
+          window.sessionStorage.removeItem('pageSize')
+          window.sessionStorage.removeItem('pageNumber')
           resolve()
         }).catch(error => {
           reject(error)

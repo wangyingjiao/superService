@@ -2,27 +2,19 @@
     <div class="addorder-container">
        <!--订单信息开始-->
         <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息
-              
-              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="true"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
-              <!-- otherInfo.orderStatus =='success' && otherInfo.orderSource =='own' && otherInfo.payStatus =='payed' -->
+            <div class="custom-action orderOneBar">订单信息              
+              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
+              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
+              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1-->
             </div>
+            <!--  -->
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">订单状态:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
-                          <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
-                          <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
-                          <!-- <span v-if="otherInfo.orderStatus =='started'">已上门</span> -->
-                          <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
-                          <span v-if="otherInfo.orderStatus =='success'">已成功</span>
-                          <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
-                      </span>
-                   </p>
+                      <span class="lineTitle">订单编号:</span>
+                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
+                   </p>                  
                    <p class="contentLine">
                       <span class="lineTitle">订单类型:</span>
                       <span class="lineContent">
@@ -34,29 +26,21 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务机构:</span>
                       <span class="lineContent width180">{{otherInfo.orgName}}</span>
-                   </p>                                                        
-                   <p class="contentLine">
-                      <span class="lineTitle">订单编号:</span>
-                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
-                   </p>                  
-                   <p class="contentLine">
-                      <span class="lineTitle">订单来源:</span>
-                      <span class="lineContent">
-                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
-                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
-                      </span>
-                   </p>                                                         
+                   </p>                                                                                                                                   
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
-                      <span class="lineTitle">服务状态:</span>
+                      <span class="lineTitle">订单状态:</span>
                       <span class="lineContent">
-                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
-                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
-                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
+                          <span v-if="otherInfo.orderStatus =='cancel'">已取消</span>
+                          <span v-if="otherInfo.orderStatus =='dispatched'">已派单</span>
+                          <span v-if="otherInfo.orderStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.orderStatus =='close'">已关闭</span>
+                          <span v-if="otherInfo.orderStatus =='stop'">已暂停</span>
+                          <span v-if="otherInfo.orderStatus =='success'">已成功</span>
+                          <span v-if="otherInfo.orderStatus =='waitdispatch'">待派单</span>
                       </span>
-                   </p>
+                   </p>                  
                    <p class="contentLine">
                       <span class="lineTitle">订单分类:</span>
                       <span class="lineContent">
@@ -67,121 +51,33 @@
                    <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
                       <span class="lineContent">{{otherInfo.stationName}}</span>
-                   </p>                                                          
+                   </p>                                                                                                                   
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle">服务状态:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
+                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
+                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
+                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
+                      </span>
+                   </p>                                                         
                    <p class="contentLine">
                       <span class="lineTitle">下单时间:</span>
                       <span class="lineContent">{{otherInfo.orderTime}}</span>
-                   </p>                                                          
-                </div> 
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">订单来源:</span>
+                      <span class="lineContent">
+                        <span v-if="otherInfo.orderSource =='own'">本机构</span>
+                        <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
+                      </span>
+                   </p>                                                                     
+                </div>                 
             </div>                                     		
 		    </div>
         <!--订单信息结束-->
-        <!--订单取消开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
-            <div class="custom-action">订单取消信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea marginBottom20">
-                   <p class="contentLine">
-                      <span class="lineTitle">取消原因:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
-                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
-                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
-                      </span>
-                   </p>                                                        
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
-                   </p>                                      
-                </div>
-
-            </div>                                     		
-		    </div>
-        <!--订单取消结束-->
-        <!--服务地址信息开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">服务地址信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea marginBottom20">
-                   <p class="contentLine">
-                      <span class="lineTitle">联系人:</span>
-                      <span class="lineContent">
-                          <span>{{addressInf.name}}</span>
-                      </span>
-                   </p>                                                        
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">服务地址:</span>
-                      <span class="selfbeizhu1">
-                        <span>{{addressInf.detailAddress}}</span>
-                      </span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" >
-                      <span class="lineTitle">联系电话:</span>
-                      <span class="lineContent" >
-                        <span>{{addressInf.phone}}</span>                                                                        
-                      </span>
-                   </p>
-                </div>
-            </div>                                     		
-		    </div>
-        <!--服务地址信息结束-->                
-        <!--支付信息开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
-            <div class="custom-action">支付信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">交易单号:</span>
-                      <span class="lineContent">{{payInfo.payNumber}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
-                       <span class="lineTitle">支付状态:</span>
-                       <span>待支付</span> 
-                   </p>                   
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付方式:</span>
-                      <span class="lineContent">
-                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
-                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
-                      </span>
-                   </p>                                                         
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付总额:</span>
-                      <span class="lineContent">{{payInfo.payAccount}}元</span>
-                   </p>                                      
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付状态:</span>
-                      <span class="lineContent" >
-                        <span>已支付</span>                                                                        
-                      </span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付平台:</span>
-                      <span class="lineContent">
-                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
-                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
-                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
-                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
-                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
-                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
-                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
-                      </span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
-                      <span class="lineTitle">支付时间:</span>
-                      <span class="lineContent">{{payInfo.payTime}}</span>
-                   </p>                                       
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--支付信息结束-->
         <!--服务信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">服务信息</div>
@@ -196,7 +92,7 @@
                       <span class="lineTitle">实际完成时间:</span>
                       <span class="lineContent">{{otherInfo.finishTime}}</span>
                    </p>
-                   <p  v-if="true" class="contentLine" style="color:#3a5fcd;cursor:pointer;" @click="gotoRefund(otherInfo.orderNumber)">点击查看退款信息</p>                                                                           
+                   <p class="contentLine" v-if="otherInfo.orderRefundFlag"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
@@ -211,7 +107,7 @@
                       :data="tableData"
                       border
                       class="self-table-style"
-                      style="margin-top:-10px;"
+                      style="margin-top:-1px;"
                       >
                       <el-table-column
                         align="center"
@@ -305,7 +201,116 @@
                 </div>
             </div>                     		
 		    </div>
-        <!--技师信息结束-->
+        <!--技师信息结束-->        
+        <!--订单取消开始-->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
+            <div class="custom-action">订单取消信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">取消原因:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
+                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
+                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
+                      </span>
+                   </p>                                                                                             
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
+                   </p>                   
+                </div>
+            </div>                                     		
+		    </div>
+        <!--订单取消结束-->
+        <!--服务地址信息开始-->
+        <div class="thrid-bar marginTop15">
+            <div class="custom-action">服务地址信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">联系人:</span>
+                      <span class="lineContent">
+                          <span>{{addressInf.name}}</span>
+                      </span>
+                   </p>                                                        
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">服务地址:</span>
+                      <span class="selfbeizhu1">
+                        <span>{{addressInf.detailAddress}}</span>
+                      </span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" >
+                      <span class="lineTitle">联系电话:</span>
+                      <span class="lineContent" >
+                        <span>{{addressInf.phone}}</span>                                                                        
+                      </span>
+                   </p>
+                </div>
+            </div>                                     		
+		    </div>
+        <!--服务地址信息结束-->                
+        <!--支付信息开始-->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
+            <div class="custom-action">支付信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">交易单号:</span>
+                      <span class="lineContent">{{payInfo.payNumber}}</span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
+                       <span class="lineTitle">支付状态:</span>
+                       <span>待支付</span> 
+                   </p>                                                                           
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付总额:</span>
+                      <span class="lineContent">{{payInfo.payAccount}}元</span>
+                   </p>                                      
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付状态:</span>
+                      <span class="lineContent" >
+                        <span>已支付</span>                                                                        
+                      </span>
+                   </p>
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付平台:</span>
+                      <span class="lineContent">
+                          <span v-if="payInfo.payPlatform =='wx'">微信</span>
+                          <span v-if="payInfo.payPlatform =='alipay'">支付宝</span>
+                          <span v-if="payInfo.payPlatform =='balance'">余额</span>
+                          <span v-if="payInfo.payPlatform =='pos'">银行卡</span>
+                          <span v-if="payInfo.payPlatform =='wx_pub_qr'">微信扫码</span>
+                          <span v-if="payInfo.payPlatform =='cash'">现金</span>
+                          <span v-if="payInfo.payPlatform =='alipay_qr'">支付宝扫码</span>
+                      </span>
+                   </p>                                       
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付方式:</span>
+                      <span class="lineContent">
+                        <span v-if="payInfo.payMethod =='offline'">货到付款</span>
+                        <span v-if="payInfo.payMethod =='online'">在线</span>                        
+                      </span>
+                   </p> 
+                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                      <span class="lineTitle">支付时间:</span>
+                      <span class="lineContent">{{payInfo.payTime}}</span>
+                   </p>                                       
+                </div>                  
+            </div>                                     		
+		    </div>
+        <!--支付信息结束-->
         <!--下单用户信息开始-->
         <div class="thrid-bar marginTop15" >
             <div class="custom-action">下单用户信息</div>
@@ -314,19 +319,19 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户姓名:</span>
-                      <span class="lineContent">{{otherInfo.businessName}}</span>
+                      <span class="lineContent">{{otherInfo.customerName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
                       <span class="selfbeizhu1">
-                        {{otherInfo.businessRemark}}
+                        {{otherInfo.customerRemark}}
                       </span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle"></span>
                       <span class="lineContent width1000">
                         <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
+                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
                               <img :src="imgSrc+item+picWidth250"/>
                             </div>
                         </div>
@@ -336,36 +341,12 @@
                 <div class="rightArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户电话:</span>
-                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
+                      <span class="lineContent">{{otherInfo.customerPhone}}</span>
                    </p>                    
                 </div> 
             </div>                                     		
 		    </div>
         <!--下单用户信息结束-->        
-        <!--用户备注开始-->
-        <div class="thrid-bar marginTop15">
-            <div class="custom-action">用户备注</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea" style="width:100%;">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">{{otherInfo.customerRemark}}</span>
-                   </p> 
-                   <p class="contentLine">
-                      <span class="lineContent2 width900">
-                        <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth250"/>
-                            </div>                           
-                        </div>
-                      </span>
-                   </p>                                                                         
-                </div>
-                 
-            </div>                                     		
-		    </div>
-        <!--用户备注结束-->
         <!--订单备注开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">订单备注</div>
@@ -585,14 +566,14 @@
         <!--取消订单弹窗结束--> 
         <!--退款详情弹窗开始-->
         <el-dialog
-          title="退款详情"
+          title="退款"
           :visible.sync="orderRefundFlag"
           :close-on-click-modal="false"
           class="selfDialogWidth1"
           >
             <div class="selfTableWrapONE1">
-              <div class="marginTop20" style="margin-left:-10px;">
-                  <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-form-inline">
+              <div  >
+                  <el-form  :model="ruleForm" :rules="rules" ref="ruleForm" >
                       <el-form-item prop="refundId">
                           <div class="table-d1">
                             <table  class="selfTable">
@@ -604,36 +585,37 @@
                                   <td  class="selfTableHEADTD" align="center" width="111px">单位</td>							
                                 </tr>
                                 <div class="orderinfoTechTablePadding">
-                                    <tr v-for="item in ruleForm.orderRefundObj" :key="item.commidyId"  ref="tableItem1" class="selfTdStyle2">
-                                      <td width="72px" class="fontSize12"  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.commidySelect" ></el-checkbox></td>
-                                      <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.commidyName}}</div></td>
-                                      <td width="132px" class="fontSize12" align="center">￥{{item.commidyPrice}}</td>
-                                      <td  width="102px" class="fontSize12" align="center">{{item.commidyNum}}</td>
-                                      <td width="110px" class="fontSize12"  align="center">{{item.commidyUnit}}</td>							
+                                    <tr v-for="item in ruleForm.orderRefundObj" :key="item.goodsId"  ref="tableItem1" class="selfTdStyle2">
+                                      <td width="72px"   align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked" ></el-checkbox></td>
+                                      <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.goodsName}}</div></td>
+                                      <td width="132px"  align="center">￥{{item.payPrice}}</td>
+                                      <td  width="102px" align="center">{{item.goodsNum}}</td>
+                                      <td width="110px"  align="center">{{item.goodsUnit}}</td>							
                                     </tr>
                                 </div>
                             </table>
                             <el-input type="hidden" value='' v-model='ruleForm.refundId'></el-input> 
                           </div>                                                 
                       </el-form-item>
-                     <el-form-item label="支付总额:" prop="paySum">￥{{ruleForm.paySum | keepTwoNum}}元</el-form-item>
-                     <el-form-item label="支付方式:" prop="payMethod"><span>{{ruleForm.payMethod}}</span></el-form-item>
-                     <el-form-item label="退款方式:" prop="refundMethod">{{ruleForm.refundMethod}}</el-form-item> 
-                     <el-form-item label="退款金额:" prop="refundSum">￥{{ruleForm.refundSum | keepTwoNum }}元</el-form-item>
-                      <el-form-item label="退款差额:" prop="chaE">
-                        <el-input v-model="ruleForm.chaE" placeholder="0" class="search searchHeader">
-                            <el-select  v-model="chooses" clearable placeholder="请选择"  slot="prepend">
-                              <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                     <el-form-item label="支付总额:" prop="payPrice" style="margin-top:-50px;">￥{{ruleForm.payPrice | keepTwoNum}}</el-form-item>
+                     <el-form-item label="支付方式:" prop="payMethod" style="margin-top:-22px;"><span>{{ruleForm.payMethod}}</span></el-form-item>
+                     <el-form-item label="退款方式:" prop="refundMethod" style="margin-top:-22px;"><span v-if="ruleForm.refundMethod == 'cash'">现金</span></el-form-item> 
+                     <el-form-item label="退款金额:" prop="refundAccount" style="margin-top:-22px;">￥{{ruleForm.refundAccount | keepTwoNum }}</el-form-item>
+                      <el-form-item label="退款差额:" prop="refundDifference" style="margin-top:-22px;">
+                        <el-input v-model="ruleForm.refundDifference" placeholder="0" class="search searchHeader">
+                            <el-select  v-model="refundDifferenceType" clearable placeholder="请选择"  slot="prepend" @change="ChangerefundType">
+                              <el-option v-for="(value,key,index) in choose" :key="index" :label="value" :value="key">
                               </el-option>
                             </el-select>
-                        </el-input>   
+                        </el-input>                           
                       </el-form-item>
-                      <el-form-item label="退款原因:" prop="refundScource">
+                      <p class="refundStatusStyle" v-if="ruleForm.orderNowRefundStatus != ''">{{ruleForm.orderNowRefundStatus}}</p>
+                      <el-form-item label="退款原因:" prop="refundReason" style="margin-top:10px;">
                           <el-input
                             type="textarea"
                             :rows="3"
                             placeholder="请输入内容"
-                            v-model="ruleForm.refundScource"
+                            v-model="ruleForm.refundReason"
                             style="width:380px;"
                             >
                           </el-input>	
@@ -659,7 +641,9 @@ import {
   addTechSave, //新增技师保存
   dispatchTechSave, //改派技师保存
   saveTime, //更换服务时间保存
-  orderCancelFun //取消订单保存
+  orderCancelFun, //取消订单保存
+  orderRefundInit, //退款
+  orderRefundSave //退款保存
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
@@ -669,88 +653,59 @@ export default {
   data() {
     //退款差价验证规则
     var checkChaE = (rule, value, callback) => {
-      if (!value) {   
+      if (!value) {
         callback();
       } else {
-        if(!/^[0-9]+.?[0-9]*/.test(value)){
-           callback(new Error("请输入整数或一至两位小数"));
-        }else{
-          if (!/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
-              callback(new Error("请输入整数或一至两位小数"));
-          }else{
+        if (!/^[0-9]+\.?[0-9]*/.test(value)) {
+          callback(new Error("请输入整数或一至两位小数"));
+        } else {
+          if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(value)) {
+            callback(new Error("请输入整数或一至两位小数"));
+          } else {
             callback();
           }
-        }         
+        }
       }
     };
     //退款原因验证规则
-    var checkrefundScource = (rule, value, callback) => {
-      if (!value) {   
+    var checkrefundReason = (rule, value, callback) => {
+      if (!value) {
         callback();
       } else {
         if (value.length >= 0 && value.length <= 500) {
           callback();
         } else {
           callback(new Error("请输入500位以内的退款原因"));
-        }          
+        }
       }
-    };        
+    };
     return {
+      jumpUrl: "#",
+      middleB: [],
       ruleForm: {
-        refundId:'',
-        chaE: '',
-        refundScource:'',
-        refundSum:0,
-        refundMethod:'现金',
-        payMethod:'现金',
-        paySum:'440',
-        orderRefundObj:[
-          {
-            commidyId:'a',
-            commidySelect:false,
-            commidyName:'kkkkkkkkkk',
-            commidyPrice:210,
-            commidyNum:20,
-            commidyUnit:'个'
-          },
-          {
-            commidyId:'b',
-            commidySelect:false,
-            commidyName:'wwwwwwwwwwwww',
-            commidyPrice:110,
-            commidyNum:10,
-            commidyUnit:'个'
-          },
-          {
-            commidyId:'c',
-            commidySelect:false,
-            commidyName:'yyyyyyyyyyyyyyywwwwwwwwwwwww',
-            commidyPrice:140,
-            commidyNum:15,
-            commidyUnit:'个'
-          }        
-        ],                
+        refundId: "",
+        refundDifference: "",
+        orderNowRefundStatus: "",
+        refundReason: "",
+        refundAccount: 0,
+        refundMethod: "cash",
+        payMethod: "现金",
+        payPrice: "",
+        orderRefundObj: []
       },
       rules: {
-          chaE: [
-            { validator: checkChaE, trigger: 'blur' },
-          ],
-          refundScource: [
-            { validator: checkrefundScource, trigger: 'blur' },
-          ],
-          refundId:[
-            { required: true,message:'请选择退款商品', trigger: 'change' },
-          ]  
+        refundDifference: [{ validator: checkChaE, trigger: "blur" }],
+        refundReason: [{ validator: checkrefundReason, trigger: "blur" }],
+        refundId: [
+          { required: true, message: "请选择退款商品", trigger: "change" }
+        ]
       },
-      choose:[
-        {value:'1',label:'多退'},
-        {value:'2',label:'少退'}
-      ],
-      chooses:'',
+      choose: [],
+      refundDifferenceType: "",
       dict: require("../../../static/dict.json"),
       becaussOptions: [],
       cancelOrderFlag: false,
-      orderRefundFlag:false,
+      orderRefundFlag: false,
       options2: [],
       btnShow: [],
       timeSaveFlag: false,
@@ -830,58 +785,125 @@ export default {
       val = Number(val);
       return val.toFixed(2);
     }
-  }, 
+  },
   methods: {
-    //计算退款总额
-    rowChange(rowObj){     
-      if (rowObj.commidySelect) {          
-           this.ruleForm.refundSum = this.ruleForm.refundSum + rowObj.commidyPrice * 1*rowObj.commidyNum;        
-      } else { 
-        this.ruleForm.refundSum = this.ruleForm.refundSum - rowObj.commidyPrice * 1*rowObj.commidyNum;  
+    //多少退款改变
+    ChangerefundType(value) {
+      if (value == "") {
+        this.ruleForm.refundDifference = "";
       }
-      if(this.ruleForm.refundSum == '0'){
-           this.ruleForm.refundId='' 
-      }else{
-           this.ruleForm.refundId='1'
-      }       
+    },
+    //计算退款总额
+    rowChange(rowObj) {
+      if (rowObj.goodsChecked) {
+        this.ruleForm.refundAccount =
+          this.ruleForm.refundAccount + rowObj.payPrice * 1 * rowObj.goodsNum;
+      } else {
+        this.ruleForm.refundAccount =
+          this.ruleForm.refundAccount - rowObj.payPrice * 1 * rowObj.goodsNum;
+      }
+      if (this.ruleForm.refundAccount == "0") {
+        this.ruleForm.refundId = "";
+      } else {
+        this.ruleForm.refundId = "1";
+      }
     },
     //确认退款
-    orderRefundOk(formName){
+    orderRefundOk(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var refundPirce=0;
-          if(this.chooses == '1'){
-            refundPirce=this.ruleForm.refundSum+Number(this.ruleForm.chaE)
+          if (
+            (this.refundDifferenceType == "" &&
+              this.ruleForm.refundDifference > 0) ||
+            (this.refundDifferenceType == null &&
+              this.ruleForm.refundDifference > 0)
+          ) {
+            this.$message({
+              type: "warning",
+              message: "请选择退款差额类型！"
+            });
+            return false;
           }
-          if(this.chooses == '2'){
-            refundPirce=this.ruleForm.refundSum-Number(this.ruleForm.chaE)
-          } 
-          if(this.chooses == ''){
-            refundPirce=this.ruleForm.refundSum
-          }
-          refundPirce=Number(refundPirce).toFixed(2); 
-          const h = this.$createElement;
-          this.$msgbox({
-            title: '提示',
-            message: h('p', null, [
-              h('span', null, '实际退款金额为：￥'),
-              h('span', { style: 'color: teal' }, refundPirce),
-              h('span', null, '，确定退款吗？'),
-            ]),
-            showCancelButton: true,
-            
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-          }).then(() => {
-              this.$refs['ruleForm'].resetFields();
-              this.orderRefundFlag = false;
-          }).catch(() => {
+          if (this.ruleForm.refundDifference >= this.ruleForm.refundAccount) {
+            this.$message({
+              type: "warning",
+              message: "退款差额应小于退款金额！"
+            });
+          } else {
+            var refundPirce = 0;
+            if (this.refundDifferenceType == "many") {
+              refundPirce =
+                this.ruleForm.refundAccount +
+                Number(this.ruleForm.refundDifference);
+            }
+            if (this.refundDifferenceType == "less") {
+              refundPirce =
+                this.ruleForm.refundAccount -
+                Number(this.ruleForm.refundDifference);
+            }
+            if (
+              this.refundDifferenceType == "" ||
+              this.refundDifferenceType == null
+            ) {
+              this.refundDifferenceType = null;
+              refundPirce = this.ruleForm.refundAccount;
+            }
+            refundPirce = Number(refundPirce).toFixed(2);
+            const h = this.$createElement;
+            this.$msgbox({
+              title: "提示",
+              message: h("p", null, [
+                h("span", null, "实际退款金额为：￥"),
+                h("span", { style: "color: teal" }, refundPirce),
+                h("span", null, "，确定退款吗？")
+              ]),
+              showCancelButton: true,
+              confirmButtonText: "确定",
+              cancelButtonText: "取消"
+            })
+              .then(() => {
+                var arr = [];
+                for (var a = 0; a < this.ruleForm.orderRefundObj.length; a++) {
+                  if (this.ruleForm.orderRefundObj[a].goodsChecked) {
+                    arr.push(this.ruleForm.orderRefundObj[a]);
+                  }
+                }
+                this.middleB = Object.assign([], arr);
+                var orderRefundInfo = {};
+                orderRefundInfo.refundMethod = this.ruleForm.refundMethod;
+                orderRefundInfo.refundAccount = this.ruleForm.refundAccount;
+                orderRefundInfo.refundDifferenceType = this.refundDifferenceType;
+                orderRefundInfo.refundDifference = this.ruleForm.refundDifference;
+                orderRefundInfo.refundAccountReality = refundPirce;
+                orderRefundInfo.refundReason = this.ruleForm.refundReason;
+                var obj1 = {
+                  id: this.orderId,
+                  goodsInfoList: this.middleB,
+                  orderRefundInfo: orderRefundInfo
+                };
+                orderRefundSave(obj1)
+                  .then(res => {
+                    if (res.data.code === 1) {
+                      this.$message({
+                        type: "success",
+                        message: "退款成功"
+                      });
+                      this.refundDifferenceType = "";
+                      this.getOrderAllInf(this.orderId);
+                      this.$refs["ruleForm"].resetFields();
+                      this.orderRefundFlag = false;
+                    }
+                  })
+                  .catch(res => {});
+              })
+              .catch(() => {
                 this.$message({
                   type: "warning",
                   message: "已取消退款"
                 });
-          })  
-        }else{
+              });
+          }
+        } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
           for (var i = 0; i < errArr.length; i++) {
@@ -895,23 +917,29 @@ export default {
           });
           return false;
         }
-      })      
-             
-      //this.ruleForm.refundScource
-      // console.log(this.ruleForm.refundSum)
-      // console.log(this.ruleForm.chaE)
-      // console.log(this.chooses)
-      //console.log(this.ruleForm.radio)
-
+      });
     },
     //取消退款
-    orderRefundCancel(){
-      this.$refs['ruleForm'].resetFields();     
+    orderRefundCancel() {
+      this.refundDifferenceType = "";
+      this.$refs["ruleForm"].resetFields();
       this.orderRefundFlag = false;
     },
     //跳转退款详情页
-    gotoRefund(orderNumber){
-      this.$router.push({ path: "/clean/refund/", query: { orderNumber: orderNumber } });
+    gotoRefund(orderNumber) {
+      if(this.btnShow.indexOf('refund_view') > -1){
+        var src = window.location.href;
+        var end = src.indexOf("#") + 1;
+        var url = src.substring(0, end);
+        this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
+        window.open(this.jumpUrl);
+      }else{
+          this.$message({
+            type: "warning",
+            message: "无查看退款权限!"
+          });        
+      }
+
     },
     loadingClick() {
       loading = this.$loading({
@@ -1125,7 +1153,6 @@ export default {
                 this.listTech = res.data.data;
                 for (var b = 0; b < this.middleA.length; b++) {
                   for (var a = 0; a < this.listTech.length; a++) {
-                    // this.$set(this.listTech[a], "techChecked", false);
                     if (this.listTech[a].techId == this.middleA[b].techId) {
                       this.listTech[a].techChecked = true;
                     }
@@ -1145,7 +1172,6 @@ export default {
                 this.listTech = res.data.data;
                 for (var c = 0; c < this.middleA.length; c++) {
                   for (var d = 0; d < this.listTech.length; d++) {
-                    // this.$set(this.listTech[d], "techChecked", false);
                     if (this.listTech[d].techId == this.middleA[c].techId) {
                       this.listTech[d].techChecked = true;
                     }
@@ -1170,7 +1196,7 @@ export default {
           }
         }
       }
-    },   
+    },
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -1259,9 +1285,6 @@ export default {
               this.dialogTableVisible = true;
               if (res.data.data != undefined) {
                 this.listTech = res.data.data;
-                // for (var a = 0; a < this.listTech.length; a++) {
-                //   this.$set(this.listTech[a], "techChecked", false);
-                // }
               }
             }
           })
@@ -1287,12 +1310,29 @@ export default {
       this.cancelOrderFlag = true;
     },
     //退款按钮
-    orderRefund(){
-      this.ruleForm.refundSum=0;
-      this.ruleForm.chaE='';
-      this.ruleForm.radio='';
-      this.ruleForm.chooses='';
-      this.orderRefundFlag=true;
+    orderRefund() {
+      this.ruleForm.refundAccount = 0;
+      this.ruleForm.refundDifference = "";
+      this.ruleForm.refundDifferenceType = "";
+      this.orderRefundFlag = true;
+      //退款按钮
+      var obj1 = {
+        id: this.orderId
+      };
+      orderRefundInit(obj1)
+        .then(res => {
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.ruleForm.payPrice = res.data.data.payPrice;
+              this.ruleForm.orderRefundObj = res.data.data.goodsInfoList;
+              if (res.data.data.orderNowRefundStatus != undefined) {
+                this.ruleForm.orderNowRefundStatus =
+                  res.data.data.orderNowRefundStatus;
+              }
+            }
+          }
+        })
+        .catch(res => {});
     },
     //取消订单确认
     submitOrder(formName) {
@@ -1354,6 +1394,8 @@ export default {
     }
   },
   mounted() {
+    console.log(window.localStorage.getItem("orderId"),'111111')
+    this.choose = this.dict.refund_type;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
     if (this.$route.query.id == undefined) {
@@ -1365,12 +1407,18 @@ export default {
 };
 </script>
 <style   scoped>
+.refundStatusStyle {
+  color: #8391a5;
+  margin-left: 75px;
+  margin-top: -20px;
+  font-size: 12px;
+}
 .searchHeader .el-input-group__prepend .el-input__inner {
   width: 200px;
   text-align: center;
 }
-.searchHeader .el-select{
-  width:180px;
+.searchHeader .el-select {
+  width: 180px;
 }
 .searchHeader {
   width: 380px;
@@ -1474,13 +1522,13 @@ export default {
 .marginBottom20 {
   margin-bottom: 20px;
 }
-.marginTop20{
-  margin-top:-20px;
-  padding-left:25px;
-  font-size:12px;
+.marginTop20 {
+  margin-top: -20px;
+  padding-left: 25px;
+  font-size: 12px;
 }
-.refundSpan{
-  padding-left:10px;
+.refundSpan {
+  padding-left: 10px;
 }
 .selfPromINF {
   font-size: 12px;
@@ -1507,12 +1555,11 @@ export default {
   margin-left: 15px;
 }
 .selfTableWrapONE1 {
-  margin-top: 20px;
+  margin: 0 20px;
   position: relative;
 }
 .table-d1 {
   width: 677px;
-  padding-left:10px;
 }
 .selfTable1,
 .selfTable1 tr th,

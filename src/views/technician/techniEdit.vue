@@ -139,36 +139,56 @@
           <h3 class="tech-tc-prson">服务信息</h3>
           <el-form :model="perServer" :rules="rulesServer" ref="perServer" label-width="100px" class="demo-ruleForm">
               <ul class="tech-ul">
-                <el-row :gutter="60">
-                      <el-col :span="12">
-                        <el-form-item label="所属服务站:" prop="stationId">
-                          <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
-                            <el-option v-for="(item,index) in servery" :key="index" :label="item.name" :value="item.id">
+                <div style="overflow:hidden;width:100%">
+                    <div class="tech-edit-width" style="margin-right:6%">
+                      <el-form-item label="岗位性质:" prop="jobNature">
+                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
+                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                           </el-select>
                         </el-form-item>
-                      </el-col>
-                      <el-col :span="12">
-                        <el-form-item label="岗位状态:" prop="jobStatus">
+                    </div>
+                  <div  class="tech-edit-width">
+                    <el-form-item label="岗位状态:" prop="jobStatus">
                             <el-select v-model="perServer.jobStatus" clearable placeholder="请选择" style="width:100%">
                                 <el-option v-for="(item,key) in statu" :key="key" :label="item" :value="key">
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                      </el-col>
-                  </el-row>
-                  <el-row :gutter="60">
-                      <el-col :span="12">
+                  </div>
+                   <div class="tech-edit-width" style="margin-right:6%">
+                    <div v-if="techUserType=='sys'">
+                      <el-form-item label="所属机构:" prop="stationId">
+                          <el-select :disabled="dialogvisibleedit" v-model="perServer.orgId" filterable clearable placeholder="请选择" style="width:100%">
+                            <el-option v-for="(item,index) in organizations" :key="index" :label="item.name" :value="item.id">
+                            </el-option>
+                          </el-select>
+                      </el-form-item>
+                    </div>
+                  </div>
+                 <div style="float:right;width:47%">
                         <el-form-item label="工作年限:" prop="workTime">
                           <el-select v-model="perServer.workTime" clearable placeholder="请选择" style="width:100%">
                               <el-option v-for="(item,key) in workyear" :key="key" :label="item" :value="key">
                               </el-option>
                           </el-select>
                         </el-form-item>
-                      </el-col>  
-                    </el-row>
+                  </div>
+                <div class="tech-edit-width">
+                   <el-form-item label="所属服务站:" prop="stationId">
+                      <el-select v-model="perServer.stationId" filterable clearable placeholder="请选择" style="width:100%">
+                        <el-option v-for="(item,index) in serveryEdit" :key="index" :label="item.name" :value="item.id">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                </div>
+                </div>
                     <el-row :gutter="60">
                       <el-col :span="12">
+                      </el-col>
+                    </el-row>
+                     <el-row :gutter="60">
+                      <el-col :span="17">
                       </el-col>
                     </el-row>
                     <el-row :gutter="60">
@@ -176,20 +196,10 @@
                         <el-form-item label="选择技能:" prop="skillIds">
                           <el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
                             <el-option
-                            v-for="item in sextypeo"
+                            v-for="item in sextypeoEdit"
                             :key="item.id"
                             :label="item.name"
                             :value="item.id">
-                            </el-option>
-                          </el-select>
-                        </el-form-item>
-                      </el-col>
-                    </el-row>
-                    <el-row :gutter="60">
-                      <el-col :span="17">
-                        <el-form-item label="岗位性质:" prop="jobNature">
-                          <el-select v-model="perServer.jobNature" clearable placeholder="请选择" style="width:100%" @change="jobStatusTable">
-                            <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                             </el-option>
                           </el-select>
                         </el-form-item>
@@ -257,7 +267,7 @@
                           <li v-for="(item,index) in perServer.workTimes" :key="index">
                           <div>
                             <div class="woking-div">
-                            <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+","}}</span></div>
+                            <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
                             <div class="time">{{item.startTimeStr+"~"+item.endTimeStr}}</div>
                             </div>
                           </div>
@@ -564,9 +574,10 @@ import {
   technicianPlus,
   technicianOther,
   familyAdd,
-  familyDelete
+  familyDelete,
+  listByOrgId
 } from "@/api/tech";
-
+import { userType} from '../../utils/auth'
 import { getSign } from "@/api/sign";
 import Cookies from "js-cookie";
 
@@ -676,6 +687,8 @@ export default {
     };
 
     return {
+      sextypeoEdit:[],
+      serveryEdit:[],
       roomSelNum: [],
       techniEditId: "",
       roomSel1Arr: [],
@@ -794,7 +807,8 @@ export default {
         jobStatus: "",
         workTime: "",
         skillIds: "",
-        workTimes: []
+        workTimes: [],
+        orgId:''
       },
       rulesServer: {
         stationCityCode: [
@@ -931,11 +945,26 @@ export default {
         ** 服务信息
         ** 
         **/
-
-        this.perServer.stationId = val.stationId;
+        this.perServer.orgId = val.orgId;
+        /*
+        **  编辑的服务站和技能不能和搜索同步
+        **  否则搜索切换机构，编辑的服务站和技能渲染Id
+        */
+        listByOrgId({orgId:this.perServer.orgId}).then(data=>{
+          let stations = data.data.data.stations
+          if(stations[0].id=="0"){
+            stations = stations.slice(1)
+          }
+          this.serveryEdit = stations
+          this.perServer.stationId = val.stationId;
+          this.sextypeoEdit = data.data.data.skils;
+          this.perServer.skillIds = val.skillIds || [];
+        }).catch(error=>{
+        })
+        // this.perServer.stationId = val.stationId;
         this.perServer.jobNature = val.jobNature;
         this.perServer.jobStatus = val.jobStatus;
-        this.perServer.skillIds = val.skillIds || [];
+        // this.perServer.skillIds = val.skillIds || [];
         this.perServer.workTime = val.workTime + "";
         this.perServer.workTimes = val.workTimes;
         // //工作时间默认选中
@@ -1006,7 +1035,9 @@ export default {
     "education",
     "relation",
     "servery",
-    "startend"
+    "startend",
+    "organizations",
+    "dialogvisibleedit"
   ],
   methods: {
     endEmpty() {
@@ -1599,6 +1630,9 @@ export default {
     });
   },
   computed: {
+    techUserType(){
+      return userType()
+    },
     sign() {
       return getSign();
     },
@@ -1639,19 +1673,6 @@ export default {
   cursor: pointer;
 }
 
-/* .tech-index {
-  background: #fff;
-  padding: 20px;
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} */
-
-/* .tech {
-  position: relative;
-} */
-
 .tech-btn {
   background: #fff;
   border: 1px solid #4c70e8;
@@ -1687,36 +1708,6 @@ export default {
   justify-content: flex-end;
   /* margin-top: 45px; */
 }
-
-/* .tech-section-ul {
-  margin: 20px 0;
-  display: flex; */
-/* justify-content: space-between; */
-/* } */
-/* 
-.tech-table {
-  margin: 20px;
-  padding-bottom: 20px;
-}
-
-.tech-section-ul li {
-  width: 32%;
-  height: 200px;
-  background: #fff;
-  position: relative;
-}
-
-.tech-section-ul-posi {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
 
 .fy {
   /* margin: 0 20px; */
@@ -1875,23 +1866,6 @@ export default {
   width: 100px;
 }
 
-/* .el-upload-list {
-  width: 80px;
-  height: 100px;
-} */
-/* .tech-psoition {
-  width: 100%;
-  height: 320px;
-  background: #fff;
-  position: absolute;
-  top: 77px;
-  left: 0;
-  z-index: 1;
-  animation: show 1s;
-  -moz-animation: show 1s;
-  -webkit-animation: show 1s;
-  -o-animation: show 1s;
-} */
 .avatar-header .el-upload--text {
   width: 120px;
   height: 120px;
@@ -2198,45 +2172,6 @@ export default {
   margin-top: 14px;
   display: flex;
 }
-
-/* .tech-mouse {
-  width: 50px;
-  height: 20px;
-  line-height: 18px;
-  background: #fff;
-  display: block;
-
-  text-align: center;
-}
-
-.tech-mouse-div {
-  margin-top: 10px;
-  display: inline-block;
-  display: flex;
-  justify-content: center;
-}
-.tech-mouse-div > span:nth-of-type(1) {
-  margin-right: 5px;
-  border: 1px solid #707cd2;
-  color: #707cd2;
-}
-
-.tech-mouse-div > span:nth-of-type(2) {
-  margin-left: 5px;
-  border: 1px solid #ff7676;
-  color: #ff7676;
-} */
-/* .working {
-  border: 1px solid #f2f2f2;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0 0 0 20px;
-}
-.working > li {
-  position: relative;
-  border-bottom: 1px solid #f2f2f2;
-  padding-top: 15px;
-} */
 .woking-div {
   display: flex;
   flex-direction: column;
@@ -2332,5 +2267,9 @@ export default {
 .techniFooter .button-large-fourth {
   display: inline-block;
   width: 20%;
+}
+.tech-edit-width{
+  width:47%;
+  float:left;
 }
 </style>

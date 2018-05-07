@@ -93,7 +93,7 @@
     "meterage": {
         "house": "按居室",
         "area": "按面积",
-        "num": "按数量"
+        "num": "按时长或数量"
     },
     "order_majorSort": {
         "clean": "保洁",
@@ -114,6 +114,7 @@
         "success": "已成功",
         "waitdispatch": "待派单",
         "cancel": "已取消",
+        "close":"已关闭",
         "whole": "全部"
     },
     "order_type": {
@@ -223,5 +224,12 @@
     "dock_platform": {
         "select":"请选择",
         "gasq": "国安社区"
-    }
+    },
+    "refund_type": {
+        "many":"多退",
+        "less": "少退"
+    },
+    "refund_method":{
+        "cash":"现金"
+    }    
 }

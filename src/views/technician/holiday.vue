@@ -9,6 +9,7 @@
       <el-tab-pane label="审核通过" name="yes"></el-tab-pane>
       <el-tab-pane label="审核未通过" name="no"></el-tab-pane>
     </el-tabs>
+
       
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
@@ -19,12 +20,21 @@
 
     <el-date-picker
       v-model="search.time"
-      style="width:20%"
+      class="search-min"
       type="daterange"
       placeholder="选择日期">
     </el-date-picker>
       
     </el-date-picker>
+    <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.officeId" placeholder="选择机构">
+        <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+       
+      <el-select filterable class="search-min" clearable  v-model="search.stationId" placeholder="选择服务站">
+        <el-option v-for="item in servicestationSearch" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
        <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
@@ -49,10 +59,19 @@
       <el-table-column align="center" label="姓名" prop="techName">      
       </el-table-column>
       
+
+
       <el-table-column align="center" label="手机号" prop="techPhone">      
       </el-table-column>
+
+      <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
+            <template scope="rowObj">
+              <p>{{rowObj.row.orgName}}</p>
+              <p>{{rowObj.row.techStationName}}</p>
+            </template>                    
+      </el-table-column>
       
-      <el-table-column align="center" label="服务站" prop="techStationName">      
+      <el-table-column  v-if="userType == 'org'" align="center" label="服务站" prop="techStationName">      
       </el-table-column>
 
       
@@ -85,7 +104,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="160">
+      <el-table-column align="center" label="操作" min-width="180">
         <template scope="scope">
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
@@ -100,7 +119,6 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <!-- <roleDialog :treeData = 'data2' @checkchange = 'aaa'></roleDialog> -->
     <!-- 弹窗 -->
     <el-dialog 
       title="审核休假"
@@ -159,18 +177,14 @@ import {
   getHolidayById,
   reviewedHoliday
 } from "@/api/tech";
-import { getMenudata } from "@/api/staff"; //接口调用
+import { getMenudata, getSList, getStation, getFuwu } from "@/api/staff"; //接口调用
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-import roleDialog from "../staff/roleDialog.vue";
 
 export default {
   name: "holiday",
   directives: {
     waves
-  },
-  components: {
-    roleDialog
   },
   data() {
     return {
@@ -183,6 +197,7 @@ export default {
       btnState: false,
       failReasonState: false,
       activeName: "",
+      userType: localStorage.getItem("type"),
       listQuery: {
         page: 1,
         limit: 10,
@@ -192,11 +207,15 @@ export default {
       pageNumber: 1,
       pageSize: 10,
       total: 1,
+      mechanismCheck: [], //服务机构
+      servicestationSearch: [], // 服务站
       data2: [],
       search: {
         type: "techName",
         val: "",
-        time: ""
+        time: "",
+        officeId: "",
+        stationId: ""
       },
       temp: {
         rowId: "",
@@ -234,7 +253,6 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.activeName = "all";
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
@@ -242,10 +260,54 @@ export default {
     getMenudata().then(res => {
       this.data2 = res.data.data;
     });
+    getSList({}).then(res => {
+      // 服务机构
+      if (res.data.data.list != undefined) {
+        if (res.data.data.list[0].id == "0") {
+          res.data.data.list.remove(res.data.data.list[0]);
+        }
+        if (res.data.data.list.length >= 2) {
+          if (res.data.data.list[1].id == "0") {
+            res.data.data.list.remove(res.data.data.list[1]);
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+        }
+        this.mechanismCheck = res.data.data.list;
+        if (
+          localStorage.getItem("type") == "station" ||
+          localStorage.getItem("type") == "org"
+        ) {
+          this.search.officeId = this.mechanismCheck[0].id;
+        }
+      }
+    });
+    this.getList();
   },
   methods: {
     aaa(obj) {
-      //console.log(obj,'aaa')
+    },
+    renderHeader(h) {
+      return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
+    },
+    searchOffice(val) {
+      // 搜索时机构改变
+      this.search.stationId = "";
+      this.servicestationSearch = [];
+      if (val) {
+        var obj = {
+          orgId: val
+        };
+        getFuwu(obj).then(res => {
+          // 请求服务站列表
+          if (res.data.data[0].id == "0") {
+            res.data.data.remove(res.data.data[0]);
+          }
+          this.servicestationSearch = res.data.data;
+          if (localStorage.getItem("type") == "station") {
+            this.search.stationId = this.servicestationSearch[0].id;
+          }
+        });
+      }
     },
     //请求列表数据
     getList() {
@@ -289,6 +351,10 @@ export default {
       if (obj.reviewStatus == "all") {
         obj.reviewStatus = "";
       }
+      obj = Object.assign(obj, {
+        orgId: this.search.officeId,
+        techStationId: this.search.stationId
+      });
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {

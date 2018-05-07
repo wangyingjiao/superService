@@ -1,7 +1,7 @@
 <template>
 	
 	<el-dialog 
-       :visible.sync="dialogFormVisible" 
+       :visible.sync="diaState" 
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -14,7 +14,7 @@
         ref="temp" 
         label-width="160px" 
         >
-
+         <p>子组件</p>
         <el-form-item label="所属机构:"  prop="officeId">
           <el-select :disabled="selsctState" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
@@ -114,7 +114,6 @@ export default {
         { id: "10", value: "十级" }
       ],
       roleLv: [],
-      dialogFormVisible: true,
       dialogStatus: "",
       textMap: {
         update: "编辑岗位",
@@ -128,8 +127,13 @@ export default {
       }
     };
   },
-  computed: {},
+  computed: {
+    // diaState(){
+    //     console.log('nnn')
+    // }
+  },
   created() {
+    console.log(this.diaState,'111111222')
     //获取权限列表
     getMenudata().then(res => {
       this.treeData = res.data.data;
@@ -139,7 +143,9 @@ export default {
       this.officeIds = res.data.data.list;
     });
   },
-  props: [],
+  props: [
+    'diaState'
+  ],
   methods: {
     nodeClick(a, b, c) {},
     currentChange(a, b) {},
@@ -301,7 +307,7 @@ export default {
                   type: "success",
                   message: "添加成功"
                 });
-                this.dialogFormVisible = false;
+                this.diaState = false;
                 
               } else {
                 
@@ -336,7 +342,8 @@ export default {
       };
     },
     resetForm() {
-      this.dialogFormVisible = false;
+      this.$emit('diaState',false)
+      // this.diaState = false;
     }
   }
 };

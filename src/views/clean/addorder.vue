@@ -15,29 +15,28 @@
 				<!--步骤1显示区域开始-->
 				<div class="stepContent"  v-show="active == 1">
 					<el-form ref="form" :rules="forma" :model="form" label-width="100px" label-position="left">
-						<el-form-item label="联系电话:">
-						    <span class="selfLabelStyle">*</span>
-						    <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="customPhone"></el-input>
-			                <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-							<div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
-						</el-form-item>            
-						<div v-if="customKeyFlag">
-							<el-form-item label="服务地址:" prop='radiovalue'>
+            <el-form-item v-if="userType == 'sys' || userType == 'platform'" label="所属机构:" prop='mechanism'>
+              <el-input type="hidden" value='' v-model='form.mechanism'></el-input>
+              <el-select clearable  style="float:left;margin-top:-36px;" class="severChangeStyle" filterable v-model="mechanism" @change="masimaChange" placeholder="请选择">
+                <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
+                </el-option>
+              </el-select>                
+            </el-form-item>
+            <div v-if="customKeyFlag">						
+              <el-form-item label="联系电话:" prop="phone">
+                  <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="form.phone" ></el-input>
+                  <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
+                  <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+              </el-form-item>            						
+							<el-form-item label="服务地址:" prop='radiovalue' v-if='form.address.addressName != "" && stationFlag'>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
                   <div style="margin-top:-36px;">
                       <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
                       <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
-                      <div  class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
+                      <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
-							</el-form-item> 
-                <el-form-item v-if="true" label="所属机构:" prop='mechanism'>
-                  <el-input type="hidden" value='' v-model='form.mechanism'></el-input>
-                  <el-select clearable  style="float:left;margin-top:-36px;" class="severChangeStyle" filterable v-model="mechanism" @change="masimaChange" placeholder="请选择">
-                    <el-option v-for="item in mechanismOptions" :key="item.id" :label="item.name" :value="item.id">
-                    </el-option>
-                  </el-select>                
-                </el-form-item>	              
-                <el-form-item label="所属服务站:" prop='serverStation1'>
+							</el-form-item> 	              
+                <el-form-item label="所属服务站:" v-if='adressFlagShow && stationFlag' prop='serverStation1'>
                   <el-input type="hidden" value='' v-model='form.serverStation1'></el-input>
                   <el-select clearable  style="margin-top:-36px;float:left;" class="severChangeStyle" filterable v-model="serverStation1" @change="seerchange" placeholder="请选择">
                     <el-option v-for="item in form.stationList" :key="item.id" :label="item.name" :value="item.id">
@@ -190,7 +189,18 @@
 	<!--新增用户弹窗开始-->
 	<el-dialog title="新增用户" :visible.sync="dialogTableVisible1" :show-close="false" :close-on-click-modal="false">
 		<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" label-position="left" class="demo-ruleForm padding10Prent">
-			<el-form-item label="姓名:" prop="name" >
+      <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
+        <el-select v-model="ruleForm.orgId"  filterable placeholder="请选择机构"  style="width:100%">  
+          <el-option
+            v-for="item in mechanismOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            >
+          </el-option>
+        </el-select>
+      </el-form-item> 			
+      <el-form-item label="姓名:" prop="name" >
 				<el-input  style='width: 100%;' v-model.trim="ruleForm.name" placeholder="请输入用户姓名"></el-input>
 			</el-form-item>
 			<el-form-item label="性别:"  prop="sex">
@@ -468,6 +478,8 @@ export default {
       }
     };
     return {
+      stationFlag:true,
+      userType:'',
       mechanismOptions:[],
       mechanism:'',
       submitFlag: false,
@@ -485,6 +497,7 @@ export default {
         severTime1: "",
         textarea: ""
       },
+      adressFlagShow:true,
       btnShow: [],
       //服务站下拉选项
       options: [],
@@ -512,9 +525,9 @@ export default {
         address: {},
         stationList: [],
         serverStation1: "",
-        mechanism:''
+        mechanism:'',
+        phone: ""
       },
-      customPhone: "",
       serverStation1: "",
       form1: {
         serverPro: "",
@@ -526,15 +539,18 @@ export default {
       },
       active: 1,
       forma: {
-        serverStation1: [
-          { required: true, message: "请选择服务站", trigger: "change" }
-        ],
+        mechanism:[
+          { required: true, message: "请选择服务机构", trigger: "change" }
+        ],        
         radiovalue: [
           { required: true, message: "请选择服务地址", trigger: "change" }
         ],
-        mechanism:[
-          { required: true, message: "请选择服务机构", trigger: "change" }
-        ]
+        phone:[
+          { required: true, validator: checkPhone, trigger: "blur" }
+        ] ,                
+        serverStation1: [
+          { required: true, message: "请选择服务站", trigger: "change" }
+        ],
       },
       rules2: {
         // selectTech: [
@@ -566,7 +582,8 @@ export default {
         areaCode: "",
         areaCodes: [],
         addrLongitude: "",
-        addrLatitude: ""
+        addrLatitude: "",
+        orgId:''
       },
       ruleFormAddress: {
         addressName: "",
@@ -591,7 +608,8 @@ export default {
         ],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        orgId:[{ required: true, message: "请选择服务机构", trigger: "change" }]
       },
       rulesAddress: {
         addressName: [
@@ -666,12 +684,23 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
-        for (var a = 0; a < res.data.data.list.length; a++) {
-          if (res.data.data.list[a].id == 0) {
-            res.data.data.list.remove(res.data.data.list[a]);
+        if(res.data.data.list !=undefined){
+          if (res.data.data.list[0].id == '0' ) {
+            res.data.data.list.remove(res.data.data.list[0]);
           }
+          if(res.data.data.list.length >=2){
+              if(res.data.data.list[1].id == '0'){
+                res.data.data.list.remove(res.data.data.list[1]);
+                res.data.data.list.remove(res.data.data.list[0]);
+              }
+          } 
+            this.mechanismOptions = res.data.data.list;
         }
-        this.mechanismOptions = res.data.data.list;
+        if(this.$route.query.orgId != undefined && this.$route.query.orgId != ''){
+           this.form.mechanism=this.$route.query.orgId;
+           this.mechanism=this.$route.query.orgId;
+           this.getcustomerList();
+        }                 
       });
     },    
     //单选改变
@@ -790,8 +819,24 @@ export default {
       this.form.serverStation1 = val;
     },
     masimaChange(val) {
-      this.form.mechanism = val;
-      console.log(this.form.mechanism)
+      this.customKeyFlag = true; 
+      if(val ==''){
+           this.form.phone='';           
+      }
+      this.adressFlagShow=false;                
+      this.form.radiovalue=''; 
+      this.radio='';
+      this.form.address.addressPhone='';
+      this.form.address.addressName='';
+      this.form.address.detailAddress=''; 
+      this.form.serverStation1='';
+      this.form1.serverPro='';
+      this.form1.servercommidty = "";
+      this.form1.sumPrice = 0;
+      this.selectCommidty=[];      
+      this.serverStation1=''; 
+      this.form.mechanism = val;     
+     
     },    
     //时间转化成xx小时XX分钟
     formatDuring(mss) {
@@ -913,14 +958,16 @@ export default {
       if (formName == "form") {
         this.$refs[formName].validate(valid => {
           if (valid) {
+            if(this.form.mechanism != '' && this.form.phone !='' && this.form.radiovalue =='' && this.form.serverStation1 == ""){
+              this.$message({
+                type: "warning",
+                message: '请输入用户电话，查询用户'
+              });
+            }
             if (this.serverStation1 != "") {
               this.findItemListFun();
             } else {
               this.active = 1;
-              this.$message({
-                type: "error",
-                message: "请输入用户电话，查询用户"
-              });
             }
           } else {
             this.active = 1;
@@ -935,6 +982,7 @@ export default {
               type: "error",
               message: errMes[0]
             });
+
             return false;
           }
         });
@@ -1007,7 +1055,8 @@ export default {
       var obj = {
         stationId: this.serverStation1,
         goodsInfoList: this.middleB,
-        techList: this.tabOptions
+        techList: this.tabOptions,
+        orgId:this.form.mechanism
       };
       findTimeListByTech(obj)
         .then(res => {
@@ -1039,44 +1088,68 @@ export default {
     //用户查询事件
     changeCustom() {
       this.serverStation1 = "";
+      this.form.radiovalue='';
+      if((this.userType == 'sys' && this.form.mechanism == "") || (this.userType == 'platform'  && this.form.mechanism == "")){
+             this.$message({
+              type: "warning",
+              message: "请先选择服务机构"
+            });
+            return false       
+      }
+      if(this.form.phone == ''){
+             this.$message({
+              type: "warning",
+              message: "联系电话不能为空"
+            });
+            return false         
+      }
       //根据手机号查询
-      if (this.customPhone != "") {
-        var obj = { phone: this.customPhone };
+        var obj = { phone: this.form.phone,orgId:this.form.mechanism };
         findCustomerByPhone(obj)
           .then(res => {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
                 this.customId = res.data.data.id;
                 this.form = res.data.data;
-                this.getoffice()
+                this.form.mechanism=res.data.data.orgId;
+                this.mechanism=res.data.data.orgId;
+                this.form.phone = res.data.data.phone;
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
-                  this.radio = res.data.data.address.id;
+                  this.radio = res.data.data.address.id;                 
+                }else{
+
                 }
-                this.customKeyFlag = true;
+                this.stationFlag=true;
+                this.adressFlagShow=true; 
+                               
               }
-            } else if (res.data.code === 3) {
-              this.customKeyFlag = false;
+            } else if (res.data.code === 3) {             
+              this.form.radiovalue='';
+              this.stationFlag=false;
+              this.radio='';
+              this.adressFlagShow=false;
+              this.form.address.addressPhone='';
+              this.form.address.addressName='';
+              this.form.address.detailAddress=''; 
+              this.form.serverStation1='';
+              this.serverStation1='';
               this.$message({
                 type: "warning",
                 message: res.data.data
               });
             } else {
-              this.customKeyFlag = false;
             }
           })
           .catch(res => {});
-      } else {
-        this.customKeyFlag = false;
-        this.$message({
-          type: "warning",
-          message: "用户电话不能为空！"
-        });
-      }
+
+
     },
     //服务项目下拉获取
     findItemListFun() {
-      var obj = {};
+      var obj = {
+        orgId:this.form.mechanism
+      };
       findItemList(obj)
         .then(res => {
           if (res.data.code === 1) {
@@ -1144,32 +1217,35 @@ export default {
       if (coustomerId != undefined) {
         this.customId = coustomerId;
         var obj = {
-          id: coustomerId
+          id: coustomerId,
+          orgId:this.form.mechanism
         };
         findCustomerById(obj)
           .then(res => {
             if (res.data.code === 1) {
               if (res.data.data != undefined) {
-                this.form = res.data.data;
-                this.getoffice()
+                //this.form =  Object.assign({}, res.data.data);;
                 if (res.data.data.address.id != undefined) {
                   this.form.radiovalue = res.data.data.address.id;
                   this.radio = res.data.data.address.id;
                 }
-                this.customPhone = res.data.data.phone;
-                this.customKeyFlag = true;
+                this.mechanism=res.data.data.orgId;
+                this.form.phone = res.data.data.phone;
+                this.form.mechanism=res.data.data.orgId;
+                this.changeCustom();
+                this.stationFlag=true;                
               }
             } else if (res.data.code === 3) {
-              this.customKeyFlag = false;
               this.$message({
                 type: "warning",
                 message: res.data.data
               });
             } else {
-              this.customKeyFlag = false;
             }
           })
           .catch(res => {});
+      }else{
+        this.stationFlag=false;
       }
     },
     //新增按钮
@@ -1187,41 +1263,44 @@ export default {
       if (this.form1.serverPro == "") {
         this.$refs.addrulesStyle.style.display = "none";
       }
-      var obj = { itemId: value };
-      findGoodsListByItem(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            if (res.data.data != undefined) {
-              this.selectCommidty = res.data.data;
-              if (this.form1.serverPro != "") {
-                this.$refs.addrulesStyle.style.display = "block";
-              }
-            } else {
-              this.selectCommidty = [];
-              this.form1.sumPrice = 0;
-            }
-          } else if (res.data.code === 3) {
-            this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display = "none";
-
-            this.form1.sumPrice = 0;
-            this.$message({
-              type: "warning",
-              message: res.data.data
-            });
-          } else {
-            this.selectCommidty = [];
-            this.$refs.addrulesStyle.style.display = "none";
-            this.form1.sumPrice = 0;
-          }
-        })
-        .catch(res => {});
+      if(value != ''){
+          var obj = { itemId: value };
+            findGoodsListByItem(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  if (res.data.data != undefined) {
+                    this.selectCommidty = res.data.data;
+                    if (this.form1.serverPro != "") {
+                      this.$refs.addrulesStyle.style.display = "block";
+                    }
+                  } else {
+                    this.selectCommidty = [];
+                    this.form1.sumPrice = 0;
+                  }
+                } else if (res.data.code === 3) {
+                  this.selectCommidty = [];
+                  this.$refs.addrulesStyle.style.display = "none";
+                  this.form1.sumPrice = 0;
+                  this.$message({
+                    type: "warning",
+                    message: res.data.data
+                  });
+                } else {
+                  this.selectCommidty = [];
+                  this.$refs.addrulesStyle.style.display = "none";
+                  this.form1.sumPrice = 0;
+                }
+              })
+              .catch(res => {});
+      }
+ 
     },
     //技师选择按钮点击
     technicianSel() {
       var obj = {
         stationId: this.serverStation1,
-        goodsInfoList: this.middleB
+        goodsInfoList: this.middleB,
+        orgId:this.form.mechanism
       };
       findTechListByGoods(obj)
         .then(res => {
@@ -1349,6 +1428,18 @@ export default {
                     .then(res => {
                       this.submitFlag1 = false;
                       if (res.data.code === 1) {
+                        window.sessionStorage.removeItem('orderNumber')
+                        window.sessionStorage.removeItem('sevicerStustas')
+                        window.sessionStorage.removeItem('orderStatus')
+                        window.sessionStorage.removeItem('mechanism')
+                        window.sessionStorage.removeItem('stationId')
+                        window.sessionStorage.removeItem('serviceTimeStart')
+                        window.sessionStorage.removeItem('serviceTimeEnd')
+                        window.sessionStorage.removeItem('startTime')
+                        window.sessionStorage.removeItem('endTime')
+                        window.sessionStorage.removeItem('pageSize')
+                        window.sessionStorage.removeItem('pageNumber')
+                        window.sessionStorage.setItem('orderStatus','dispatched')                          
                         this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                         this.$message({
                           type: "success",
@@ -1387,6 +1478,18 @@ export default {
                 .then(res => {
                   this.submitFlag1 = false;
                   if (res.data.code === 1) {
+                    window.sessionStorage.removeItem('orderNumber')
+                    window.sessionStorage.removeItem('sevicerStustas')
+                    window.sessionStorage.removeItem('orderStatus')
+                    window.sessionStorage.removeItem('mechanism')
+                    window.sessionStorage.removeItem('stationId')
+                    window.sessionStorage.removeItem('serviceTimeStart')
+                    window.sessionStorage.removeItem('serviceTimeEnd')
+                    window.sessionStorage.removeItem('startTime')
+                    window.sessionStorage.removeItem('endTime')
+                    window.sessionStorage.removeItem('pageSize')
+                    window.sessionStorage.removeItem('pageNumber')
+                    window.sessionStorage.setItem('orderStatus','dispatched')                      
                     this.$router.push({ path: "/clean/ordermanage" }); //跳转到订单管理
                     this.$message({
                       type: "success",
@@ -1473,6 +1576,7 @@ export default {
       var obj = {
         techName: this.techName,
         stationId: this.serverStation1,
+        orgId:this.form.mechanism,
         goodsInfoList: this.middleB
       };
       //服务技师获取
@@ -1501,10 +1605,17 @@ export default {
         .catch(res => {});
     }
   },
-  mounted() {
-    this.getcustomerList();
+  mounted() {  
     this.sex = this.dict.sex;
-    
+    this.userType=localStorage.getItem("type")
+    if(this.userType == 'sys' || this.userType == 'platform'){
+        this.getoffice()
+        this.customKeyFlag = false;
+            
+    }else{
+      this.customKeyFlag = true;     
+      this.getcustomerList();
+    }        
   }
 };
 </script>

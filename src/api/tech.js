@@ -190,9 +190,9 @@ export function getHolidayById(obj) {
 }
 
 // 获取用户机构时间
-export function serviceTechnicianInfo() {
+export function serviceTechnicianInfo(obj) {
   return new Promise((resolve, reject) => {
-    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`).then(data => {
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/getDate`,obj).then(data => {
       resolve(data)
     }).catch(error => {
       reject(error)
@@ -219,6 +219,39 @@ export function scheduleList(obj, pageNumber, pageSize) {
     instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/scheduleList?pageNo=${pageNumber}&pageSize=${pageSize}`, obj).then(data => {
       resolve(data)
     }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+//机构列表
+export function listDataAll({}) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/sys/organization/listDataAll`,{}).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+//服务站联动
+export function listByOffice(obj) {
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/station/serviceStation/listByOffice`,obj).then(data => {
+      resolve(data)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+}
+
+//根据机构返回服务站和技能
+export function listByOrgId(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/technician/serviceTechnicianInfo/listByOrgId`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
       reject(error)
     })
   })

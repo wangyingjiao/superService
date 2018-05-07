@@ -29,12 +29,23 @@
 								</div>
 							</template>
 						</el-table-column>
-            <el-table-column  align="center" width="150" :render-header="renderHeader"  >
+            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                    <p>{{rowObj.row.orgName}}</p>
-                    <p>{{rowObj.row.stationName}}</p>
+                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 9" :content="rowObj.row.orgName">
+                        <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                      </el-tooltip>
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9"  :content="rowObj.row.stationName">
+                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>
                   </template>                    
             </el-table-column>
+            <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
+                  <template scope="rowObj">
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
+                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>
+                  </template>                    
+            </el-table-column>            
 					  <el-table-column align="center"  width="160px" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
@@ -53,7 +64,7 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" :disabled="item.techName.length < 6 " :content="item.techName">
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
                         <div class="techNameStyle1">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
@@ -170,6 +181,7 @@ export default {
   name: "dispatchmanage",
   data() {
     return {
+      userType:'',
       mechanismOptions: [],
       mechanism: "",
       payTypeOptions: [],
@@ -195,7 +207,7 @@ export default {
       jumpPage: 1,
       aa: "",
       orderId: "",
-      listLoading: false,
+      listLoading: true,
       techName1: "",
       techName2: "",
       techPhone1: "",
@@ -209,7 +221,7 @@ export default {
   },
   methods: {
     renderHeader (h) {
-      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
     },
     //机构变化事件
     orgChange(val) {
@@ -221,11 +233,19 @@ export default {
         };
         getFuwu(obj).then(res => {
           if (res.data.code === 1) {
-            if (res.data.data[0].id == 0) {
-              res.data.data.remove(res.data.data[0]);
+            if(res.data.data){
+              if (res.data.data[0].id == 0) {
+                res.data.data.remove(res.data.data[0]);
+              }
+              this.payTypeOptions = res.data.data;
+              if(this.userType =='station'){
+                this.payType=this.payTypeOptions[0].id
+              }else{
+              }
             }
-            this.payTypeOptions = res.data.data;
+
           } else {
+
           }
         });
       }
@@ -233,12 +253,21 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
-        for (var a = 0; a < res.data.data.list.length; a++) {
-          if (res.data.data.list[a].id == 0) {
-            res.data.data.list.remove(res.data.data.list[a]);
+        if(res.data.data.list != undefined){
+          if (res.data.data.list[0].id == '0' ) {
+            res.data.data.list.remove(res.data.data.list[0]);
           }
+          if(res.data.data.list.length >=2){
+              if(res.data.data.list[1].id == '0'){
+                res.data.data.list.remove(res.data.data.list[1]);
+                res.data.data.list.remove(res.data.data.list[0]);
+              }
+          }                    
+            this.mechanismOptions = res.data.data.list;
+            if(this.userType == 'org' || this.userType == 'station'){
+               this.mechanism=this.mechanismOptions[0].id
+            }
         }
-        this.mechanismOptions = res.data.data.list;
       });
     },           
     //跳转改派记录页
@@ -497,10 +526,19 @@ export default {
   mounted() {
     this.reassList({}, 1, 10);
     this.getoffice();
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>
 <style scoped>
+.selfToolTip1 {
+  margin:0 auto;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .dispatchNumberStyle {
   cursor: pointer;
   padding-left: 18px;

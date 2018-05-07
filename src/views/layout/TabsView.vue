@@ -23,9 +23,22 @@ export default {
   methods: {
     closeViewTabs(view, $event) {
       this.$store.dispatch("delVisitedViews", view).then(views => {
+        if(view.path == '/clean/ordermanage'){
+          window.sessionStorage.removeItem('orderNumber')
+          window.sessionStorage.removeItem('sevicerStustas')
+          window.sessionStorage.removeItem('orderStatus')
+          window.sessionStorage.removeItem('mechanism')
+          window.sessionStorage.removeItem('stationId')
+          window.sessionStorage.removeItem('serviceTimeStart')
+          window.sessionStorage.removeItem('serviceTimeEnd')
+          window.sessionStorage.removeItem('startTime')
+          window.sessionStorage.removeItem('endTime')
+          window.sessionStorage.removeItem('pageSize')
+          window.sessionStorage.removeItem('pageNumber')        
+        }
         if (this.isActive(view.path)) {
           const latestView = views.slice(-1)[0];
-          if (latestView) {
+          if (latestView) {            
             this.$router.push(latestView.path);
           } else {
             this.$router.push("/");

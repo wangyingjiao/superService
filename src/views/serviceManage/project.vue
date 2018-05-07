@@ -6,6 +6,7 @@
       <el-tab-pane label="保洁" name="clean"></el-tab-pane>
       <el-tab-pane label="家修" name="repair"></el-tab-pane>
     </el-tabs>
+      <orgSearch :widths="'20%'" @orgsearch="orgSearch" ref="orgSearch"></orgSearch>
       <el-select clearable class="search" filterable  v-model="search.sortId" placeholder="所属分类">
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
@@ -15,14 +16,17 @@
       </el-input> 
 	  <el-input class="search" placeholder="请输入搜索的商品名称" v-model="search.goodsName">
       </el-input> 
-	  <!-- <el-input class="search" placeholder="请输入搜索的对接编码" v-model="search.sortIdandGoodsId">
-      </el-input>  -->
       <button class="button-large el-icon-search btn_search btn-color" @click="serGetList"> 搜索</button>
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增</button>
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    <span v-if="techUserType=='sys'">
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1" style="width:80px" @click="buttDetails">对接详情</button>
+    </span>
+    <span v-else>
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+    </span>
     <!-- btnShow.indexOf('project_send')>-1 && -->
     <el-table 
     :key='tableKey' 
@@ -45,6 +49,8 @@
         <template scope="scope" >
           <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+picWidth60" class="imgList"/></span>
         </template>
+      </el-table-column>
+       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName">
       </el-table-column>
 
       <el-table-column  label="项目名称" align="center" prop="name">
@@ -81,14 +87,39 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <!-- 商品 -->
-        <el-table-column align="center" label="" min-width="250">
+        <!-- 删除商品与已对接E店的一列
+        element无法根据内容大小，所以判断两种，有E店和无E店 -->
+        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?250:100">
              <template scope="scope">
             <div
               class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
-                <span v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</span>
-                <span v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</span>
+              <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
+              <!-- 全系统用户不需要判断是否有对接E店 -->
+              <span v-if="techUserType=='sys'">
+                <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+              <span v-else>
+                <button v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="" v-if="techUserType!='sys'" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?250:100">
+             <template scope="scope">
+            <div
+              class="branch"  
+              v-for="(item,index) in scope.row.commoditys" 
+              :key="index">
+              <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
+              <!-- 全系统用户不需要判断是否有对接E店 -->
+              <span v-if="techUserType=='sys'">
+                <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
+              <span v-else>
+                <button v-show="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
+              </span>
             </div>
           </template>
         </el-table-column>
@@ -135,6 +166,12 @@
                 label-width="90px" 
                  ref="basic" 
                 :rules="basicRles" >
+                <el-form-item label="所属机构：" class="seize" prop="orgId" v-if="techUserType=='sys'">
+                    <el-select :disabled="textMap[dialogStatus]=='编辑服务项目'" filterable v-model="basicForm.orgId" style="width:100%" class="form_item">
+                      <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
+                      </el-option>
+                    </el-select>
+                </el-form-item>
                 
                 <el-form-item label="所属分类：" class="seize" prop="sortId">
                   <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item">
@@ -154,16 +191,16 @@
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
 					</div>
+				<div class="pro-hint">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
                 </el-form-item>
-				<div class="el-upload__tip prompt-img">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
 
 				<el-form-item label="图文详情：">
 					<div class="upload-demo upload_box form_item">
 						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture'" :min='0' :max='8'></imgService>
 					</div>
                    
+				 <div class="pro-hint">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
                 </el-form-item>
-				 <div class="el-upload__tip prompt-img">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
 
                 <el-form-item label="系统标签：" prop="sysTags">
                    <div class="custom form_item">
@@ -180,8 +217,8 @@
                         </div>                        
                     </div>
                     
+				            <div class="pro-hint">* 最多设置3个系统标签</div>
                 </el-form-item>
-				<div class="el-upload__tip prompt-img">* 最多设置3个系统标签</div>
 
                 <el-form-item label="自定义标签：" class="labelDav">
                     <div class="custom">
@@ -192,7 +229,7 @@
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
                         </span>
                     </div>
-					<div style="margin-top:20px" class="el-upload__tip">* 最多设置3个自定义标签</div>
+					          <div class="pro-hint">* 最多设置3个自定义标签</div>
                 </el-form-item> 
             
               </el-form>
@@ -203,7 +240,7 @@
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
                     <template scope="scope">
-                      <span v-show="scope.row.type=='num'">按数量</span>
+                      <span v-show="scope.row.type=='num'">按时长或数量</span>
                       <span v-show="scope.row.type=='area'">按面积</span>
                       <span v-show="scope.row.type=='house'">按居室</span>
                     </template>
@@ -213,17 +250,17 @@
                       <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
                     </template>  
                   </el-table-column>
-                  <el-table-column prop="convertHours" align="center" label="折算时长">
+                  <el-table-column v-if="sordFlag" prop="convertHours" align="center" label="折算时长">
                     <template scope="scope">
                       <span>{{scope.row.convertHours+'小时 / '+scope.row.unit}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column align="center" label="起步人数">
+                  <el-table-column v-if="sordFlag" align="center" label="起步人数">
                     <template scope="scope">
                       <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="cappingPerNum" align="center" label="封顶人数"> 
+                  <el-table-column v-if="sordFlag" prop="cappingPerNum" align="center" label="封顶人数"> 
                     <template scope="scope">
                       <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
                     </template>
@@ -379,7 +416,7 @@
                      <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="折算时长:" prop="convertHours" class="doubtf">
+                <el-form-item v-if="sordFlag" label="折算时长:" prop="convertHours" class="doubtf">
                   <el-input v-model="goods_info.convertHours" style="width:100%" >
                     <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
                   </el-input>
@@ -392,14 +429,14 @@
                    <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
                 </el-form-item>
              
-                <el-form-item label="起步人数:" class="seize" prop="startPerNum">
+                <el-form-item v-if="sordFlag" label="起步人数:" class="seize" prop="startPerNum">
                   <el-input
                     placeholder="请输入起步人数(默认为1)"
                    
                     v-model="goods_info.startPerNum"></el-input>
                 </el-form-item>
 
-                <el-form-item label="封顶人数:" class="seize" prop="cappingPerNum">
+                <el-form-item v-if="sordFlag" label="封顶人数:" class="seize" prop="cappingPerNum">
                   <el-input
                     placeholder="请输入封顶人数"
                     
@@ -412,6 +449,7 @@
                     
                     v-model="goods_info.minPurchase"></el-input>
                 </el-form-item>
+                <div v-if="dialogStatus != 'update'" class="pro-wing">*注意事项：通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数自动保存为0</div>
               </el-form>
 			   <div slot="footer" class="dialog-footer" style="text-align:center">
 				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
@@ -476,10 +514,13 @@ import {
   delProject,
   getInfoPic
 } from "@/api/serviceManage";
+import { listDataAll } from "@/api/tech"
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import { userType} from '../../utils/auth'
 import { parseTime } from "@/utils";
+import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import {
   Taxonomy,
   Orienteering,
@@ -493,6 +534,7 @@ import {
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
+import dict from "../../../static/dict.json"
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];
@@ -718,15 +760,18 @@ export default {
       }
     };
     return {
+      sordFlag:true,
       orgStatus: "",
       pageNumber: 1,
       addCommodityFlag: false,
       editName: {},
       customArr: [],
+      orgList:[],
       jointCode: false,
       dockingData: [],
       alreadyArr: [],
       labelClickArr: [],
+      orgNameList:[],
       systemClickId: null,
       systemClick2Id: null,
       systemClick3Id: null,
@@ -804,7 +849,8 @@ export default {
         majorSort: "all",
         commoditys: [],
         sysTags: [],
-        customTags: []
+        customTags: [],
+        orgId:''
       },
       basicRles: {
         name: [
@@ -820,6 +866,7 @@ export default {
         sortId: [
           { required: true, message: "请选择所属分类", trigger: "blur" }
         ],
+        orgId:[{ required: true, message: "请选择所属机构", trigger: "blur" }],
         info: [
           { required: true, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
@@ -843,10 +890,11 @@ export default {
         page: 1
       },
       search: {
+        orgId:'',
         sortId: "",
         name: "",
         // sortIdandGoodsId: "",
-        goodsName: ""
+        goodsName: "",
       },
       pageSize: 10,
       fileList: [],
@@ -870,7 +918,7 @@ export default {
   },
   created() {
     //所属分类
-    this.handleClick({ name: "all" });
+    // this.handleClick({ name: "all" });
     //系统标签
     serGasqSort()
       .then(data => {
@@ -878,7 +926,7 @@ export default {
       })
       .catch(error => {});
     //是否 计量方式 全部 保洁 家修
-    var dict = require("../../../static/dict.json");
+    // var dict = require("../../../static/dict.json");
     this.measure = dict.meterage;
     this.whole = dict.ser_sort;
 
@@ -892,6 +940,9 @@ export default {
     this.sign; //获取签名
   },
   computed: {
+    techUserType(){
+      return userType()
+    },
     sign: function() {
       return getSign();
     },
@@ -900,6 +951,9 @@ export default {
     }
   },
   methods: {
+    orgSearch(item){
+      this.search.orgId = item
+    },
     //删除商品
     deletGood(item) {
       this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
@@ -1150,9 +1204,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           var obj = Object.assign({}, this.goods_info);
-          obj.startPerNum = this.goods_info.startPerNum;
+          obj.startPerNum = this.goods_info.startPerNum || 0;
           obj.minPurchase = this.goods_info.minPurchase;
-          obj.cappingPerNum = this.goods_info.cappingPerNum;
+          obj.cappingPerNum = this.goods_info.cappingPerNum || 0;
+          obj.convertHours = this.goods_info.convertHours || 0;
           obj.price = this.returnFloat(this.goods_info.price);
           if (this.handleEditFlag) {
             this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
@@ -1265,6 +1320,9 @@ export default {
         if (this.search.goodsName) {
           obj.goodsName = this.search.goodsName;
         }
+        if(this.search.orgId){
+          obj.orgId = this.search.orgId
+        }
         // if (this.search.sortIdandGoodsId) {
         //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
         // }
@@ -1299,27 +1357,13 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageNumber = val;
-      var obj = {};
-      if (this.basicForm.majorSort) {
-        obj.majorSort = this.tabs;
-      }
-      if (this.search.sortId) {
-        obj.sortId = this.search.sortId;
-      }
-      if (this.search.name) {
-        obj.name = this.search.name;
-      }
-      if (this.search.goodsName) {
-        obj.goodsName = this.search.goodsName;
-      }
-      // if (this.search.sortIdandGoodsId) {
-      //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-      // }
 
       this.listLoading = true;
-      this.getList(this.pageNumber, this.pageSize, obj);
+      this.getList(this.pageNumber, this.pageSize);
     },
     handleCreate(formName) {
+      this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
+      this.sordFlag = true;
       this.basicForm.sortId = "";
       this.imgNumber = 0;
       this.tableProject({ majorSort: "clean" });
@@ -1351,6 +1395,14 @@ export default {
                 dataUpdate.commoditys[i].price
               );
             }
+              if(dataUpdate.sortId < 100){
+               this.sordFlag = false
+               this.measure = { "num": "按时长或数量"}
+               this.goods_info.type = "num"
+              }else{
+                this.sordFlag = true
+                this.measure = dict.meterage;
+              }
             // }
             this.listLoading = false;
             this.dialogFormVisible = true;
@@ -1443,8 +1495,8 @@ export default {
     },
     handleClick(tab, event) {
       this.search.sortId = "";
-      this.search.name = "";
-      this.search.goodsName = "";
+      // this.search.name = "";
+      // this.search.goodsName = "";
       // this.search.sortIdandGoodsId = "";
       var size = this.pageSize;
       this.pageNumber = 1;
@@ -1563,6 +1615,9 @@ export default {
                   this.search.name = "";
                   this.search.goodsName = "";
                   // this.search.sortIdandGoodsId = "";
+  
+                  this.$refs['orgSearch'].orgEmpty()
+                  this.orgSearch()
                   this.tabs = "all";
                   this.listQuery.page = 1;
                   this.getList(1, this.pageSize);
@@ -1657,11 +1712,36 @@ export default {
   },
   components: {
     imgService,
-    addCommodity
+    addCommodity,
+    orgSearch
+  },
+  mounted(){
+
+    let list = async ()=>{
+      try{
+        let _list = await this.$refs['orgSearch'].listDataAll()
+        this.orgList = _list
+        this.handleClick({ name: "all" });
+      }
+      catch(error){
+      }
+    }
+
+    list()
   }
 };
 </script>
 <style>
+.pro-hint{
+  color:#b7b5b5;
+  font-size:13px;
+}
+.pro-wing{
+  font-size:13px;
+  color:#b7b5b5;
+  margin-left: 100px;
+  line-height: 20px;
+}
 .selfTitle1 {
   display: inline-block;
   float: left;

@@ -37,7 +37,8 @@
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-						prop="orgName"         
+						prop="orgName"
+            v-if=" userType != 'org'  && userType != 'station'"         
 						label="服务机构">
 					  </el-table-column>            
 					  <el-table-column
@@ -47,6 +48,7 @@
 					  </el-table-column>
 					  <el-table-column
 						align="center"
+            width="65"
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>
@@ -55,7 +57,7 @@
 					  </el-table-column>						
 					  <el-table-column
 						align="center"
-                        width="360"
+            width="360"
 						label="操作"
 						>
 						  <template scope="scope">
@@ -85,6 +87,17 @@
 					label-width="160px" 
 					label-position="left" 
 					class="demo-ruleForm padding10Prent">
+          <el-form-item v-if=" userType == 'sys' || userType == 'platform'" label="选择机构"  prop="orgId">
+            <el-select v-model="ruleForm.orgId" :disabled='mechanismFlag' filterable placeholder="请选择机构"  style="width:100%">  
+              <el-option
+                v-for="item in mechanismOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                >
+              </el-option>
+            </el-select>
+          </el-form-item>          
 					<el-form-item label="姓名:" prop="name"  >
 						<el-input v-model.trim="ruleForm.name"  placeholder="请输入2-15位用户姓名"  style='width: 100%;' ></el-input>
 					</el-form-item>
@@ -317,6 +330,8 @@ export default {
       }
     };
     return {
+      userType:'',
+      mechanismFlag:false,
       AddressStatus: "add",
       mechanismOptions: [],
       titlevar: "新增用户",
@@ -327,7 +342,7 @@ export default {
       testvalue: "",
       areaOptions: this.$store.state.user.area,
       areaOptionsAddress: this.$store.state.user.area,
-      listLoading: false,
+      listLoading: true,
       ruleForm: {
         name: "",
         phone: "",
@@ -339,7 +354,8 @@ export default {
         areaCode: "",
         areaCodes: [],
         addrLongitude: "",
-        addrLatitude: ""
+        addrLatitude: "",
+        orgId:'',
       },
       ruleFormAddress: {
         id: "",
@@ -357,7 +373,8 @@ export default {
         name: [{ required: true, validator: checkName, trigger: "blur" }],
         phone: [{ required: true, validator: checkPhone, trigger: "blur" }],
         email: [{ required: false, validator: checkEmail, trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }]
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        orgId:[{ required: true, message: "请选择服务机构", trigger: "change" }]
       },
       rulesAddress: {
         addressName: [
@@ -411,12 +428,21 @@ export default {
     // 服务机构
     getoffice() {
       getSList({}).then(res => {
-        for (var a = 0; a < res.data.data.list.length; a++) {
-          if (res.data.data.list[a].id == 0) {
-            res.data.data.list.remove(res.data.data.list[a]);
+      if(res.data.data.list != undefined){        
+        if (res.data.data.list[0].id == '0' ) {
+          res.data.data.list.remove(res.data.data.list[0]);
+        }
+        if(res.data.data.list.length >=2){
+          if(res.data.data.list[1].id == '0'){
+            res.data.data.list.remove(res.data.data.list[1]);
+            res.data.data.list.remove(res.data.data.list[0]);
+          }
+        }          
+          this.mechanismOptions = res.data.data.list;
+          if(this.userType == 'org' || this.userType == 'station'){
+            this.organizationName=this.mechanismOptions[0].id
           }
         }
-        this.mechanismOptions = res.data.data.list;
       });
     },     
     //单选改变
@@ -741,12 +767,14 @@ export default {
       this.areaOptions = this.$store.state.user.area;
       if (row.id == undefined) {
         this.titlevar = "新增用户";
+        this.mechanismFlag=false;
         this.ruleForm.provinceCode = "";
         this.ruleForm.cityCode = "";
         this.ruleForm.areaCode = "";
         this.ruleForm.sex = "";
       } else {
         this.titlevar = "编辑用户";
+        this.mechanismFlag=true;
         var obj = {
           id: row.id
         };
@@ -771,9 +799,10 @@ export default {
     //表格下单操作按钮
     lookInf(obj) {
       var id = obj.id;
+      var orgid=obj.orgId
       this.$router.push({
         path: "/clean/addorder",
-        query: { coustomerId: id }
+        query: { coustomerId: id ,orgId:orgid}
       });
     },
     //表格删除操作按钮
@@ -845,6 +874,7 @@ export default {
     this.getData({}, 1, 10);
     this.sex = this.dict.sex;
     this.getoffice()
+    this.userType=localStorage.getItem("type")
   }
 };
 </script>

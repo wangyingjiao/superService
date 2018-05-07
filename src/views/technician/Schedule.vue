@@ -4,10 +4,11 @@
 			<!-- 搜索 -->
 			<div class="schedult-search">
 				<div>
-					<el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
-					<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
-					</el-select>
-					<el-select class="searchRight select-width" v-model="search.stationId" placeholder="选择服务站">
+					<orgSearch @orgsearch="orgSearch" ref="orgSearch" :schedule="true"></orgSearch>
+					<!-- <el-select class="searchRight select-width" v-model="search.orgId" placeholder="选择机构">
+						<el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
+					</el-select> -->
+					<el-select class="searchRight select-width" clearable v-model="search.stationId" placeholder="选择服务站">
 						<el-option v-for="item in stations" :key="item.id" :label="item.name" :value="item.id"></el-option>	
 					</el-select>
 					<el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="searchRight search-width">
@@ -37,6 +38,7 @@
 			<!-- 搜索完成 -->
 			<!-- 表格 -->
 			<div class="schedule-table" v-loading="listLoading">
+				<div style="color:#929496" v-if="techUserType=='sys'">请选择搜索条件：服务机构查询数据</div>
 				<div v-if="tableData.length">
 					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->
@@ -102,7 +104,8 @@
 					</el-table>
 				</div>
 				<div v-if="!tableData.length && !listLoading" class="nodata">
-					  暂无数据
+					  <span v-if="!scheduleFlag"></span>
+					  <span v-else>暂无数据</span>
 				</div>
  				 <div class="schedult-pagin">
                     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageSync"
@@ -116,11 +119,13 @@
 </template>
 
 <script>
+	import orgSearch from '../../components/Hamburger/orgSearch.vue'
 	import {
 		mechanismService,
-		scheduleList
+		scheduleList,
+		listByOrgId
 	} from "@/api/tech";
-
+	import { userType} from '../../utils/auth'
 	var getData = function(obj,page,size){
 		return new Promise((res,rej)=>{
 			scheduleList(obj,page,size)
@@ -141,6 +146,7 @@
 						return time.getTime() > Date.now()+691200000;
 					}
 				},
+				scheduleFlag:false,
 				listLoading:false,
 				total:0,
 				pageSync:1,
@@ -171,9 +177,45 @@
 			}
 		},
 		computed:{
-			
+			techUserType(){
+				return userType()
+			},
+		},
+		components:{
+			orgSearch
 		},
 		methods:{
+			orgSearch(item){
+				this.search.orgId = item
+				this.search.stationId = ''
+				this.search.skilId = ''
+				if(!item){
+					this.stations = []
+					this.skils = []
+					return
+				}
+				listByOrgId({orgId:item}).then(data=>{
+					let list  = data.data.data.stations
+					if(list[0].id=='0'){
+						list = list.slice(1)
+					}
+					this.stations = list
+					this.skils = data.data.data.skils
+					if(this.stations.length>0 && this.techUserType=='station'){
+						this.search.stationId = this.stations[0].id
+					}
+				})
+			},
+			listByOrgId(item){
+				return new Promise((rej,res)=>{
+					listByOrgId({orgId:item}).then(data=>{
+						if(data.data.code==1){
+							res(data.data.data)
+						}
+					}).catch(error=>{
+					})
+				})
+			},
 			schedulePath(item){
 				//判断是订单还是休假
 				if(item.type == "order"){
@@ -225,8 +267,14 @@
 			},
 			//搜索
 			searchClick(item){
-				if(!item.stationId){
-					return
+				if(this.techUserType == 'sys'){
+					if(!item.orgId){
+						 this.$message({
+							message: '请选择服务机构查询数据',
+							type: 'warning'
+						});
+						return
+					}
 				}
 				// 解决： 【同时】把下拉框和input框清空 发送过去的数据没变
 				let obj = Object.assign({},item)
@@ -260,7 +308,7 @@
 			},
 			getList(){
 				this.listLoading = true
-				// console.log(this.search,this.pageSync,this.pageSize)
+				this.scheduleFlag = true
 				getData(this.search,this.pageSync,this.pageSize)
 					.then(({data})=>{
 						if(data.code){
@@ -270,43 +318,49 @@
 						}else{
 							this.listLoading = false
 						}
-						// console.log(data,"data-----")
 					})
 					.catch(error=>{
 						this.listLoading = false
-						// console.log(error,"error----")
 					})
 			},
 		},
 		mounted(){
-			mechanismService()
-				.then(({data})=>{
-					if(data.code==1){
-						if(data.data.organizations[0].id=='0'){
-							this.organizations = data.data.organizations.slice(1)
-						}else{
-							this.organizations = data.data.organizations
-						}
-						this.search.orgId = this.organizations[0].id
-						if(data.data.stations[0].id=='0'){
-							this.stations = data.data.stations.slice(1)
-						}else{
-							this.stations = data.data.stations
-						}
-						this.search.stationId = this.stations[0].id
-						this.skils = data.data.skils
-					}else{
+			console.log(this.$route.meta,",meta---++++++---")
+			if(this.techUserType=='station' || this.techUserType=='org'){
+				this.getList()
+			}
+			let list = async ()=>{
+				try{
+					let _list = await this.$refs['orgSearch'].listDataAll()
+				}
+				catch(error){
+				}
+			}
+			list()
+		},
+		// beforeRouteEnter(to, from, next){
+		// 	if(from.path == '/clean/orderinfo'){
+		// 		to.meta.keepAlive = true
+		// 	}else{
+		// 		to.meta.keepAlive = false
+		// 	}
+		// 	console.log(to,"to----")
+		// 	console.log(from,"from----")
+		// 	next()
+		// },
+		// beforeRouteLeave(to, from, next){
 
-					}
-					// var obj = data.data.data
-					// if(data.data){}
-					// console.log(data)
-				})
-				.catch(error=>{
-					// console.log(error)
-				})
-			// this.getList()
-		}
+		// 	if(to.path == '/clean/orderinfo'){
+		// 		console.log(1)
+		// 		from.meta.keepAlive = true
+		// 	}else{
+		// 		console.log(2)
+		// 		from.meta.keepAlive = false
+		// 	}
+		// 	console.log(to,"to----")
+		// 	console.log(from,"from----")
+		// 	next()
+		// }
 	}
 </script>
 
