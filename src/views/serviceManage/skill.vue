@@ -93,8 +93,9 @@
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <div class="techNameStyle">{{item.techName}}</div>
-                        <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
+                        <span >{{item.techName}}</span>
+                        <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i>
+                        <!-- <div class="closePic" @click="selfErrorClose(item)">&#10005</div> -->
                       </div>                     
                   </div>              
             </el-form-item>           
@@ -107,23 +108,24 @@
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
         <el-dialog title="选择服务人员":visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
-              <div class="selfFLOLeft width120">
-                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:180px;"></el-input>                
+              <div class="selfFLOLeft" style="width:40%">
+                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:96%"></el-input>                
               </div>
-              <div class="selfFLOLeft">
-                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:95px;">
+              <div class="selfFLOLeft" style="width:40%">
+                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:22px;width:96%">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
+              <div style="color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;">当前选择标签：</div> 
               <el-collapse-transition>
-                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
+                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
                     <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
+                      <span class="techNameStyle">{{item.techName}}</span>
                     </div>                    
                     <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
+                      <span class="techNameStyle">{{item.techName}}</span>
                     </div>                                              
                 </div>
               </el-collapse-transition>                           
@@ -859,9 +861,11 @@ export default {
   line-height: 200px;
 }
 .techNameStyle {
-  width: 80px;
-  height: 25px;
-  line-height: 25px;
+  width: 74px;
+  display:inline-block;
+  /* height: 25px;
+  line-height: 25px; */
+  font-size:14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -888,6 +892,7 @@ export default {
 }
 .selfFLORight {
   float: right;
+  margin-top:2px;
   margin-right: 20px;
 }
 .selfpromMessageTab {
@@ -1010,33 +1015,59 @@ export default {
   padding-top: 10px;
 }
 .tabWrap {
-  width: 100px;
-  margin-right: 20px;
+ /* width: 100px;
+   margin-right: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
-  margin-left: 10px;
+  margin-left: 10px; */
+  padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 25px;
+  height: 24px;
   text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
+  line-height: 23px;
+  margin:3px 0 3px 6px;
+  background:#f0f4f5;
+  color:#7a838a;
+  /* border-radius: 12px;
+  border: 1px solid #bfcbd9; */
   position: relative;
+  border:1px solid #bfcbd9
 }
 .tabWrap1 {
-  width: 80px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 5px;
+  width: 84px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+  padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 25px;
+  height: 32px;
   text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
+  line-height: 32px;
+  margin:3px 0 3px 6px;
+  background:#f0f4f5;
+  color:#7a838a;
   position: relative;
+  border:1px solid #bfcbd9
+}
+.self-el-close{
+    border-radius: 50%;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    font-size: 12px;
+    transform: scale(0.75, 0.75);
+    height: 22px;
+    width: 22px;
+    line-height: 22px;
+    vertical-align: middle;
+    top: -1px;
+    right: -2px;
+}
+.self-el-close:hover {
+  background:#6989F3;
+  color:#fff;
 }
 .closePic {
   cursor: pointer;

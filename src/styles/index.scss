@@ -580,6 +580,10 @@ body {
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
   line-height:23px;
+  
+}
+.el-select__tags .el-tag{
+  border:1px solid #bfcbd9
 }
 //搜索功能造成的多选框抖动
 .kill .el-select__tags  .is-undefined{
