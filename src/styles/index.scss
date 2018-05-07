@@ -509,21 +509,7 @@ body {
   background-color: #eef1f6;
   
 }
-.el-tag .el-icon-close {
-  border-radius: 50%;
-  text-align: center;
-  position: relative;
-  cursor: pointer;
-  font-size: 12px;
-  -ms-transform: scale(.75,.75);
-  transform: scale(.75,.75);
-  height: 22px;
-  width: 22px;
-  line-height: 22px;
-  vertical-align: middle;
-  top: -1px;
-  right: -2px;
-}
+
 .el-tabs__nav-scroll{
    padding-bottom: 20px;
 }
@@ -569,6 +555,7 @@ body {
 .searchs{
   padding: 0px 20px 20px 20px;
 }
+
 //自定义弹窗大小
 .selfDialogWidth .el-dialog {width:700px}
 //自定义弹窗大小
@@ -576,7 +563,52 @@ body {
 .selfDialogWidth1 .el-dialog .el-form-item__label{font-size:14px;}
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
-  line-height:23px;
+  line-height:28px;  
+}
+.el-select__tags{
+  max-width:490px;
+}
+//导航栏TAB关闭样式调整
+.tabs-view  .el-icon-close{
+  margin-top:12px;
+  margin-right:-6px;
+}
+//多选框中TAB关闭:hover时样式调整
+.el-tag .el-icon-close:hover {
+  background:#6989F3;
+}
+//多选框中TAB关闭样式调整
+ .el-tag .el-icon-close {
+  border-radius: 50%;
+  text-align: center;
+  position: relative; 
+  cursor: pointer;
+  font-size: 12px;
+  transform: scale(0.75, 0.75);
+  height: 22px;
+  width: 22px;
+  line-height: 22px;
+  vertical-align: middle;
+  top: -8px;
+  right: 4px;
+}
+//多选框中TAB中内容样式调整
+ .el-select__tags-text{
+  display:inline-block;
+  width:130px;
+  font-size:14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height:28px;
+  text-align:center;
+}
+//多选框中TAB样式调整
+.el-select__tags .el-tag{
+  border:1px solid #bfcbd9;
+  height:30px;
+  line-height:30px;
+  width:156px;
 }
 //搜索功能造成的多选框抖动
 .kill .el-select__tags  .is-undefined{
@@ -677,9 +709,20 @@ body {
 }
 //文字提示样式
 .el-tooltip__popper.is-dark{
-  background-color: #DFE4ED !important;
-  color: #666666 !important;
+  background-color: rgba(40, 40, 40, 0.65) !important;
+  color: #fff !important;
   font-size: 12px !important;
+  
+}
+.el-tooltip__popper .popper_arrow:after{
+  border-left-color: rgba(40, 40, 40, 0.65);
+}
+.el-tooltip__popper[x-placement^=left] .popper__arrow::after {
+  right: 1px;
+  bottom: -5px;
+  margin-left: -5px;
+  border-right-width: 0;
+  border-left-color: rgba(40, 40, 40, 0.65);
 }
 //提示信息滚动
 .el-tooltip__popper{
@@ -688,8 +731,8 @@ body {
   word-break: break-all; 
   word-wrap:break-word;
   // overflow-y: scroll;
-  overflow: auto;
-  overflow-x: hidden;
+  // overflow: auto;
+  // overflow-x: hidden;
 }
 // 嵌套表格样式
 .el-table__expanded-cell {

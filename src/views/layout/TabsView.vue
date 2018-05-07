@@ -4,7 +4,7 @@
     <div class="leftmove" @click="leftmove">&#139</div>
     <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path">
       <!-- <span>|</span> -->
-      <el-tag :closable="true" :type="isActive(tag.path)?'primary':''" @close='closeViewTabs(tag,$event)'>
+      <el-tag :closable="true" class="tabsview" :type="isActive(tag.path)?'primary':''" @close='closeViewTabs(tag,$event)'>
         {{tag.name}}
       </el-tag>
     </router-link>	
