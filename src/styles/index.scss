@@ -568,9 +568,6 @@ body {
 .el-select__tags{
   max-width:490px;
 }
-.el-select__input .is-undefined{
-   background:pink;
-}
 //导航栏TAB关闭样式调整
 .tabs-view  .el-icon-close{
   margin-top:12px;
@@ -604,6 +601,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height:28px;
+  text-align:center;
 }
 //多选框中TAB样式调整
 .el-select__tags .el-tag{
