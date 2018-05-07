@@ -206,15 +206,23 @@
                    <div class="custom form_item">
                         <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
                     </div>
-                    <div class="labelList form_item" v-if="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
-                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa system-label" style="border-radius:20px;">
+                    <div class="labelList form_item label-sty" v-if="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+                        <!-- <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa system-label" style="border-radius:20px;">
                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
                               <div>
                                   <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;margin-right:0px">{{item}}</span>
                                   <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
                               </div>
                           </el-tooltip>
-                        </div>                        
+                        </div>                         -->
+                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="sys-label">
+                          <el-tooltip placement="left" :disabled="item.length <=8" :content="item">
+                              <div>
+                                  <span class="sys-text">{{item}}</span>
+                                  <span class="sys-close" @click="AlreadyLabel(item)"></span>
+                              </div>
+                          </el-tooltip>
+                        </div>                       
                     </div>
                     
 				            <div class="pro-hint">* 最多设置3个系统标签</div>
@@ -224,10 +232,18 @@
                     <div class="custom">
                         <span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
                     </div>
-                    <div class="labelList" v-show="customArr != undefined && customArr.length>0">
-                        <span v-for="(item,index) in customArr" :key="index">{{item}}   
+                    <div class="labelList label-sty" v-show="customArr != undefined && customArr.length>0">
+                      <div v-for="(item,index) in customArr" :key="index" class="sys-label">
+                        <el-tooltip placement="left" :disabled="item.length <=8" :content="item">
+                          <div>
+                              <span class="sys-text">{{item}}</span>
+                              <span class="sys-close" @click="deleteLabel(index)"></span>
+                          </div>
+                        </el-tooltip>
+                      </div>
+                        <!-- <span v-for="(item,index) in customArr" :key="index">{{item}}   
                           <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
-                        </span>
+                        </span> -->
                     </div>
 					          <div class="pro-hint">* 最多设置3个自定义标签</div>
                 </el-form-item> 
@@ -304,51 +320,141 @@
         </div>
       </el-dialog>
     <!-- 自定义标签结束-->
-
     <!--系统标签-->
       <el-dialog title="选择标签" :close-on-click-modal="false" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
         <el-row>
           <el-col :span="24">
-              <div class="already">
+              <div style="line-height:50px">
                   <div class="selfTitle1">当前选择标签：</div>
-                  <div v-for="(item,index) in labelClickArr" :key="index" class="selfTabsaa">
+                  <div class="labelList label-current" v-show="labelClickArr != undefined && labelClickArr.length>0">
+                       <div v-for="(item,index) in labelClickArr" :key="index" class="sys-label sys-label-dialog">
+                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
+                              <div>
+                                  <span class="sys-text">{{item}}</span>
+                                  <span class="sys-close" @click="SelectedLabel(item)"></span>
+                              </div>
+                           </el-tooltip>
+                       </div>
+                  </div>
+                  <!-- <div v-for="(item,index) in labelClickArr" :key="index" class="selfTabsaa">
                     <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
                         <div>
                             <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
                             <span @click="SelectedLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;"></span>
                         </div>
                     </el-tooltip>
-                  </div>
-                </div>
+                  </div> -->
+              </div>
           </el-col>
         </el-row>
-
         <el-row>
           <el-col :span="24" v-show="alreadyArr.length>0">
-            <div class="already">
+            <div style="line-height:32px">
                   <div class="selfTitle1">已添加标签：</div>
-                  <div v-for="(item,index) in alreadyArr" :key="index" class="selfTabsaa">
+                  <div class="labelList label-already" v-show="alreadyArr != undefined && alreadyArr.length>0">
+                      <div v-for="(item,index) in alreadyArr" :key="index" class="sys-label sys-label-dialog">
+                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
+                              <div>
+                                  <span class="sys-text">{{item}}</span>
+                                  <span class="sys-close" @click="AlreadyLabel(item)"></span>
+                              </div>
+                           </el-tooltip>
+                       </div>
+                  </div>
+                  <!-- <div v-for="(item,index) in alreadyArr" :key="index" class="selfTabsaa">
                     <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
                         <div>
                           <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
                           <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:2px;"></span>
                         </div>
                     </el-tooltip>
-                  </div>
+                  </div> -->
             </div>
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-col :span="24">
-              <div style="overflow:hidden">
-                  <ul>
+       
+              <div class="sys-label-choice" style="overflow:hidden;margin-top:22px">
+                <div class="over-fl label-num">
+                    <div style="width:87%;float:left">
+                        <div class="sys-title">
+                            标题一
+                        </div>
+                        <ul>
+                            <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
+                              <span class="projectLabel">{{item.label}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="float:left">
+                        <div class="sys-arrow">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- 标题2 -->
+                <div class="over-fl label-num" v-show="systemOptions2 !== undefined && systemOptions2.length>0">
+                    <div style="width:87%;float:left">
+                        <div class="sys-title">
+                            标题二
+                        </div>
+                        <ul>
+                            <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
+                              <span class="projectLabel">{{item.label}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="float:left">
+                        <div class="sys-arrow">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- 标题三 -->
+                <div class="over-fl label-num" v-show="systemOptions3 !== undefined && systemOptions3.length>0">
+                    <div style="width:87%;float:left">
+                        <div class="sys-title">
+                            标题三
+                        </div>
+                        <ul>
+                            <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
+                              <span class="projectLabel">{{item.label}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div style="float:left">
+                        <div class="sys-arrow">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- 标签名 -->
+                 <div class="over-fl label-num label-name" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
+                    <div style="width:100%;float:left">
+                        <div class="sys-title">
+                            标签名
+                        </div>
+                        <div class="labelSystem">
+                           <div v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
+                              <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
+                                <input type="button"
+                                        class="cursor" 
+                                        style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
+                                      :value="item.label" @click="labelClick(item)"
+                                        :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
+                                        :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+                            </el-tooltip>
+                          </div>        
+                        </div>
+                    </div>
+                </div>
+                  <!-- <ul>
                       <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
                         <span class="projectLabel">{{item.label}}</span>
                         <i class="el-icon-arrow-right"></i>
                       </li>
-                  </ul>
-                  <ul v-show="systemOptions2 !== undefined && systemOptions2.length>0">
+                  </ul> -->
+                  <!-- <ul v-show="systemOptions2 !== undefined && systemOptions2.length>0">
                       <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
                         <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
                       </li>
@@ -362,7 +468,6 @@
                   <div class="labelSystem" v-if="systemOptions4 !== undefined && systemOptions4.length>0">
                       <div  v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
                           <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
-                            <!-- <span>{{item.label}}</span> -->
                             <input type="button"
                                     class="cursor" 
                                     style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
@@ -371,11 +476,9 @@
                                     :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
                         </el-tooltip>
                       </div>        
-                    <!--  -->
-                  </div>
+                  </div> -->
               </div>
-          </el-col>
-        </el-row>
+       
         <div slot="footer" class="dialog-footer">
           <input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
         </div>
@@ -1732,6 +1835,44 @@ export default {
 };
 </script>
 <style>
+.over-fl{
+  overflow: hidden;
+  position: relative;
+}
+.sys-title{
+  font-family: PingFangSC-Medium;
+  letter-spacing: 0;
+  font-size: 16px;
+  text-align: center;
+  line-height: 40px;
+  color: #fff;
+  width: 100%;
+  height: 40px;
+  background: #6989F3;
+  border-radius: 3px 3px 0 0; 
+}
+.sys-arrow{
+  position: absolute;
+  top: 50%;
+  margin-top: -10px;
+  right: 6px;
+  width: 10px;
+  height:21px;
+  background: url("../../../static/icon/箭头.png") no-repeat;
+}
+.sys-label-choice>div{
+  width: 24%;
+  float: left;
+  /* border: 2px dashed #D8E1FF;
+  border-top:none;  */
+}
+.sys-label-choice .label-name{
+  width: 28%;
+}
+.sys-label-choice>div ul{
+  width: 100%;
+}
+
 .pro-hint{
   color:#b7b5b5;
   font-size:13px;
@@ -1743,6 +1884,7 @@ export default {
   line-height: 20px;
 }
 .selfTitle1 {
+  width: 100px;
   display: inline-block;
   float: left;
 }
@@ -2343,19 +2485,71 @@ hr {
   padding-top: 0;
 }
 .labelList {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 10px;
+  /* width: 100%;
+  box-sizing: border-box; */
+  display:flex;
+  flex-wrap: wrap;
+}
+.label-sty{
+  padding: 20px 20px;
   border: 1px solid #bfcbd9;
   border-top: 0;
 }
-.labelList span {
+.label-current{
+  padding: 10px 0 16px 5px;
+}
+.label-already{
+  padding: 0 0 0 5px;
+}
+.labelList .sys-label{
+  position: relative;
+  width: 155px;
+  height: 32px;
+  line-height: 32px;
+  margin-right: 10px;
+  font-size: 14px;
+  color: rgba(80,94,112,1);
+  box-sizing: border-box;
+  border: 1px solid rgba(216,225,255,1);
+  background: rgba(242,247,253,1);
+  padding: 0 8px;
+}
+.labelList .sys-label-dialog{
+   width: 120px;
+   padding-right: 15px;
+}
+.labelList .sys-label .sys-text{
+  text-align: center;
+  width: 90%;
   display: inline-block;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  padding-right:6px; 
+}
+.labelList .sys-label .sys-close{
+  cursor: pointer;
+  position: absolute;
+  right: 8px;
+  top: 7px;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: url("../../../static/icon/叉1.png") no-repeat;
+}
+.labelList .sys-label .el-tooltip{
+  height: 32px;
+}
+.sys-label:hover .sys-close{
+  background: url("../../../static/icon/叉2.png") no-repeat;
+}
+
+.labelList span {
+  /* display: inline-block;
   border: 1px solid #bfcbd9;
-  /* padding: 0 10px; */
   border-radius: 20px;
   line-height: 20px;
-  margin-right: 10px;
+  margin-right: 10px; */
 }
 .labelDav .labelList span {
   padding: 0 5px;
@@ -2367,7 +2561,7 @@ hr {
 }
 .systemLabel ul {
   width: 22%;
-  float: left;
+  /* float: left; */
   height: 300px;
   overflow-y: auto;
   border: 1px solid #e8e8e8;
@@ -2397,12 +2591,13 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
+  margin-top: 4px;
+  padding:11px 0; 
   overflow-y: auto;
-  float: left;
-  border: 1px solid #e8e8e8;
-  width: 34%;
-  height: 300px;
+  width: 100%;
+  height: 296px;
   border-left: 0;
+  background: #F7FBFC;
 }
 .image-text-body .img-content {
   width: 100%;
@@ -2418,15 +2613,15 @@ hr {
   border-radius: 2px;
 }
 .labelSystem input {
-  background: #fff;
+  background:#F2F7FD;
   padding: 0 10px 0 5px;
   float: left;
   display: block;
   height: 30px;
   line-height: 30px;
   text-align: center;
-  border: 1px solid #4c70e8;
-  margin: 5px;
+  border: 1px solid #D8E1FF;
+  margin: 3px;
   /* width: 95%; */
   overflow: hidden;
   white-space: nowrap;
@@ -2435,7 +2630,11 @@ hr {
 .activeSystem_1,
 .activeSystem_2,
 .activeSystem_3 {
-  background: #e0f1fb;
+  font-family: PingFangSC-Medium;
+  font-size: 16px;
+  color: #6989F3;
+  letter-spacing: 0;
+  font-weight: bolder;
 }
 .already {
   /* height: 50px; */
@@ -2446,7 +2645,7 @@ hr {
   width: 100%;
 }
 .already span {
-  border: 1px solid #e8e8e8;
+  /* border: 1px solid #e8e8e8; */
   /* line-height:20px; */
   /* padding: 5px;
   margin-right: 5px; */
