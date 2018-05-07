@@ -279,9 +279,10 @@ export default {
         orderServer(obj)
           .then(res => {
             if (res.data.code === 1) {
-              this.Options2 = res.data.data.list;                           
+              if(!this.mechanismFlag){
+                this.Options2 = res.data.data.list;
+              }                             
               this.listTech = res.data.data.techs;
-              // this.dialogVisible = true;
             } else {
               this.dialogVisible = false;
             }
