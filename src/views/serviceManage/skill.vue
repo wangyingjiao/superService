@@ -93,8 +93,9 @@
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <div class="techNameStyle">{{item.techName}}</div>
-                        <div class="closePic" @click="selfErrorClose(item)">&#10005</div>
+                        <div><span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i></div>
+                        
+                        <!-- <div class="closePic" @click="selfErrorClose(item)">&#10005</div> -->
                       </div>                     
                   </div>              
             </el-form-item>           
@@ -107,23 +108,24 @@
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
         <el-dialog title="选择服务人员":visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
-              <div class="selfFLOLeft width120">
-                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:180px;"></el-input>                
+              <div class="selfFLOLeft" style="width:40%">
+                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:96%"></el-input>                
               </div>
-              <div class="selfFLOLeft">
-                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:95px;">
+              <div class="selfFLOLeft" style="width:40%">
+                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:22px;width:96%">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
+              <div style="color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;">当前选择标签：</div> 
               <el-collapse-transition>
-                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                    
+                <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
                     <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
+                      <span class="techNameStyle">{{item.techName}}</span>
                     </div>                    
                     <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                      <div class="techNameStyle">{{item.techName}}</div>
+                      <span class="techNameStyle">{{item.techName}}</span>
                     </div>                                              
                 </div>
               </el-collapse-transition>                           
@@ -132,16 +134,16 @@
                       <table  class="selfTable">
                           <tr class="tableHeader">
                             <td  class="selfTdStyle" align="center" width="73px">选择</td>
-                            <td  class="selfTdStyle"  align="center" width="128px">头像</td>
-                            <td  class="selfTdStyle"  align="center" width="150px">姓名</td>
+                            <td  class="selfTdStyle"  align="center" width="100px">头像</td>
+                            <td  class="selfTdStyle"  align="center" width="178px">姓名</td>
                             <td  class="selfTdStyle"  align="center" width="73px">性别</td>
                             <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
                           </tr>                
                         <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
-                            <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                            <td  width="152px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                            <td  width="99px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                            <td  width="180px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
                             <td  width="73px" align="center">
                               <span v-if="item.techSex =='male'">男</span>
                               <span v-if="item.techSex =='female'">女</span>									
@@ -279,9 +281,10 @@ export default {
         orderServer(obj)
           .then(res => {
             if (res.data.code === 1) {
-              this.Options2 = res.data.data.list;                           
+              if(!this.mechanismFlag){
+                this.Options2 = res.data.data.list;
+              }                          
               this.listTech = res.data.data.techs;
-              // this.dialogVisible = true;
             } else {
               this.dialogVisible = false;
             }
@@ -425,7 +428,8 @@ export default {
 
       } else if (this.dialogStatus == "edit") {
         this.title = "编辑技能";
-        this.mechanismFlag=true;        
+        this.mechanismFlag=true;  
+        this.Options2=[];      
         //编辑操作
         this.id = row.id;
         var obj1 = {
@@ -435,7 +439,7 @@ export default {
           .then(res => {
             if (res.data.code === 1) {
               this.listTech = res.data.data.techs;
-              this.Options2 = res.data.data.list;
+              this.Options2 =  res.data.data.list;
               this.listLoading = false;
               this.dialogVisible = true;
               this.ruleForm2.name = res.data.data.info.name;
@@ -859,9 +863,19 @@ export default {
   line-height: 200px;
 }
 .techNameStyle {
-  width: 80px;
-  height: 25px;
-  line-height: 25px;
+  width: 74px;
+  display:inline-block;
+  /* height: 25px;
+  line-height: 25px; */
+  font-size:14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.techNameStyle1 {
+  width: 90px;
+  display:inline-block;
+  font-size:14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -888,6 +902,7 @@ export default {
 }
 .selfFLORight {
   float: right;
+  margin-top:2px;
   margin-right: 20px;
 }
 .selfpromMessageTab {
@@ -910,8 +925,8 @@ export default {
 }
 .selfTdStyle {
   background: #eef1f6;
-  height: 60px;
-  line-height: 60px;
+  height: 46px;
+  line-height: 46px;
   border: none !important;
 }
 .tableHeader {
@@ -933,7 +948,7 @@ export default {
   white-space: nowrap;
 }
 .skillMarginTop60 {
-  margin-top: 60px;
+  margin-top: 44px;
 }
 .selftechStationNameStyle {
   width: 174px;
@@ -1010,33 +1025,53 @@ export default {
   padding-top: 10px;
 }
 .tabWrap {
-  width: 100px;
-  margin-right: 20px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 10px;
+  width: 156px;
+  padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 25px;
+  height: 32px;
   text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
+  line-height: 32px;
+  margin:3px 0 3px 6px;
+  background:#f0f4f5;
+  color:#7a838a;
+  font-size:14px;
   position: relative;
+  border:1px solid #bfcbd9
 }
 .tabWrap1 {
-  width: 80px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 5px;
+  width: 84px;
+  /* overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+  padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 25px;
+  height: 32px;
   text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
+  line-height: 32px;
+  margin:3px 0 3px 6px;
+  background:#f0f4f5;
+  color:#7a838a;
   position: relative;
+  border:1px solid #bfcbd9
+}
+.self-el-close{
+    border-radius: 50%;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+    font-size: 12px;
+    transform: scale(0.75, 0.75);
+    height: 22px;
+    width: 22px;
+    line-height: 22px;
+    vertical-align: middle;
+    margin-top: 5px;
+}
+.self-el-close:hover {
+  background:#6989F3;
+  color:#fff;
 }
 .closePic {
   cursor: pointer;

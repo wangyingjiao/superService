@@ -1314,6 +1314,7 @@ export default {
       this.ruleForm.refundAccount = 0;
       this.ruleForm.refundDifference = "";
       this.ruleForm.refundDifferenceType = "";
+      this.ruleForm.orderNowRefundStatus='';
       this.orderRefundFlag = true;
       //退款按钮
       var obj1 = {
