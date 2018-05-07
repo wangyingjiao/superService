@@ -411,8 +411,8 @@ export default {
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     beforeAvatarUpload(file) {
-      let name = file.name
-      var apk = name.substring(name.length-3,name.length)
+      let name = file.name;
+      var apk = name.substring(name.length - 3, name.length);
       const isAPK = apk === "apk";
       if (!isAPK) {
         this.$message.error("上传只能是 apk 格式安装包!");
@@ -654,7 +654,7 @@ export default {
   font-size: 14px;
   border-radius: 4px;
 }
-.el-upload{
+.el-upload {
   text-align: left;
 }
 </style>
