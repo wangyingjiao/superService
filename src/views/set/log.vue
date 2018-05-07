@@ -78,7 +78,7 @@
 
       <el-table-column align="center" label="异常信息" prop="exceptions">     
         <template scope="scope">
-           <el-tooltip class="www" placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
+           <el-tooltip popper-class="log_tool" placement="left" :disabled="scope.row.exceptions.length < 10" :content="scope.row.exceptions">
              <div class="tool" >{{scope.row.exceptions}}</div>
            </el-tooltip>
         </template> 
@@ -260,13 +260,13 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-.el-tooltip__popper{
+<style>
+.log_tool{
   max-width: 300px;
   max-height: 500px;
   word-break: break-all; 
   word-wrap:break-word;
-  // overflow-y: scroll;
+  /* // overflow-y: scroll; */
   overflow: auto;
   overflow-x: hidden;
 }
@@ -293,5 +293,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.www{
+  color: aquamarine;
 }
 </style>

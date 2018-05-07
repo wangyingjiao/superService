@@ -681,6 +681,16 @@ body {
   color: #fff !important;
   font-size: 12px !important;
 }
+.el-tooltip__popper .popper_arrow:after{
+  border-left-color: rgba(40, 40, 40, 0.65);
+}
+.el-tooltip__popper[x-placement^=left] .popper__arrow::after {
+  right: 1px;
+  bottom: -5px;
+  margin-left: -5px;
+  border-right-width: 0;
+  border-left-color: rgba(40, 40, 40, 0.65);
+}
 //提示信息滚动
 .el-tooltip__popper{
   max-width: 300px;
