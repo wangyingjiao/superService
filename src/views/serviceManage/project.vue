@@ -324,7 +324,7 @@
       <el-dialog title="选择标签" :close-on-click-modal="false" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
         <el-row>
           <el-col :span="24">
-              <div style="line-height:50px">
+              <div style="line-height:60px">
                   <div class="selfTitle1">当前选择标签：</div>
                   <div class="labelList label-current" v-show="labelClickArr != undefined && labelClickArr.length>0">
                        <div v-for="(item,index) in labelClickArr" :key="index" class="sys-label sys-label-dialog">
@@ -380,7 +380,7 @@
                         <div class="sys-title">
                             标题一
                         </div>
-                        <ul>
+                        <ul class="innerbox">
                             <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
                               <span class="projectLabel">{{item.label}}</span>
                             </li>
@@ -398,7 +398,7 @@
                         <div class="sys-title">
                             标题二
                         </div>
-                        <ul>
+                        <ul class="innerbox">
                             <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
                               <span class="projectLabel">{{item.label}}</span>
                             </li>
@@ -416,7 +416,7 @@
                         <div class="sys-title">
                             标题三
                         </div>
-                        <ul>
+                        <ul class="innerbox">
                             <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
                               <span class="projectLabel">{{item.label}}</span>
                             </li>
@@ -434,8 +434,8 @@
                         <div class="sys-title">
                             标签名
                         </div>
-                        <div class="labelSystem">
-                           <div v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
+                        <div class="labelSystem innerbox">
+                           <div class="label-input" v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
                               <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
                                 <input type="button"
                                         class="cursor" 
@@ -1835,11 +1835,32 @@ export default {
 };
 </script>
 <style>
+.labelSystem{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+/*滚动条样式*/
+  .innerbox::-webkit-scrollbar {/*滚动条整体样式*/
+      width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+      height: 4px;
+  }
+  .innerbox::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+      border-radius: 5px;
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.2);
+  }
+  .innerbox::-webkit-scrollbar-track {/*滚动条里面轨道*/
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      border-radius: 0;
+      background: rgba(0,0,0,0.1);
+  }
 .over-fl{
   overflow: hidden;
   position: relative;
 }
 .sys-title{
+  margin-bottom: 4px;
   font-family: PingFangSC-Medium;
   letter-spacing: 0;
   font-size: 16px;
@@ -2496,7 +2517,7 @@ hr {
   border-top: 0;
 }
 .label-current{
-  padding: 10px 0 16px 5px;
+  padding: 12px 0 16px 5px;
 }
 .label-already{
   padding: 0 0 0 5px;
@@ -2564,7 +2585,7 @@ hr {
   /* float: left; */
   height: 300px;
   overflow-y: auto;
-  border: 1px solid #e8e8e8;
+  /* border: 1px solid #e8e8e8; */
 }
 .systemLabel ul:nth-of-type(2) {
   border-left: 0;
@@ -2577,11 +2598,16 @@ hr {
   border-left: 0;
 }
 .systemLabel ul li {
+  font-family: PingFangSC-Regular;
+  color: #969696;
+  letter-spacing: 0;
+  margin-bottom: 3px;
+  background: #F7FBFC;
   width: 100%;
-  padding: 0 5px;
-  height: 29px;
-  border-bottom: 1px dashed #e8e8e8;
-  line-height: 29px;
+  /* padding: 0 5px; */
+  /* height: 29px; */
+  /* border-bottom: 1px dashed #e8e8e8; */
+  /* line-height: 29px; */
   list-style: none;
 }
 .systemLabel ul li i {
@@ -2591,8 +2617,7 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
-  margin-top: 4px;
-  padding:11px 0; 
+  padding:11px 5px; 
   overflow-y: auto;
   width: 100%;
   height: 296px;
@@ -2615,7 +2640,7 @@ hr {
 .labelSystem input {
   background:#F2F7FD;
   padding: 0 10px 0 5px;
-  float: left;
+  /* float: left; */
   display: block;
   height: 30px;
   line-height: 30px;
@@ -2627,9 +2652,9 @@ hr {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.activeSystem_1,
-.activeSystem_2,
-.activeSystem_3 {
+.sys-label-choice .activeSystem_1,
+.sys-label-choice .activeSystem_2,
+.sys-label-choice .activeSystem_3 {
   font-family: PingFangSC-Medium;
   font-size: 16px;
   color: #6989F3;
@@ -2661,7 +2686,10 @@ hr {
 }
 .projectLabel {
   cursor: pointer;
-  width: 90%;
+  width: 100%;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
