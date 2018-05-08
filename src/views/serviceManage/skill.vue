@@ -1025,7 +1025,7 @@ export default {
   border: 1px solid #ccc;
   border-top: none;
   margin-top: -23.5px;
-  padding-top: 18px;
+  padding-top: 23px;
 }
 .tabWrap {
   width: 146px;
