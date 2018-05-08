@@ -2618,7 +2618,7 @@ export default {
   justify-content: center;
 }
 .tech-index .el-select .el-tag {
-  line-height: 23px;
+  line-height: 20px;
 }
 .tech-mouse-div > span:nth-of-type(1) {
   /* border: 1px solid #707cd2; */
@@ -2797,7 +2797,7 @@ export default {
   cursor: pointer;
 }
 .tech-service .el-select .el-tag {
-  line-height: 23px;
+  line-height: 20px;
 }
 .page {
   padding-right: 20px;

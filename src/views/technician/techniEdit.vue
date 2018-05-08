@@ -2272,4 +2272,7 @@ export default {
   width:47%;
   float:left;
 }
+.techniEdit .el-select__tags .el-tag{
+  line-height: 23px;
+}
 </style>
