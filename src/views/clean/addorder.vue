@@ -1712,7 +1712,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle1 {
-  width: 90px;
+  width: 80px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
@@ -1887,14 +1887,14 @@ export default {
   padding: 2px;
 }
 .tabWrap {
-  width: 156px;
+  width: 146px;
   padding: 0 5px;
-  font-size: 12px;
+  font-size: 10px;
   display: inline-block;
-  height: 32px;
+  height: 30px;
   text-align: center;
-  line-height: 32px;
-  margin:3px 0 3px 6px;
+  line-height: 30px;
+  margin:-9px 0 3px 6px;
   background:#f0f4f5;
   color:#7a838a;
   font-size:14px;
@@ -2012,9 +2012,9 @@ export default {
   padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 32px;
+  height: 30px;
   text-align: center;
-  line-height: 32px;
+  line-height: 30px;
   margin:3px 0 3px 6px;
   background:#f0f4f5;
   color:#7a838a;
