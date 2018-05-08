@@ -56,8 +56,8 @@
     </div>
    <!-- 弹窗开始 -->
     <el-dialog
-       :title="textMap[dialogStatus]" 
-       :visible.sync="dialogFormVisible" 
+       :title="textMap[dialogStatus]"
+       :visible.sync="dialogFormVisible"
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
