@@ -709,10 +709,20 @@ body {
 }
 //文字提示样式
 .el-tooltip__popper.is-dark{
-  background-color: #DFE4ED !important;
-  color: #666666 !important;
+  background-color: rgba(40, 40, 40, 0.65) !important;
+  color: #fff !important;
   font-size: 12px !important;
   
+}
+.el-tooltip__popper .popper_arrow:after{
+  border-left-color: rgba(40, 40, 40, 0.65);
+}
+.el-tooltip__popper[x-placement^=left] .popper__arrow::after {
+  right: 1px;
+  bottom: -5px;
+  margin-left: -5px;
+  border-right-width: 0;
+  border-left-color: rgba(40, 40, 40, 0.65);
 }
 //提示信息滚动
 .el-tooltip__popper{
@@ -722,8 +732,8 @@ body {
   word-wrap:break-word;
   
   // overflow-y: scroll;
-  overflow: auto;
-  overflow-x: hidden;
+  // overflow: auto;
+  // overflow-x: hidden;
 }
 // 嵌套表格样式
 .el-table__expanded-cell {
