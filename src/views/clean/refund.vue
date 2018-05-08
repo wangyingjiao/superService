@@ -174,7 +174,11 @@ var refundDetails = (id)=>{
                     obj[this.chooses] = this.chooContent
                 }
                 this.search = obj
-                this.searchData()
+                if(this.pageSync == 1){
+					this.searchData()
+				}else{
+					this.pageSync = 1
+				}
             },
             //列表数据
             searchData(){
