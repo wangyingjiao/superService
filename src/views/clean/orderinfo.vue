@@ -1595,9 +1595,9 @@ export default {
   padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 32px;
+  height: 30px;
   text-align: center;
-  line-height: 32px;
+  line-height: 30px;
   margin:3px 0 3px 6px;
   background:#f0f4f5;
   color:#7a838a;
