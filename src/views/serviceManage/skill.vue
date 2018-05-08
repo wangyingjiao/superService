@@ -1028,7 +1028,7 @@ export default {
   padding-top: 23px;
 }
 .tabWrap {
-  width: 146px;
+  width: 145px;
   padding: 0 5px;
   display: inline-block;
   height: 30px;
