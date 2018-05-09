@@ -94,15 +94,16 @@
 										</div>						
 								</template>
 					  </el-table-column>
-						<el-table-column label="操作" align="center" class="aa" width="180" >
-            <el-table-column align="center"   :colspan="2"  ref="selfcolumn" width="80">
+            <el-table-column align="center" :render-header="renderHeader1"    ref="selfcolumn" width="100" fixed="right">
                 <template scope="scope">
                   <div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
                     <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
                   </div>						
                 </template>
-            </el-table-column>		
-							<el-table-column align="center" width="100">
+            </el-table-column>
+						<el-table-column  align="center" :render-header="renderHeader2" class="aa" width="100" fixed="right">
+		
+							<el-table-column  align="center" width="100">
 								<template scope="scope">
 									<div>
 										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
@@ -137,14 +138,14 @@
 					<tr class="tableHeader">
 						<td  class="selfTableHEADTD" align="center" width="73px">选择</td>
 						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
-						<td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="170px">姓名</td>
 						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
 						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
 					</tr>
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td  width="157px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
 								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 15" :content="item.techName"><div :class=" item.techName.length < 18 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
@@ -221,7 +222,13 @@ export default {
   methods: {
     renderHeader (h) {
       return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
-    },   
+    }, 
+    renderHeader1 (h) {
+      return [h('p', {style:'font-size:14px;text-align:right;'}, ['操'])]
+    },
+    renderHeader2 (h) {
+      return [h('p', {style:'font-size:14px;text-align:left;'}, ['作'])]
+    },              
     //机构变化事件
     orgChange(val) {
       this.payType = "";
