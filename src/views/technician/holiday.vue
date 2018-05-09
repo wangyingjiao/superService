@@ -284,8 +284,7 @@ export default {
     this.getList();
   },
   methods: {
-    aaa(obj) {
-    },
+    aaa(obj) {},
     renderHeader(h) {
       return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
     },
@@ -311,6 +310,7 @@ export default {
     },
     //请求列表数据
     getList() {
+      this.listLoading = true;
       var obj = {
         reviewStatus: this.activeName
       };
@@ -357,6 +357,9 @@ export default {
       });
       getHoliday(obj, this.pageNumber, this.pageSize)
         .then(res => {
+          this.$nextTick(() => {
+            this.listLoading = false;
+          });
           if (res.data.code == 1) {
             this.total = res.data.data.count;
             this.list = res.data.data.list;
@@ -368,9 +371,6 @@ export default {
                 this.list[i].index = i + 1;
               }
             }
-            this.listLoading = false;
-          } else {
-            this.listLoading = false;
           }
         })
         .catch(() => {
