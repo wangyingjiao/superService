@@ -43,12 +43,20 @@
 					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->
 							<el-table-column label="技师" align="center">
-								<el-table-column align="center">
+								<el-table-column align="center" min-width="140">
 									<template scope="scope">
 										<div class="schedule-tech">
-											<div>{{scope.row.name}}<span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
+											<div>
+												<el-tooltip placement="left" :disabled="scope.row.name.length <=6" :content="scope.row.name">
+													<div  class="ov-flow">{{scope.row.name}}<span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
+												</el-tooltip>
+											</div>
 											<div>{{scope.row.phone}}</div>
-											<div>{{scope.row.stationName}}</div>
+											<div class="ov-flow">
+												<el-tooltip placement="left" :disabled="scope.row.stationName.length <=8" :content="scope.row.stationName">
+													<span>{{scope.row.stationName}}</span>
+												</el-tooltip>
+											</div>
 										</div>
 									</template>
 								</el-table-column>
@@ -438,5 +446,10 @@
 	.work-arrange{
 		/*box-sizing: border-box;*/
 		padding: 10px 0 110px 0;
+	}
+	.ov-flow{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>
