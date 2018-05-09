@@ -22,7 +22,7 @@
 		<div class="second-bar">
 			<div class="tableWarpaa addStyle">
 					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
-					  <el-table-column  align="center" min-width="198"  label="订单编号">
+					  <el-table-column  align="center" min-width="220"  label="订单编号">
 							<template scope="scope" >
 								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
@@ -46,7 +46,7 @@
                       </el-tooltip>
                   </template>                    
             </el-table-column>            
-					  <el-table-column align="center"  min-width="150" label="服务时间">
+					  <el-table-column align="center"  min-width="160" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
 										{{scope.row.serviceTime}}
