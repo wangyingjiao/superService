@@ -94,15 +94,16 @@
 										</div>						
 								</template>
 					  </el-table-column>
-						<el-table-column label="操作" align="center" class="aa" width="180" >
-            <el-table-column align="center"   :colspan="2"  ref="selfcolumn" width="80">
+            <el-table-column align="center" :render-header="renderHeader1"    ref="selfcolumn" width="100" fixed="right">
                 <template scope="scope">
                   <div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
                     <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
                   </div>						
                 </template>
-            </el-table-column>		
-							<el-table-column align="center" width="100">
+            </el-table-column>
+						<el-table-column  align="center" :render-header="renderHeader2" class="aa" width="100" fixed="right">
+		
+							<el-table-column  align="center" width="100">
 								<template scope="scope">
 									<div>
 										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
@@ -221,7 +222,13 @@ export default {
   methods: {
     renderHeader (h) {
       return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
-    },   
+    }, 
+    renderHeader1 (h) {
+      return [h('p', {style:'font-size:14px;text-align:right;'}, ['操'])]
+    },
+    renderHeader2 (h) {
+      return [h('p', {style:'font-size:14px;text-align:left;'}, ['作'])]
+    },              
     //机构变化事件
     orgChange(val) {
       this.payType = "";

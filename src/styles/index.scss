@@ -593,6 +593,9 @@ body {
 .dispatchTaleSelf  .cell{
 	padding: 0;
 }
+.dispatchTaleSelf  th{
+  border-right: 0px solid #dfe6ec; 
+}
 //自定义日期显示样式
 .selfTestStyle1 .el-date-table td.next-month,.selfTestStyle1 .el-date-table td.prev-month{
    color:#48576A;
