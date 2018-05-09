@@ -40,7 +40,7 @@
          </template>
       </el-table-column>
 
-      <el-table-column  label="机构电话" align="center" min-width="110"  prop="telephone">
+      <el-table-column  label="机构电话" align="center" min-width="150"  prop="telephone">
       </el-table-column>
 
       <el-table-column  label="机构地址"  align="center" min-width="150" >
