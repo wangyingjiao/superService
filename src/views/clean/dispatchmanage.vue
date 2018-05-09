@@ -15,6 +15,7 @@
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
         </el-select>
+        
       </el-input>      
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
