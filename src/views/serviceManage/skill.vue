@@ -18,21 +18,22 @@
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading"  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
-                      <el-table-column align="center" label="编号" width="100">
+                      <el-table-column align="center" label="编号" min-width="100">
                           <template scope="scope">
                             {{scope.row.index+(pageNumber-1)*pageSize}}
                           </template>
                       </el-table-column>
                       <el-table-column
+                      min-width="220"
                       align="center"
                       prop="orgName"         
                       label="服务机构"
                       v-if=" userType != 'org' && userType != 'station'"
                       >
                       </el-table-column>                       
-                      <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
-                      <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
-                      <el-table-column align="center" label="操作" min-width="100px">
+                      <el-table-column min-width="220" label="技能名称" align="center" prop="name"></el-table-column>
+                      <el-table-column min-width="94" label="技师个数" align="center" prop="techNum"> </el-table-column>
+                      <el-table-column align="center" label="操作" min-width="138">
                         <template scope="scope">
                             <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
                             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>

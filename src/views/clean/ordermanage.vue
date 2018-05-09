@@ -56,46 +56,46 @@
 					highlight-current-row
 					style="width:100%;"
 					>
-					<el-table-column align="center" width="180" label="订单编号"  prop="orderNumber">
+					<el-table-column align="center" min-width="198" label="订单编号"  prop="orderNumber">
 					</el-table-column>
-					<el-table-column  v-if="userType == 'sys' || userType =='platform'" align="center" width="156" :render-header="renderHeader"  >
+					<el-table-column  v-if="userType == 'sys' || userType =='platform'" align="center" min-width="150" :render-header="renderHeader"  >
                 <template scope="rowObj">
-                  <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 9" :content="rowObj.row.orgName">
-                     <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                  <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                     <p :class=" rowObj.row.orgName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.orgName}}</p>
                   </el-tooltip>
-                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
-                    <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                    <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.stationName}}</p>
                   </el-tooltip>
                 </template>                    
 					</el-table-column>
-					<el-table-column v-if=" userType == 'org'"  align="center" width="156" label="服务站名称"  >
+					<el-table-column v-if=" userType == 'org'"  align="center" width="150" label="服务站名称"  >
                 <template scope="rowObj">
-                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
-                    <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                  <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                    <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.stationName}}</p>
                   </el-tooltip>
                 </template>                    
 					</el-table-column>          
-					<el-table-column  align="center" width="150"  label="订单来源">
+					<el-table-column  align="center" min-width="94"  label="订单来源">
 						<template scope="scope">
 							<span v-if="scope.row.orderSource =='own'">本机构</span>
 							<span v-if="scope.row.orderSource =='gasq'">国安社区</span>																													
 						</template>            
 					</el-table-column>	          							
-					<el-table-column  align="center"  width="150" label="服务内容">
+					<el-table-column  align="center"  min-width="150" label="服务内容">
 						<template scope="scope">
 							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
 								<div class="selfToolTip">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
 					</el-table-column>
-					<el-table-column   align="center" width="150" label="付款价格">
+					<el-table-column   align="center" min-width="150" label="付款价格">
               <template scope="scope">
                   <span>￥{{scope.row.payPrice}}</span>
               </template>							
 					</el-table-column>
-					<el-table-column   align="center" width="150" label="服务时间"  prop="serviceTime">	
+					<el-table-column   align="center" min-width="148" label="服务时间"  prop="serviceTime">	
 					</el-table-column>
-					<el-table-column  align="center" width="150" label="服务状态">
+					<el-table-column  align="center" min-width="94" label="服务状态">
 						<template scope="scope">
 							<span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
 							<span v-if="scope.row.serviceStatus =='started'">已上门</span>
@@ -103,7 +103,7 @@
 							<span v-if="scope.row.serviceStatus =='cancel'">已取消</span>																													
 						</template>									
 					</el-table-column>														
-					<el-table-column  align="center" width="150" label="订单状态">
+					<el-table-column  align="center" min-width="94" label="订单状态">
 						<template scope="scope">
 							<span v-if="scope.row.orderStatus =='cancel'">已取消</span>
 							<span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
@@ -114,10 +114,10 @@
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 						</template>									
 					</el-table-column>
-                    <el-table-column   align="center" width="150" label="对接订单ID">
+                    <el-table-column   align="center" min-width="170" label="对接订单ID">
 						<template scope="scope">
-							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length< 20" :content="scope.row.jointOrderId">
-								<div class="selfToolTip">{{scope.row.jointOrderId}}</div>
+							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length <= 20" :content="scope.row.jointOrderId">
+								<div :class=" scope.row.jointOrderId.length <= 20 ? '' : 'selfToolTip'">{{scope.row.jointOrderId}}</div>
 							</el-tooltip>
 						</template>						
 					</el-table-column>					
@@ -127,7 +127,7 @@
 							<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
 					</template>	
 					</el-table-column> -->
-					<el-table-column   align="center" width="150" label="下单时间"  prop="orderTime">
+					<el-table-column   align="center" min-width="148" label="下单时间"  prop="orderTime">
 					</el-table-column>	  
 					<el-table-column align="center" label="操作" width="150" fixed="right">
 					<template scope="scope">
@@ -235,7 +235,7 @@ export default {
       }
     },
     renderHeader (h) {
-      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
+      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
     },
     //机构变化事件
     orgChange(val) {
@@ -741,7 +741,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .selfToolTip {
-  width: 120px;
+  width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -749,7 +749,7 @@ export default {
 }
 .selfToolTip1 {
   margin:0 auto;
-  width: 100px;
+  width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
