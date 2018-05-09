@@ -14,8 +14,7 @@
         <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
-        </el-select>
-        
+        </el-select>     
       </el-input>      
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
