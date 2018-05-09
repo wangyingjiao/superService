@@ -56,7 +56,7 @@
 					highlight-current-row
 					style="width:100%;"
 					>
-					<el-table-column align="center" min-width="198" label="订单编号"  prop="orderNumber">
+					<el-table-column align="center" min-width="220" label="订单编号"  prop="orderNumber">
 					</el-table-column>
 					<el-table-column  v-if="userType == 'sys' || userType =='platform'" align="center" min-width="150" :render-header="renderHeader"  >
                 <template scope="rowObj">
@@ -68,7 +68,7 @@
                   </el-tooltip>
                 </template>                    
 					</el-table-column>
-					<el-table-column v-if=" userType == 'org'"  align="center" width="150" label="服务站名称"  >
+					<el-table-column v-if=" userType == 'org'"  align="center" width="150" label="服务站"  >
                 <template scope="rowObj">
                   <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                     <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.stationName}}</p>
@@ -81,10 +81,10 @@
 							<span v-if="scope.row.orderSource =='gasq'">国安社区</span>																													
 						</template>            
 					</el-table-column>	          							
-					<el-table-column  align="center"  min-width="150" label="服务内容">
+					<el-table-column  align="center"  min-width="170" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
-								<div class="selfToolTip">{{scope.row.orderContent}}</div>
+							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length <= 11" :content="scope.row.orderContent">
+								<div :class=" scope.row.orderContent.length <= 11 ? '' : 'selfToolTip'">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
 					</el-table-column>
@@ -93,7 +93,7 @@
                   <span>￥{{scope.row.payPrice}}</span>
               </template>							
 					</el-table-column>
-					<el-table-column   align="center" min-width="148" label="服务时间"  prop="serviceTime">	
+					<el-table-column   align="center" min-width="160" label="服务时间"  prop="serviceTime">	
 					</el-table-column>
 					<el-table-column  align="center" min-width="94" label="服务状态">
 						<template scope="scope">
@@ -114,7 +114,7 @@
 							<span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>																													
 						</template>									
 					</el-table-column>
-                    <el-table-column   align="center" min-width="170" label="对接订单ID">
+                    <el-table-column   align="center" min-width="180" label="对接订单ID">
 						<template scope="scope">
 							<el-tooltip v-if="scope.row.jointOrderId != undefined" placement="left" :disabled="scope.row.jointOrderId.length <= 20" :content="scope.row.jointOrderId">
 								<div :class=" scope.row.jointOrderId.length <= 20 ? '' : 'selfToolTip'">{{scope.row.jointOrderId}}</div>
@@ -127,7 +127,7 @@
 							<span v-if="scope.row.payStatus =='waitpay'">待支付</span>
 					</template>	
 					</el-table-column> -->
-					<el-table-column   align="center" min-width="148" label="下单时间"  prop="orderTime">
+					<el-table-column   align="center" min-width="160" label="下单时间"  prop="orderTime">
 					</el-table-column>	  
 					<el-table-column align="center" label="操作" width="150" fixed="right">
 					<template scope="scope">

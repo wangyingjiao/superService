@@ -38,28 +38,8 @@
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column>
-      <!-- <el-table-column label="id" prop="id"></el-table-column> -->
-
-      <el-table-column align="center" label="姓名" >
-         <template scope="scope">
-           <el-tooltip  placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
-             <div class="overheidden">{{scope.row.name}}</div>
-           </el-tooltip>
-         </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="登录账号" prop="mobile">
-      </el-table-column>
-
-      <el-table-column  label="岗位名称" align="center" prop="role.name">
-        <template scope="scope">
-           <el-tooltip  placement="left" :disabled="scope.row.role.name.length < 10" :content="scope.row.role.name">
-             <div class="overheidden">{{scope.row.role.name}}</div>
-           </el-tooltip>
-         </template>
-      </el-table-column>
       
-      <el-table-column v-if="userType =='sys'||userType =='platform'"  align="center"  :render-header="renderHeader"  >
+      <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150"  align="center"  :render-header="renderHeader"  >
             <template scope="rowObj">
               <!-- <p>{{rowObj.row.organization.name}}</p> -->
                <el-tooltip  placement="left" :disabled="rowObj.row.organization.name.length < 10" :content="rowObj.row.organization.name">
@@ -73,21 +53,36 @@
             </template>                    
       </el-table-column>
 
-      <!-- <el-table-column  align="center" label="服务机构" prop="organization.name">
+      <el-table-column v-if="userType == 'org'"  align="center" min-width="150" label="服务站" >
         <template scope="scope">
-           <el-tooltip  placement="left" :disabled="scope.row.organization.name.length < 10" :content="scope.row.organization.name">
-             <div class="overheidden">{{scope.row.organization.name}}</div>
-           </el-tooltip>
-         </template>
-      </el-table-column> -->
-
-      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" >
-        <template scope="scope">
+          <el-tooltip  placement="left" :disabled="scope.row.station.name.length < 10" :content="scope.row.station.name">
               <span v-if="scope.row.organization.id != 0&&scope.row.station.id == 0">本机构</span>
-              <span v-else>{{scope.row.station.name}}</span>
+              <span class="overheidden" v-else>{{scope.row.station.name}}</span>
+          </el-tooltip>
+              
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="状态" align="center" prop="useable">
+
+      <el-table-column align="center" label="姓名" min-width="150" >
+         <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
+             <div :class="scope.row.name.length < 10 ? '' : 'overheidden'">{{scope.row.name}}</div>
+           </el-tooltip>
+         </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="登录账号" min-width="200" prop="mobile">
+      </el-table-column>
+
+      <el-table-column  label="岗位名称"  min-width='150' align="center">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.role.name.length < 10" :content="scope.row.role.name">
+             <div :class="scope.row.role.name.length < 10 ? '' : 'overheidden'">{{scope.row.role.name}}</div>
+           </el-tooltip>
+         </template>
+      </el-table-column>
+
+      <el-table-column class-name="status-col" label="状态" min-width="150" align="center" prop="useable">
          <template scope="scope">
           <span v-if="scope.row.useable =='1'">可用</span>
 					<span v-if="scope.row.useable =='0'">不可用</span>
@@ -1421,10 +1416,5 @@ export default {
 }
 .diasize .el-dialog {
   width: 70%;
-}
-.overheidden {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>
