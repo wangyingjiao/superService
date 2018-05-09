@@ -81,7 +81,7 @@
           </template>
       </el-table-column>
 
-      <el-table-column  label="商品名称" align="center" min-width="130">
+      <el-table-column  label="商品名称" align="center" min-width="150">
         <template scope="scope">
           <div 
             class="branch"  

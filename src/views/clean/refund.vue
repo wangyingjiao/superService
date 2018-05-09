@@ -174,7 +174,7 @@ var refundDetails = (id)=>{
                 if(this.techUserType=='station'){
                     return
                 }else{
-                    return [this.techUserType!='org'?h('p',['机构名称']):'',  h('p',['服务站名称']) ]
+                    return [this.techUserType!='org'?h('p',['服务机构']):'',  h('p',['服务站']) ]
                 }
             },
             //搜索
