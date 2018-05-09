@@ -325,7 +325,6 @@
 			},
 		},
 		mounted(){
-			console.log(this.$route.meta,",meta---++++++---")
 			if(this.techUserType=='station' || this.techUserType=='org'){
 				this.getList()
 			}
@@ -337,30 +336,7 @@
 				}
 			}
 			list()
-		},
-		// beforeRouteEnter(to, from, next){
-		// 	if(from.path == '/clean/orderinfo'){
-		// 		to.meta.keepAlive = true
-		// 	}else{
-		// 		to.meta.keepAlive = false
-		// 	}
-		// 	console.log(to,"to----")
-		// 	console.log(from,"from----")
-		// 	next()
-		// },
-		// beforeRouteLeave(to, from, next){
-
-		// 	if(to.path == '/clean/orderinfo'){
-		// 		console.log(1)
-		// 		from.meta.keepAlive = true
-		// 	}else{
-		// 		console.log(2)
-		// 		from.meta.keepAlive = false
-		// 	}
-		// 	console.log(to,"to----")
-		// 	console.log(from,"from----")
-		// 	next()
-		// }
+		}
 	}
 </script>
 
