@@ -39,7 +39,7 @@
                       </el-tooltip>
                   </template>                    
             </el-table-column>
-            <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站名称"   >
+            <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站"   >
                   <template scope="rowObj">
                       <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
                         <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
@@ -64,8 +64,8 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
-                        <div class="techNameStyle1">{{item.techName}}</div>
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length <= 7 " :content="item.techName">
+                        <div :class=" item.techName.length <= 7 ? '' : 'techNameStyle1'">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
 								</template>
