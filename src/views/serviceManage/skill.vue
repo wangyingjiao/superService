@@ -142,12 +142,12 @@
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                            <td  width="152px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                            <td  width="152px" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                             <td  width="73px" align="center">
                               <span v-if="item.techSex =='male'">男</span>
                               <span v-if="item.techSex =='female'">女</span>									
                             </td>
-                            <td  width="198px" align="center"><div class="selftechStationNameStyle">{{item.techStationName}}</div></td>							
+                            <td  width="198px" align="center"><el-tooltip placement="left" v-if="item.techStationName != undefined" :disabled="item.techStationName.length < 10" :content="item.techStationName"><div :class=" item.techStationName.length < 10 ? '' : 'selftechStationNameStyle' ">{{item.techStationName}}</div></el-tooltip></td>							
                           </tr>
                         </div>
                       </table>
@@ -929,7 +929,7 @@ export default {
   line-height: 70px;
 }
 .selftechNameStyle {
-  width: 130px;
+  width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -938,7 +938,7 @@ export default {
   margin-top: 60px;
 }
 .selftechStationNameStyle {
-  width: 174px;
+  width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

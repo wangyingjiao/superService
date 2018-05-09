@@ -94,15 +94,14 @@
 										</div>						
 								</template>
 					  </el-table-column>
-
-						<el-table-column label="操作" align="center" class="aa" width="180">
-							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn" width="80">
-									<template scope="scope">
-										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
-											<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
-										</div>						
-									</template>
-							</el-table-column>		
+						<el-table-column label="作" align="center" class="aa" width="180" >
+            <el-table-column align="center"   :colspan="2"  ref="selfcolumn" width="80">
+                <template scope="scope">
+                  <div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
+                    <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
+                  </div>						
+                </template>
+            </el-table-column>		
 							<el-table-column align="center" width="100">
 								<template scope="scope">
 									<div>
@@ -146,7 +145,7 @@
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
 								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 18" :content="item.techName"><div :class=" item.techName.length < 18 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -222,7 +221,7 @@ export default {
   methods: {
     renderHeader (h) {
       return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
-    },
+    },   
     //机构变化事件
     orgChange(val) {
       this.payType = "";
@@ -638,7 +637,7 @@ export default {
   line-height: 70px;
 }
 .selftechNameStyle {
-  width: 185px;
+  width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

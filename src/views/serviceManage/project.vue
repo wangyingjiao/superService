@@ -39,7 +39,7 @@
     class="projectTabel"
     element-loading-text="正在加载" 
     style="width: 100%;" >
-      <el-table-column align="center" label="编号" width="100">
+      <el-table-column align="center" label="编号" width="70">
         <template scope="scope">
           {{scope.row.num+(pageNumber-1)*pageSize}}
         </template>
@@ -71,7 +71,7 @@
          </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center" min-width="120">
+      <el-table-column  label="所属分类" align="center" min-width="130">
           <template scope="scope">
             <div>
               <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 10" :content="scope.row.sortName">
@@ -81,7 +81,7 @@
           </template>
       </el-table-column>
 
-      <el-table-column  label="商品名称" align="center" min-width="110">
+      <el-table-column  label="商品名称" align="center" min-width="130">
         <template scope="scope">
           <div 
             class="branch"  
