@@ -294,7 +294,4 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.www{
-  color: aquamarine;
-}
 </style>
