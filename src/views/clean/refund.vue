@@ -16,7 +16,7 @@
         <div class="refund-table" v-loading.body="loading">
             <div>
                 <el-table :data="tableData"  stripe style="width: 100%">
-                    <el-table-column align="center" prop="refundNumber"  min-width="200" label="退款编号"></el-table-column>
+                    <el-table-column align="center" prop="refundNumber"  min-width="205" label="退款编号"></el-table-column>
                     <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader" min-width="120">
                         <template scope="scope">
                             <div>
@@ -29,13 +29,13 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="orderNumber" min-width="200" label="订单编号"></el-table-column>
+                    <el-table-column align="center" prop="orderNumber" min-width="205" label="订单编号"></el-table-column>
                     <el-table-column align="center" min-width="110" label="退款金额">
                         <template scope="scope">
                             <span>{{'￥'+scope.row.refundAccountReality}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="finishTime" min-width="150" label="退款时间"></el-table-column>
+                    <el-table-column align="center" prop="finishTime" min-width="155" label="退款时间"></el-table-column>
                     <el-table-column align="center" prop="refundName" min-width="120" label="用户姓名">
                          <template scope="scope">
                             <div>
@@ -46,7 +46,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column align="center" prop="refundPhone" min-width="120" label="用户电话"></el-table-column>
-                    <el-table-column align="center" label="操作">
+                    <el-table-column align="center" label="操作" fixed="right">
                         <template scope="scope">
                             <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('refund_info') > -1" @click="handleRead(scope.row.id)">查看</el-button> 
                         </template>    

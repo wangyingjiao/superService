@@ -48,23 +48,29 @@
                           <span v-else>暂无数据</span>
                         </div>
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
-                        <el-table-column prop="newName" label="对接商品名称" align="center"></el-table-column>
+                        <el-table-column prop="newName" label="对接商品名称" align="center" min-width="130">
+                            <template scope="scope">
+                                    <el-tooltip placement="left" :disabled="scope.row.newName.length <= 13" :content="scope.row.newName">
+                                        <span>{{scope.row.newName}}</span>
+                                    </el-tooltip>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center">
                             <template scope="scope">
                                 {{scope.row.univalence}}
                             </template>
                         </el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
+                        <el-table-column min-width="130" v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.selfCode+''.length <= 20" :content="scope.row.selfCode">
+                                <el-tooltip placement="left" :disabled="scope.row.selfCode+''.length <= 13" :content="scope.row.selfCode">
                                     <span>{{scope.row.selfCode}}</span>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column v-if="activeName!='noDocking'" prop="jointGoodsCode" label="对接商品ID" align="center">
+                        <el-table-column min-width="130" v-if="activeName!='noDocking'" prop="jointGoodsCode" label="对接商品ID" align="center">
                             <template scope="scope">
-                                <el-tooltip placement="left" :disabled="scope.row.jointGoodsCode+''.length <= 20" :content="scope.row.jointGoodsCode">
+                                <el-tooltip placement="left" :disabled="scope.row.jointGoodsCode+''.length <= 13" :content="scope.row.jointGoodsCode">
                                     <span>{{scope.row.jointGoodsCode}}</span>
                                 </el-tooltip>
                             </template>
@@ -506,11 +512,11 @@ export default {
   font-size: 13px;
   color: #b7b5b5;
 }
-.buttBox .el-table .cell {
+/* .buttBox .el-table .cell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+} */
 .buttBox .disabled {
   background: #ccc;
   border-color: #ccc;
