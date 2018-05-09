@@ -128,7 +128,7 @@
               placeholder="请输入2-15位的姓名" v-model="temp.name"></el-input>
             </el-form-item>
         
-        <el-form-item label="登录账号:" prop="mobile">
+        <el-form-item label="登录账号:" :prop="isAdmin ? '':'mobile'">
           <el-input
            :disabled="dialogStatus == 'update'"
             v-model="temp.mobile"
@@ -379,6 +379,7 @@ export default {
       roleState: false, //岗位禁用
       crBtnState: false, //新增岗位按钮状态
       useableState: false, //可用状态禁用
+      isAdmin:false,
       list: null,
       total: null,
       userType: localStorage.getItem("type"),
@@ -848,6 +849,7 @@ export default {
         hanleUpuser({ id: row.id }).then(res => {
           if (res.data.code === 1) {
             var user = res.data.data;
+            this.isAdmin = user.admin
             this.temp = {
               id: user.id,
               name: user.name,
