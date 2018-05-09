@@ -45,7 +45,7 @@
         </template>
       </el-table-column>
 
-       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="120">
+       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="130">
          <template scope="scope">
            <div>
              <el-tooltip placement="left" :disabled="scope.row.orgName.length <= 10" :content="scope.row.orgName">
@@ -61,11 +61,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="项目名称" align="center" prop="name" min-width="120">
+      <el-table-column  label="项目名称" align="center" prop="name" min-width="130">
           <template scope="scope">
             <div>
               <el-tooltip placement="left" :disabled="scope.row.name.length <= 10" :content="scope.row.name">
-                  <span :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
+                  <span style="padding:0 5px;" :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
               </el-tooltip>
             </div>
          </template>
