@@ -128,12 +128,8 @@ export default {
     };
   },
   computed: {
-    // diaState(){
-    //     console.log('nnn')
-    // }
   },
   created() {
-    console.log(this.diaState,'111111222')
     //获取权限列表
     getMenudata().then(res => {
       this.treeData = res.data.data;

@@ -50,43 +50,48 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="编号"  width="100">
+      <el-table-column align="center" label="编号"  width="70">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="姓名" prop="techName">      
-      </el-table-column>
-      
-
-
-      <el-table-column align="center" label="手机号" prop="techPhone">      
-      </el-table-column>
-
-      <el-table-column v-if="userType =='sys'||userType =='platform'" width="150px" align="center"  :render-header="renderHeader">
+      <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
                <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
-                 <p class="tool" >{{rowObj.row.orgName}}</p>
+                 <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.orgName}}</p>
                </el-tooltip>
                <el-tooltip placement="left" :disabled="rowObj.row.techStationName.length < 10" :content="rowObj.row.techStationName">
-                 <p class="tool" >{{rowObj.row.techStationName}}</p>
+                 <p :class="rowObj.row.techStationName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.techStationName}}</p>
                </el-tooltip>
-             
-            </template>                    
+            </template>
       </el-table-column>
       
-      <el-table-column  v-if="userType == 'org'" align="center" label="服务站" prop="techStationName">      
+      <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站">  
+        <template scope="scope">
+          <el-tooltip placement="left" :disabled="scope.row.techStationName.length < 10" :content="scope.row.techStationName">
+                 <p :class="scope.row.techStationName.length < 10 ? '' : 'overheidden'" >{{scope.row.techStationName}}</p>
+           </el-tooltip>
+        </template>    
+      </el-table-column>
+
+      <el-table-column align="center" label="姓名" min-width="140" > 
+        <template scope="rowObj">
+             <el-tooltip placement="left" :disabled="rowObj.row.techName.length < 10" :content="rowObj.row.techName">
+               <p :class="rowObj.row.techName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.techName}}</p>
+             </el-tooltip>
+          </template>          
+      </el-table-column>
+      <el-table-column align="center" label="手机号" min-width="110" prop="techPhone">      
       </el-table-column>
 
       
-      <el-table-column align="center" label="开始时间" prop="startTime">     
+      <el-table-column align="center" label="开始时间" min-width="150" prop="startTime">     
       </el-table-column>
       
-      <el-table-column align="center" label="结束时间" prop="endTime">      
+      <el-table-column align="center" label="结束时间" min-width="150" prop="endTime">      
       </el-table-column>
 
-      <el-table-column align="center" label="审核状态" prop="reviewStatus">  
+      <el-table-column align="center" label="审核状态" min-width="100" prop="reviewStatus">  
         <template scope="scope">
            <span v-if="scope.row.reviewStatus=='submit'">待审核</span>
            <span v-if="scope.row.reviewStatus=='yes'">审核通过</span>
@@ -94,17 +99,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="来源" prop="source">   
+      <el-table-column align="center" label="来源" min-width="80" prop="source">   
         <template scope="scope">
            <span v-if="scope.row.source=='sys'">系统</span>
            <span v-if="scope.row.source=='app'">App</span>
         </template>   
       </el-table-column>
       
-      <el-table-column align="center" :show-overflow-tooltip="true" width="150px" label="备注">      
+      <el-table-column align="center" :show-overflow-tooltip="true" min-width="150" label="备注">      
         <template scope="scope">
            <el-tooltip placement="left" :disabled="scope.row.remark.length < 10" :content="scope.row.remark">
-             <div class="tool" >{{scope.row.remark}}</div>
+             <div :class="scope.row.remark.length < 10 ? '' : 'overheidden'" >{{scope.row.remark}}</div>
            </el-tooltip>
         </template>
       </el-table-column>
@@ -594,7 +599,7 @@ export default {
   padding: 20px 20px 20px 20px;
 }
 .tool {
-  width: 120px;
+  width: 121px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;

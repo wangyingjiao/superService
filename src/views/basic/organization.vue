@@ -32,37 +32,37 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="机构名称" align="center" >
+      <el-table-column  label="机构名称" min-width="150" align="center" >
         <template scope="scope">
-           <el-tooltip  placement="left" :content="scope.row.name">
-             <div class="overheidden" >{{scope.row.name}}</div>
+           <el-tooltip placement="left" :disabled="scope.row.name.length < 10" :content="scope.row.name">
+             <p :class="scope.row.name.length < 10 ? '' : 'overheidden'" >{{scope.row.name}}</p>
            </el-tooltip>
          </template>
       </el-table-column>
 
-      <el-table-column  label="机构电话" align="center"  prop="telephone">
+      <el-table-column  label="机构电话" align="center" min-width="110"  prop="telephone">
       </el-table-column>
 
-      <el-table-column  label="机构地址"  align="center" width="200px" >
+      <el-table-column  label="机构地址"  align="center" min-width="150" >
          <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.address.length < 10" :content="scope.row.address">
-             <div class="overheidden" >{{scope.row.address}}</div>
+             <div :class="scope.row.address.length < 10 ? '' : 'overheidden'" >{{scope.row.address}}</div>
            </el-tooltip>
          </template>
       </el-table-column>
 
-      <el-table-column  label="负责人姓名" align="center">
+      <el-table-column  label="负责人姓名" min-width="150" align="center">
         <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.masterName.length < 10" :content="scope.row.masterName">
-             <div class="overheidden" >{{scope.row.masterName}}</div>
+             <div :class="scope.row.masterName.length < 10 ? '' : 'overheidden'" >{{scope.row.masterName}}</div>
            </el-tooltip>
          </template>
       </el-table-column>
 
-      <el-table-column  label="负责人手机号" align="center"  prop="masterPhone">
+      <el-table-column  label="负责人手机号" align="center" min-width="120" prop="masterPhone">
       </el-table-column>
 
-      <el-table-column  label="对接E店" align="center">
+      <el-table-column  label="对接E店" min-width="150" align="center">
           <template scope="scope">
               <el-tooltip placement="left"  :content="scope.row.eshopNames">
                   <span class="overheidden">{{scope.row.eshopNames}}</span>
@@ -1084,11 +1084,6 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
-}
-.overheidden {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .btn_addEshop {
   float: right;
