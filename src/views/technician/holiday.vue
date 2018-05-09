@@ -39,7 +39,7 @@
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
-    <p class="bgWhite">
+    <div class="bgWhite">
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -81,14 +81,14 @@
              </el-tooltip>
           </template>          
       </el-table-column>
-      <el-table-column align="center" label="手机号" min-width="110" prop="techPhone">      
+      <el-table-column align="center" label="手机号" min-width="120" prop="techPhone">      
       </el-table-column>
 
       
-      <el-table-column align="center" label="开始时间" min-width="150" prop="startTime">     
+      <el-table-column align="center" label="开始时间" min-width="160" prop="startTime">     
       </el-table-column>
       
-      <el-table-column align="center" label="结束时间" min-width="150" prop="endTime">      
+      <el-table-column align="center" label="结束时间" min-width="160" prop="endTime">      
       </el-table-column>
 
       <el-table-column align="center" label="审核状态" min-width="100" prop="reviewStatus">  
@@ -114,7 +114,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="180">
+      <el-table-column align="center" label="操作" min-width="180" fixed="right">
         <template scope="scope">
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
@@ -129,6 +129,7 @@
         :page-sizes="[5,10,15,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    
     <!-- 弹窗 -->
     <el-dialog 
       title="审核休假"
@@ -174,8 +175,8 @@
       </div>
     </el-dialog>
     <!-- 弹框结束 -->
-
   </div>
+
   </div>
 </div>
 </template>

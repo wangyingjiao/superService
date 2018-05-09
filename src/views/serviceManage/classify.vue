@@ -17,13 +17,13 @@
     <button class="button-small btn_pad" style="width:80px" @click="handleCreate"  v-if="btnShow.indexOf('class_insert') != -1">新增</button>
     <!-- 表格 -->
     <el-table 
-    :key='tableKey' 
-    :data="list" 
-    v-loading="listLoading" 
-    fit
-    highlight-current-row
-    element-loading-text="正在加载" 
-    style="width: 100%" >
+      :key='tableKey'
+      :data="list" 
+      v-loading="listLoading" 
+      fit
+      highlight-current-row
+      element-loading-text="正在加载" 
+      style="width: 100%" >
 
       <el-table-column align="center" label="编号" width="100">
         <template scope="scope">
