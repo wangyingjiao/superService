@@ -93,7 +93,7 @@
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <div><span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i></div>
+                        <span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i>
                         
                         <!-- <div class="closePic" @click="selfErrorClose(item)">&#10005</div> -->
                       </div>                     
@@ -1025,12 +1025,11 @@ export default {
   border: 1px solid #ccc;
   border-top: none;
   margin-top: -23.5px;
-  padding-top: 13px;
+  padding-top: 23px;
 }
 .tabWrap {
-  width: 146px;
+  width: 145px;
   padding: 0 5px;
-  font-size: 12px;
   display: inline-block;
   height: 30px;
   text-align: center;

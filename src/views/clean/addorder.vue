@@ -1887,7 +1887,7 @@ export default {
   padding: 2px;
 }
 .tabWrap {
-  width: 146px;
+  width: 145px;
   padding: 0 5px;
   font-size: 10px;
   display: inline-block;
