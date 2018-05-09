@@ -81,10 +81,10 @@
 							<span v-if="scope.row.orderSource =='gasq'">国安社区</span>																													
 						</template>            
 					</el-table-column>	          							
-					<el-table-column  align="center"  min-width="150" label="服务内容">
+					<el-table-column  align="center"  min-width="170" label="服务内容">
 						<template scope="scope">
-							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
-								<div class="selfToolTip">{{scope.row.orderContent}}</div>
+							<el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length <= 11" :content="scope.row.orderContent">
+								<div :class=" scope.row.orderContent.length <= 11 ? '' : 'selfToolTip'">{{scope.row.orderContent}}</div>
 							</el-tooltip>
 						</template>	
 					</el-table-column>
