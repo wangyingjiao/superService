@@ -434,8 +434,9 @@
                         <div class="sys-title">
                             标签名
                         </div>
-                        <div class="labelSystem innerbox">
-                           <div class="label-input" v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
+                        <div style="height:296px;overflow-y:auto;" class="innerbox">
+                          <div class="labelSystem">
+                           <div class="label-input" v-for="(item,key) in systemOptions4"  style="" :key="key">
                               <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
                                 <input type="button"
                                         class="cursor" 
@@ -443,8 +444,9 @@
                                       :value="item.label" @click="labelClick(item)"
                                         :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
                                         :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                            </el-tooltip>
-                          </div>        
+                              </el-tooltip>
+                            </div>        
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -1836,13 +1838,19 @@ export default {
 </script>
 <style>
 .labelSystem{
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around; */
+}
+.label-input{
+  float: left;
+  margin-left: 5px;
+  height: 32px;
+  margin-bottom: 10px;
 }
 /*滚动条样式*/
   .innerbox::-webkit-scrollbar {/*滚动条整体样式*/
-      width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+      width: 4px; 
       height: 4px;
   }
   .innerbox::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
@@ -1855,6 +1863,7 @@ export default {
       border-radius: 0;
       background: rgba(0,0,0,0.1);
   }
+/* 滚动条 */
 .over-fl{
   overflow: hidden;
   position: relative;
@@ -2617,10 +2626,10 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
-  padding:11px 5px; 
+  padding:11px 0px; 
   overflow-y: auto;
   width: 100%;
-  height: 296px;
+  /* height: 296px; */
   border-left: 0;
   background: #F7FBFC;
 }
