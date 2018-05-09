@@ -37,6 +37,7 @@
                       <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
                         <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
+                      
                   </template>                    
             </el-table-column>
             <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站"   >
