@@ -11,7 +11,7 @@
     </el-tabs>
 
       
-      <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入搜索内容" v-model="search.val">
+      <el-input @keyup.enter.native="handleFilter" style="width:23%;margin-right:1%" placeholder="请输入搜索内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:90px" v-model="search.type" placeholder="请选择">
           <el-option v-for="item in seOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
