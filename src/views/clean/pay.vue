@@ -42,11 +42,6 @@
       highlight-current-row 
       style="width: 100%">
 
-      <!-- <el-table-column align="center" label="编号"  width="100">
-         <template scope="scope">
-            {{scope.row.index + (pageNumber-1) * pageSize}}
-        </template>
-      </el-table-column> -->
       <el-table-column align="center" label="支付编号" min-width="200" prop="payNumber">      
       </el-table-column>
         
