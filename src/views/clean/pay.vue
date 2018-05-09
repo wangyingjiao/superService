@@ -47,38 +47,48 @@
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column> -->
-
-      <el-table-column align="center" label="订单编号" min-width="130" prop="orderNumber">      
+      <el-table-column align="center" label="支付编号" min-width="200" prop="payNumber">      
       </el-table-column>
-
-      <el-table-column align="center" label="支付编号" min-width="130" prop="payNumber">      
-      </el-table-column>
-
-      <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
+        
+        <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
-              <p>{{rowObj.row.orgName}}</p>
-              <p>{{rowObj.row.stationName}}</p>
-            </template>                    
+               <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                 <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.orgName}}</p>
+               </el-tooltip>
+               <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+                 <p :class="rowObj.row.stationName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.stationName}}</p>
+               </el-tooltip>
+            </template>
       </el-table-column>
 
-      <el-table-column v-if="userType == 'org'"  align="center" label="服务站" prop="stationName">
+      <el-table-column v-if="userType == 'org'" min-width="150" align="center" label="服务站" >
+        <template scope="scope">
+          <el-tooltip placement="left" :disabled="scope.row.stationName.length < 10" :content="scope.row.stationName">
+             <p :class="scope.row.stationName.length < 10 ? '' : 'overheidden'" >{{scope.row.stationName}}</p>
+           </el-tooltip>
+        </template>
        
       </el-table-column>
 
-      <el-table-column align="center" label="支付金额" prop="payAccount">      
+
+      <el-table-column align="center" label="订单编号" min-width="200" prop="orderNumber">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付状态" prop="payStatus" >
+      
+      <el-table-column align="center" label="支付金额" min-width="100" prop="payAccount">      
+      </el-table-column>
+
+      <el-table-column align="center" label="支付状态" min-width="100" prop="payStatus" >
         <template scope="scope">
            <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
            <span v-if="scope.row.payStatus=='payed'">已支付</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="收款人" prop="payTechName">      
+      <el-table-column align="center" label="收款人" min-width="150" prop="payTechName">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" prop="payTime">
+      <el-table-column align="center" label="支付时间" min-width="150" prop="payTime">
       </el-table-column>
 
     </el-table>

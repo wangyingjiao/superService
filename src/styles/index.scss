@@ -828,3 +828,11 @@ body {
 .time-select-item.selected:not(.disabled){
   background-color: #4c70e8;
 }
+//溢出显示省略号
+.overheidden {
+  width: 120px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
