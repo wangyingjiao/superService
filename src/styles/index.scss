@@ -69,6 +69,7 @@ input, button{
 .app-main {
   min-height: 100%;
   margin:0 15px;
+  min-width: 1120px;
 }
 
 // .app-container {
@@ -414,7 +415,7 @@ body {
 }
 // 分页
 // .pagination-container {
-//   overflow: hidden;
+//   background-color: #fff;
 // }
 // 选中行的样式
 #tableColor tbody tr.current-row>td{

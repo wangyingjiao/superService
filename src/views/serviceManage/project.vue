@@ -39,13 +39,13 @@
     class="projectTabel"
     element-loading-text="正在加载" 
     style="width: 100%;" >
-      <el-table-column align="center" label="编号" width="100">
+      <el-table-column align="center" label="编号" width="70">
         <template scope="scope">
           {{scope.row.num+(pageNumber-1)*pageSize}}
         </template>
       </el-table-column>
 
-       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="120">
+       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="130">
          <template scope="scope">
            <div>
              <el-tooltip placement="left" :disabled="scope.row.orgName.length <= 10" :content="scope.row.orgName">
@@ -61,17 +61,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column  label="项目名称" align="center" prop="name" min-width="120">
+      <el-table-column  label="项目名称" align="center" prop="name" min-width="130">
           <template scope="scope">
             <div>
               <el-tooltip placement="left" :disabled="scope.row.name.length <= 10" :content="scope.row.name">
-                  <span :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
+                  <span style="padding:0 5px;" :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
               </el-tooltip>
             </div>
          </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center" min-width="120">
+      <el-table-column  label="所属分类" align="center" min-width="130">
           <template scope="scope">
             <div>
               <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 10" :content="scope.row.sortName">
@@ -81,7 +81,7 @@
           </template>
       </el-table-column>
 
-      <el-table-column  label="商品名称" align="center" min-width="110">
+      <el-table-column  label="商品名称" align="center" min-width="130">
         <template scope="scope">
           <div 
             class="branch"  

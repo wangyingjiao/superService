@@ -42,7 +42,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="支付编号" min-width="200" prop="payNumber">      
+      <el-table-column align="center" label="支付编号" min-width="210" prop="payNumber">      
       </el-table-column>
         
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
@@ -66,7 +66,7 @@
       </el-table-column>
 
 
-      <el-table-column align="center" label="订单编号" min-width="200" prop="orderNumber">      
+      <el-table-column align="center" label="订单编号" min-width="210" prop="orderNumber">      
       </el-table-column>
 
       
@@ -83,7 +83,7 @@
       <el-table-column align="center" label="收款人" min-width="150" prop="payTechName">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" min-width="150" prop="payTime">
+      <el-table-column align="center" label="支付时间" min-width="160" prop="payTime">
       </el-table-column>
 
     </el-table>
