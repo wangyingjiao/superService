@@ -1395,7 +1395,6 @@ export default {
     }
   },
   mounted() {
-    console.log(window.localStorage.getItem("orderId"),'111111')
     this.choose = this.dict.refund_type;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");

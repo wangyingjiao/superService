@@ -370,7 +370,6 @@ export default {
     //设置对接按钮
     toggleSetUp() {
       var obj = this.setUpDelete("id");
-      console.log(obj,"ibj-----")
       if (obj.goodIds.length <= 0) {
         return;
       }
