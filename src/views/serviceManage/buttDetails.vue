@@ -55,10 +55,18 @@
                                     </el-tooltip>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="sortName" label="所属分类" align="center"></el-table-column>
-                        <el-table-column prop="univalence" label="价格/单位" align="center">
+                        <el-table-column prop="sortName" label="所属分类" align="center" min-width="120">
+                           <template scope="scope">
+                              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 10" :content="scope.row.sortName">
+                                <span> {{scope.row.sortName}}</span>
+                              </el-tooltip>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="univalence" label="价格/单位" align="center" min-width="120">
                             <template scope="scope">
-                                {{scope.row.univalence}}
+                              <el-tooltip placement="left" :disabled="scope.row.univalence.length <= 10" :content="scope.row.univalence">
+                                <span> {{scope.row.univalence}}</span>
+                              </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column min-width="130" v-if="activeName!='noDocking'" prop="selfCode" label="对接编码" align="center">
