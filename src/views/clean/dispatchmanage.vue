@@ -45,7 +45,30 @@
                         <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
-            </el-table-column>            
+            </el-table-column>
+					  <el-table-column align="center"  width="160px" label="订单状态">
+							<template scope="scope" >
+								<div  class="dispatchNumberStyle1">
+                    <span v-if="scope.row.orderStatus =='cancel'">已取消</span>
+                    <span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
+                    <span v-if="scope.row.orderStatus =='finish'">已完成</span>
+                    <span v-if="scope.row.orderStatus =='close'">已关闭</span>
+                    <span v-if="scope.row.orderStatus =='stop'">已暂停</span>
+                    <span v-if="scope.row.orderStatus =='success'">已成功</span>
+                    <span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>
+								</div>
+							</template>							
+						</el-table-column>
+					  <el-table-column align="center"  width="160px" label="服务状态">
+							<template scope="scope" >
+								<div  class="dispatchNumberStyle1">
+                  <span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
+                  <span v-if="scope.row.serviceStatus =='started'">已上门</span>
+                  <span v-if="scope.row.serviceStatus =='finish'">已完成</span>
+                  <span v-if="scope.row.serviceStatus =='cancel'">已取消</span>
+								</div>
+							</template>							
+						</el-table-column>                                    
 					  <el-table-column align="center"  width="160px" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
@@ -53,6 +76,20 @@
 								</div>
 							</template>							
 						</el-table-column>
+					  <el-table-column align="center"  width="160px" label="建议服务时长">
+							<template scope="scope" >
+								<div  class="dispatchNumberStyle1">
+										{{scope.row.serviceHour}}
+								</div>
+							</template>							
+						</el-table-column>
+					  <el-table-column align="center"  width="160px" label="服务内容">
+              <template scope="scope">
+                <el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
+                  <div class="selfToolTip">{{scope.row.orderContent}}</div>
+                </el-tooltip>
+              </template>							
+						</el-table-column>                        
 					  <el-table-column  align="center" label="头像">
 								<template scope="scope">
 										<div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
@@ -95,15 +132,15 @@
 								</template>
 					  </el-table-column>
 
-						<el-table-column label="操作" align="center" class="aa">
-							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn">
+						<el-table-column label="操作" align="center"  width="180">
+							<el-table-column align="center" label=""  :colspan="2"    ref="selfcolumn">
 									<template scope="scope">
 										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
 											<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
 										</div>						
 									</template>
 							</el-table-column>		
-							<el-table-column align="center">
+							<el-table-column align="center" width="100">
 								<template scope="scope">
 									<div>
 										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
@@ -125,6 +162,7 @@
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
+      <div class="NowTabs">当前选择标签：</div>
 			<el-collapse-transition>
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
 					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -422,7 +460,7 @@ export default {
             this.tableData = res.data.data.list;
             this.pageNumber = res.data.data.pageNo;
             this.jumpPage = res.data.data.pageNo;
-            this.pageSize1 = res.data.data.pageSize;
+            this.pageSize1 = res.data.data.pageSize;            
             this.listLoading = false;
           } else {
             this.listLoading = false;
@@ -531,6 +569,13 @@ export default {
 };
 </script>
 <style scoped>
+.selfToolTip {
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .selfToolTip1 {
   margin:0 auto;
   width: 100px;
@@ -563,27 +608,30 @@ export default {
   margin-top: 20px;
   margin-left: 10px;
 }
+.NowTabs{
+  color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
+}
 .techNameStyle {
-  width: 80px;
-  height: 25px;
-  line-height: 25px;
+  width: 74px;
+  display:inline-block;
+  font-size:14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .tabWrap1 {
-  width: 80px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 5px;
+  width: 84px;
+  padding: 0 5px;
   font-size: 12px;
   display: inline-block;
-  height: 25px;
+  height: 30px;
   text-align: center;
-  line-height: 25px;
-  border-radius: 12px;
-  border: 1px solid #bfcbd9;
+  line-height: 30px;
+  margin:3px 0 3px 6px;
+  background:#f0f4f5;
+  color:#7a838a;
   position: relative;
+  border:1px solid #bfcbd9
 }
 .selfTableWrapONE {
   margin-top: 20px;
@@ -692,7 +740,7 @@ export default {
   width: 120px;
 }
 .paddingTop60 {
-  padding-top: 60px;
+  padding-top: 44px;
 }
 .marginRight15 {
   margin-right: 15px;
@@ -749,7 +797,7 @@ export default {
 }
 .selfTableHEADTD {
   background: #eef1f6;
-  height: 60px;
+  height: 46px;
   border: none !important;
 }
 </style>
