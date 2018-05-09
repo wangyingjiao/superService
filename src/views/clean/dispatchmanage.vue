@@ -138,14 +138,14 @@
 					<tr class="tableHeader">
 						<td  class="selfTableHEADTD" align="center" width="73px">选择</td>
 						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
-						<td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="170px">姓名</td>
 						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
 						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
 					</tr>
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td  width="157px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
 								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 15" :content="item.techName"><div :class=" item.techName.length < 18 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
