@@ -44,7 +44,7 @@
 					  </el-table-column>           
 					  <el-table-column
 						align="center"
-            min-width="110"
+            min-width="120"
 						prop="phone"         
 						label="手机号">
 					  </el-table-column>
