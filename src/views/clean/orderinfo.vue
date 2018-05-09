@@ -176,7 +176,6 @@
                         align="center"
                         label="姓名"
                         >
-                        
                       </el-table-column>
                       <el-table-column
                         align="center"
