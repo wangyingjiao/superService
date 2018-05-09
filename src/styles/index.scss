@@ -709,20 +709,25 @@ body {
 }
 //文字提示样式
 .el-tooltip__popper.is-dark{
-  background-color: rgba(40, 40, 40, 0.65) !important;
-  color: #fff !important;
+  background-color: #d8e1ff !important;
+  color: #2f323e !important;
   font-size: 12px !important;
   
 }
-.el-tooltip__popper .popper_arrow:after{
-  border-left-color: rgba(40, 40, 40, 0.65);
+.el-tooltip__popper[x-placement^=left] .popper__arrow {
+  right: -6px;
+  border-right-width: 0;
+  border-left-color: #d8e1ff;
 }
+// .el-tooltip__popper .popper_arrow{
+//   border-left-color: #d8e1ff;
+// }
 .el-tooltip__popper[x-placement^=left] .popper__arrow::after {
   right: 1px;
   bottom: -5px;
   margin-left: -5px;
   border-right-width: 0;
-  border-left-color: rgba(40, 40, 40, 0.65);
+  border-left-color: #d8e1ff;
 }
 //提示信息滚动
 .el-tooltip__popper{
