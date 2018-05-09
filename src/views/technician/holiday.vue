@@ -39,7 +39,7 @@
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
-    <div class="bgWhite">
+    <p class="bgWhite">
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -64,10 +64,15 @@
       <el-table-column align="center" label="手机号" prop="techPhone">      
       </el-table-column>
 
-      <el-table-column v-if="userType =='sys'||userType =='platform'" align="center" width="220" :render-header="renderHeader">
+      <el-table-column v-if="userType =='sys'||userType =='platform'" width="150px" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
-              <p>{{rowObj.row.orgName}}</p>
-              <p>{{rowObj.row.techStationName}}</p>
+               <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                 <p class="tool" >{{rowObj.row.orgName}}</p>
+               </el-tooltip>
+               <el-tooltip placement="left" :disabled="rowObj.row.techStationName.length < 10" :content="rowObj.row.techStationName">
+                 <p class="tool" >{{rowObj.row.techStationName}}</p>
+               </el-tooltip>
+             
             </template>                    
       </el-table-column>
       
@@ -589,7 +594,7 @@ export default {
   padding: 20px 20px 20px 20px;
 }
 .tool {
-  width: 115px;
+  width: 120px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;

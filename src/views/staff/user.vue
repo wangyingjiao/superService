@@ -67,7 +67,7 @@
                </el-tooltip>
               <el-tooltip  placement="left" :disabled="rowObj.row.station.name.length < 10" :content="rowObj.row.station.name">
                <p v-if="rowObj.row.organization.id != 0&&rowObj.row.station.id == 0">本机构</p>
-               <p v-else>{{rowObj.row.station.name}}</p>
+               <p class="overheidden" v-else>{{rowObj.row.station.name}}</p>
               </el-tooltip>
         
             </template>                    
