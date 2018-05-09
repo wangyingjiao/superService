@@ -22,31 +22,31 @@
 		<div class="second-bar">
 			<div class="tableWarpaa addStyle">
 					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
-					  <el-table-column  align="center" width="170px"  label="订单编号">
+					  <el-table-column  align="center" min-width="198"  label="订单编号">
 							<template scope="scope" >
 								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
 						</el-table-column>
-            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
+            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" min-width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 9" :content="rowObj.row.orgName">
-                        <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                        <p :class=" rowObj.row.orgName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.orgName}}</p>
                       </el-tooltip>
-                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9"  :content="rowObj.row.stationName">
-                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
+                        <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
             </el-table-column>
-            <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
+            <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站"   >
                   <template scope="rowObj">
                       <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
-                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                        <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
             </el-table-column>            
-					  <el-table-column align="center"  width="160px" label="服务时间">
+					  <el-table-column align="center"  min-width="150" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
 										{{scope.row.serviceTime}}
@@ -64,8 +64,8 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
-                        <div class="techNameStyle1">{{item.techName}}</div>
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length <= 7 " :content="item.techName">
+                        <div :class=" item.techName.length <= 7 ? '' : 'techNameStyle1'">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
 								</template>
@@ -95,15 +95,15 @@
 								</template>
 					  </el-table-column>
 
-						<el-table-column label="操作" align="center" class="aa">
-							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn">
+						<el-table-column label="操作" align="center" class="aa" width="180">
+							<el-table-column align="center" label="" :colspan="2"  ref="selfcolumn" width="80">
 									<template scope="scope">
-										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
+										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
 											<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
 										</div>						
 									</template>
 							</el-table-column>		
-							<el-table-column align="center">
+							<el-table-column align="center" width="100">
 								<template scope="scope">
 									<div>
 										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
@@ -221,7 +221,7 @@ export default {
   },
   methods: {
     renderHeader (h) {
-      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
+      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
     },
     //机构变化事件
     orgChange(val) {
@@ -533,7 +533,7 @@ export default {
 <style scoped>
 .selfToolTip1 {
   margin:0 auto;
-  width: 100px;
+  width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
