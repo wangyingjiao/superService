@@ -14,7 +14,7 @@
         <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
-        </el-select>
+        </el-select>             
       </el-input>      
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
@@ -36,7 +36,7 @@
                       </el-tooltip>
                       <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
                         <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
-                      </el-tooltip>
+                      </el-tooltip>                      
                   </template>                    
             </el-table-column>
             <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站"   >
@@ -146,7 +146,7 @@
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
 								<td  width="157px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 15" :content="item.techName"><div :class=" item.techName.length < 18 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
+								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 15" :content="item.techName"><div :class=" item.techName.length < 15 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -644,7 +644,7 @@ export default {
   line-height: 70px;
 }
 .selftechNameStyle {
-  width: 160px;
+  width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

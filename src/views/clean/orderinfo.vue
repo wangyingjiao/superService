@@ -475,7 +475,7 @@
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
                     <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                    <td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
+                    <td width="185px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                     <td  width="72px" class="fontSize12" align="center">
                       <span class="fontSize12" v-if="item.techSex =='male'">男</span>
                       <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
