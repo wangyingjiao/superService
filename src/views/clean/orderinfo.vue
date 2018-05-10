@@ -155,7 +155,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
-                  <span class="plusComb">&#10010</span>
+                  <span class="plusComb">&#10010;</span>
                   <span class="plusComtent">增加技师</span>
                 </div>
                 <div class="selfTableWrapStyle1">                
@@ -1511,8 +1511,7 @@ export default {
 .selfbeizhu1 {
   width: 800px;
   float: left;
-  display: inline-block;
-  
+  display:block;  
   margin-left: 102px;
   margin-top: -15px;
   word-break: break-all;
@@ -1741,7 +1740,7 @@ export default {
   cursor: pointer;
 }
 .plusComb {
-  display: inline-block;
+  display:block;
   float: left;
   width: 32px;
   height: 32px;
@@ -1752,7 +1751,7 @@ export default {
   font-size: 20px;
 }
 .plusComtent {
-  display: inline-block;
+  display:block;
   float: left;
   width: 78px;
   height: 32px;
@@ -1778,7 +1777,7 @@ export default {
   cursor: pointer;
   border: 1px solid #4c70e8;
   text-align: center;
-  display: inline-block;
+  display:block;
   color: #4c70e8;
 }
 .custom-action {
