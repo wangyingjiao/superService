@@ -406,7 +406,7 @@ export default {
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
       userSearch: [], //搜索条件
-      temp: {
+      temp: {   //编辑新增绑定值
         mobile: "",
         name: "",
         password: "",
