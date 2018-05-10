@@ -69,6 +69,7 @@ input, button{
 .app-main {
   min-height: 100%;
   margin:0 15px;
+  min-width: 1080px;
 }
 
 // .app-container {
@@ -414,7 +415,7 @@ body {
 }
 // 分页
 // .pagination-container {
-//   overflow: hidden;
+//   background-color: #fff;
 // }
 // 选中行的样式
 #tableColor tbody tr.current-row>td{
@@ -555,7 +556,6 @@ body {
 .searchs{
   padding: 0px 20px 20px 20px;
 }
-
 //自定义弹窗大小
 .selfDialogWidth .el-dialog {width:700px}
 //自定义弹窗大小
@@ -623,6 +623,9 @@ body {
 //改派内部表格样式自定义
 .dispatchTaleSelf  .cell{
 	padding: 0;
+}
+.dispatchTaleSelf  th{
+  border-right: 0px solid #dfe6ec; 
 }
 //自定义日期显示样式
 .selfTestStyle1 .el-date-table td.next-month,.selfTestStyle1 .el-date-table td.prev-month{
@@ -709,20 +712,22 @@ body {
 }
 //文字提示样式
 .el-tooltip__popper.is-dark{
-  background-color: rgba(40, 40, 40, 0.65) !important;
-  color: #fff !important;
+  background-color: #d8e1ff !important;
+  color: #2f323e !important;
   font-size: 12px !important;
   
 }
-.el-tooltip__popper .popper_arrow:after{
-  border-left-color: rgba(40, 40, 40, 0.65);
+.el-tooltip__popper[x-placement^=left] .popper__arrow {
+  right: -6px;
+  border-right-width: 0;
+  border-left-color: #d8e1ff;
 }
 .el-tooltip__popper[x-placement^=left] .popper__arrow::after {
   right: 1px;
   bottom: -5px;
   margin-left: -5px;
   border-right-width: 0;
-  border-left-color: rgba(40, 40, 40, 0.65);
+  border-left-color: #d8e1ff;
 }
 //提示信息滚动
 .el-tooltip__popper{
@@ -857,4 +862,12 @@ body {
 }
 .time-select-item.selected:not(.disabled){
   background-color: #4c70e8;
+}
+//溢出显示省略号
+.overheidden {
+  width: 120px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

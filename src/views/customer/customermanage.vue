@@ -23,32 +23,34 @@
 					  <el-table-column
 						align="center"
 						label="编号"						
-						width="80">
+						min-width="100">
 						<template scope="scope">
 							{{scope.row.index+(pageNumber-1)*pageSize1}}
 						</template>
 					  </el-table-column>
 					  <el-table-column
-					    align="center"
-						prop="name"
-    
-						label="姓名"
-						>
-					  </el-table-column>
-					  <el-table-column
+            min-width="220"
 						align="center"
 						prop="orgName"
             v-if=" userType != 'org'  && userType != 'station'"         
 						label="服务机构">
-					  </el-table-column>            
+					  </el-table-column>             
+					  <el-table-column
+              align="center"
+              min-width="220"
+              prop="name"    
+              label="姓名"
+						>
+					  </el-table-column>           
 					  <el-table-column
 						align="center"
+            min-width="120"
 						prop="phone"         
 						label="手机号">
 					  </el-table-column>
 					  <el-table-column
 						align="center"
-            width="65"
+            min-width="65"
 						label="性别">
 						    <template scope="scope">
 						    		<span v-if="scope.row.sex =='male'">男</span>

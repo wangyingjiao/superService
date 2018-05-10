@@ -2,14 +2,14 @@
     <div class="tableWarp">
         <!-- 表格开始 -->
         <el-table :data="reassList"  v-loading="listLoading"  style="width: 100%" border>
-            <el-table-column prop="headPic" label="头像" align="center">
+            <el-table-column prop="headPic" label="头像" align="center" width="85">
                 <template scope="scope">
                     <div>
                         <img class="head-image" :src="imgSrc+scope.row.headPic+picWidth60" alt="">
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="techName" label="姓名" align="center">
+            <el-table-column prop="techName" width="230" label="姓名" align="center">
             </el-table-column>
             <el-table-column label="性别" align="center">
                 <template scope="scope">

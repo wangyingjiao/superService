@@ -16,25 +16,37 @@
         <div class="refund-table" v-loading.body="loading">
             <div>
                 <el-table :data="tableData"  stripe style="width: 100%">
-                    <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader">
+                    <el-table-column align="center" prop="refundNumber"  min-width="205" label="退款编号"></el-table-column>
+                    <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader" min-width="140">
                         <template scope="scope">
                             <div>
-                                <div v-if="techUserType!='org'">{{scope.row.orgName}}</div>
-                                <div>{{scope.row.stationName}}</div> 
+                                <el-tooltip placement="left" v-if="techUserType!='org'" :disabled="scope.row.orgName.length < 9" :content="scope.row.orgName">
+                                    <div :class="{'over-fl':scope.row.orgName.length >=10}" v-if="techUserType!='org'">{{scope.row.orgName}}</div>
+                                </el-tooltip>
+                                <el-tooltip placement="left" :disabled="scope.row.stationName.length < 9" :content="scope.row.stationName">
+                                    <div :class="{'over-fl':scope.row.stationName.length >=10}">{{scope.row.stationName}}</div> 
+                                </el-tooltip>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="orderNumber" min-width="130" label="订单编号"></el-table-column>
-                    <el-table-column align="center" prop="refundNumber"  min-width="130" label="退款编号"></el-table-column>
-                    <el-table-column align="center" label="退款金额">
+                    <el-table-column align="center" prop="orderNumber" min-width="205" label="订单编号"></el-table-column>
+                    <el-table-column align="center" min-width="110" label="退款金额">
                         <template scope="scope">
                             <span>{{'￥'+scope.row.refundAccountReality}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" prop="finishTime" label="退款时间"></el-table-column>
-                    <el-table-column align="center" prop="refundName" label="用户姓名"></el-table-column>
-                    <el-table-column align="center" prop="refundPhone" label="用户电话"></el-table-column>
-                    <el-table-column align="center" label="操作">
+                    <el-table-column align="center" prop="finishTime" min-width="155" label="退款时间"></el-table-column>
+                    <el-table-column align="center" prop="refundName" min-width="140" label="用户姓名">
+                         <template scope="scope">
+                            <div>
+                                <el-tooltip placement="left" :disabled="scope.row.refundName.length < 9" :content="scope.row.refundName">
+                                    <div :class="{'over-fl':scope.row.refundName.length >=9}">{{scope.row.refundName}}</div>
+                                </el-tooltip>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" prop="refundPhone" min-width="120" label="用户电话"></el-table-column>
+                    <el-table-column align="center" label="操作" fixed="right">
                         <template scope="scope">
                             <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('refund_info') > -1" @click="handleRead(scope.row.id)">查看</el-button> 
                         </template>    
@@ -162,7 +174,7 @@ var refundDetails = (id)=>{
                 if(this.techUserType=='station'){
                     return
                 }else{
-                    return [this.techUserType!='org'?h('p',['机构名称']):'',  h('p',['服务站名称']) ]
+                    return [this.techUserType!='org'?h('p',['服务机构']):'',  h('p',['服务站']) ]
                 }
             },
             //搜索
@@ -174,7 +186,11 @@ var refundDetails = (id)=>{
                     obj[this.chooses] = this.chooContent
                 }
                 this.search = obj
-                this.searchData()
+                if(this.pageSync == 1){
+					this.searchData()
+				}else{
+					this.pageSync = 1
+				}
             },
             //列表数据
             searchData(){
@@ -263,6 +279,11 @@ var refundDetails = (id)=>{
 </script>
 
 <style>
+    .over-fl{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     .refun-dialog .el-dialog__body{
         padding: 0;
         color: black;

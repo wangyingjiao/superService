@@ -475,8 +475,8 @@
               <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-                    <td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                    <td width="230px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                    <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                    <td width="185px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                     <td  width="72px" class="fontSize12" align="center">
                       <span class="fontSize12" v-if="item.techSex =='male'">男</span>
                       <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -588,7 +588,7 @@
                                 <div class="orderinfoTechTablePadding">
                                     <tr v-for="item in ruleForm.orderRefundObj" :key="item.goodsId"  ref="tableItem1" class="selfTdStyle2">
                                       <td width="72px"   align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked" ></el-checkbox></td>
-                                      <td width="206px" align="center"><div class="selfComdityNameStyle">{{item.goodsName}}</div></td>
+                                      <td width="206px" align="center"><el-tooltip placement="left" v-if="item.goodsName != undefined" :disabled="item.goodsName.length < 15" :content="item.goodsName"><div :class=" item.goodsName.length < 15 ? '' : 'selfComdityNameStyle' ">{{item.goodsName}}</div></el-tooltip></td>
                                       <td width="132px"  align="center">￥{{item.payPrice}}</td>
                                       <td  width="102px" align="center">{{item.goodsNum}}</td>
                                       <td width="110px"  align="center">{{item.goodsUnit}}</td>							
@@ -1396,7 +1396,6 @@ export default {
     }
   },
   mounted() {
-    console.log(window.localStorage.getItem("orderId"),'111111')
     this.choose = this.dict.refund_type;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
@@ -1435,7 +1434,7 @@ export default {
   width: 180px !important;
 }
 .selftechNameStyle {
-  width: 185px;
+  width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1511,8 +1510,9 @@ export default {
 }
 .selfbeizhu1 {
   width: 800px;
-  display: inline-block;
   float: left;
+  display: inline-block;
+  
   margin-left: 102px;
   margin-top: -15px;
   word-break: break-all;

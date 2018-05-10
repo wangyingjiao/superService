@@ -50,49 +50,49 @@
         </template>
         </el-table-column>
         
-        <el-table-column v-if="userType =='sys'||userType =='platform'"  align="center"  :render-header="renderHeader"  >
+        <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader"  >
             <template scope="rowObj">
                <el-tooltip  placement="left" :disabled="rowObj.row.orgName.length < 8" :content="rowObj.row.orgName">
-                 <div class="overheidden">{{rowObj.row.orgName}}</div>
+                 <div :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'">{{rowObj.row.orgName}}</div>
                </el-tooltip>
                <el-tooltip  placement="left" :disabled="rowObj.row.name.length < 8" :content="rowObj.row.name">
-                 <div class="overheidden">{{rowObj.row.name}}</div>
+                 <div :class="rowObj.row.name.length < 10 ? '' : 'overheidden'">{{rowObj.row.name}}</div>
                </el-tooltip>
             </template>
       </el-table-column>
       
-        <el-table-column  v-else label="服务站名称" align="center">
+        <el-table-column  v-else label="服务站名称" min-width="150" align="center">
            <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.name.length < 5" :content="scope.row.name">
-             <div class="overheidden" >{{scope.row.name}}</div>
+             <div :class="scope.row.name.length < 10 ? '' : 'overheidden'" >{{scope.row.name}}</div>
            </el-tooltip>
          </template>
 
         </el-table-column>
 
-        <el-table-column label="服务站类型" align="center" prop="type">
+        <el-table-column label="服务站类型" align="center" min-width="130" prop="type">
            <template scope="scope">
             <span v-if="scope.row.type =='join'">加盟</span>
             <span v-if="scope.row.type =='self'">直营</span>
           </template>    
         </el-table-column>
 
-        <el-table-column label="站长" align="center" prop="user.name">
+        <el-table-column label="站长" align="center" min-width="80" prop="user.name">
         </el-table-column>
 
-        <el-table-column label="所属城市" align="center" prop="cityName">        
+        <el-table-column label="所属城市" min-width="95" align="center" prop="cityName">        
         </el-table-column>
 
-        <el-table-column label="服务站电话" align="center" prop="phone">       
+        <el-table-column label="服务站电话" align="center" min-width="120" prop="phone">       
         </el-table-column>
 
-        <el-table-column label="员工数量" align="center" prop="employees">
+        <el-table-column label="员工数量" align="center" min-width="95" prop="employees">
         </el-table-column>
 
-        <el-table-column label="技师数量" align="center" prop="techNum">          
+        <el-table-column label="技师数量" align="center" min-width="95" prop="techNum">          
         </el-table-column>
 
-        <el-table-column align="center" label="状态" prop="isUseable">
+        <el-table-column align="center" label="状态" min-width="70" prop="isUseable">
           <template scope="scope">
             <span v-if="scope.row.isUseable =='yes'">启用</span>
             <span v-else>停用</span>
@@ -972,10 +972,5 @@ export default {
   height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
-}
-.overheidden {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 </style>
