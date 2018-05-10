@@ -17,13 +17,13 @@
             <div>
                 <el-table :data="tableData"  stripe style="width: 100%">
                     <el-table-column align="center" prop="refundNumber"  min-width="205" label="退款编号"></el-table-column>
-                    <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader" min-width="120">
+                    <el-table-column v-if="techUserType!='station'" align="center" :render-header="renderHeader" min-width="140">
                         <template scope="scope">
                             <div>
-                                <el-tooltip placement="left" v-if="techUserType!='org'" :disabled="scope.row.orgName.length < 10" :content="scope.row.orgName">
+                                <el-tooltip placement="left" v-if="techUserType!='org'" :disabled="scope.row.orgName.length < 9" :content="scope.row.orgName">
                                     <div :class="{'over-fl':scope.row.orgName.length >=10}" v-if="techUserType!='org'">{{scope.row.orgName}}</div>
                                 </el-tooltip>
-                                <el-tooltip placement="left" :disabled="scope.row.stationName.length < 10" :content="scope.row.stationName">
+                                <el-tooltip placement="left" :disabled="scope.row.stationName.length < 9" :content="scope.row.stationName">
                                     <div :class="{'over-fl':scope.row.stationName.length >=10}">{{scope.row.stationName}}</div> 
                                 </el-tooltip>
                             </div>
@@ -36,11 +36,11 @@
                         </template>
                     </el-table-column>
                     <el-table-column align="center" prop="finishTime" min-width="155" label="退款时间"></el-table-column>
-                    <el-table-column align="center" prop="refundName" min-width="120" label="用户姓名">
+                    <el-table-column align="center" prop="refundName" min-width="140" label="用户姓名">
                          <template scope="scope">
                             <div>
-                                <el-tooltip placement="left" :disabled="scope.row.refundName.length < 10" :content="scope.row.refundName">
-                                    <div :class="{'over-fl':scope.row.refundName.length >=10}">{{scope.row.refundName}}</div>
+                                <el-tooltip placement="left" :disabled="scope.row.refundName.length < 9" :content="scope.row.refundName">
+                                    <div :class="{'over-fl':scope.row.refundName.length >=9}">{{scope.row.refundName}}</div>
                                 </el-tooltip>
                             </div>
                         </template>
