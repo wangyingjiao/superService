@@ -47,7 +47,7 @@
 									<template scope="scope">
 										<div class="schedule-tech">
 											<div>
-												<el-tooltip placement="left" :disabled="scope.row.status=='yes' ? scope.row.name.length < 10 : scope.row.name.length <=6" :content="scope.row.name">
+												<el-tooltip placement="left" :disabled="scope.row.status=='yes' ? scope.row.name.length < 9 : scope.row.name.length <=2" :content="scope.row.name">
 													<div :class="{'ov-flow':scope.row.status=='yes'}"><span :class="{'name-status':scope.row.status!='yes'}">{{scope.row.name}}</span><span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
 												</el-tooltip>
 											</div>
