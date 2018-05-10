@@ -1509,8 +1509,9 @@ export default {
 }
 .selfbeizhu1 {
   width: 800px;
-  display: inline-block;
   float: left;
+  display: inline-block;
+  
   margin-left: 102px;
   margin-top: -15px;
   word-break: break-all;
