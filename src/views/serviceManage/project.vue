@@ -39,10 +39,20 @@
     class="projectTabel"
     element-loading-text="正在加载" 
     style="width: 100%;" >
-      <el-table-column align="center" label="编号" width="100">
+      <el-table-column align="center" label="编号" width="70">
         <template scope="scope">
           {{scope.row.num+(pageNumber-1)*pageSize}}
         </template>
+      </el-table-column>
+
+       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="130">
+         <template scope="scope">
+           <div>
+             <el-tooltip placement="left" :disabled="scope.row.orgName.length <= 9" :content="scope.row.orgName">
+                <span style="padding:0 5px;" :class="{'proName':scope.row.orgName.length>=10}">{{scope.row.orgName}}</span>
+             </el-tooltip>
+           </div>
+         </template>
       </el-table-column>
 
       <el-table-column align="center" label="图片">
@@ -50,36 +60,48 @@
           <span v-if="scope.row.pictures != undefined"><img :src="imgSrc + scope.row.pictures[0]+picWidth60" class="imgList"/></span>
         </template>
       </el-table-column>
-       <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName">
+
+      <el-table-column  label="项目名称" align="center" prop="name" min-width="130">
+          <template scope="scope">
+            <div>
+              <el-tooltip placement="left" :disabled="scope.row.name.length <= 9" :content="scope.row.name">
+                  <span style="padding:0 5px;" :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
+              </el-tooltip>
+            </div>
+         </template>
       </el-table-column>
 
-      <el-table-column  label="项目名称" align="center" prop="name">
+      <el-table-column  label="所属分类" align="center" min-width="130">
+          <template scope="scope">
+            <div>
+              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 9" :content="scope.row.sortName">
+                  <span :class="{'proName':scope.row.sortName.length>=10}">{{scope.row.sortName}}</span>
+              </el-tooltip>
+            </div>
+          </template>
       </el-table-column>
 
-      <el-table-column  label="所属分类" align="center" prop="sortName">
-      </el-table-column>
-
-      <el-table-column  label="商品名称" align="center">
+      <el-table-column  label="商品名称" align="center" min-width="150">
         <template scope="scope">
           <div 
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-            <el-tooltip placement="left" :disabled="item.name.length <= 10" :content="item.name">
-                <span class="proName">{{item.name}}</span>
+            <el-tooltip placement="left" :disabled="item.name.length <= 9" :content="item.name">
+                <span :class="{'proName':item.name.length>=10}">{{item.name}}</span>
             </el-tooltip>
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="价格/单位" align="center">
+      <el-table-column label="价格/单位" align="center" min-width="120">
         <template scope="scope">
           <div
           class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
           >
-          <el-tooltip placement="left" :disabled="(item.unit+item.doublePrice).length <= 10" :content="item.doublePrice+'元 / '+item.unit">
+          <el-tooltip placement="left" :disabled="(item.unit+item.doublePrice).length <= 9" :content="item.doublePrice+'元 / '+item.unit">
             <span class="proName">{{item.doublePrice+"元"}} / {{item.unit}}</span>
           </el-tooltip>
           </div>
@@ -89,14 +111,14 @@
         <!-- 商品 -->
         <!-- 删除商品与已对接E店的一列
         element无法根据内容大小，所以判断两种，有E店和无E店 -->
-        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?250:100">
+        <!-- :min-width="btnShow.indexOf('project_send')>-1?250:100" -->
+        <!-- <el-table-column align="center" v-if="techUserType=='sys'"  label="" :width="btnShow.indexOf('project_send')>-1?250:150">
              <template scope="scope">
             <div
               class="branch"  
               v-for="(item,index) in scope.row.commoditys" 
               :key="index">
               <button v-if="btnShow.indexOf('project_delete')>-1" class="commEd ceshi3" @click="deletGood(item)">删除商品</button>
-              <!-- 全系统用户不需要判断是否有对接E店 -->
               <span v-if="techUserType=='sys'">
                 <button v-show="btnShow.indexOf('project_send')>-1" class="commEd ceshi3" @click="dockingE(item)">已对接E店</button>
               </span>
@@ -105,8 +127,9 @@
               </span>
             </div>
           </template>
-        </el-table-column>
-        <el-table-column align="center" label="" v-if="techUserType!='sys'" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?250:100">
+        </el-table-column> -->
+        <!-- :width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?550:150" -->
+        <el-table-column align="center" label=""  width="250">
              <template scope="scope">
             <div
               class="branch"  
@@ -124,7 +147,7 @@
           </template>
         </el-table-column>
         <!-- 项目 -->
-        <el-table-column align="center" label="" min-width="200">
+        <el-table-column align="center" label="" width="200">
           <template scope="scope">
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>

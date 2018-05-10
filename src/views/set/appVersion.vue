@@ -26,12 +26,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="ID" prop="id">
-        <template scope="scope">
-           <el-tooltip placement="left"  :content="scope.row.id">
-             <div class="tool" >{{scope.row.id}}</div>
-           </el-tooltip>
-        </template> 
+      <el-table-column align="center" label="ID" min-width="230" prop="id">
       </el-table-column>
 
       <el-table-column align="center" label="版本号" prop="versionNumber">

@@ -18,21 +18,22 @@
           <div style="padding-top:15px;">
               <el-table  :data="getListdata" v-loading="listLoading"  highlight-current-row element-loading-text="正在加载"
                 style="width: 100% ;">
-                      <el-table-column align="center" label="编号" width="100">
+                      <el-table-column align="center" label="编号" min-width="100">
                           <template scope="scope">
                             {{scope.row.index+(pageNumber-1)*pageSize}}
                           </template>
                       </el-table-column>
                       <el-table-column
+                      min-width="220"
                       align="center"
                       prop="orgName"         
                       label="服务机构"
                       v-if=" userType != 'org' && userType != 'station'"
                       >
                       </el-table-column>                       
-                      <el-table-column label="技能名称" align="center" prop="name"></el-table-column>
-                      <el-table-column label="技师个数" align="center" prop="techNum"> </el-table-column>
-                      <el-table-column align="center" label="操作" min-width="100px">
+                      <el-table-column min-width="220" label="技能名称" align="center" prop="name"></el-table-column>
+                      <el-table-column min-width="94" label="技师个数" align="center" prop="techNum"> </el-table-column>
+                      <el-table-column align="center" label="操作" min-width="138">
                         <template scope="scope">
                             <el-button class="el-icon-edit ceshi3"  v-if="btnShow.indexOf('skill_update') != -1" @click="add('edit',scope.row)"></el-button>
                             <el-button class="el-icon-delete ceshi3" v-if="btnShow.indexOf('skill_delete') != -1" @click="handleDelete(scope.row)"></el-button>
@@ -142,13 +143,13 @@
                         <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                             <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
-                            <td  width="99px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                            <td  width="180px" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+                            <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                            <td  width="152px" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                             <td  width="73px" align="center">
                               <span v-if="item.techSex =='male'">男</span>
                               <span v-if="item.techSex =='female'">女</span>									
                             </td>
-                            <td  width="198px" align="center"><div class="selftechStationNameStyle">{{item.techStationName}}</div></td>							
+                            <td  width="198px" align="center"><el-tooltip placement="left" v-if="item.techStationName != undefined" :disabled="item.techStationName.length < 10" :content="item.techStationName"><div :class=" item.techStationName.length < 10 ? '' : 'selftechStationNameStyle' ">{{item.techStationName}}</div></el-tooltip></td>							
                           </tr>
                         </div>
                       </table>
@@ -945,7 +946,7 @@ export default {
   line-height: 70px;
 }
 .selftechNameStyle {
-  width: 130px;
+  width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -954,7 +955,7 @@ export default {
   margin-top: 44px;
 }
 .selftechStationNameStyle {
-  width: 174px;
+  width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

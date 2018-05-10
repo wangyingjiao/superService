@@ -43,12 +43,20 @@
 					<el-table :data="tableData" border style="width: 100%">
 						<!-- 技师 -->
 							<el-table-column label="技师" align="center">
-								<el-table-column align="center">
+								<el-table-column align="center" min-width="140">
 									<template scope="scope">
 										<div class="schedule-tech">
-											<div>{{scope.row.name}}<span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
+											<div>
+												<el-tooltip placement="left" :disabled="scope.row.status=='yes' ? scope.row.name.length < 9 : scope.row.name.length <=2" :content="scope.row.name">
+													<div :class="{'ov-flow':scope.row.status=='yes'}"><span :class="{'name-status':scope.row.status!='yes'}">{{scope.row.name}}</span><span class="color-red">{{scope.row.status=="yes"?'':'(暂停服务)'}}</span></div>
+												</el-tooltip>
+											</div>
 											<div>{{scope.row.phone}}</div>
-											<div>{{scope.row.stationName}}</div>
+											<div class="ov-flow">
+												<el-tooltip placement="left" :disabled="scope.row.stationName.length <=8" :content="scope.row.stationName">
+													<span>{{scope.row.stationName}}</span>
+												</el-tooltip>
+											</div>
 										</div>
 									</template>
 								</el-table-column>
@@ -67,7 +75,7 @@
 							</el-table-column>
 						<!-- 技师结束 -->
 						<!-- 7天时间 -->
-							<el-table-column v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
+							<el-table-column min-width="120" v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
 								<template scope="scope">
 									<!-- 
 										1：有工资时间
@@ -325,7 +333,6 @@
 			},
 		},
 		mounted(){
-			console.log(this.$route.meta,",meta---++++++---")
 			if(this.techUserType=='station' || this.techUserType=='org'){
 				this.getList()
 			}
@@ -337,34 +344,19 @@
 				}
 			}
 			list()
-		},
-		// beforeRouteEnter(to, from, next){
-		// 	if(from.path == '/clean/orderinfo'){
-		// 		to.meta.keepAlive = true
-		// 	}else{
-		// 		to.meta.keepAlive = false
-		// 	}
-		// 	console.log(to,"to----")
-		// 	console.log(from,"from----")
-		// 	next()
-		// },
-		// beforeRouteLeave(to, from, next){
-
-		// 	if(to.path == '/clean/orderinfo'){
-		// 		console.log(1)
-		// 		from.meta.keepAlive = true
-		// 	}else{
-		// 		console.log(2)
-		// 		from.meta.keepAlive = false
-		// 	}
-		// 	console.log(to,"to----")
-		// 	console.log(from,"from----")
-		// 	next()
-		// }
+		}
 	}
 </script>
 
 <style>
+	.name-status{
+		vertical-align:middle;
+		width: 40%;
+		display: inline-block;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 	.color-red{
 		color: red;
 	}
@@ -462,5 +454,10 @@
 	.work-arrange{
 		/*box-sizing: border-box;*/
 		padding: 10px 0 110px 0;
+	}
+	.ov-flow{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>

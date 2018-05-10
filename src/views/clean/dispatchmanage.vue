@@ -14,7 +14,7 @@
         <el-select  clearable slot="prepend" class="width120"  v-model="technicianName" placeholder="请选择">
           <el-option v-for="item in technicianOptions" :key="item.key" :label="item.technicianName" :value="item.key">
           </el-option>
-        </el-select>
+        </el-select>             
       </el-input>      
 		  <button class="button-large btn_search" @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
   </div>
@@ -22,27 +22,27 @@
 		<div class="second-bar">
 			<div class="tableWarpaa addStyle">
 					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
-					  <el-table-column  align="center" width="170px"  label="订单编号">
+					  <el-table-column  align="center" min-width="220"  label="订单编号">
 							<template scope="scope" >
 								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
 						</el-table-column>
-            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" width="150" :render-header="renderHeader"  >
+            <el-table-column  v-if="userType == 'sys' || userType == 'platform'" align="center" min-width="150" :render-header="renderHeader"  >
                   <template scope="rowObj">
-                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 9" :content="rowObj.row.orgName">
-                        <p class="selfToolTip1">{{rowObj.row.orgName}}</p>
+                      <el-tooltip placement="left" v-if="rowObj.row.orgName != undefined" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                        <p :class=" rowObj.row.orgName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.orgName}}</p>
                       </el-tooltip>
-                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9"  :content="rowObj.row.stationName">
-                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
-                      </el-tooltip>
+                      <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 10"  :content="rowObj.row.stationName">
+                        <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
+                      </el-tooltip>                      
                   </template>                    
             </el-table-column>
-            <el-table-column  v-if="userType == 'org'" align="center" width="150" label="服务站名称"   >
+            <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站"   >
                   <template scope="rowObj">
                       <el-tooltip placement="left" v-if="rowObj.row.stationName != undefined"  :disabled="rowObj.row.stationName.length < 9" :content="rowObj.row.stationName">
-                        <p class="selfToolTip1">{{rowObj.row.stationName}}</p>
+                        <p :class=" rowObj.row.stationName.length < 10 ? '' : 'selfToolTip1'">{{rowObj.row.stationName}}</p>
                       </el-tooltip>
                   </template>                    
             </el-table-column>
@@ -101,8 +101,8 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
-                        <div class="techNameStyle1">{{item.techName}}</div>
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length <= 7 " :content="item.techName">
+                        <div :class=" item.techName.length <= 7 ? '' : 'techNameStyle1'">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
 								</template>
@@ -131,16 +131,16 @@
 										</div>						
 								</template>
 					  </el-table-column>
-
-						<el-table-column label="操作" align="center"  width="180">
-							<el-table-column align="center" label=""  :colspan="2"    ref="selfcolumn">
-									<template scope="scope">
-										<div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name">
-											<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
-										</div>						
-									</template>
-							</el-table-column>		
-							<el-table-column align="center" width="100">
+            <el-table-column align="center" :render-header="renderHeader1"    ref="selfcolumn" width="100" fixed="right">
+                <template scope="scope">
+                  <div class="selfTd"  v-for=" item in scope.row.techList" :key="item.name" >
+                    <el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_insert') >= 0" @click="gaiPai(scope.row.id,item)">改派</el-button>
+                  </div>						
+                </template>
+            </el-table-column>
+						<el-table-column  align="center" :render-header="renderHeader2" class="aa" width="100" fixed="right">
+		
+							<el-table-column  align="center" width="100">
 								<template scope="scope">
 									<div>
 										<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('dispatch_info') >= 0" @click="godispatchReass(scope.row.id)">
@@ -176,15 +176,15 @@
 					<tr class="tableHeader">
 						<td  class="selfTableHEADTD" align="center" width="73px">选择</td>
 						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
-						<td  class="selfTableHEADTD" align="center" width="182px">姓名</td>
+						<td  class="selfTableHEADTD" align="center" width="170px">姓名</td>
 						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
 						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
 					</tr>
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="172px" class="fontSize12" align="center"><div class="selftechNameStyle">{{item.techName}}</div></td>
+								<td  width="157px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -259,8 +259,14 @@ export default {
   },
   methods: {
     renderHeader (h) {
-      return [h('p', {}, ['机构名称']),h('p', {}, ['服务站名称'])]
+      return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
+    }, 
+    renderHeader1 (h) {
+      return [h('p', {style:'font-size:14px;text-align:right;'}, ['操'])]
     },
+    renderHeader2 (h) {
+      return [h('p', {style:'font-size:14px;text-align:left;'}, ['作'])]
+    },              
     //机构变化事件
     orgChange(val) {
       this.payType = "";
@@ -578,7 +584,7 @@ export default {
 }
 .selfToolTip1 {
   margin:0 auto;
-  width: 100px;
+  width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -686,7 +692,7 @@ export default {
   line-height: 70px;
 }
 .selftechNameStyle {
-  width: 185px;
+  width: 147px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
