@@ -48,7 +48,7 @@
        <el-table-column v-if="techUserType=='sys'"  label="服务机构" align="center" prop="orgName" min-width="130">
          <template scope="scope">
            <div>
-             <el-tooltip placement="left" :disabled="scope.row.orgName.length <= 10" :content="scope.row.orgName">
+             <el-tooltip placement="left" :disabled="scope.row.orgName.length <= 9" :content="scope.row.orgName">
                 <span style="padding:0 5px;" :class="{'proName':scope.row.orgName.length>=10}">{{scope.row.orgName}}</span>
              </el-tooltip>
            </div>
@@ -64,7 +64,7 @@
       <el-table-column  label="项目名称" align="center" prop="name" min-width="130">
           <template scope="scope">
             <div>
-              <el-tooltip placement="left" :disabled="scope.row.name.length <= 10" :content="scope.row.name">
+              <el-tooltip placement="left" :disabled="scope.row.name.length <= 9" :content="scope.row.name">
                   <span style="padding:0 5px;" :class="{'proName':scope.row.name.length>=10}">{{scope.row.name}}</span>
               </el-tooltip>
             </div>
@@ -74,7 +74,7 @@
       <el-table-column  label="所属分类" align="center" min-width="130">
           <template scope="scope">
             <div>
-              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 10" :content="scope.row.sortName">
+              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 9" :content="scope.row.sortName">
                   <span :class="{'proName':scope.row.sortName.length>=10}">{{scope.row.sortName}}</span>
               </el-tooltip>
             </div>
@@ -87,7 +87,7 @@
             class="branch"  
             v-for="(item,index) in scope.row.commoditys" 
             :key="index">
-            <el-tooltip placement="left" :disabled="item.name.length <= 10" :content="item.name">
+            <el-tooltip placement="left" :disabled="item.name.length <= 9" :content="item.name">
                 <span :class="{'proName':item.name.length>=10}">{{item.name}}</span>
             </el-tooltip>
           </div>
@@ -101,7 +101,7 @@
             v-for="(item,index) in scope.row.commoditys" 
             :key="index"
           >
-          <el-tooltip placement="left" :disabled="(item.unit+item.doublePrice).length <= 10" :content="item.doublePrice+'元 / '+item.unit">
+          <el-tooltip placement="left" :disabled="(item.unit+item.doublePrice).length <= 9" :content="item.doublePrice+'元 / '+item.unit">
             <span class="proName">{{item.doublePrice+"元"}} / {{item.unit}}</span>
           </el-tooltip>
           </div>

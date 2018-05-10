@@ -57,14 +57,14 @@
                         </el-table-column>
                         <el-table-column prop="sortName" label="所属分类" align="center" min-width="120">
                            <template scope="scope">
-                              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 10" :content="scope.row.sortName">
+                              <el-tooltip placement="left" :disabled="scope.row.sortName.length < 10" :content="scope.row.sortName">
                                 <span> {{scope.row.sortName}}</span>
                               </el-tooltip>
                             </template>
                         </el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center" min-width="120">
                             <template scope="scope">
-                              <el-tooltip placement="left" :disabled="scope.row.univalence.length <= 10" :content="scope.row.univalence">
+                              <el-tooltip placement="left" :disabled="scope.row.univalence.length < 10" :content="scope.row.univalence">
                                 <span> {{scope.row.univalence}}</span>
                               </el-tooltip>
                             </template>
