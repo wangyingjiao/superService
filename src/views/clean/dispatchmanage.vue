@@ -101,8 +101,8 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length <= 7 " :content="item.techName">
-                        <div :class=" item.techName.length <= 7 ? '' : 'techNameStyle1'">{{item.techName}}</div>
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
+                        <div :class=" item.techName.length < 6 ? '' : 'techNameStyle1'">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
 								</template>
