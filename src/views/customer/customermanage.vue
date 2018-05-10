@@ -8,7 +8,7 @@
       </el-select>
 		  <el-input  class="search"   placeholder="请输入用户的手机号" v-model="customPhone"></el-input>
 			<el-input  class="search"   placeholder="请输入用户的姓名" v-model="customName"></el-input>
-		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+		  <button class="search-button btn_search"  @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
 		</div>
 		<!--搜索结束-->
 		<div class="second-bar">
@@ -981,7 +981,7 @@ export default {
   width: 180px !important;
 }
 .selfPromInfStyle1 {
-  heihgt: 30px;
+  height: 30px;
   line-height: 30px;
   color: #8391a5;
   font-size: 12px;
