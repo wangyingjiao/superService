@@ -877,7 +877,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 84px;
+  width: 83px;
   line-height:30px;
   margin:0 auto;
   font-size:14px;
@@ -886,7 +886,7 @@ export default {
   white-space: nowrap;
 }
 .techNameStyle1 {
-  width: 130px;
+  width: 125px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;

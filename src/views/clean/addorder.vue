@@ -1729,7 +1729,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle1 {
-  width: 130px;
+  width: 125px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
@@ -1738,7 +1738,7 @@ export default {
   white-space: nowrap;
 }
 .techNameStyle2 {
-  width: 84px;
+  width: 83px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
