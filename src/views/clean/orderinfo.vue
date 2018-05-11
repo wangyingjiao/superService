@@ -50,7 +50,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
-                      <span class="lineContent" style="min-width:180px;">{{otherInfo.stationName}}</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.stationName}}</span>
                    </p>                                                                                                                   
                 </div>
                 <div class="rightArea">
@@ -242,7 +242,7 @@
                 <div class="leftArea marginBottom20">
                    <p class="contentLine">
                       <span class="lineTitle">联系人:</span>
-                      <span class="lineContent">
+                      <span class="lineContent" style="min-width:186px;">
                           <span>{{addressInf.name}}</span>
                       </span>
                    </p>                                                        
@@ -327,7 +327,7 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户姓名:</span>
-                      <span class="lineContent">{{otherInfo.customerName}}</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.customerName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
