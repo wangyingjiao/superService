@@ -138,7 +138,13 @@
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-										<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div><span class="techNameStyle1">{{item.techName}}</span><i class="self-el-close el-icon-close"  @click="errorClose(item)"></i></div></el-tooltip>
+										<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName">
+                      <div>
+                        <span v-if="item.techName.length !=9" class="techNameStyle1">{{item.techName}}</span>
+                        <span v-if="item.techName.length ==9" class="techNameStyle1">{{item.techName}}一</span>
+                        <i class="self-el-close el-icon-close"  @click="errorClose(item)"></i>
+                      </div>
+                    </el-tooltip>
 									</div> 					
 								</div>
 							</div>																	
@@ -226,13 +232,18 @@
 			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
 			<div class="NowTabs">当前选择标签：</div>
-      <el-collapse-transition>
+      <!-- <el-collapse-transition> -->
+      <transition name="el-zoom-in-bottom">
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
 					<div  class="tabWrap2" v-for="item in middleA" :key="item.techId">
-						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle1">{{item.techName}}</div></el-tooltip>
+						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 6" :content="item.techName">
+              <div v-if="item.techName.length != 6" class="techNameStyle2">{{item.techName}}</div>
+              <div v-if="item.techName.length == 6" class="techNameStyle2">{{item.techName}}一</div>
+            </el-tooltip>
 					</div>                         
 				</div>
-			</el-collapse-transition>                                               	
+      </transition>
+			<!-- </el-collapse-transition>                                               	 -->
 			<div class="selfTableWrapONE">
 				<div class="table-d">
 					<table  class="selfTable">
@@ -1726,7 +1737,15 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
+.techNameStyle2 {
+  width: 84px;
+  display:inline-block;
+  font-size:14px;
+  overflow: hidden;
+  margin-left: -9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .stepControl {
   width: 100%;
   padding-left: 30px;
