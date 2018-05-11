@@ -166,7 +166,7 @@
 			<el-collapse-transition>
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
 					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-						<div class="techNameStyle">{{item.techName}}</div>
+						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
 					</div>                         
 				</div>
 			</el-collapse-transition>                                               	
@@ -646,24 +646,26 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 74px;
+  width: 130px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
+  margin-left: -9px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .tabWrap1 {
-  width: 84px;
+  width: 145px;
   padding: 0 5px;
-  font-size: 12px;
+  font-size: 10px;
   display: inline-block;
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:3px 0 3px 6px;
+  margin:3px 6px 3px 8px;
   background:#f0f4f5;
   color:#7a838a;
+  font-size:14px;
   position: relative;
   border:1px solid #bfcbd9
 }
