@@ -50,7 +50,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
-                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                      <span class="lineContent" style="min-width:180px;">{{otherInfo.stationName}}</span>
                    </p>                                                                                                                   
                 </div>
                 <div class="rightArea">
@@ -112,14 +112,21 @@
                       <el-table-column
                         align="center"
                         label="服务项目"
+                        min-width="120"
                         prop="itemName"
                         > 
                       </el-table-column>                      
                       <el-table-column
                         align="center"
+                        min-width="150"
                         label="商品名称"
-                        prop="goodsName"
-                        > 
+                       
+                        >
+                        <template scope="rowObj">
+                          <el-tooltip placement="left" v-if="rowObj.row.goodsName != undefined" :disabled="rowObj.row.goodsName.length < 10" :content="rowObj.row.goodsName">
+                            <p :class=" rowObj.row.goodsName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.goodsName}}</p>
+                          </el-tooltip>
+                        </template>                          
                       </el-table-column>
                       <el-table-column
                         align="center"
@@ -172,10 +179,11 @@
                         </template>
                       </el-table-column>
                       <el-table-column
-                        prop="techName"
+                        min-width="150"
                         align="center"
                         label="姓名"
-                        >
+                        prop="techName"
+                        >                        
                       </el-table-column>
                       <el-table-column
                         align="center"
@@ -1409,6 +1417,14 @@ export default {
 };
 </script>
 <style   scoped>
+.selfToolTip1 {
+  margin:0 auto;
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .refundStatusStyle {
   color: #8391a5;
   margin-left: 75px;
