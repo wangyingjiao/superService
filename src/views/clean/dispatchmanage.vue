@@ -46,7 +46,7 @@
                       </el-tooltip>
                   </template>                    
             </el-table-column>
-					  <el-table-column align="center"  width="160px" label="订单状态">
+					  <el-table-column align="center"  min-width="94" label="订单状态">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
                     <span v-if="scope.row.orderStatus =='cancel'">已取消</span>
@@ -59,7 +59,7 @@
 								</div>
 							</template>							
 						</el-table-column>
-					  <el-table-column align="center"  width="160px" label="服务状态">
+					  <el-table-column align="center"  min-width="94" label="服务状态">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
                   <span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
@@ -69,24 +69,24 @@
 								</div>
 							</template>							
 						</el-table-column>                                    
-					  <el-table-column align="center"  width="160px" label="服务时间">
+					  <el-table-column align="center"  min-width="160" label="服务时间">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
 										{{scope.row.serviceTime}}
 								</div>
 							</template>							
 						</el-table-column>
-					  <el-table-column align="center"  width="160px" label="建议服务时长">
+					  <el-table-column align="center"  min-width="120" label="建议服务时长">
 							<template scope="scope" >
 								<div  class="dispatchNumberStyle1">
 										{{scope.row.serviceHour}}
 								</div>
 							</template>							
 						</el-table-column>
-					  <el-table-column align="center"  width="160px" label="服务内容">
+					  <el-table-column align="center"  min-width="170" label="服务内容">
               <template scope="scope">
                 <el-tooltip placement="left" v-if="scope.row.orderContent != undefined" :disabled="scope.row.orderContent.length < 11" :content="scope.row.orderContent">
-                  <div class="selfToolTip">{{scope.row.orderContent}}</div>
+                  <div :class=" scope.row.orderContent.length <= 11 ? '' : 'selfToolTip'">{{scope.row.orderContent}}</div>
                 </el-tooltip>
               </template>							
 						</el-table-column>                        
@@ -101,8 +101,8 @@
 					  <el-table-column align="center" label="姓名">
 								<template scope="scope">										
                   <div class="selfTd" v-for="(item,index) in scope.row.techList" :key="index">
-                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length <= 7 " :content="item.techName">
-                        <div :class=" item.techName.length <= 7 ? '' : 'techNameStyle1'">{{item.techName}}</div>
+                    <el-tooltip  placement="left" v-if="item.techName != undefined"  :disabled="item.techName.length < 6 " :content="item.techName">
+                        <div :class=" item.techName.length < 6 ? '' : 'techNameStyle1'">{{item.techName}}</div>
                     </el-tooltip>
                   </div>																										
 								</template>
@@ -258,6 +258,21 @@ export default {
     }
   },
   methods: {
+    //时间转化成xx小时XX分钟
+    formatDuring(mss) {
+      var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = (mss % (1000 * 60)) / 1000;
+      if (hours == 0 && seconds == 0) {
+        return minutes + "分钟";
+      } else if (hours == 0 && seconds != 0) {
+        return minutes + 1 + "分钟";
+      } else if (seconds == 0 && minutes == 0) {
+        return hours + "小时";
+      } else {
+        return hours + "小时" + minutes + "分钟";
+      }
+    },    
     renderHeader (h) {
       return [h('p', {}, ['服务机构']),h('p', {}, ['服务站'])]
     }, 
@@ -464,6 +479,18 @@ export default {
           if (res.data.code === 1) {
             this.pagetotal1 = res.data.data.count;
             this.tableData = res.data.data.list;
+            //建议服务时长转化格式
+            for(var i=0;i < res.data.data.list.length;i++){
+                if(this.tableData[i].serviceHour != undefined){
+                  this.tableData[i].serviceHour=this.formatDuring(
+                        res.data.data.list[i].serviceHour* 3600000
+                  );
+                }
+
+            }
+            
+
+
             this.pageNumber = res.data.data.pageNo;
             this.jumpPage = res.data.data.pageNo;
             this.pageSize1 = res.data.data.pageSize;            
@@ -576,6 +603,7 @@ export default {
 </script>
 <style scoped>
 .selfToolTip {
+  margin:0 auto;
   width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;

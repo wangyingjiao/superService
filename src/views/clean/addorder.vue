@@ -26,12 +26,12 @@
               <el-form-item label="联系电话:" prop="phone">
                   <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="form.phone" ></el-input>
                   <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-                  <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+                  <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010;&nbsp;新增用户</div>
               </el-form-item>            						
 							<el-form-item label="服务地址:" prop='radiovalue' v-if='form.address.addressName != "" && stationFlag'>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
                   <div style="margin-top:-36px;">
-                      <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
+                      <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;" class="fontSize12">{{form.address.addressPhone}}</span></p>
                       <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
@@ -69,7 +69,7 @@
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>
                     <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
 									</tr>
-									<tr v-for="(item,index) in selectCommidty" :key="item.goodsId" >
+									<tr v-for="item in selectCommidty" :key="item.goodsId" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked"></el-checkbox></td>
 										<td  align="center">
 											<span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.goodsName}}</span>
@@ -1781,14 +1781,14 @@ export default {
 }
 .selfPromInfStyle {
   display: inline-block;
-  heihgt: 30px;
+  height: 30px;
   line-height: 30px;
   margin-left: 30px;
   color: #8391a5;
   font-size: 12px;
 }
 .selfPromInfStyle1 {
-  heihgt: 30px;
+  height: 30px;
   line-height: 30px;
   margin-top: 20px;
   color: #8391a5;

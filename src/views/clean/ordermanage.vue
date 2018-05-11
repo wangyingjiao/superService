@@ -21,7 +21,7 @@
 						<el-option v-for="(value,key,index) in sevicerStustasOptions" :key="index" :label="value" :value="key">
 						</el-option>
 			  </el-select>						  
-			  <button type="button" class="search-button floatRight btn_search btn-color"  @click="localSearch"><i class="el-icon-search"></i>&nbsp搜索</button>
+			  <button type="button" class="search-button floatRight btn_search btn-color"  @click="localSearch"><i class="el-icon-search"></i>&nbsp;搜索</button>
 			  <div class="second-input">
 				    <el-date-picker
 						v-model="startTime"

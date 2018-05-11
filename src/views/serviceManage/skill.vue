@@ -83,12 +83,12 @@
             </el-form-item>            
             <el-form-item v-if=" userType == 'org' || userType == 'station'" label="选择技师" prop="technicians" class="selfst3">
               <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
-                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010; 请选择</div>
               </div>
             </el-form-item>
             <el-form-item v-if=" (userType == 'sys' && mechanism1 !='' ) || (userType == 'platform'  && mechanism1 !='' )" label="选择技师" prop="technicians" class="selfst3">
               <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
-                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010; 请选择</div>
               </div>
             </el-form-item>            
             <el-form-item label="" >
@@ -108,7 +108,7 @@
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
-        <el-dialog title="选择服务人员":visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
+        <el-dialog title="选择服务人员" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
               <div class="selfFLOLeft" style="width:40%">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:96%"></el-input>                
               </div>
