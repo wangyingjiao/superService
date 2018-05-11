@@ -163,13 +163,18 @@
 			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
       <div class="NowTabs">当前选择标签：</div>
-			<el-collapse-transition>
+			<!-- <el-collapse-transition> -->
+        <transition name="el-zoom-in-bottom">
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
 					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
+						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 6" :content="item.techName">
+              <div v-if="item.techName.length !=6" class="techNameStyle">{{item.techName}}</div>
+              <div v-if="item.techName.length ==6" class="techNameStyle">{{item.techName}}一</div>
+            </el-tooltip>
 					</div>                         
 				</div>
-			</el-collapse-transition>                                               	
+			<!-- </el-collapse-transition>  -->
+        </transition>                                             	
 			<div class="selfTableWrapONE">
 				<div class="table-d">
 					<table  class="selfTable">
@@ -646,7 +651,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 130px;
+  width: 84px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
