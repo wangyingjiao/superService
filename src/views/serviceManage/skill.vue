@@ -139,10 +139,10 @@
                             <td  class="selfTdStyle"  align="center" width="178px">姓名</td>
                             <td  class="selfTdStyle"  align="center" width="73px">性别</td>
                             <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
-                          </tr>                
+                          </tr>    
                         <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                            <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
+                            <td  width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
                             <td  width="152px" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                             <td  width="73px" align="center">
