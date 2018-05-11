@@ -5,7 +5,7 @@
         <div class="serch-input">
             <div class="serch-ski" style="width:67%">
                 <div style="width:100%;margin:0 0 10px 20px">
-                  <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search" style="width:47%;margin-right:2%;padding-right:5px">
+                  <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search" style="width:48%;margin-right:2%;padding-right:5px">
                       <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                       </el-option>
                     </el-select>
@@ -17,16 +17,16 @@
                         </el-select>
                     </el-input>
                 </div>
-                <div style="width:100%; background:rgb(248, 250, 253);margin:0 0 0px 11px; padding:10px 0px 20px 9px;">
+                <div class="search-mechanism">
                     <div style="margin-bottom:10px">
-                        <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true" style="width:47%;margin-right:2%"></orgSearch>
+                        <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true" style="width:48%;margin-right:2%"></orgSearch>
                         <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站" style="width:48%;padding-right:5px">
                           <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
                           </el-option>
                         </el-select>
                     </div>
                     <div>
-                        <el-select ref="select" style="width:97%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                        <el-select ref="select" style="width:98%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
                             <el-option
                             v-for="(item,index) in sexTypeo"
                             :key="index"
@@ -1978,7 +1978,12 @@ export default {
 };
 </script>
 <style>
-
+.search-mechanism{
+  width:100%; 
+  background:rgb(248, 250, 253);
+  margin:0 0 0px 11px; 
+  padding:10px 0px 20px 9px;
+}
 .tech-index .serch-box .serch-input{
   display:flex;
   justify-content:space-between;

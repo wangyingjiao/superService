@@ -1861,13 +1861,13 @@ export default {
 </script>
 <style>
 .labelSystem{
-  /* display: flex;
+  display: flex;
   flex-wrap: wrap;
-  justify-content: space-around; */
+  /* justify-content: space-around; */
 }
 .label-input{
-  float: left;
-  margin-left: 5px;
+  /* float: left;
+  margin-left: 5px; */
   height: 32px;
   margin-bottom: 10px;
 }
@@ -2649,7 +2649,7 @@ hr {
   color: #bebebe;
 }
 .labelSystem {
-  padding:11px 0px; 
+  padding:11px 0 11px 5px; 
   overflow-y: auto;
   width: 100%;
   /* height: 296px; */
