@@ -94,7 +94,13 @@
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div><span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i></div></el-tooltip>                       
+                        <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName">
+                          <div>
+                            <span v-if="item.techName.length != 9" class="techNameStyle1">{{item.techName}}</span> 
+                            <span v-if="item.techName.length == 9" class="techNameStyle1">{{item.techName}}一</span>
+                            <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i>
+                          </div>
+                          </el-tooltip>                       
                       </div>                     
                   </div>              
             </el-form-item>           
@@ -118,16 +124,22 @@
               </div>
               <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
               <div class="NowTabs">当前选择标签：</div> 
-              <el-collapse-transition>
+              <transition name="el-zoom-in-bottom">
                 <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
                     <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
+                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 6" :content="item.techName">
+                        <div v-if="item.techName.length != 6" class="techNameStyle">{{item.techName}}</div>
+                        <div v-if="item.techName.length == 6" class="techNameStyle">{{item.techName}}一</div>
+                      </el-tooltip>
                     </div>                    
                     <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
+                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 6" :content="item.techName">
+                        <div v-if="item.techName.length != 6" class="techNameStyle">{{item.techName}}</div>
+                        <div v-if="item.techName.length == 6" class="techNameStyle">{{item.techName}}一</div>
+                      </el-tooltip>
                     </div>                                              
                 </div>
-              </el-collapse-transition>                           
+              </transition>
               <div class="selfFLOLeft selfOVerflow1">
                     <div class="table-d">
                       <table  class="selfTable">
@@ -865,7 +877,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 130px;
+  width: 83px;
   line-height:30px;
   margin:0 auto;
   font-size:14px;
@@ -874,7 +886,7 @@ export default {
   white-space: nowrap;
 }
 .techNameStyle1 {
-  width: 130px;
+  width: 125px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;

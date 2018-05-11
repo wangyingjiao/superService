@@ -461,14 +461,18 @@
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
           <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
           <div class="NowTabs">当前选择标签：</div>
-          <el-collapse-transition>
+          <!-- <el-collapse-transition> -->
+           <transition name="el-zoom-in-bottom">
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
-                <!-- <span class="techNameStyle">{{item.techName}}</span> -->
+                <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 6" :content="item.techName">
+                  <div v-if="item.techName.length != 6" class="techNameStyle">{{item.techName}}</div>
+                  <div v-if="item.techName.length == 6" class="techNameStyle">{{item.techName}}一</div>
+                </el-tooltip>
               </div>                         
             </div>
-          </el-collapse-transition>                                              	
+           </transition>
+          <!-- </el-collapse-transition>                                              	 -->
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table  class="selfTable">
@@ -482,8 +486,8 @@
               <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-                    <td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-                    <td width="185px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
+                    <td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                    <td width="230px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                     <td  width="72px" class="fontSize12" align="center">
                       <span class="fontSize12" v-if="item.techSex =='male'">男</span>
                       <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -1597,7 +1601,7 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 130px;
+  width: 83px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
