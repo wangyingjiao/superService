@@ -112,21 +112,19 @@
                       <el-table-column
                         align="center"
                         label="服务项目"
-                        min-width="120"
                         prop="itemName"
                         > 
                       </el-table-column>                      
                       <el-table-column
                         align="center"
-                        min-width="150"
                         label="商品名称"
-                       
+                        prop="goodsName"
                         >
-                        <template scope="rowObj">
+                        <!-- <template scope="rowObj">
                           <el-tooltip placement="left" v-if="rowObj.row.goodsName != undefined" :disabled="rowObj.row.goodsName.length < 10" :content="rowObj.row.goodsName">
                             <p :class=" rowObj.row.goodsName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.goodsName}}</p>
                           </el-tooltip>
-                        </template>                          
+                        </template>                           -->
                       </el-table-column>
                       <el-table-column
                         align="center"
