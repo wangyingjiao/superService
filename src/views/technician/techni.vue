@@ -3,13 +3,47 @@
     <div class="tech-index">
       <div class="serch-box">
         <div class="serch-input">
-          <div class="serch-server" style="width:80%">
+            <div class="serch-ski" style="width:67%">
+                <div style="width:100%;margin:0 0 10px 20px">
+                  <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search" style="width:47%;margin-right:2%;padding-right:5px">
+                      <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
+                      </el-option>
+                    </el-select>
+
+                    <el-input v-model.trim ="chooContent" placeholder="输入要搜索的内容" class="search searchHeader" style="width:47%;padding-right:5px">
+                        <el-select  v-model="techniSearch.chooses" clearable placeholder="请选择"  slot="prepend">
+                          <el-option v-for="item in choose" :key="item.value" :label="item.label" :value="item.value">
+                          </el-option>
+                        </el-select>
+                    </el-input>
+                </div>
+                <div style="width:100%; background:rgb(248, 250, 253);margin:0 0 0px 11px; padding:10px 0px 20px 9px;">
+                    <div style="margin-bottom:10px">
+                        <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true" style="width:47%;margin-right:2%"></orgSearch>
+                        <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站" style="width:48%;padding-right:5px">
+                          <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
+                          </el-option>
+                        </el-select>
+                    </div>
+                    <div>
+                        <el-select ref="select" style="width:97%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                            <el-option
+                            v-for="(item,index) in sexTypeo"
+                            :key="index"
+                            :label="item.name"
+                            :value="item.id">
+                            </el-option>
+                      </el-select>
+                    </div>
+                </div>
+            </div>
+          <!-- <div class="serch-server" style="width:80%">
             <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true"></orgSearch>
             <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
               <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
-            <el-select style="width:47%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+            <el-select ref="select" style="width:47%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
                   <el-option
                   v-for="(item,index) in sexTypeo"
                   :key="index"
@@ -17,12 +51,31 @@
                   :value="item.id">
                   </el-option>
             </el-select>
-          </div>
+          </div> -->
 
            <button class="search-button el-icon-search btn_search btn-color serch-btn" @click="techniSearchs"> 搜索</button>
+        </div>
       </div>
-      </div>
-      <div class="serch-ski">
+      <!-- <div class="serch-server">
+          <div class="serch-server-top">
+              <orgSearch ref="orgSearch" @orgsearch="orgSearch" :flag="true"></orgSearch>
+              <el-select class="search" filterable v-model="techniSearch.stationId" clearable placeholder="选择服务站">
+                  <el-option v-for="(item,index) in server" :key="index" :label="item.name" :value="item.id">
+                  </el-option>
+              </el-select>
+          </div>
+          <div class="serch-server-buttom">
+              <el-select ref="select" style="width:47%;margin-right:0" v-model="roomSel2Arr" multiple placeholder="请选择技能" class="search" filterable >
+                  <el-option
+                  v-for="(item,index) in sexTypeo"
+                  :key="index"
+                  :label="item.name"
+                  :value="item.id">
+                  </el-option>
+              </el-select>
+          </div>
+      </div> -->
+      <!-- <div class="serch-ski">
                <el-select v-model="techniSearch.jobNature" clearable placeholder="岗位性质" class="search">
                   <el-option v-for="(item,key) in station" :key="key" :label="item" :value="key">
                   </el-option>
@@ -35,7 +88,7 @@
                     </el-select>
                 </el-input>
            
-      </div>
+      </div> -->
     </div>
     <div class="tech-section">
       <div class="tech-section-right">
@@ -1929,10 +1982,13 @@ export default {
 .tech-index .serch-box .serch-input{
   display:flex;
   justify-content:space-between;
-  padding:10px 20px 5px 10px;
+  padding:10px 20px 5px 0px;
 }
-.tech-index .serch-box .serch-input .serch-server{
-  padding:10px;
+.tech-index .serch-server{
+  margin: 0 0 20px 15px;
+  width: 65%;
+  padding: 10px 5px 15px;
+  /* padding: 0 20px 10px; */
   background:#f8fafd;
   /* border:1px dashed #bbb9b9; */
   /* border-radius:10px; */
@@ -1988,8 +2044,9 @@ export default {
 }
 
 .tech-index .serch-ski {
-  margin-top: 10px;
-  padding: 0px 20px 20px;
+  overflow: hidden;
+  margin: 10px 0 10px 0px;
+  /* padding: 0px 0px 10px; */
 }
 
 
