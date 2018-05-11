@@ -26,12 +26,12 @@
               <el-form-item label="联系电话:" prop="phone">
                   <el-input  class="severChangeStyle"   placeholder="请输入用户手机号" :maxlength='11' v-model="form.phone" ></el-input>
                   <div  class="selftSerchBut"  @click="changeCustom">点击查询</div>
-                  <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010&nbsp;新增用户</div>
+                  <div  class="selftSerchBut"   style="width:90px;" v-if="btnShow.indexOf('customer_insert') > -1" @click="addcustomer">&#10010;&nbsp;新增用户</div>
               </el-form-item>            						
 							<el-form-item label="服务地址:" prop='radiovalue' v-if='form.address.addressName != "" && stationFlag'>
                   <el-input type="hidden" value='' v-model='form.radiovalue'></el-input>
                   <div style="margin-top:-36px;">
-                      <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;"class="fontSize12">{{form.address.addressPhone}}</span></p>
+                      <p v-if='form.address.addressName != undefined'><span  class="fontSize12">{{form.address.addressName}}</span><span  style="margin-left:50px;" class="fontSize12">{{form.address.addressPhone}}</span></p>
                       <p v-if='form.address.detailAddress != undefined'><span  class="fontSize12">{{form.address.detailAddress}}</span></p>
                       <div   class="selftSerchBut"  @click="changeuserAddress">更换地址</div>                    
                   </div>                                   
@@ -69,7 +69,7 @@
 										<td  class="selfTableHEADTD" align="center" width="26%">数量</td>
                     <td  class="selfTableHEADTD"   align="center" style="display:none;width:50px">小计</td> 							
 									</tr>
-									<tr v-for="(item,index) in selectCommidty" :key="item.goodsId" >
+									<tr v-for="item in selectCommidty" :key="item.goodsId" >
 										<td  align="center"><el-checkbox  @change="rowChange(item)" v-model="item.goodsChecked"></el-checkbox></td>
 										<td  align="center">
 											<span v-if="item.goodsType=='num' || item.goodsType=='area'">{{item.goodsName}}</span>
@@ -138,8 +138,7 @@
 							<div class="custom-action stepThreeSelfTop">
 								<div class="customNamevalue">
 									<div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-										<div><span class="techNameStyle1">{{item.techName}}</span><i class="self-el-close el-icon-close"  @click="errorClose(item)"></i></div>
-										<!-- <div class="closePic" @click="errorClose(item)">&#10005</div> -->
+										<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div><span class="techNameStyle1">{{item.techName}}</span><i class="self-el-close el-icon-close"  @click="errorClose(item)"></i></div></el-tooltip>
 									</div> 					
 								</div>
 							</div>																	
@@ -229,8 +228,8 @@
 			<div class="NowTabs">当前选择标签：</div>
       <el-collapse-transition>
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
-					<div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-						<div class="techNameStyle">{{item.techName}}</div>
+					<div  class="tabWrap2" v-for="item in middleA" :key="item.techId">
+						<el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle1">{{item.techName}}</div></el-tooltip>
 					</div>                         
 				</div>
 			</el-collapse-transition>                                               	
@@ -247,8 +246,8 @@
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
 								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
-								<td  width="156px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
-								<td width="182px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
+								<td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+								<td width="230px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
@@ -1700,15 +1699,16 @@ export default {
 .self-el-close{
     border-radius: 50%;
     text-align: center;
-    float: right;
     cursor: pointer;
     font-size: 12px;
     transform: scale(0.75, 0.75);
     height: 22px;
     width: 22px;
     line-height: 22px;
-    vertical-align: middle;
-    margin-top: 5px;
+    display: block;
+    float: right;
+    margin-top: -35px;
+    margin-right: -8px;
 }
 .self-el-close:hover {
   background:#6989F3;
@@ -1718,21 +1718,15 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle1 {
-  width: 80px;
+  width: 130px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
+  margin-left: -9px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.techNameStyle {
-  width: 74px;
-  display:inline-block;
-  font-size:14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+
 .stepControl {
   width: 100%;
   padding-left: 30px;
@@ -1781,14 +1775,14 @@ export default {
 }
 .selfPromInfStyle {
   display: inline-block;
-  heihgt: 30px;
+  height: 30px;
   line-height: 30px;
   margin-left: 30px;
   color: #8391a5;
   font-size: 12px;
 }
 .selfPromInfStyle1 {
-  heihgt: 30px;
+  height: 30px;
   line-height: 30px;
   margin-top: 20px;
   color: #8391a5;
@@ -1907,6 +1901,22 @@ export default {
   position: relative;
   border:1px solid #bfcbd9
 }
+.tabWrap2 {
+  width: 145px;
+  padding: 0 5px;
+  font-size: 10px;
+  display: inline-block;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  margin:3px 6px 3px 8px;
+  background:#f0f4f5;
+  color:#7a838a;
+  font-size:14px;
+  position: relative;
+  border:1px solid #bfcbd9
+}
+
 .closePic {
   cursor: pointer;
   color: #bfcbd9;
@@ -2013,20 +2023,20 @@ export default {
   margin-top: 20px;
   margin-left: 10px;
 }
-.tabWrap1 {
-  width: 84px;
-  padding: 0 5px;
-  font-size: 12px;
-  display: inline-block;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  margin:3px 0 3px 6px;
-  background:#f0f4f5;
-  color:#7a838a;
-  position: relative;
-  border:1px solid #bfcbd9
-}
+// .tabWrap1 {
+//   width: 84px;
+//   padding: 0 5px;
+//   font-size: 12px;
+//   display: inline-block;
+//   height: 30px;
+//   text-align: center;
+//   line-height: 30px;
+//   margin:3px 0 3px 6px;
+//   background:#f0f4f5;
+//   color:#7a838a;
+//   position: relative;
+//   border:1px solid #bfcbd9
+// }
 .selfTableWrapONE {
   margin-top: 20px;
   overflow: hidden;

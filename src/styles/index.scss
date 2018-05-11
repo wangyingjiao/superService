@@ -572,7 +572,7 @@ body {
 //导航栏TAB关闭样式调整
 .tabs-view  .el-icon-close{
   margin-top:-8px;
-  margin-right:-6px;
+  right: 0px !important;
 }
 //多选框中TAB关闭:hover时样式调整
 .el-tag .el-icon-close:hover {
@@ -591,14 +591,14 @@ body {
   line-height: 22px;
   vertical-align: middle;
   top: 4px;
-  right: 4px;
+  right: 12px;
 }
 //多选框中TAB中内容样式调整
  .el-select__tags-text{
   display:inline-block;
   float:left;
   margin-top:3px;
-  width:120px;
+  width:130px;
   height:24px;
   line-height:23px;
   font-size:14px;

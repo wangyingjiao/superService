@@ -50,7 +50,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
-                      <span class="lineContent">{{otherInfo.stationName}}</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.stationName}}</span>
                    </p>                                                                                                                   
                 </div>
                 <div class="rightArea">
@@ -119,7 +119,12 @@
                         align="center"
                         label="商品名称"
                         prop="goodsName"
-                        > 
+                        >
+                        <!-- <template scope="rowObj">
+                          <el-tooltip placement="left" v-if="rowObj.row.goodsName != undefined" :disabled="rowObj.row.goodsName.length < 10" :content="rowObj.row.goodsName">
+                            <p :class=" rowObj.row.goodsName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.goodsName}}</p>
+                          </el-tooltip>
+                        </template>                           -->
                       </el-table-column>
                       <el-table-column
                         align="center"
@@ -155,7 +160,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
-                  <span class="plusComb">&#10010</span>
+                  <span class="plusComb">&#10010;</span>
                   <span class="plusComtent">增加技师</span>
                 </div>
                 <div class="selfTableWrapStyle1">                
@@ -172,10 +177,11 @@
                         </template>
                       </el-table-column>
                       <el-table-column
-                        prop="techName"
+                        min-width="150"
                         align="center"
                         label="姓名"
-                        >
+                        prop="techName"
+                        >                        
                       </el-table-column>
                       <el-table-column
                         align="center"
@@ -234,7 +240,7 @@
                 <div class="leftArea marginBottom20">
                    <p class="contentLine">
                       <span class="lineTitle">联系人:</span>
-                      <span class="lineContent">
+                      <span class="lineContent" style="min-width:186px;">
                           <span>{{addressInf.name}}</span>
                       </span>
                    </p>                                                        
@@ -319,7 +325,7 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">用户姓名:</span>
-                      <span class="lineContent">{{otherInfo.customerName}}</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.customerName}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle FloatLeft">备注:</span>
@@ -458,7 +464,8 @@
           <el-collapse-transition>
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                <span class="techNameStyle">{{item.techName}}</span>
+                <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
+                <!-- <span class="techNameStyle">{{item.techName}}</span> -->
               </div>                         
             </div>
           </el-collapse-transition>                                              	
@@ -1408,6 +1415,14 @@ export default {
 };
 </script>
 <style   scoped>
+.selfToolTip1 {
+  margin:0 auto;
+  width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
 .refundStatusStyle {
   color: #8391a5;
   margin-left: 75px;
@@ -1511,8 +1526,7 @@ export default {
 .selfbeizhu1 {
   width: 800px;
   float: left;
-  display: inline-block;
-  
+  display:block;  
   margin-left: 102px;
   margin-top: -15px;
   word-break: break-all;
@@ -1583,24 +1597,26 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 74px;
+  width: 130px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
+  margin-left: -9px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .tabWrap1 {
-  width: 84px;
+  width: 145px;
   padding: 0 5px;
-  font-size: 12px;
+  font-size: 10px;
   display: inline-block;
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:3px 0 3px 6px;
+  margin:3px 6px 3px 8px;
   background:#f0f4f5;
   color:#7a838a;
+  font-size:14px;
   position: relative;
   border:1px solid #bfcbd9
 }
@@ -1741,7 +1757,7 @@ export default {
   cursor: pointer;
 }
 .plusComb {
-  display: inline-block;
+  display:block;
   float: left;
   width: 32px;
   height: 32px;
@@ -1752,7 +1768,7 @@ export default {
   font-size: 20px;
 }
 .plusComtent {
-  display: inline-block;
+  display:block;
   float: left;
   width: 78px;
   height: 32px;
@@ -1778,7 +1794,7 @@ export default {
   cursor: pointer;
   border: 1px solid #4c70e8;
   text-align: center;
-  display: inline-block;
+  display:block;
   color: #4c70e8;
 }
 .custom-action {

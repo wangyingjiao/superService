@@ -83,20 +83,18 @@
             </el-form-item>            
             <el-form-item v-if=" userType == 'org' || userType == 'station'" label="选择技师" prop="technicians" class="selfst3">
               <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
-                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010; 请选择</div>
               </div>
             </el-form-item>
             <el-form-item v-if=" (userType == 'sys' && mechanism1 !='' ) || (userType == 'platform'  && mechanism1 !='' )" label="选择技师" prop="technicians" class="selfst3">
               <div class="tech-order-jnsk selfst2 form_item" style="width:100%">
-                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010 请选择</div>
+                    <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010; 请选择</div>
               </div>
             </el-form-item>            
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i>
-                        
-                        <!-- <div class="closePic" @click="selfErrorClose(item)">&#10005</div> -->
+                        <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div><span class="techNameStyle1">{{item.techName}}</span> <i class="self-el-close el-icon-close"  @click="selfErrorClose(item)"></i></div></el-tooltip>                       
                       </div>                     
                   </div>              
             </el-form-item>           
@@ -108,11 +106,11 @@
         </el-dialog>
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
-        <el-dialog title="选择服务人员":visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
-              <div class="selfFLOLeft" style="width:40%">
+        <el-dialog title="选择技师" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
+              <div class="selfFLOLeft" style="width:35%">
                 <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:96%"></el-input>                
               </div>
-              <div class="selfFLOLeft" style="width:40%">
+              <div class="selfFLOLeft" style="width:35%">
                 <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:22px;width:96%">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
@@ -123,10 +121,10 @@
               <el-collapse-transition>
                 <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
                     <div v-if="dialogStatus == 'add'" class="tabWrap1" v-for="item in middleA" :key="item.techId">
-                      <span class="techNameStyle">{{item.techName}}</span>
+                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
                     </div>                    
                     <div v-if="dialogStatus == 'edit'" class="tabWrap1" v-for="item in middleB" :key="item.techId">
-                      <span class="techNameStyle">{{item.techName}}</span>
+                      <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName"><div class="techNameStyle">{{item.techName}}</div></el-tooltip>
                     </div>                                              
                 </div>
               </el-collapse-transition>                           
@@ -139,10 +137,10 @@
                             <td  class="selfTdStyle"  align="center" width="178px">姓名</td>
                             <td  class="selfTdStyle"  align="center" width="73px">性别</td>
                             <td  class="selfTdStyle"  align="center" width="200px">服务站</td>							
-                          </tr>                
+                          </tr>    
                         <div class="skillMarginTop60">
                           <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                            <td   width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
+                            <td  width="72px" align="center"><el-checkbox :disabled="item.jobStatus=='leave'"  v-model="item.techChecked" @change="testTech(item)"></el-checkbox></td>
                             <td  width="127px"  align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
                             <td  width="152px" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                             <td  width="73px" align="center">
@@ -867,17 +865,16 @@ export default {
   color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
 }
 .techNameStyle {
-  width: 74px;
-  display:inline-block;
-  /* height: 25px;
-  line-height: 25px; */
+  width: 130px;
+  line-height:30px;
+  margin:0 auto;
   font-size:14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .techNameStyle1 {
-  width: 80px;
+  width: 130px;
   display:inline-block;
   font-size:14px;
   overflow: hidden;
@@ -1043,31 +1040,32 @@ export default {
   border:1px solid #bfcbd9
 }
 .tabWrap1 {
-  width: 84px;
+  width: 145px;
   padding: 0 5px;
-  font-size: 12px;
   display: inline-block;
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:3px 0 3px 6px;
+  margin:3px 6px 3px 8px;
   background:#f0f4f5;
   color:#7a838a;
+  font-size:14px;
   position: relative;
   border:1px solid #bfcbd9
 }
 .self-el-close{
     border-radius: 50%;
     text-align: center;
-    float: right;
     cursor: pointer;
     font-size: 12px;
     transform: scale(0.75, 0.75);
     height: 22px;
     width: 22px;
     line-height: 22px;
-    vertical-align: middle;
-    margin-top: 5px;
+    display: block;
+    float: right;
+    margin-top: -35px;
+    margin-right: -8px;
 }
 .self-el-close:hover {
   background:#6989F3;
