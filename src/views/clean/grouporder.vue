@@ -80,8 +80,8 @@
 
       <el-table-column align="center" label="订单状态" min-width="100" prop="payStatus" >
         <template scope="scope">
-           <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
-           <span v-if="scope.row.payStatus=='payed'">已支付</span>
+<!--            <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
+           <span v-if="scope.row.payStatus=='payed'">已支付</span> -->
         </template>
       </el-table-column>
 
