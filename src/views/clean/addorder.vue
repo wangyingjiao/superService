@@ -1718,7 +1718,7 @@ export default {
     line-height: 22px;
     display: block;
     float: right;
-    margin-top: -35px;
+    margin-top: 4px;
     margin-right: -8px;
 }
 .self-el-close:hover {
