@@ -194,7 +194,7 @@
                     <el-row :gutter="60">
                       <el-col :span="17">
                         <el-form-item label="选择技能:" prop="skillIds">
-                          <el-select v-model="perServer.skillIds" multiple placeholder="请选择" style="width:100%">
+                          <el-select v-model="perServer.skillIds" filterable  multiple placeholder="请选择" style="width:100%">
                             <el-option
                             v-for="item in sextypeoEdit"
                             :key="item.id"
@@ -2273,6 +2273,6 @@ export default {
   float:left;
 }
 .techniEdit .el-select__tags .el-tag{
-  line-height: 23px;
+  line-height: 20px;
 }
 </style>
