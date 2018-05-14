@@ -592,14 +592,14 @@ body {
   line-height: 22px;
   vertical-align: middle;
   top: 4px;
-  right: 12px;
+  right: 1px;
 }
 //多选框中TAB中内容样式调整
  .el-select__tags-text{
   display:inline-block;
   float:left;
   margin-top:3px;
-  width:130px;
+  width:125px;
   height:24px;
   line-height:23px;
   font-size:14px;
@@ -607,6 +607,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align:center;
+  margin-left:-6px;
 }
 //多选框中TAB样式调整
 .el-select__tags .el-tag{
