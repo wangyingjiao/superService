@@ -12,10 +12,12 @@
         </el-option>
       </el-select>
 
-      <el-select filterable class="search-min" clearable  v-model="search.payStatus" placeholder="请选择支付状态">
-        <el-option v-for="(val,key,index) in payState" :key="key" :label="val" :value="key">
-        </el-option>
-      </el-select>
+      <el-date-picker
+      v-model="search.time"
+      class="search-min"
+      type="daterange"
+      placeholder="选择日期">
+    </el-date-picker>
 
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入要搜索的内容" v-model="search.val">
         <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
@@ -42,7 +44,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="支付编号" min-width="210" prop="payNumber">      
+      <el-table-column align="center" label="订单组ID" min-width="210" prop="payNumber">      
       </el-table-column>
         
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
@@ -64,28 +66,36 @@
         </template>
        
       </el-table-column>
-
-
-      <el-table-column align="center" label="订单编号" min-width="210" prop="orderNumber">      
-      </el-table-column>
-
       
-      <el-table-column align="center" label="支付金额" min-width="100" prop="payAccount">      
+      <el-table-column  label="组合商品名称"  min-width='150' align="center">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.orderNumber.length < 10" :content="scope.row.orderNumber">
+             <div :class="scope.row.orderNumber.length < 10 ? '' : 'overheidden'">{{scope.row.orderNumber}}</div>
+           </el-tooltip>
+         </template>
+      </el-table-column>
+      
+      <el-table-column align="center" label="总价" min-width="100" prop="payAccount">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付状态" min-width="100" prop="payStatus" >
+      <el-table-column align="center" label="订单状态" min-width="100" prop="payStatus" >
         <template scope="scope">
            <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
            <span v-if="scope.row.payStatus=='payed'">已支付</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="收款人" min-width="150" prop="payTechName">      
+      <el-table-column align="center" label="订单来源" min-width="150" prop="payTechName">      
       </el-table-column>
 
-      <el-table-column align="center" label="支付时间" min-width="160" prop="payTime">
+      <el-table-column align="center" label="下单时间" min-width="160" prop="payTime">
       </el-table-column>
 
+      <el-table-column align="center" label="操作" min-width="160">
+          <template scope="scope">
+            <el-button class="ceshi3" @click="handleLook(scope.row)">查看</el-button>
+          </template>
+      </el-table-column>
     </el-table>
 
     <!-- 分页器 -->
@@ -106,12 +116,13 @@ import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "log",
+  name: "grouporder",
   directives: {
     waves
   },
   data() {
     return {
+      btnshow: [],
       list: [],
       total: null,
       listQuery: {
@@ -128,19 +139,15 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        orderNumber: "订单编号",
-        payNumber: "支付编号"
-      },
-      payState: {
-        waitpay: "待支付",
-        payed: "已支付"
+        orderNumber: "订单组ID",
+        payNumber: "组合商品名称"
       },
       //搜索数据
       search: {
         type: "",
         val: "",
         orgId: "",
-        payStatus: "",
+        time: "",
         stationId: ""
       },
       tableKey: 0,
@@ -148,6 +155,9 @@ export default {
     };
   },
   created() {
+    if (JSON.parse(localStorage.getItem("btn"))) {
+      this.btnShow = JSON.parse(localStorage.getItem("btn"));
+    }
     getSList({}).then(res => {
       // 服务机构
       if (res.data.data.list != undefined) {
@@ -180,6 +190,26 @@ export default {
     getList() {
       this.listLoading = true;
       var obj = {};
+      if (this.search.time[0]) {
+        var startTime = util.formatDate.format(
+          new Date(this.search.time[0]),
+          "yyyy-MM-dd hh:mm:ss"
+        );
+        var start = {
+          startTime: startTime
+        };
+        obj = Object.assign(obj, start);
+      }
+      if (this.search.time[1]) {
+        var endTime = util.formatDate.format(
+          new Date(this.search.time[1]),
+          "yyyy-MM-dd 23:59:59"
+        );
+        var end = {
+          endTime: endTime
+        };
+        obj = Object.assign(obj, end);
+      }
       if (this.search.payStatus) {
         obj = Object.assign(obj, { payStatus: this.search.payStatus });
       }
@@ -260,25 +290,9 @@ export default {
         });
       }
     },
-    //删除
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          return;
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
+    //查看
+    handleLook(row) {
+      
     }
   }
 };
