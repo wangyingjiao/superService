@@ -73,7 +73,8 @@ export const constantRouterMap = [
       { path: 'orderinfo', name: '订单详情', meta: { keepAlive: false }, component: _import('clean/orderinfo') },
       { path: 'dispatchReass', name: '改派记录', meta: { keepAlive: false }, component: _import('clean/dispatchReass') },
       { path: 'refund', name: '退款管理', meta: { keepAlive: false }, component: _import('clean/refund') },
-      { path: 'pay', name: '收款管理', meta: { keepAlive: false }, component: _import('clean/pay') }
+      { path: 'pay', name: '收款管理', meta: { keepAlive: false }, component: _import('clean/pay') },
+      { path: 'grouporderinfo', name: '组合订单详情', meta: { keepAlive: false }, component: _import('clean/grouporderinfo') }
     ]
   },
   {
