@@ -1740,6 +1740,7 @@ export default {
       getOrderInf1(obj)
         .then(res => {
           if (res.data.code === 1) {
+            console.log(res.data.data,'grouporderInfo')
             var AllInfo = res.data.data;
             var nowtime = new Date();
             var severtime = new Date(AllInfo.serviceTime);
