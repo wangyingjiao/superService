@@ -120,5 +120,5 @@ export function getPay(obj, pageNumber, pageSize) {
 }
 // 组合订单列表
 export function getCombination(obj, pageNumber, pageSize) {
-  return instance.post(`apiservice/a/ service/order/orderInfo/listDataCombination?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+  return instance.post(`apiservice/a/service/order/combination/listDataCombination?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }

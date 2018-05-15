@@ -588,7 +588,7 @@ export default {
     //var dict = require("../../../static/dict.json");
     this.userSearch = {
       name: "姓名",
-      mobile: "手机",
+      mobile: "登录账号",
       roleName: "岗位名称"
     };
     var lv = localStorage.getItem("dataScope");
