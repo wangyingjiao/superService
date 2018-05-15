@@ -1521,7 +1521,22 @@ export default {
       this.activeName = tab.name;
       this.active1 = tab.name;
       //更改表格内容
-    },    
+      this.searchliveOrer(this.active1)      
+    },
+    //查询已有订单信息
+    searchliveOrer(name){
+       if(name == 'serviced'){
+         this.ordertableData=[{
+                   orderNumber:'201805140951500199941897',
+                   serverTime:'2018-05-18 10:00:00'
+         }]
+       }else{
+         this.ordertableData=[{
+                   orderNumber:'201805140951500199941896',
+                   serverTime:'2018-05-18 18:00:00'
+         }]         
+       }
+    },   
     //查看备注按钮
     lookRemark(row){
       this.RemarkInfFlag=true;
@@ -2220,7 +2235,8 @@ export default {
     this.frequencyOptions = this.dict.frequency_options;    
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
-    var orderId = window.localStorage.getItem("grouporderId");
+    var orderId = window.localStorage.getItem("orderId");
+    //grouporderId
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
     } else {
