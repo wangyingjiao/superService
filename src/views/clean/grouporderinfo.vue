@@ -898,16 +898,17 @@
         <el-dialog
           title="取消订单"
           :visible.sync="testFlag"
+          class="selfDialogWidth"
           :close-on-click-modal="false"
           >
             <el-form  :model="Orderform1" :rules="orderrules1" ref="Orderform1" label-width="84px" label-position="left" >
                 <el-row>  
                   <el-col :span="17" class="addTime">
-                    <el-form-item label="工作时间：" prop="Orderform1.workTimes" style="min-width: 450px;">
-                          <div class="tech-order-jn" style="width:100%">
+                    <el-form-item label="工作时间：" prop="workTimes" style="min-width: 450px;">
+                          <div class="tech-order-jn" style="width:550px">
                             <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
                           </div>
-                          <el-collapse-transition>
+                          <el-collapse-transition>                            
                               <div class="tech-order-jn-sons wirkTimes" v-show="isB">
                                 <div style="margin:0 10px;">
                                   <p style="padding:10px 0;">新增日期</p>
@@ -916,6 +917,7 @@
                                     <div style="display:flex;">
                                       <div class="selfCheckBoxsday">日期</div>
                                       <input type="button" class="selfCheckBoxs tech-order-posis"
+                                        
                                         :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
                                         @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
                                         :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
@@ -936,9 +938,9 @@
                                         step: '00:30',
                                         end: '24:00',
                                         maxTime:startEnd.endNew 
-                                      }" class="tech-daytim">
+                                      }" class="tech-daytim" style="width:231px;">
                                     </el-time-select>
-                                    <el-time-select placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                    <el-time-select style="width:231px;" placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
                                         start: '00:00',
                                         step: '00:30',
                                         end: '24:00',
@@ -952,7 +954,7 @@
                                   <span class="button-large btn-styl" @click="techClick">确认</span>
                                   <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
                                 </div>
-                              </div>
+                              </div>                           
                           </el-collapse-transition>
                       </el-form-item>
                   </el-col>
@@ -960,11 +962,11 @@
                 <el-row>
                     <el-col :span="17" v-show="teachArr.length>0">
                       <el-form-item>
-                        <ul class="working" style="width:100%">
+                        <ul class="working" style="width:550px;">
                           <li v-for="(item,index) in teachArr" :key="index">
                             <div>
                               <div class="woking-div">
-                                <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
+                                <div ><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
                                 <div class="time">{{item.startTime+"~"+item.endTime}}</div>
                               </div>
                             </div>
@@ -979,8 +981,8 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
-              <button class="button-large" @click="setOk">确定</button>
-              <button class="button-cancel" @click="setCancel" >取 消</button>
+              <button class="button-large" @click="setOk('Orderform1')">确定</button>
+              <button class="button-cancel" @click="setCancel('Orderform1')" >取 消</button>
             </div>
         </el-dialog>
         <!--取消订单弹窗结束-->        
@@ -1202,7 +1204,11 @@ export default {
       teachArr: [], 
       roomSel1Arr: [],
       disbArr: [],
-      roomSelNum: [],           
+      roomSelNum: [],
+      workTimes: [
+        //工作时间
+        { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
+      ]                 
     };
   },
   created() {
@@ -1218,16 +1224,34 @@ export default {
   },
   methods: {
     //更换固定时间取消
-    setCancel(){
+    setCancel(formName){
+      // this.$refs[formName].resetFields();
       this.testFlag=false;
     },
     //更换固定时间保存
-    setOk(){
-      this.testFlag=false;
+    setOk(formName){
+      this.$refs[formName].validate(val => {
+            if (val) {
+              for (var i = 0; i < this.teachArr.length; i++) {
+                if (this.teachArr[i].endTime == "24:00") {
+                  this.teachArr[i].endTime = "23:59:59";
+                }
+              }
+              if (this.teachArr.endTime == "24:00") {
+                this.teachArr.endTime = "23:59";
+              }
+              this.Orderform1.workTimes = this.teachArr;
+              this.testFlag=false;
+            }
+        })
+      // this.$refs[formName].resetFields();
+      
     },
     //更换固定时间
     changeguTime(){
         this.testFlag=true;
+        this.teachArr = []
+        this.disbArr = []
     },
     //排序
     by(name) {
@@ -2033,15 +2057,28 @@ export default {
 };
 </script>
 <style   scoped>
-.time{    position: absolute;
+.time{    
+    position: absolute;
     right: 50px;
-    top: 10px;}
+    top: 15px;
+}
 ul li{    list-style: none;}
 .i-delete {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 25px;
   cursor: pointer;
+}
+.working {
+  border: 1px solid #bfcbd9;
+  border-top: none;
+  box-sizing: border-box;
+  padding: 0 0 0 20px;
+}
+.working > li {
+  position: relative;
+  border-bottom: 1px solid #f2f2f2;
+  padding-top: 15px;
 }
 .woking-div {
   display: flex;
@@ -2049,6 +2086,8 @@ ul li{    list-style: none;}
 }
 .btn-styl {
   height: 25px;
+  line-height:25px;
+  display:inline-block;
   width: 60px;
 }
 .tech-green {
@@ -2086,14 +2125,21 @@ ul li{    list-style: none;}
 
 }
 .wirkTimes {
-  width: 100%;
+  width: 550px;
   border-top: none;
   min-width: 450px;
 }
 .wirkTimes .el-input__inner {
   border: 1px solid #bfcbd9 !important;
 }
-
+.tech-order-btn {
+  background: #fff;
+  color: #4c70e8;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
 .tech-order-jn-sont {
   width: 545px;
   height: 40px;
