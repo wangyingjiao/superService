@@ -1073,7 +1073,7 @@
 
 <script>
 import {
-  getOrderInf, //用订单ID获取页面相关信息
+  getOrderInf1, //用订单ID获取页面相关信息
   addTechData, //服务技师获取
   ChangeTimeData, //请求服务时间下拉菜单值
   dispatchTechData, //改派技师获取
@@ -1735,9 +1735,9 @@ export default {
     getOrderAllInf(orderId) {
       this.orderId = orderId;
       var obj = {
-        id: orderId
+        masterId: orderId
       };
-      getOrderInf(obj)
+      getOrderInf1(obj)
         .then(res => {
           if (res.data.code === 1) {
             var AllInfo = res.data.data;
@@ -2239,8 +2239,8 @@ export default {
     this.frequencyOptions = this.dict.frequency_options;    
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
-    var orderId = window.localStorage.getItem("orderId");
-    //grouporderId
+    var orderId = window.localStorage.getItem("grouporderId");
+    //orderId
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
     } else {
