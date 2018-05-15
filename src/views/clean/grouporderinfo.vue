@@ -681,7 +681,7 @@
                 <el-form-item label="选择技师" prop="Tech">             
                   <div style="margin-top: -10px;">                
                       <el-table
-                        :data="tableData1"
+                        :data="tableData2"
                         border                  
                         class="orderInfoHeaderPic">
                         <el-table-column
@@ -1008,7 +1008,7 @@
                 <el-form-item label="选择技师" prop="Tech">             
                   <div style="margin-top: -10px;">                
                       <el-table
-                        :data="tableData1"
+                        :data="tableData3"
                         border                  
                         class="orderInfoHeaderPic">
                         <el-table-column
@@ -1320,10 +1320,14 @@ export default {
     //固定时间查询服务技师按钮
     searchSeverTech(){
        this.gudingFlag=true;
+      //技师表格数据
+      this.tableData3=this.tableData1
     },
     //更换时间查询服务技师按钮
     searchSeverTech1(){
        this.gudingFlag1=true;
+      //技师表格数据
+      this.tableData2=this.tableData1
     },    
     //固定时间服务时长改变
     numberChange(val){
