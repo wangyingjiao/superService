@@ -302,7 +302,17 @@ input, button{
   margin-left: 30px;
   margin-top: 10px;
 }
-
+//横向分隔线样式1
+.hr-style1 {
+  height: 1px;
+  width:100%;
+  background: #eef1f6;
+  margin-top: 10px;
+}
+//tabs自定义样式
+.self-el-tabs .el-tabs__nav-scroll{
+  padding-bottom: 0px;
+}
 .fl {
   float: left;
 }
