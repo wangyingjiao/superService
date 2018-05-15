@@ -2,31 +2,30 @@
     <div class="addorder-container">
        <!--订单信息开始-->
         <div class="thrid-bar">
-            <div class="custom-action orderOneBar">订单信息              
-              <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
-              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款">
-              <!-- otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1-->
+            <div class="custom-action orderOneBar">基本信息              
+              <!-- <input type="button" v-if="otherInfo.orderSource =='own' && otherInfo.payStatus =='waitpay' && otherInfo.serviceStatus !='cancel' && btnShow.indexOf('order_cancel') > -1 && otherInfo.orderStatus != 'close'"  @click="cancelOrder"  class="button-cancel height25" style="float:right;"  value="取消订单">
+              <input type="button" v-if="otherInfo.orderStatus =='success' && (! otherInfo.orderAllRefundFlag) && otherInfo.orderSource =='own' && otherInfo.serviceStatus =='finish' && otherInfo.payStatus =='payed' && btnShow.indexOf('order_refund') > -1"  @click="orderRefund"  class="button-cancel height25" style="float:right;"  value="退款"> -->              
             </div>
             <!--  -->
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">订单编号:</span>
+                      <span class="lineTitle">订单组ID:</span>
                       <span class="lineContent">{{otherInfo.orderNumber}}</span>
-                   </p>                  
+                   </p>
                    <p class="contentLine">
-                      <span class="lineTitle">订单类型:</span>
+                      <span class="lineTitle">服务机构:</span>
+                      <span class="lineContent width180">{{otherInfo.orgName}}</span>
+                   </p>                                      
+                   <p class="contentLine">
+                      <span class="lineTitle">用户姓名:</span>
                       <span class="lineContent">
                           <span v-if="otherInfo.orderType =='common'">普通订单</span>
                           <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
                           <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
                       </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle">服务机构:</span>
-                      <span class="lineContent width180">{{otherInfo.orgName}}</span>
-                   </p>                                                                                                                                   
+                   </p>                                                                                                                                  
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
@@ -42,37 +41,32 @@
                       </span>
                    </p>                  
                    <p class="contentLine">
-                      <span class="lineTitle">订单分类:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.majorSort =='clean'">保洁</span>
-                          <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
-                      </span>
-                   </p>
-                   <p class="contentLine">
                       <span class="lineTitle">服务站:</span>
                       <span class="lineContent" style="min-width:186px;">{{otherInfo.stationName}}</span>
-                   </p>                                                                                                                   
+                   </p>
+                   <p class="contentLine">
+                      <span class="lineTitle">用户电话:</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.stationName}}</span>
+                   </p>                                                                                                                                      
                 </div>
                 <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">服务状态:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.serviceStatus =='wait_service'">待服务</span>
-                          <span v-if="otherInfo.serviceStatus =='started'">已上门</span>
-                          <span v-if="otherInfo.serviceStatus =='finish'">已完成</span>
-                          <span v-if="otherInfo.serviceStatus =='cancel'">已取消</span>
-                      </span>
-                   </p>                                                         
-                   <p class="contentLine">
-                      <span class="lineTitle">下单时间:</span>
-                      <span class="lineContent">{{otherInfo.orderTime}}</span>
-                   </p>
                    <p class="contentLine">
                       <span class="lineTitle">订单来源:</span>
                       <span class="lineContent">
                         <span v-if="otherInfo.orderSource =='own'">本机构</span>
                         <span v-if="otherInfo.orderSource =='gasq'">国安社区</span>
                       </span>
+                   </p>                   
+                   <p class="contentLine">
+                      <span class="lineTitle">订单分类:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.majorSort =='clean'">保洁</span>
+                          <span v-if="otherInfo.majorSort =='repair'">家修</span>                         
+                      </span>
+                   </p>                                                                            
+                   <p class="contentLine">
+                      <span class="lineTitle">下单时间:</span>
+                      <span class="lineContent">{{otherInfo.orderTime}}</span>
                    </p>                                                                     
                 </div>                 
             </div>                                     		
@@ -85,29 +79,57 @@
             <div class="selfWrap1">
                 <div class="leftArea">
                    <p class="contentLine">
-                      <span class="lineTitle">建议服务时长:</span>
-                      <span  class="lineContent">{{otherInfo.serviceHour}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.serviceStatus =='finish'">
-                      <span class="lineTitle">实际完成时间:</span>
-                      <span class="lineContent">{{otherInfo.finishTime}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.orderRefundFlag"><a href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                                            
+                      <span class="lineTitle">组合商品名称:</span>
+                      <span class="lineContent">周期日常保洁</span>
+                   </p>                                                                           
                 </div>
                 <div class="rightArea width390">
                    <p class="contentLine">
-                      <span class="lineTitle">服务时间:</span>
-                      <span class="lineContent">{{otherInfo.serviceTime}}</span>
-                      <span class="selfMarLeft70"  v-if="nowTime >= 5400000" @click="changeTime"><input type="button" v-if="btnShow.indexOf('order_time') > -1"   class="button-cancel height25"  value="更换时间"></span>
+                      <span class="lineTitle">组合商品价格:</span>
+                      <span class="lineContent">￥300.00/小时</span>
                    </p>                                     
-                </div> 
-            </div>            
+                </div>
+                <div class="rightArea width390">
+                   <p class="contentLine">
+                      <span class="lineTitle">建议服务时长:</span>
+                      <span  class="lineContent">{{otherInfo.serviceHour}}</span>
+                   </p>                                     
+                </div>
+                <div  style="width:960px;">
+                   <p class="contentLine" >
+                      <span  class="lineTitle">固定技师:</span>
+                      <span  class="lineContent3">
+                        <span>李四</span>
+                        <span style="margin-left:48px;">1581655090</span>
+                        <span style="margin-left:91px;"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
+                      </span>
+                   </p>
+                    <div style="float:left;width:80px;margin-left:30px;">固定服务时间:</div>
+                    <div  style="float:left;width:800px;margin-left:20px;" >
+                      <div style="float:left;width:80px;">一周多次</div>
+                      <div style="float:left;width:420px;">
+                        <div style="float:left;width:140px;">
+                            <p style="line-height:20px;">每周一   08:00 ~ 12:00</p>
+                            <p style="line-height:20px;">每周五   08:00 ~ 12:00</p> 
+                            <p style="line-height:20px;">每周一   08:00 ~ 12:00</p>
+                            <p style="line-height:20px;">每周五   08:00 ~ 12:00</p>                                                                                                                                          
+                        </div>
+                        <div style="width:100px;height:100%;position: absolute;top:38%;padding-left: 161px;margin-top: -24px;">
+                             <input type="button"  class="button-cancel height25"  @click="changeguTime" value="更换固定时间">
+                        </div>
+                      </div>                      
+                    </div>
+                    <div style="float:left;">
+                        <p  class="contentLine"><a v-if="false" href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                      
+                    </div>                                                                               
+                </div>                                  
+            </div>                       
             <div class="selfTableWrapStyle" >                    
                     <el-table
                       :data="tableData"
                       border
                       class="self-table-style"
-                      style="margin-top:-1px;"
+                      style="margin-top:20px;"
                       >
                       <el-table-column
                         align="center"
@@ -120,29 +142,19 @@
                         label="商品名称"
                         prop="goodsName"
                         >
-                        <!-- <template scope="rowObj">
-                          <el-tooltip placement="left" v-if="rowObj.row.goodsName != undefined" :disabled="rowObj.row.goodsName.length < 10" :content="rowObj.row.goodsName">
-                            <p :class=" rowObj.row.goodsName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.goodsName}}</p>
-                          </el-tooltip>
-                        </template>                           -->
-                      </el-table-column>
+                      </el-table-column>                     
                       <el-table-column
                         align="center"
-                        label="服务数量"
-                        prop="goodsNum">                    
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="单位"
-                        prop="goodsUnit">                    
-                      </el-table-column>                      
-                      <el-table-column
-                        align="center"
-                        label="单价">
+                        label="组合单价/单位">
                           <template scope="scope">
-                              <span>￥{{scope.row.payPrice}}</span>
+                              <span>￥{{scope.row.payPrice}}/{{scope.row.goodsUnit}}</span>
                           </template>	                                           
                       </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="商品数量"
+                        prop="goodsNum">                    
+                      </el-table-column>                      
                       <el-table-column
                         align="center"
                         label="小计">
@@ -155,7 +167,7 @@
 		    </div>
         <!--服务信息结束-->
         <!--技师信息开始-->
-        <div class="thrid-bar marginTop15">
+        <!-- <div class="thrid-bar marginTop15">
             <div class="custom-action">技师信息</div>
             <div class="hr-style"></div>
             <div class="techTabWrap">
@@ -206,11 +218,10 @@
                     </el-table>
                 </div>
             </div>                     		
-		    </div>
+		    </div> -->
         <!--技师信息结束-->        
         <!--订单取消开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'"><!-- && otherInfo.orderStatus =='cancel'-->
-            <div class="custom-action">订单取消信息</div>
+        <!-- <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'">
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea marginBottom20">
@@ -230,7 +241,7 @@
                    </p>                   
                 </div>
             </div>                                     		
-		    </div>
+		    </div> -->
         <!--订单取消结束-->
         <!--服务地址信息开始-->
         <div class="thrid-bar marginTop15">
@@ -263,32 +274,28 @@
 		    </div>
         <!--服务地址信息结束-->                
         <!--支付信息开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own'">
+        <div class="thrid-bar marginTop15" >
             <div class="custom-action">支付信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   <p class="contentLine" >
                       <span class="lineTitle">交易单号:</span>
                       <span class="lineContent">{{payInfo.payNumber}}</span>
-                   </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='waitpay'">
-                       <span class="lineTitle">支付状态:</span>
-                       <span>待支付</span> 
-                   </p>                                                                           
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   </p>                                                                          
+                   <p class="contentLine" >
                       <span class="lineTitle">支付总额:</span>
                       <span class="lineContent">{{payInfo.payAccount}}元</span>
                    </p>                                      
                 </div>
                 <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   <p class="contentLine" >
                       <span class="lineTitle">支付状态:</span>
                       <span class="lineContent" >
                         <span>已支付</span>                                                                        
                       </span>
                    </p>
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   <p class="contentLine">
                       <span class="lineTitle">支付平台:</span>
                       <span class="lineContent">
                           <span v-if="payInfo.payPlatform =='wx'">微信</span>
@@ -302,14 +309,14 @@
                    </p>                                       
                 </div>
                 <div class="rightArea">
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   <p class="contentLine" >
                       <span class="lineTitle">支付方式:</span>
                       <span class="lineContent">
                         <span v-if="payInfo.payMethod =='offline'">货到付款</span>
                         <span v-if="payInfo.payMethod =='online'">在线</span>                        
                       </span>
                    </p> 
-                   <p class="contentLine" v-if="otherInfo.payStatus =='payed'">
+                   <p class="contentLine">
                       <span class="lineTitle">支付时间:</span>
                       <span class="lineContent">{{payInfo.payTime}}</span>
                    </p>                                       
@@ -317,145 +324,228 @@
             </div>                                     		
 		    </div>
         <!--支付信息结束-->
-        <!--下单用户信息开始-->
-        <div class="thrid-bar marginTop15" >
-            <div class="custom-action">下单用户信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">用户姓名:</span>
-                      <span class="lineContent" style="min-width:186px;">{{otherInfo.customerName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">
-                        {{otherInfo.customerRemark}}
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
-                              <img :src="imgSrc+item+picWidth250"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">用户电话:</span>
-                      <span class="lineContent">{{otherInfo.customerPhone}}</span>
-                   </p>                    
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--下单用户信息结束-->        
-        <!--订单备注开始-->
+        <!--技师信息开始-->
         <div class="thrid-bar marginTop15">
-            <div class="custom-action">订单备注</div>
+            <div class="custom-action">已有订单信息</div>
             <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea" style="width:100%;">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineContent2 width900">
-                        <div class="picWrap selfMarTL">
-                            <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth250"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--订单备注结束-->               
-        <!--业务人员信息开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource !='own'">
-            <div class="custom-action">业务人员信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">姓名:</span>
-                      <span class="lineContent">{{otherInfo.businessName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">
-                        {{otherInfo.businessRemark}}
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
-                              <img :src="imgSrc+item+picWidth250"/>
-                            </div>
-                        </div>
-                      </span>
-                   </p>                                                        
+            <div class="techTabWrap">
+                <div>
+                  <p style="margin: 20px 0 20px 0px;font-size:12px;color: #8391a5;" >总服务次数为：50次 已服务10次 剩余40次</p>
+                    <!--选项卡开始-->
+                    <el-tabs class="self-el-tabs"  style="margin-top:-20px;" v-model="activeName" @tab-click="handleClick">
+                      <el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
+                    </el-tabs>
+                    <!--选项卡结束-->                 
+                </div>               
+                <div class="selfTableWrapStyle2">                
+                    <el-table
+                      :data="ordertableData"
+                      border                  
+                      class="orderInfoHeaderPic">
+                      <el-table-column
+                        min-width="110"
+                        align="center"
+                        label="订单编号"
+                        prop="orderNumber"
+                        >
+                        
+                      </el-table-column>
+                      <el-table-column
+                        min-width="90"
+                        align="center"
+                        label="服务时间"
+                        prop="serverTime"
+                        >                        
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="服务状态">
+                          <template scope="scope">
+                            <span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
+                            <span v-if="scope.row.serviceStatus =='started'">已上门</span>
+                            <span v-if="scope.row.serviceStatus =='finish'">已完成</span>
+                            <span v-if="scope.row.serviceStatus =='cancel'">已取消</span>
+                          </template>	                    
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        label="订单状态">
+                          <template scope="scope">
+                          <span v-if="scope.row.orderStatus =='cancel'">已取消</span>
+                          <span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
+                          <span v-if="scope.row.orderStatus =='finish'">已完成</span>
+                          <span v-if="scope.row.orderStatus =='close'">已关闭</span>
+                          <span v-if="scope.row.orderStatus =='stop'">已暂停</span>
+                          <span v-if="scope.row.orderStatus =='success'">已成功</span>
+                          <span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>                            
+                          </template>	                    
+                      </el-table-column> 
+                      <el-table-column
+                        min-width="90"
+                        align="center"
+                        label="完成时间"
+                        prop="serverTime"
+                        >                        
+                      </el-table-column>                                           
+                      <el-table-column
+                        prop="techPhone"
+                        align="center"
+                        label="下单时间">
+                      </el-table-column>                  
+                      <el-table-column
+                        align="center"
+                        width="330"
+                        label="操作">
+                          <template scope="scope">
+                                <input type="button"  class="button-cancel height25"  @click="changeTime(scope.row)" value="更换时间">
+                                <input type="button"  class="button-cancel height25"  @click="changeTech(scope.row)" value="更换技师">
+                                <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注">                   
+                          </template>                    
+                      </el-table-column>                  
+                    </el-table>
                 </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">电话:</span>
-                      <span class="lineContent">{{otherInfo.businessPhone}}</span>
-                   </p>                    
-                </div> 
-            </div>                                     		
+            </div>                     		
 		    </div>
-        <!--业务人员信息结束-->
-        <!--门店信息开始-->
-        <div class="thrid-bar marginTop15 marginBOT20" v-if="otherInfo.orderSource !='own'">
-            <div class="custom-action">门店信息</div>
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">名称:</span>
-                      <span class="lineContent">{{otherInfo.shopName}}</span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">地址:</span>
-                      <span class="lineContent">
-                        <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
-                          <div class="selfToolTip">{{otherInfo.shopAddr}}</div>
-                        </el-tooltip>                                                
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">
-                        {{otherInfo.shopRemark}}                        
-                      </span>
-                   </p>
-                   <p class="contentLine">
-                      <span class="lineTitle"></span>
-                      <span class="lineContent width1000">
-                        <div class="picWrap marginLeft82">
-                            <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
-                              <img :src="imgSrc+item+picWidth250"/>
+        <!--技师信息结束-->        
+        <el-dialog
+          title="查看备注信息"
+          class="selfCustomerDialog"
+          :visible.sync="RemarkInfFlag"
+          :close-on-click-modal="false"
+          >
+            <!--下单用户信息开始-->
+            <div class="thrid-bar" style="margin-top:-38px;">
+                <div class="custom-action1">用户备注</div>
+                <div class="hr-style1"></div>
+                <div class="selfWrap1">
+                    <div class="leftArea">
+                      <p class="contentLine1">
+                          <span class="lineTitle FloatLeft">备注:</span>
+                          <span class="selfbeizhu1">
+                            {{otherInfo.customerRemark}}
+                          </span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle"></span>
+                          <span class="lineContent width1000">
+                            <div class="picWrap marginLeft82">
+                                <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
                             </div>
-                        </div>
-                      </span>
-                   </p>                                                        
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">电话:</span>
-                      <span class="lineContent">{{otherInfo.shopPhone}}</span>
-                   </p>                  
-                </div> 
-            </div>                                     		
-		    </div>
-        <!--门店信息结束-->                                                
+                          </span>
+                      </p>                                                        
+                    </div>
+                </div>                                     		
+            </div>
+            <!--下单用户信息结束-->        
+            <!--订单备注开始-->
+            <div class="thrid-bar marginTop15">
+                <div class="custom-action1">订单备注</div>
+                <div class="hr-style1"></div>
+                <div class="selfWrap1">
+                    <div class="leftArea" style="width:100%;">
+                      <p class="contentLine1">
+                          <span class="lineTitle FloatLeft">备注:</span>
+                          <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineContent2 width900">
+                            <div class="picWrap selfMarTL">
+                                <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
+                            </div>
+                          </span>
+                      </p>                                                        
+                    </div> 
+                </div>                                     		
+            </div>
+            <!--订单备注结束-->               
+            <!--业务人员信息开始-->
+            <div class="thrid-bar marginTop15">
+                <div class="custom-action1">业务人员信息</div>
+                <div class="hr-style1"></div>
+                <div class="selfWrap1">
+                    <div class="leftArea">
+                      <p class="contentLine1">
+                          <span class="lineTitle">姓名:</span>
+                          <span class="lineContent">{{otherInfo.businessName}}</span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle FloatLeft">备注:</span>
+                          <span class="selfbeizhu1">
+                            {{otherInfo.businessRemark}}
+                          </span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle"></span>
+                          <span class="lineContent width1000">
+                            <div class="picWrap marginLeft82">
+                                <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
+                            </div>
+                          </span>
+                      </p>                                                        
+                    </div>
+                    <div class="rightArea">
+                      <p class="contentLine">
+                          <span class="lineTitle">电话:</span>
+                          <span class="lineContent">{{otherInfo.businessPhone}}</span>
+                      </p>                    
+                    </div> 
+                </div>                                     		
+            </div>
+            <!--业务人员信息结束-->
+            <!--门店信息开始-->
+            <div class="thrid-bar marginTop15 marginBOT20" >
+                <div class="custom-action1">门店信息</div>
+                <div class="hr-style1"></div>
+                <div class="selfWrap1">
+                    <div class="leftArea">
+                      <p class="contentLine1">
+                          <span class="lineTitle">名称:</span>
+                          <span class="lineContent">{{otherInfo.shopName}}</span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle FloatLeft">地址:</span>
+                          <span class="lineContent">
+                            <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
+                              <div class="selfToolTip">{{otherInfo.shopAddr}}</div>
+                            </el-tooltip>                                                
+                          </span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle FloatLeft">备注:</span>
+                          <span class="selfbeizhu1">
+                            {{otherInfo.shopRemark}}                        
+                          </span>
+                      </p>
+                      <p class="contentLine1">
+                          <span class="lineTitle"></span>
+                          <span class="lineContent width1000">
+                            <div class="picWrap marginLeft82">
+                                <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
+                            </div>
+                          </span>
+                      </p>                                                        
+                    </div>
+                    <div class="rightArea">
+                      <p class="contentLine">
+                          <span class="lineTitle">电话:</span>
+                          <span class="lineContent">{{otherInfo.shopPhone}}</span>
+                      </p>                  
+                    </div> 
+                </div>                                     		
+            </div>
+            <!--门店信息结束-->
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" :disabled="timeSaveFlag"  @click="RemarkInfFlag = false">关闭</button>
+            </div>
+        </el-dialog>        
         <!--技师选择弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
@@ -485,7 +575,10 @@
               </tr>
               <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-                    <td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+                    <td width="72px" class="fontSize12"  align="center">
+                      <el-checkbox v-if="status == 'add'" v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox>
+                      <el-radio v-if="status == 'edit'" :label="item.techId" v-model="radio1" @change.native="getCurrentRow1(item.techId)">&nbsp;</el-radio>
+                    </td>
                     <td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
                     <td width="230px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
                     <td  width="72px" class="fontSize12" align="center">
@@ -508,39 +601,146 @@
             <button class="button-cancel" @click="cancelForm2()">取 消</button>
           </div>
         </el-dialog>
-        <!--技师选择弹窗结束-->        
-        <!--修改服务时间弹窗开始-->
+        <!--技师选择弹窗结束-->                                                    
+        <!--更换技师弹窗开始-->
+        <el-dialog title="选择技师" :visible.sync="dialogTableVisible1" class="selfDialogWidth" :close-on-click-modal="false">
+          <el-input placeholder="输入技师姓名" v-model="techName1" class="orderinfoTechNameStyle"></el-input> 
+          <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh1">查询</button>
+          <div class="NowTabs" style="font-size:12px;">*更换固定服务技师后，之后的订单会默认派单给该技师</div>                                             	
+          <div class="selfTableWrapONE">
+            <div class="table-d">
+              <table  class="selfTable">
+              <tr class="tableHeader">
+                <td  class="selfTableHEADTD" align="center" width="73px">选择</td>
+                <td  class="selfTableHEADTD" align="center" width="100px">头像</td>
+                <td  class="selfTableHEADTD" align="center" width="230px">姓名</td>
+                <td  class="selfTableHEADTD" align="center" width="73px">性别</td>
+                <td  class="selfTableHEADTD" align="center" width="161px">岗位性质</td>							
+              </tr>
+              <div class="orderinfoTechTablePadding">
+                  <tr v-for="item in listTech1" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+                    <td width="72px" class="fontSize12"  align="center">              
+                     <el-radio :label="item.techId" v-model="radio" @change.native="getCurrentRow(item.techId)">&nbsp;</el-radio>
+                   </td>
+                    <td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
+                    <td width="230px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
+                    <td  width="72px" class="fontSize12" align="center">
+                      <span class="fontSize12" v-if="item.techSex =='male'">男</span>
+                      <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
+                    </td>
+                    <td width="160px" class="fontSize12"  align="center">
+                          <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
+                          <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
+                    </td>							
+                  </tr>
+              </div>
+              </table>
+              <div v-if="listTech1.length == 0  || listTech1.length == undefined" class="selfTabProm">暂无数据</div>
+              
+            </div>            
+          </div> 	  	  
+          <div slot="footer" class="dialog-footer" style="text-align:center">
+            <button class="button-large" :disabled="techSaveFlag" @click="submitForm21()">确定更换</button>
+            <button class="button-cancel" @click="cancelForm21()">取 消</button>
+          </div>
+        </el-dialog>
+        <!--更换技师弹窗结束-->        
+        <!--选择服务时间弹窗开始-->
         <el-dialog
           title="选择服务时间"
           :visible.sync="dialogVisible"
           :close-on-click-modal="false"
+          class="selfDialogWidth"
           >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
-              <el-form-item label="选择日期" prop='Date' >
-                      <el-select v-model="formInline.Date" class="selfDateStyle"  @change='dateChange' placeholder="请选择">
-                        <el-option
-                          v-for="item in options2"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>                      
-              </el-form-item>
-              <el-form-item label="选择时间" prop='Time'>
-                    <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
-                    <div class="marginTopDec46">
-                      <div v-if="timeObj.length == 0" class="promMessage">当前所选择日期没有可服务的技师,请更换日期!</div>                                            
-                      <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>
-                    </div>                    
-              </el-form-item>              
-
+              <div>
+                  <el-form-item label="选择日期" prop='Date' >
+                          <el-select v-model="formInline.Date" class="selfDateStyle"  @change='dateChange' placeholder="请选择">
+                            <el-option
+                              v-for="item in options2"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                          </el-select>                      
+                  </el-form-item>
+                  <el-form-item label="选择时间" prop='Time'>
+                        <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
+                        <div class="marginTopDec46">
+                          <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
+                        </div> 
+                        <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
+                  </el-form-item>
+                  <el-form-item label="">              
+                  <button class="button-large-fourth">查询服务技师</button> 
+                  </el-form-item>
+              </div>
+              <div v-if="true">
+                <div style="margin-left:80px;font-size:12px;">
+                    <p>*  该订单的技师为：李四    15801655090</p>
+                    <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
+                </div>               
+                <el-form-item label="选择技师" prop="Tech">             
+                  <div style="margin-top: -10px;">                
+                      <el-table
+                        :data="tableData1"
+                        border                  
+                        class="orderInfoHeaderPic">
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="选择"                        
+                          > 
+                            <template scope="scope">
+                              <el-radio :label="scope.row.techName" v-model="radio3" @change.native="getCurrentRow3(scope.row.techName)">&nbsp;</el-radio>
+                            </template>                                               
+                        </el-table-column>                      
+                        <el-table-column
+                          min-width="90"
+                          align="center"
+                          label="头像"
+                          >
+                          <template scope="scope">
+                          <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          align="center"
+                          label="姓名"
+                          min-width="150"
+                          >
+                            <template scope="rowObj">
+                              <el-tooltip placement="left" v-if="rowObj.row.techName!= undefined" :disabled="rowObj.row.techName.length < 10" :content="rowObj.row.techName">
+                                <p :class=" rowObj.row.techName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.techName}}</p>
+                              </el-tooltip>
+                            </template>                                                
+                        </el-table-column>
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="性别">
+                            <template scope="scope">
+                                <span v-if="scope.row.techSex =='male'">男</span>
+                              <span v-if="scope.row.techSex =='female'">女</span>
+                            </template>	                    
+                        </el-table-column>
+                        <el-table-column
+                          prop="techPhone"
+                          min-width="94"
+                          align="center"
+                          label="手机号">
+                        </el-table-column>                                  
+                      </el-table>
+                  </div>  
+                </el-form-item>
+              </div>
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
               <button class="button-large" :disabled="timeSaveFlag"  @click="submitTime('formInline')">保存</button>
               <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
-        <!--修改服务时间弹窗结束-->
+        <!--选择服务时间弹窗结束-->
         <!--取消订单弹窗开始-->
         <el-dialog
           title="取消订单"
@@ -640,7 +840,154 @@
               <button class="button-cancel"  @click="orderRefundCancel">取 消</button>
             </div>
         </el-dialog>
-        <!--退款详情弹窗结束-->                          
+        <!--退款详情弹窗结束--> 
+        <!--更换技师弹窗开始-->
+        <el-dialog
+          title="技师选择"
+          :visible.sync="changeTechFlag"
+          :close-on-click-modal="false"
+          class="selfDialogWidth1"
+          >
+          <div class="selfPromInfStyle1"> <input type="button"   class="button-cancel height25" style="float:right;"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')"  value="增加技师"></div>
+            <el-table
+              :data="tableData1"
+              border                  
+              class="orderInfoHeaderPic">
+              <el-table-column
+                align="center"
+                label="头像"
+                >
+                <template scope="scope">
+                <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                </template>
+              </el-table-column>
+              <el-table-column
+                min-width="150"
+                align="center"
+                label="姓名"
+                prop="techName"
+                >                        
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="性别">
+                  <template scope="scope">
+                      <span v-if="scope.row.techSex =='male'">男</span>
+                    <span v-if="scope.row.techSex =='female'">女</span>
+                  </template>	                    
+              </el-table-column>
+              <el-table-column
+                prop="techPhone"
+                align="center"
+                label="手机号">
+              </el-table-column>                  
+              <el-table-column
+                align="center"
+                label="操作">
+                  <template scope="scope">
+                        <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
+                  </template>                    
+              </el-table-column>                  
+            </el-table>                     
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-cancel"   @click="changeTechOk()">关闭</button>
+            </div>
+        </el-dialog>
+        <!--更换技师弹窗结束-->
+        <!--取消订单弹窗开始-->
+        <el-dialog
+          title="取消订单"
+          :visible.sync="testFlag"
+          class="selfDialogWidth"
+          :close-on-click-modal="false"
+          >
+            <el-form  :model="Orderform1" :rules="orderrules1" ref="Orderform1" label-width="84px" label-position="left" >
+                <el-row>  
+                  <el-col :span="17" class="addTime">
+                    <el-form-item label="工作时间：" prop="workTimes" style="min-width: 450px;">
+                          <div class="tech-order-jn" style="width:550px">
+                            <span class="tech-order-btn" @click="addtime"> &#10010; 添加时间</span>
+                          </div>
+                          <el-collapse-transition>                            
+                              <div class="tech-order-jn-sons wirkTimes" v-show="isB">
+                                <div style="margin:0 10px;">
+                                  <p style="padding:10px 0;">新增日期</p>
+                                  <div>
+
+                                    <div style="display:flex;">
+                                      <div class="selfCheckBoxsday">日期</div>
+                                      <input type="button" class="selfCheckBoxs tech-order-posis"
+                                        
+                                        :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
+                                        @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
+                                        :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                        :value="item.name"
+                                      >
+                                    </div>
+                                  </div>
+                                  <div style="margin-top:10px;">
+                                    <div class="selfCheckBoxsday">时段</div>
+                                    <el-time-select placeholder="起始时间" @change="endEmpty" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
+                                        start: '00:00',
+                                        step: '00:30',
+                                        end: '24:00',
+                                        minTime:startEnd.startNew,
+                                        maxTime:startEnd.endNew 
+                                      }:{
+                                        start: '00:00',
+                                        step: '00:30',
+                                        end: '24:00',
+                                        maxTime:startEnd.endNew 
+                                      }" class="tech-daytim" style="width:231px;">
+                                    </el-time-select>
+                                    <el-time-select style="width:231px;" placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                        start: '00:00',
+                                        step: '00:30',
+                                        end: '24:00',
+                                        minTime:startTime || startEnd.startNew,
+                                        maxTime:startEnd.endNew
+                                      }">
+                                    </el-time-select>
+                                  </div>
+                                </div>
+                                <div style="margin:10px 10px 10px;">
+                                  <span class="button-large btn-styl" @click="techClick">确认</span>
+                                  <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                                </div>
+                              </div>                           
+                          </el-collapse-transition>
+                      </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="17" v-show="teachArr.length>0">
+                      <el-form-item>
+                        <ul class="working" style="width:550px;">
+                          <li v-for="(item,index) in teachArr" :key="index">
+                            <div>
+                              <div class="woking-div">
+                                <div ><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
+                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
+                              </div>
+                            </div>
+                            <div>
+                              <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
+                            </div>
+                          </li>
+                        </ul>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>           
+
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" @click="setOk('Orderform1')">确定</button>
+              <button class="button-cancel" @click="setCancel('Orderform1')" >取 消</button>
+            </div>
+        </el-dialog>
+        <!--取消订单弹窗结束-->        
+
+                                         
   </div>
 </template>
 
@@ -691,7 +1038,60 @@ export default {
         }
       }
     };
+    //工作时间
+    var WORKTIMES = (rule, value, callback) => {
+      if (this.teachArr.length > 0 && this.teachArr != undefined) {
+        callback();
+      } else {
+        callback(new Error("请选择工作时间"));
+      }
+    };    
     return {
+      addtimeFlag: true,
+      roomSelNum: [],
+      disbArr: [],
+      startEnd: { start: "09:00", end: "18:00" },
+      sexDay: [
+        {
+          name: "星期一",
+          id: 1
+        },
+        {
+          name: "星期二",
+          id: 2
+        },
+        {
+          name: "星期三",
+          id: 3
+        },
+        {
+          name: "星期四",
+          id: 4
+        },
+        {
+          name: "星期五",
+          id: 5
+        },
+        {
+          name: "星期六",
+          id: 6
+        },
+        {
+          name: "星期日",
+          id: 7
+        }
+      ],      
+      testFlag:false,
+      changeTechFlag:false,
+      radio1:'',
+      radio3:'',
+      listTech1: [],
+      techName1: "",
+      radio:'',
+      orderTest: [],
+      active1: "",
+      activeName: "wait_service", //当前tabs
+      RemarkInfFlag:false,
       jumpUrl: "#",
       middleB: [],
       ruleForm: {
@@ -738,6 +1138,12 @@ export default {
         becouss: "",
         beizhu: ""
       },
+      Orderform1: {
+        workTimes: ""
+      }, 
+      orderrules1: {
+      workTimes: [{ required: true, validator: WORKTIMES, trigger: "blur" }],
+      },           
       orderrules: {
         becouss: [
           { required: true, message: "请选择取消原因", trigger: "change" }
@@ -750,7 +1156,8 @@ export default {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }]
+        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
       },
       timeObj: [], //时间对象
       addressInfo: [], //服务地址信息
@@ -760,6 +1167,7 @@ export default {
       goodsInfo: [], //服务信息
       options: [],
       techName: "",
+      isB: false,
       techStationId: "",
       promShow1: false,
       promInf1: "搜索内容不存在!",
@@ -768,14 +1176,20 @@ export default {
       select: "date",
       formInline: {
         Date: "",
-        Time: ""
+        Time: "",
+        Tech:''
       },
       value1: "",
       value2: "",
       tabOptions: [],
       dialogTableVisible: false,
+      dialogTableVisible1: false,
       tableData: [],
       tableData1: [],
+      ordertableData:[{
+        orderNumber:'201805140951500199941896',
+        serverTime:'2018-05-18 18:00:00'
+      }],
       dialogVisible: false,
       middleA: [],
       changTime: "",
@@ -784,7 +1198,17 @@ export default {
       bb: "",
       orderId: "",
       nowTime: "",
-      addressInf: []
+      addressInf: [],
+      startTime: "09:00",
+      endTime: "05:00",
+      teachArr: [], 
+      roomSel1Arr: [],
+      disbArr: [],
+      roomSelNum: [],
+      workTimes: [
+        //工作时间
+        { startTime: "", endTime: "", weeks: [] } //开始时间,结束时间，星期几
+      ]                 
     };
   },
   created() {
@@ -799,6 +1223,167 @@ export default {
     }
   },
   methods: {
+    //更换固定时间取消
+    setCancel(formName){
+      // this.$refs[formName].resetFields();
+      this.testFlag=false;
+    },
+    //更换固定时间保存
+    setOk(formName){
+      this.$refs[formName].validate(val => {
+            if (val) {
+              for (var i = 0; i < this.teachArr.length; i++) {
+                if (this.teachArr[i].endTime == "24:00") {
+                  this.teachArr[i].endTime = "23:59:59";
+                }
+              }
+              if (this.teachArr.endTime == "24:00") {
+                this.teachArr.endTime = "23:59";
+              }
+              this.Orderform1.workTimes = this.teachArr;
+              this.testFlag=false;
+            }
+        })
+      // this.$refs[formName].resetFields();
+      
+    },
+    //更换固定时间
+    changeguTime(){
+        this.testFlag=true;
+        this.teachArr = []
+        this.disbArr = []
+    },
+    //排序
+    by(name) {
+      return function(o, p) {
+        var a, b;
+        if (typeof o === "object" && typeof p === "object" && o && p) {
+          a = o[name];
+          b = p[name];
+          if (a === b) {
+            return 0;
+          }
+          if (typeof a === typeof b) {
+            return a < b ? -1 : 1;
+          }
+          return typeof a < typeof b ? -1 : 1;
+        } else {
+          throw "error";
+        }
+      };
+    },    
+    techClick() {
+      var c1 = Date.parse("2008-08-08 " + this.startTime);
+      var c2 = Date.parse("2008-08-08 " + this.endTime);
+      if (this.startTime && this.endTime && this.roomSel1Arr.length > 0) {
+        if (c2 > c1) {
+          var obj = {};
+          obj.startTime = this.startTime;
+          obj.endTime = this.endTime;
+          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
+          obj.weeks = [].concat(this.roomSel1Arr);
+          this.disbArr = this.disbArr.concat(this.roomSelNum);
+          this.teachArr.push(obj);
+          this.isB = false;
+          this.startTime = "";
+          this.endTime = "";
+        } else {
+          this.$message({
+            type: "warning",
+            message: "结束时间不能小于开始时间"
+          });
+          return false;
+        }
+      } else {
+        this.$message.error("请选择日期、时段");
+        return false;
+      }
+      if (this.disbArr.length > 0) {
+        this.disbArr.map(item => {
+          if (this.roomSelNum.indexOf(item) != -1) {
+            this.remove(this.roomSelNum, this.roomSel1Arr, item);
+          }
+        });
+      }
+    },
+    //数组去重
+    remove(num, arr, val) {
+      for (var i = 0; i < num.length; i++) {
+        if (num[i] == val) {
+          num.splice(i, 1);
+          arr.splice(i, 1);
+          break;
+        }
+      }
+    },    
+        roomSel1(item) {
+      if (this.roomSelNum.indexOf(item.id) == -1) {
+        this.roomSelNum.push(item.id);
+        this.roomSel1Arr.push(item);
+      } else {
+        this.remove(this.roomSelNum, this.roomSel1Arr, item.id);
+      }
+      item.show = !item.show;
+    },    
+    endEmpty() {
+      if (this.startTime != this.startEnd.start) {
+        this.endTime = "";
+      }
+    },    
+    // 添加时间
+    addtime() {
+      this.isB = true;
+      this.startTime = this.startEnd.start;
+      this.endTime = this.startEnd.end;
+    },
+    addtimeno() {
+      this.roomSelNum = [];
+      this.roomSel1Arr = [];
+      this.isB = false;
+    },
+    // 工作时间删除
+    deletes(item, index) {
+      this.disbArr = [];
+      var arr = [].concat(this.teachArr);
+      arr.splice(index, 1);
+      this.teachArr = arr;
+      for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].weeks.length; j++) {
+          this.disbArr.push(arr[i].weeks[j].id * 1);
+        }
+      }
+    },        
+    //单选改变
+    getCurrentRow(value) {
+      this.radio = value;
+    },
+    //单选改变
+    getCurrentRow3(value) {
+      this.radio3 = value;
+      this.formInline.Tech=this.radio3;
+    },    
+    //改派单选改变
+    getCurrentRow1(value) {
+      this.radio = value;
+    },        
+    //tabs操作需要请求表格数据
+    handleClick(tab, event) {
+      this.activeName = tab.name;
+      this.active1 = tab.name;
+      //更改表格内容
+    },    
+    //查看备注按钮
+    lookRemark(row){
+      this.RemarkInfFlag=true;
+    },
+    //更换技师按钮
+    changeTech(row){
+      this.changeTechFlag=true;
+    },
+    //更换技师确定
+    changeTechOk() {
+      this.changeTechFlag=false;
+    },    
     //多少退款改变
     ChangerefundType(value) {
       if (value == "") {
@@ -1149,6 +1734,27 @@ export default {
         }
       }
     },
+    //更换技师弹出层查询按钮
+    searchTeh1() {
+      var obj = {
+        id: this.orderId,
+        techName: this.techName1
+      };
+      //服务技师获取
+        addTechData(obj)
+          .then(res => {
+            this.listTech1 = [];
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.listTech1 = res.data.data;
+              } else {
+                this.listTech1 = [];
+              }
+            }
+          })
+          .catch(res => {});
+  
+    },    
     //选择技师弹出层查询按钮
     searchTeh() {
       var obj = {
@@ -1209,6 +1815,15 @@ export default {
         }
       }
     },
+    //更换技师弹出层确认
+    submitForm21() {
+      this.dialogTableVisible1 = false;
+    },
+    //更换技师弹出层取消
+    cancelForm21() {
+      this.listTech1 = [];
+      this.dialogTableVisible1 = false;
+    },        
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -1249,6 +1864,8 @@ export default {
           });
       }
       if (this.status == "edit" && arr.length != 0) {
+        //改派操作this.radio1为技师id
+        
         var obj1 = {
           id: this.orderId,
           dispatchTechId: this.aa,
@@ -1284,6 +1901,7 @@ export default {
     },
     //改派或新增技师
     gaiPai(status, obj) {
+      this.radio1='';
       this.aa = obj.techId;
       this.status = status;
       this.techName = "";
@@ -1317,6 +1935,24 @@ export default {
           .catch(res => {});
       }
     },
+    //改派或新增技师
+    gaiPai1() {
+        this.radio='';
+        this.techName1 = "";
+        var obj = {
+          id: this.orderId
+        };
+        addTechData(obj)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.dialogTableVisible1 = true;
+              if (res.data.data != undefined) {
+                this.listTech1 = res.data.data;
+              }
+            }
+          })
+          .catch(res => {});
+    },    
     //取消订单
     cancelOrder() {
       this.cancelOrderFlag = true;
@@ -1378,7 +2014,8 @@ export default {
       this.cancelOrderFlag = false;
     },
     //改变服务时间按钮
-    changeTime() {
+    changeTime(row) {
+      this.radio3 ='';
       this.timeObj = [];
       if (this.otherInfo.serviceStatus != "finish") {
         var obj = {
@@ -1408,6 +2045,7 @@ export default {
   },
   mounted() {
     this.choose = this.dict.refund_type;
+    this.orderTest = this.dict.group_order_status;
     this.becaussOptions = this.dict.cancel_type;
     var orderId = window.localStorage.getItem("orderId");
     if (this.$route.query.id == undefined) {
@@ -1419,6 +2057,124 @@ export default {
 };
 </script>
 <style   scoped>
+.time{    
+    position: absolute;
+    right: 50px;
+    top: 15px;
+}
+ul li{    list-style: none;}
+.i-delete {
+  position: absolute;
+  right: 20px;
+  top: 25px;
+  cursor: pointer;
+}
+.working {
+  border: 1px solid #bfcbd9;
+  border-top: none;
+  box-sizing: border-box;
+  padding: 0 0 0 20px;
+}
+.working > li {
+  position: relative;
+  border-bottom: 1px solid #f2f2f2;
+  padding-top: 15px;
+}
+.woking-div {
+  display: flex;
+  flex-direction: column;
+}
+.btn-styl {
+  height: 25px;
+  line-height:25px;
+  display:inline-block;
+  width: 60px;
+}
+.tech-green {
+  border: solid 1px #4c70e8 !important;
+  background: url("../../../static/icon/Selected.png") no-repeat;
+  background-size: 15px 15px;
+  background-position: bottom right;
+}
+.selfCheckBoxsday {
+  width: 32px;
+  height: 24px;
+  line-height: 24px;
+  /* border: 1px solid #bfcbd9; */
+  display: inline-block;
+  /* text-align: center; */
+  position: relative;
+  /* margin-left: 20px; */
+  font-size: 12px;
+  cursor: pointer;
+}
+.tech-order-jn {
+  width: 300px;
+  height: 38px;
+  border: 1px solid #bfcbd9;
+  position: relative;
+  line-height: 38px;
+}
+
+.tech-order-jn-son,
+.tech-order-jn-sons {
+  width: 100%;
+  border: 1px solid #bfcbd9;
+  background: #fff;
+  float: left;
+
+}
+.wirkTimes {
+  width: 550px;
+  border-top: none;
+  min-width: 450px;
+}
+.wirkTimes .el-input__inner {
+  border: 1px solid #bfcbd9 !important;
+}
+.tech-order-btn {
+  background: #fff;
+  color: #4c70e8;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.tech-order-jn-sont {
+  width: 545px;
+  height: 40px;
+  /* margin-top: 15px; */
+  border: 1px solid #bfcbd9;
+  /* display: flex; */
+  /* position: absolute; */
+  background: #fff;
+  z-index: 1;
+  top: 35px;
+  left: -1px;
+}
+
+.tech-order-posi {
+  margin: 15px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tech-order-posis {
+  background-color: #fff;
+  border: 1px solid #bfcbd9;
+  margin: 0 5px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  line-height: 26px;
+  cursor: pointer;
+  padding: 0 7px;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .selfToolTip1 {
   margin:0 auto;
   width: 120px;
@@ -1500,7 +2256,7 @@ export default {
   margin-top: 10px;
 }
 .selfDateStyle {
-  width: 200px;
+  width: 80%;
   margin-left: 20px;
 }
 .marginTopDec46 {
@@ -1737,6 +2493,11 @@ export default {
   padding-bottom: 20px;
   margin-top: 20px;
 }
+.selfTableWrapStyle2 {
+  min-width: 960px;
+  padding-bottom: 20px;
+  margin-top: -20px;
+}
 .servicerFont {
   cursor: pointer;
   color: #4c70e8;
@@ -1806,6 +2567,10 @@ export default {
   font-size: 14px;
   font-weight: 600;
 }
+.custom-action1 {
+  font-size: 14px;
+  font-weight: 600;
+}
 .thrid-bar {
   padding-top: 20px;
   width: 100%;
@@ -1825,14 +2590,22 @@ export default {
   margin: 20px 0 20px 30px;
   font-size: 12px;
 }
+.contentLine1 {
+  margin: 20px 0 20px 0px;
+  font-size: 12px;
+}
 .lineTitle {
   display: inline-block;
   width: 80px;
 }
+
 .lineContent {
   display: inline-block;
   margin-left: 20px;
   width: 170px;
+}
+.lineContent3 {
+ width:500px;margin-left:20px;display:inline-block;
 }
 .lineContent1 {
   display: inline-block;
