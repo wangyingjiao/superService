@@ -229,6 +229,10 @@
         "many":"多退",
         "less": "少退"
     },
+    "group_order_status": {
+        "wait_service": "待服务",
+        "serviced": "已服务"
+    },    
     "refund_method":{
         "cash":"现金"
     }    
