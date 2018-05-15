@@ -12,7 +12,7 @@
                 <div class="leftArea">
                    <p class="contentLine">
                       <span class="lineTitle">订单组ID:</span>
-                      <span class="lineContent">{{otherInfo.orderNumber}}</span>
+                      <span class="lineContent">{{otherInfo.masterId}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">服务机构:</span>
@@ -21,9 +21,7 @@
                    <p class="contentLine">
                       <span class="lineTitle">用户姓名:</span>
                       <span class="lineContent">
-                          <span v-if="otherInfo.orderType =='common'">普通订单</span>
-                          <span v-if="otherInfo.orderType =='group_split_yes'">组合并拆单</span>
-                          <span v-if="otherInfo.orderType =='group_split_no'">组合不拆单</span>                        
+                        {{otherInfo.customerName}}                      
                       </span>
                    </p>                                                                                                                                  
                 </div>
@@ -46,7 +44,7 @@
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">用户电话:</span>
-                      <span class="lineContent" style="min-width:186px;">{{otherInfo.stationName}}</span>
+                      <span class="lineContent" style="min-width:186px;">{{otherInfo.customerPhone}}</span>
                    </p>                                                                                                                                      
                 </div>
                 <div class="rightArea">
@@ -72,65 +70,78 @@
             </div>                                     		
 		    </div>
         <!--订单信息结束-->
+        <!--订单取消开始-->
+        <div class="thrid-bar marginTop15" >
+            <!-- v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'" -->
+            <div class="custom-action">订单取消信息</div>
+            <div class="hr-style"></div>
+            <div class="selfWrap1">
+                <div class="leftArea marginBottom20">
+                   <p class="contentLine">
+                      <span class="lineTitle">取消原因:</span>
+                      <span class="lineContent">
+                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
+                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
+                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
+                      </span>
+                   </p>                                                                                             
+                </div>
+                <div class="rightArea">
+                   <p class="contentLine">
+                      <span class="lineTitle FloatLeft">备注:</span>
+                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
+                   </p>                   
+                </div>
+            </div>                                     		
+		    </div>
+        <!--订单取消结束-->        
         <!--服务信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">服务信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
-                <div class="leftArea">
-                   <p class="contentLine">
-                      <span class="lineTitle">组合商品名称:</span>
-                      <span class="lineContent">周期日常保洁</span>
-                   </p>                                                                           
-                </div>
-                <div class="rightArea width390">
-                   <p class="contentLine">
-                      <span class="lineTitle">组合商品价格:</span>
-                      <span class="lineContent">￥300.00/小时</span>
-                   </p>                                     
-                </div>
-                <div class="rightArea width390">
+                <div class="leftArea" style="width:420px;">
                    <p class="contentLine">
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
-                   </p>                                     
-                </div>
-                <div  style="width:960px;">
-                   <p class="contentLine" >
-                      <span  class="lineTitle">固定技师:</span>
-                      <span  class="lineContent3">
-                        <span>李四</span>
-                        <span style="margin-left:48px;">1581655090</span>
-                        <span style="margin-left:91px;"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
-                      </span>
                    </p>
-                    <div style="float:left;width:80px;margin-left:30px;">固定服务时间:</div>
-                    <div  style="float:left;width:800px;margin-left:20px;" >
-                      <div style="float:left;width:80px;">一周多次</div>
-                      <div style="float:left;width:420px;">
-                        <div style="float:left;width:140px;">
-                            <p style="line-height:20px;">每周一   08:00 ~ 12:00</p>
-                            <p style="line-height:20px;">每周五   08:00 ~ 12:00</p> 
-                            <p style="line-height:20px;">每周一   08:00 ~ 12:00</p>
-                            <p style="line-height:20px;">每周五   08:00 ~ 12:00</p>                                                                                                                                          
-                        </div>
-                        <div style="width:100px;height:100%;position: absolute;top:38%;padding-left: 161px;margin-top: -24px;">
-                             <input type="button"  class="button-cancel height25"  @click="changeguTime" value="更换固定时间">
-                        </div>
-                      </div>                      
-                    </div>
-                    <div style="float:left;">
-                        <p  class="contentLine"><a v-if="false" href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></p>                                                      
-                    </div>                                                                               
-                </div>                                  
-            </div>                       
-            <div class="selfTableWrapStyle" >                    
+                   <p class="contentLine">
+                      <span class="lineTitle">固定技师:</span>
+                      <span  style="margin-left: 20px;" >
+                        <span>李四</span>
+                        <span style="margin-left:20px;">1581655090</span>
+                        <span style="margin-left:20px;"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
+                      </span>
+                   </p>                                                                                            
+                </div>
+                <div class="rightArea" style="width:520px;">
+                     <div style="width:80px;float:left;margin-top: 20px;">固定服务时间:</div>
+                      <div  style="float:left;width:380px;">
+                        <div style="float:left;width:80px;margin-top: 20px;">一周多次</div>
+                        <div style="float:left;width:80px;margin-top: 20px;">每次3小时</div>
+                        <ul style="float:left;width:120px;margin-top: 20px;">
+                          <li>每周一 08:00 ~ 12:00</li>
+                          <li>每周一 08:00 ~ 12:00</li>
+                          <li>每周一 08:00 ~ 12:00</li>
+                        </ul>
+                        <div style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime" value="更换固定时间"></div>
+                      </div>                                      
+                </div>
+            </div>
+            <div style="float:left;width:800px;margin-left:30px;"><a v-if="true" href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></div>            
+            <div class="selfTableWrapStyle" style="width:960px;" >                                
                     <el-table
                       :data="tableData"
                       border
                       class="self-table-style"
                       style="margin-top:20px;"
                       >
+                      <el-table-column
+                        align="center"
+                        label="组合商品名称"
+                        prop="goodsName"
+                        >
+                      </el-table-column>                       
                       <el-table-column
                         align="center"
                         label="服务项目"
@@ -142,19 +153,26 @@
                         label="商品名称"
                         prop="goodsName"
                         >
-                      </el-table-column>                     
+                      </el-table-column>
                       <el-table-column
                         align="center"
-                        label="组合单价/单位">
+                        label="服务数量"
+                        prop="goodsNum">                    
+                      </el-table-column>                                           
+                      <el-table-column
+                        align="center"
+                        label="单位">
                           <template scope="scope">
-                              <span>￥{{scope.row.payPrice}}/{{scope.row.goodsUnit}}</span>
+                              <span>{{scope.row.goodsUnit}}</span>
                           </template>	                                           
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        label="商品数量"
-                        prop="goodsNum">                    
-                      </el-table-column>                      
+                        label="单价">
+                          <template scope="scope">
+                              <span>￥{{scope.row.payPrice}}</span>
+                          </template>	                                           
+                      </el-table-column>                                             
                       <el-table-column
                         align="center"
                         label="小计">
@@ -220,29 +238,7 @@
             </div>                     		
 		    </div> -->
         <!--技师信息结束-->        
-        <!--订单取消开始-->
-        <!-- <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'">
-            <div class="hr-style"></div>
-            <div class="selfWrap1">
-                <div class="leftArea marginBottom20">
-                   <p class="contentLine">
-                      <span class="lineTitle">取消原因:</span>
-                      <span class="lineContent">
-                          <span v-if="otherInfo.cancelReason =='customer'">用户来电取消</span>
-                          <span v-if="otherInfo.cancelReason =='tech'">无可派技师</span>
-                          <span v-if="otherInfo.cancelReason =='other'">其它原因</span>
-                      </span>
-                   </p>                                                                                             
-                </div>
-                <div class="rightArea">
-                   <p class="contentLine">
-                      <span class="lineTitle FloatLeft">备注:</span>
-                      <span class="selfbeizhu1">{{otherInfo.cancelReasonRemark}}</span>
-                   </p>                   
-                </div>
-            </div>                                     		
-		    </div> -->
-        <!--订单取消结束-->
+
         <!--服务地址信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">服务地址信息</div>
@@ -1740,19 +1736,18 @@ export default {
       getOrderInf1(obj)
         .then(res => {
           if (res.data.code === 1) {
-            console.log(res.data.data,'grouporderInfo')
             var AllInfo = res.data.data;
             var nowtime = new Date();
-            var severtime = new Date(AllInfo.serviceTime);
-            this.nowTime = severtime.getTime() - nowtime.getTime();
+            // var severtime = new Date(AllInfo.serviceTime);
+            // this.nowTime = severtime.getTime() - nowtime.getTime();
             this.otherInfo = AllInfo; //所有其他信息变量
             this.addressInf = AllInfo.addressInfo;
             this.otherInfo.serviceHour = this.formatDuring(
               AllInfo.serviceHour * 3600000
             );
-            this.goodsInfo = AllInfo.goodsInfo; //服务信息
-            this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
-            this.tableData1 = AllInfo.techList; //技师信息表格
+            // this.goodsInfo = AllInfo.goodsInfo; //服务信息
+            // this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
+            // this.tableData1 = AllInfo.techList; //技师信息表格
             this.payInfo = AllInfo.payInfo; //支付信息
           }
         })
@@ -2709,7 +2704,7 @@ ul li{    list-style: none;}
   color: #4c70e8;
 }
 .self-table-style {
-  width: 100%;
+  width: 960px;
   display: inline-block;
   margin-top: 20px;
 }
