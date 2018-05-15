@@ -546,12 +546,11 @@
               <button class="button-large" :disabled="timeSaveFlag"  @click="RemarkInfFlag = false">关闭</button>
             </div>
         </el-dialog>        
-        <!--技师选择弹窗开始-->
+        <!--已有订单中更换技师与改派共用弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
           <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
           <div class="NowTabs">当前选择标签：</div>
-          <!-- <el-collapse-transition> -->
            <transition name="el-zoom-in-bottom">
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -562,7 +561,6 @@
               </div>                         
             </div>
            </transition>
-          <!-- </el-collapse-transition>                                              	 -->
           <div class="selfTableWrapONE">
             <div class="table-d">
               <table  class="selfTable">
@@ -601,7 +599,7 @@
             <button class="button-cancel" @click="cancelForm2()">取 消</button>
           </div>
         </el-dialog>
-        <!--技师选择弹窗结束-->                                                    
+        <!--已有订单中更换技师与改派共用弹窗结束-->                                                    
         <!--更换固定技师弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible1" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入技师姓名" v-model="techName1" class="orderinfoTechNameStyle"></el-input> 
@@ -1541,7 +1539,7 @@ export default {
       var tech=[];
       for(var a= 0;a<this.listTech1.length;a++){
         if(this.radio == this.listTech1[a].techId){
-          tech=this.listTech1[a]
+          tech.push(this.listTech1[a].techId)
         }
       }
       console.log(tech,'更换固定技师')
@@ -2029,21 +2027,18 @@ export default {
           });
       }
       if (this.status == "edit") {
-        // && arr.length != 0
         var tech=[];
         for(var a=0 ;a<this.listTech.length;a++){
             if(this.radio1==this.listTech[a].techId){
-              tech=this.listTech[a]
+              tech.push(this.listTech[a].techId)
               
             }
         }
-        console.log(tech)
         //改派操作this.radio1为技师id
-        console.log(this.radio1)
         var obj1 = {
           id: this.orderId,
-          dispatchTechId: this.radio1,
-          //techIdList: arr
+          dispatchTechId: this.aa,
+          techIdList: tech
         };
         dispatchTechSave(obj1)
           .then(res => {
@@ -2054,10 +2049,10 @@ export default {
                 message: "改派成功!"
               });
               this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = this.formatDuring(
-                res.data.data.serviceHour * 3600000
-              );
-              this.middleA = [];
+              // this.otherInfo.serviceHour = this.formatDuring(
+              //   res.data.data.serviceHour * 3600000
+              // );
+              //this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
             } else {
@@ -2225,7 +2220,7 @@ export default {
     this.frequencyOptions = this.dict.frequency_options;    
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
-    var orderId = window.localStorage.getItem("orderId");
+    var orderId = window.localStorage.getItem("grouporderId");
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
     } else {
