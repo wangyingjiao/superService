@@ -2748,11 +2748,14 @@ export default {
 .i-delete {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 27px;
   cursor: pointer;
 }
 .time {
   /* padding: 10px 0; */
+  position: absolute;
+  right: 50px;
+  top: 16px;
 }
 #confirmation {
   display: flex;
