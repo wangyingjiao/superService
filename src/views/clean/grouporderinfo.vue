@@ -134,7 +134,7 @@
                       :data="tableData"
                       border
                       class="self-table-style"
-                      style="margin-top:20px;"
+                      style="margin-top:20px;"                      
                       >
                       <el-table-column
                         align="center"
@@ -145,14 +145,18 @@
                       <el-table-column
                         align="center"
                         label="服务项目"
-                        prop="itemName"
-                        > 
+                        >
+                        <template scope="scope">
+                            <div class="selfTd" v-for="(item,index) in scope.row.item" :key="index">{{item.itemName}}</div>						
+                        </template>                         
                       </el-table-column>                      
                       <el-table-column
                         align="center"
                         label="商品名称"
-                        prop="goodsName"
                         >
+                        <template scope="scope">
+                            <div class="selfTd" v-for="(item,index) in scope.row.goods" :key="index">{{item.goodsName}}</div>						
+                        </template>                        
                       </el-table-column>
                       <el-table-column
                         align="center"
@@ -326,7 +330,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p style="margin: 20px 0 20px 0px;font-size:12px;color: #8391a5;" >总服务次数为：50次 已服务10次 剩余40次</p>
+                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>3小时</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>
                     <!--选项卡开始-->
                     <el-tabs class="self-el-tabs"  style="margin-top:-20px;" v-model="activeName" @tab-click="handleClick">
                       <el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
@@ -392,12 +396,27 @@
                         align="center"
                         width="330"
                         label="操作">
-                          <template scope="scope">
-                                <input type="button"  class="button-cancel height25"  @click="changeTime(scope.row)" value="更换时间">
-                                <input type="button"  class="button-cancel height25"  @click="changeTech(scope.row)" value="更换技师">
-                                <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注">                   
-                          </template>                    
-                      </el-table-column>                  
+                            <el-table-column
+                              align="center"
+                              width="220"
+                              :colspan="2"
+                              >
+                                <template scope="scope">
+                                  <div class="selfTd" v-for="(item,index) in scope.row.testObj" :key="index">
+                                      <input type="button"  class="button-cancel height25"  @click="changeTime(scope.row)" value="更换时间">
+                                      <input type="button"  class="button-cancel height25"  @click="changeTech(scope.row)" value="更换技师">
+                                  </div>                       
+                                </template>                    
+                            </el-table-column>
+                            <el-table-column
+                              width="110"
+                              align="center">
+                                <template scope="scope">
+                                    <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注"> 
+                                </template>                    
+                            </el-table-column>                                                                        
+                      </el-table-column>
+                                        
                     </el-table>
                 </div>
             </div>                     		
@@ -639,7 +658,7 @@
           </div>
         </el-dialog>
         <!--更换固定技师弹窗结束-->        
-        <!--选择服务时间弹窗开始-->
+        <!--更换服务时间弹窗开始-->
         <el-dialog
           title="选择服务时间"
           :visible.sync="dialogVisible"
@@ -734,7 +753,114 @@
               <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
-        <!--选择服务时间弹窗结束-->
+        <!--更换服务时间弹窗结束-->
+        <!--预约弹窗开始-->
+        <el-dialog
+          title="预约"
+          :visible.sync="yuyuedialogVisible"
+          :close-on-click-modal="false"
+          class="selfDialogWidth"
+          >
+            <el-form  :model="yuyueformInline" :rules="yuyueformInline1rules" ref="yuyueformInline" label-width="80px">
+              <div>
+                  <el-form-item label="服务时长:" style="margin-top: -22px;">
+                    <span class="selfLabelStyle" style="left: -72px;">*</span>
+                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="yuyuenumberChange"></el-input-number>
+                    <div style="font-size: 12px;color: #576475;width:500px;">* 单次建议服务时长为3小时；总服务时长为6小时（预约个数 * 单次建议服务时长） </div>
+                  </el-form-item>
+                  <el-form-item label="" style="margin-top: -26px;">              
+                  <div class="button-large-fourth"  @click="searchseverDateyuyue">查询服务日期</div> 
+                  </el-form-item>
+                  <div v-if="yuyueselectDateFlag">
+                        <el-form-item label="选择日期:" prop='Date' >
+                                <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:5px;"  @change='yuyuedateChange' placeholder="请选择">
+                                  <el-option
+                                    v-for="item in options21"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                  </el-option>
+                                </el-select>                      
+                        </el-form-item>
+                        <el-form-item label="选择时间:" prop='Time'>
+                              <el-input type="hidden" value='' v-model='yuyueformInline.Time'></el-input>                  
+                              <div class="marginTopDec46">
+                                <div class="selfSeverTimeSt" ref="yuyueTimeWrap"  v-for="(item,index) in yuyuetimeObj" :key="index" @click="yuyuetimeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
+                              </div> 
+                              <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
+                        </el-form-item>
+                        <el-form-item label="">              
+                        <div class="button-large-fourth"  @click="searchSeverTechyuyue">查询服务技师</div> 
+                        </el-form-item>                    
+                  </div>                   
+
+              </div>
+              <div v-if="gudingFlag11">
+                <div style="margin-left:80px;font-size:12px;">
+                    <p>*  该订单的技师为：李四    15801655090</p>
+                    <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
+                </div>               
+                <el-form-item label="选择技师:" prop="Tech">             
+                  <div style="margin-top: -10px;">                
+                      <el-table
+                        :data="yuyuetableData"
+                        border                  
+                        class="orderInfoHeaderPic">
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="选择"                        
+                          > 
+                            <template scope="scope">
+                              <el-radio :label="scope.row.techName" v-model="yuyueradio" @change.native="yuyuegetCurrentRow(scope.row.techName)">&nbsp;</el-radio>
+                            </template>                                               
+                        </el-table-column>                      
+                        <el-table-column
+                          min-width="90"
+                          align="center"
+                          label="头像"
+                          >
+                          <template scope="scope">
+                          <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          align="center"
+                          label="姓名"
+                          min-width="150"
+                          >
+                            <template scope="rowObj">
+                              <el-tooltip placement="left" v-if="rowObj.row.techName!= undefined" :disabled="rowObj.row.techName.length < 10" :content="rowObj.row.techName">
+                                <p :class=" rowObj.row.techName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.techName}}</p>
+                              </el-tooltip>
+                            </template>                                                
+                        </el-table-column>
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="性别">
+                            <template scope="scope">
+                                <span v-if="scope.row.techSex =='male'">男</span>
+                              <span v-if="scope.row.techSex =='female'">女</span>
+                            </template>	                    
+                        </el-table-column>
+                        <el-table-column
+                          prop="techPhone"
+                          min-width="94"
+                          align="center"
+                          label="手机号">
+                        </el-table-column>                                  
+                      </el-table>
+                  </div>  
+                </el-form-item>
+              </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large" :disabled="yuyuetimeSaveFlag1"  @click="yuyuesubmitTime('yuyueformInline')">保存</button>
+              <button class="button-cancel"  @click="yuyuecancelTime('yuyueformInline')">取 消</button>
+            </div>
+        </el-dialog>
+        <!--预约弹窗结束-->        
         <!--取消订单弹窗开始-->
         <el-dialog
           title="取消订单"
@@ -896,107 +1022,112 @@
           :close-on-click-modal="false"
           >
             <el-form  :model="Orderform1" :rules="orderrules1" ref="Orderform1" label-width="84px" label-position="left" >
-                <el-form-item label="服务频次：" prop="frequencySelecte" >
-                  <span class="selfLabelStyle">*</span>
-                  <div class="frequencyTabs"  v-for="(value,key,index) in frequencyOptions" ref="frequencyTabs" :label="value" :name='key' :key="index" @click="Changefrequency(key,index)" >{{value}}</div>
-                  <div style="font-size: 12px;color: #576475;">* 目前固定服务时间： 一周多次  每周二   13:00 ~ 15:00、每周五   13:00 ~ 15:00</div>
-                </el-form-item>
-                <el-form-item label="服务时长：" style="margin-top: -22px;">
+                <el-form-item label="预约个数：" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <el-input-number class="selfINputNumStyle"  v-model="severHour" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="numberChange"></el-input-number>
-                   <div style="font-size: 12px;color: #576475;">* 目前的服务时长为3小时 </div>
-                </el-form-item>                                  
-                <el-row style="margin-top:-20px;">  
-                  <el-col :span="17" class="addTime">
-                    <el-form-item label="服务时间：" prop="workTimes" style="min-width: 450px;">
-                          <div class="tech-order-jn" style="width:550px">
-                            <span class="tech-order-btn" @click="addtime"> &#10010;请选择服务时间段</span>
-                          </div>
-                          <el-collapse-transition>                            
-                              <div class="tech-order-jn-sons wirkTimes" v-show="isB">
-                                <div style="margin:0 10px;">
-                                  <p style="padding:10px 0;">新增日期</p>
-                                  <div>
+                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为3小时；总服务时长为6小时（预约个数 * 单次建议服务时长） </div>
+                </el-form-item>
+                <el-form-item label="" style="margin-top: -22px;">              
+                   <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
+                </el-form-item>
+                <div v-if="severFrequencyFlag">
+                    <el-form-item label="服务频次：" prop="frequencySelecte" >
+                      <span class="selfLabelStyle">*</span>
+                      <div class="frequencyTabs"  v-for="(value,key,index) in frequencyOptions" ref="frequencyTabs" :label="value" :name='key' :key="index" @click="Changefrequency(key,index)" >{{value}}</div>
+                      <div style="font-size: 12px;color: #576475;">* 目前固定服务时间： 一周多次   每周二   13:00 ~ 15:00、每周五   13:00 ~ 15:00</div>
+                    </el-form-item>                                  
+                    <el-row style="margin-top:-20px;">  
+                      <el-col :span="17" class="addTime">
+                        <el-form-item label="服务时间：" prop="workTimes" style="min-width: 450px;">
+                              <div class="tech-order-jn" style="width:550px">
+                                <span class="tech-order-btn" @click="addtime"> &#10010;请选择服务时间段</span>
+                              </div>
+                              <el-collapse-transition>                            
+                                  <div class="tech-order-jn-sons wirkTimes" v-show="isB">
+                                    <div style="margin:0 10px;">
+                                      <p style="padding:10px 0;">新增日期</p>
+                                      <div>
 
-                                    <div style="display:flex;">
-                                      <div class="selfCheckBoxsday">日期</div>
-                                      <input type="button" class="selfCheckBoxs tech-order-posis"
-                                        
-                                        :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
-                                        @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
-                                        :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
-                                        :value="item.name"
-                                      >
+                                        <div style="display:flex;">
+                                          <div class="selfCheckBoxsday">日期</div>
+                                          <input type="button" class="selfCheckBoxs tech-order-posis"
+                                            
+                                            :disabled="disbArr.indexOf(item.id)!=-1" ref="sexOption" 
+                                            @click="roomSel1(item)" :key="$index" v-for="(item,$index) in sexDay" 
+                                            :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"
+                                            :value="item.name"
+                                          >
+                                        </div>
+                                      </div>
+                                      <div style="margin-top:10px;">
+                                        <div class="selfCheckBoxsday">时段</div>
+                                        <el-time-select placeholder="起始时间" @change="endEmpty" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
+                                            start: '00:00',
+                                            step: '00:30',
+                                            end: '24:00',
+                                            minTime:startEnd.startNew,
+                                            maxTime:startEnd.endNew 
+                                          }:{
+                                            start: '00:00',
+                                            step: '00:30',
+                                            end: '24:00',
+                                            maxTime:startEnd.endNew 
+                                          }" class="tech-daytim" style="width:231px;">
+                                        </el-time-select>
+                                        <el-time-select style="width:231px;" placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
+                                            start: '00:00',
+                                            step: '00:30',
+                                            end: '24:00',
+                                            minTime:startTime || startEnd.startNew,
+                                            maxTime:startEnd.endNew
+                                          }">
+                                        </el-time-select>
+                                      </div>
+                                    </div>
+                                    <div style="margin:10px 10px 10px;">
+                                      <span class="button-large btn-styl" @click="techClick">确认</span>
+                                      <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
                                     </div>
                                   </div>
-                                  <div style="margin-top:10px;">
-                                    <div class="selfCheckBoxsday">时段</div>
-                                    <el-time-select placeholder="起始时间" @change="endEmpty" :editable="false" v-model="startTime" :picker-options="addtimeFlag?{
-                                        start: '00:00',
-                                        step: '00:30',
-                                        end: '24:00',
-                                        minTime:startEnd.startNew,
-                                        maxTime:startEnd.endNew 
-                                      }:{
-                                        start: '00:00',
-                                        step: '00:30',
-                                        end: '24:00',
-                                        maxTime:startEnd.endNew 
-                                      }" class="tech-daytim" style="width:231px;">
-                                    </el-time-select>
-                                    <el-time-select style="width:231px;" placeholder="结束时间" :editable="false" v-model="endTime" :picker-options="{
-                                        start: '00:00',
-                                        step: '00:30',
-                                        end: '24:00',
-                                        minTime:startTime || startEnd.startNew,
-                                        maxTime:startEnd.endNew
-                                      }">
-                                    </el-time-select>
+                                                            
+                              </el-collapse-transition>                          
+                          </el-form-item>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="17" v-show="teachArr.length>0">
+                          <el-form-item>
+                            <ul class="working" style="width:550px;margin-top: -21px;">
+                              <li v-for="(item,index) in teachArr" :key="index">
+                                <div>
+                                  <div class="woking-div">
+                                    <div ><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
+                                    <div class="time">{{item.startTime+"~"+item.endTime}}</div>
                                   </div>
                                 </div>
-                                <div style="margin:10px 10px 10px;">
-                                  <span class="button-large btn-styl" @click="techClick">确认</span>
-                                  <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="addtimeno" value="取消">
+                                <div>
+                                  <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
                                 </div>
-                              </div>
-                                                         
-                          </el-collapse-transition>                          
+                              </li>
+                            </ul>
+                          </el-form-item>
+                        </el-col>
+                        <div class="severPromitINf" v-show="teachArr.length>0">* 两周后的订单将按照更换后的固定时间分配</div>                    
+                      </el-row>           
+                    <el-form-item label="选择日期" prop='Date' >
+                              <el-select v-model="Orderform1.Date" style="width:550px;"  @change='dateChange' placeholder="请选择第一次服务日期">
+                                <el-option
+                                  v-for="item in options3"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value">
+                                </el-option>
+                              </el-select>                      
                       </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="17" v-show="teachArr.length>0">
-                      <el-form-item>
-                        <ul class="working" style="width:550px;margin-top: -21px;">
-                          <li v-for="(item,index) in teachArr" :key="index">
-                            <div>
-                              <div class="woking-div">
-                                <div ><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
-                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
-                              </div>
-                            </div>
-                            <div>
-                              <i class="i-delete el-icon-close" @click="deletes(item,index)"></i>
-                            </div>
-                          </li>
-                        </ul>
+                      <el-form-item label="">              
+                      <div class="button-large-fourth" @click="searchSeverTech">查询服务技师</div> 
                       </el-form-item>
-                    </el-col>
-                    <div class="severPromitINf" v-show="teachArr.length>0">* 两周后的订单将按照更换后的固定时间分配</div>                    
-                  </el-row>           
-                 <el-form-item label="选择日期" prop='Date' >
-                          <el-select v-model="Orderform1.Date" style="width:550px;"  @change='dateChange1' placeholder="请选择第一次服务日期">
-                            <el-option
-                              v-for="item in options3"
-                              :key="item.value"
-                              :label="item.label"
-                              :value="item.value">
-                            </el-option>
-                          </el-select>                      
-                  </el-form-item>
-                  <el-form-item label="">              
-                  <div class="button-large-fourth" @click="searchSeverTech">查询服务技师</div> 
-                  </el-form-item>
+                </div>                
               <div v-if="gudingFlag">
                 <div style="margin-left:80px;font-size:12px;">
                     <p>*  更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：李四    15801655090</p>
@@ -1069,7 +1200,8 @@
 
 <script>
 import {
-  getOrderInf1, //用订单ID获取页面相关信息
+  getOrderInf1, //组合订单ID获取页面相关信息
+  getOrderInf, //用订单ID获取页面相关信息
   addTechData, //服务技师获取
   ChangeTimeData, //请求服务时间下拉菜单值
   dispatchTechData, //改派技师获取
@@ -1123,9 +1255,14 @@ export default {
       }
     };    
     return {
+      yuyuedialogVisible: false,//预约弹窗开关
       gudingFlag:false,//固定时间改派技师显示开关
+      severFrequencyFlag:false,//固定时间服务显示开关
       gudingFlag1:false,//更换时间改派技师显示开关
+      gudingFlag11:false,//预约改派技师显示开关
+      yuyueselectDateFlag:false,//预约日期选择开关
       severHour:'',
+      yuyueNumber:'',
       frequencyOptions:'',
       frequencySelecte:'week_some',
       addtimeFlag: true,
@@ -1166,13 +1303,14 @@ export default {
       changeTechFlag:false,
       radio1:'',
       radio3:'',
+      yuyueradio:'',
       radio4:'',
       listTech1: [],
       techName1: "",
       radio:'',
       orderTest: [],
       active1: "",
-      activeName: "wait_service", //当前tabs
+      activeName: "no_finished", //当前tabs
       RemarkInfFlag:false,
       jumpUrl: "#",
       middleB: [],
@@ -1201,9 +1339,11 @@ export default {
       cancelOrderFlag: false,
       orderRefundFlag: false,
       options2: [],
+      options21: [],
       options3: [],
       btnShow: [],
       timeSaveFlag: false,
+      yuyuetimeSaveFlag1: false,
       techSaveFlag: false,
       pickerOptions0: {
         disabledDate(time) {
@@ -1249,7 +1389,15 @@ export default {
         Time: [{ required: true, message: "请选择服务时间", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
       },
+      yuyueformInline1rules: {
+        Date: [
+          { required: true, message: "请选择服务日期", trigger: "change" }
+        ],
+        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
+      },      
       timeObj: [], //时间对象
+      yuyuetimeObj:[],//预约时间对象
       addressInfo: [], //服务地址信息
       otherInfo: [],
       payInfo: [], //支付信息
@@ -1269,16 +1417,42 @@ export default {
         Time: "",
         Tech:''
       },
+      yuyueformInline: {
+        Date: "",
+        Time: "",
+        Tech:'',
+        severHour:''
+      },      
       value1: "",
       value2: "",
       tabOptions: [],
       dialogTableVisible: false,
       dialogTableVisible1: false,
-      tableData: [],
+      tableData: [{
+        goodsName:'组合商品名1',
+        item:[{itemId:'1',itemName:'项目名1'},{itemId:'2',itemName:'项目名2'}],
+        goods:[{goodsId:'1',goodsName:'项目名1'},{goodsId:'2',goodsName:'项目名2'}],
+        goodsNum:'4',
+        goodsUnit:'平米',
+        payPrice:'1200.00',
+        payPriceSum:'4800.00'
+      },
+      {
+        goodsName:'组合商品名1',
+        item:[{itemId:'1',itemName:'项目名1'},{itemId:'2',itemName:'项目名2'}],
+        goods:[{goodsId:'1',goodsName:'商品名1'},{goodsId:'2',goodsName:'商品名2'}],
+        goodsNum:'4',
+        goodsUnit:'平米',
+        payPrice:'1200.00',
+        payPriceSum:'4800.00'
+      }],
       tableData1: [],
+      tableData2: [],
+      yuyuetableData: [],
       ordertableData:[{
         orderNumber:'201805140951500199941896',
-        serverTime:'2018-05-18 18:00:00'
+        serverTime:'2018-05-18 18:00:00',
+        testObj:[{},{}]
       }],
       dialogVisible: false,
       middleA: [],
@@ -1313,12 +1487,40 @@ export default {
     }
   },
   methods: {
+    //预约操作
+    yuyueClick(){
+      this.yuyueradio='';
+      this.yuyueformInline.severHour='1';
+      this.yuyueNumber='1';
+      this.yuyuedialogVisible=true;
+    },    
     //固定时间查询服务技师按钮
     searchSeverTech(){
        this.gudingFlag=true;
       //技师表格数据
       this.tableData3=this.tableData1
     },
+    //固定时间查询服务日期按钮
+    searchSeverDate(){
+      this.severFrequencyFlag=true;
+      this.$nextTick(()=>{
+          this.$refs.frequencyTabs[1].style.color='#4c70e8'
+          this.$refs.frequencyTabs[1].style.borderColor='#4c70e8'
+      })
+      this.radio4='';
+    },
+    //预约查询服务日期按钮
+    searchseverDateyuyue(){
+      this.yuyueselectDateFlag=true;
+      this.yuyueradio=''
+    },
+    //预约查询服务技师按钮
+    searchSeverTechyuyue(){
+       this.gudingFlag11=true;
+       this.yuyueradio=''
+      //技师表格数据
+      this.yuyuetableData=this.tableData1
+    },    
     //更换时间查询服务技师按钮
     searchSeverTech1(){
        this.gudingFlag1=true;
@@ -1328,7 +1530,17 @@ export default {
     //固定时间服务时长改变
     numberChange(val){
       this.Orderform1.severHour=val
+      this.severFrequencyFlag=false;
+      this.gudingFlag=false;
+      this.radio4='';
     },
+    //预约数量改变
+    yuyuenumberChange(val){
+      this.yuyueformInline.severHour=val
+      this.yuyueNumber=val;
+      this.yuyueselectDateFlag=false;
+      this.gudingFlag11=false;
+    },    
     //固定时间服务频次更换
     Changefrequency(key,index){
       this.frequencySelecte=key;
@@ -1382,12 +1594,8 @@ export default {
     },
     //更换固定时间按钮
     changeguTime(){
-       this.gudingFlag=false;
+        this.gudingFlag=false;
         this.testFlag=true;
-        this.$nextTick(()=>{
-            this.$refs.frequencyTabs[1].style.color='#4c70e8'
-            this.$refs.frequencyTabs[1].style.borderColor='#4c70e8'
-        })
         this.orderrules1.frequencySelecte='week_some';
         this.radio4 = "";
         this.Orderform1.severHour='1';
@@ -1507,6 +1715,11 @@ export default {
       this.radio3 = value;
       this.formInline.Tech=this.radio3;
     },
+    //预约单选改变
+    yuyuegetCurrentRow(value) {
+      this.yuyueradio = value;
+      this.yuyueformInline.Tech=this.yuyueradio;
+    },    
     //固定时间更换弹窗单选改变
     getCurrentRow4(value) {
       this.radio4 = value;
@@ -1525,15 +1738,17 @@ export default {
     },
     //查询已有订单信息
     searchliveOrer(name){
-       if(name == 'serviced'){
+       if(name == 'finished'){
          this.ordertableData=[{
                    orderNumber:'201805140951500199941897',
-                   serverTime:'2018-05-18 10:00:00'
+                   serverTime:'2018-05-18 10:00:00',
+                   testObj:[{},{}]
          }]
        }else{
          this.ordertableData=[{
                    orderNumber:'201805140951500199941896',
-                   serverTime:'2018-05-18 18:00:00'
+                   serverTime:'2018-05-18 18:00:00',
+                   testObj:[{},{}]
          }]         
        }
     },   
@@ -1733,7 +1948,8 @@ export default {
       var obj = {
         masterId: orderId
       };
-      getOrderInf1(obj)
+      //getOrderInf1
+      getOrderInf(obj)
         .then(res => {
           if (res.data.code === 1) {
             var AllInfo = res.data.data;
@@ -1768,6 +1984,106 @@ export default {
         return hours + "小时" + minutes + "分钟";
       }
     },
+    //预约的保存
+    yuyuesubmitTime(formName) {
+      this.gudingFlag11=false;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.yuyuetimeSaveFlag1 = true;
+          
+          var time = "";
+          for (var a = 0; a < this.yuyuetimeObj.length; a++) {
+            if (this.yuyuetimeObj[a].selected == true) {
+              time = this.yuyuetimeObj[a].serviceTimeStr;
+              this.bb = this.yuyuetimeObj[a].serviceTimeStr;
+            }
+          }
+          var that = this;
+          this.$confirm("此操作将更改技师, 是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnClickModal: false
+          })
+            .then(() => {
+              this.loadingClick();
+              //更换时间的保存
+              var obj = {
+                id: this.orderId,
+                serviceTime: this.changTime + " " + time + ":00"
+              };
+              saveTime(obj)
+                .then(res => {
+                  this.yuyuetimeSaveFlag1 = false;
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "更换时间成功!"
+                    });
+                    this.$refs["formInline"].resetFields();
+                    this.yuyuedialogVisible=false;
+                    this.yuyuetimeObj = [];
+                    this.tableData1 = res.data.data.list;
+                    this.otherInfo.serviceHour = this.formatDuring(
+                      res.data.data.serviceHour * 3600000
+                    );
+                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
+                    var nowtime = new Date();
+                    var severtime = new Date(this.otherInfo.serviceTime);
+                    this.nowTime = severtime.getTime() - nowtime.getTime();
+                    loading.close();
+                  } else {
+                    this.yuyuetimeObj = [];
+                    this.yuyuetimeSaveFlag1 = false;
+                    this.dateChange(this.formInline.Date);
+                    loading.close();
+                  }
+                })
+                .catch(res => {
+                  this.yuyuetimeSaveFlag1 = false;
+                  this.yuyuetimeObj = [];
+                  loading.close();
+                });
+            })
+            .catch(() => {
+              this.$message({
+                type: "warning",
+                message: "已取消更换时间"
+              });
+              this.yuyuetimeSaveFlag1 = false;
+              this.yuyuetimeObj = [];
+              this.yuyuedateChange(this.formInline.Date);
+              this.yuyueformInline.Time = "";
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
+        }
+      });
+    },
+    //预约取消
+    yuyuecancelTime(formName) {
+      this.gudingFlag11=false;
+      this.$refs[formName].resetFields();
+      //样式复位
+      for (var a = 0; a < this.yuyuetimeObj.length; a++) {
+        this.$set(this.yuyuetimeObj[a], "selected", false);
+        this.$refs.yuyueTimeWrap[a].style.borderColor = "#fff";
+        this.$refs.yuyueTimeWrap[a].style.color = "#000";
+        this.$refs.yuyueTimeWrap[a].style.border = "1px solid #bfcbd9";
+        this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt";
+      }
+      this.yuyuedialogVisible=false;
+    },    
     //更换时间的保存
     submitTime(formName) {
       this.gudingFlag1=false;
@@ -1876,7 +2192,11 @@ export default {
     //固定服务时间修改中日期变化时改变时间对象
     dateChange1(val) {
       //this.options3
-    },    
+    },
+    //预约中日期变化时改变时间对象
+    yuyuedateChange(val) {
+      //this.options21
+    },        
     //日期变化时改变时间对象
     dateChange(val) {
       var that = this;
@@ -1903,6 +2223,24 @@ export default {
         });
       }
     },
+    //预约弹窗中的时间选项点击
+    yuyuetimeChange(index, obj) {
+      for (var a = 0; a < this.yuyuetimeObj.length; a++) {
+        this.$set(this.yuyuetimeObj[a], "selected", false);
+        if (a == index) {
+          this.$refs.yuyueTimeWrap[a].style.borderColor = "#4c70e8";
+          this.$refs.yuyueTimeWrap[a].style.color = "#4c70e8";
+          this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt mark";
+          this.yuyuetimeObj[a].selected = !this.timeObj[a].selected;
+          this.yuyueformInline.Time = this.yuyuetimeObj[a].serviceTimeStr;
+        } else {
+          this.$refs.yuyueTimeWrap[a].style.borderColor = "#fff";
+          this.$refs.yuyueTimeWrap[a].style.color = "#000";
+          this.$refs.yuyueTimeWrap[a].style.border = "1px solid #bfcbd9";
+          this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt";
+        }
+      }
+    },    
     //已有订单更换时间弹窗中的时间选项点击
     timeChange(index, obj) {
       for (var a = 0; a < this.timeObj.length; a++) {
@@ -2235,8 +2573,8 @@ export default {
     this.frequencyOptions = this.dict.frequency_options;    
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
-    var orderId = window.localStorage.getItem("grouporderId");
-    //orderId
+    var orderId = window.localStorage.getItem("orderId");
+    //orderId grouporderId
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
     } else {
@@ -2246,6 +2584,16 @@ export default {
 };
 </script>
 <style   scoped>
+/* 自定义单元格样式 */
+.selfTd {
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  border-bottom: 1px solid #dfe6ec;
+}
+.selfTd:last-child {
+  border: none;
+}
 .selfLabelStyle {
   display: inline-block;
   position: absolute;
@@ -2694,8 +3042,11 @@ ul li{    list-style: none;}
   padding-bottom: 20px;
   margin-top: 20px;
 }
+.yuyueStyle{
+  margin: 20px 0 20px 0px;font-size:12px;color: #8391a5;width:1020px;
+}
 .selfTableWrapStyle2 {
-  min-width: 960px;
+  min-width: 1020px;
   padding-bottom: 20px;
   margin-top: -20px;
 }
@@ -2707,6 +3058,8 @@ ul li{    list-style: none;}
   width: 960px;
   display: inline-block;
   margin-top: 20px;
+  
+ 
 }
 .selfWrap1 {
   width: 100%;

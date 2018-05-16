@@ -576,8 +576,10 @@ body {
 .selfDialogWidth1 .el-dialog .el-form-item__label{font-size:14px;}
 //解决技能页面的多选框抖动
 .kill .el-select__tags .el-tag{
-  line-height:23px;  
+  line-height:23px; 
+   
 }
+.el-tag{background:#f2f7fd;}
 //搜索功能造成的多选框抖动
 .kill .el-select__tags  .is-undefined{
   height:24px;
@@ -586,6 +588,9 @@ body {
 .tabs-view  .el-icon-close{
   margin-top:-8px;
   right: 0px !important;
+}
+.tabs-view .el-tag{
+  background:#fff;
 }
 //多选框中TAB关闭:hover时样式调整
 .el-tag .el-icon-close:hover {
@@ -623,13 +628,14 @@ body {
 }
 //多选框中TAB样式调整
 .el-select__tags .el-tag{
-  border:1px solid #bfcbd9; 
+  border:1px solid #d8e1ff; 
   width:145px;
   height:30px;
   line-height: 30px;  
 }
 //改派表头显示
 .tableWarpaa .el-table .el-table__header thead tr:nth-of-type(2),
+.selfTableWrapStyle2 .el-table .el-table__header thead tr:nth-of-type(2),
 .app-container .el-table .el-table__header thead tr:nth-of-type(2),
 .schedule-table .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
@@ -641,6 +647,13 @@ body {
 .dispatchTaleSelf  th{
   border-right: 0px solid #dfe6ec; 
 }
+.self-table-style .cell{
+  padding: 0;
+}
+.orderInfoHeaderPic  .cell{
+  padding: 0;
+}
+
 //自定义日期显示样式
 .selfTestStyle1 .el-date-table td.next-month,.selfTestStyle1 .el-date-table td.prev-month{
    color:#48576A;

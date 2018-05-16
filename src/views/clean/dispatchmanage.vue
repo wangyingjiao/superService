@@ -160,7 +160,7 @@
 		</div>
 		<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-			<el-input placeholder="输入要搜索的姓名" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
+			<el-input placeholder="输入要搜索的姓名" style="width:252px;" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
       <div class="NowTabs">当前选择标签：</div>
 			<!-- <el-collapse-transition> -->
@@ -183,7 +183,7 @@
 						<td  class="selfTableHEADTD" align="center" width="158px">头像</td>
 						<td  class="selfTableHEADTD" align="center" width="170px">姓名</td>
 						<td  class="selfTableHEADTD" align="center" width="73px">性别</td>
-						<td  class="selfTableHEADTD" align="center" width="141px">岗位性质</td>							
+						<td  class="selfTableHEADTD" align="center" width="161px">岗位性质</td>							
 					</tr>
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -194,7 +194,7 @@
 									<span class="fontSize12" v-if="item.techSex =='male'">男</span>
 									<span class="fontSize12" v-if="item.techSex =='female'">女</span>									
 								</td>
-								<td width="140px" class="fontSize12"  align="center">
+								<td width="160px" class="fontSize12"  align="center">
 											<span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
 											<span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
 								</td>							
@@ -668,11 +668,11 @@ export default {
   text-align: center;
   line-height: 30px;
   margin:3px 6px 3px 8px;
-  background:#f0f4f5;
+  background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border:1px solid #d8e1ff;
 }
 .selfTableWrapONE {
   margin-top: 20px;

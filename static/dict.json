@@ -230,8 +230,8 @@
         "less": "少退"
     },
     "group_order_status": {
-        "wait_service": "待服务",
-        "serviced": "已服务"
+        "no_finished": "未完成",
+        "finished": "已完成"
     },
     "frequency_options": {
         "week_one": "1周1次",
