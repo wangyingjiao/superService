@@ -122,3 +122,7 @@ export function getPay(obj, pageNumber, pageSize) {
 export function getCombination(obj, pageNumber, pageSize) {
   return instance.post(`apiservice/a/service/order/combination/listDataCombination?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
 }
+// 按组合ID获取订单详情
+export function getOrderInf1(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/getCombinationById`, obj)
+}

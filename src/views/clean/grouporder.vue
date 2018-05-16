@@ -298,8 +298,8 @@ export default {
     },
     //查看
     handleLook(row) {
-      localStorage.setItem('grouporderId',row.id)
-      this.$router.push({ path: "/clean/grouporderinfo", query: { id: row.id } });
+      localStorage.setItem('grouporderId',row.masterId)
+      this.$router.push({ path: "/clean/grouporderinfo", query: { id: row.masterId} });
     }
   }
 };
