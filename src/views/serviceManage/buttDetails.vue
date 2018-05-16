@@ -120,6 +120,7 @@ import { listDataAll } from "@/api/tech";
 export default {
   data() {
     return {
+      aaa:'',
       orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: false,
@@ -286,13 +287,15 @@ export default {
           return
         }
       }
+      // this.aaa = this.search
+      // console.log(this.aaa,'sssssssss')
       this.searchLoca = Object.assign({},this.search)
       //改变当前查询的E店：
       this.eshopCodeData()
       //--改变当前查询的E店------------------：
       this.tableFlag = true
       if (this.pageSync == 1) {
-        this.tablePageSize(this.searchLoca, this.pageSync, this.pageSize);
+        this.tablePageSize(this.search, this.pageSync, this.pageSize);
       } else {
         this.pageSync = 1;
       }
@@ -313,6 +316,7 @@ export default {
         this.total = 0;
         return;
       }
+      console.log(obj,"obj++++++")
       if (this.activeName == "yesDocking") {
         this.buttedConnListApi(obj, page, size);
       } else {
@@ -359,14 +363,15 @@ export default {
         arrPost.push(arr[i][data]);
       }
       obj.goodIds = arrPost;
-      obj.eshopCode = this.search.eshopCode;
+      obj.eshopCode = this.searchLoca.eshopCode;
       if(this.userType){
-        obj.orgId = this.search.orgId
+        obj.orgId = this.searchLoca.orgId
       }
       return obj;
     },
     //移除对接按钮
     toggleSelection(row, selected) {
+      // return
       var obj = this.setUpDelete("id");
 
       if (obj.goodIds.length <= 0) {
