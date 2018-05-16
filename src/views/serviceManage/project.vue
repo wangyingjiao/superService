@@ -20,8 +20,8 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic','single')">新增单一商品</button>
-     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic','combination')">新增组合商品</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增单一商品</button>
+     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreateCom('basic')">新增组合商品</button>
     <span v-if="techUserType=='sys'">
       <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1" style="width:80px" @click="buttDetails">对接详情</button>
     </span>
@@ -75,10 +75,16 @@
       <el-table-column  label="所属分类" align="center" min-width="130">
           <template scope="scope">
             <div>
-              <el-tooltip placement="left" :disabled="scope.row.sortName.length <= 9" :content="scope.row.sortName">
-                  <span :class="{'proName':scope.row.sortName.length>=10}">{{scope.row.sortName}}</span>
+              <el-tooltip placement="left" :disabled="scope.row.sortName!=undefined && scope.row.sortName.length <= 9" :content="scope.row.sortName">
+                  <span class='proName'>{{scope.row.sortName}}</span>
               </el-tooltip>
             </div>
+          </template>
+      </el-table-column>
+
+      <el-table-column  label="商品分类" align="center">
+          <template scope="scope">
+              <span>{{scope.row.goodsType == 'single' ? '单一' : '组合'}}</span>
           </template>
       </el-table-column>
 
@@ -163,6 +169,7 @@
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <combination @comlist="comList" ref='combination'></combination>
     <!-- 添加，编辑弹框 -->
     <el-dialog 
       :title="textMap[dialogStatus]" 
@@ -279,10 +286,10 @@
               </combination> -->
                   <!-- 组合商品信息 -->
                     <div style="margin:0 -20px" class="combinationType-info">
-                        <h3 class="tit">{{handleCreateFlag=='single'?'商品信息':'组合商品信息'}}</h3><hr/>
-                        <div v-if="handleCreateFlag!='single'">
+                        <h3 class="tit">商品信息</h3><hr/>
+                        <div v-if="false">
                             <div style="padding:20px 20px">
-                                <el-form-item label="服务类型：" prop="type">
+                                <el-form-item label="服务类型：" prop="type" class="combination-name">
                                     <div :class="combinationType==1?'type-border-alive':'type-border'" @click="typeAlive(1)">
                                         <i :class="combinationType==1?'type-alive':'type-single'"></i>
                                         <p>单次服务</p>
@@ -294,12 +301,12 @@
                                 </el-form-item>
                             </div>
                             <div style="padding:0 20px;">
-                                <el-form-item label="商品信息：" prop="commodityInfo">
+                                <el-form-item label="商品信息：" prop="commodityInfo" class="combination-name">
                                     <input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
                                 </el-form-item>
                             </div>
-                            <div style="padding:0 20px">
-                                <el-table :data="basicForm.information" border style="width: 100%;">
+                            <div style="padding:0 20px" v-if="basicForm.combinationCommodities == undefined ||basicForm.combinationCommodities.length>0">
+                                <el-table :data="basicForm.combinationCommodities" border style="width: 100%;">
                                     <el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
                                     <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                                     <el-table-column prop="company" align="center" label="原价/单位">
@@ -309,17 +316,17 @@
                                     </el-table-column>
                                     <el-table-column prop="name" align="center" label="组合商品售价">
                                         <template scope="scope">
-                                          <span><el-input v-model="scope.row.priceCom"></el-input></span>
+                                          <span><el-input v-model="scope.row.combinationPrice"></el-input></span>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="name" align="center" label="数量">
                                         <template scope="scope">
-                                            <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.num" :min='1'  :max="999999"></el-input-number></span>
+                                            <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="name" align="center" label="操作">
                                         <template scope="scope">
-                                            <span @click="deleteInformation">操作</span>
+                                            <span style="color:#FF7676;" @click="deleteInformation(scope.row)">删除</span>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -333,7 +340,7 @@
                                       placeholder="请输入1-24位的组合商品名称"></el-input>
                                 </el-form-item>
                                 <el-form-item label="组合商品价格：" class="combination-name">
-                                    <span>{{'¥ '+informationCalculation}}</span>
+                                    <span v-if="handleCreateFlag=='combination'">{{'¥ '+informationCalculation}}</span>
                                 </el-form-item>
                                 <el-form-item label="商品单位：" class="combination-name">
                                     <el-input
@@ -373,7 +380,7 @@
                   <!-- 组合商品信息 完成-->
                </el-form>
     <!-- 商品信息表格 -->
-                <el-table v-if="handleCreateFlag=='single'" :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
+                <el-table v-if="true" :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
                   <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
@@ -416,7 +423,7 @@
                   </el-table-column>
                 </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
-              <div class="add_Btn" @click="addCommodity" v-if="handleCreateFlag=='single'">
+              <div class="add_Btn" @click="addCommodity" v-if="true">
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
@@ -450,7 +457,7 @@
                   <div class="selfTitle1">当前选择标签：</div>
                   <div class="labelList label-current" v-show="labelClickArr != undefined && labelClickArr.length>0">
                        <div v-for="(item,index) in labelClickArr" :key="index" class="sys-label sys-label-dialog">
-                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
+                           <el-tooltip placement="left" :disabled="item.length <=6" :content="item">
                               <div>
                                   <span class="sys-text">{{item}}</span>
                                   <span class="sys-close" @click="SelectedLabel(item)"></span>
@@ -475,7 +482,7 @@
                   <div class="selfTitle1">已添加标签：</div>
                   <div class="labelList label-already" v-show="alreadyArr != undefined && alreadyArr.length>0">
                       <div v-for="(item,index) in alreadyArr" :key="index" class="sys-label sys-label-dialog">
-                           <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
+                           <el-tooltip placement="left" :disabled="item.length <=6" :content="item">
                               <div>
                                   <span class="sys-text">{{item}}</span>
                                   <span class="sys-close" @click="AlreadyLabel(item)"></span>
@@ -500,7 +507,7 @@
                 <div class="over-fl label-num">
                     <div style="width:87%;float:left">
                         <div class="sys-title">
-                            标题一
+                            分类一
                         </div>
                         <ul class="innerbox">
                             <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
@@ -518,7 +525,7 @@
                 <div class="over-fl label-num" v-show="systemOptions2 !== undefined && systemOptions2.length>0">
                     <div style="width:87%;float:left">
                         <div class="sys-title">
-                            标题二
+                            分类二
                         </div>
                         <ul class="innerbox">
                             <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
@@ -536,7 +543,7 @@
                 <div class="over-fl label-num" v-show="systemOptions3 !== undefined && systemOptions3.length>0">
                     <div style="width:87%;float:left">
                         <div class="sys-title">
-                            标题三
+                            分类三
                         </div>
                         <ul class="innerbox">
                             <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
@@ -554,7 +561,7 @@
                  <div class="over-fl label-num label-name" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
                     <div style="width:100%;float:left">
                         <div class="sys-title">
-                            标签名
+                            标签名称
                         </div>
                         <div style="height:296px;overflow-y:auto;" class="innerbox">
                           <div class="labelSystem">
@@ -819,12 +826,12 @@ var informationTables = [
   {label:'深度保洁2',name:'平米保洁1',company:'￥201 /平米',price:'14',num:'4'},
 ]
 var informationTable = [
-  {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1',priceCom:'0',num:'1'},
-  {check:false,itemName:'日常保洁2',name:'居室保洁2',unit:'200',price:"间",id:'2',priceCom:'0',num:'1'},
-  {check:false,itemName:'日常保洁3',name:'居室保洁3',unit:'300',price:"间",id:'3',priceCom:"0",num:'1'},
-  {check:false,itemName:'日常保洁4',name:'居室保洁4',unit:'400',price:"间",id:"4",priceCom:'0',num:'1'},
-  {check:false,itemName:'日常保洁5',name:'居室保洁5',unit:'500',price:"间",id:'5',priceCom:'0',num:'1'},
-  {check:false,itemName:'日常保洁6',name:'居室保洁6',unit:'600',price:"间",id:'6',priceCom:'0',num:'1'}
+  {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1',combinationPrice:'0',combinationNum:'1'},
+  {check:false,itemName:'日常保洁2',name:'居室保洁2',unit:'200',price:"间",id:'2',combinationPrice:'0',combinationNum:'1'},
+  {check:false,itemName:'日常保洁3',name:'居室保洁3',unit:'300',price:"间",id:'3',combinationPrice:"0",combinationNum:'1'},
+  {check:false,itemName:'日常保洁4',name:'居室保洁4',unit:'400',price:"间",id:"4",combinationPrice:'0',combinationNum:'1'},
+  {check:false,itemName:'日常保洁5',name:'居室保洁5',unit:'500',price:"间",id:'5',combinationPrice:'0',combinationNum:'1'},
+  {check:false,itemName:'日常保洁6',name:'居室保洁6',unit:'600',price:"间",id:'6',combinationPrice:'0',combinationNum:'1'}
 ]
 var commodityDate = [
   {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1'},
@@ -1059,7 +1066,7 @@ export default {
       commodityArr:[],
       handleCreateFlag:'',
       radio:'',
-      commodityDate:commodityDate,
+      commodityDate:[],
       informationPrice:['11','22','33','44'],
       combinationTypeDialog:false,
       combinationType:1,
@@ -1155,7 +1162,7 @@ export default {
         customTags: [],
         orgId:'',
         type:'',  //服务分类
-        information:informationTable, //组合订单----商品信息
+        combinationCommodities:[], //组合订单----商品信息
         combinationName:'',   //组合商品名称
         combinationPrice:'',     //组合商品价格
         commodityCompany:'',   //商品单位
@@ -1252,19 +1259,22 @@ export default {
   },
   computed: {
     informationCalculation(){
-      let num = this.basicForm.information,
+      let num = this.basicForm.combinationCommodities,
           i,
           numDate,
           bate = 0,
-          list,
-          len = this.basicForm.information.length;
-      for( i = len ; i-- ;){
-        numDate = num[i]
-        list = numDate.num * numDate.priceCom
-        console.log(numDate.num* numDate.priceCom,"numDate.num-----")
-        bate += list
+          list;
+      if(this.basicForm.combinationCommodities.length > 0){
+        let len = this.basicForm.combinationCommodities.length
+        for( i = len ; i-- ;){
+          numDate = num[i]
+          list = numDate.combinationNum * numDate.combinationPrice
+          bate += list
+        }
+        return bate
+      }else{
+        return '0'
       }
-      return bate
     },
     techUserType(){
       return userType()
@@ -1279,14 +1289,10 @@ export default {
   methods: {
     //组合商品信息--选择商品--保存
     commodityPreservation(){
-      // information
       let {commodityArr,basicForm} = this,
           i,len = commodityArr.length,arr = [].concat(commodityArr);
 
-      // for( i = len ; i-- ; ){
-      //   arr[i].priceCom = '0'
-      // }
-      basicForm.information = commodityArr
+      basicForm.combinationCommodities = commodityArr
       this.combinationTypeDialog = false;
     },
     //组合商品信息--选择商品--单选
@@ -1322,8 +1328,7 @@ export default {
     //组合商品信息--选择商品--复选框
     selectCommodity(item){
       if(item.check){
-        let arr = Object.assign(item,{priceCom:'0',num:'1'})
-        this.commodityArr.push(arr)
+        this.commodityArr.push(item)
       }else{
         let i , len = this.commodityArr.length;
         for(i = len ; i-- ;){
@@ -1338,15 +1343,22 @@ export default {
       this.combinationTypeDialog = false;
     },
     choiceCommodity(){
-      this.combinationTypeDialog = true;
+        let i , len = commodityDate.length;
+        for( i = len ; i-- ;){
+          commodityDate[i].combinationPrice = '0'
+          commodityDate[i].combinationNum = '1'
+        }
+        this.commodityDate = commodityDate
+        this.combinationTypeDialog = true;
     },
-    deleteInformation(){
-      console.log(this.informationPrice,"informationPrice------")
+    deleteInformation(item){
+      this.commodityDelete(item)
     },
     //服务分类
     typeAlive(num){
       this.combinationType = num
       this.commodityArr = []
+      this.basicForm.combinationCommodities = []
     },
     orgSearch(item){
       this.search.orgId = item
@@ -1758,8 +1770,10 @@ export default {
       this.listLoading = true;
       this.getList(this.pageNumber, this.pageSize);
     },
+    handleCreateCom(){
+      this.$refs['combination'].dialogFormVisibleClick()
+    },
     handleCreate(formName,str) {
-      this.handleCreateFlag = str
       this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
       this.sordFlag = true;
       this.basicForm.sortId = "";
@@ -1773,6 +1787,12 @@ export default {
     },
     //编辑方法
     handleUpdate(row) {
+      if(row.goodsType == "combined"){
+        // this.listLoading = true;
+        this.$refs['combination'].combinationEdit(row.id)
+        return;
+      }
+      this.handleCreateFlag = 'single'
       this.resetForm();
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
@@ -2007,20 +2027,7 @@ export default {
                   }
                   //loading取消
                   loading.close();
-                  this.cancel("basic");
-                  this.basicForm.majorSort = "all";
-                  this.search.sortId = "";
-                  this.search.name = "";
-                  this.search.goodsName = "";
-                  // this.search.sortIdandGoodsId = "";
-  
-                  this.$refs['orgSearch'].orgEmpty()
-                  this.orgSearch()
-                  this.tabs = "all";
-                  this.listQuery.page = 1;
-                  this.getList(1, this.pageSize);
-                  this.picFile = [];
-                  this.pictureDetails = [];
+                  this.comList()
                 } else {
                   loading.close();
                   this.btnState = false;
@@ -2046,6 +2053,21 @@ export default {
           return false;
         }
       });
+    },
+    //组合商品新增成功刷新列表
+    comList(){
+      this.cancel("basic");
+      this.basicForm.majorSort = "all";
+      this.search.sortId = "";
+      this.search.name = "";
+      this.search.goodsName = "";
+      this.$refs['orgSearch'].orgEmpty()
+      this.orgSearch()
+      this.tabs = "all";
+      this.listQuery.page = 1;
+      this.getList(1, this.pageSize);
+      this.picFile = [];
+      this.pictureDetails = [];
     },
     resetForm(ser) {
       if (this.$refs["goods_info"]) {
@@ -2136,967 +2158,5 @@ export default {
 };
 </script>
 <style>
-.commodity-search{
-  width: 35%;
-}
-.commodity-search:nth-of-type(2){
-  margin-left: 3%;
-}
-.combination-name .el-form-item__label{
-  width: 110px !important;
-}
-.combinationType-info .selfINputNumStyle{
-  width: 100%;
-}
-.combinationType-info .el-icon-plus,.combinationType-info .el-icon-minus{
-  font-size: 10px;
-}
-.type-border,.type-border-alive{
-  cursor: pointer;
-  border: 1px solid #c7c7c7;
-  border-radius: 5px;
-  float: left;
-  width: 80px;
-  height: 80px;
-  display:flex;
-  flex-direction:column;
-  justify-content: space-evenly;
-  align-items: center;
-  font-size: 12px;
-  color: #c7c7c7;
-}
-.type-border-alive{
-  border: 1px solid #4c70e8;
-  color:#4c70e8
-}
-.type-border p,.type-border-alive p{
-  display: inline-block;
-  line-height: 1;
-}
-.type-border .type-single{
-  display: inline-block;
-  background: url("../../../static/icon/u11590.png") no-repeat;
-  background-size: 100%;
-  width: 40px;
-  height: 40px;
-}
-.type-border-alive .type-alive{
-  display: inline-block;
-  background: url("../../../static/icon/u11601.png") no-repeat;
-  background-size: 100%;
-  width: 40px;
-  height: 40px;
-}
-.labelSystem{
-  display: flex;
-  flex-wrap: wrap;
-  /* justify-content: space-around; */
-}
-.label-input{
-  /* float: left;
-  margin-left: 5px; */
-  height: 32px;
-  margin-bottom: 10px;
-}
-/*滚动条样式*/
-  .innerbox::-webkit-scrollbar {/*滚动条整体样式*/
-      width: 4px; 
-      height: 4px;
-  }
-  .innerbox::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-      border-radius: 5px;
-      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-      background: rgba(0,0,0,0.2);
-  }
-  .innerbox::-webkit-scrollbar-track {/*滚动条里面轨道*/
-      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-      border-radius: 0;
-      background: rgba(0,0,0,0.1);
-  }
-/* 滚动条 */
-.over-fl{
-  overflow: hidden;
-  position: relative;
-}
-.sys-title{
-  margin-bottom: 4px;
-  font-family: PingFangSC-Medium;
-  letter-spacing: 0;
-  font-size: 15px;
-  text-align: center;
-  line-height: 35px;
-  color: #fff;
-  width: 100%;
-  height: 35px;
-  background: #6989F3;
-  border-radius: 3px 3px 0 0; 
-}
-.sys-arrow{
-  position: absolute;
-  top: 5%;
-  margin-top: -10px;
-  right: 6px;
-  width: 10px;
-  height:21px;
-  background: url("../../../static/icon/箭头.png") no-repeat;
-}
-.sys-label-choice>div{
-  width: 24%;
-  float: left;
-  /* border: 2px dashed #D8E1FF;
-  border-top:none;  */
-}
-.sys-label-choice .label-name{
-  width: 28%;
-}
-.sys-label-choice>div ul{
-  width: 100%;
-}
-
-.pro-hint{
-  color:#b7b5b5;
-  font-size:13px;
-}
-.pro-wing{
-  font-size:13px;
-  color:#b7b5b5;
-  margin-left: 100px;
-  line-height: 20px;
-}
-.selfTitle1 {
-  width: 100px;
-  display: inline-block;
-  float: left;
-}
-.selfTabsaa {
-  display: inline-block;
-  margin-top: 10px;
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
-  border: 1px solid #4c70e8;
-  margin-left: 10px;
-  cursor: pointer;
-}
-.selfTabsaa .el-tooltip {
-  height: 30px;
-  padding: 0 5px;
-  /* padding:0 5px; */
-}
-.system-label {
-  border: 1px solid #bfcbd9;
-}
-.selfTabContent {
-  float: left;
-  width: 70px;
-  display: inline-block;
-  overflow: hidden;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  border: none;
-}
-.selfCloseSty {
-  border: none;
-}
-.el-radio-group {
-  width: 100%;
-}
-.btn_right {
-  float: right;
-  width: 100px;
-}
-.btn_left {
-  width: 100px;
-}
-.checkRightBox {
-  border: solid 1px #dcdcdc;
-  padding: 10px;
-}
-.checkAllBox {
-  padding: 10px 0;
-}
-.checkBox1 {
-  padding: 10px 0;
-  border-top: solid 1px #dcdcdc;
-  border-bottom: solid 1px #dcdcdc;
-}
-.checkBox2 {
-  padding: 10px 0;
-}
-.checkBox3 {
-  padding: 10px 0;
-  border-top: solid 1px #dcdcdc;
-}
-.bgWhite {
-  background-color: #ffffff;
-  padding: 20px 20px 20px 20px;
-}
-.btn_right {
-  float: right;
-}
-.goods_info {
-  font-size: 12px;
-}
-.projectTableStyle th > .cell {
-  text-align: -webkit-center;
-}
-.projectTabel .el-table .cell,
-.projectTabel .el-table th > div {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-.projectTabel .el-table__row .operationTab {
-  text-align: left;
-}
-.projectTabel .operationTab .cell {
-  width: 166px;
-  margin: 0 auto;
-}
-.upload_box {
-  /* text-align: center; */
-  box-sizing: border-box;
-  /* padding: 10px; */
-  border: 1px #ccc dashed;
-}
-.upload_box .el-upload .el-button {
-  background-color: #4c70e8;
-  border-color: #4c70e8;
-  border-radius: 0px;
-}
-.font_small {
-  color: #cccccc;
-  font-size: 12px;
-  line-height: 20px;
-  width: 400px;
-}
-.content-rowspan div {
-  line-height: 30px;
-  border-bottom: 1px solid #dfe6ec;
-}
-.content-rowspan div:last-child {
-  border-bottom: 0;
-}
-.tabBox .codeClean .el-radio-button__inner {
-  background-color: #eef1f6 !important;
-  color: #bbb !important;
-}
-.add_Btn {
-  width: 100px;
-  height: 30px;
-  margin: 20px 0 10px 0;
-  color: #ffffff;
-  line-height: 30px;
-  background-color: #4c70e8;
-  cursor: pointer;
-}
-.btn_Span1 {
-  font-size: 20px;
-  line-height: 30px;
-  width: 30px;
-  height: 30px;
-  background-color: #3a5fcd;
-  font-weight: bolder;
-  text-align: center;
-}
-
-.doubt {
-  position: absolute;
-  right: -30px;
-  top: 0;
-  font-size: 25px;
-  vertical-align: middle;
-  cursor: pointer;
-  color: #bfcbd9;
-}
-.btn_Span2 {
-  width: 70px;
-  height: 30px;
-  text-align: center;
-}
-.branch,
-.branchSpan {
-  padding: 0 10px;
-  width: 100%;
-  height: 45px;
-  line-height: 45px;
-  /* white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; */
-}
-.branch {
-  border-bottom: 1px solid #dfe6ec;
-}
-.el-table__row .cell .branch:last-child {
-  border-bottom: none;
-}
-.branch:nth-of-type(even) {
-  /* background-color: #f5f5f5; */
-}
-.projectTabel .el-table__row .cell {
-  padding: 0;
-}
-.dockingDialog .el-table__row .cell div {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: inherit;
-}
-.dockingDialog .el-table td > div {
-  padding: 0;
-}
-
-.tabBox {
-  overflow: hidden;
-  width: 100%;
-  border: 1px #eee solid;
-  background-color: #f9f9f9;
-}
-.tabLeft {
-  width: 15%;
-}
-.tabLeft .tabBtn {
-  display: block;
-  width: 100%;
-  height: 35px;
-  line-height: 35px;
-  font-size: 14px;
-  text-align: center;
-  cursor: pointer;
-}
-.tabBtnclick {
-  background-color: #6d8dfc;
-  color: #ffffff;
-}
-.tabLeft .el-radio-button__inner {
-  text-align: left;
-  padding-left: 25%;
-  background: #f9f9f9;
-}
-
-.systemClose {
-  transform: scale(0.7);
-  opacity: 0.75;
-  cursor: pointer;
-  float: right;
-  line-height: 30px;
-  display: inline-block;
-  height: 30px;
-}
-/* #diatable .el-upload__tip{
-	margin:0 0 10px 90px;
-} */
-/* .el-upload__tip{
-	margin: 10px;
-	margin-left: 0;
-} */
-.prompt-img {
-  margin: 0 0 10px 90px;
-}
-
-.bgWhite .el-switch.is-checked .el-switch__core {
-  background-color: #4c70e8;
-  border: 1px solid #4c70e8;
-}
-
-.tabRight {
-  width: 85%;
-  height: 100%;
-  border-left: 1px #eee solid;
-  background-color: #ffffff;
-  padding: 10px 25px 60px 25px;
-  /* margin-right: 10px; */
-}
-.el-radio-button {
-  width: 100%;
-}
-.el-radio-button__orig-radio:checked + .el-radio-button__inner {
-  width: 100%;
-  color: #fff;
-  background-color: #4c70e8;
-  border-color: #4c70e8;
-  box-shadow: -1px 0 0 0 #4c70e8;
-}
-.el-upload .el-button span {
-  color: #ffffff;
-}
-
-.el-upload .el-upload-list li .el-upload-list__item-name {
-  display: none;
-}
-.senddata {
-  margin-left: 10px;
-}
-.tit {
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0 8px 0;
-}
-.upload-demo .el-upload--picture-card {
-  width: 112px;
-  height: 112px;
-  line-height: 112px;
-}
-.upload-back {
-  display: inline-block;
-  background: url("../../../static/icon/sctp.png") no-repeat;
-  background-size: 100%;
-  background-position: 33.33333% 33.33333%;
-  width: 50px;
-  height: 50px;
-}
-/* .bgWhite .el-popover{
-  text-align: center;
-} */
-.question {
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
-  background: url("../../../static/icon/问号.png") no-repeat;
-  background-size: 100%;
-  vertical-align: middle;
-  cursor: pointer;
-}
-.upload-back::before {
-  content: "点击上传";
-  font-size: 12px;
-  line-height: 110px;
-}
-.table-pro,
-.table-pro tr th,
-.table-pro tr td {
-  border: 1px solid #dececb;
-}
-.table-pro {
-  width: 350px;
-  line-height: 25px;
-  text-align: center;
-  border-collapse: collapse;
-  padding: 2px;
-}
-.table-pro tr td:nth-child(1),
-.table-pro tr th:nth-child(1) {
-  background: #ccc;
-  padding: 0 10px;
-}
-.table-input {
-  border: none;
-  outline: none;
-  text-align: center;
-}
-.basic {
-  padding: 0 20px;
-}
-.send > label::before {
-  content: "*";
-  margin-right: 4px;
-  color: red;
-}
-.seize > label::before {
-  content: "";
-  margin-right: 8px;
-  color: red;
-}
-.upload-demo .el-upload-list__item-thumbnail {
-  width: 100px;
-  height: 100px;
-}
-.upload-demo .el-upload-list--picture-card .el-upload-list__item {
-  width: 100px;
-  height: 100px;
-}
-.tech-center {
-  margin: 0px 20px 10px 0;
-  display: flex;
-  justify-content: center;
-}
-.tabStyle .search {
-  /* width: 15%; */
-  margin-right: 0;
-}
-.tabStyle .el-select {
-  margin-left: 1%;
-}
-.tabStyle .button-large {
-  margin-left: 0;
-}
-.tabStyle .el-input {
-  margin-left: 1%;
-}
-.selfCheckBoxsday {
-  width: 30px;
-  height: 24px;
-  line-height: 24px;
-  /* border: 1px solid #bfcbd9; */
-  display: inline-block;
-  /* text-align: center; */
-  position: relative;
-  /* margin-left: 20px; */
-  font-size: 12px;
-  cursor: pointer;
-}
-.proName {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: block;
-}
-.cityClass {
-  display: flex;
-  flex-wrap: wrap;
-  width: 90%;
-  overflow: hidden;
-}
-.cityClass > div:nth-child(1),
-.cityClass > div:nth-child(5n) {
-}
-.main-container .techTime-green {
-  background-size: 15px 15px;
-  border: solid 1px #4c70e8;
-  background: url("../../../static/icon/Selected.png") no-repeat;
-  background-size: 20px 20px;
-  background-position: bottom right;
-}
-
-hr {
-  border: 0.5px solid #eee;
-}
-/* .image-text .el-dialog__body,
-.image-text .el-dialog__header {
-  padding: 0;
-}
-.image-text .el-dialog__header{
-  height: 0;
-} */
-.bgWhite .el-dialog__footer {
-  margin-top: 0;
-}
-.image-text-header {
-  overflow: hidden;
-  width: 100%;
-  /* height: 44px; */
-  background: #f3f7f9;
-  border-bottom: 1px solid #eee;
-  font-size: 16px;
-  font-weight: bolder;
-  line-height: 44px;
-  padding: 0 20px;
-}
-.image-text-header p:nth-child(1) {
-  float: left;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1f2d3d;
-}
-/* .image-text p:nth-child(2) {
-  float: right;
-}
-.image-text p:nth-child(2) span {
-  margin: 0 5px;
-} */
-.image-text-body {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 20px;
-}
-.image-text-body .img-upload .avatar-uploader-icon {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  line-height: 45px;
-  z-index: 100;
-}
-.image-border {
-  width: 100%;
-  /* background: rgb(182, 180, 180); */
-  box-sizing: border-box;
-  /* padding: 100px 20px; */
-  margin: 10px 0;
-}
-
-/* .avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  text-align: center
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-} */
-/* .avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-} */
-/* .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-} */
-.sortInput {
-  width: 40px;
-  text-align: center;
-  /* outline:none;  */
-  border: none;
-  /* background: red */
-}
-/* .sortInput:nth-child(2n){
-  background: #FAFAFA
-} */
-.el-table__body tr:nth-child(2n) .sortInput {
-  background: #fafafa;
-}
-.imgText .el-upload-list__item {
-  height: 100%;
-}
-.imgText .el-upload-list__item-name {
-  display: none;
-}
-.imgText .el-upload-list__item-thumbnail {
-  height: 100%;
-  width: 100%;
-}
-.imgList {
-  /* width: 60px;
-  height: 60px; */
-  margin-top: 5px;
-}
-.upload-demo .el-upload-list__item-preview {
-  display: none !important;
-}
-.el-icon-plus {
-  text-align: center;
-  font-size: 20px;
-}
-.el-upload--picture {
-  width: 100%;
-}
-.el-upload-list {
-  width: 100%;
-  height: 100%;
-}
-.imgText .el-icon-plus {
-  position: absolute;
-  top: 0;
-  line-height: 44px;
-  right: 15px;
-  z-index: 1000;
-}
-.tableSer {
-  padding: 5px 10px;
-  cursor: pointer;
-  color: #6d8dfc;
-}
-.tableSer:nth-of-type(3) {
-  color: red;
-}
-.details {
-  font-size: 18px;
-  font-weight: 900;
-  text-align: center;
-  line-height: 80px;
-  padding-top: 30px;
-}
-.tabRight .bottimPro .el-form-item__content {
-  /* margin-left: 0; */
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-.tabRight .bottimPro .el-form-item__content input:nth-child(2) {
-  margin-left: 30px;
-}
-.custom {
-  width: 100%;
-  height: 36px;
-  border: 1px solid #bfcbd9;
-}
-.custom span {
-  line-height: 36px;
-}
-.tech-order-btn {
-  background: #fff;
-  color: #4c70e8;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  margin-left: 10px;
-}
-.labelName .el-dialog--small {
-  width: 30%;
-}
-.labelName .el-dialog__header,
-.systemLabel .el-dialog__header {
-  padding: 0 0 0 20px;
-  height: 45px;
-  background: #f3f7f9;
-  border-bottom: 1px solid #eee;
-  font-size: 16px;
-  line-height: 45px;
-}
-.labelName .el-form-item__label {
-  width: 80px;
-  text-align: center;
-}
-.labelName .el-form-item__content {
-  margin-left: 90px;
-}
-.labelName .dialog-footer,
-.systemLabel .dialog-footer,
-.dockingDialog .dialog-footer {
-  display: flex;
-  justify-content: center;
-}
-.labelName .dialog-footer input:nth-child(2),
-.systemLabel .dialog-footer input:nth-child(2) {
-  margin-left: 20px;
-}
-.labelName .el-dialog__body {
-  padding: 30px 20px 10px 20px;
-}
-.systemLabel .el-dialog__body {
-  padding-top: 0;
-}
-.labelList {
-  /* width: 100%;
-  box-sizing: border-box; */
-  display:flex;
-  flex-wrap: wrap;
-}
-.label-sty{
-  padding: 20px 20px;
-  border: 1px solid #bfcbd9;
-  border-top: 0;
-}
-.label-current{
-  padding: 12px 0 16px 5px;
-}
-.label-already{
-  padding: 0 0 0 5px;
-}
-.labelList .sys-label{
-  position: relative;
-  width: 155px;
-  height: 32px;
-  line-height: 32px;
-  margin-right: 10px;
-  font-size: 14px;
-  color: rgba(80,94,112,1);
-  box-sizing: border-box;
-  border: 1px solid rgba(216,225,255,1);
-  background: rgba(242,247,253,1);
-  padding: 0 8px;
-}
-.labelList .sys-label-dialog{
-   width: 120px;
-   padding-right: 15px;
-}
-.labelList .sys-label .sys-text{
-  text-align: center;
-  width: 90%;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow:ellipsis;
-  white-space: nowrap;
-  padding-right:6px; 
-}
-.labelList .sys-label .sys-close{
-  cursor: pointer;
-  position: absolute;
-  right: 8px;
-  top: 7px;
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  background: url("../../../static/icon/叉1.png") no-repeat;
-}
-.labelList .sys-label .el-tooltip{
-  height: 32px;
-}
-.sys-label:hover .sys-close{
-  background: url("../../../static/icon/叉2.png") no-repeat;
-}
-
-.labelList span {
-  /* display: inline-block;
-  border: 1px solid #bfcbd9;
-  border-radius: 20px;
-  line-height: 20px;
-  margin-right: 10px; */
-}
-.labelDav .labelList span {
-  padding: 0 5px;
-  line-height: 30px;
-}
-.labelList span i {
-  font-size: 12px;
-  margin-left: 5px;
-}
-.systemLabel ul {
-  width: 22%;
-  /* float: left; */
-  height: 300px;
-  overflow-y: auto;
-  /* border: 1px solid #e8e8e8; */
-}
-.systemLabel ul:nth-of-type(2) {
-  border-left: 0;
-}
-.top-start {
-  min-width: 100px;
-  text-align: center;
-}
-.systemLabel ul:nth-of-type(3) {
-  border-left: 0;
-}
-.systemLabel ul li {
-  font-family: PingFangSC-Regular;
-  color: #969696;
-  letter-spacing: 0;
-  margin-bottom: 3px;
-  background: #F7FBFC;
-  width: 100%;
-  /* padding: 0 5px; */
-  /* height: 29px; */
-  /* border-bottom: 1px dashed #e8e8e8; */
-  /* line-height: 29px; */
-  list-style: none;
-}
-.systemLabel ul li i {
-  float: right;
-  line-height: 29px;
-  width: 10%;
-  color: #bebebe;
-}
-.labelSystem {
-  padding:11px 0 11px 5px; 
-  overflow-y: auto;
-  width: 100%;
-  /* height: 296px; */
-  border-left: 0;
-  background: #F7FBFC;
-}
-.image-text-body .img-content {
-  width: 100%;
-}
-.image-text-body .image-border .img-list .img-content {
-  margin-top: 20px;
-}
-.image-text-body .img-list .img-content .layer {
-  height: 50px !important;
-  line-height: 50px !important;
-  margin: 5px auto;
-  width: 600px;
-  border-radius: 2px;
-}
-.labelSystem input {
-  background:#F2F7FD;
-  padding: 0 10px 0 5px;
-  color: #969696;
-  /* float: left; */
-  display: block;
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  border: 1px solid #D8E1FF;
-  margin: 3px;
-  /* width: 95%; */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.sys-label-choice .activeSystem_1,
-.sys-label-choice .activeSystem_2,
-.sys-label-choice .activeSystem_3 {
-  font-family: PingFangSC-Medium;
-  font-size: 15px;
-  color: #6989F3;
-  letter-spacing: 0;
-  font-weight: bolder;
-}
-.already {
-  /* height: 50px; */
-  line-height: 50px;
-  word-break: keep-all;
-}
-.alreadyUl {
-  width: 100%;
-}
-.already span {
-  /* border: 1px solid #e8e8e8; */
-  /* line-height:20px; */
-  /* padding: 5px;
-  margin-right: 5px; */
-}
-.already span i {
-  font-weight: bolder;
-  margin-left: 5px;
-}
-.cursor {
-  cursor: pointer;
-  word-wrap: break-word;
-  color: #48576a;
-}
-.projectLabel {
-  cursor: pointer;
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  padding-left: 10px;
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.labelDav .el-form-item__label {
-  padding-right: 0;
-}
-.addCommidtyClass .el-dialog__body .el-table {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-.diatable > .el-dialog--small {
-  width: 75%;
-}
-.commEd {
-  border: 1px solid #4c70e8;
-  padding: 4px 16px;
-  color: #4c70e8;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 0 10px;
-}
-.probtn {
-  border: 1px solid #4c70e8;
-  padding: 4px 16px;
-  color: #4c70e8;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 0 10px;
-  line-height: 30px;
-}
-.deleteCom .el-message-box__message {
-  text-align: left !important;
-}
-.joCode .cell {
-  padding: 0 10px;
-  white-space: nowrap;
-}
-#project .diatable .el-upload{
-  text-align: center;
-}
-/* .deleteEd{
-  text-align: left;
-}
-.deleteEd>div{
-  width: 240px;
-  margin: 0 auto;
-} */
+  @import './prokect.css';
 </style>

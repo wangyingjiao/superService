@@ -289,6 +289,7 @@ export default {
       }
     },
     // 搜索框清空
+    
     searchEmpty() {
       if(this.activeName == 'noDocking'){
         this.selfCodeNo = this.search.selfCode

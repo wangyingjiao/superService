@@ -249,3 +249,26 @@ export function editTech(obj) {
 export function upDataTech(obj) {
   return instance.post(`/apiservice/a/service/skill/serSkillInfo/upData`, obj)
 }
+
+
+//组合商品新增
+export function saveCombinedData(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/saveCombinedData`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}
+
+//组合商品--选择商品
+export function listDataBySortId(obj){
+  return new Promise((resolve,reject)=>{
+    instance.post(`apiservice/a/service/item/serItemInfo/listDataBySortId`,obj).then(data=>{
+      resolve(data)
+    }).catch(error=>{
+      reject(error)
+    })
+  })
+}

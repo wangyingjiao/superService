@@ -898,3 +898,10 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.el-radio__input.is-checked .el-radio__inner{
+  border-color: #4c70e8;
+  background: #4c70e8;
+}
+.el-radio__inner:hover{
+  border-color: #4c70e8;
+}
