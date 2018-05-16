@@ -229,7 +229,7 @@
 	<!--新增用户弹窗结束-->		
 	<!--技师选择弹窗开始-->
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-			<el-input placeholder="输入要搜索的姓名" v-model="techName" class="dispatchTechNameSearch"></el-input> 
+			<el-input placeholder="输入要搜索的姓名" style="width:252px;" v-model="techName" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
 			<div class="NowTabs">当前选择标签：</div>
       <!-- <el-collapse-transition> -->
@@ -1914,11 +1914,11 @@ export default {
   text-align: center;
   line-height: 30px;
   margin:-9px 0 3px 6px;
-  background:#f0f4f5;
+  background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border:1px solid #d8e1ff;
 }
 .tabWrap2 {
   width: 145px;
@@ -1929,11 +1929,11 @@ export default {
   text-align: center;
   line-height: 30px;
   margin:3px 6px 3px 8px;
-  background:#f0f4f5;
+  background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border:1px solid #d8e1ff;
 }
 
 .closePic {

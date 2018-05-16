@@ -92,8 +92,8 @@ export function orderRefundInit(obj) {
 export function orderRefundSave(obj) {
   return instance.post(`/apiservice/a/service/order/orderInfo/orderRefundSave`, obj)
 }
-//退款列表
-export function listDataRefund(obj, pageNumber, pageSize){
+// 退款列表
+export function listDataRefund(obj, pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     instance.post(`apiservice/a/service/order/orderInfo/listDataRefund?pageNo=${pageNumber}&pageSize=${pageSize}`, obj).then(data => {
       resolve(data)
@@ -103,13 +103,13 @@ export function listDataRefund(obj, pageNumber, pageSize){
   })
 }
 
-//退款详情
-export function formDataRefund(obj){
-  console.log(obj,"obj")
-  return new Promise((resolve, reject)=>{
-    instance.post(`apiservice/a/service/order/orderInfo/formDataRefund`,obj).then(data=>{
+// 退款详情
+export function formDataRefund(obj) {
+  console.log(obj, 'obj')
+  return new Promise((resolve, reject) => {
+    instance.post(`apiservice/a/service/order/orderInfo/formDataRefund`, obj).then(data => {
       resolve(data)
-    }).catch(error=>{
+    }).catch(error => {
       reject(error)
     })
   })
@@ -117,4 +117,12 @@ export function formDataRefund(obj){
 // 收款列表
 export function getPay(obj, pageNumber, pageSize) {
   return instance.post(`apiservice/a/service/order/orderInfo/listDataPay?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
+// 组合订单列表
+export function getCombination(obj, pageNumber, pageSize) {
+  return instance.post(`apiservice/a/service/order/combination/listDataCombination?pageNo=` + pageNumber + '&pageSize=' + pageSize, obj)
+}
+// 按组合ID获取订单详情
+export function getOrderInf1(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/getCombinationById`, obj)
 }

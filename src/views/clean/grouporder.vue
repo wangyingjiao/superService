@@ -44,7 +44,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="订单组ID" min-width="210" prop="payNumber">      
+      <el-table-column align="center" label="订单组ID" min-width="210" prop="id">      
       </el-table-column>
         
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
@@ -69,26 +69,32 @@
       
       <el-table-column  label="组合商品名称"  min-width='150' align="center">
         <template scope="scope">
-           <el-tooltip  placement="left" :disabled="scope.row.orderNumber.length < 10" :content="scope.row.orderNumber">
-             <div :class="scope.row.orderNumber.length < 10 ? '' : 'overheidden'">{{scope.row.orderNumber}}</div>
+           <el-tooltip  placement="left" :disabled="scope.row.orderContent.length < 10" :content="scope.row.orderContent">
+             <div :class="scope.row.orderContent.length < 10 ? '' : 'overheidden'">{{scope.row.orderContent}}</div>
            </el-tooltip>
          </template>
       </el-table-column>
       
-      <el-table-column align="center" label="总价" min-width="100" prop="payAccount">      
+      <el-table-column align="center" label="总价" min-width="100" prop="payPrice">      
       </el-table-column>
 
-      <el-table-column align="center" label="订单状态" min-width="100" prop="payStatus" >
+      <el-table-column align="center" label="订单状态" min-width="100" prop="orderStatus" >
         <template scope="scope">
-<!--            <span v-if="scope.row.payStatus=='waitpay'">待支付</span>
-           <span v-if="scope.row.payStatus=='payed'">已支付</span> -->
+           <span v-if="scope.row.orderStatus=='dispatched'">已下单</span>
+           <span v-if="scope.row.orderStatus=='cancel'">已取消</span>
+           <span v-if="scope.row.orderStatus=='success'">已成功</span>
+           <span v-if="scope.row.orderStatus=='close'">已支付</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="订单来源" min-width="150" prop="payTechName">      
+      <el-table-column align="center" label="订单来源" min-width="150" prop="orderSource"> 
+        <template scope="scope">
+           <span v-if="scope.row.orderSource=='own'">本机构</span>
+           <span v-if="scope.row.orderSource=='gasq'">国安社区</span>
+        </template>     
       </el-table-column>
 
-      <el-table-column align="center" label="下单时间" min-width="160" prop="payTime">
+      <el-table-column align="center" label="下单时间" min-width="160" prop="orderTime">
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="160">
@@ -110,7 +116,7 @@
 </template>
 
 <script>
-import { getPay } from "@/api/order";
+import { getCombination } from "@/api/order";
 import { getSList, getFuwu } from "@/api/staff";
 import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
@@ -139,8 +145,8 @@ export default {
       pageSize: 10,
       total: 1,
       seOptions: {
-        orderNumber: "订单组ID",
-        payNumber: "组合商品名称"
+        masterId: "订单组ID",
+        orderContent: "组合商品名称"
       },
       //搜索数据
       search: {
@@ -219,18 +225,18 @@ export default {
       if (this.search.stationId) {
         obj = Object.assign(obj, { stationId: this.search.stationId });
       }
-      if (this.search.type == "orderNumber") {
-        var orderNumber = {
-          orderNumber: this.search.val
+      if (this.search.type == "masterId") {
+        var masterId = {
+          masterId: this.search.val
         };
-        obj = Object.assign(obj, orderNumber);
-      } else if (this.search.type == "payNumber") {
-        var payNumber = {
-          payNumber: this.search.val
+        obj = Object.assign(obj, masterId);
+      } else if (this.search.type == "orderContent") {
+        var orderContent = {
+          orderContent: this.search.val
         };
-        obj = Object.assign(obj, payNumber);
+        obj = Object.assign(obj, orderContent);
       }
-      getPay(obj, this.pageNumber, this.pageSize)
+      getCombination(obj, this.pageNumber, this.pageSize)
         .then(res => {
           if (res.data.code == 1) {
             this.total = res.data.data.count;
@@ -292,7 +298,8 @@ export default {
     },
     //查看
     handleLook(row) {
-      
+      localStorage.setItem('grouporderId',row.masterId)
+      this.$router.push({ path: "/clean/grouporderinfo", query: { id: row.masterId} });
     }
   }
 };
