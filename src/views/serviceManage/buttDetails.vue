@@ -136,6 +136,14 @@ export default {
       pageSize: 10,
       total: 0,
       thisType: {},
+      searchLoca:{
+        orgId:'',
+        eshopCode: "",
+        majorSort: "",
+        sortId: "",
+        goodsName: "",
+        selfCode: ""
+      },
       search: {
         orgId:'',
         eshopCode: "",
@@ -255,7 +263,7 @@ export default {
     },
     eshopCodeData(){
       if (this.search.eshopCode) {
-        var i,
+        let i,
           options = this.options;
         for (i = 0; i < options.length; i++) {
           if (options[i].eshopCode == this.search.eshopCode) {
@@ -278,12 +286,13 @@ export default {
           return
         }
       }
+      this.searchLoca = Object.assign({},this.search)
       //改变当前查询的E店：
       this.eshopCodeData()
       //--改变当前查询的E店------------------：
       this.tableFlag = true
       if (this.pageSync == 1) {
-        this.tablePageSize(this.search, this.pageSync, this.pageSize);
+        this.tablePageSize(this.searchLoca, this.pageSync, this.pageSize);
       } else {
         this.pageSync = 1;
       }
@@ -364,6 +373,7 @@ export default {
         return;
       }
       this.listLoading = true;
+      this.eshopCodeData()
       deleteGoodsCode(obj)
         .then(data => {
           if (data.data.code == 1) {
@@ -388,6 +398,7 @@ export default {
         return;
       }
       this.listLoading = true;
+      this.eshopCodeData()
       JonitGoods(obj)
         .then(data => {
           if (data.data.code == 1) {
@@ -446,7 +457,7 @@ export default {
                 resolve(this.search);
                 // this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
               } else {
-                this.dockingEName = { name: "" };
+                // this.dockingEName = { name: "" };
               }
             } else {
               this.listLoading = false;
