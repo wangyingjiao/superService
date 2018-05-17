@@ -291,7 +291,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
+                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'"><span>总服务次数为：<span>{{otherInfo.bespeakTotal}}</span>次 已服务<span>{{otherInfo.bespeakNum}}</span>次 剩余<span>{{otherInfo.surplusNum}}</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -1619,18 +1619,6 @@ export default {
       // if (this.roomSelNum.indexOf(item.id) == -1) {
       this.roomSelNum.push(item.id); //存储星期的ID
       this.roomSel1Arr = Object.assign({}, item); //存储星期的对象
-      // } else {
-      //   this.remove(this.roomSelNum, this.roomSel1Arr, item.id);//星期去重
-      // }
-      // console.log(this.roomSel1Arr, this.teachArr, "11111111111");
-      // for(var i of this.teachArr){
-      //   console.log(i)
-      //   if(this.roomSel1Arr.name == i.name){
-      //     console.log(2222222);
-      //     this.creatIs = 'no'
-      //   }
-        
-      // }
       //星期几的id在对象中遍历得到下拉日期数据
         if (item.id == 1) {
           this.timeAreaoptions = [
@@ -1660,9 +1648,7 @@ export default {
       }
       var obj = {};
       obj.name = this.roomSel1Arr.name;
-      obj.timeArea = this.timeArea;
-      // this.disbArr = this.disbArr.concat(this.roomSelNum);
-      
+      obj.timeArea = this.timeArea;      
       if (this.Orderform1.testsele == "week_some") {
         if (this.teachArr.length > 0) {
           this.creatIs = 'no'
@@ -1687,27 +1673,7 @@ export default {
       }
 
       console.log(this.teachArr, "绑定值");
-      // if(this.Orderform1.testsele == 'week_some'){
-      //   console.log("multiple")
-      //   console.log(this.roomSel1Arr)
-        this.listShowFlag=true;
-      // }else{
-      //   console.log("single")
-      //   console.log(this.roomSel1Arr)
-      //   this.listShowFlag=true;
-      //   //this.Orderform1.workTimes=this.weekNumber+this.timeArea
-      // }
-    
-    },
-    //数组去重
-    remove(num, arr, val) {
-      for (var i = 0; i < num.length; i++) {
-        if (num[i] == val) {
-          num.splice(i, 1);
-          arr.splice(i, 1);
-          break;
-        }
-      }
+        this.listShowFlag=true;    
     },
     //单选请选择服务时间段点击
     addtime() {
@@ -1718,6 +1684,8 @@ export default {
       this.freStyl1 = "8";
       this.timeArea = "";
       this.timeAreaoptions = [];
+      this.teachArr=[];
+      this.listShowFlag=false;
       this.isB = false;
     },
     singledeletes(item) {
@@ -1726,10 +1694,9 @@ export default {
       this.timeArea = "";
       this.freStyl1 = "8";
       this.Orderform1.workTimes = "";
-      // if (this.Orderform1.testsele == "week_some") {
-      // } else {
-      //   this.listShowFlag = false;
-      // }
+      if(this.teachArr.length == 0){
+        this.listShowFlag=false;
+      }
     },
     //固定技师选择单选改变
     getCurrentRow(value) {
@@ -1955,18 +1922,13 @@ export default {
         .then(res => {
           if (res.data.code === 1) {
             var AllInfo = res.data.data;
-            var nowtime = new Date();
-            // var severtime = new Date(AllInfo.serviceTime);
-            // this.nowTime = severtime.getTime() - nowtime.getTime();
             this.otherInfo = AllInfo; //所有其他信息变量
-            this.ordertableData=AllInfo.orderCombinationGasqInfos;
+            this.ordertableData=AllInfo.orderCombinationGasqInfos;//已有订单表格数据
             this.addressInf = AllInfo.addressInfo;
             this.otherInfo.serviceHour = this.formatDuring(
               AllInfo.serviceHour * 3600000
             );
-            // this.goodsInfo = AllInfo.goodsInfo; //服务信息
             // this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
-            // this.tableData1 = AllInfo.techList; //技师信息表格
             this.payInfo = AllInfo.payInfo; //支付信息
           }
         })
