@@ -31,7 +31,7 @@
         <!-- table列表 分页-->
             <div class="btton-table">
                 <div>
-                    <span v-if="nameFlag" style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
+                    <span style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
                     <span class="e-prompt">对接相关的请求的交互结果非实时数据，最终的交互结果需耐心等待一段时间</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
@@ -230,11 +230,6 @@ export default {
           if (data.data.code) {
             this.listLoading = false;
             this.tableData3 = data.data.data.page.list;
-            if(this.tableData3.length>0){
-              this.nameFlag = true
-            }else{
-              this.nameFlag = false
-            }
             this.total = data.data.data.page.count;
             this.eshopStatus = data.data.data.eshopStatus;
           } else {
@@ -316,7 +311,6 @@ export default {
         this.total = 0;
         return;
       }
-      console.log(obj,"obj++++++")
       if (this.activeName == "yesDocking") {
         this.buttedConnListApi(obj, page, size);
       } else {
