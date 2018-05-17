@@ -71,8 +71,7 @@
 		    </div>
         <!--订单信息结束-->
         <!--订单取消开始-->
-        <div class="thrid-bar marginTop15" >
-            <!-- v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'" -->
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'">
             <div class="custom-action">订单取消信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -101,22 +100,22 @@
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea" style="width:420px;">
-                   <p class="contentLine" >
-                     <!-- v-if="otherInfo.orderType =='group_split_no'" -->
+                   <p class="contentLine" v-if="otherInfo.orderType =='group_split_no'">
+                     <!--  -->
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
                    </p>
                    <p class="contentLine">
                       <span class="lineTitle">固定技师:</span>
                       <span  style="margin-left: 20px;" >
-                        <span>李四</span>
-                        <span style="margin-left:20px;">1581655090</span>
-                        <span style="margin-left:20px;"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
+                        <span v-if="otherInfo.tech != undefined">{{otherInfo.tech.name}}</span>
+                        <span v-if="otherInfo.tech != undefined" style="margin-left:10px;">{{otherInfo.tech.phone}}</span>
+                        <span style="margin-left:15px;"><input type="button"  class="button-cancel height25"  @click="gaiPai1(otherInfo.techId)"  value="更换固定技师"></span>
                       </span>
                    </p>                                                                                            
                 </div>
-                <div class="rightArea" style="width:520px;">
-                   <!-- v-if="otherInfo.orderType =='group_split_yes'" -->
+                <div class="rightArea" style="width:520px;" v-if="otherInfo.orderType =='group_split_yes'">
+                   <!--  -->
                      <div style="width:80px;float:left;margin-top: 20px;">固定服务时间:</div>
                       <div  style="float:left;width:380px;">
                         <div style="float:left;width:80px;margin-top: 20px;">
@@ -145,7 +144,7 @@
                       </div>                                      
                 </div>
             </div>
-            <div style="float:left;width:800px;margin-left:30px;"><a v-if="true" href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></div>            
+            <div v-if="otherInfo.orderRefundFlag" style="float:left;width:800px;margin-left:30px;"><a v-if="true" href="javascript:void(0);" style="color:#3a5fcd;cursor:pointer;" target="" @click="gotoRefund(otherInfo.orderNumber)  " >点击查看退款信息</a></div>            
             <div class="selfTableWrapStyle" style="width:960px;" >                                
                     <el-table
                       :data="tableData"
@@ -236,7 +235,7 @@
 		    </div>
         <!--服务地址信息结束-->                
         <!--支付信息开始-->
-        <div class="thrid-bar marginTop15" >
+        <div class="thrid-bar marginTop15" v-if="false">
             <div class="custom-action">支付信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
@@ -292,7 +291,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>3小时</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
+                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -391,7 +390,7 @@
                         >                              
                           <template scope="scope">
                             <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
-                              <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注">
+                              <input type="button"  class="button-cancel height25"  @click="lookRemark(item)" value="查看备注">
                             </div> 
                           </template>                     
                       </el-table-column>                                        
@@ -1443,21 +1442,7 @@ export default {
       tableData1: [],
       tableData2: [],
       yuyuetableData: [],
-      ordertableData:[
-          {
-            ordN:[
-              {orderNumber:'201805140951500199941896',
-              serviceTime:'2018-05-18 18:00:00'},
-              { 
-                orderNumber:'201805140951500199941897',
-                serviceTime:'2018-05-18 18:00:00'}
-              ],
-          },
-          {ordN:[
-              {orderNumber:'201805140951500199941898',
-              serviceTime:'2018-05-18 18:00:00'}]       
-          }
-      ],
+      ordertableData:[],//已有订单表格数据
       dialogVisible: false,
       middleA: [],
       changTime: "",
@@ -1467,17 +1452,15 @@ export default {
       orderId: "",
       nowTime: "",
       addressInf: [],
-      startTime: "09:00",
-      endTime: "05:00",
-      roomSel1Arr: {},
-      teachArr: [],
-      disbArr: [],
-      roomSelNum: [],
+      roomSel1Arr: {},//固定时间星期选择时的存储对象的容器
+      teachArr: [],//固定时间服务时间选择确定后时的存储对象的容器
+      disbArr: [],//固定时间星期选择删除存储对象的容器
+      roomSelNum: [],//固定时间星期选择时的存储星期id的容器
       workTimes: [], //工作时间
       freStyl: "4",
       freStyl1: "8",
-      tishi:'',
-      tishiTime1:'',
+      tishi:'',//固定时间总服务时间提示信息中
+      tishiTime1:'',//预约总服务时间提示信息中
       
     };
   },
@@ -1596,12 +1579,6 @@ export default {
       this.$refs[formName].validate(val => {
         if (val) {
           for (var i = 0; i < this.teachArr.length; i++) {
-            if (this.teachArr[i].endTime == "24:00") {
-              this.teachArr[i].endTime = "23:59:59";
-            }
-          }
-          if (this.teachArr.endTime == "24:00") {
-            this.teachArr.endTime = "23:59";
           }
           this.Orderform1.workTimes = this.teachArr;
           //服务频次 this.testsele
@@ -1655,7 +1632,6 @@ export default {
         
       // }
       //星期几的id在对象中遍历得到下拉日期数据
-      if (this.roomSelNum.length > 0) {
         if (item.id == 1) {
           this.timeAreaoptions = [
             { label: "8:00-10:00", value: "aa" },
@@ -1668,9 +1644,9 @@ export default {
             { label: "16:00-18:00", value: "b1" }
           ];
         }
-      } else {
+       if(item.id==3||item.id==4||item.id==5||item.id==6||item.id==7||item.id==8){
         this.timeAreaoptions = [];
-      }
+       }
     },
     //单选服务时间段确定动作
     singletechClick() {
@@ -1778,6 +1754,7 @@ export default {
     },
     //查看备注按钮
     lookRemark(row) {
+      console.log(row.id)
       this.RemarkInfFlag = true;
     },
     //更换技师按钮
@@ -2481,7 +2458,8 @@ export default {
       }
     },
     //改派或新增技师
-    gaiPai1() {
+    gaiPai1(id) {
+      console.log(id,'固定技师')
       this.radio = "";
       this.techName1 = "";
       var obj = {
@@ -2560,6 +2538,7 @@ export default {
     },
     //已有订单中表格中的服务时间按钮
     changeTime(row) {
+      console.log(row.orderGroupId)
       this.radio3 = "";
       this.timeObj = [];
       if (this.otherInfo.serviceStatus != "finish") {
