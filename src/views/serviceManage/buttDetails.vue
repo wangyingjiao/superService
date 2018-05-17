@@ -326,6 +326,7 @@ export default {
       // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.searchLoca = Object.assign({},this.search)
       this.eshopCodeData()
       this.pageSize = 10;
       if (this.pageSync == 1) {
@@ -478,7 +479,8 @@ export default {
           this.$refs['orgSearch'].listDataAll()
         }else{
           let _promise = await this.promise({orgId:''})
-          this.buttedConnListApi(_promise);
+          await this.buttedConnListApi(_promise);
+          this.searchLoca = this.search
         }
       }
       catch(error){
