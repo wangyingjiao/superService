@@ -1172,7 +1172,6 @@
 <script>
 import {
   getOrderInf1, //组合订单ID获取页面相关信息
-  getOrderInf, //用订单ID获取页面相关信息
   addTechData, //服务技师获取
   ChangeTimeData, //请求服务时间下拉菜单值
   dispatchTechData, //改派技师获取
@@ -1728,6 +1727,7 @@ export default {
     },
     //更换技师按钮
     changeTech(row) {
+      console.log(row.orderGroupId)//参数
       this.changeTechFlag = true;
     },
     //更换技师确定
@@ -1917,7 +1917,6 @@ export default {
       var obj = {
         masterId: orderId
       };
-      //getOrderInf1
       getOrderInf1(obj)
         .then(res => {
           if (res.data.code === 1) {
@@ -2231,18 +2230,18 @@ export default {
         techName: this.techName1
       };
       //服务技师获取
-      addTechData(obj)
-        .then(res => {
-          this.listTech1 = [];
-          if (res.data.code === 1) {
-            if (res.data.data != undefined) {
-              this.listTech1 = res.data.data;
-            } else {
-              this.listTech1 = [];
-            }
-          }
-        })
-        .catch(res => {});
+      // addTechData(obj)
+      //   .then(res => {
+      //     this.listTech1 = [];
+      //     if (res.data.code === 1) {
+      //       if (res.data.data != undefined) {
+      //         this.listTech1 = res.data.data;
+      //       } else {
+      //         this.listTech1 = [];
+      //       }
+      //     }
+      //   })
+      //   .catch(res => {});
     },
     //新增选择技师弹出层查询按钮
     searchTeh() {
@@ -2252,44 +2251,44 @@ export default {
       };
       //服务技师获取
       if (this.status == "add") {
-        addTechData(obj)
-          .then(res => {
-            this.listTech = [];
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-                for (var b = 0; b < this.middleA.length; b++) {
-                  for (var a = 0; a < this.listTech.length; a++) {
-                    if (this.listTech[a].techId == this.middleA[b].techId) {
-                      this.listTech[a].techChecked = true;
-                    }
-                  }
-                }
-              } else {
-                this.listTech = [];
-              }
-            }
-          })
-          .catch(res => {});
+        // addTechData(obj)
+        //   .then(res => {
+        //     this.listTech = [];
+        //     if (res.data.code === 1) {
+        //       if (res.data.data != undefined) {
+        //         this.listTech = res.data.data;
+        //         for (var b = 0; b < this.middleA.length; b++) {
+        //           for (var a = 0; a < this.listTech.length; a++) {
+        //             if (this.listTech[a].techId == this.middleA[b].techId) {
+        //               this.listTech[a].techChecked = true;
+        //             }
+        //           }
+        //         }
+        //       } else {
+        //         this.listTech = [];
+        //       }
+        //     }
+        //   })
+        //   .catch(res => {});
       } else {
-        dispatchTechData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-                for (var c = 0; c < this.middleA.length; c++) {
-                  for (var d = 0; d < this.listTech.length; d++) {
-                    if (this.listTech[d].techId == this.middleA[c].techId) {
-                      this.listTech[d].techChecked = true;
-                    }
-                  }
-                }
-              } else {
-                this.listTech = [];
-              }
-            }
-          })
-          .catch(res => {});
+        // dispatchTechData(obj)
+        //   .then(res => {
+        //     if (res.data.code === 1) {
+        //       if (res.data.data != undefined) {
+        //         this.listTech = res.data.data;
+        //         for (var c = 0; c < this.middleA.length; c++) {
+        //           for (var d = 0; d < this.listTech.length; d++) {
+        //             if (this.listTech[d].techId == this.middleA[c].techId) {
+        //               this.listTech[d].techChecked = true;
+        //             }
+        //           }
+        //         }
+        //       } else {
+        //         this.listTech = [];
+        //       }
+        //     }
+        //   })
+        //   .catch(res => {});
       }
     },
     //存储选择技师对象
@@ -2395,30 +2394,30 @@ export default {
         var obj = {
           id: this.orderId
         };
-        addTechData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogTableVisible = true;
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-              }
-            }
-          })
-          .catch(res => {});
+        // addTechData(obj)
+        //   .then(res => {
+        //     if (res.data.code === 1) {
+        //       this.dialogTableVisible = true;
+        //       if (res.data.data != undefined) {
+        //         this.listTech = res.data.data;
+        //       }
+        //     }
+        //   })
+        //   .catch(res => {});
       } else {
         var obj1 = {
           id: this.orderId
         };
-        dispatchTechData(obj1)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogTableVisible = true;
-              if (res.data.data != undefined) {
-                this.listTech = res.data.data;
-              }
-            }
-          })
-          .catch(res => {});
+        // dispatchTechData(obj1)
+        //   .then(res => {
+        //     if (res.data.code === 1) {
+        //       this.dialogTableVisible = true;
+        //       if (res.data.data != undefined) {
+        //         this.listTech = res.data.data;
+        //       }
+        //     }
+        //   })
+        //   .catch(res => {});
       }
     },
     //改派或新增技师
@@ -2429,16 +2428,17 @@ export default {
       var obj = {
         id: this.orderId
       };
-      addTechData(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            this.dialogTableVisible1 = true;
-            if (res.data.data != undefined) {
-              this.listTech1 = res.data.data;
-            }
-          }
-        })
-        .catch(res => {});
+      this.dialogTableVisible1 = true;
+      // addTechData(obj)
+      //   .then(res => {
+      //     if (res.data.code === 1) {
+      //       this.dialogTableVisible1 = true;
+      //       if (res.data.data != undefined) {
+      //         this.listTech1 = res.data.data;
+      //       }
+      //     }
+      //   })
+      //   .catch(res => {});
     },
     //取消订单
     cancelOrder() {
@@ -2502,33 +2502,34 @@ export default {
     },
     //已有订单中表格中的服务时间按钮
     changeTime(row) {
-      console.log(row.orderGroupId)
+      console.log(row.orderGroupId)//参数
       this.radio3 = "";
       this.timeObj = [];
-      if (this.otherInfo.serviceStatus != "finish") {
-        var obj = {
-          id: this.orderId
-        };
-        //请求服务时间下拉菜单值
-        ChangeTimeData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogVisible = true;
-              this.options2 = res.data.data; //服务时间下拉菜单值
-              //默认选择当前日期
-              if (this.options2 != undefined && this.options2[0] != undefined) {
-                this.formInline.Date = this.options2[0].value;
-                this.dateChange(this.formInline.Date);
-              }
-            }
-          })
-          .catch(res => {});
-      } else {
-        this.$message({
-          type: "error",
-          message: "不能更换时间!"
-        });
-      }
+      this.dialogVisible = true;
+    //   if (this.otherInfo.serviceStatus != "finish") {
+    //     var obj = {
+    //       id: this.orderId
+    //     };
+    //     //请求服务时间下拉菜单值
+    //     ChangeTimeData(obj)
+    //       .then(res => {
+    //         if (res.data.code === 1) {
+    //           this.dialogVisible = true;
+    //           this.options2 = res.data.data; //服务时间下拉菜单值
+    //           //默认选择当前日期
+    //           if (this.options2 != undefined && this.options2[0] != undefined) {
+    //             this.formInline.Date = this.options2[0].value;
+    //             this.dateChange(this.formInline.Date);
+    //           }
+    //         }
+    //       })
+    //       .catch(res => {});
+    //   } else {
+    //     this.$message({
+    //       type: "error",
+    //       message: "不能更换时间!"
+    //     });
+    //   }
     }
   },
   mounted() {
