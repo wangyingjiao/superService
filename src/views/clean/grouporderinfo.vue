@@ -124,7 +124,6 @@
                         </div>
                         <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}小时</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
-                          week  startTime  endTime
                           <li v-for="item in otherInfo.freList" :key="item">{{item.week}}{{item.startTime}}{{item.endTime}}</li>
                           <li>每周一 08:00 ~ 12:00</li>
                           <li>每周一 08:00 ~ 12:00</li>
