@@ -44,7 +44,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="订单组ID" min-width="210" prop="id">      
+      <el-table-column align="center" label="订单组ID" min-width="210" prop="masterId">      
       </el-table-column>       
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
