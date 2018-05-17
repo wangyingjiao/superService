@@ -169,7 +169,7 @@
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <combination @comlist="comList" ref='combination'></combination>
+    <combination @comlist="comList" ref='combination' :org-list="orgList"></combination>
     <!-- 添加，编辑弹框 -->
     <el-dialog 
       :title="textMap[dialogStatus]" 
@@ -1683,6 +1683,7 @@ export default {
       }
     },
     houseClick(val) {
+      console.log('12313123------')
       this.basicForm.sortId = "";
       this.tableProject({ majorSort: val });
       this.houseStr = val;
@@ -1756,6 +1757,10 @@ export default {
         .catch(res => {
           this.listLoading = false;
         });
+    },
+    listLoadingSon(bl){
+      console.log("bl__________")
+      this.listLoading = bl
     },
     // 搜索
     handleSizeChange(val) {

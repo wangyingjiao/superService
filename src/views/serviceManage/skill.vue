@@ -113,16 +113,16 @@
         <!-- 弹出层新增技能结束 -->
         <!-- 选择技师弹出层开始 -->
         <el-dialog title="选择技师" :visible.sync="ordertech" :modal="false" :modal-append-to-body="false" :close-on-click-modal="false"  class="selfDialogWidth">
-              <div class="selfFLOLeft" style="width:35%">
-                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:96%"></el-input>                
+              <div class="selfFLOLeft">
+                <el-input placeholder="输入要搜索的姓名" v-model="techName"  style="margin-left:15px;width:252px;"></el-input>                
               </div>
-              <div class="selfFLOLeft" style="width:35%">
-                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:22px;width:96%">
+              <div class="selfFLOLeft">
+                <el-select clearable placeholder="请选择服务站" filterable v-model="techStationId" style="margin-left:18px;width:252px;">
                   <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
                   </el-option>
                 </el-select>
               </div>
-              <div  class="selfFLORight"><button class="button-large" @click="searchTeh">查询</button></div>
+              <div  class="selfFLOLeft" style="width:80px;margin-left:19px;"><button class="button-large" @click="searchTeh">查询</button></div>
               <div class="NowTabs">当前选择标签：</div> 
               <transition name="el-zoom-in-bottom">
                 <div class="selfpromMessageTab" v-if="middleA.length !=0 || middleB.length !=0">                   
@@ -1046,11 +1046,11 @@ export default {
   text-align: center;
   line-height: 30px;
   margin:-9px 0 3px 6px;
-  background:#f0f4f5;
+  background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border:1px solid #d8e1ff;
 }
 .tabWrap1 {
   width: 145px;
@@ -1060,11 +1060,11 @@ export default {
   text-align: center;
   line-height: 30px;
   margin:3px 6px 3px 8px;
-  background:#f0f4f5;
+  background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border:1px solid #d8e1ff;
 }
 .self-el-close{
     border-radius: 50%;

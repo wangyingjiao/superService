@@ -328,6 +328,7 @@ export default {
   },
   watch: {
     filterText(val) {
+      // console.log(val,'change')
       this.$refs.domTree.filter(val);
     }
   },
@@ -337,11 +338,14 @@ export default {
       return data.type.indexOf(value) !== -1;
     },
     orgChange(val) {
+      // console.log(val)
+      // console.log(this.filterText)
       if (val == "sys") {
         this.$nextTick(() => {
           this.filterText = "";
         });
       } else {
+        // console.log(11111111111)
         this.$nextTick(() => {
           this.filterText = "business";
         });
@@ -580,6 +584,8 @@ export default {
                 this.$nextTick(() => {
                   this.filterText = "business";
                 });
+              }else{
+                this.filterText = "";
               }
               this.listLoading = false;
               if (this.officeIds.length == 1) {
@@ -675,6 +681,8 @@ export default {
             this.$nextTick(() => {
               this.filterText = "business";
             });
+          }else{
+            this.filterText = "";
           }
           this.temp.name = a.name;
           //this.temp.dataScope = a.dataScope;
