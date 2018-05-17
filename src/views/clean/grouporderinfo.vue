@@ -1078,7 +1078,7 @@
                                       </div>
                                     </div>
                                     <div>
-                                      <i class="i-delete el-icon-close" @click="singledeletes()"></i>
+                                      <i class="i-delete el-icon-close" @click="singledeletes(item)"></i>
                                     </div>
                                   </li>
                                 </ul>
@@ -1720,14 +1720,16 @@ export default {
       this.timeAreaoptions = [];
       this.isB = false;
     },
-    singledeletes() {
+    singledeletes(item) {
+      console.log(item)
+      this.teachArr.remove(item)
       this.timeArea = "";
       this.freStyl1 = "8";
       this.Orderform1.workTimes = "";
-      if (this.Orderform1.testsele == "week_some") {
-      } else {
-        this.listShowFlag = false;
-      }
+      // if (this.Orderform1.testsele == "week_some") {
+      // } else {
+      //   this.listShowFlag = false;
+      // }
     },
     //固定技师选择单选改变
     getCurrentRow(value) {
