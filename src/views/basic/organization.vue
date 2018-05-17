@@ -392,7 +392,7 @@ export default {
         sort: "+id"
       },
       pageNumber: 1,
-      allPlatformFlag:'',
+      allPlatformFlag: "",
       pageSize: 10,
       total: 1,
       search: {
@@ -714,7 +714,7 @@ export default {
       this.typeState = false;
       this.temp.visable = "no";
       this.temp.dockType = "select";
-      this.allPlatformFlag = false
+      this.allPlatformFlag = false;
     },
     //点击编辑
     handleUpdate(row) {
@@ -726,18 +726,21 @@ export default {
       setMech(obj)
         .then(res => {
           if (res.data.code == "1") {
-            if(localStorage.getItem('type') == 'platform'||localStorage.getItem('type') == 'sys'){
-              console.log(111)
-              if(res.data.data.updateOwnFlag == 'yes'){
-                this.allPlatformFlag = true
-              }else{
-                this.allPlatformFlag = false
+            if (
+              localStorage.getItem("type") == "platform" ||
+              localStorage.getItem("type") == "sys"
+            ) {
+              console.log(111);
+              if (res.data.data.updateOwnFlag == "yes") {
+                this.allPlatformFlag = true;
+              } else {
+                this.allPlatformFlag = false;
               }
-            }else{
-              this.allPlatformFlag = true
+            } else {
+              this.allPlatformFlag = true;
             }
             this.orgId = res.data.data.updateOwnFlag;
-            console.log(this.allPlatformFlag,this.orgId)
+            console.log(this.allPlatformFlag, this.orgId);
             this.listLoading = false;
             if (res.data.data.haveStation !== 0) {
               this.typeState = true;
