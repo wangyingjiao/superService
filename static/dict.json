@@ -236,7 +236,7 @@
     "frequency_options": {
         "week_one": "1周1次",
         "week_some": "1周多次",
-        "two_week_one": "1周2次"
+        "two_week_one": "2周1次"
     },         
     "refund_method":{
         "cash":"现金"
