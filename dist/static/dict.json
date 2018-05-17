@@ -229,8 +229,6 @@
         "many":"多退",
         "less": "少退"
     },
-<<<<<<< HEAD
-=======
     "group_order_status": {
         "no_finished": "未完成",
         "finished": "已完成"
@@ -240,7 +238,6 @@
         "week_some": "1周多次",
         "two_week_one": "2周1次"
     },         
->>>>>>> aeab1e2cb9de1f963cdf801c9c7c96262b516007
     "refund_method":{
         "cash":"现金"
     }    
