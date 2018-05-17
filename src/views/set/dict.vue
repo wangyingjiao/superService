@@ -75,13 +75,13 @@
           <el-form-item label="字典类型:" prop="type">
             <el-input
            class="form_item"
-            placeholder="请输入2-15位的字典类型" v-model.trim="temp.type"></el-input>
+            placeholder="请输入2-50位的字典类型" v-model.trim="temp.type"></el-input>
           </el-form-item>
 
           <el-form-item label="描述:" prop="description">
             <el-input
               class="form_item"
-                placeholder="请输入2-15位的描述" v-model.trim="temp.description"></el-input>
+                placeholder="请输入2-50位的描述" v-model.trim="temp.description"></el-input>
           </el-form-item>
           <el-form-item label="变量名:" v-if="this.dialogStatus == 'create'" prop="label">
 
@@ -93,7 +93,7 @@
           <el-form-item label="变量值:" v-if="this.dialogStatus == 'create'" prop="value">
             <el-input        
            class="form_item"
-            placeholder="请输入2-15位的变量值" v-model.trim="temp.value"></el-input>
+            placeholder="请输入2-50位的变量值" v-model.trim="temp.value"></el-input>
           </el-form-item>
 
           </el-form>
@@ -130,7 +130,7 @@
           <el-form-item label="变量值:"  prop="value">
             <el-input        
            class="form_item"
-            placeholder="请输入2-15位的变量值" v-model.trim="temp.value"></el-input>
+            placeholder="请输入2-50位的变量值" v-model.trim="temp.value"></el-input>
           </el-form-item>
 
           </el-form>
@@ -250,26 +250,26 @@ export default {
         value: [
           {
             required: true,
-            message: "请输入 2 到 15 位的数据值",
+            message: "请输入 2 到 50 位的数据值",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          { min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" }
         ],
         type: [
           {
             required: true,
-            message: "请输入 2 到 15 位的分类名称",
+            message: "请输入 2 到 50 位的分类名称",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          { min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" }
         ],
         description: [
           {
             required: true,
-            message: "请输入 2 到 15 位的描述",
+            message: "请输入 2 到 50 位的描述",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+          { min: 2, max: 50, message: "长度在 2 到 50 个字符", trigger: "blur" }
         ]
       },
       tableKey: 0,
