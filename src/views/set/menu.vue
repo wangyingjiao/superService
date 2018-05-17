@@ -142,7 +142,7 @@
           <el-form-item label="权限标识:" prop="permission" >
             <el-input        
            class="form_item"
-            placeholder="请输入2-15位的权限标识" v-model.trim="temp.permission"></el-input>
+            placeholder="请输入2-50位的权限标识" v-model.trim="temp.permission"></el-input>
           </el-form-item>
 
           <el-form-item label="排序:" prop="sort" >
@@ -154,7 +154,7 @@
           <el-form-item label="链接:">
             <el-input
            class="form_item"
-            placeholder="请输入2-15位的权限标识" v-model.trim="temp.href"></el-input>
+            placeholder="请输入2-50位的权限标识" v-model.trim="temp.href"></el-input>
           </el-form-item>
 
           <el-form-item label="图标:">
@@ -251,10 +251,10 @@ export default {
         permission: [
           {
             required: true,
-            message: "请输入2-15位的权限标识",
+            message: "请输入2-50位的权限标识",
             trigger: "blur"
           },
-          { min: 2, max: 15, message: "请输入2-15位的权限标识" }
+          { min: 2, max: 50, message: "请输入2-50位的权限标识" }
         ],
         sort: [
           {
