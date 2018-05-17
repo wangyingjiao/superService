@@ -75,7 +75,7 @@
 							</el-table-column>
 						<!-- 技师结束 -->
 						<!-- 7天时间 -->
-							<el-table-column min-width="120" v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate" align="center" className="work">
+							<el-table-column min-width="120" v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate+'('+weekNum(item.weekNum)+')'" align="center" className="work">
 								<template scope="scope">
 									<!-- 
 										1：有工资时间
@@ -193,6 +193,24 @@
 			orgSearch
 		},
 		methods:{
+			weekNum(num){
+				switch(num){
+					case 1:
+						return '周一'
+					case 2:
+						return '周二'
+					case 3:
+						return '周三'
+					case 4:
+						return '周四'
+					case 5:
+						return '周五'
+					case 6:
+						return '周六'
+					case 7:
+						return '周日'
+				} 
+			},
 			orgSearch(item){
 				this.search.orgId = item
 				this.search.stationId = ''

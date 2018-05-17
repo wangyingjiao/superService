@@ -193,10 +193,10 @@
                                             v-model="basicForm.serItemCommodity.startPerNum"
                                             placeholder="请输入起步人数(默认为1)"></el-input>
                                         </el-form-item>
-                                        <el-form-item label="封顶人数：" prop="serItemCommodity.cappinPerNum" class="combination-name">
+                                        <el-form-item label="封顶人数：" prop="serItemCommodity.cappingPerNum" class="combination-name">
                                         <el-input
                                             style="width:60%"
-                                            v-model="basicForm.serItemCommodity.cappinPerNum"
+                                            v-model="basicForm.serItemCommodity.cappingPerNum"
                                             placeholder="请输入封顶人数"></el-input>
                                         </el-form-item>
                                         <el-form-item label="起够数量：" prop="serItemCommodity.minPurchase" class="combination-name">
@@ -264,7 +264,7 @@
           </div>
 		  <!-- </div> -->
               <div slot="footer" class="dialog-footer" style="text-align:center">
-                <input type="button" class="button-large btn-color" :disabled="btnState" @click="subFormCom('basic')" value="保 存">
+                <input v-if="dialogStatus != 'update'" type="button" class="button-large btn-color" :disabled="btnState" @click="subFormCom('basic')" value="保 存">
                 <input type="button" class="button-cancel btn-color-cancel" @click="cancel('basic')" value="取 消">
               </div>
             </el-dialog>
@@ -917,7 +917,6 @@ export default {
       addCommodityFlag: false,
       editName: {},
       customArr: [],
-      orgList:[],
       jointCode: false,
       dockingData: [],
       alreadyArr: [],
@@ -1012,7 +1011,7 @@ export default {
             type:'',  //计量方式
             convertHours:'',  //折算时长
             startPerNum:'',  //起步
-            cappinPerNum:'',  //封顶
+            cappingPerNum:'',  //封顶
             minPurchase:'' //起购
         }
       },
@@ -1187,16 +1186,27 @@ export default {
   methods: {
     //编辑
     combinationEdit(id){
-        this.dialogFormVisible = true
-        this.listDataAllClick()
+        this.dialogStatus = "update";
+        this.$emit('listloadingson',true)
         ServerEdit({id:id})
             .then(({data:{code,data}})=>{
-                this.basicForm = data
-                // this.basicForm.sortId = data.sortId
-                console.log(data.sortId,"data-----______")
+              this.jointCode = true;
+              this.tableProject({ majorSort: data.majorSort }, data.sortId);
+              this.basicForm = data
+              this.picList = data.pictures;
+              this.customArr = data.customTags || [];
+              this.alreadyArr = data.sysTags || [];
+              this.commodityArr = data.serItemCommodity.combinationCommodities
+              if(data.pictureDetails != undefined){
+                this.pictureDetails = data.pictureDetails;
+              }else{
+                this.pictureDetails = ["", "", "", ""];
+              }
+              this.$emit('listloadingson',false)
+              this.dialogFormVisible = true
             })
             .catch(error=>{
-                console.log(error,"error----")
+              console.log(error,"error----")
             })
     },
     dialogFormVisibleClick(){
@@ -1215,7 +1225,6 @@ export default {
     //组合商品信息--选择商品--单选
     selectCommoditySingle(item){
       this.$set(this.commodityArr,0,item)
-      console.log(this.radio,"radio-----")
     },
     //组合商品信息--选择商品--删除商品
     commodityDelete(item){
@@ -1254,7 +1263,6 @@ export default {
           }
         }
       }
-      console.log(this.commodityArr,"this.commodityArr-------")
     },
     ommodityCancel(){
       this.combinationTypeDialog = false;
@@ -1264,12 +1272,17 @@ export default {
         this.loadingCom = true;
         let obj = {}
         obj.sortId = this.basicForm.sortId;
-        obj.orgId = this.basicForm.orgId;
+        if(this.techUserType == 'sys'){
+          obj.orgId = this.basicForm.orgId;
+        }else{
+           obj.orgId = '';
+        }
         obj.itemName = this.itemName
         obj.goodsName = this.goodName
         listDataBySortId(obj).then(({data:{code,data}})=>{
             if(code == 1){
                 let i , j , len = data.length,lon = this.commodityArr.length;
+                //判读：复选框选中
                 for( i = len ; i -- ;){
                     data[i].combinationPrice = '0'
                     data[i].combinationNum = '1'
@@ -1280,7 +1293,6 @@ export default {
                     }
                 }
                 this.commodityDate = data
-                console.log(this.commodityArr,"this.commodityArr--------")
             }else{
 
             }
@@ -1296,12 +1308,14 @@ export default {
     //服务分类
     typeAlive(num){
       this.basicForm.serItemCommodity.serviceType = num
-      this.comInformationDelete()
+      this.comInformationDelete(true)
     },
-    comInformationDelete(){
+    comInformationDelete(bl){
+      if(this.dialogStatus != "update" || bl==true){
         this.commodityArr = []
         this.basicForm.serItemCommodity.combinationCommodities = []
         this.radio = ''
+      }
     },
     orgSearch(item){
       this.search.orgId = item
@@ -1726,6 +1740,10 @@ export default {
       this.basicForm.name = "";
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
+      this.commodityArr = []
+      this.basicForm.serItemCommodity.cappingPerNum = ''
+      this.basicForm.serItemCommodity.startPerNum = ''
+      this.basicForm.serItemCommodity.minPurchase = ''
     },
     //编辑方法
     handleUpdate(row) {
@@ -1908,11 +1926,9 @@ export default {
             loading.close();
             this.dialogFormVisible = false
             this.$emit('comlist')
-            console.log(data)
         }).catch(error=>{
             console.log(error,"error--------")
         })
-        console.log(this.basicForm,"basicForm----+++++")
     },
     //保存
     subForm(formName) {
@@ -2104,7 +2120,9 @@ export default {
     listDataAllClick(){
          let list = async ()=>{
             try{
-                this.handleClick({ name: "all" });
+              let _list = await this.$refs['orgSearch'].listDataAll()
+              this.orgList = _list
+              // this.handleClick({ name: "all" });
             }
             catch(error){
             }
@@ -2112,6 +2130,9 @@ export default {
         list()
     }
   },
+  props:[
+    'orgList'
+  ],
   components: {
     imgService,
     addCommodity,
@@ -2119,6 +2140,7 @@ export default {
     combination
   },
   mounted(){
+    // this.listDataAllClick()
     // console.log('_______________________________________')
     // let list = async ()=>{
     //   try{
