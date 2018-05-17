@@ -1478,7 +1478,8 @@ export default {
       roomSelNum: [],
       workTimes: [], //工作时间
       freStyl: "4",
-      freStyl1: "8"
+      freStyl1: "8",
+      creatIs:""
     };
   },
   created() {
@@ -1553,6 +1554,7 @@ export default {
       this.timeArea = "";
       this.timeAreaoptions = [];
       this.Orderform1.testsele = key;
+      this.teachArr = []
     },
     //更换固定时间取消
     setCancel(formName) {
@@ -1607,6 +1609,7 @@ export default {
 
     //单选服务时间段中星期几选择
     roomSel2(item, index) {
+      this.creatIs = 'yes'
       this.timeArea = "";
       // this.listShowFlag=false;
       this.weekNumber = item.name;
@@ -1616,6 +1619,15 @@ export default {
       this.roomSel1Arr = Object.assign({}, item); //存储星期的对象
       // } else {
       //   this.remove(this.roomSelNum, this.roomSel1Arr, item.id);//星期去重
+      // }
+      // console.log(this.roomSel1Arr, this.teachArr, "11111111111");
+      // for(var i of this.teachArr){
+      //   console.log(i)
+      //   if(this.roomSel1Arr.name == i.name){
+      //     console.log(2222222);
+      //     this.creatIs = 'no'
+      //   }
+        
       // }
       //星期几的id在对象中遍历得到下拉日期数据
       if (this.roomSelNum.length > 0) {
@@ -1649,16 +1661,21 @@ export default {
       obj.name = this.roomSel1Arr.name;
       obj.timeArea = this.timeArea;
       // this.disbArr = this.disbArr.concat(this.roomSelNum);
-      console.log(obj, this.teachArr, "11111111111");
+      
       if (this.Orderform1.testsele == "week_some") {
         if (this.teachArr.length > 0) {
+          this.creatIs = 'no'
           for (var i of this.teachArr) {
             console.log(i, "iiiiii");
             if (i.name == obj.name) {
               console.log("mmmmm");
-            } else {
-              this.teachArr.push(obj);
-            }
+              this.$message.error("当前日期已选择");
+              this.creatIs = 'yes'
+              break
+            } 
+          }
+          if(this.creatIs == 'no'){
+            this.teachArr.push(obj);
           }
         } else {
           this.teachArr.push(obj);
@@ -1672,13 +1689,14 @@ export default {
       // if(this.Orderform1.testsele == 'week_some'){
       //   console.log("multiple")
       //   console.log(this.roomSel1Arr)
-      //   this.listShowFlag=true;
+        this.listShowFlag=true;
       // }else{
       //   console.log("single")
       //   console.log(this.roomSel1Arr)
       //   this.listShowFlag=true;
       //   //this.Orderform1.workTimes=this.weekNumber+this.timeArea
       // }
+    
     },
     //数组去重
     remove(num, arr, val) {
