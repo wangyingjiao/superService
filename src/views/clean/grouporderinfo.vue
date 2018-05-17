@@ -124,7 +124,7 @@
                         </div>
                         <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}小时</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
-                          <li v-for="item in otherInfo.freList" :key="item">{{item.week}}{{item.startTime}}{{item.endTime}}</li>
+                          <li v-for="item in otherInfo.freList" :key="item.id">{{item.week}}{{item.startTime}}{{item.endTime}}</li>
                           <li>每周一 08:00 ~ 12:00</li>
                           <li>每周一 08:00 ~ 12:00</li>
                         </ul>
@@ -1236,23 +1236,23 @@ export default {
       } else {
         callback(new Error("请选择服务时间段"));
       }
-    };        
+    };
     return {
-      listShowFlag:false,//单选结果显示开关
-      weekNumber:'',//单选星期几
-      timeArea:'',//单选时间段值
-      timeAreaoptions:[],//单选时间段下拉对象      
-      frequencyStatus:'week_some',//服务频次开关
-      yuyuedialogVisible: false,//预约弹窗开关
-      gudingFlag:false,//固定时间改派技师显示开关
-      severFrequencyFlag:false,//固定时间服务显示开关
-      gudingFlag1:false,//更换时间改派技师显示开关
-      gudingFlag11:false,//预约改派技师显示开关
-      yuyueselectDateFlag:false,//预约日期选择开关
-      severHour:'',
-      yuyueNumber:'',
-      frequencyOptions:'',
-      frequencySelecte:'',
+      listShowFlag: false, //单选结果显示开关
+      weekNumber: "", //单选星期几
+      timeArea: "", //单选时间段值
+      timeAreaoptions: [], //单选时间段下拉对象
+      frequencyStatus: "week_some", //服务频次开关
+      yuyuedialogVisible: false, //预约弹窗开关
+      gudingFlag: false, //固定时间改派技师显示开关
+      severFrequencyFlag: false, //固定时间服务显示开关
+      gudingFlag1: false, //更换时间改派技师显示开关
+      gudingFlag11: false, //预约改派技师显示开关
+      yuyueselectDateFlag: false, //预约日期选择开关
+      severHour: "",
+      yuyueNumber: "",
+      frequencyOptions: "",
+      frequencySelecte: "",
       addtimeFlag: true,
       //单选星期对象
       sexDay: [
@@ -1284,17 +1284,17 @@ export default {
           name: "星期日",
           id: 7
         }
-      ],            
-      testFlag:false,
-      changeTechFlag:false,
-      radio1:'',
-      radio3:'',
-      yuyueradio:'',
-      radio4:'',
+      ],
+      testFlag: false,
+      changeTechFlag: false,
+      radio1: "",
+      radio3: "",
+      yuyueradio: "",
+      radio4: "",
       listTech1: [],
       techName1: "",
-      radio:'',
-      RemarkInfFlag:false,
+      radio: "",
+      RemarkInfFlag: false,
       jumpUrl: "#",
       middleB: [],
       ruleForm: {
@@ -1346,17 +1346,21 @@ export default {
       },
       Orderform1: {
         workTimes: "",
-        testsele:'',
-        severHour:'',
-        Date:'',
-        Tech:'',
-      }, 
+        testsele: "",
+        severHour: "",
+        Date: "",
+        Tech: ""
+      },
       orderrules1: {
-        testsele:[{ required: true, message: "请选择服务频次", trigger: "change" }],
-        workTimes: [{ required: true, message:"请选择服务时间", trigger: "blur" }],
-        Date:[{ required: true, message: "请选择日期", trigger: "change" }],
-        Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
-      },           
+        testsele: [
+          { required: true, message: "请选择服务频次", trigger: "change" }
+        ],
+        workTimes: [
+          { required: true, message: "请选择服务时间", trigger: "blur" }
+        ],
+        Date: [{ required: true, message: "请选择日期", trigger: "change" }],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
+      },
       orderrules: {
         becouss: [
           { required: true, message: "请选择取消原因", trigger: "change" }
@@ -1369,18 +1373,22 @@ export default {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }],
-        Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
+        Time: [
+          { required: true, message: "请选择服务时间", trigger: "change" }
+        ],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       yuyueformInline1rules: {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [{ required: true, message: "请选择服务时间", trigger: "change" }],
-        Tech: [{ required: true, message: "请选择技师", trigger: "change" }],
-      },      
+        Time: [
+          { required: true, message: "请选择服务时间", trigger: "change" }
+        ],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
+      },
       timeObj: [], //时间对象
-      yuyuetimeObj:[],//预约时间对象
+      yuyuetimeObj: [], //预约时间对象
       addressInfo: [], //服务地址信息
       otherInfo: [],
       payInfo: [], //支付信息
@@ -1388,7 +1396,7 @@ export default {
       goodsInfo: [], //服务信息
       options: [],
       techName: "",
-      isB: false,//单选星期与时段显示开关
+      isB: false, //单选星期与时段显示开关
       techStationId: "",
       promShow1: false,
       promInf1: "搜索内容不存在!",
@@ -1398,45 +1406,61 @@ export default {
       formInline: {
         Date: "",
         Time: "",
-        Tech:''
+        Tech: ""
       },
       yuyueformInline: {
         Date: "",
         Time: "",
-        Tech:'',
-        severHour:''
-      },      
+        Tech: "",
+        severHour: ""
+      },
       value1: "",
       value2: "",
       tabOptions: [],
       dialogTableVisible: false,
       dialogTableVisible1: false,
-      tableData: [{
-        goodsName:'组合商品名1',
-        item:[{itemId:'1',itemName:'项目名1'},{itemId:'2',itemName:'项目名2'}],
-        goods:[{goodsId:'1',goodsName:'项目名1'},{goodsId:'2',goodsName:'项目名2'}],
-        goodsNum:'4',
-        goodsUnit:'平米',
-        payPrice:'1200.00',
-        payPriceSum:'4800.00'
-      },
-      {
-        goodsName:'组合商品名1',
-        item:[{itemId:'1',itemName:'项目名1'},{itemId:'2',itemName:'项目名2'}],
-        goods:[{goodsId:'1',goodsName:'商品名1'},{goodsId:'2',goodsName:'商品名2'}],
-        goodsNum:'4',
-        goodsUnit:'平米',
-        payPrice:'1200.00',
-        payPriceSum:'4800.00'
-      }],
+      tableData: [
+        {
+          goodsName: "组合商品名1",
+          item: [
+            { itemId: "1", itemName: "项目名1" },
+            { itemId: "2", itemName: "项目名2" }
+          ],
+          goods: [
+            { goodsId: "1", goodsName: "项目名1" },
+            { goodsId: "2", goodsName: "项目名2" }
+          ],
+          goodsNum: "4",
+          goodsUnit: "平米",
+          payPrice: "1200.00",
+          payPriceSum: "4800.00"
+        },
+        {
+          goodsName: "组合商品名1",
+          item: [
+            { itemId: "1", itemName: "项目名1" },
+            { itemId: "2", itemName: "项目名2" }
+          ],
+          goods: [
+            { goodsId: "1", goodsName: "商品名1" },
+            { goodsId: "2", goodsName: "商品名2" }
+          ],
+          goodsNum: "4",
+          goodsUnit: "平米",
+          payPrice: "1200.00",
+          payPriceSum: "4800.00"
+        }
+      ],
       tableData1: [],
       tableData2: [],
       yuyuetableData: [],
-      ordertableData:[{
-        orderNumber:'201805140951500199941896',
-        serverTime:'2018-05-18 18:00:00',
-        testObj:[{},{}]
-      }],
+      ordertableData: [
+        {
+          orderNumber: "201805140951500199941896",
+          serverTime: "2018-05-18 18:00:00",
+          testObj: [{}, {}]
+        }
+      ],
       dialogVisible: false,
       middleA: [],
       changTime: "",
@@ -1448,13 +1472,13 @@ export default {
       addressInf: [],
       startTime: "09:00",
       endTime: "05:00",
-      roomSel1Arr: [],
-      teachArr: [], 
+      roomSel1Arr: {},
+      teachArr: [],
       disbArr: [],
       roomSelNum: [],
-      workTimes: [],//工作时间
-      freStyl:'4',
-      freStyl1:'8',                 
+      workTimes: [], //工作时间
+      freStyl: "4",
+      freStyl1: "8"
     };
   },
   created() {
@@ -1470,173 +1494,192 @@ export default {
   },
   methods: {
     //预约操作
-    yuyueClick(){
-      this.yuyueradio='';
-      this.yuyueformInline.severHour='1';
-      this.yuyueNumber='1';
-      this.yuyuedialogVisible=true;
-    },    
+    yuyueClick() {
+      this.yuyueradio = "";
+      this.yuyueformInline.severHour = "1";
+      this.yuyueNumber = "1";
+      this.yuyuedialogVisible = true;
+    },
     //固定时间查询服务技师按钮
-    searchSeverTech(){
-       this.gudingFlag=true;
+    searchSeverTech() {
+      this.gudingFlag = true;
       //技师表格数据
-      this.tableData3=this.tableData1
+      this.tableData3 = this.tableData1;
     },
     //固定时间查询服务日期按钮
-    searchSeverDate(){
-      this.severFrequencyFlag=true;
-      this.freStyl='4';
-      this.radio4='';
+    searchSeverDate() {
+      this.severFrequencyFlag = true;
+      this.freStyl = "4";
+      this.radio4 = "";
     },
     //预约查询服务日期按钮
-    searchseverDateyuyue(){
-      this.yuyueselectDateFlag=true;
-      this.yuyueradio=''
+    searchseverDateyuyue() {
+      this.yuyueselectDateFlag = true;
+      this.yuyueradio = "";
     },
     //预约查询服务技师按钮
-    searchSeverTechyuyue(){
-       this.gudingFlag11=true;
-       this.yuyueradio=''
+    searchSeverTechyuyue() {
+      this.gudingFlag11 = true;
+      this.yuyueradio = "";
       //技师表格数据
-      this.yuyuetableData=this.tableData1
-    },    
+      this.yuyuetableData = this.tableData1;
+    },
     //更换时间查询服务技师按钮
-    searchSeverTech1(){
-       this.gudingFlag1=true;
+    searchSeverTech1() {
+      this.gudingFlag1 = true;
       //技师表格数据
-      this.tableData2=this.tableData1
-    },    
+      this.tableData2 = this.tableData1;
+    },
     //固定时间服务时长改变
-    numberChange(val){
-      this.freStyl='4';
-      this.Orderform1.severHour=val
-      this.severFrequencyFlag=false;
-      this.gudingFlag=false;
-      this.radio4='';
+    numberChange(val) {
+      this.freStyl = "4";
+      this.Orderform1.severHour = val;
+      this.severFrequencyFlag = false;
+      this.gudingFlag = false;
+      this.radio4 = "";
     },
     //预约数量改变
-    yuyuenumberChange(val){
-      this.yuyueformInline.severHour=val
-      this.yuyueNumber=val;
-      this.yuyueselectDateFlag=false;
-      this.gudingFlag11=false;
-    },    
+    yuyuenumberChange(val) {
+      this.yuyueformInline.severHour = val;
+      this.yuyueNumber = val;
+      this.yuyueselectDateFlag = false;
+      this.gudingFlag11 = false;
+    },
     //固定时间服务频次更换
-    Changefrequency(key,index){
-      this.frequencySelecte=key;
-      this.freStyl=index;
-      this.freStyl1='8';
-      this.timeArea='';
-      this.timeAreaoptions=[];
-      this.Orderform1.testsele=key;
+    Changefrequency(key, index) {
+      this.frequencySelecte = key;
+      this.freStyl = index;
+      this.freStyl1 = "8";
+      this.timeArea = "";
+      this.timeAreaoptions = [];
+      this.Orderform1.testsele = key;
     },
     //更换固定时间取消
-    setCancel(formName){
-      this.freStyl='4';
-      this.freStyl1='8';
-      this.timeArea='';
-      this.timeAreaoptions=[];
-      this.gudingFlag=false;     
+    setCancel(formName) {
+      this.freStyl = "4";
+      this.freStyl1 = "8";
+      this.timeArea = "";
+      this.timeAreaoptions = [];
+      this.gudingFlag = false;
       this.$refs[formName].resetFields();
-      this.testFlag=false;
+      this.testFlag = false;
     },
     //更换固定时间保存
-    setOk(formName){
-          this.$refs[formName].validate(val => {
-                if (val) {
-                  for (var i = 0; i < this.teachArr.length; i++) {
-                    if (this.teachArr[i].endTime == "24:00") {
-                      this.teachArr[i].endTime = "23:59:59";
-                    }
-                  }
-                  if (this.teachArr.endTime == "24:00") {
-                    this.teachArr.endTime = "23:59";
-                  }
-                  this.Orderform1.workTimes = this.teachArr;
-                  //服务频次 this.testsele
-                  
-                  this.freStyl='4'
-                  this.freStyl1='8';
-                  this.timeArea='';
-                  this.timeAreaoptions=[];
-                  console.log(this.Orderform1.severHour)               
-                  this.testFlag=false;
-                  //this.$refs[formName].resetFields();
-                }
-            })
+    setOk(formName) {
+      this.$refs[formName].validate(val => {
+        if (val) {
+          for (var i = 0; i < this.teachArr.length; i++) {
+            if (this.teachArr[i].endTime == "24:00") {
+              this.teachArr[i].endTime = "23:59:59";
+            }
+          }
+          if (this.teachArr.endTime == "24:00") {
+            this.teachArr.endTime = "23:59";
+          }
+          this.Orderform1.workTimes = this.teachArr;
+          //服务频次 this.testsele
 
-
-      
-      
+          this.freStyl = "4";
+          this.freStyl1 = "8";
+          this.timeArea = "";
+          this.timeAreaoptions = [];
+          console.log(this.Orderform1.severHour);
+          this.testFlag = false;
+          //this.$refs[formName].resetFields();
+        }
+      });
     },
     //更换固定时间按钮
-    changeguTime(){
-        this.freStyl='4';
-        this.freStyl1='8';
-        this.timeArea='';
-        this.timeAreaoptions=[];
-        this.gudingFlag=false;
-        this.testFlag=true;
-        this.Orderform1.testsele='';
-        this.radio4 = "";
-        this.Orderform1.severHour='1';
-        this.severHour='1';        
-        this.teachArr = [];
-        this.disbArr = [];
+    changeguTime() {
+      this.freStyl = "4";
+      this.freStyl1 = "8";
+      this.timeArea = "";
+      this.timeAreaoptions = [];
+      this.gudingFlag = false;
+      this.testFlag = true;
+      this.Orderform1.testsele = "";
+      this.radio4 = "";
+      this.Orderform1.severHour = "1";
+      this.severHour = "1";
+      this.teachArr = [];
+      this.disbArr = [];
     },
-    
-    //单选服务时间段中星期几选择    
-    roomSel2(item,index) {
-      this.timeArea='';
-      this.listShowFlag=false;
-      this.weekNumber=item.name;
-      this.freStyl1=index      
-      if (this.roomSelNum.indexOf(item.id) == -1) {
-        this.roomSelNum.push(item.id);//存储星期的ID
-        this.roomSel1Arr.push(item);//存储星期的对象
-      } else {
-        this.remove(this.roomSelNum, this.roomSel1Arr, item.id);//星期去重
-      }
-      //星期几的id在对象中遍历得到下拉日期数据 
-      if(this.roomSelNum.length >0){
-          if(item.id == 1){
-            this.timeAreaoptions=[{label:'8:00-10:00',value:'aa'},{label:'18:00-20:00',value:'bb'}]
-          }
-          if(item.id == 2){
-            this.timeAreaoptions=[{label:'6:00-10:00',value:'a1'},{label:'16:00-18:00',value:'b1'}]
-          }        
-      }else{
-           this.timeAreaoptions=[];
-      }       
 
-    },   
-    //单选服务时间段确定动作    
-    singletechClick() {      
-      if(this.weekNumber ==""){
-        this.$message.error("请选择星期");
-        return false
+    //单选服务时间段中星期几选择
+    roomSel2(item, index) {
+      this.timeArea = "";
+      // this.listShowFlag=false;
+      this.weekNumber = item.name;
+      this.freStyl1 = index;
+      // if (this.roomSelNum.indexOf(item.id) == -1) {
+      this.roomSelNum.push(item.id); //存储星期的ID
+      this.roomSel1Arr = Object.assign({}, item); //存储星期的对象
+      // } else {
+      //   this.remove(this.roomSelNum, this.roomSel1Arr, item.id);//星期去重
+      // }
+      //星期几的id在对象中遍历得到下拉日期数据
+      if (this.roomSelNum.length > 0) {
+        if (item.id == 1) {
+          this.timeAreaoptions = [
+            { label: "8:00-10:00", value: "aa" },
+            { label: "18:00-20:00", value: "bb" }
+          ];
+        }
+        if (item.id == 2) {
+          this.timeAreaoptions = [
+            { label: "6:00-10:00", value: "a1" },
+            { label: "16:00-18:00", value: "b1" }
+          ];
+        }
+      } else {
+        this.timeAreaoptions = [];
       }
-      if(this.timeArea ==""){
+    },
+    //单选服务时间段确定动作
+    singletechClick() {
+      if (this.weekNumber == "") {
+        this.$message.error("请选择星期");
+        return false;
+      }
+      if (this.timeArea == "") {
         this.$message.error("请选择时段");
-        return false
+        return false;
       }
       var obj = {};
-      this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
-      obj.timeArea = [].concat(this.roomSel1Arr);
-      this.disbArr = this.disbArr.concat(this.roomSelNum);
-      this.teachArr.push(obj);     
-      if(this.Orderform1.testsele == 'week_some'){
-        console.log("multiple")
-        console.log(this.roomSel1Arr)
-        this.listShowFlag=true;
-      }else{
-        console.log("single")
-        console.log(this.roomSel1Arr)
-        this.listShowFlag=true;
-        //this.Orderform1.workTimes=this.weekNumber+this.timeArea           
-      } 
-     
-    },    
+      obj.name = this.roomSel1Arr.name;
+      obj.timeArea = this.timeArea;
+      // this.disbArr = this.disbArr.concat(this.roomSelNum);
+      console.log(obj, this.teachArr, "11111111111");
+      if (this.Orderform1.testsele == "week_some") {
+        if (this.teachArr.length > 0) {
+          for (var i of this.teachArr) {
+            console.log(i, "iiiiii");
+            if (i.name == obj.name) {
+              console.log("mmmmm");
+            } else {
+              this.teachArr.push(obj);
+            }
+          }
+        } else {
+          this.teachArr.push(obj);
+        }
+      } else {
+        this.teachArr.splice(0);
+        this.teachArr.push(obj);
+      }
+
+      console.log(this.teachArr, "绑定值");
+      // if(this.Orderform1.testsele == 'week_some'){
+      //   console.log("multiple")
+      //   console.log(this.roomSel1Arr)
+      //   this.listShowFlag=true;
+      // }else{
+      //   console.log("single")
+      //   console.log(this.roomSel1Arr)
+      //   this.listShowFlag=true;
+      //   //this.Orderform1.workTimes=this.weekNumber+this.timeArea
+      // }
+    },
     //数组去重
     remove(num, arr, val) {
       for (var i = 0; i < num.length; i++) {
@@ -1646,29 +1689,26 @@ export default {
           break;
         }
       }
-    },                
+    },
     //单选请选择服务时间段点击
     addtime() {
       this.isB = true;
-    },        
-   //单选服务时间段中选择后取消
+    },
+    //单选服务时间段中选择后取消
     singleaddtimeno() {
-      this.freStyl1='8';
-      this.timeArea='';
-      this.timeAreaoptions=[];
+      this.freStyl1 = "8";
+      this.timeArea = "";
+      this.timeAreaoptions = [];
       this.isB = false;
     },
-    singledeletes(){
-      this.timeArea = ''  
-      this.freStyl1='8'
-      this.Orderform1.workTimes=''      
-      if(this.Orderform1.testsele == 'week_some'){
-
-      }else{
-        this.listShowFlag=false; 
+    singledeletes() {
+      this.timeArea = "";
+      this.freStyl1 = "8";
+      this.Orderform1.workTimes = "";
+      if (this.Orderform1.testsele == "week_some") {
+      } else {
+        this.listShowFlag = false;
       }
-     
-         
     },
     //固定技师选择单选改变
     getCurrentRow(value) {
@@ -1677,50 +1717,50 @@ export default {
     //更换技师（表格内）单选改变
     getCurrentRow3(value) {
       this.radio3 = value;
-      this.formInline.Tech=this.radio3;
+      this.formInline.Tech = this.radio3;
     },
     //预约单选改变
     yuyuegetCurrentRow(value) {
       this.yuyueradio = value;
-      this.yuyueformInline.Tech=this.yuyueradio;
-    },    
+      this.yuyueformInline.Tech = this.yuyueradio;
+    },
     //固定时间更换弹窗单选改变
     getCurrentRow4(value) {
       this.radio4 = value;
-      this.Orderform1.Tech=this.radio4;
-    },        
+      this.Orderform1.Tech = this.radio4;
+    },
     //改派单选改变
     getCurrentRow1(value) {
       this.radio1 = value;
-    },          
+    },
     //查看备注按钮
-    lookRemark(row){
-      this.RemarkInfFlag=true;
+    lookRemark(row) {
+      this.RemarkInfFlag = true;
     },
     //更换技师按钮
-    changeTech(row){
-      this.changeTechFlag=true;
+    changeTech(row) {
+      this.changeTechFlag = true;
     },
     //更换技师确定
     changeTechOk() {
-      this.changeTechFlag=false;
+      this.changeTechFlag = false;
     },
     //更换固定技师弹出层确认
     submitForm21() {
-      var tech=[];
-      for(var a= 0;a<this.listTech1.length;a++){
-        if(this.radio == this.listTech1[a].techId){
-          tech.push(this.listTech1[a].techId)
+      var tech = [];
+      for (var a = 0; a < this.listTech1.length; a++) {
+        if (this.radio == this.listTech1[a].techId) {
+          tech.push(this.listTech1[a].techId);
         }
       }
-      console.log(tech,'更换固定技师')
+      console.log(tech, "更换固定技师");
       this.dialogTableVisible1 = false;
     },
     //更换固定技师弹出层取消
     cancelForm21() {
       this.listTech1 = [];
       this.dialogTableVisible1 = false;
-    },     
+    },
     //多少退款改变
     ChangerefundType(value) {
       if (value == "") {
@@ -1861,19 +1901,18 @@ export default {
     },
     //跳转退款详情页
     gotoRefund(orderNumber) {
-      if(this.btnShow.indexOf('refund_view') > -1){
+      if (this.btnShow.indexOf("refund_view") > -1) {
         var src = window.location.href;
         var end = src.indexOf("#") + 1;
         var url = src.substring(0, end);
         this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
         window.open(this.jumpUrl);
-      }else{
-          this.$message({
-            type: "warning",
-            message: "无查看退款权限!"
-          });        
+      } else {
+        this.$message({
+          type: "warning",
+          message: "无查看退款权限!"
+        });
       }
-
     },
     loadingClick() {
       loading = this.$loading({
@@ -1927,11 +1966,11 @@ export default {
     },
     //预约的保存
     yuyuesubmitTime(formName) {
-      this.gudingFlag11=false;
+      this.gudingFlag11 = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.yuyuetimeSaveFlag1 = true;
-          
+
           var time = "";
           for (var a = 0; a < this.yuyuetimeObj.length; a++) {
             if (this.yuyuetimeObj[a].selected == true) {
@@ -1961,7 +2000,7 @@ export default {
                       message: "更换时间成功!"
                     });
                     this.$refs["formInline"].resetFields();
-                    this.yuyuedialogVisible=false;
+                    this.yuyuedialogVisible = false;
                     this.yuyuetimeObj = [];
                     this.tableData1 = res.data.data.list;
                     this.otherInfo.serviceHour = this.formatDuring(
@@ -2013,7 +2052,7 @@ export default {
     },
     //预约取消
     yuyuecancelTime(formName) {
-      this.gudingFlag11=false;
+      this.gudingFlag11 = false;
       this.$refs[formName].resetFields();
       //样式复位
       for (var a = 0; a < this.yuyuetimeObj.length; a++) {
@@ -2023,11 +2062,11 @@ export default {
         this.$refs.yuyueTimeWrap[a].style.border = "1px solid #bfcbd9";
         this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt";
       }
-      this.yuyuedialogVisible=false;
-    },    
+      this.yuyuedialogVisible = false;
+    },
     //更换时间的保存
     submitTime(formName) {
-      this.gudingFlag1=false;
+      this.gudingFlag1 = false;
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.timeSaveFlag = true;
@@ -2112,7 +2151,7 @@ export default {
     },
     //更换时间取消
     cancelTime(formName) {
-      this.gudingFlag1=false;
+      this.gudingFlag1 = false;
       this.$refs[formName].resetFields();
       //样式复位
       for (var a = 0; a < this.timeObj.length; a++) {
@@ -2137,7 +2176,7 @@ export default {
     //预约中日期变化时改变时间对象
     yuyuedateChange(val) {
       //this.options21
-    },        
+    },
     //日期变化时改变时间对象
     dateChange(val) {
       var that = this;
@@ -2181,7 +2220,7 @@ export default {
           this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt";
         }
       }
-    },    
+    },
     //已有订单更换时间弹窗中的时间选项点击
     timeChange(index, obj) {
       for (var a = 0; a < this.timeObj.length; a++) {
@@ -2207,20 +2246,19 @@ export default {
         techName: this.techName1
       };
       //服务技师获取
-        addTechData(obj)
-          .then(res => {
-            this.listTech1 = [];
-            if (res.data.code === 1) {
-              if (res.data.data != undefined) {
-                this.listTech1 = res.data.data;
-              } else {
-                this.listTech1 = [];
-              }
+      addTechData(obj)
+        .then(res => {
+          this.listTech1 = [];
+          if (res.data.code === 1) {
+            if (res.data.data != undefined) {
+              this.listTech1 = res.data.data;
+            } else {
+              this.listTech1 = [];
             }
-          })
-          .catch(res => {});
-  
-    },    
+          }
+        })
+        .catch(res => {});
+    },
     //新增选择技师弹出层查询按钮
     searchTeh() {
       var obj = {
@@ -2280,7 +2318,7 @@ export default {
           }
         }
       }
-    },       
+    },
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
@@ -2321,12 +2359,11 @@ export default {
           });
       }
       if (this.status == "edit") {
-        var tech=[];
-        for(var a=0 ;a<this.listTech.length;a++){
-            if(this.radio1==this.listTech[a].techId){
-              tech.push(this.listTech[a].techId)
-              
-            }
+        var tech = [];
+        for (var a = 0; a < this.listTech.length; a++) {
+          if (this.radio1 == this.listTech[a].techId) {
+            tech.push(this.listTech[a].techId);
+          }
         }
         //改派操作this.radio1为技师id
         var obj1 = {
@@ -2364,8 +2401,8 @@ export default {
     },
     //改派或新增技师
     gaiPai(status, obj) {
-      this.gudingFlag1=false;
-      this.radio1='';
+      this.gudingFlag1 = false;
+      this.radio1 = "";
       this.aa = obj.techId;
       this.status = status;
       this.techName = "";
@@ -2401,22 +2438,22 @@ export default {
     },
     //改派或新增技师
     gaiPai1() {
-        this.radio='';
-        this.techName1 = "";
-        var obj = {
-          id: this.orderId
-        };
-        addTechData(obj)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.dialogTableVisible1 = true;
-              if (res.data.data != undefined) {
-                this.listTech1 = res.data.data;
-              }
+      this.radio = "";
+      this.techName1 = "";
+      var obj = {
+        id: this.orderId
+      };
+      addTechData(obj)
+        .then(res => {
+          if (res.data.code === 1) {
+            this.dialogTableVisible1 = true;
+            if (res.data.data != undefined) {
+              this.listTech1 = res.data.data;
             }
-          })
-          .catch(res => {});
-    },    
+          }
+        })
+        .catch(res => {});
+    },
     //取消订单
     cancelOrder() {
       this.cancelOrderFlag = true;
@@ -2426,7 +2463,7 @@ export default {
       this.ruleForm.refundAccount = 0;
       this.ruleForm.refundDifference = "";
       this.ruleForm.refundDifferenceType = "";
-      this.ruleForm.orderNowRefundStatus='';
+      this.ruleForm.orderNowRefundStatus = "";
       this.orderRefundFlag = true;
       //退款按钮
       var obj1 = {
@@ -2479,7 +2516,7 @@ export default {
     },
     //已有订单中表格中的服务时间按钮
     changeTime(row) {
-      this.radio3 ='';
+      this.radio3 = "";
       this.timeObj = [];
       if (this.otherInfo.serviceStatus != "finish") {
         var obj = {
@@ -2510,11 +2547,11 @@ export default {
   mounted() {
     this.choose = this.dict.refund_type;
     //服务频次字典量
-    this.frequencyOptions = this.dict.frequency_options;    
+    this.frequencyOptions = this.dict.frequency_options;
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
     var orderId = window.localStorage.getItem("grouporderId");
-    //orderId 
+    //orderId
     if (this.$route.query.id == undefined) {
       this.getOrderAllInf(orderId);
     } else {
@@ -2524,11 +2561,11 @@ export default {
 };
 </script>
 <style   scoped>
-.aaa .el-form-item__error{
-  color:#000;
+.aaa .el-form-item__error {
+  color: #000;
 }
-.activeStyle{
-  color:#4c70e8;
+.activeStyle {
+  color: #4c70e8;
   border-color: #4c70e8 !important;
 }
 /* 自定义单元格样式 */
@@ -2547,18 +2584,29 @@ export default {
   left: -82px;
   color: red;
 }
-.frequencyTabs{
-  float:left;border:1px solid #ccc;width:80px;height:34px;line-height:34px;margin:0 20px 0 0;text-align:center;border-radius:4px;
+.frequencyTabs {
+  float: left;
+  border: 1px solid #ccc;
+  width: 80px;
+  height: 34px;
+  line-height: 34px;
+  margin: 0 20px 0 0;
+  text-align: center;
+  border-radius: 4px;
 }
-.severPromitINf{
-   float: left;font-size:12px;color: #576475;
+.severPromitINf {
+  float: left;
+  font-size: 12px;
+  color: #576475;
 }
-.time{    
-    position: absolute;
-    right: 50px;
-    top: 15px;
+.time {
+  position: absolute;
+  right: 50px;
+  top: 15px;
 }
-ul li{    list-style: none;}
+ul li {
+  list-style: none;
+}
 .i-delete {
   position: absolute;
   right: 20px;
@@ -2582,8 +2630,8 @@ ul li{    list-style: none;}
 }
 .btn-styl {
   height: 25px;
-  line-height:25px;
-  display:inline-block;
+  line-height: 25px;
+  display: inline-block;
   width: 60px;
 }
 .tech-green {
@@ -2624,7 +2672,6 @@ ul li{    list-style: none;}
   border: 1px solid #bfcbd9;
   background: #fff;
   float: left;
-
 }
 .wirkTimes {
   width: 550px;
@@ -2678,7 +2725,7 @@ ul li{    list-style: none;}
 }
 
 .selfToolTip1 {
-  margin:0 auto;
+  margin: 0 auto;
   width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2788,7 +2835,7 @@ ul li{    list-style: none;}
 .selfbeizhu1 {
   width: 800px;
   float: left;
-  display:block;  
+  display: block;
   margin-left: 102px;
   margin-top: -15px;
   word-break: break-all;
@@ -2855,13 +2902,19 @@ ul li{    list-style: none;}
   margin-top: 20px;
   margin-left: 10px;
 }
-.NowTabs{
-  color:#576475;float:left;width:100%;font-size:14px;margin-top:15px;margin-bottom:10px;margin-left: 15px;
+.NowTabs {
+  color: #576475;
+  float: left;
+  width: 100%;
+  font-size: 14px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 15px;
 }
 .techNameStyle {
   width: 83px;
-  display:inline-block;
-  font-size:14px;
+  display: inline-block;
+  font-size: 14px;
   overflow: hidden;
   margin-left: -9px;
   text-overflow: ellipsis;
@@ -2875,12 +2928,12 @@ ul li{    list-style: none;}
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:3px 6px 3px 8px;
-  background:#f0f4f5;
-  color:#7a838a;
-  font-size:14px;
+  margin: 3px 6px 3px 8px;
+  background: #f0f4f5;
+  color: #7a838a;
+  font-size: 14px;
   position: relative;
-  border:1px solid #bfcbd9
+  border: 1px solid #bfcbd9;
 }
 .height70 {
   height: 70px;
@@ -2995,8 +3048,11 @@ ul li{    list-style: none;}
   padding-bottom: 20px;
   margin-top: 20px;
 }
-.yuyueStyle{
-  margin: 20px 0 20px 0px;font-size:12px;color: #8391a5;width:1020px;
+.yuyueStyle {
+  margin: 20px 0 20px 0px;
+  font-size: 12px;
+  color: #8391a5;
+  width: 1020px;
 }
 .selfTableWrapStyle2 {
   min-width: 1020px;
@@ -3011,8 +3067,6 @@ ul li{    list-style: none;}
   width: 960px;
   display: inline-block;
   margin-top: 20px;
-  
- 
 }
 .selfWrap1 {
   width: 100%;
@@ -3029,7 +3083,7 @@ ul li{    list-style: none;}
   cursor: pointer;
 }
 .plusComb {
-  display:block;
+  display: block;
   float: left;
   width: 32px;
   height: 32px;
@@ -3040,7 +3094,7 @@ ul li{    list-style: none;}
   font-size: 20px;
 }
 .plusComtent {
-  display:block;
+  display: block;
   float: left;
   width: 78px;
   height: 32px;
@@ -3066,7 +3120,7 @@ ul li{    list-style: none;}
   cursor: pointer;
   border: 1px solid #4c70e8;
   text-align: center;
-  display:block;
+  display: block;
   color: #4c70e8;
 }
 .custom-action {
@@ -3112,7 +3166,9 @@ ul li{    list-style: none;}
   width: 170px;
 }
 .lineContent3 {
- width:500px;margin-left:20px;display:inline-block;
+  width: 500px;
+  margin-left: 20px;
+  display: inline-block;
 }
 .lineContent1 {
   display: inline-block;
