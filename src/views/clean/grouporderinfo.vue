@@ -1043,7 +1043,7 @@
                     <el-form-item style="margin-top: -15px;">
                       <div style="font-size: 12px;color: #576475;float:left;">* 目前固定服务时间： 一周多次   每周二   13:00 ~ 15:00、每周五   13:00 ~ 15:00</div>                                                                                          
                     </el-form-item>                                                      
-                    <el-form-item v-if="freStyl !='4' && Orderform1.testsele !='week_some'" label="服务时间：" prop="workTimes">
+                    <el-form-item v-if="freStyl !='4'" label="服务时间：" prop="workTimes">
                           <div class="tech-order-jn" style="width:550px">
                             <span class="tech-order-btn" @click="addtime"> &#10010;请选择服务时间段</span>
                           </div>
@@ -1055,7 +1055,7 @@
                                       <div style="display:flex;">
                                         <div class="selfCheckBoxsday">日期</div>
                                         <input type="button" class="selfCheckBoxs tech-order-posis"                                         
-                                          @click="roomSel2(item,index)" :key="index" v-for="(item,index) in sexDay1" 
+                                          @click="roomSel2(item,index)" :key="index" v-for="(item,index) in sexDay" 
                                           :class="freStyl1 == index ? 'tech-green' :''"
                                           :value="item.name"
                                         >
@@ -1080,7 +1080,7 @@
                                 </div>                                                        
                             </el-collapse-transition>                          
                           </el-form-item>
-                          <div v-show="listShowFlag && freStyl !='4' && Orderform1.testsele !='week_some'">
+                          <div v-show="listShowFlag && freStyl !='4'">
                               <el-form-item >
                                 <ul class="working" style="width:550px;margin-top: -21px;">
                                   <li>
@@ -1098,43 +1098,6 @@
                                 <div class="severPromitINf">* 两周后的订单将按照更换后的固定时间分配</div>
                               </el-form-item>                    
                           </div>
-                      <el-form-item v-if="freStyl !='4' && Orderform1.testsele =='week_some'" label="服务时间：" prop='workTimes'>
-                          <div class="tech-order-jn" style="width:550px">
-                            <span class="tech-order-btn" @click="multipleaddtime"> &#10010;请选择服务时间段</span>
-                          </div>
-                          <el-collapse-transition>                            
-                              <div class="tech-order-jn-sons wirkTimes" v-show="isB1">
-                                <div style="margin:0 10px;">
-                                  <p style="padding:10px 0;">新增日期</p>
-                                  <div>
-                                    <div style="display:flex;">
-                                      <div class="selfCheckBoxsday">日期</div>
-                                      <input type="button" class="selfCheckBoxs tech-order-posis"                                         
-                                        @click="roomSel1(item,index)" :key="index" v-for="(item,index) in sexDay"
-                                        :class="[{'tech-green':roomSelNum.indexOf(item.id)!=-1},{'tech-dir':disbArr.indexOf(item.id)!=-1}]"                                         
-                                        :value="item.name"
-                                      >
-                                    </div>
-                                  </div>
-                                  <div style="margin-top:10px;">
-                                    <div class="selfCheckBoxsday">时段</div>
-                                    <el-select v-model="timeArea1" style="width:231px;"  @change='changeTimeArea' placeholder="请选择时间段">
-                                      <el-option
-                                        v-for="item in timeAreaoptions1"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.label">
-                                      </el-option>
-                                    </el-select> 
-                                  </div>
-                                </div>
-                                <div style="margin:10px 10px 10px;">
-                                  <span class="button-large btn-styl" @click="multipletechClick">确认</span>
-                                  <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="multipleaddtimeno" value="取消">
-                                </div>
-                              </div>                                                        
-                          </el-collapse-transition>                                                  
-                      </el-form-item>                                                    
                       <el-form-item label="选择日期" prop='Date' >
                               <el-select v-model="Orderform1.Date" style="width:550px;"  @change='dateChange' placeholder="请选择第一次服务日期">
                                 <el-option
@@ -1279,11 +1242,7 @@ export default {
       listShowFlag:false,//单选结果显示开关
       weekNumber:'',//单选星期几
       timeArea:'',//单选时间段值
-      timeAreaoptions:[],//单选时间段下拉对象
-      listShowFlag1:false,//单选结果显示开关
-      weekNumber1:'',//单选星期几
-      timeArea1:'',//单选时间段值
-      timeAreaoptions1:[],//单选时间段下拉对象      
+      timeAreaoptions:[],//单选时间段下拉对象      
       frequencyStatus:'week_some',//服务频次开关
       yuyuedialogVisible: false,//预约弹窗开关
       gudingFlag:false,//固定时间改派技师显示开关
@@ -1296,39 +1255,8 @@ export default {
       frequencyOptions:'',
       frequencySelecte:'',
       addtimeFlag: true,
-      //多选星期对象
+      //单选星期对象
       sexDay: [
-        {
-          name: "星期一",
-          id: 1
-        },
-        {
-          name: "星期二",
-          id: 2
-        },
-        {
-          name: "星期三",
-          id: 3
-        },
-        {
-          name: "星期四",
-          id: 4
-        },
-        {
-          name: "星期五",
-          id: 5
-        },
-        {
-          name: "星期六",
-          id: 6
-        },
-        {
-          name: "星期日",
-          id: 7
-        }
-      ],
-      //多选星期对象
-      sexDay1: [
         {
           name: "星期一",
           id: 1
@@ -1465,7 +1393,6 @@ export default {
       options: [],
       techName: "",
       isB: false,//单选星期与时段显示开关
-      isB1: false,//多选星期与时段显示开关
       techStationId: "",
       promShow1: false,
       promInf1: "搜索内容不存在!",
@@ -1603,11 +1530,6 @@ export default {
       this.frequencySelecte=key;
       this.freStyl=index;
       this.Orderform1.testsele=key;
-      if(this.Orderform1.testsele == 'week_some'){
-        console.log("multiple")
-      }else{
-        console.log("single")
-      }
     },
     //更换固定时间取消
     setCancel(formName){
@@ -1654,40 +1576,13 @@ export default {
         this.teachArr = [];
         this.disbArr = [];
     },
-    //服务时间段中排序
-    by(name) {
-      return function(o, p) {
-        var a, b;
-        if (typeof o === "object" && typeof p === "object" && o && p) {
-          a = o[name];
-          b = p[name];
-          if (a === b) {
-            return 0;
-          }
-          if (typeof a === typeof b) {
-            return a < b ? -1 : 1;
-          }
-          return typeof a < typeof b ? -1 : 1;
-        } else {
-          throw "error";
-        }
-      };
-    },    
+    
     //单选服务时间段中星期几选择    
     roomSel2(item,index) {
       this.timeArea='';
       this.listShowFlag=false;
       this.weekNumber=item.name;
-      this.freStyl1=index
-      //星期几的id在对象中遍历得到下拉日期数据
-      if(item.id == 1){
-        this.timeAreaoptions=[{label:'8:00-10:00',value:'aa'},{label:'18:00-20:00',value:'bb'}]
-      }else{
-        this.timeAreaoptions=[]
-      }
-    },
-    //多选服务时间段中星期几选择    
-    roomSel1(item,index) {
+      this.freStyl1=index      
       if (this.roomSelNum.indexOf(item.id) == -1) {
         this.roomSelNum.push(item.id);//存储星期的ID
         this.roomSel1Arr.push(item);//存储星期的对象
@@ -1697,52 +1592,39 @@ export default {
       //星期几的id在对象中遍历得到下拉日期数据 
       if(this.roomSelNum.length >0){
           if(this.roomSelNum[this.roomSelNum.length-1] == 1){
-            this.timeAreaoptions1=[{label:'8:00-10:00',value:'aa'},{label:'18:00-20:00',value:'bb'}]
+            this.timeAreaoptions=[{label:'8:00-10:00',value:'aa'},{label:'18:00-20:00',value:'bb'}]
           }
           if(this.roomSelNum[this.roomSelNum.length-1] == 2){
-            this.timeAreaoptions1=[{label:'6:00-10:00',value:'a1'},{label:'16:00-18:00',value:'b1'}]
+            this.timeAreaoptions=[{label:'6:00-10:00',value:'a1'},{label:'16:00-18:00',value:'b1'}]
           }        
       }else{
-           this.timeAreaoptions1=[];
-      }    
-    },
-    //多选时段变化
-    changeTimeArea(val){
-       console.log(val)
-    },    
+           this.timeAreaoptions=[];
+      }       
+
+    },   
     //单选服务时间段确定动作    
-    singletechClick() {
-     if(this.weekNumber ==""){
-       this.$message.error("请选择星期");
-      return false
-     }
-     if(this.timeArea ==""){
-       this.$message.error("请选择时段");
-      return false
-     }
-     if(this.timeArea != '' && this.weekNumber !=''){
-       this.listShowFlag=true;
-       this.Orderform1.workTimes=this.weekNumber+this.timeArea
-     }      
+    singletechClick() {      
+      if(this.weekNumber ==""){
+        this.$message.error("请选择星期");
+        return false
+      }
+      if(this.timeArea ==""){
+        this.$message.error("请选择时段");
+        return false
+      }
+      if(this.Orderform1.testsele == 'week_some'){
+        console.log("multiple")
+        console.log(this.roomSel1Arr)
+        console.log(this.timeArea)
+      }else{
+        console.log("single")
+        console.log(this.roomSel1Arr)
+        console.log(this.timeArea)
+        //this.listShowFlag=true;
+        //this.Orderform1.workTimes=this.weekNumber+this.timeArea           
+      } 
+     
     },    
-    //多选服务时间段确定动作    
-    multipletechClick() {
-          var obj = {};
-          obj.startTime = this.startTime;
-          obj.endTime = this.endTime;
-          this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
-          obj.weeks = [].concat(this.roomSel1Arr);
-          this.disbArr = this.disbArr.concat(this.roomSelNum);
-          this.teachArr.push(obj);
-          this.isB1 = false;
-          if (this.disbArr.length > 0) {
-            this.disbArr.map(item => {
-              if (this.roomSelNum.indexOf(item) != -1) {
-                this.remove(this.roomSelNum, this.roomSel1Arr, item);
-              }
-            });
-          }      
-    },
     //数组去重
     remove(num, arr, val) {
       for (var i = 0; i < num.length; i++) {
@@ -1756,16 +1638,7 @@ export default {
     //单选请选择服务时间段点击
     addtime() {
       this.isB = true;
-    },
-    //多选请选择服务时间段点击
-    multipleaddtime() {
-      this.isB1 = true;
-    },
-   //多选服务时间段中选择后取消
-    multipleaddtimeno() {
-      this.isB1 = false;
-    },    
-        
+    },        
    //单选服务时间段中选择后取消
     singleaddtimeno() {
       this.isB = false;
@@ -2020,7 +1893,7 @@ export default {
         masterId: orderId
       };
       //getOrderInf1
-      getOrderInf(obj)
+      getOrderInf1(obj)
         .then(res => {
           if (res.data.code === 1) {
             var AllInfo = res.data.data;
