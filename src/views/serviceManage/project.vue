@@ -82,7 +82,7 @@
           </template>
       </el-table-column>
 
-      <el-table-column  label="商品分类" align="center">
+      <el-table-column  label="商品分类" align="center" min-width="95">
           <template scope="scope">
               <span>{{scope.row.goodsType == 'single' ? '单一' : '组合'}}</span>
           </template>
@@ -136,7 +136,7 @@
           </template>
         </el-table-column> -->
         <!-- :width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?550:150" -->
-        <el-table-column align="center" label=""  width="250">
+        <el-table-column align="center" label=""  width="240">
              <template scope="scope">
             <div
               class="branch"  
@@ -154,7 +154,7 @@
           </template>
         </el-table-column>
         <!-- 项目 -->
-        <el-table-column align="center" label="" width="200">
+        <el-table-column align="center" label="" width="170">
           <template scope="scope">
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
@@ -169,7 +169,7 @@
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <combination @comlist="comList" ref='combination' :org-list="orgList"></combination>
+    <combination @listloadingson="listloadingson" @comlist="comList" ref='combination' :org-list="orgList"></combination>
     <!-- 添加，编辑弹框 -->
     <el-dialog 
       :title="textMap[dialogStatus]" 
@@ -1758,9 +1758,8 @@ export default {
           this.listLoading = false;
         });
     },
-    listLoadingSon(bl){
-      console.log("bl__________")
-      this.listLoading = bl
+    listloadingson(bl){
+     this.listLoading = bl;
     },
     // 搜索
     handleSizeChange(val) {

@@ -1187,11 +1187,11 @@ export default {
     //编辑
     combinationEdit(id){
         this.dialogStatus = "update";
-        this.$emit('listLoadingSon')
+        this.$emit('listloadingson',true)
         ServerEdit({id:id})
             .then(({data:{code,data}})=>{
               this.jointCode = true;
-              // this.tableProject({ majorSort: data.majorSort }, data.sortId);
+              this.tableProject({ majorSort: data.majorSort }, data.sortId);
               this.basicForm = data
               this.picList = data.pictures;
               this.customArr = data.customTags || [];
@@ -1202,7 +1202,7 @@ export default {
               }else{
                 this.pictureDetails = ["", "", "", ""];
               }
-              this.$emit('listLoadingSon',false)
+              this.$emit('listloadingson',false)
               this.dialogFormVisible = true
             })
             .catch(error=>{
@@ -1225,7 +1225,6 @@ export default {
     //组合商品信息--选择商品--单选
     selectCommoditySingle(item){
       this.$set(this.commodityArr,0,item)
-      console.log(this.radio,"radio-----")
     },
     //组合商品信息--选择商品--删除商品
     commodityDelete(item){
@@ -1264,7 +1263,6 @@ export default {
           }
         }
       }
-      console.log(this.commodityArr,"this.commodityArr-------")
     },
     ommodityCancel(){
       this.combinationTypeDialog = false;
@@ -1295,7 +1293,6 @@ export default {
                     }
                 }
                 this.commodityDate = data
-                console.log(this.commodityArr,"this.commodityArr--------")
             }else{
 
             }
@@ -1311,10 +1308,10 @@ export default {
     //服务分类
     typeAlive(num){
       this.basicForm.serItemCommodity.serviceType = num
-      this.comInformationDelete()
+      this.comInformationDelete(true)
     },
-    comInformationDelete(){
-      if(this.dialogStatus != "update"){
+    comInformationDelete(bl){
+      if(this.dialogStatus != "update" || bl==true){
         this.commodityArr = []
         this.basicForm.serItemCommodity.combinationCommodities = []
         this.radio = ''
@@ -1643,7 +1640,6 @@ export default {
       }
     },
     houseClick(val) {
-      console.log('dawdaw-d--------')
       this.basicForm.sortId = "";
       this.tableProject({ majorSort: val });
       this.houseStr = val;
@@ -1930,11 +1926,9 @@ export default {
             loading.close();
             this.dialogFormVisible = false
             this.$emit('comlist')
-            console.log(data)
         }).catch(error=>{
             console.log(error,"error--------")
         })
-        console.log(this.basicForm,"basicForm----+++++")
     },
     //保存
     subForm(formName) {
