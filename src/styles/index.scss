@@ -640,6 +640,9 @@ body {
 .schedule-table .el-table .el-table__header thead tr:nth-of-type(2){
 	display:none;
 }
+.testaa th{
+  border-right: 0px solid #dfe6ec; 
+}
 //改派内部表格样式自定义
 .dispatchTaleSelf  .cell{
 	padding: 0;

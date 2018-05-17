@@ -101,7 +101,8 @@
             <div class="hr-style"></div>
             <div class="selfWrap1">
                 <div class="leftArea" style="width:420px;">
-                   <p class="contentLine">
+                   <p class="contentLine" >
+                     <!-- v-if="otherInfo.orderType =='group_split_no'" -->
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
                    </p>
@@ -115,6 +116,7 @@
                    </p>                                                                                            
                 </div>
                 <div class="rightArea" style="width:520px;">
+                   <!-- v-if="otherInfo.orderType =='group_split_yes'" -->
                      <div style="width:80px;float:left;margin-top: 20px;">固定服务时间:</div>
                       <div  style="float:left;width:380px;">
                         <div style="float:left;width:80px;margin-top: 20px;">
@@ -122,11 +124,21 @@
                           <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
                           <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
                         </div>
-                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}小时</div>
+                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
-                          <li v-for="item in otherInfo.freList" :key="item.id">{{item.week}}{{item.startTime}}{{item.endTime}}</li>
-                          <li>每周一 08:00 ~ 12:00</li>
-                          <li>每周一 08:00 ~ 12:00</li>
+                          <li v-for="item in otherInfo.freList" :key="item.id">
+                            <span>
+                              每周
+                              <span v-if="item.week =='1'">一</span>
+                              <span v-if="item.week =='2'">二</span>
+                              <span v-if="item.week =='3'">三</span>
+                              <span v-if="item.week =='4'">四</span>
+                              <span v-if="item.week =='5'">五</span>
+                              <span v-if="item.week =='6'">六</span>
+                              <span v-if="item.week =='7'">日</span>
+                            </span>
+                            <span style="margin-left:10px;">{{item.startTime}}~{{item.endTime}}</span>
+                          </li>
                         </ul>
                         <div v-if=" frequencyStatus ==''" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime" value="更换固定时间"></div>
                         <div v-if=" frequencyStatus == 'week_some'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime" value="设置固定时间"></div>
@@ -193,61 +205,6 @@
             </div>                                     		
 		    </div>
         <!--服务信息结束-->
-        <!--技师信息开始-->
-        <!-- <div class="thrid-bar marginTop15">
-            <div class="custom-action">技师信息</div>
-            <div class="hr-style"></div>
-            <div class="techTabWrap">
-                <div class="addTechWrap"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')">
-                  <span class="plusComb">&#10010;</span>
-                  <span class="plusComtent">增加技师</span>
-                </div>
-                <div class="selfTableWrapStyle1">                
-                    <el-table
-                      :data="tableData1"
-                      border                  
-                      class="orderInfoHeaderPic">
-                      <el-table-column
-                        align="center"
-                        label="头像"
-                        >
-                        <template scope="scope">
-                        <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
-                        </template>
-                      </el-table-column>
-                      <el-table-column
-                        min-width="150"
-                        align="center"
-                        label="姓名"
-                        prop="techName"
-                        >                        
-                      </el-table-column>
-                      <el-table-column
-                        align="center"
-                        label="性别">
-                          <template scope="scope">
-                              <span v-if="scope.row.techSex =='male'">男</span>
-                            <span v-if="scope.row.techSex =='female'">女</span>
-                          </template>	                    
-                      </el-table-column>
-                      <el-table-column
-                        prop="techPhone"
-                        align="center"
-                        label="手机号">
-                      </el-table-column>                  
-                      <el-table-column
-                        align="center"
-                        label="操作">
-                          <template scope="scope">
-                                <div style="cursor:pointer;color:#4c70e8"  v-if="btnShow.indexOf('order_dispatch') > -1" @click="gaiPai('edit',scope.row)">改派</div>                    
-                          </template>                    
-                      </el-table-column>                  
-                    </el-table>
-                </div>
-            </div>                     		
-		    </div> -->
-        <!--技师信息结束-->        
-
         <!--服务地址信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">服务地址信息</div>
@@ -341,82 +298,114 @@
                     <el-table
                       :data="ordertableData"
                       border                  
-                      class="orderInfoHeaderPic">
+                      class="orderInfoHeaderPic testaa">
                       <el-table-column
-                        min-width="110"
                         align="center"
+                        width='180'
                         label="订单编号"
-                        prop="orderNumber"
                         >
-                        
+                            <template scope="scope">
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                {{item.orderNumber}}
+                              </div> 
+                            </template>                        
                       </el-table-column>
                       <el-table-column
-                        min-width="90"
                         align="center"
+                        width='120'
                         label="服务时间"
-                        prop="serverTime"
-                        >                        
+                        >
+                            <template scope="scope">
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                {{item.serviceTime}}
+                              </div> 
+                            </template>                                                
                       </el-table-column>
                       <el-table-column
                         align="center"
+                        width='100'
                         label="服务状态">
                           <template scope="scope">
-                            <span v-if="scope.row.serviceStatus =='wait_service'">待服务</span>
-                            <span v-if="scope.row.serviceStatus =='started'">已上门</span>
-                            <span v-if="scope.row.serviceStatus =='finish'">已完成</span>
-                            <span v-if="scope.row.serviceStatus =='cancel'">已取消</span>
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                  <span v-if="item.serviceStatus =='wait_service'">待服务</span>
+                                  <span v-if="item.serviceStatus =='started'">已上门</span>
+                                  <span v-if="item.serviceStatus =='finish'">已完成</span>
+                                  <span v-if="item.serviceStatus =='cancel'">已取消</span>
+                              </div>                            
                           </template>	                    
                       </el-table-column>
                       <el-table-column
                         align="center"
+                        width='100'
                         label="订单状态">
                           <template scope="scope">
-                          <span v-if="scope.row.orderStatus =='cancel'">已取消</span>
-                          <span v-if="scope.row.orderStatus =='dispatched'">已派单</span>
-                          <span v-if="scope.row.orderStatus =='finish'">已完成</span>
-                          <span v-if="scope.row.orderStatus =='close'">已关闭</span>
-                          <span v-if="scope.row.orderStatus =='stop'">已暂停</span>
-                          <span v-if="scope.row.orderStatus =='success'">已成功</span>
-                          <span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>                            
+                            <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                  <span v-if="item.orderStatus =='cancel'">已取消</span>
+                                  <span v-if="item.orderStatus =='dispatched'">已派单</span>
+                                  <span v-if="item.orderStatus =='finish'">已完成</span>
+                                  <span v-if="item.orderStatus =='close'">已关闭</span>
+                                  <span v-if="item.orderStatus =='stop'">已暂停</span>
+                                  <span v-if="item.orderStatus =='success'">已成功</span>
+                                  <span v-if="item.orderStatus =='waitdispatch'">待派单</span> 
+                            </div>                           
                           </template>	                    
                       </el-table-column> 
                       <el-table-column
-                        min-width="90"
                         align="center"
                         label="完成时间"
-                        prop="serverTime"
-                        >                        
-                      </el-table-column>                                           
-                      <el-table-column
-                        prop="techPhone"
-                        align="center"
-                        label="下单时间">
-                      </el-table-column>                  
-                      <el-table-column
-                        align="center"
-                        width="330"
-                        label="操作">
-                            <el-table-column
-                              align="center"
-                              width="110"
-                              :colspan="2"
-                              >
-                                <template scope="scope">
-                                    <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注"> 
-                                </template>                     
-                            </el-table-column>
-                            <el-table-column
-                              width="220"
-                              align="center">
-                                <template scope="scope">
-                                  <div class="selfTd" v-for="(item,index) in scope.row.testObj" :key="index">
-                                      <input type="button"  class="button-cancel height25"  @click="changeTime(scope.row)" value="更换时间">
-                                      <input type="button"  class="button-cancel height25"  @click="changeTech(scope.row)" value="更换技师">
-                                  </div>                       
-                                </template>                   
-                            </el-table-column>                                                                        
+                        width='120'
+                        >
+                            <template scope="scope">
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                {{item.finishTime}}
+                              </div> 
+                            </template>                                                 
                       </el-table-column>
-                                        
+                      <el-table-column
+                        align="center"
+                        label="对接订单编号"
+                        width='180'
+                        >
+                            <template scope="scope">
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                {{item.jointOrderId}}
+                              </div> 
+                            </template>                                                 
+                      </el-table-column>                                                                 
+                      <el-table-column
+                        prop="orderTime"
+                        align="center"
+                        width='120'
+                        label="下单时间">
+                            <template scope="scope">
+                              <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                                {{item.orderTime}}
+                              </div> 
+                            </template>                         
+                      </el-table-column>
+                      <el-table-column
+                        align="center"
+                        width="200"
+                        :render-header="renderHeader1"
+                        fixed="right"
+                        >                              
+                          <template scope="scope">
+                            <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
+                              <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注">
+                            </div> 
+                          </template>                     
+                      </el-table-column>                                        
+                      <el-table-column
+                        align="center"
+                        width="200"
+                        :render-header="renderHeader2"
+                        fixed="right"
+                        >
+                            <template scope="scope">                                  
+                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" @click="changeTime(scope.row)" value="更换时间">
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" @click="changeTech(scope.row)" value="更换技师">                                                         
+                            </template>                                                                                            
+                      </el-table-column>                                        
                     </el-table>
                 </div>
             </div>                     		
@@ -766,7 +755,7 @@
                   <el-form-item label="服务时长:" style="margin-top: -22px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
                     <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="yuyuenumberChange"></el-input-number>
-                    <div style="font-size: 12px;color: #576475;width:500px;">* 单次建议服务时长为3小时；总服务时长为6小时（预约个数 * 单次建议服务时长） </div>
+                    <div style="font-size: 12px;color: #576475;width:500px;">* 单次建议服务时长为3小时；总服务时长为{{tishiTime1}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue">查询服务日期</div> 
@@ -1025,7 +1014,7 @@
                 <el-form-item label="预约个数：" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <el-input-number class="selfINputNumStyle"  v-model="severHour" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="numberChange"></el-input-number>
-                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为3小时；总服务时长为6小时（预约个数 * 单次建议服务时长） </div>
+                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为3小时；总服务时长为{{tishi}}小时（预约个数 * 单次建议服务时长） </div>
                 </el-form-item>
                 <el-form-item label="" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
@@ -1454,12 +1443,20 @@ export default {
       tableData1: [],
       tableData2: [],
       yuyuetableData: [],
-      ordertableData: [
-        {
-          orderNumber: "201805140951500199941896",
-          serverTime: "2018-05-18 18:00:00",
-          testObj: [{}, {}]
-        }
+      ordertableData:[
+          {
+            ordN:[
+              {orderNumber:'201805140951500199941896',
+              serviceTime:'2018-05-18 18:00:00'},
+              { 
+                orderNumber:'201805140951500199941897',
+                serviceTime:'2018-05-18 18:00:00'}
+              ],
+          },
+          {ordN:[
+              {orderNumber:'201805140951500199941898',
+              serviceTime:'2018-05-18 18:00:00'}]       
+          }
       ],
       dialogVisible: false,
       middleA: [],
@@ -1479,7 +1476,9 @@ export default {
       workTimes: [], //工作时间
       freStyl: "4",
       freStyl1: "8",
-      creatIs:""
+      tishi:'',
+      tishiTime1:'',
+      
     };
   },
   created() {
@@ -1494,6 +1493,12 @@ export default {
     }
   },
   methods: {
+    renderHeader1 (h) {
+      return [h('p', {style:'font-size:14px;text-align:right;'}, ['操'])]
+    },
+    renderHeader2 (h) {
+      return [h('p', {style:'font-size:14px;text-align:left;'}, ['作'])]
+    },     
     //预约操作
     yuyueClick() {
       this.yuyueradio = "";
@@ -1533,6 +1538,16 @@ export default {
     },
     //固定时间服务时长改变
     numberChange(val) {
+      //预约个数*单次服务时间如果大于6提示不能
+      //0.5 为单次服务时间
+      if(val*0.5>6){
+            this.$message({
+              type: "warning",
+              message: "总服务时长不能大于6小时！"
+            });
+      }else{
+        this.tishi=val*0.5
+      }
       this.freStyl = "4";
       this.Orderform1.severHour = val;
       this.severFrequencyFlag = false;
@@ -1541,6 +1556,16 @@ export default {
     },
     //预约数量改变
     yuyuenumberChange(val) {
+      //预约个数*单次服务时间如果大于6提示不能
+      //0.5 为单次服务时间
+      if(val*0.5 > 6){
+            this.$message({
+              type: "warning",
+              message: "总服务时长不能大于6小时！"
+            });
+      }else{
+        this.tishiTime1=val*0.5
+      }
       this.yuyueformInline.severHour = val;
       this.yuyueNumber = val;
       this.yuyueselectDateFlag = false;
@@ -1957,6 +1982,7 @@ export default {
             // var severtime = new Date(AllInfo.serviceTime);
             // this.nowTime = severtime.getTime() - nowtime.getTime();
             this.otherInfo = AllInfo; //所有其他信息变量
+            this.ordertableData=AllInfo.orderCombinationGasqInfos;
             this.addressInf = AllInfo.addressInfo;
             this.otherInfo.serviceHour = this.formatDuring(
               AllInfo.serviceHour * 3600000
@@ -3068,11 +3094,8 @@ ul li {
   padding-bottom: 20px;
   margin-top: 20px;
 }
-.yuyueStyle {
-  margin: 20px 0 20px 0px;
-  font-size: 12px;
-  color: #8391a5;
-  width: 1020px;
+.yuyueStyle{
+  margin: 20px 0 20px 0px;font-size:12px;width:1020px;
 }
 .selfTableWrapStyle2 {
   min-width: 1020px;
