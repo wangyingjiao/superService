@@ -282,8 +282,6 @@ export default {
           return
         }
       }
-      // this.aaa = this.search
-      // console.log(this.aaa,'sssssssss')
       this.searchLoca = Object.assign({},this.search)
       //改变当前查询的E店：
       this.eshopCodeData()
