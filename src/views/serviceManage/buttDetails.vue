@@ -287,8 +287,6 @@ export default {
           return
         }
       }
-      // this.aaa = this.search
-      // console.log(this.aaa,'sssssssss')
       this.searchLoca = Object.assign({},this.search)
       //改变当前查询的E店：
       this.eshopCodeData()
@@ -316,7 +314,6 @@ export default {
         this.total = 0;
         return;
       }
-      console.log(obj,"obj++++++")
       if (this.activeName == "yesDocking") {
         this.buttedConnListApi(obj, page, size);
       } else {
