@@ -117,10 +117,15 @@
                 <div class="rightArea" style="width:520px;">
                      <div style="width:80px;float:left;margin-top: 20px;">固定服务时间:</div>
                       <div  style="float:left;width:380px;">
-                        <div style="float:left;width:80px;margin-top: 20px;">一周多次</div>
-                        <div style="float:left;width:80px;margin-top: 20px;">每次3小时</div>
+                        <div style="float:left;width:80px;margin-top: 20px;">
+                          <span v-if="otherInfo.serviceFrequency =='week_one'">1周1次</span>
+                          <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
+                          <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
+                        </div>
+                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}小时</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
-                          <li>每周一 08:00 ~ 12:00</li>
+                          week  startTime  endTime
+                          <li v-for="item in otherInfo.freList" :key="item">{{item.week}}{{item.startTime}}{{item.endTime}}</li>
                           <li>每周一 08:00 ~ 12:00</li>
                           <li>每周一 08:00 ~ 12:00</li>
                         </ul>
@@ -331,12 +336,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>3小时</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>
-                    <!--选项卡开始-->
-                    <el-tabs class="self-el-tabs"  style="margin-top:-20px;" v-model="activeName" @tab-click="handleClick">
-                      <el-tab-pane  v-for="(value,key,index) in orderTest" :label="value" :name='key' :key="index"></el-tab-pane>		
-                    </el-tabs>
-                    <!--选项卡结束-->                 
+                  <p class="yuyueStyle"><span>总服务次数为：<span>50</span>次 已服务<span>10</span>次 剩余<span>40</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>3小时</span></span><span style="float:right;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -399,22 +399,22 @@
                         label="操作">
                             <el-table-column
                               align="center"
-                              width="220"
+                              width="110"
                               :colspan="2"
                               >
+                                <template scope="scope">
+                                    <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注"> 
+                                </template>                     
+                            </el-table-column>
+                            <el-table-column
+                              width="220"
+                              align="center">
                                 <template scope="scope">
                                   <div class="selfTd" v-for="(item,index) in scope.row.testObj" :key="index">
                                       <input type="button"  class="button-cancel height25"  @click="changeTime(scope.row)" value="更换时间">
                                       <input type="button"  class="button-cancel height25"  @click="changeTech(scope.row)" value="更换技师">
                                   </div>                       
-                                </template>                    
-                            </el-table-column>
-                            <el-table-column
-                              width="110"
-                              align="center">
-                                <template scope="scope">
-                                    <input type="button"  class="button-cancel height25"  @click="lookRemark(scope.row)" value="查看备注"> 
-                                </template>                    
+                                </template>                   
                             </el-table-column>                                                                        
                       </el-table-column>
                                         
@@ -1083,11 +1083,11 @@
                           <div v-show="listShowFlag && freStyl !='4'">
                               <el-form-item >
                                 <ul class="working" style="width:550px;margin-top: -21px;">
-                                  <li>
+                                  <li v-for="item in teachArr" :key="item.id">
                                     <div>
                                       <div class="woking-div">
-                                        <div ><span>{{weekNumber}}</span></div>
-                                        <div class="time">{{timeArea}}</div>
+                                        <div ><span >{{item.name}}</span></div>
+                                        <div class="time">{{item.timeArea}}</div>
                                       </div>
                                     </div>
                                     <div>
@@ -1295,9 +1295,6 @@ export default {
       listTech1: [],
       techName1: "",
       radio:'',
-      orderTest: [],
-      active1: "",
-      activeName: "no_finished", //当前tabs
       RemarkInfFlag:false,
       jumpUrl: "#",
       middleB: [],
@@ -1529,11 +1526,17 @@ export default {
     Changefrequency(key,index){
       this.frequencySelecte=key;
       this.freStyl=index;
+      this.freStyl1='8';
+      this.timeArea='';
+      this.timeAreaoptions=[];
       this.Orderform1.testsele=key;
     },
     //更换固定时间取消
     setCancel(formName){
       this.freStyl='4';
+      this.freStyl1='8';
+      this.timeArea='';
+      this.timeAreaoptions=[];
       this.gudingFlag=false;     
       this.$refs[formName].resetFields();
       this.testFlag=false;
@@ -1554,6 +1557,9 @@ export default {
                   //服务频次 this.testsele
                   
                   this.freStyl='4'
+                  this.freStyl1='8';
+                  this.timeArea='';
+                  this.timeAreaoptions=[];
                   console.log(this.Orderform1.severHour)               
                   this.testFlag=false;
                   //this.$refs[formName].resetFields();
@@ -1567,6 +1573,9 @@ export default {
     //更换固定时间按钮
     changeguTime(){
         this.freStyl='4';
+        this.freStyl1='8';
+        this.timeArea='';
+        this.timeAreaoptions=[];
         this.gudingFlag=false;
         this.testFlag=true;
         this.Orderform1.testsele='';
@@ -1591,10 +1600,10 @@ export default {
       }
       //星期几的id在对象中遍历得到下拉日期数据 
       if(this.roomSelNum.length >0){
-          if(this.roomSelNum[this.roomSelNum.length-1] == 1){
+          if(item.id == 1){
             this.timeAreaoptions=[{label:'8:00-10:00',value:'aa'},{label:'18:00-20:00',value:'bb'}]
           }
-          if(this.roomSelNum[this.roomSelNum.length-1] == 2){
+          if(item.id == 2){
             this.timeAreaoptions=[{label:'6:00-10:00',value:'a1'},{label:'16:00-18:00',value:'b1'}]
           }        
       }else{
@@ -1612,15 +1621,19 @@ export default {
         this.$message.error("请选择时段");
         return false
       }
+      var obj = {};
+      this.roomSel1Arr = this.roomSel1Arr.sort(this.by("id"));
+      obj.timeArea = [].concat(this.roomSel1Arr);
+      this.disbArr = this.disbArr.concat(this.roomSelNum);
+      this.teachArr.push(obj);     
       if(this.Orderform1.testsele == 'week_some'){
         console.log("multiple")
         console.log(this.roomSel1Arr)
-        console.log(this.timeArea)
+        this.listShowFlag=true;
       }else{
         console.log("single")
         console.log(this.roomSel1Arr)
-        console.log(this.timeArea)
-        //this.listShowFlag=true;
+        this.listShowFlag=true;
         //this.Orderform1.workTimes=this.weekNumber+this.timeArea           
       } 
      
@@ -1641,14 +1654,22 @@ export default {
     },        
    //单选服务时间段中选择后取消
     singleaddtimeno() {
+      this.freStyl1='8';
+      this.timeArea='';
+      this.timeAreaoptions=[];
       this.isB = false;
     },
     singledeletes(){
-     this.timeArea = ''  
-     this.weekNumber =''
-     this.freStyl1='8'
-     this.Orderform1.workTimes=''
-     this.listShowFlag=false;     
+      this.timeArea = ''  
+      this.freStyl1='8'
+      this.Orderform1.workTimes=''      
+      if(this.Orderform1.testsele == 'week_some'){
+
+      }else{
+        this.listShowFlag=false; 
+      }
+     
+         
     },
     //固定技师选择单选改变
     getCurrentRow(value) {
@@ -1672,30 +1693,7 @@ export default {
     //改派单选改变
     getCurrentRow1(value) {
       this.radio1 = value;
-    },        
-    //tabs操作需要请求表格数据
-    handleClick(tab, event) {
-      this.activeName = tab.name;
-      this.active1 = tab.name;
-      //更改表格内容
-      this.searchliveOrer(this.active1)      
-    },
-    //查询已有订单信息
-    searchliveOrer(name){
-       if(name == 'finished'){
-         this.ordertableData=[{
-                   orderNumber:'201805140951500199941897',
-                   serverTime:'2018-05-18 10:00:00',
-                   testObj:[{},{}]
-         }]
-       }else{
-         this.ordertableData=[{
-                   orderNumber:'201805140951500199941896',
-                   serverTime:'2018-05-18 18:00:00',
-                   testObj:[{},{}]
-         }]         
-       }
-    },   
+    },          
     //查看备注按钮
     lookRemark(row){
       this.RemarkInfFlag=true;
@@ -2512,7 +2510,6 @@ export default {
   },
   mounted() {
     this.choose = this.dict.refund_type;
-    this.orderTest = this.dict.group_order_status;
     //服务频次字典量
     this.frequencyOptions = this.dict.frequency_options;    
     this.becaussOptions = this.dict.cancel_type;
