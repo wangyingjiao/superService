@@ -1238,7 +1238,7 @@ export default {
       if (this.teachArr.length > 0 && this.teachArr != undefined) {
         callback();
       } else {
-        callback(new Error("请选择服务时间段"));
+        callback(new Error("请选择服务时间"));
       }
     };
     return {
@@ -1360,7 +1360,7 @@ export default {
           { required: true, message: "请选择服务频次", trigger: "change" }
         ],
         workTimes: [
-          { required: true, message: "请选择服务时间", trigger: "blur" }
+          { required: true,validator:WORKTIMES , trigger: "blur" }
         ],
         Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
@@ -1450,6 +1450,7 @@ export default {
       copyserviceHour1:'',//单次服务时间格式转换后的
       yuyuegeshu:'',//返回预约个数
       gudingStatus:'',
+      techArrtest:[],
     };
   },
   created() {
@@ -1494,7 +1495,6 @@ export default {
         this.Orderform1.testsele='';
         this.teachArr=[];
       }     
-
       this.listShowFlag=false;
       this.isB = false;           
       //预约个数*单次服务时间如果大于6提示不能
@@ -1598,6 +1598,8 @@ export default {
           this.gudingFlag = false;
           this.$refs[formName].resetFields();          
       }
+      this.teachArr=this.techArrtest;
+      this.otherInfo.freList=this.techArrtest;
       this.testFlag = false;
     },
     //更换固定时间保存
@@ -1647,6 +1649,7 @@ export default {
         if(this.otherInfo.serviceFrequency =='week_some'){
              a=1
         }
+        this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
         this.teachArr = this.otherInfo.freList; //服务时间的回显 
         this.Changefrequency(this.otherInfo.serviceFrequency,a)//服务频次回显
         this.searchSeverTech();//查询服务技师表格数据
@@ -1703,16 +1706,13 @@ export default {
         return false;
       }
       var obj = {};
-      //obj.name = this.roomSel1Arr.name;
       obj.week = this.roomSel1Arr.id;
       obj.timeArea = this.timeArea;      
       if (this.Orderform1.testsele == "week_some") {
         if (this.teachArr.length > 0) {
           this.creatIs = 'no'
           for (var i of this.teachArr) {
-            console.log(i, "iiiiii");
-            if (i.name == obj.name) {
-              console.log("mmmmm");
+            if (i.week == obj.week) {
               this.$message.error("当前日期已选择");
               this.creatIs = 'yes'
               break
@@ -1750,12 +1750,8 @@ export default {
       this.freStyl1 = "8";
       this.timeArea = "";
       this.timeAreaoptions = [];
-      this.teachArr=[];
-      this.listShowFlag=false;
-      this.isB = false;
     },
     singledeletes(item) {
-      console.log(item)
       this.teachArr.remove(item)
       this.timeArea = "";
       this.freStyl1 = "8";
