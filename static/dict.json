@@ -240,5 +240,9 @@
     },         
     "refund_method":{
         "cash":"现金"
-    }    
+    },
+    "goods_type":{
+        "single":"单一商品",
+        "combined":"组合商品"
+    }        
 }
