@@ -1,320 +1,237 @@
 <template>
 <div id="project">
-  <div class="filter-container">
-    <!-- 添加，编辑弹框 -->
-    <el-dialog 
-      :title="textMap[dialogStatus]" 
-      :visible.sync="dialogFormVisible" 
-      :show-close= "false"
-       :close-on-click-modal="false"
-       :close-on-press-escape="false"
-       @close="emptyingForm"
-      class="diatable combination">
-      <div class="tabBox">
-          <div class="tabLeft fl" ref="refTab">
-          <el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
-            <el-radio-button label="1" style="display:none"></el-radio-button>
-            <el-radio-button :disabled="jointCode"  class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
-            <el-radio-button :disabled="jointCode"  style="width:100%;" label="repair">家修</el-radio-button>
-            <el-radio-button label="2" style="display:none"></el-radio-button>
-          </el-radio-group>
-        </div>
-         <div class="tabRight fl">
-			 <h3 class="tit">基本信息</h3><hr/><br/>
-              <el-form 
-                class="small-space basic" 
-                :model="basicForm" 
-                label-position="left" 
-                label-width="90px" 
-                 ref="basic" 
-                :rules="basicRles" >
-                <el-form-item label="所属机构：" class="seize" prop="orgId" v-if="techUserType=='sys'">
-                    <el-select :disabled="textMap[dialogStatus]=='编辑服务项目'" filterable v-model="basicForm.orgId" style="width:100%" class="form_item">
-                      <el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
-                      </el-option>
-                    </el-select>
-                </el-form-item>
-                
-                <el-form-item label="所属分类：" class="seize" prop="sortId">
-                  <el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="comInformationDelete">
-                    <el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+  	<div class="filter-container">
+<!-- 添加，编辑弹框 -->
+		<el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :show-close= "false" :close-on-click-modal="false"
+		:close-on-press-escape="false" @close="emptyingForm" class="diatable combination">
+			<div class="tabBox">
+				<div class="tabLeft fl" ref="refTab">
+					<el-radio-group v-model="basicForm.majorSort" @change="houseClick"> 
+						<el-radio-button label="1" style="display:none"></el-radio-button>
+						<el-radio-button :disabled="jointCode"  class="tableCleaning" size='large' label="clean">保洁</el-radio-button>
+						<el-radio-button :disabled="jointCode"  style="width:100%;" label="repair">家修</el-radio-button>
+						<el-radio-button label="2" style="display:none"></el-radio-button>
+					</el-radio-group>
+				</div>
+				<div class="tabRight fl">
+					<h3 class="tit">基本信息</h3><hr/><br/>
+					<el-form class="small-space basic" :model="basicForm" label-position="left" label-width="90px" ref="basic" :rules="basicRles" >
+						<el-form-item label="所属机构：" class="seize" prop="orgId" v-if="techUserType=='sys'">
+							<el-select :disabled="textMap[dialogStatus]=='编辑服务项目'" filterable v-model="basicForm.orgId" style="width:100%" class="form_item">
+								<el-option v-for="item in orgList" :key="item.id" :label="item.name" :value="item.id">
+								</el-option>
+							</el-select>
+						</el-form-item>
+						
+						<el-form-item label="所属分类：" class="seize" prop="sortId">
+							<el-select :disabled="jointCode"  filterable   v-model="basicForm.sortId" style="width:100%" class="form_item" @change="comInformationDelete">
+								<el-option v-for="item in sortList" :key="item.id" :label="item.name" :value="item.id">
+								</el-option>
+							</el-select>
+						</el-form-item>
 
-                <el-form-item label="项目名称：" prop="name">
-                  <el-input
-                  class="form_item"
-                  v-model="basicForm.name"
-                  placeholder="请输入2-10位的项目名称"></el-input>
-                </el-form-item>
+						<el-form-item label="项目名称：" prop="name">
+							<el-input class="form_item" v-model="basicForm.name" placeholder="请输入2-10位的项目名称"></el-input>
+						</el-form-item>
 
-                <el-form-item label="banner图：" prop="picture">
-					<div class="upload-demo upload_box form_item">
-						<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
-					</div>
-				<div class="pro-hint">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
-                </el-form-item>
+						<el-form-item label="banner图：" prop="picture">
+							<div class="upload-demo upload_box form_item">
+								<imgService @imgclick = "imgClick" :piclist = "picList" :type="'picture-card'" :min='0.9' :max='1.1'></imgService>
+							</div>
+							<div class="pro-hint">*为了保证浏览效果，请上传大于750px*750px的正方形图片，且不超过4张</div>
+						</el-form-item>
 
-				<el-form-item label="图文详情：">
-					<div class="upload-demo upload_box form_item">
-						<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture'" :min='0' :max='8'></imgService>
-					</div>
-                   
-				 <div class="pro-hint">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
-                </el-form-item>
+						<el-form-item label="图文详情：">
+							<div class="upload-demo upload_box form_item">
+								<imgService @imgclick = "imgTextClick" :piclist = "pictureDetails" :type="'picture'" :min='0' :max='8'></imgService>
+							</div>
+							<div class="pro-hint">*最多4张; 为了保证浏览效果,请上传大于750px*10px且小于750px*6000px的图片</div>
+						</el-form-item>
 
-                <el-form-item label="系统标签：" prop="sysTags">
-                   <div class="custom form_item">
-                        <span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
-                    </div>
-                    <div class="labelList form_item label-sty" v-if="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
-                        <!-- <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="selfTabsaa system-label" style="border-radius:20px;">
-                          <el-tooltip placement="left" :disabled="item.length <=5" :content="item">
-                              <div>
-                                  <span class="selfTabContent" style="border:none !important;border-radius:0px;margin-top:5px;margin-right:0px">{{item}}</span>
-                                  <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:5px;margin-right:0px"></span>
-                              </div>
-                          </el-tooltip>
-                        </div>                         -->
-                        <div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="sys-label">
-                          <el-tooltip placement="left" :disabled="item.length <=8" :content="item">
-                              <div>
-                                  <span class="sys-text">{{item}}</span>
-                                  <span class="sys-close" @click="AlreadyLabel(item)"></span>
-                              </div>
-                          </el-tooltip>
-                        </div>                       
-                    </div>
-                    
-				            <div class="pro-hint">* 最多设置3个系统标签</div>
-                </el-form-item>
+						<el-form-item label="系统标签：" prop="sysTags">
+							<div class="custom form_item">
+								<span class="tech-order-btn" @click="SystemLabel = true"> &#10010; 请选择</span>
+							</div>
+							<div class="labelList form_item label-sty" v-if="(labelClickArr!=undefined && labelClickArr.length>0) || (alreadyArr!=undefined && alreadyArr.length>0)">
+								<div v-for="(item,index) in labelClickArr.concat(alreadyArr)" :key="index" class="sys-label">
+									<el-tooltip placement="left" :disabled="item.length <=8" :content="item">
+										<div>
+											<span class="sys-text">{{item}}</span>
+											<span class="sys-close" @click="AlreadyLabel(item)"></span>
+										</div>
+									</el-tooltip>
+								</div>                       
+							</div>
+							<div class="pro-hint">* 最多设置3个系统标签</div>
+						</el-form-item>
 
-                <el-form-item label="自定义标签：" class="labelDav">
-                    <div class="custom">
-                        <span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
-                    </div>
-                    <div class="labelList label-sty" v-show="customArr != undefined && customArr.length>0">
-                      <div v-for="(item,index) in customArr" :key="index" class="sys-label">
-                        <el-tooltip placement="left" :disabled="item.length <=8" :content="item">
-                          <div>
-                              <span class="sys-text">{{item}}</span>
-                              <span class="sys-close" @click="deleteLabel(index)"></span>
-                          </div>
-                        </el-tooltip>
-                      </div>
-                        <!-- <span v-for="(item,index) in customArr" :key="index">{{item}}   
-                          <i @click="deleteLabel(index)" class="el-icon-close systemClose"></i>
-                        </span> -->
-                    </div>
-					          <div class="pro-hint">* 最多设置3个自定义标签</div>
-                </el-form-item> 
-            
-              <!-- <combination>
-                  <div slot="title">
-                    <h3 slot="title" class="tit"> 组合商品信息</h3><hr/>
-                  </div>
-              </combination> -->
-                  <!-- 组合商品信息 -->
-                    <div style="margin:0 -20px" class="combinationType-info">
-                        <h3 class="tit">{{handleCreateFlag=='single'?'商品信息':'组合商品信息'}}</h3><hr/>
-                        <div v-if="handleCreateFlag!='single'">
-                            <div style="padding:20px 20px">
-                                <el-form-item label="服务类型：" prop="serItemCommodity.serviceType" class="combination-name">
-                                    <div :class="basicForm.serItemCommodity.serviceType=='single'?'type-border-alive':'type-border'" @click="typeAlive('single')">
-                                        <i :class="basicForm.serItemCommodity.serviceType=='single'?'type-alive':'type-single'"></i>
-                                        <p>单次服务</p>
-                                    </div>
-                                    <div style="margin-left:50px" :class="basicForm.serItemCommodity.serviceType=='combined'?'type-border-alive':'type-border'" @click="typeAlive('combined')">
-                                        <i :class="basicForm.serItemCommodity.serviceType=='combined'?'type-alive':'type-single'"></i>
-                                        <p>多次服务</p>
-                                    </div>
-                                </el-form-item>
-                            </div>
-                            <div style="padding:0 20px;">
-                                <el-form-item label="商品信息：" prop="serItemCommodity.combinationCommodities" class="combination-name">
-                                    <input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
-                                </el-form-item>
-                            </div>
-                            <div class="combinationTable" style="padding:0 20px" v-if="basicForm.serItemCommodity.combinationCommodities == undefined ||basicForm.serItemCommodity.combinationCommodities.length>0">
-                                <el-table :data="basicForm.serItemCommodity.combinationCommodities" border style="width: 100%;">
-                                    <el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
-                                    <el-table-column prop="goodsName" align="center" label="商品名称"> </el-table-column>
-                                    <el-table-column prop="convertHours" align="center" :min-width="110" label="折算时长/单位"></el-table-column>
-                                    <el-table-column prop="goodsPrice" align="center" :min-width="85" label="原价/单位"></el-table-column>
-                                    <el-table-column prop="goodsUnit" align="center" label="单位"></el-table-column>
-                                    <el-table-column prop="name" align="center" label="组合商品售价" :min-width="105">
-                                        <template scope="scope">
-                                            <!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
-                                          <span><el-input v-model="scope.row.combinationPrice"></el-input></span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="name" align="center" label="数量" :min-width="110">
-                                        <template scope="scope">
-                                            <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="name" align="center" label="操作">
-                                        <template scope="scope">
-                                            <span style="color:#FF7676;" @click="deleteInformation(scope.row)">删除</span>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                            </div>
-                            <div style="padding:20px">
-                                <el-form-item label="组合商品名称：" prop="serItemCommodity.name" class="combination-name">
-                                    <el-input
-                                      style="width:60%"
-                                      v-model="basicForm.serItemCommodity.name"
-                                      placeholder="请输入1-24位的组合商品名称"></el-input>
-                                </el-form-item>
-                                <el-form-item label="组合商品价格：" prop="serItemCommodity.price" class="combination-name">
-                                    <span>{{'¥ '+informationCalculation}}</span>
-                                </el-form-item>
-                                 <el-form-item label="计量方式：" prop="serItemCommodity.type" class="combination-name">
-                                    <span>按时长或数量</span>
-                                </el-form-item>
-                                <el-form-item label="商品单位：" prop="serItemCommodity.unit" class="combination-name">
-                                    <el-input
-                                      style="width:60%"
-                                      v-model="basicForm.serItemCommodity.unit"
-                                      placeholder="请输入1-6位的组合商品单位"></el-input>
-                                </el-form-item>
-                                <div>
-                                    <el-form-item label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
-                                        <el-input style="width:60%" v-model="basicForm.serItemCommodity.convertHours" placeholder="请输入折算时长">
-                                            <template slot="append">小时 / {{basicForm.serItemCommodity.unit || '单位'}}</template>
-                                        </el-input>
-                                    </el-form-item>
-                                    <div v-if="basicForm.serItemCommodity.serviceType=='single'">
-                                        <el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
-                                        <el-input
-                                            style="width:60%"
-                                            v-model="basicForm.serItemCommodity.startPerNum"
-                                            placeholder="请输入起步人数(默认为1)"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="封顶人数：" prop="serItemCommodity.cappingPerNum" class="combination-name">
-                                        <el-input
-                                            style="width:60%"
-                                            v-model="basicForm.serItemCommodity.cappingPerNum"
-                                            placeholder="请输入封顶人数"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="起够数量：" prop="serItemCommodity.minPurchase" class="combination-name">
-                                        <el-input
-                                            style="width:60%"
-                                            v-model="basicForm.serItemCommodity.minPurchase"
-                                            placeholder="请输入起够数量(默认为1)"></el-input>
-                                        </el-form-item>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                  <!-- 组合商品信息 完成-->
-               </el-form>
-    <!-- 商品信息表格 -->
-                <el-table v-if="handleCreateFlag=='single'" :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
-                  <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
-                  <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
-                  <el-table-column prop="type" align="center" label="计量方式"> 
-                    <template scope="scope">
-                      <span v-show="scope.row.type=='num'">按时长或数量</span>
-                      <span v-show="scope.row.type=='area'">按面积</span>
-                      <span v-show="scope.row.type=='house'">按居室</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="price" align="center" label="价格"> 
-                    <template scope="scope">
-                      <span>{{scope.row.price+'元/'+scope.row.unit}}</span>  
-                    </template>  
-                  </el-table-column>
-                  <el-table-column v-if="sordFlag" prop="convertHours" align="center" label="折算时长">
-                    <template scope="scope">
-                      <span>{{scope.row.convertHours+'小时 / '+scope.row.unit}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column v-if="sordFlag" align="center" label="起步人数">
-                    <template scope="scope">
-                      <span>{{scope.row.startPerNum!=0? scope.row.startPerNum : 1}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column v-if="sordFlag" prop="cappingPerNum" align="center" label="封顶人数"> 
-                    <template scope="scope">
-                      <span>{{scope.row.cappingPerNum!=0?scope.row.cappingPerNum:''}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="minPurchase" align="center" label="起购数量"> 
-                    <template scope="scope">
-                      <span>{{scope.row.minPurchase!=0? scope.row.minPurchase : 1}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作" width="150" align="center"> 
-                    <template scope="scope">
-                      <span class="tableSer" @click="handleEdit(scope.$index, scope.row)">编辑</span>
-                      <span class="tableSer" v-if="!scope.row.id" style="color:red"  @click="tableHandleDelete(scope.$index, scope.row)">删除</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-          <!-- 商品信息表格 。。。。。。。。完成 -->
-              <div class="add_Btn" @click="addCommodity" v-if="handleCreateFlag=='single'">
-                <span class="fl btn_Span1">+</span>
-                <span class="fl btn_Span2">添加商品</span>
-              </div>
-          </div>
-          </div>
-		  <!-- </div> -->
-              <div slot="footer" class="dialog-footer" style="text-align:center">
-                <input v-if="dialogStatus != 'update'" type="button" class="button-large btn-color" :disabled="btnState" @click="subFormCom('basic')" value="保 存">
-                <input type="button" class="button-cancel btn-color-cancel" @click="cancel('basic')" value="取 消">
-              </div>
-            </el-dialog>
-    <!-- 商品信息 完成 -->
-    <!--自定义标签 -->
-      <el-dialog title="设置自定义标签" :close-on-click-modal="false" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
+						<el-form-item label="自定义标签：" class="labelDav">
+							<div class="custom">
+								<span class="tech-order-btn" @click="addLabel = true"> &#10010; 添加</span>
+							</div>
+							<div class="labelList label-sty" v-show="customArr != undefined && customArr.length>0">
+								<div v-for="(item,index) in customArr" :key="index" class="sys-label">
+									<el-tooltip placement="left" :disabled="item.length <=8" :content="item">
+										<div>
+											<span class="sys-text">{{item}}</span>
+											<span class="sys-close" @click="deleteLabel(index)"></span>
+										</div>
+									</el-tooltip>
+								</div>
+							</div>
+							<div class="pro-hint">* 最多设置3个自定义标签</div>
+						</el-form-item> 
+					<!-- 组合商品信息 -->
+						<div style="margin:0 -20px" class="combinationType-info">
+							<h3 class="tit">{{handleCreateFlag=='single'?'商品信息':'组合商品信息'}}</h3><hr/>
+							<div v-if="handleCreateFlag!='single'">
+								<div style="padding:20px 20px">
+									<el-form-item label="服务类型：" prop="serItemCommodity.serviceType" class="combination-name">
+										<div :class="basicForm.serItemCommodity.serviceType=='single'?'type-border-alive':'type-border'" @click="typeAlive('single')">
+											<i :class="basicForm.serItemCommodity.serviceType=='single'?'type-alive':'type-single'"></i>
+											<p>单次服务</p>
+										</div>
+										<div style="margin-left:50px" :class="basicForm.serItemCommodity.serviceType=='combined'?'type-border-alive':'type-border'" @click="typeAlive('combined')">
+											<i :class="basicForm.serItemCommodity.serviceType=='combined'?'type-alive':'type-single'"></i>
+											<p>多次服务</p>
+										</div>
+									</el-form-item>
+								</div>
+								<div style="padding:0 20px;">
+									<el-form-item label="商品信息：" prop="serItemCommodity.combinationCommodities" class="combination-name">
+										<input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
+									</el-form-item>
+								</div>
+								<div class="combinationTable" style="padding:0 20px" v-if="basicForm.serItemCommodity.combinationCommodities == undefined ||basicForm.serItemCommodity.combinationCommodities.length>0">
+									<el-table :data="basicForm.serItemCommodity.combinationCommodities" border style="width: 100%;">
+										<el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
+										<el-table-column prop="goodsName" align="center" label="商品名称"> </el-table-column>
+										<el-table-column prop="convertHours" align="center" :min-width="110" label="折算时长/单位">
+											<template scope="scope">
+												<span>{{scope.row.convertHours+'小时'}}</span>
+											</template>
+										</el-table-column>
+										<el-table-column prop="goodsPrice" align="center" :min-width="85" label="原价/单位">
+										<template scope="scope">
+												<span>{{'¥'+scope.row.goodsPrice}}</span>
+											</template>
+										</el-table-column>
+										<el-table-column prop="goodsUnit" align="center" label="单位"></el-table-column>
+										<el-table-column prop="name" align="center" label="组合商品售价" :min-width="105">
+											<template scope="scope">
+												<!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
+											<span><el-input v-model="scope.row.combinationPrice"></el-input></span>
+											</template>
+										</el-table-column>
+										<el-table-column prop="name" align="center" label="数量" :min-width="110">
+											<template scope="scope">
+												<span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
+											</template>
+										</el-table-column>
+										<el-table-column prop="name" align="center" label="操作">
+											<template scope="scope">
+												<span style="color:#FF7676;" @click="deleteInformation(scope.row)">删除</span>
+											</template>
+										</el-table-column>
+									</el-table>
+								</div>
+								<div style="padding:20px">
+									<el-form-item label="组合商品名称：" prop="serItemCommodity.name" class="combination-name">
+										<el-input style="width:60%" v-model="basicForm.serItemCommodity.name" placeholder="请输入1-24位的组合商品名称"></el-input>
+									</el-form-item>
+									<el-form-item label="组合商品价格：" prop="serItemCommodity.price" class="combination-name">
+										<span>{{'¥ '+informationCalculation}}</span>
+									</el-form-item>
+									<el-form-item label="计量方式：" prop="serItemCommodity.type" class="combination-name">
+										<span>按时长或数量</span>
+									</el-form-item>
+									<el-form-item label="商品单位：" prop="serItemCommodity.unit" class="combination-name">
+										<el-input
+										style="width:60%"
+										v-model="basicForm.serItemCommodity.unit"
+										placeholder="请输入1-6位的组合商品单位"></el-input>
+									</el-form-item>
+									<div>
+										<el-form-item v-if="basicForm.serItemCommodity.serviceType=='single'" label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
+											<el-input style="width:60%" v-model="basicForm.serItemCommodity.convertHours" placeholder="请输入折算时长">
+												<template slot="append">小时 / {{basicForm.serItemCommodity.unit || '单位'}}</template>
+											</el-input>
+										</el-form-item>
+										<el-form-item v-else label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
+											<span>{{basicForm.serItemCommodity.combinationCommodities.length>0 ? basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit : 0}} </span>
+										</el-form-item>
+										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
+											<el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
+											<el-input
+												style="width:60%"
+												v-model="basicForm.serItemCommodity.startPerNum"
+												placeholder="请输入起步人数(默认为1)"></el-input>
+											</el-form-item>
+											<el-form-item label="封顶人数：" prop="serItemCommodity.cappingPerNum" class="combination-name">
+											<el-input
+												style="width:60%"
+												v-model="basicForm.serItemCommodity.cappingPerNum"
+												placeholder="请输入封顶人数"></el-input>
+											</el-form-item>
+											<el-form-item label="起够数量：" prop="serItemCommodity.minPurchase" class="combination-name">
+											<el-input
+												style="width:60%"
+												v-model="basicForm.serItemCommodity.minPurchase"
+												placeholder="请输入起够数量(默认为1)"></el-input>
+											</el-form-item>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					<!-- 组合商品信息 完成-->
+					</el-form>
+				</div>
+			</div>
+				<div slot="footer" class="dialog-footer" style="text-align:center">
+					<input v-if="dialogStatus != 'update'" type="button" class="button-large btn-color" :disabled="btnState" @click="subFormCom('basic')" value="保 存">
+					<input type="button" class="button-cancel btn-color-cancel" @click="cancel('basic')" value="取 消">
+				</div>
+		</el-dialog>
+<!-- 商品信息 完成 -->
+<!--自定义标签 -->
+	<el-dialog title="设置自定义标签" :close-on-click-modal="false" :visible.sync="addLabel" class="labelName" @close="closeingLabel">
         <el-form :model="labelObj" :rules="labelRules" ref="labelObj">
-          <el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
-            <el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(1~10)"></el-input>
-          </el-form-item>
+			<el-form-item label="标签名称" :label-width="formLabelWidth" prop="labelName">
+				<el-input v-model="labelObj.labelName" placeholder="中文、英文、数字(1~10)"></el-input>
+			</el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-large" @click="CustomLabel('labelObj')" value="确 定">
-          <input type="button" class="button-cancel" @click="addLabel = false" value="取 消">
+			<input type="button" class="button-large" @click="CustomLabel('labelObj')" value="确 定">
+			<input type="button" class="button-cancel" @click="addLabel = false" value="取 消">
         </div>
-      </el-dialog>
-    <!-- 自定义标签结束-->
-    <!--系统标签-->
-      <el-dialog title="选择标签" :close-on-click-modal="false" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
+	</el-dialog>
+<!-- 自定义标签结束-->
+<!--系统标签-->
+	<el-dialog title="选择标签" :close-on-click-modal="false" :visible.sync="SystemLabel" class="systemLabel" @close="closeingLabel">
         <el-row>
-          <el-col :span="24">
-              <div style="line-height:60px">
-                  <div class="selfTitle1">当前选择标签：</div>
-                  <div class="labelList label-current" v-show="labelClickArr != undefined && labelClickArr.length>0">
-                       <div v-for="(item,index) in labelClickArr" :key="index" class="sys-label sys-label-dialog">
-                           <el-tooltip placement="left" :disabled="item.length <=6" :content="item">
-                              <div>
-                                  <span class="sys-text">{{item}}</span>
-                                  <span class="sys-close" @click="SelectedLabel(item)"></span>
-                              </div>
-                           </el-tooltip>
-                       </div>
-                  </div>
-                  <!-- <div v-for="(item,index) in labelClickArr" :key="index" class="selfTabsaa">
-                    <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
-                        <div>
-                            <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
-                            <span @click="SelectedLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;"></span>
-                        </div>
-                    </el-tooltip>
-                  </div> -->
-              </div>
+          	<el-col :span="24">
+              	<div style="line-height:60px">
+                  	<div class="selfTitle1">当前选择标签：</div>
+					<div class="labelList label-current" v-show="labelClickArr != undefined && labelClickArr.length>0">
+						<div v-for="(item,index) in labelClickArr" :key="index" class="sys-label sys-label-dialog">
+							<el-tooltip placement="left" :disabled="item.length <=6" :content="item">
+								<div>
+									<span class="sys-text">{{item}}</span>
+									<span class="sys-close" @click="SelectedLabel(item)"></span>
+								</div>
+							</el-tooltip>
+						</div>
+					</div>
+              	</div>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24" v-show="alreadyArr.length>0">
-            <div style="line-height:32px">
-                  <div class="selfTitle1">已添加标签：</div>
-                  <div class="labelList label-already" v-show="alreadyArr != undefined && alreadyArr.length>0">
-                      <div v-for="(item,index) in alreadyArr" :key="index" class="sys-label sys-label-dialog">
+          	<el-col :span="24" v-show="alreadyArr.length>0">
+            	<div style="line-height:32px">
+                  	<div class="selfTitle1">已添加标签：</div>
+                  	<div class="labelList label-already" v-show="alreadyArr != undefined && alreadyArr.length>0">
+                      	<div v-for="(item,index) in alreadyArr" :key="index" class="sys-label sys-label-dialog">
                            <el-tooltip placement="left" :disabled="item.length <=6" :content="item">
                               <div>
                                   <span class="sys-text">{{item}}</span>
@@ -323,293 +240,140 @@
                            </el-tooltip>
                        </div>
                   </div>
-                  <!-- <div v-for="(item,index) in alreadyArr" :key="index" class="selfTabsaa">
-                    <el-tooltip placement="left" :disabled="item.length <= 4" :content="item">
-                        <div>
-                          <span class="selfTabContent" style="" style="border:none;">{{item}}</span>
-                          <span @click="AlreadyLabel(item)" class="el-icon-close systemClose selfCloseSty" style="border:none;margin-top:2px;"></span>
-                        </div>
-                    </el-tooltip>
-                  </div> -->
-            </div>
-          </el-col>
+            	</div>
+          	</el-col>
         </el-row>
-
-       
-              <div class="sys-label-choice" style="overflow:hidden;margin-top:22px">
-                <div class="over-fl label-num">
-                    <div style="width:87%;float:left">
-                        <div class="sys-title">
-                            分类一
-                        </div>
-                        <ul class="innerbox">
-                            <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
-                              <span class="projectLabel">{{item.label}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div style="float:left">
-                        <div class="sys-arrow">
-
-                        </div>
-                    </div>
-                </div>
-                <!-- 标题2 -->
-                <div class="over-fl label-num" v-show="systemOptions2 !== undefined && systemOptions2.length>0">
-                    <div style="width:87%;float:left">
-                        <div class="sys-title">
-                            分类二
-                        </div>
-                        <ul class="innerbox">
-                            <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
-                              <span class="projectLabel">{{item.label}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div style="float:left">
-                        <div class="sys-arrow">
-
-                        </div>
-                    </div>
-                </div>
-                <!-- 标题三 -->
-                <div class="over-fl label-num" v-show="systemOptions3 !== undefined && systemOptions3.length>0">
-                    <div style="width:87%;float:left">
-                        <div class="sys-title">
-                            分类三
-                        </div>
-                        <ul class="innerbox">
-                            <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
-                              <span class="projectLabel">{{item.label}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div style="float:left">
-                        <div class="sys-arrow">
-
-                        </div>
-                    </div>
-                </div>
-                <!-- 标签名 -->
-                 <div class="over-fl label-num label-name" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
-                    <div style="width:100%;float:left">
-                        <div class="sys-title">
-                            标签名称
-                        </div>
-                        <div style="height:296px;overflow-y:auto;" class="innerbox">
-                          <div class="labelSystem">
-                           <div class="label-input" v-for="(item,key) in systemOptions4"  style="" :key="key">
-                              <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
-                                <input type="button"
-                                        class="cursor" 
-                                        style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
-                                      :value="item.label" @click="labelClick(item)"
-                                        :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
-                                        :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                              </el-tooltip>
-                            </div>        
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                  <!-- <ul>
-                      <li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
-                        <span class="projectLabel">{{item.label}}</span>
-                        <i class="el-icon-arrow-right"></i>
-                      </li>
-                  </ul> -->
-                  <!-- <ul v-show="systemOptions2 !== undefined && systemOptions2.length>0">
-                      <li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
-                        <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
-                      </li>
-                  </ul>
-                  <ul v-show="systemOptions3 !== undefined && systemOptions3.length>0">
-                      <li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
-                        <span class="projectLabel">{{item.label}}</span><i class="el-icon-arrow-right"></i>
-                      </li>
-                  </ul>
-                  <div></div>
-                  <div class="labelSystem" v-if="systemOptions4 !== undefined && systemOptions4.length>0">
-                      <div  v-for="(item,key) in systemOptions4"  style="margin-left:5px;" :key="key">
-                          <el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
-                            <input type="button"
-                                    class="cursor" 
-                                    style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
-                                   :value="item.label" @click="labelClick(item)"
-                                    :class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
-                                    :disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
-                        </el-tooltip>
-                      </div>        
-                  </div> -->
-              </div>
-       
+		<div class="sys-label-choice" style="overflow:hidden;margin-top:22px">
+			<div class="over-fl label-num">
+				<div style="width:87%;float:left">
+					<div class="sys-title">
+						分类一
+					</div>
+					<ul class="innerbox">
+						<li v-for="item in systemOptions" :key="item.value" @click="systemClick(item)" :class="{'activeSystem_1':item.value==systemClickId}">
+							<span class="projectLabel">{{item.label}}</span>
+						</li>
+					</ul>
+				</div>
+				<div style="float:left">
+					<div class="sys-arrow">
+					</div>
+				</div>
+			</div>
+		<!-- 标题2 -->
+			<div class="over-fl label-num" v-show="systemOptions2 !== undefined && systemOptions2.length>0">
+				<div style="width:87%;float:left">
+					<div class="sys-title">
+						分类二
+					</div>
+					<ul class="innerbox">
+						<li v-for="item in systemOptions2" :key="item.value" @click="systemClick2(item)" :class="{'activeSystem_2':item.value==systemClick2Id}">
+							<span class="projectLabel">{{item.label}}</span>
+						</li>
+					</ul>
+				</div>
+				<div style="float:left">
+					<div class="sys-arrow">
+					</div>
+				</div>
+			</div>
+		<!-- 标题三 -->
+			<div class="over-fl label-num" v-show="systemOptions3 !== undefined && systemOptions3.length>0">
+				<div style="width:87%;float:left">
+					<div class="sys-title">
+						分类三
+					</div>
+					<ul class="innerbox">
+						<li v-for="item in systemOptions3" :key="item.value" @click="systemClick3(item)" :class="{'activeSystem_3':item.value==systemClick3Id}">
+							<span class="projectLabel">{{item.label}}</span>
+						</li>
+					</ul>
+				</div>
+				<div style="float:left">
+					<div class="sys-arrow">
+					</div>
+				</div>
+			</div>
+		<!-- 标签名 -->
+			<div class="over-fl label-num label-name" v-show="systemOptions4 !== undefined && systemOptions4.length>0">
+				<div style="width:100%;float:left">
+					<div class="sys-title">
+						标签名称
+					</div>
+					<div style="height:296px;overflow-y:auto;" class="innerbox">
+						<div class="labelSystem">
+							<div class="label-input" v-for="(item,key) in systemOptions4"  style="" :key="key">
+								<el-tooltip placement="left" :disabled="item.label.length<4" :content="item.label">
+									<input type="button"
+											class="cursor" 
+											style="width:85px;height:30px;line-height:30px;overflow:hidden;" 
+										:value="item.label" @click="labelClick(item)"
+											:class="{'techTime-green':labelClickArr.indexOf(item.label)!=-1 || JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1}"
+											:disabled="JSON.stringify(alreadyArr).indexOf(JSON.stringify(item.label))!=-1">
+								</el-tooltip>
+							</div>        
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
         <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
+          	<input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
         </div>
       </el-dialog>
     <!-- 系统标签结束 -->
-
-    <!-- 商品添加 -->
-	    <el-dialog :title='handleEditFlag?"编辑商品":"添加商品"' :visible.sync="addCommodityFlag" :close-on-click-modal="false" class="addCommidtyClass">
-              <el-form 
-                :model="goods_info"
-                ref="goods_info"
-                label-position="left"
-                label-width="100px" 
-                class="dia_form"
-                :rules = "goods"
-                 >
-                <el-form-item label="商品名称:" prop="name">
-                  <el-input
-                    placeholder="请输入商品名称（1-24位）"
-                    
-                    v-model="goods_info.name"></el-input>
-                </el-form-item>
-                <el-form-item label="商品单位:" prop="unit">
-                  <el-input 
-                    
-                    placeholder="请输入单位名称（1-6位）"
-                    v-model="goods_info.unit"></el-input>
-                </el-form-item>
-
-                <el-form-item label="计量方式:" prop="type">
-                  <el-select class="form_item" v-model="goods_info.type" placeholder="请选择" >
-                     <el-option v-for="(item,key) in measure" :key="key" :label="item" :value="key"></el-option>
-                  </el-select>
-                </el-form-item>
-                
-                <el-form-item label="价格:" prop="price">
-                  <el-input v-model="goods_info.price" >
-                     <template slot="append">元 / {{goods_info.unit || "单位"}}</template>
-                  </el-input>
-                </el-form-item>
-                <el-form-item v-if="sordFlag" label="折算时长:" prop="convertHours" class="doubtf">
-                  <el-input v-model="goods_info.convertHours" style="width:100%" >
-                    <template slot="append">小时 / {{goods_info.unit || "单位"}}</template>                
-                  </el-input>
-                  <el-popover
-                      ref="popover1"
-                      placement="top-start"
-                      trigger="hover"
-                      content="请录入1单位所需服务时长（以小时为单位）例如：擦玻璃计量单位为平米，1单位（即1平米）所需服务时长为0.25小时每人">
-                    </el-popover>
-                   <span  v-popover:popover1 class="iconfont doubt">&#xe62a;</span>
-                </el-form-item>
-             
-                <el-form-item v-if="sordFlag" label="起步人数:" class="seize" prop="startPerNum">
-                  <el-input
-                    placeholder="请输入起步人数(默认为1)"
-                   
-                    v-model="goods_info.startPerNum"></el-input>
-                </el-form-item>
-
-                <el-form-item v-if="sordFlag" label="封顶人数:" class="seize" prop="cappingPerNum">
-                  <el-input
-                    placeholder="请输入封顶人数"
-                    
-                    v-model="goods_info.cappingPerNum"></el-input>
-                </el-form-item>
-
-                <el-form-item label="起购数量:" class="seize" prop="minPurchase">
-                  <el-input
-                    placeholder="请输入起购数量（默认为1）"
-                    
-                    v-model="goods_info.minPurchase"></el-input>
-                </el-form-item>
-                <div v-if="dialogStatus != 'update'" class="pro-wing">*注意事项：通用分类下的商品保存时，会将计量方式自动保存为按时长或数量，折算时长、起步人数自动保存为0</div>
-              </el-form>
-			   <div slot="footer" class="dialog-footer" style="text-align:center">
-				 	<input v-if="handleEditFlag" type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="保 存">
-                  	<input v-else type="button" class="button-large btn-color" @click="submitForm('goods_info')" value="添 加">
-                  	<!-- <input type="button" class="button-cancel btn-color" @click="resetForm('ser')" value="取 消"> -->
-					<input type="button" class="button-cancel btn-color-cancel" @click="resetForm()" value="取 消">
+<!-- 组合商品信息——选择商品 -->
+	<el-dialog title="选择商品" :close-on-click-modal="false" :visible.sync="combinationTypeDialog" class="dockingDialog com-dialog">
+		<div>
+			<el-input class="commodity-search" v-model="itemName" placeholder="请输入项目名称"></el-input>
+			<el-input class="commodity-search" v-model="goodName" placeholder="请输入商品名称"></el-input>
+			<input type="button" class="button-large btn-color" style="float:right" value="查 询" @click="choiceCommodity">
+		</div>
+		<div style="padding-top:25px">
+			<p>已选择商品：</p>
+			<transition name="el-zoom-in-bottom">
+				<div class="labelList label-current" v-if="commodityArr != undefined && commodityArr.length>0">
+					<div v-for="(item,index) in commodityArr" :key="index" class="sys-label sys-label-dialog">
+						<el-tooltip placement="left" :disabled="item.goodsName.length <=5" :content="item.goodsName">
+							<div>
+								<span class="sys-text">{{item.goodsName}}</span>
+								<span class="sys-close" @click="commodityDelete(item)"></span>
+							</div>
+						</el-tooltip>
+					</div>
 				</div>
-			</el-dialog>
-        <!-- <el-dialog title="添加商品" :visible.sync="addCommodityFlag">
-			<addCommodity :measure="measure"></addCommodity>
-        </el-dialog> -->
-    <!-- 商品添加完成 -->
-    <!-- 对接E店 -->
-      <el-dialog title="商品对接E店详情" :close-on-click-modal="false" :visible.sync="docking" class="dockingDialog">
-        <el-table :data="dockingData" stripe border style="width: 100%">
-          <el-table-column prop="name" align="center" label="商品名称"></el-table-column>
-          <el-table-column class-name="joCode" prop="jointCode" align="center" label="对接编码">
-            <template scope="scope">
-              <el-tooltip placement="left" :disabled="scope.row.jointCode.length<=20" :content="scope.row.jointCode">
-                <span>{{scope.row.jointCode}}</span>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-          <el-table-column prop="address" align="center" label="E店名称">
-            <template scope="scope">
-              <div class="branch" v-for="(item,index) in scope.row.commodityEshops" :key="index">
-                  <el-tooltip placement="left" :disabled="item.eshopName.length<=10" :content="item.eshopName">
-                      <span>{{item.eshopName}}</span>
-                   </el-tooltip>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="id" align="center" label="对接商品ID">
-            <template scope="scope">
-              <div class="branch" v-for="(item,index) in scope.row.commodityEshops" :key="index">
-                <el-tooltip placement="left" :disabled="item.jointGoodsCode.length<=10" :content="item.jointGoodsCode">
-                  <span>{{item.jointGoodsCode}}</span>
-                </el-tooltip>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-cancel" @click="docking = false" value="关 闭">
-        </div>
-      </el-dialog>
-    <!-- 对接E店完成 -->
-
-    <!-- 组合商品信息——选择商品 -->
-      <el-dialog title="选择商品" :close-on-click-modal="false" :visible.sync="combinationTypeDialog" class="dockingDialog com-dialog">
-          <div>
-              <el-input class="commodity-search" v-model="itemName" placeholder="请输入项目名称"></el-input>
-              <el-input class="commodity-search" v-model="goodName" placeholder="请输入商品名称"></el-input>
-              <input type="button" class="button-large btn-color" style="float:right" value="查 询" @click="choiceCommodity">
-          </div>
-          <div style="padding-top:25px">
-              <p>已选择商品：</p>
-              <transition name="el-zoom-in-bottom">
-                <div class="labelList label-current" v-if="commodityArr != undefined && commodityArr.length>0">
-                  <div v-for="(item,index) in commodityArr" :key="index" class="sys-label sys-label-dialog">
-                      <el-tooltip placement="left" :disabled="item.goodsName.length <=5" :content="item.goodsName">
-                        <div>
-                            <span class="sys-text">{{item.goodsName}}</span>
-                            <span class="sys-close" @click="commodityDelete(item)"></span>
-                        </div>
-                      </el-tooltip>
-                  </div>
-                </div>
-              </transition>
-          </div>
-          <div>
-              <el-table height="360" v-loading.body="loadingCom" :data="commodityDate" border style="width: 100%">
-                  <el-table-column prop="name" align="center" label="选择">
-                      <template scope="scope">
-                          <el-checkbox v-if="basicForm.serItemCommodity.serviceType=='single'" v-model="scope.row.check" @change="selectCommodity(scope.row)"></el-checkbox>
-                          <el-radio v-else class="radio" v-model="radio" :label="scope.row.goodsId" @change.native="selectCommoditySingle(scope.row)">&nbsp;</el-radio>
-                      </template>
-                  </el-table-column>
-                  <el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
-                  <el-table-column prop="goodsName" align="center" label="商品名称"> </el-table-column>
-                  <el-table-column prop="convertHours" align="center" :min-width="90" label="折算时长/单位"> </el-table-column>
-                  <el-table-column prop="goodsPrice" align="center" label="单价/单位"></el-table-column>
-                  <el-table-column prop="goodsUnit" align="center" label="单位"></el-table-column>
-              </el-table>
-          </div>
-          <div slot="footer" class="dialog-footer" style="text-align:center" >
-                <input type="button" class="button-large btn-color" @click="commodityPreservation" value="保 存">
-                <input type="button" class="button-cancel btn-color-cancel" @click="ommodityCancel" value="取 消">
-          </div>
-      </el-dialog>
-    <!-- 组合商品信息——选择商品 完成 -->
-
-  </div>
+			</transition>
+		</div>
+		<div>
+			<el-table height="360" v-loading.body="loadingCom" :data="commodityDate" border style="width: 100%">
+				<el-table-column prop="name" align="center" label="选择">
+					<template scope="scope">
+						<el-checkbox v-if="basicForm.serItemCommodity.serviceType=='single'" v-model="scope.row.check" @change="selectCommodity(scope.row)"></el-checkbox>
+						<el-radio v-else class="radio" v-model="radio" :label="scope.row.goodsId" @change.native="selectCommoditySingle(scope.row)">&nbsp;</el-radio>
+					</template>
+				</el-table-column>
+				<el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
+				<el-table-column prop="goodsName" align="center" label="商品名称"> </el-table-column>
+				<el-table-column prop="convertHours" align="center" :min-width="90" label="折算时长/单位">
+					<template scope="scope">
+						<span>{{scope.row.convertHours+'小时'}}</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="goodsPrice" align="center" label="单价/单位">
+					<template scope="scope">
+						<span>{{'¥'+scope.row.goodsPrice}}</span>
+					</template>
+					</el-table-column>
+				<el-table-column prop="goodsUnit" align="center" label="单位"></el-table-column>
+			</el-table>
+		</div>
+		<div slot="footer" class="dialog-footer" style="text-align:center" >
+				<input type="button" class="button-large btn-color" @click="commodityPreservation" value="保 存">
+				<input type="button" class="button-cancel btn-color-cancel" @click="ommodityCancel" value="取 消">
+		</div>
+	</el-dialog>
+<!-- 组合商品信息——选择商品 完成 -->
+  	</div>
 </div>
 </template>
 
@@ -646,7 +410,6 @@ import {
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
 import dict from "../../../static/dict.json"
-// var without = require('lodash.without')
 //挂载数据
 var arr = [];
 var informationTables = [
@@ -795,7 +558,7 @@ export default {
       if (value) {
         if (value * 1 <= 30) {
           if (reg.test(value)) {
-            if (value * 1 >= this.goods_info.startPerNum * 1) {
+            if (value * 1 >= this.basicForm.serItemCommodity.startPerNum * 1) {
               if (value == 0) {
                 callback(new Error("封顶人数最小值为1"));
               } else {
@@ -816,6 +579,7 @@ export default {
     };
     //起步人数
     var STARTPERNUM = (rule, value, callback) => {
+      console.log(value,"value----++++++")
       var reg = /^\d+$/;
       if (value) {
         if (value * 1 <= 30) {
@@ -894,7 +658,7 @@ export default {
     };
     //组合信息--价格
     var SERPICTURE = (rule,value,callback) =>{
-        if(this.informationCalculation){
+        if(this.informationCalculation>=0){
             callback()
         }else{
             callback(new Error("请选择商品"))
@@ -927,7 +691,6 @@ export default {
       systemClick2Id: null,
       systemClick3Id: null,
       docking: false,
-      systemOptions: [],
       systemOptions2: [],
       imgNumber: 0,
       systemOptions3: [],
@@ -1016,8 +779,23 @@ export default {
         }
       },
       basicRles: {
+        'serItemCommodity.startPerNum':[
+            { validator: STARTPERNUM, trigger: "blur" }
+        ],
+        'serItemCommodity.minPurchase':[
+            { validator: MINPURCHASE, trigger: "blur" }
+        ],
+        'serItemCommodity.cappingPerNum':[
+            { validator: CAPPINPERNUM, trigger: "blur" }
+        ],
         'serItemCommodity.convertHours':[
-            { required: true, message: "请选择折算时长", trigger: "blur" },
+              {
+                required: true,
+                validator: (rule, value, callback) => {
+                    callback()
+                },
+                trigger: "change"
+              }
         ],
         'serItemCommodity.type':[
             {
@@ -1135,11 +913,11 @@ export default {
     //所属分类
     // this.handleClick({ name: "all" });
     //系统标签
-    serGasqSort()
-      .then(data => {
-        this.systemOptions = data.data.data;
-      })
-      .catch(error => {});
+    // serGasqSort()
+    //   .then(data => {
+    //     this.systemOptions = data.data.data;
+    //   })
+    //   .catch(error => {});
     //是否 计量方式 全部 保洁 家修
     // var dict = require("../../../static/dict.json");
     this.measure = dict.meterage;
@@ -1281,20 +1059,30 @@ export default {
         obj.goodsName = this.goodName
         listDataBySortId(obj).then(({data:{code,data}})=>{
             if(code == 1){
-                let i , j , len = data.length,lon = this.commodityArr.length;
-                //判读：复选框选中
-                for( i = len ; i -- ;){
-                    data[i].combinationPrice = '0'
-                    data[i].combinationNum = '1'
-                    for( j = lon ; j-- ;){
-                        if(this.commodityArr[j].goodsId == data[i].goodsId){
-                            data[i].check = true
-                        }
-                    }
-                }
-                this.commodityDate = data
+				if(data != undefined){
+					let i , j , lon = this.commodityArr.length;
+					//判读：复选框选中
+					for( i = data.length ; i -- ;){
+						data[i].combinationPrice = '0'
+						data[i].combinationNum = '1'
+						for( j = lon ; j-- ;){
+							if(this.commodityArr[j].goodsId == data[i].goodsId){
+								if( this.basicForm.serItemCommodity.serviceType == 'single'){
+									data[i].check = true
+								}else{
+									this.radio = data[i].goodsId
+								}
+							}
+						}
+					}
+					this.commodityDate = data
+				}else{
+					this.commodityDate = []
+					this.commodityArr = []
+				}
             }else{
-
+				this.commodityDate = []
+				this.commodityArr = []
             }
             this.loadingCom = false;
         }).catch(error=>{
@@ -1321,78 +1109,78 @@ export default {
       this.search.orgId = item
     },
     //删除商品
-    deletGood(item) {
-      this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false,
-        customClass: "deleteCom",
-        type: "warning"
-      })
-        .then(() => {
-          deleteGoodsData({ id: item.id, itemId: item.itemId })
-            .then(data => {
-              if (data.data.code == 1) {
-                this.$message({
-                  type: "success",
-                  message: data.data.data
-                });
-                this.handleCurrentChange(this.listQuery.page);
-              } else {
-              }
-            })
-            .catch(error => {});
-        })
-        .catch(() => {
-          // return
-        });
-    },
+    // deletGood(item) {
+    //   this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     closeOnClickModal: false,
+    //     customClass: "deleteCom",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       deleteGoodsData({ id: item.id, itemId: item.itemId })
+    //         .then(data => {
+    //           if (data.data.code == 1) {
+    //             this.$message({
+    //               type: "success",
+    //               message: data.data.data
+    //             });
+    //             this.handleCurrentChange(this.listQuery.page);
+    //           } else {
+    //           }
+    //         })
+    //         .catch(error => {});
+    //     })
+    //     .catch(() => {
+    //       // return
+    //     });
+    // },
     //已对接E店
-    dockingE(item) {
-      if (item.jointEshopFlag == "yes") {
-        alreadyButted({ id: item.id })
-          .then(data => {
-            if (data.data.code == 1) {
-              var arr = data.data.data;
-              if ("commodityEshops" in arr) {
-                for (var i = 0; i < arr.commodityEshops.length; i++) {
-                  if ("jointGoodsCode" in arr.commodityEshops[i]) {
-                    continue;
-                  } else {
-                    arr.commodityEshops[i].jointGoodsCode = "";
-                  }
-                }
-              }
-              // this.dockingData[0] = arr
+    // dockingE(item) {
+    //   if (item.jointEshopFlag == "yes") {
+    //     alreadyButted({ id: item.id })
+    //       .then(data => {
+    //         if (data.data.code == 1) {
+    //           var arr = data.data.data;
+    //           if ("commodityEshops" in arr) {
+    //             for (var i = 0; i < arr.commodityEshops.length; i++) {
+    //               if ("jointGoodsCode" in arr.commodityEshops[i]) {
+    //                 continue;
+    //               } else {
+    //                 arr.commodityEshops[i].jointGoodsCode = "";
+    //               }
+    //             }
+    //           }
+    //           // this.dockingData[0] = arr
 
-              this.$set(this.dockingData, 0, arr);
-              this.docking = true;
-            } else {
-              this.$message({
-                type: "warning",
-                message: data.data.data
-              });
-            }
-          })
-          .catch(error => {
-            return false;
-          });
-      } else {
-        this.dockingData = [];
-        this.docking = true;
-      }
-    },
+    //           this.$set(this.dockingData, 0, arr);
+    //           this.docking = true;
+    //         } else {
+    //           this.$message({
+    //             type: "warning",
+    //             message: data.data.data
+    //           });
+    //         }
+    //       })
+    //       .catch(error => {
+    //         return false;
+    //       });
+    //   } else {
+    //     this.dockingData = [];
+    //     this.docking = true;
+    //   }
+    // },
     //对接详情
-    buttDetails() {
-      this.$router.push({ path: "/service/buttDetails/" });
-    },
-    returnImg(item) {
-      var arr = [];
-      for (var i = 0; i < item.length; i++) {
-        arr.push(item[i].url);
-      }
-      return arr;
-    },
+    // buttDetails() {
+    //   this.$router.push({ path: "/service/buttDetails/" });
+    // },
+    // returnImg(item) {
+    //   var arr = [];
+    //   for (var i = 0; i < item.length; i++) {
+    //     arr.push(item[i].url);
+    //   }
+    //   return arr;
+    // },
     imgClick(item) {
       this.picFile = item;
       //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
@@ -1403,34 +1191,34 @@ export default {
       this.imgText = item;
     },
     //对接商品
-    handleSendData(row) {
-      var obj = { id: row.id };
-      sendData(obj)
-        .then(data => {
-          if (data.data.code == 1) {
-            this.$message({
-              type: "success",
-              message: data.data.data
-            });
-          }
-          if (data.data.code == 3) {
-            this.$message({
-              type: "warning",
-              message: data.data.data
-            });
-          }
-          this.getList(this.pageNumber, this.pageSize);
-        })
-        .catch(error => {
-          return false;
-        });
-    },
+    // handleSendData(row) {
+    //   var obj = { id: row.id };
+    //   sendData(obj)
+    //     .then(data => {
+    //       if (data.data.code == 1) {
+    //         this.$message({
+    //           type: "success",
+    //           message: data.data.data
+    //         });
+    //       }
+    //       if (data.data.code == 3) {
+    //         this.$message({
+    //           type: "warning",
+    //           message: data.data.data
+    //         });
+    //       }
+    //       this.getList(this.pageNumber, this.pageSize);
+    //     })
+    //     .catch(error => {
+    //       return false;
+    //     });
+    // },
     //添加商品
-    addCommodity() {
-      this.addCommodityFlag = true;
-      this.resetForm("ser");
-      this.handleEditFlag = false;
-    },
+    // addCommodity() {
+    //   this.addCommodityFlag = true;
+    //   this.resetForm("ser");
+    //   this.handleEditFlag = false;
+    // },
     converFilter(val) {
       var reg = /^\d+(\.\d{1,2})?$/;
       var con = reg.test(val) ? true : false;
@@ -1456,11 +1244,14 @@ export default {
     //保洁家修切换
     tableProject(obj, id) {
       Taxonomy(obj)
-        .then(data => {
-          this.sortList = data.data.data;
-          if (id) {
-            this.basicForm.sortId = id;
-          }
+        .then(({data:{data}}) => {
+			if(data[data.length-1].id<100){
+				data.pop()   //组合商品没有通用订单的选项
+			}
+			this.sortList = data
+			if (id) {
+				this.basicForm.sortId = id;
+			}
         })
         .catch(error => {
           return false;
@@ -1566,79 +1357,79 @@ export default {
       }
     },
     //商品添加/编辑
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = Object.assign({}, this.goods_info);
-          obj.startPerNum = this.goods_info.startPerNum || 0;
-          obj.minPurchase = this.goods_info.minPurchase;
-          obj.cappingPerNum = this.goods_info.cappingPerNum || 0;
-          obj.convertHours = this.goods_info.convertHours || 0;
-          obj.price = this.returnFloat(this.goods_info.price);
-          if (this.handleEditFlag) {
-            this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
-            this.resetForm("ser");
-            this.handleEditFlag = false;
-            this.addCommodityFlag = false;
-          } else {
-            if ("id" in obj) {
-              delete obj.id;
-            }
-            if ("jointGoodsCode" in obj) {
-              delete obj.jointGoodsCode;
-            }
-            this.basicForm.commoditys.push(obj);
-            this.resetForm("ser");
-            this.addCommodityFlag = false;
-          }
-        } else {
-          var errArr = this.$refs[formName]._data.fields;
-          var errMes = [];
-          for (var i = 0; i < errArr.length; i++) {
-            if (errArr[i].validateMessage != "") {
-              errMes.push(errArr[i].validateMessage);
-            }
-          }
-          this.$message({
-            type: "error",
-            message: errMes[0]
-          });
-          return false;
-        }
-      });
-    },
+    // submitForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       var obj = Object.assign({}, this.goods_info);
+    //       obj.startPerNum = this.goods_info.startPerNum || 0;
+    //       obj.minPurchase = this.goods_info.minPurchase;
+    //       obj.cappingPerNum = this.goods_info.cappingPerNum || 0;
+    //       obj.convertHours = this.goods_info.convertHours || 0;
+    //       obj.price = this.returnFloat(this.goods_info.price);
+    //       if (this.handleEditFlag) {
+    //         this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
+    //         this.resetForm("ser");
+    //         this.handleEditFlag = false;
+    //         this.addCommodityFlag = false;
+    //       } else {
+    //         if ("id" in obj) {
+    //           delete obj.id;
+    //         }
+    //         if ("jointGoodsCode" in obj) {
+    //           delete obj.jointGoodsCode;
+    //         }
+    //         this.basicForm.commoditys.push(obj);
+    //         this.resetForm("ser");
+    //         this.addCommodityFlag = false;
+    //       }
+    //     } else {
+    //       var errArr = this.$refs[formName]._data.fields;
+    //       var errMes = [];
+    //       for (var i = 0; i < errArr.length; i++) {
+    //         if (errArr[i].validateMessage != "") {
+    //           errMes.push(errArr[i].validateMessage);
+    //         }
+    //       }
+    //       this.$message({
+    //         type: "error",
+    //         message: errMes[0]
+    //       });
+    //       return false;
+    //     }
+    //   });
+    // },
     //表格编辑
-    handleEdit(index, val) {
-      this.addCommodityFlag = true;
-      this.handleEditFlag = true;
-      this.handleEditIndex = index;
-      this.editName = Object.assign({}, val);
-      this.goods_info = Object.assign({}, val);
-      this.goods_info.startPerNum = this.goods_info.startPerNum
-        ? this.goods_info.startPerNum
-        : "";
-      this.goods_info.cappingPerNum = this.goods_info.cappingPerNum
-        ? this.goods_info.cappingPerNum
-        : "";
-      this.goods_info.minPurchase = this.goods_info.minPurchase
-        ? this.goods_info.minPurchase
-        : "";
-      //   this.addComm = true;
-    },
+    // handleEdit(index, val) {
+    //   this.addCommodityFlag = true;
+    //   this.handleEditFlag = true;
+    //   this.handleEditIndex = index;
+    //   this.editName = Object.assign({}, val);
+    //   this.goods_info = Object.assign({}, val);
+    //   this.goods_info.startPerNum = this.goods_info.startPerNum
+    //     ? this.goods_info.startPerNum
+    //     : "";
+    //   this.goods_info.cappingPerNum = this.goods_info.cappingPerNum
+    //     ? this.goods_info.cappingPerNum
+    //     : "";
+    //   this.goods_info.minPurchase = this.goods_info.minPurchase
+    //     ? this.goods_info.minPurchase
+    //     : "";
+    //   //   this.addComm = true;
+    // },
     //表格删除
-    tableHandleDelete(index, item) {
-      if (this.basicForm.commoditys.length <= 1) {
-        this.$message.error("商品信息不能为空");
-        return false;
-      } else {
-        this.$message({
-          message: "删除成功",
-          type: "success"
-        });
-        this.handleEditFlag = false;
-        this.basicForm.commoditys.splice(index, 1);
-      }
-    },
+    // tableHandleDelete(index, item) {
+    //   if (this.basicForm.commoditys.length <= 1) {
+    //     this.$message.error("商品信息不能为空");
+    //     return false;
+    //   } else {
+    //     this.$message({
+    //       message: "删除成功",
+    //       type: "success"
+    //     });
+    //     this.handleEditFlag = false;
+    //     this.basicForm.commoditys.splice(index, 1);
+    //   }
+    // },
     houseClick(val) {
       this.basicForm.sortId = "";
       this.tableProject({ majorSort: val });
@@ -1661,73 +1452,73 @@ export default {
         }
       }
     },
-    serGetList() {
-      this.pageNumber = 1;
-      this.getList(this.pageNumber);
-      this.listQuery.page = 1;
-    },
-    getList(page, size, getObj) {
-      var _page = page || this.pageNumber;
-      var _size = size || this.pageSize;
-      this.listLoading = true;
-      var obj = {};
-      if (getObj) {
-        obj = getObj;
-      } else {
-        var obj = {};
-        if (this.basicForm.majorSort) {
-          obj.majorSort = this.tabs;
-        }
-        if (this.search.sortId) {
-          obj.sortId = this.search.sortId;
-        }
-        if (this.search.name) {
-          obj.name = this.search.name;
-        }
-        if (this.search.goodsName) {
-          obj.goodsName = this.search.goodsName;
-        }
-        if(this.search.orgId){
-          obj.orgId = this.search.orgId
-        }
-        // if (this.search.sortIdandGoodsId) {
-        //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-        // }
-      }
-      getProject(obj, _page, _size)
-        .then(res => {
-          this.orgStatus = res.data.data.orgStatus;
-          this.total = res.data.data.page.count;
-          this.pageNumber = res.data.data.page.pageNo;
-          this.pageSize = res.data.data.page.pageSize;
-          this.listQuery.page = res.data.data.page.pageNo;
-          this.listTable = res.data.data.page.list;
-          let i,
-            len = this.listTable.length;
-          if (this.listTable != undefined && this.listTable.length > 0) {
-            for (i = 0; i < len; i++) {
-              this.listTable[i].num = i + 1;
-            }
-          }
-          this.listLoading = false;
-        })
-        .catch(res => {
-          this.listLoading = false;
-        });
-    },
+    // serGetList() {
+    //   this.pageNumber = 1;
+    //   this.getList(this.pageNumber);
+    //   this.listQuery.page = 1;
+    // },
+    // getList(page, size, getObj) {
+    //   var _page = page || this.pageNumber;
+    //   var _size = size || this.pageSize;
+    //   this.listLoading = true;
+    //   var obj = {};
+    //   if (getObj) {
+    //     obj = getObj;
+    //   } else {
+    //     var obj = {};
+    //     if (this.basicForm.majorSort) {
+    //       obj.majorSort = this.tabs;
+    //     }
+    //     if (this.search.sortId) {
+    //       obj.sortId = this.search.sortId;
+    //     }
+    //     if (this.search.name) {
+    //       obj.name = this.search.name;
+    //     }
+    //     if (this.search.goodsName) {
+    //       obj.goodsName = this.search.goodsName;
+    //     }
+    //     if(this.search.orgId){
+    //       obj.orgId = this.search.orgId
+    //     }
+    //     // if (this.search.sortIdandGoodsId) {
+    //     //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
+    //     // }
+    //   }
+    //   getProject(obj, _page, _size)
+    //     .then(res => {
+    //       this.orgStatus = res.data.data.orgStatus;
+    //       this.total = res.data.data.page.count;
+    //       this.pageNumber = res.data.data.page.pageNo;
+    //       this.pageSize = res.data.data.page.pageSize;
+    //       this.listQuery.page = res.data.data.page.pageNo;
+    //       this.listTable = res.data.data.page.list;
+    //       let i,
+    //         len = this.listTable.length;
+    //       if (this.listTable != undefined && this.listTable.length > 0) {
+    //         for (i = 0; i < len; i++) {
+    //           this.listTable[i].num = i + 1;
+    //         }
+    //       }
+    //       this.listLoading = false;
+    //     })
+    //     .catch(res => {
+    //       this.listLoading = false;
+    //     });
+    // },
     // 搜索
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.getList(1, this.pageSize);
-      this.pageNumber = 1;
-      this.listQuery.page = 1;
-    },
-    handleCurrentChange(val) {
-      this.pageNumber = val;
+    // handleSizeChange(val) {
+    //   this.pageSize = val;
+    //   this.getList(1, this.pageSize);
+    //   this.pageNumber = 1;
+    //   this.listQuery.page = 1;
+    // },
+    // handleCurrentChange(val) {
+    //   this.pageNumber = val;
 
-      this.listLoading = true;
-      this.getList(this.pageNumber, this.pageSize);
-    },
+    //   this.listLoading = true;
+    //   this.getList(this.pageNumber, this.pageSize);
+    // },
     handleCreate(formName,str) {
       this.handleCreateFlag = str
       this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
@@ -1741,146 +1532,150 @@ export default {
       this.dialogStatus = "create";
       this.basicForm.majorSort = "clean";
       this.commodityArr = []
+      this.basicForm.serItemCommodity.name = ''
+      this.basicForm.serItemCommodity.unit = ''
+      this.basicForm.serItemCommodity.serviceType = 'single'
+      this.basicForm.serItemCommodity.convertHours = ''
       this.basicForm.serItemCommodity.cappingPerNum = ''
       this.basicForm.serItemCommodity.startPerNum = ''
       this.basicForm.serItemCommodity.minPurchase = ''
     },
     //编辑方法
-    handleUpdate(row) {
-      this.handleCreateFlag = 'single'
-      this.resetForm();
-      this.temp = Object.assign({}, row);
-      this.dialogStatus = "update";
-      this.basicForm.majorSort = "clean";
-      this.picList = [];
-      this.editId = row.id;
-      this.listLoading = true;
-      ServerEdit({ id: this.editId })
-        .then(data => {
-          if (data.data.code == 1) {
-            var dataUpdate = data.data.data;
-            this.jointCode = true;
-            // if (dataUpdate.commoditys != undefined) {
-            let i,
-              len = dataUpdate.commoditys.length;
-            for (i = 0; i < len; i++) {
-              dataUpdate.commoditys[i].price = this.returnFloat(
-                dataUpdate.commoditys[i].price
-              );
-            }
-              if(dataUpdate.sortId < 100){
-               this.sordFlag = false
-               this.measure = { "num": "按时长或数量"}
-               this.goods_info.type = "num"
-              }else{
-                this.sordFlag = true
-                this.measure = dict.meterage;
-              }
-            // }
-            this.listLoading = false;
-            this.dialogFormVisible = true;
-            var arr = data.data.data;
-            if (arr.pictures != undefined) {
-              this.picFile = arr.pictures;
-              //banner传给upload组件
-              this.picList = this.picFile;
-              // this.imgNumber = arr.pictures.length;
-              // for (var i = 0; i < arr.pictures.length; i++) {
-              //   var obj = {
-              //     url:arr.pictures[i]
-              //   }
-              //   this.picList.push(arr.pictures[i]);
-              // }
-            }
-            if (arr.pictureDetails != undefined) {
-              this.imgText = arr.pictureDetails;
-              //详情图片传给upload组件
-              this.pictureDetails = this.imgText;
-              // for(var i = 0;i<arr.pictureDetails.length; i++){
-              // var obj = {
-              // 	url:arr.pictureDetails[i]
-              // }
-              // 	this.pictureDetails.push(arr.pictureDetails[i])
-              // }
-            } else {
-              this.pictureDetails = ["", "", "", ""];
-            }
-            this.tableProject({ majorSort: arr.majorSort }, arr.sortId);
-            this.basicForm = arr;
-            this.customArr = arr.customTags || [];
-            this.alreadyArr = arr.sysTags || [];
-          } else {
-            this.listLoading = false;
-            return false;
-          }
-        })
-        .catch(error => {
-          this.listLoading = false;
-          return false;
-        });
-    },
-    handleDelete(row) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false,
-        customClass: "deleteCom",
-        type: "warning"
-      })
-        .then(() => {
-          var obj = {
-            id: row.id
-          };
-          ServerDelete(obj)
-            .then(res => {
-              if (res.data.code) {
-                if (res.data.code == 1) {
-                  this.$message({
-                    type: "success",
-                    message: res.data.data
-                  });
-                }
-                if (res.data.code == 3) {
-                  this.$message({
-                    type: "warning",
-                    message: res.data.data
-                  });
-                }
-                this.handleCurrentChange(this.listQuery.page);
-              } else {
-                // this.$message({
-                //   type: "error",
-                //   message: res.data.data
-                // });
-                // return false
-              }
-            })
-            .catch(error => {
-              return false;
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "warning",
-            message: "已取消删除"
-          });
-        });
-    },
-    handleClick(tab, event) {
-      this.search.sortId = "";
-      // this.search.name = "";
-      // this.search.goodsName = "";
-      // this.search.sortIdandGoodsId = "";
-      var size = this.pageSize;
-      this.pageNumber = 1;
-      Taxonomy({ majorSort: tab.name })
-        .then(data => {
-          this.searchSortList = data.data.data;
-        })
-        .catch(error => {});
-      this.getList(1, size);
-      this.listQuery.page = 1;
-    },
+    // handleUpdate(row) {
+    //   this.handleCreateFlag = 'single'
+    //   this.resetForm();
+    //   this.temp = Object.assign({}, row);
+    //   this.dialogStatus = "update";
+    //   this.basicForm.majorSort = "clean";
+    //   this.picList = [];
+    //   this.editId = row.id;
+    //   this.listLoading = true;
+    //   ServerEdit({ id: this.editId })
+    //     .then(data => {
+    //       if (data.data.code == 1) {
+    //         var dataUpdate = data.data.data;
+    //         this.jointCode = true;
+    //         // if (dataUpdate.commoditys != undefined) {
+    //         let i,
+    //           len = dataUpdate.commoditys.length;
+    //         for (i = 0; i < len; i++) {
+    //           dataUpdate.commoditys[i].price = this.returnFloat(
+    //             dataUpdate.commoditys[i].price
+    //           );
+    //         }
+    //           if(dataUpdate.sortId < 100){
+    //            this.sordFlag = false
+    //            this.measure = { "num": "按时长或数量"}
+    //            this.goods_info.type = "num"
+    //           }else{
+    //             this.sordFlag = true
+    //             this.measure = dict.meterage;
+    //           }
+    //         // }
+    //         this.listLoading = false;
+    //         this.dialogFormVisible = true;
+    //         var arr = data.data.data;
+    //         if (arr.pictures != undefined) {
+    //           this.picFile = arr.pictures;
+    //           //banner传给upload组件
+    //           this.picList = this.picFile;
+    //           // this.imgNumber = arr.pictures.length;
+    //           // for (var i = 0; i < arr.pictures.length; i++) {
+    //           //   var obj = {
+    //           //     url:arr.pictures[i]
+    //           //   }
+    //           //   this.picList.push(arr.pictures[i]);
+    //           // }
+    //         }
+    //         if (arr.pictureDetails != undefined) {
+    //           this.imgText = arr.pictureDetails;
+    //           //详情图片传给upload组件
+    //           this.pictureDetails = this.imgText;
+    //           // for(var i = 0;i<arr.pictureDetails.length; i++){
+    //           // var obj = {
+    //           // 	url:arr.pictureDetails[i]
+    //           // }
+    //           // 	this.pictureDetails.push(arr.pictureDetails[i])
+    //           // }
+    //         } else {
+    //           this.pictureDetails = ["", "", "", ""];
+    //         }
+    //         this.tableProject({ majorSort: arr.majorSort }, arr.sortId);
+    //         this.basicForm = arr;
+    //         this.customArr = arr.customTags || [];
+    //         this.alreadyArr = arr.sysTags || [];
+    //       } else {
+    //         this.listLoading = false;
+    //         return false;
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.listLoading = false;
+    //       return false;
+    //     });
+    // },
+    // handleDelete(row) {
+    //   this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     closeOnClickModal: false,
+    //     customClass: "deleteCom",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       var obj = {
+    //         id: row.id
+    //       };
+    //       ServerDelete(obj)
+    //         .then(res => {
+    //           if (res.data.code) {
+    //             if (res.data.code == 1) {
+    //               this.$message({
+    //                 type: "success",
+    //                 message: res.data.data
+    //               });
+    //             }
+    //             if (res.data.code == 3) {
+    //               this.$message({
+    //                 type: "warning",
+    //                 message: res.data.data
+    //               });
+    //             }
+    //             this.handleCurrentChange(this.listQuery.page);
+    //           } else {
+    //             // this.$message({
+    //             //   type: "error",
+    //             //   message: res.data.data
+    //             // });
+    //             // return false
+    //           }
+    //         })
+    //         .catch(error => {
+    //           return false;
+    //         });
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: "warning",
+    //         message: "已取消删除"
+    //       });
+    //     });
+    // },
+    // handleClick(tab, event) {
+    //   this.search.sortId = "";
+    //   // this.search.name = "";
+    //   // this.search.goodsName = "";
+    //   // this.search.sortIdandGoodsId = "";
+    //   var size = this.pageSize;
+    //   this.pageNumber = 1;
+    //   Taxonomy({ majorSort: tab.name })
+    //     .then(data => {
+    //       this.searchSortList = data.data.data;
+    //     })
+    //     .catch(error => {});
+    //   this.getList(1, size);
+    //   this.listQuery.page = 1;
+    // },
     //取消
     cancel(fromName) {
       if (this.dialogStatus == "update") {
@@ -1888,9 +1683,13 @@ export default {
       }
       this.dialogFormVisible = false;
     },
-    subFormCom(formName){
-        //新增
+    subFormDate(){
+      //  新增
         let { basicForm } = this
+        //类型是多次，折算时长等于商品信息的折算时长
+        if( basicForm.serItemCommodity.serviceType != 'single'){
+          basicForm.serItemCommodity.convertHours = basicForm.serItemCommodity.combinationCommodities[0].convertHours
+        }
         basicForm.serItemCommodity.price = this.informationCalculation //组合商品价格
         basicForm.serItemCommodity.type = 'num'   //计量方式
         basicForm.pictures = this.picFile; //banner
@@ -1902,8 +1701,15 @@ export default {
             basicForm.serItemCommodity.serviceNum =  basicForm.serItemCommodity.combinationCommodities[0].combinationNum
         }else{
             delete basicForm.serItemCommodity.serviceNum
-        }
-
+		}
+		if('id' in basicForm){
+			delete basicForm['id']
+		}
+		if(this.techUserType != 'sys'){
+			if('orgId' in basicForm){
+				delete basicForm['orgId']
+			}
+		}
         var loading = this.$loading({
             lock: true,
             spinner: "el-icon-loading",
@@ -1930,152 +1736,172 @@ export default {
             console.log(error,"error--------")
         })
     },
+    subFormCom(formName){
+        this.$refs[formName].validate(valid => {
+          if(valid){
+            this.subFormDate()
+          }else{
+              let errArr = this.$refs[formName]._data.fields;
+              let errMes = [];
+              for (let i = 0; i < errArr.length; i++) {
+                if (errArr[i].validateMessage != "") {
+                  errMes.push(errArr[i].validateMessage);
+                }
+              }
+              this.$message({
+                type: "error",
+                message: errMes[0]
+              });
+              return false;
+          }
+        })
+    },
     //保存
-    subForm(formName) {
-      var that = this;
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.btnState = true;
-          var arr = [];
-          var obj = Object.assign({}, that.basicForm);
-          obj.pictures = this.picFile; //服务图片缩略图.
-          obj.pictureDetails = this.imgText;
-          obj.sysTags = this.labelClickArr; //添加 系统标签
-          obj.customTags = this.customArr;
-          var loading = this.$loading({
-            lock: true,
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)",
-            target: document.querySelector(".tabBox ")
-          });
-          //==update 是编辑   create是添加
-          if (this.dialogStatus == "update") {
-            that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr);
-            that.basicForm.customTags = this.customArr;
-            that.basicForm.pictures = this.picFile;
-            that.basicForm.pictureDetails = this.imgText;
-            serverEditPre(that.basicForm)
-              .then(data => {
-                this.btnState = false;
-                if (data.data.code) {
-                  if (data.data.code == 3) {
-                    this.$message({
-                      message: data.data.data,
-                      type: "warning"
-                    });
-                  }
-                  if (data.data.code == 1) {
-                    this.$message({
-                      message: data.data.data,
-                      type: "success"
-                    });
-                  }
-                  loading.close();
-                  this.resetForm();
-                  this.dialogFormVisible = false;
-                  this.getList(this.pageNumber, this.pageSize);
-                  this.picFile = [];
-                  this.pictureDetails = [];
-                  this.picList = [];
-                  this.imgNumber = 0;
-                } else {
-                  loading.close();
-                  this.btnState = false;
-                  this.imgNumber = 0;
-                }
-              })
-              .catch(error => {
-                loading.close();
-                this.btnState = false;
-                this.imgNumber = 0;
-              });
-          } else {
-            if ("id" in obj) {
-              delete obj.id;
-            }
-            if ("pictureDetail" in obj) {
-              delete obj.pictureDetail;
-            }
-            // if("pictureDetails" in obj){
-            //   delete obj.pictureDetails
-            // }
-            ServerAdd(obj)
-              .then(data => {
-                this.btnState = false;
-                if (data.data.code) {
-                  if (data.data.code == 1) {
-                    this.$message({
-                      message: data.data.data,
-                      type: "success"
-                    });
-                  }
-                  if (data.data.code == 3) {
-                    this.$message({
-                      message: data.data.data,
-                      type: "warning"
-                    });
-                  }
-                  //loading取消
-                  loading.close();
-                  this.cancel("basic");
-                  this.basicForm.majorSort = "all";
-                  this.search.sortId = "";
-                  this.search.name = "";
-                  this.search.goodsName = "";
-                  // this.search.sortIdandGoodsId = "";
+    // subForm(formName) {
+    //   var that = this;
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       this.btnState = true;
+    //       var arr = [];
+    //       var obj = Object.assign({}, that.basicForm);
+    //       obj.pictures = this.picFile; //服务图片缩略图.
+    //       obj.pictureDetails = this.imgText;
+    //       obj.sysTags = this.labelClickArr; //添加 系统标签
+    //       obj.customTags = this.customArr;
+    //       var loading = this.$loading({
+    //         lock: true,
+    //         spinner: "el-icon-loading",
+    //         background: "rgba(0, 0, 0, 0.7)",
+    //         target: document.querySelector(".tabBox ")
+    //       });
+    //       //==update 是编辑   create是添加
+    //       if (this.dialogStatus == "update") {
+    //         that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr);
+    //         that.basicForm.customTags = this.customArr;
+    //         that.basicForm.pictures = this.picFile;
+    //         that.basicForm.pictureDetails = this.imgText;
+    //         serverEditPre(that.basicForm)
+    //           .then(data => {
+    //             this.btnState = false;
+    //             if (data.data.code) {
+    //               if (data.data.code == 3) {
+    //                 this.$message({
+    //                   message: data.data.data,
+    //                   type: "warning"
+    //                 });
+    //               }
+    //               if (data.data.code == 1) {
+    //                 this.$message({
+    //                   message: data.data.data,
+    //                   type: "success"
+    //                 });
+    //               }
+    //               loading.close();
+    //               this.resetForm();
+    //               this.dialogFormVisible = false;
+    //               this.getList(this.pageNumber, this.pageSize);
+    //               this.picFile = [];
+    //               this.pictureDetails = [];
+    //               this.picList = [];
+    //               this.imgNumber = 0;
+    //             } else {
+    //               loading.close();
+    //               this.btnState = false;
+    //               this.imgNumber = 0;
+    //             }
+    //           })
+    //           .catch(error => {
+    //             loading.close();
+    //             this.btnState = false;
+    //             this.imgNumber = 0;
+    //           });
+    //       } else {
+    //         if ("id" in obj) {
+    //           delete obj.id;
+    //         }
+    //         if ("pictureDetail" in obj) {
+    //           delete obj.pictureDetail;
+    //         }
+    //         // if("pictureDetails" in obj){
+    //         //   delete obj.pictureDetails
+    //         // }
+    //         ServerAdd(obj)
+    //           .then(data => {
+    //             this.btnState = false;
+    //             if (data.data.code) {
+    //               if (data.data.code == 1) {
+    //                 this.$message({
+    //                   message: data.data.data,
+    //                   type: "success"
+    //                 });
+    //               }
+    //               if (data.data.code == 3) {
+    //                 this.$message({
+    //                   message: data.data.data,
+    //                   type: "warning"
+    //                 });
+    //               }
+    //               //loading取消
+    //               loading.close();
+    //               this.cancel("basic");
+    //               this.basicForm.majorSort = "all";
+    //               this.search.sortId = "";
+    //               this.search.name = "";
+    //               this.search.goodsName = "";
+    //               // this.search.sortIdandGoodsId = "";
   
-                  this.$refs['orgSearch'].orgEmpty()
-                  this.orgSearch()
-                  this.tabs = "all";
-                  this.listQuery.page = 1;
-                  this.getList(1, this.pageSize);
-                  this.picFile = [];
-                  this.pictureDetails = [];
-                } else {
-                  loading.close();
-                  this.btnState = false;
-                }
-              })
-              .catch(error => {
-                loading.close();
-                this.btnState = false;
-              });
-          }
-        } else {
-          var errArr = this.$refs[formName]._data.fields;
-          var errMes = [];
-          for (var i = 0; i < errArr.length; i++) {
-            if (errArr[i].validateMessage != "") {
-              errMes.push(errArr[i].validateMessage);
-            }
-          }
-          this.$message({
-            type: "error",
-            message: errMes[0]
-          });
-          return false;
-        }
-      });
-    },
-    resetForm(ser) {
-      if (this.$refs["goods_info"]) {
-        this.$refs["goods_info"].resetFields();
-      }
-      if (ser == "ser") {
-        this.addCommodityFlag = true;
-      } else {
-        this.addCommodityFlag = false;
-        // this.addComm = false
-      }
-      this.goods_info.name = "";
-      this.goods_info.unit = "";
-      this.goods_info.type = "";
-      this.goods_info.price = "";
-      this.goods_info.convertHours = "";
-      this.goods_info.minPurchase = "";
-      this.goods_info.startPerNum = "";
-      this.goods_info.cappingPerNum = "";
-    },
+    //               this.$refs['orgSearch'].orgEmpty()
+    //               this.orgSearch()
+    //               this.tabs = "all";
+    //               this.listQuery.page = 1;
+    //               this.getList(1, this.pageSize);
+    //               this.picFile = [];
+    //               this.pictureDetails = [];
+    //             } else {
+    //               loading.close();
+    //               this.btnState = false;
+    //             }
+    //           })
+    //           .catch(error => {
+    //             loading.close();
+    //             this.btnState = false;
+    //           });
+    //       }
+    //     } else {
+    //       var errArr = this.$refs[formName]._data.fields;
+    //       var errMes = [];
+    //       for (var i = 0; i < errArr.length; i++) {
+    //         if (errArr[i].validateMessage != "") {
+    //           errMes.push(errArr[i].validateMessage);
+    //         }
+    //       }
+    //       this.$message({
+    //         type: "error",
+    //         message: errMes[0]
+    //       });
+    //       return false;
+    //     }
+    //   });
+    // },
+    // resetForm(ser) {
+    //   if (this.$refs["goods_info"]) {
+    //     this.$refs["goods_info"].resetFields();
+    //   }
+    //   if (ser == "ser") {
+    //     this.addCommodityFlag = true;
+    //   } else {
+    //     this.addCommodityFlag = false;
+    //     // this.addComm = false
+    //   }
+    //   this.goods_info.name = "";
+    //   this.goods_info.unit = "";
+    //   this.goods_info.type = "";
+    //   this.goods_info.price = "";
+    //   this.goods_info.convertHours = "";
+    //   this.goods_info.minPurchase = "";
+    //   this.goods_info.startPerNum = "";
+    //   this.goods_info.cappingPerNum = "";
+    // },
     //弹框关闭回调
     emptyingForm() {
       if (this.$refs["goods_info"]) {
@@ -2096,27 +1922,29 @@ export default {
       this.systemOptions2 = [];
       this.systemOptions3 = [];
       this.systemOptions4 = [];
+      this.itemName = ''
+      this.goodName = ''
     },
-    resetEmpty(txt) {
-      if (txt == "ser") {
-        this.$refs["goods_info"].resetFields();
-        this.goods_info.minPurchase = "";
-        this.goods_info.startPerNum = "";
-        this.goods_info.cappingPerNum = "";
-      } else {
-        this.$refs["goods_info"].resetFields();
-        this.$refs["basic"].resetFields();
-        this.goods_info.minPurchase = "";
-        this.basicForm.sortNum = ""; //排序号好清空
-        this.basicForm.cityCodes = []; //定向城市
-        this.goods_info.minPurchase = ""; //起够数量
-        this.basicForm.commoditys = []; //商品信息表格
-        this.picFile = []; //清空图片
-        this.pictureDetails = [];
-        this.picList = []; //清空图片
-        this.dialogFormVisible = false;
-      }
-    },
+    // resetEmpty(txt) {
+    //   if (txt == "ser") {
+    //     this.$refs["goods_info"].resetFields();
+    //     this.goods_info.minPurchase = "";
+    //     this.goods_info.startPerNum = "";
+    //     this.goods_info.cappingPerNum = "";
+    //   } else {
+    //     this.$refs["goods_info"].resetFields();
+    //     this.$refs["basic"].resetFields();
+    //     this.goods_info.minPurchase = "";
+    //     this.basicForm.sortNum = ""; //排序号好清空
+    //     this.basicForm.cityCodes = []; //定向城市
+    //     this.goods_info.minPurchase = ""; //起够数量
+    //     this.basicForm.commoditys = []; //商品信息表格
+    //     this.picFile = []; //清空图片
+    //     this.pictureDetails = [];
+    //     this.picList = []; //清空图片
+    //     this.dialogFormVisible = false;
+    //   }
+    // },
     listDataAllClick(){
          let list = async ()=>{
             try{
@@ -2131,7 +1959,8 @@ export default {
     }
   },
   props:[
-    'orgList'
+    'orgList',
+    'systemOptions'
   ],
   components: {
     imgService,
@@ -2165,6 +1994,9 @@ export default {
     @import './prokect.css';
     .com-dialog .el-table{
         /* margin-top: 0; */
+    }
+    .combinationType-info .el-form-item__content{
+      margin-left: 108px !important;
     }
 </style>
 
