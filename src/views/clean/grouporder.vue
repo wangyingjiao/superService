@@ -73,11 +73,25 @@
            </el-tooltip>
          </template>
       </el-table-column>
-      
+
+      <el-table-column align="center" label="服务内容" min-width="100" prop="payPrice">      
+      </el-table-column>
+
+
       <el-table-column align="center" label="总价" min-width="100" prop="payPrice">      
       </el-table-column>
 
+      
       <el-table-column align="center" label="订单状态" min-width="100" prop="orderStatus" >
+        <template scope="scope">
+           <span v-if="scope.row.orderStatus=='dispatched'">已下单</span>
+           <span v-if="scope.row.orderStatus=='cancel'">已取消</span>
+           <span v-if="scope.row.orderStatus=='success'">已成功</span>
+           <span v-if="scope.row.orderStatus=='close'">已支付</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="支付状态" min-width="100" prop="orderStatus" >
         <template scope="scope">
            <span v-if="scope.row.orderStatus=='dispatched'">已下单</span>
            <span v-if="scope.row.orderStatus=='cancel'">已取消</span>
@@ -93,10 +107,13 @@
         </template>     
       </el-table-column>
 
+      <el-table-column align="center" label="对接订单组ID" min-width="100" prop="payPrice">      
+      </el-table-column>
+
       <el-table-column align="center" label="下单时间" min-width="160" prop="orderTime">
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="160">
+      <el-table-column align="center" label="操作" fixed="right" min-width="160">
           <template scope="scope">
             <el-button class="ceshi3" @click="handleLook(scope.row)">查看</el-button>
           </template>
