@@ -121,7 +121,7 @@
         <!-- 删除商品与已对接E店的一列
         element无法根据内容大小，所以判断两种，有E店和无E店 -->
         <!-- :min-width="btnShow.indexOf('project_send')>-1?250:100" -->
-        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?200:100">
+        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?220:110">
              <template scope="scope">
             <div
               class="branch"  
@@ -138,7 +138,7 @@
           </template>
         </el-table-column>
         <!-- :width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?550:150" -->
-        <el-table-column align="center" v-if="techUserType!='sys'" label="" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?200:100">
+        <el-table-column align="center" v-if="techUserType!='sys'" label="" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?210:120">
              <template scope="scope">
             <div
               class="branch"  
@@ -1252,7 +1252,6 @@ export default {
     this.measure = dict.meterage;
     this.whole = dict.ser_sort;
     this.goodsTypeList = dict.goods_type
-    console.log(dict,"this.goodsTypeList----")
     // Whether()
     //   .then(({ data }) => {
     //     this.measure = data.meterage;
@@ -1688,7 +1687,6 @@ export default {
       }
     },
     houseClick(val) {
-      console.log('12313123------')
       this.basicForm.sortId = "";
       this.tableProject({ majorSort: val });
       this.houseStr = val;
