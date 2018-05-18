@@ -123,24 +123,23 @@
                           <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
                           <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
                         </div>
-                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.serviceHour}}</div>
+                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.copyserviceHour1}}</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
                           <li v-for="item in otherInfo.freList" :key="item.id">
-                            <span>
-                              每周
-                              <span v-if="item.week =='1'">一</span>
-                              <span v-if="item.week =='2'">二</span>
-                              <span v-if="item.week =='3'">三</span>
-                              <span v-if="item.week =='4'">四</span>
-                              <span v-if="item.week =='5'">五</span>
-                              <span v-if="item.week =='6'">六</span>
-                              <span v-if="item.week =='7'">日</span>
+                            <span>                              
+                              <span v-if="item.week =='1'">每周一</span>
+                              <span v-if="item.week =='2'">每周二</span>
+                              <span v-if="item.week =='3'">每周三</span>
+                              <span v-if="item.week =='4'">每周四</span>
+                              <span v-if="item.week =='5'">每周五</span>
+                              <span v-if="item.week =='6'">每周六</span>
+                              <span v-if="item.week =='7'">每周日</span>
                             </span>
-                            <span style="margin-left:10px;">{{item.startTime}}~{{item.endTime}}</span>
+                            <span style="margin-left:10px;">{{item.timeArea}}</span>
                           </li>
                         </ul>
-                        <div v-if=" frequencyStatus ==''" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime" value="更换固定时间"></div>
-                        <div v-if=" frequencyStatus == 'week_some'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime" value="设置固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length == 0" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
                       </div>                                      
                 </div>
             </div>
@@ -155,7 +154,7 @@
                       <el-table-column
                         align="center"
                         label="组合商品名称"
-                        prop="goodsName"
+                        prop="combinationGoodsName"
                         >
                       </el-table-column>                       
                       <el-table-column
@@ -163,7 +162,7 @@
                         label="服务项目"
                         >
                         <template scope="scope">
-                            <div class="selfTd" v-for="(item,index) in scope.row.item" :key="index">{{item.itemName}}</div>						
+                            <div class="selfTd" v-for="(item,index) in scope.row.combinationCommoditys" :key="index">{{item.itemName}}</div>						
                         </template>                         
                       </el-table-column>                      
                       <el-table-column
@@ -171,33 +170,33 @@
                         label="商品名称"
                         >
                         <template scope="scope">
-                            <div class="selfTd" v-for="(item,index) in scope.row.goods" :key="index">{{item.goodsName}}</div>						
+                            <div class="selfTd" v-for="(item,index) in scope.row.combinationCommoditys" :key="index">{{item.goodsName}}</div>						
                         </template>                        
                       </el-table-column>
                       <el-table-column
                         align="center"
                         label="服务数量"
-                        prop="goodsNum">                    
+                        prop="combinationGoodsNum">                    
                       </el-table-column>                                           
                       <el-table-column
                         align="center"
                         label="单位">
                           <template scope="scope">
-                              <span>{{scope.row.goodsUnit}}</span>
+                              <span>{{scope.row.unit}}</span>
                           </template>	                                           
                       </el-table-column>
                       <el-table-column
                         align="center"
                         label="单价">
                           <template scope="scope">
-                              <span>￥{{scope.row.payPrice}}</span>
+                              <span>￥{{scope.row.price}}</span>
                           </template>	                                           
                       </el-table-column>                                             
                       <el-table-column
                         align="center"
                         label="小计">
                           <template scope="scope">
-                              <span>￥{{scope.row.payPriceSum}}</span>
+                              <span>￥{{scope.row.sum}}</span>
                           </template>	                                           
                       </el-table-column>                      
                     </el-table>
@@ -285,7 +284,7 @@
             </div>                                     		
 		    </div>
         <!--支付信息结束-->
-        <!--技师信息开始-->
+        <!--已有订单信息开始-->
         <div class="thrid-bar marginTop15">
             <div class="custom-action">已有订单信息</div>
             <div class="hr-style"></div>
@@ -409,15 +408,15 @@
                 </div>
             </div>                     		
 		    </div>
-        <!--技师信息结束-->        
+        <!--已有订单信息结束-->        
         <el-dialog
           title="查看备注信息"
-          class="selfCustomerDialog"
+          class="selfCustomerDialog1"
           :visible.sync="RemarkInfFlag"
           :close-on-click-modal="false"
           >
             <!--下单用户信息开始-->
-            <div class="thrid-bar" style="margin-top:-38px;">
+            <div class="thrid-bar" style="margin-top:-38px;padding-left:20px;">
                 <div class="custom-action1">用户备注</div>
                 <div class="hr-style1"></div>
                 <div class="selfWrap1">
@@ -430,7 +429,7 @@
                       </p>
                       <p class="contentLine1">
                           <span class="lineTitle"></span>
-                          <span class="lineContent width1000">
+                          <span class="lineContent">
                             <div class="picWrap marginLeft82">
                                 <div class="picStyle" v-for="item in otherInfo.customerRemarkPics" :key="item"> 
                                   <img :src="imgSrc+item+picWidth250"/>
@@ -443,17 +442,18 @@
             </div>
             <!--下单用户信息结束-->        
             <!--订单备注开始-->
-            <div class="thrid-bar marginTop15">
-                <div class="custom-action1">订单备注</div>
-                <div class="hr-style1"></div>
-                <div class="selfWrap1">
+            <div class="thrid-bar marginTop15" style="position:relative;">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                <div class="custom-action1" style="padding-left:20px;">订单备注</div>
+                <div class="hr-style1" style="padding-left:20px;"></div>
+                <div class="selfWrap1" style="padding-left:20px;">
                     <div class="leftArea" style="width:100%;">
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">备注:</span>
                           <span class="lineContent1 selfbeizhu">{{otherInfo.orderRemark}}</span>
                       </p>
                       <p class="contentLine1">
-                          <span class="lineContent2 width900">
+                          <span class="lineContent2">
                             <div class="picWrap selfMarTL">
                                 <div class="picStyle" v-for="item in otherInfo.orderRemarkPics" :key="item">
                                   <img :src="imgSrc+item+picWidth250"/>
@@ -466,10 +466,11 @@
             </div>
             <!--订单备注结束-->               
             <!--业务人员信息开始-->
-            <div class="thrid-bar marginTop15">
-                <div class="custom-action1">业务人员信息</div>
+            <div class="thrid-bar marginTop15" style="position:relative;">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                <div class="custom-action1" style="padding-left:20px;">业务人员信息</div>
                 <div class="hr-style1"></div>
-                <div class="selfWrap1">
+                <div class="selfWrap1" style="padding-left:20px;">
                     <div class="leftArea">
                       <p class="contentLine1">
                           <span class="lineTitle">姓名:</span>
@@ -483,7 +484,7 @@
                       </p>
                       <p class="contentLine1">
                           <span class="lineTitle"></span>
-                          <span class="lineContent width1000">
+                          <span class="lineContent ">
                             <div class="picWrap marginLeft82">
                                 <div class="picStyle" v-for="item in otherInfo.businessRemarkPics" :key="item"> 
                                   <img :src="imgSrc+item+picWidth250"/>
@@ -501,11 +502,13 @@
                 </div>                                     		
             </div>
             <!--业务人员信息结束-->
+            
             <!--门店信息开始-->
-            <div class="thrid-bar marginTop15 marginBOT20" >
-                <div class="custom-action1">门店信息</div>
+            <div class="thrid-bar marginTop15 marginBOT20" style="position:relative;">
+                 <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                <div class="custom-action1" style="padding-left:20px;">门店信息</div>
                 <div class="hr-style1"></div>
-                <div class="selfWrap1">
+                <div class="selfWrap1" style="padding-left:20px;">
                     <div class="leftArea">
                       <p class="contentLine1">
                           <span class="lineTitle">名称:</span>
@@ -527,7 +530,7 @@
                       </p>
                       <p class="contentLine1">
                           <span class="lineTitle"></span>
-                          <span class="lineContent width1000">
+                          <span class="lineContent">
                             <div class="picWrap marginLeft82">
                                 <div class="picStyle" v-for="item in otherInfo.shopRemarkPics" :key="item">
                                   <img :src="imgSrc+item+picWidth250"/>
@@ -551,7 +554,7 @@
         </el-dialog>        
         <!--已有订单中更换技师与改派共用弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
-          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle"></el-input> 
+          <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle" style="width:252px;"></el-input> 
           <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
           <div class="NowTabs">当前选择标签：</div>
            <transition name="el-zoom-in-bottom">
@@ -605,7 +608,7 @@
         <!--已有订单中更换技师与改派共用弹窗结束-->                                                    
         <!--更换固定技师弹窗开始-->
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible1" class="selfDialogWidth" :close-on-click-modal="false">
-          <el-input placeholder="输入技师姓名" v-model="techName1" class="orderinfoTechNameStyle"></el-input> 
+          <el-input placeholder="输入技师姓名" v-model="techName1" class="orderinfoTechNameStyle" style="width:252px;"></el-input> 
           <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh1">查询</button>
           <div class="NowTabs" style="font-size:12px;">*更换固定服务技师后，之后的订单会默认派单给该技师</div>                                             	
           <div class="selfTableWrapONE">
@@ -619,7 +622,7 @@
                 <td  class="selfTableHEADTD" align="center" width="161px">岗位性质</td>							
               </tr>
               <div class="orderinfoTechTablePadding">
-                  <tr v-for="item in listTech1" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
+                  <tr v-for="item in listTech1" :key="item.techId"   class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center">              
                      <el-radio :label="item.techId" v-model="radio" @change.native="getCurrentRow(item.techId)">&nbsp;</el-radio>
                    </td>
@@ -651,12 +654,12 @@
           title="选择服务时间"
           :visible.sync="dialogVisible"
           :close-on-click-modal="false"
-          class="selfDialogWidth"
+          class="selfDialogWidth3"
           >
             <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
               <div>
-                  <el-form-item label="选择日期" prop='Date' >
-                          <el-select v-model="formInline.Date" class="selfDateStyle"  @change='dateChange' placeholder="请选择">
+                  <el-form-item label="选择日期" prop='Date' style="padding-left:20px;">
+                          <el-select v-model="formInline.Date" class="selfDateStyle" style="margin-left:0px;"  @change='dateChange' placeholder="请选择">
                             <el-option
                               v-for="item in options2"
                               :key="item.value"
@@ -665,23 +668,24 @@
                             </el-option>
                           </el-select>                      
                   </el-form-item>
-                  <el-form-item label="选择时间" prop='Time'>
+                  <el-form-item label="选择时间" prop='Time' style="padding-left:20px;">
                         <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                         <div class="marginTopDec46">
                           <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
                         </div> 
                         <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                   </el-form-item>
-                  <el-form-item label="">              
-                  <div class="button-large-fourth" @click="searchSeverTech1">查询服务技师</div> 
+                  <el-form-item label="" style="padding-left:20px;">              
+                        <div class="button-large-fourth" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
-              <div v-if="gudingFlag1">
-                <div style="margin-left:80px;font-size:12px;">
+              <div v-if="gudingFlag1" style="position:relative;">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:20px;">
                     <p>*  该订单的技师为：李四    15801655090</p>
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
-                <el-form-item label="选择技师" prop="Tech">             
+                <el-form-item label="选择技师" prop="Tech" style="padding-left:20px;">             
                   <div style="margin-top: -10px;">                
                       <el-table
                         :data="tableData2"
@@ -747,20 +751,21 @@
           title="预约"
           :visible.sync="yuyuedialogVisible"
           :close-on-click-modal="false"
-          class="selfDialogWidth"
+          class="selfDialogWidth3"
           >
             <el-form  :model="yuyueformInline" :rules="yuyueformInline1rules" ref="yuyueformInline" label-width="80px">
               <div>
-                  <el-form-item label="服务时长:" style="margin-top: -22px;">
+                  <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
                     <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="yuyuenumberChange"></el-input-number>
-                    <div style="font-size: 12px;color: #576475;width:500px;">* 单次建议服务时长为3小时；总服务时长为{{tishiTime1}}小时（预约个数 * 单次建议服务时长） </div>
+                    <div style="font-size: 12px;color: #576475;width:500px;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
-                  <el-form-item label="" style="margin-top: -26px;">              
+                  <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue">查询服务日期</div> 
                   </el-form-item>
-                  <div v-if="yuyueselectDateFlag">
-                        <el-form-item label="选择日期:" prop='Date' >
+                  <div v-if="yuyueselectDateFlag" style="position:relative;">
+                        <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                        <el-form-item label="选择日期:" prop='Date' style="padding-top:20px;padding-left:20px;">
                                 <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:5px;"  @change='yuyuedateChange' placeholder="请选择">
                                   <el-option
                                     v-for="item in options21"
@@ -770,25 +775,26 @@
                                   </el-option>
                                 </el-select>                      
                         </el-form-item>
-                        <el-form-item label="选择时间:" prop='Time'>
+                        <el-form-item label="选择时间:" prop='Time' style="padding-left:20px;">
                               <el-input type="hidden" value='' v-model='yuyueformInline.Time'></el-input>                  
                               <div class="marginTopDec46">
                                 <div class="selfSeverTimeSt" ref="yuyueTimeWrap"  v-for="(item,index) in yuyuetimeObj" :key="index" @click="yuyuetimeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
                               </div> 
                               <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                         </el-form-item>
-                        <el-form-item label="">              
+                        <el-form-item label="" style="padding-left:20px;">              
                         <div class="button-large-fourth"  @click="searchSeverTechyuyue">查询服务技师</div> 
                         </el-form-item>                    
                   </div>                   
 
               </div>
-              <div v-if="gudingFlag11">
-                <div style="margin-left:80px;font-size:12px;">
+              <div v-if="gudingFlag11" style="position:relative;">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                <div style="margin-left:80px;font-size:12px;padding-top: 20px;padding-left:20px;">
                     <p>*  该订单的技师为：李四    15801655090</p>
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
-                <el-form-item label="选择技师:" prop="Tech">             
+                <el-form-item label="选择技师:" prop="Tech" style="padding-left:20px;">             
                   <div style="margin-top: -10px;">                
                       <el-table
                         :data="yuyuetableData"
@@ -850,7 +856,7 @@
         </el-dialog>
         <!--预约弹窗结束-->        
         <!--取消订单弹窗开始-->
-        <el-dialog
+        <!-- <el-dialog
           title="取消订单"
           :visible.sync="cancelOrderFlag"
           :close-on-click-modal="false"
@@ -882,10 +888,10 @@
               <button class="button-large" :disabled="timeSaveFlag"  @click="submitOrder('Orderform')">确定</button>
               <button class="button-cancel"  @click="unOrder('Orderform')">取 消</button>
             </div>
-        </el-dialog>
+        </el-dialog> -->
         <!--取消订单弹窗结束--> 
         <!--退款详情弹窗开始-->
-        <el-dialog
+        <!-- <el-dialog
           title="退款"
           :visible.sync="orderRefundFlag"
           :close-on-click-modal="false"
@@ -947,7 +953,7 @@
               <button class="button-large" :disabled="timeSaveFlag"  @click="orderRefundOk('ruleForm')">退款</button>
               <button class="button-cancel"  @click="orderRefundCancel">取 消</button>
             </div>
-        </el-dialog>
+        </el-dialog> -->
         <!--退款详情弹窗结束--> 
         <!--更换技师弹窗开始-->
         <el-dialog
@@ -956,7 +962,7 @@
           :close-on-click-modal="false"
           class="selfDialogWidth1"
           >
-          <div class="selfPromInfStyle1"> <input type="button"   class="button-cancel height25" style="float:right;"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')"  value="增加技师"></div>
+          <div class="selfPromInfStyle1"> <input type="button"   class="button-cancel height25" style="float:right;margin-right: 16px;"  v-if="btnShow.indexOf('order_addTech') > -1" @click="gaiPai('add','')"  value="增加技师"></div>
             <el-table
               :data="tableData1"
               border                  
@@ -1010,16 +1016,17 @@
           :close-on-click-modal="false"
           >
             <el-form  :model="Orderform1" :rules="orderrules1" ref="Orderform1" label-width="84px" label-position="left" >
-                <el-form-item label="预约个数：" style="margin-top: -22px;">
+                <el-form-item label="预约个数：" style="margin-top: -22px;padding-left:20px;">
                   <span class="selfLabelStyle">*</span>
                   <el-input-number class="selfINputNumStyle"  v-model="severHour" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="numberChange"></el-input-number>
-                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为3小时；总服务时长为{{tishi}}小时（预约个数 * 单次建议服务时长） </div>
+                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长） </div>
                 </el-form-item>
-                <el-form-item label="" style="margin-top: -22px;">              
+                <el-form-item label="" style="margin-top: -22px;padding-left:20px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
                 </el-form-item>
-                <div v-if="severFrequencyFlag">
-                    <el-form-item label="服务频次：" prop="testsele"> 
+                <div v-if="severFrequencyFlag" style="position:relative;">
+                    <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-11px;"></div>
+                    <el-form-item label="服务频次：" prop="testsele" style="padding-left:20px;padding-top:20px;"> 
                         <input type="hidden"   v-model="Orderform1.testsele"/>                       
                         <div   v-for="(value,key,index) in frequencyOptions"  :label="value" :name='key' :key="index"  @click="Changefrequency(key,index)">
                           <div class="frequencyTabs" :class="freStyl == index ? 'activeStyle' :'' ">
@@ -1028,9 +1035,9 @@
                         </div> 
                     </el-form-item>
                     <el-form-item style="margin-top: -15px;">
-                      <div style="font-size: 12px;color: #576475;float:left;">* 目前固定服务时间： 一周多次   每周二   13:00 ~ 15:00、每周五   13:00 ~ 15:00</div>                                                                                          
+                      <div style="font-size: 12px;color: #576475;float:left;padding-left: 20px;">* 目前固定服务时间： 一周多次   每周二   13:00 ~ 15:00、每周五   13:00 ~ 15:00</div>                                                                                          
                     </el-form-item>                                                      
-                    <el-form-item v-if="freStyl !='4'" label="服务时间：" prop="workTimes">
+                    <el-form-item  label="服务时间：" prop="workTimes" style="padding-left:20px;">
                           <div class="tech-order-jn" style="width:550px">
                             <span class="tech-order-btn" @click="addtime"> &#10010;请选择服务时间段</span>
                           </div>
@@ -1067,13 +1074,21 @@
                                 </div>                                                        
                             </el-collapse-transition>                          
                           </el-form-item>
-                          <div v-show="listShowFlag && freStyl !='4'">
-                              <el-form-item >
+                          <div v-show="listShowFlag">
+                              <el-form-item style="padding-left:20px;">
                                 <ul class="working" style="width:550px;margin-top: -21px;">
                                   <li v-for="item in teachArr" :key="item.id">
                                     <div>
                                       <div class="woking-div">
-                                        <div ><span >{{item.name}}</span></div>
+                                        <div >
+                                          <span v-if="item.week =='1'">星期一</span>
+                                          <span v-if="item.week =='2'">星期二</span>
+                                          <span v-if="item.week =='3'">星期三</span>
+                                          <span v-if="item.week =='4'">星期四</span>
+                                          <span v-if="item.week =='5'">星期五</span>
+                                          <span v-if="item.week =='6'">星期六</span>
+                                          <span v-if="item.week =='7'">星期日</span>
+                                        </div>
                                         <div class="time">{{item.timeArea}}</div>
                                       </div>
                                     </div>
@@ -1082,28 +1097,30 @@
                                     </div>
                                   </li>
                                 </ul>
-                                <div class="severPromitINf">* 两周后的订单将按照更换后的固定时间分配</div>
+                                <div class="severPromitINf" style="padding-left: 20px;">* 两周后的订单将按照更换后的固定时间分配</div>
                               </el-form-item>                    
                           </div>
-                      <el-form-item label="选择日期" prop='Date' >
-                              <el-select v-model="Orderform1.Date" style="width:550px;"  @change='dateChange' placeholder="请选择第一次服务日期">
-                                <el-option
-                                  v-for="item in options3"
-                                  :key="item.value"
-                                  :label="item.label"
-                                  :value="item.value">
-                                </el-option>
-                              </el-select>                      
-                      </el-form-item>
-                      <el-form-item label="">              
-                      <div class="button-large-fourth" @click="searchSeverTech">查询服务技师</div> 
-                      </el-form-item>
-                </div>                
-              <div v-if="gudingFlag">
-                <div style="margin-left:80px;font-size:12px;">
-                    <p>*  更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：李四    15801655090</p>
+                          <el-form-item label="选择日期" prop='Date' style="padding-left:20px;">
+                                  <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
+                                    <el-option
+                                      v-for="item in options3"
+                                      :key="item.value"
+                                      :label="item.label"
+                                      :value="item.value">
+                                    </el-option>
+                                  </el-select>                      
+                          </el-form-item>
+                          <el-form-item label="" style="padding-left: 20px;">              
+                          <div class="button-large-fourth"  @click="searchSeverTech">查询服务技师</div> 
+                          </el-form-item>
+                </div>
+                                
+              <div  v-if="gudingFlag" style="position:relative;">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
+                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
+                    <p>* 更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：李四    15801655090</p>
                 </div>               
-                <el-form-item label="选择技师" prop="Tech">             
+                <el-form-item label="选择技师" prop="Tech" style="padding-left:20px;">             
                   <div style="margin-top: -10px;">                
                       <el-table
                         :data="tableData3"
@@ -1221,7 +1238,7 @@ export default {
       if (this.teachArr.length > 0 && this.teachArr != undefined) {
         callback();
       } else {
-        callback(new Error("请选择服务时间段"));
+        callback(new Error("请选择服务时间"));
       }
     };
     return {
@@ -1278,7 +1295,7 @@ export default {
       radio3: "",
       yuyueradio: "",
       radio4: "",
-      listTech1: [],
+      listTech1: [],//更换固定技师弹窗中的表格数据对象
       techName1: "",
       radio: "",
       RemarkInfFlag: false,
@@ -1343,7 +1360,7 @@ export default {
           { required: true, message: "请选择服务频次", trigger: "change" }
         ],
         workTimes: [
-          { required: true, message: "请选择服务时间", trigger: "blur" }
+          { required: true,validator:WORKTIMES , trigger: "blur" }
         ],
         Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
@@ -1406,40 +1423,10 @@ export default {
       tabOptions: [],
       dialogTableVisible: false,
       dialogTableVisible1: false,
-      tableData: [
-        {
-          goodsName: "组合商品名1",
-          item: [
-            { itemId: "1", itemName: "项目名1" },
-            { itemId: "2", itemName: "项目名2" }
-          ],
-          goods: [
-            { goodsId: "1", goodsName: "项目名1" },
-            { goodsId: "2", goodsName: "项目名2" }
-          ],
-          goodsNum: "4",
-          goodsUnit: "平米",
-          payPrice: "1200.00",
-          payPriceSum: "4800.00"
-        },
-        {
-          goodsName: "组合商品名1",
-          item: [
-            { itemId: "1", itemName: "项目名1" },
-            { itemId: "2", itemName: "项目名2" }
-          ],
-          goods: [
-            { goodsId: "1", goodsName: "商品名1" },
-            { goodsId: "2", goodsName: "商品名2" }
-          ],
-          goodsNum: "4",
-          goodsUnit: "平米",
-          payPrice: "1200.00",
-          payPriceSum: "4800.00"
-        }
-      ],
+      tableData: [],
       tableData1: [],
       tableData2: [],
+      tableData3:[],//固定时间中表格数据
       yuyuetableData: [],
       ordertableData:[],//已有订单表格数据
       dialogVisible: false,
@@ -1453,14 +1440,17 @@ export default {
       addressInf: [],
       roomSel1Arr: {},//固定时间星期选择时的存储对象的容器
       teachArr: [],//固定时间服务时间选择确定后时的存储对象的容器
-      disbArr: [],//固定时间星期选择删除存储对象的容器
       roomSelNum: [],//固定时间星期选择时的存储星期id的容器
       workTimes: [], //工作时间
       freStyl: "4",
       freStyl1: "8",
       tishi:'',//固定时间总服务时间提示信息中
       tishiTime1:'',//预约总服务时间提示信息中
-      
+      copyserviceHour:'',//单次服务时间
+      copyserviceHour1:'',//单次服务时间格式转换后的
+      yuyuegeshu:'',//返回预约个数
+      gudingStatus:'',
+      techArrtest:[],
     };
   },
   created() {
@@ -1492,85 +1482,124 @@ export default {
     searchSeverTech() {
       this.gudingFlag = true;
       //技师表格数据
-      this.tableData3 = this.tableData1;
+      this.tableData3 = [];
     },
     //固定时间查询服务日期按钮
-    searchSeverDate() {
-      this.severFrequencyFlag = true;
-      this.freStyl = "4";
-      this.radio4 = "";
+    searchSeverDate() { 
+      if(this.gudingStatus =='add'){
+        this.freStyl = "4";
+        this.radio4 = ""; 
+        this.freStyl1 = "8";
+        this.timeArea = "";
+        this.timeAreaoptions = [];
+        this.Orderform1.testsele='';
+        this.teachArr=[];
+      }     
+      this.listShowFlag=false;
+      this.isB = false;           
+      //预约个数*单次服务时间如果大于6提示不能
+      if(this.severHour*this.copyserviceHour>6){
+            this.$message({
+              type: "warning",
+              message: "总服务时长不能大于6小时！"
+            });
+            this.severFrequencyFlag = false;
+            return false
+      }
+      this.severFrequencyFlag = true;     
     },
     //预约查询服务日期按钮
     searchseverDateyuyue() {
-      this.yuyueselectDateFlag = true;
       this.yuyueradio = "";
+      //预约个数*单次服务时间如果大于6提示不能
+      if(this.yuyueNumber*this.copyserviceHour > 6){
+            this.$message({
+              type: "warning",
+              message: "总服务时长不能大于6小时！"
+            });
+            this.yuyueselectDateFlag = false;            
+            return false
+      }else{
+        this.yuyueselectDateFlag = true;        
+      }      
     },
     //预约查询服务技师按钮
     searchSeverTechyuyue() {
       this.gudingFlag11 = true;
       this.yuyueradio = "";
       //技师表格数据
-      this.yuyuetableData = this.tableData1;
+      this.yuyuetableData = []
     },
     //更换时间查询服务技师按钮
     searchSeverTech1() {
       this.gudingFlag1 = true;
       //技师表格数据
-      this.tableData2 = this.tableData1;
+      this.tableData2 = [];
     },
-    //固定时间服务时长改变
+    //固定时间预约个数改变
     numberChange(val) {
-      //预约个数*单次服务时间如果大于6提示不能
-      //0.5 为单次服务时间
-      if(val*0.5>6){
-            this.$message({
-              type: "warning",
-              message: "总服务时长不能大于6小时！"
-            });
-      }else{
-        this.tishi=val*0.5
+      if(this.gudingStatus =='add'){
+          this.freStyl = "4";
+          this.radio4 = "";
       }
-      this.freStyl = "4";
+      
       this.Orderform1.severHour = val;
       this.severFrequencyFlag = false;
       this.gudingFlag = false;
-      this.radio4 = "";
-    },
-    //预约数量改变
-    yuyuenumberChange(val) {
+            
       //预约个数*单次服务时间如果大于6提示不能
-      //0.5 为单次服务时间
-      if(val*0.5 > 6){
+      if(val*this.copyserviceHour>6){
             this.$message({
               type: "warning",
               message: "总服务时长不能大于6小时！"
             });
-      }else{
-        this.tishiTime1=val*0.5
+            return false
       }
-      this.yuyueformInline.severHour = val;
-      this.yuyueNumber = val;
+
+    },
+    //预约数量改变
+    yuyuenumberChange(val) {
       this.yuyueselectDateFlag = false;
       this.gudingFlag11 = false;
+      this.yuyueformInline.severHour = val;
+      this.yuyueNumber = val;            
+      //预约个数*单次服务时间如果大于6提示不能
+      if(val*this.copyserviceHour > 6){
+            this.$message({
+              type: "warning",
+              message: "总服务时长不能大于6小时！"
+            });
+
+            return false
+      }
     },
     //固定时间服务频次更换
     Changefrequency(key, index) {
-      this.frequencySelecte = key;
-      this.freStyl = index;
-      this.freStyl1 = "8";
-      this.timeArea = "";
-      this.timeAreaoptions = [];
-      this.Orderform1.testsele = key;
-      this.teachArr = []
+          this.frequencySelecte = key;
+          this.freStyl = index;
+          this.Orderform1.testsele = key;      
+      if(this.gudingStatus =='add'){
+
+          this.freStyl1 = "8";
+          this.timeArea = "";
+          this.timeAreaoptions = [];
+          
+          this.teachArr = []
+      }
+
     },
     //更换固定时间取消
     setCancel(formName) {
-      this.freStyl = "4";
-      this.freStyl1 = "8";
-      this.timeArea = "";
-      this.timeAreaoptions = [];
-      this.gudingFlag = false;
-      this.$refs[formName].resetFields();
+      if(this.gudingStatus =='add'){
+          this.freStyl = "4";
+          this.freStyl1 = "8";
+          this.timeArea = "";
+          this.timeAreaoptions = [];
+          this.gudingFlag = false;
+          this.$refs[formName].resetFields();          
+      }
+      this.teachArr=this.techArrtest;
+      this.otherInfo.freList=this.techArrtest;
       this.testFlag = false;
     },
     //更换固定时间保存
@@ -1586,36 +1615,67 @@ export default {
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = [];
-          console.log(this.Orderform1.severHour);
+          //this.Orderform1.severHour
           this.testFlag = false;
           //this.$refs[formName].resetFields();
         }
       });
     },
     //更换固定时间按钮
-    changeguTime() {
-      this.freStyl = "4";
-      this.freStyl1 = "8";
-      this.timeArea = "";
-      this.timeAreaoptions = [];
-      this.gudingFlag = false;
-      this.testFlag = true;
-      this.Orderform1.testsele = "";
-      this.radio4 = "";
-      this.Orderform1.severHour = "1";
-      this.severHour = "1";
-      this.teachArr = [];
-      this.disbArr = [];
+    changeguTime(status) {
+      this.gudingStatus=status;//是新增还是修改
+      if(status == 'add'){
+        this.freStyl = "4";
+        this.freStyl1 = "8";
+        this.isB=false;
+        this.severFrequencyFlag=false;
+        this.timeArea = "";
+        this.timeAreaoptions = [];
+        this.gudingFlag = false;
+        this.testFlag = true;
+        this.Orderform1.testsele = "";
+        this.radio4 = "";
+        this.Orderform1.severHour = "1";
+        this.severHour = "1";
+        this.teachArr = [];        
+      }else{
+        var a
+        if(this.otherInfo.serviceFrequency =='week_one'){
+            a=0
+        }
+        if(this.otherInfo.serviceFrequency =='two_week_one'){
+             a=2
+        }
+        if(this.otherInfo.serviceFrequency =='week_some'){
+             a=1
+        }
+        this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
+        this.teachArr = this.otherInfo.freList; //服务时间的回显 
+        this.Changefrequency(this.otherInfo.serviceFrequency,a)//服务频次回显
+        this.searchSeverTech();//查询服务技师表格数据
+        this.freStyl1 = "8";
+        this.isB=true;
+        
+        if(this.teachArr.length != 0){
+           this.listShowFlag=true;//日期选择结果显示开关
+        }        
+        this.severFrequencyFlag=true;
+        this.timeArea = "";
+        this.timeAreaoptions = [];
+        this.gudingFlag = true;
+        this.testFlag = true;
+        this.radio4 = "";//技师选择的id
+        this.severHour = "1";//预约次数的回显      
+      }
+
     },
 
     //单选服务时间段中星期几选择
     roomSel2(item, index) {
       this.creatIs = 'yes'
       this.timeArea = "";
-      // this.listShowFlag=false;
       this.weekNumber = item.name;
       this.freStyl1 = index;
-      // if (this.roomSelNum.indexOf(item.id) == -1) {
       this.roomSelNum.push(item.id); //存储星期的ID
       this.roomSel1Arr = Object.assign({}, item); //存储星期的对象
       //星期几的id在对象中遍历得到下拉日期数据
@@ -1646,15 +1706,13 @@ export default {
         return false;
       }
       var obj = {};
-      obj.name = this.roomSel1Arr.name;
+      obj.week = this.roomSel1Arr.id;
       obj.timeArea = this.timeArea;      
       if (this.Orderform1.testsele == "week_some") {
         if (this.teachArr.length > 0) {
           this.creatIs = 'no'
           for (var i of this.teachArr) {
-            console.log(i, "iiiiii");
-            if (i.name == obj.name) {
-              console.log("mmmmm");
+            if (i.week == obj.week) {
               this.$message.error("当前日期已选择");
               this.creatIs = 'yes'
               break
@@ -1676,19 +1734,24 @@ export default {
     },
     //单选请选择服务时间段点击
     addtime() {
-      this.isB = true;
+      if(this.Orderform1.testsele == ''){
+        this.$message({
+          type: "error",
+          message: "请选择服务频次！"
+        });
+        this.isB = false;
+      }else{
+        this.isB = true;
+      }
+      
     },
     //单选服务时间段中选择后取消
     singleaddtimeno() {
       this.freStyl1 = "8";
       this.timeArea = "";
       this.timeAreaoptions = [];
-      this.teachArr=[];
-      this.listShowFlag=false;
-      this.isB = false;
     },
     singledeletes(item) {
-      console.log(item)
       this.teachArr.remove(item)
       this.timeArea = "";
       this.freStyl1 = "8";
@@ -1727,10 +1790,11 @@ export default {
     },
     //更换技师按钮
     changeTech(row) {
-      console.log(row.orderGroupId)//参数
+      console.log(row.orderGroupId,'更换技师表格内按钮')//参数
+      //用上面的参数查询到 this.tableData1     
       this.changeTechFlag = true;
     },
-    //更换技师确定
+    //表格内更换技师确定
     changeTechOk() {
       this.changeTechFlag = false;
     },
@@ -1742,11 +1806,12 @@ export default {
           tech.push(this.listTech1[a].techId);
         }
       }
-      console.log(tech, "更换固定技师");
+      console.log(tech, "更换固定技师传入参数array");
       this.dialogTableVisible1 = false;
     },
     //更换固定技师弹出层取消
     cancelForm21() {
+      this.radio='';
       this.listTech1 = [];
       this.dialogTableVisible1 = false;
     },
@@ -1924,10 +1989,15 @@ export default {
             this.otherInfo = AllInfo; //所有其他信息变量
             this.ordertableData=AllInfo.orderCombinationGasqInfos;//已有订单表格数据
             this.addressInf = AllInfo.addressInfo;
+            this.copyserviceHour=AllInfo.serviceHour//单次服务时间
+            this.yuyuegeshu=AllInfo.serviceNum//预约个数
+            this.otherInfo.copyserviceHour1=this.formatDuring(
+              AllInfo.serviceAllHour * 3600000
+            );//单次服务时间格式转换后
             this.otherInfo.serviceHour = this.formatDuring(
               AllInfo.serviceHour * 3600000
             );
-            // this.tableData = AllInfo.goodsInfo.goods; //服务商品信息表格
+            this.tableData = AllInfo.combinationOrderInfos; //服务商品信息表格
             this.payInfo = AllInfo.payInfo; //支付信息
           }
         })
@@ -1986,7 +2056,6 @@ export default {
                     this.$refs["formInline"].resetFields();
                     this.yuyuedialogVisible = false;
                     this.yuyuetimeObj = [];
-                    this.tableData1 = res.data.data.list;
                     this.otherInfo.serviceHour = this.formatDuring(
                       res.data.data.serviceHour * 3600000
                     );
@@ -1998,7 +2067,6 @@ export default {
                   } else {
                     this.yuyuetimeObj = [];
                     this.yuyuetimeSaveFlag1 = false;
-                    this.dateChange(this.formInline.Date);
                     loading.close();
                   }
                 })
@@ -2050,7 +2118,7 @@ export default {
     },
     //更换时间的保存
     submitTime(formName) {
-      this.gudingFlag1 = false;
+      this.gudingFlag1 = false;//技师信息展示开关
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.timeSaveFlag = true;
@@ -2083,21 +2151,22 @@ export default {
                       message: "更换时间成功!"
                     });
                     this.$refs["formInline"].resetFields();
-                    this.dialogVisible = false;
-                    this.timeObj = [];
-                    this.tableData1 = res.data.data.list;
-                    this.otherInfo.serviceHour = this.formatDuring(
-                      res.data.data.serviceHour * 3600000
-                    );
-                    this.otherInfo.serviceTime = that.changTime + " " + that.bb;
-                    var nowtime = new Date();
-                    var severtime = new Date(this.otherInfo.serviceTime);
-                    this.nowTime = severtime.getTime() - nowtime.getTime();
+                    this.dialogVisible = false;//弹窗关闭
+                    this.timeObj = [];//时段对象
+                    this.options2=[];
+                    this.radio3='';
+                    this.tableData2=[];
+                    // this.otherInfo.serviceHour = this.formatDuring(
+                    //   res.data.data.serviceHour * 3600000
+                    // );
+                    // this.otherInfo.serviceTime = that.changTime + " " + that.bb;
+                    // var nowtime = new Date();
+                    // var severtime = new Date(this.otherInfo.serviceTime);
+                    // this.nowTime = severtime.getTime() - nowtime.getTime();
                     loading.close();
                   } else {
                     this.timeObj = [];
                     this.timeSaveFlag = false;
-                    this.dateChange(this.formInline.Date);
                     loading.close();
                   }
                 })
@@ -2114,7 +2183,6 @@ export default {
               });
               this.timeSaveFlag = false;
               this.timeObj = [];
-              this.dateChange(this.formInline.Date);
               this.formInline.Time = "";
             });
         } else {
@@ -2136,6 +2204,10 @@ export default {
     //更换时间取消
     cancelTime(formName) {
       this.gudingFlag1 = false;
+      this.timeObj = [];//时段对象
+      this.options2=[];
+      this.radio3='';
+      this.tableData2=[];      
       this.$refs[formName].resetFields();
       //样式复位
       for (var a = 0; a < this.timeObj.length; a++) {
@@ -2150,18 +2222,35 @@ export default {
     //选择技师弹出层取消
     cancelForm2() {
       this.middleA = [];
+      this.radio1='';
       this.listTech = [];
       this.dialogTableVisible = false;
     },
     //固定服务时间修改中日期变化时改变时间对象
     dateChange1(val) {
+      if(val== true){
+        if(this.Orderform1.testsele == ''){
+          this.$message({
+            type: "error",
+            message: "请选择服务频次！"
+          });
+          return false;
+        }
+        if(this.teachArr.length == 0){
+          this.$message({
+            type: "error",
+            message: "请选择服务时间！"
+          });
+          return false;
+        }
+      }
       //this.options3
     },
     //预约中日期变化时改变时间对象
     yuyuedateChange(val) {
       //this.options21
     },
-    //日期变化时改变时间对象
+    //更换时间中日期变化时改变时间对象
     dateChange(val) {
       var that = this;
       for (var b = 0; b < this.options2.length; b++) {
@@ -2207,6 +2296,10 @@ export default {
     },
     //已有订单更换时间弹窗中的时间选项点击
     timeChange(index, obj) {
+      //隐藏技师选择部分
+      this.radio3='';
+      this.gudingFlag1=false;
+      this.tableData2=[];
       for (var a = 0; a < this.timeObj.length; a++) {
         this.$set(this.timeObj[a], "selected", false);
         if (a == index) {
@@ -2227,9 +2320,9 @@ export default {
     searchTeh1() {
       var obj = {
         id: this.orderId,
-        techName: this.techName1
+        techName: this.techName1//技师姓名参数
       };
-      //服务技师获取
+      //更换固定技师格数据获取
       // addTechData(obj)
       //   .then(res => {
       //     this.listTech1 = [];
@@ -2243,13 +2336,13 @@ export default {
       //   })
       //   .catch(res => {});
     },
-    //新增选择技师弹出层查询按钮
+    //新增与改派选择技师弹出层查询按钮
     searchTeh() {
       var obj = {
         id: this.orderId,
         techName: this.techName
       };
-      //服务技师获取
+      //多选（新增）
       if (this.status == "add") {
         // addTechData(obj)
         //   .then(res => {
@@ -2271,17 +2364,12 @@ export default {
         //   })
         //   .catch(res => {});
       } else {
+        //单选（改派）
         // dispatchTechData(obj)
         //   .then(res => {
         //     if (res.data.code === 1) {
-        //       if (res.data.data != undefined) {
-        //         this.listTech = res.data.data;
-        //         for (var c = 0; c < this.middleA.length; c++) {
-        //           for (var d = 0; d < this.listTech.length; d++) {
-        //             if (this.listTech[d].techId == this.middleA[c].techId) {
-        //               this.listTech[d].techChecked = true;
-        //             }
-        //           }
+        //         if (res.data.data != undefined) {
+        //            this.listTech = res.data.data;       
         //         }
         //       } else {
         //         this.listTech = [];
@@ -2316,33 +2404,33 @@ export default {
         }
       }
       if (this.status == "add" && arr.length != 0) {
-        //保存技师接口调用
+        //多选保存技师
         var obj = {
           id: this.orderId,
           techIdList: arr
         };
-        addTechSave(obj)
-          .then(res => {
-            this.techSaveFlag = false;
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "新增成功!"
-              });
-              this.tableData1 = res.data.data.list;
-              this.otherInfo.serviceHour = this.formatDuring(
-                res.data.data.serviceHour * 3600000
-              );
-              this.middleA = [];
-              this.listTech = [];
-              this.dialogTableVisible = false;
-            }
-          })
-          .catch(res => {
-            this.techSaveFlag = false;
-          });
+        // addTechSave(obj)
+        //   .then(res => {
+        //     this.techSaveFlag = false;
+        //     if (res.data.code === 1) {
+        //       this.$message({
+        //         type: "success",
+        //         message: "新增成功!"
+        //       });
+        //       this.otherInfo.serviceHour = this.formatDuring(
+        //         res.data.data.serviceHour * 3600000
+        //       );
+        //       this.middleA = [];
+        //       this.listTech = [];
+        //       this.dialogTableVisible = false;
+        //     }
+        //   })
+        //   .catch(res => {
+        //     this.techSaveFlag = false;
+        //   });
       }
       if (this.status == "edit") {
+        //单选保存技师
         var tech = [];
         for (var a = 0; a < this.listTech.length; a++) {
           if (this.radio1 == this.listTech[a].techId) {
@@ -2363,10 +2451,6 @@ export default {
                 type: "success",
                 message: "改派成功!"
               });
-              this.tableData1 = res.data.data.list;
-              // this.otherInfo.serviceHour = this.formatDuring(
-              //   res.data.data.serviceHour * 3600000
-              // );
               //this.middleA = [];
               this.listTech = [];
               this.dialogTableVisible = false;
@@ -2378,10 +2462,10 @@ export default {
             this.techSaveFlag = false;
           });
       }
-      if (arr.length == 0) {
-        this.techSaveFlag = false;
-        this.dialogTableVisible = false;
-      }
+      // if (arr.length == 0) {
+      //   this.techSaveFlag = false;
+      //   this.dialogTableVisible = false;
+      // }
     },
     //改派或新增技师
     gaiPai(status, obj) {
@@ -2391,6 +2475,8 @@ export default {
       this.status = status;
       this.techName = "";
       if (status == "add") {
+        //多选增加技师
+         this.dialogTableVisible = true;
         var obj = {
           id: this.orderId
         };
@@ -2405,6 +2491,7 @@ export default {
         //   })
         //   .catch(res => {});
       } else {
+        //单选择
         var obj1 = {
           id: this.orderId
         };
@@ -2420,13 +2507,13 @@ export default {
         //   .catch(res => {});
       }
     },
-    //改派或新增技师
+    //改派或新增技师（更换固定技师）
     gaiPai1(id) {
-      console.log(id,'固定技师')
+      console.log(id,'固定技师传入参数')
       this.radio = "";
       this.techName1 = "";
       var obj = {
-        id: this.orderId
+        id: id
       };
       this.dialogTableVisible1 = true;
       // addTechData(obj)
@@ -2500,7 +2587,7 @@ export default {
       this.$refs[formName].resetFields();
       this.cancelOrderFlag = false;
     },
-    //已有订单中表格中的服务时间按钮
+    //已有订单中表格中的更换时间按钮
     changeTime(row) {
       console.log(row.orderGroupId)//参数
       this.radio3 = "";
@@ -2821,7 +2908,7 @@ ul li {
   word-wrap: break-word;
 }
 .selfbeizhu1 {
-  width: 800px;
+  width: 700px;
   float: left;
   display: block;
   margin-left: 102px;
@@ -3174,7 +3261,7 @@ ul li {
   border: none !important;
 }
 .orderInfoHeaderPic {
-  width: 100%;
+  width: 98%;
   display: inline-block;
 }
 .orderinfoTechNameStyle {

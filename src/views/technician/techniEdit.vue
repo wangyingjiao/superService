@@ -2183,7 +2183,10 @@ export default {
   cursor: pointer;
 }
 .time {
-  padding: 10px 0;
+  /* padding: 10px 0; */
+  position: absolute;
+  right: 50px;
+  top: 16px;
 }
 #confirmation {
   display: flex;

@@ -569,8 +569,13 @@ body {
 }
 //自定义弹窗大小
 .selfDialogWidth .el-dialog {width:700px}
+.selfDialogWidth3 .el-dialog {width:700px}
+.selfCustomerDialog1 .el-dialog{width:800px}
 //自定义弹窗大小
 .selfDialogWidth2 .el-dialog {width:800px}
+.selfDialogWidth2 .el-dialog__body {padding:30px 0;}
+.selfDialogWidth3 .el-dialog__body {padding:30px 0;}
+.selfCustomerDialog1 .el-dialog__body {padding:30px 0;}
 //自定义弹窗大小
 .selfDialogWidth1 .el-dialog {width:734px}
 .selfDialogWidth1 .el-dialog .el-form-item__label{font-size:14px;}
