@@ -1079,7 +1079,7 @@
                                 <ul class="working" style="width:550px;margin-top: -21px;">
                                   <li v-for="item in teachArr" :key="item.id">
                                     <div>
-                                      <div class="woking-div">
+                                      <div class="selfwoking-div">
                                         <div >
                                           <span v-if="item.week =='1'">星期一</span>
                                           <span v-if="item.week =='2'">星期二</span>
@@ -1089,7 +1089,7 @@
                                           <span v-if="item.week =='6'">星期六</span>
                                           <span v-if="item.week =='7'">星期日</span>
                                         </div>
-                                        <div class="time">{{item.timeArea}}</div>
+                                        <div class="selftime">{{item.timeArea}}</div>
                                       </div>
                                     </div>
                                     <div>
@@ -1541,11 +1541,14 @@ export default {
       if(this.gudingStatus =='add'){
           this.freStyl = "4";
           this.radio4 = "";
+          this.severFrequencyFlag = false;
+          this.gudingFlag = false;
       }
+
       
       this.Orderform1.severHour = val;
-      this.severFrequencyFlag = false;
-      this.gudingFlag = false;
+      
+      
             
       //预约个数*单次服务时间如果大于6提示不能
       if(val*this.copyserviceHour>6){
@@ -2674,7 +2677,7 @@ export default {
   font-size: 12px;
   color: #576475;
 }
-.time {
+.selftime {
   position: absolute;
   right: 50px;
   top: 15px;
@@ -2699,7 +2702,7 @@ ul li {
   border-bottom: 1px solid #f2f2f2;
   padding-top: 15px;
 }
-.woking-div {
+.selfwoking-div {
   display: flex;
   flex-direction: column;
 }
