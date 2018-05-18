@@ -44,7 +44,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="订单组ID" min-width="210" prop="masterId">      
+      <el-table-column align="center" label="订单组ID" min-width="250" prop="masterId">      
       </el-table-column>       
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
@@ -66,15 +66,21 @@
        
       </el-table-column>
       
+
       <el-table-column  label="组合商品名称"  min-width='150' align="center">
+        <template scope="scope">
+           <el-tooltip  placement="left" :disabled="scope.row.combinationGoodsName.length < 10" :content="scope.row.combinationGoodsName">
+             <div :class="scope.row.combinationGoodsName.length < 10 ? '' : 'overheidden'">{{scope.row.combinationGoodsName}}</div>
+           </el-tooltip>
+         </template>
+      </el-table-column>
+      
+      <el-table-column  label="服务内容"  min-width='150' align="center">
         <template scope="scope">
            <el-tooltip  placement="left" :disabled="scope.row.orderContent.length < 10" :content="scope.row.orderContent">
              <div :class="scope.row.orderContent.length < 10 ? '' : 'overheidden'">{{scope.row.orderContent}}</div>
            </el-tooltip>
          </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="服务内容" min-width="100" prop="payPrice">      
       </el-table-column>
 
 
@@ -91,13 +97,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="支付状态" min-width="100" prop="orderStatus" >
+      <el-table-column   align="center" width="150" label="支付状态"  >
         <template scope="scope">
-           <span v-if="scope.row.orderStatus=='dispatched'">已下单</span>
-           <span v-if="scope.row.orderStatus=='cancel'">已取消</span>
-           <span v-if="scope.row.orderStatus=='success'">已成功</span>
-           <span v-if="scope.row.orderStatus=='close'">已支付</span>
-        </template>
+            <span v-if="scope.row.payStatus =='payed'">已支付</span>
+            <span v-if="scope.row.payStatus =='waitpay'">待支付</span>
+        </template>	
       </el-table-column>
 
       <el-table-column align="center" label="订单来源" min-width="150" prop="orderSource"> 
@@ -162,7 +166,8 @@ export default {
       total: 1,
       seOptions: {
         masterId: "订单组ID",
-        orderContent: "组合商品名称"
+        orderContent: "组合商品名称",
+        orderConten: "对接订单组ID"
       },
       //搜索数据
       search: {
@@ -314,8 +319,11 @@ export default {
     },
     //查看
     handleLook(row) {
-      localStorage.setItem('grouporderId',row.masterId)
-      this.$router.push({ path: "/clean/grouporderinfo", query: { id: row.masterId} });
+      localStorage.setItem("grouporderId", row.masterId);
+      this.$router.push({
+        path: "/clean/grouporderinfo",
+        query: { id: row.masterId }
+      });
     }
   }
 };

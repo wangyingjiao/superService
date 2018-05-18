@@ -473,7 +473,7 @@
     justify-content: center;
   }
   .tabStyle .search {
-    /* width: 15%; */
+    width: 15%;
     margin-right: 0;
   }
   .tabStyle .el-select {

@@ -11,7 +11,9 @@
         <el-option v-for="(item,index) in searchSortList" :key="index" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-
+      <el-select clearable class="search" filterable  v-model="search.goodsType" placeholder="商品类型">
+           <el-option v-for="(item,key) in goodsTypeList" :key="key" :label="item" :value="key"></el-option>
+      </el-select>
       <el-input class="search" placeholder="请输入搜索的项目名称" v-model="search.name">
       </el-input> 
 	  <el-input class="search" placeholder="请输入搜索的商品名称" v-model="search.goodsName">
@@ -119,7 +121,7 @@
         <!-- 删除商品与已对接E店的一列
         element无法根据内容大小，所以判断两种，有E店和无E店 -->
         <!-- :min-width="btnShow.indexOf('project_send')>-1?250:100" -->
-        <!-- <el-table-column align="center" v-if="techUserType=='sys'"  label="" :width="btnShow.indexOf('project_send')>-1?250:150">
+        <el-table-column align="center" v-if="techUserType=='sys'"  label="" :min-width="btnShow.indexOf('project_send')>-1?200:100">
              <template scope="scope">
             <div
               class="branch"  
@@ -134,9 +136,9 @@
               </span>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <!-- :width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?550:150" -->
-        <el-table-column align="center" label=""  width="240">
+        <el-table-column align="center" v-if="techUserType!='sys'" label="" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?200:100">
              <template scope="scope">
             <div
               class="branch"  
@@ -154,7 +156,7 @@
           </template>
         </el-table-column>
         <!-- 项目 -->
-        <el-table-column align="center" label="" width="170">
+        <el-table-column align="center" label="" width="180">
           <template scope="scope">
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_update')>-1" @click="handleUpdate(scope.row)">编辑</span>
             <span class="probtn ceshi3" v-if="btnShow.indexOf('project_delete')>-1" @click="handleDelete(scope.row)">删除项目</span>
@@ -169,7 +171,7 @@
         :page-sizes="[5,10,15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-    <combination @listloadingson="listloadingson" @comlist="comList" ref='combination' :org-list="orgList"></combination>
+    <combination :system-options="systemOptions" @listloadingson="listloadingson" @comlist="comList" ref='combination' :org-list="orgList"></combination>
     <!-- 添加，编辑弹框 -->
     <el-dialog 
       :title="textMap[dialogStatus]" 
@@ -1063,6 +1065,7 @@ export default {
       }
     };
     return {
+      goodsTypeList:{},
       commodityArr:[],
       handleCreateFlag:'',
       radio:'',
@@ -1211,6 +1214,7 @@ export default {
         orgId:'',
         sortId: "",
         name: "",
+        goodsType:'',
         // sortIdandGoodsId: "",
         goodsName: "",
       },
@@ -1247,7 +1251,8 @@ export default {
     // var dict = require("../../../static/dict.json");
     this.measure = dict.meterage;
     this.whole = dict.ser_sort;
-
+    this.goodsTypeList = dict.goods_type
+    console.log(dict,"this.goodsTypeList----")
     // Whether()
     //   .then(({ data }) => {
     //     this.measure = data.meterage;
@@ -1717,22 +1722,23 @@ export default {
       if (getObj) {
         obj = getObj;
       } else {
-        var obj = {};
-        if (this.basicForm.majorSort) {
-          obj.majorSort = this.tabs;
-        }
-        if (this.search.sortId) {
-          obj.sortId = this.search.sortId;
-        }
-        if (this.search.name) {
-          obj.name = this.search.name;
-        }
-        if (this.search.goodsName) {
-          obj.goodsName = this.search.goodsName;
-        }
-        if(this.search.orgId){
-          obj.orgId = this.search.orgId
-        }
+        var obj = Object.assign({},this.search)
+        obj.majorSort = this.tabs;
+        // if (this.basicForm.majorSort) {
+        //   obj.majorSort = this.tabs;
+        // }
+        // if (this.search.sortId) {
+        //   obj.sortId = this.search.sortId;
+        // }
+        // if (this.search.name) {
+        //   obj.name = this.search.name;
+        // }
+        // if (this.search.goodsName) {
+        //   obj.goodsName = this.search.goodsName;
+        // }
+        // if(this.search.orgId){
+        //   obj.orgId = this.search.orgId
+        // }
         // if (this.search.sortIdandGoodsId) {
         //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
         // }
@@ -2064,6 +2070,7 @@ export default {
       this.basicForm.majorSort = "all";
       this.search.sortId = "";
       this.search.name = "";
+      this.search.goodsType = "";
       this.search.goodsName = "";
       this.$refs['orgSearch'].orgEmpty()
       this.orgSearch()
