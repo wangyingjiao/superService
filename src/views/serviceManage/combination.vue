@@ -158,7 +158,7 @@
 											</el-input>
 										</el-form-item>
 										<el-form-item v-else label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
-											<span>{{basicForm.serItemCommodity.combinationCommodities.length>0 ? basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit : 0}} </span>
+											<span>{{basicForm.serItemCommodity.combinationCommodities.length>0 ? basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit : 0+'小时/单位'}} </span>
 										</el-form-item>
 										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
 											<el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
@@ -990,7 +990,8 @@ export default {
     dialogFormVisibleClick(){
         this.dialogFormVisible = true
         this.listDataAllClick()
-        this.handleCreate()
+		this.handleCreate()
+		console.log(this.basicForm,"basicForm----+++++")
     },
     //组合商品信息--选择商品--保存
     commodityPreservation(){
@@ -1523,7 +1524,8 @@ export default {
       this.handleCreateFlag = str
       this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
       this.sordFlag = true;
-      this.basicForm.sortId = "";
+	  this.basicForm.sortId = "";
+	  this.basicForm.orgId = "";
       this.imgNumber = 0;
       this.tableProject({ majorSort: "clean" });
       this.alreadyArr = [];
