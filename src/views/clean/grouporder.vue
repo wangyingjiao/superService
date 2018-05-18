@@ -20,7 +20,7 @@
     </el-date-picker>
 
       <el-input @keyup.enter.native="handleFilter" style="width:30%;margin-right:2%" placeholder="请输入要搜索的内容" v-model="search.val">
-        <el-select  clearable slot="prepend" style="width:100px" v-model="search.type" placeholder="请选择">
+        <el-select  clearable slot="prepend" style="width:120px" v-model="search.type" placeholder="请选择">
           <el-option v-for="(val,key,index) in seOptions" :key="key" :label="val" :value="key">
           </el-option>
         </el-select>
@@ -111,7 +111,7 @@
         </template>     
       </el-table-column>
 
-      <el-table-column align="center" label="对接订单组ID" min-width="100" prop="payPrice">      
+      <el-table-column align="center" label="对接订单组ID" min-width="250" prop="jointGroupId">      
       </el-table-column>
 
       <el-table-column align="center" label="下单时间" min-width="160" prop="orderTime">
@@ -167,7 +167,7 @@ export default {
       seOptions: {
         masterId: "订单组ID",
         orderContent: "组合商品名称",
-        orderConten: "对接订单组ID"
+        jointGroupId: "对接订单组ID"
       },
       //搜索数据
       search: {
@@ -256,6 +256,11 @@ export default {
           orderContent: this.search.val
         };
         obj = Object.assign(obj, orderContent);
+      }else if(this.search.type == "jointGroupId"){
+        var jointGroupId = {
+          jointGroupId: this.search.val
+        };
+        obj = Object.assign(obj, jointGroupId);
       }
       getCombination(obj, this.pageNumber, this.pageSize)
         .then(res => {
