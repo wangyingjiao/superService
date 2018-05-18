@@ -574,7 +574,7 @@
                             <div>
                               <div class="woking-div">
                                 <div><span v-for="(data,i) in item.weeks" :key="i">{{data.name+"、"}}</span></div>
-                                <div class="time">{{item.startTime+"~"+item.endTime}}</div>
+                                <div class="time1">{{item.startTime+"~"+item.endTime}}</div>
                               </div>
                             </div>
                             <div>
@@ -2751,7 +2751,7 @@ export default {
   top: 27px;
   cursor: pointer;
 }
-.time {
+.time1 {
   /* padding: 10px 0; */
   position: absolute;
   right: 50px;
