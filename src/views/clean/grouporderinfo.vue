@@ -420,7 +420,7 @@
                 <div class="custom-action1">用户备注</div>
                 <div class="hr-style1"></div>
                 <div class="selfWrap1">
-                    <div class="leftArea">
+                    <div class="leftArea" style="width:100%;">
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">备注:</span>
                           <span class="selfbeizhu1">
@@ -429,8 +429,8 @@
                       </p>
                       <p class="contentLine1">
                           <span class="lineTitle"></span>
-                          <span class="lineContent">
-                            <div class="picWrap marginLeft82">
+                          <span class="lineContent2">
+                            <div class="picWrap">
                                 <div class="picStyle" v-for="item in otherInfo1.customerRemarkPics" :key="item"> 
                                   <img :src="imgSrc+item+picWidth250"/>
                                 </div>
@@ -471,7 +471,7 @@
                 <div class="custom-action1" style="padding-left:20px;">业务人员信息</div>
                 <div class="hr-style1"></div>
                 <div class="selfWrap1" style="padding-left:20px;">
-                    <div class="leftArea">
+                    <div class="leftArea" >
                       <p class="contentLine1">
                           <span class="lineTitle">姓名:</span>
                           <span class="lineContent">{{otherInfo1.businessName}}</span>
@@ -482,10 +482,10 @@
                             {{otherInfo1.businessRemark}}
                           </span>
                       </p>
-                      <p class="contentLine1">
+                      <p class="contentLine1" style="width:600px;">
                           <span class="lineTitle"></span>
-                          <span class="lineContent ">
-                            <div class="picWrap marginLeft82">
+                          <span class="lineContent2 ">
+                            <div class="picWrap">
                                 <div class="picStyle" v-for="item in otherInfo1.businessRemarkPics" :key="item"> 
                                   <img :src="imgSrc+item+picWidth250"/>
                                 </div>
@@ -509,7 +509,7 @@
                 <div class="custom-action1" style="padding-left:20px;">门店信息</div>
                 <div class="hr-style1"></div>
                 <div class="selfWrap1" style="padding-left:20px;">
-                    <div class="leftArea">
+                    <div class="leftArea" >
                       <p class="contentLine1">
                           <span class="lineTitle">名称:</span>
                           <span class="lineContent">{{otherInfo1.shopName}}</span>
@@ -528,10 +528,10 @@
                             {{otherInfo1.shopRemark}}                        
                           </span>
                       </p>
-                      <p class="contentLine1">
+                      <p class="contentLine1" style="width:600px;">
                           <span class="lineTitle"></span>
-                          <span class="lineContent">
-                            <div class="picWrap marginLeft82">
+                          <span class="lineContent2">
+                            <div class="picWrap">
                                 <div class="picStyle" v-for="item in otherInfo1.shopRemarkPics" :key="item">
                                   <img :src="imgSrc+item+picWidth250"/>
                                 </div>
