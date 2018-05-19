@@ -450,7 +450,7 @@
                     <div class="leftArea" style="width:100%;">
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">备注:</span>
-                          <span class="lineContent1 selfbeizhu">{{otherInfo1.orderRemark}}</span>
+                          <span class="lineContent1 selfbeizhu" style="margin-left: 20px;">{{otherInfo1.orderRemark}}</span>
                       </p>
                       <p class="contentLine1">
                           <span class="lineContent2">
@@ -478,7 +478,7 @@
                       </p>
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">备注:</span>
-                          <span class="selfbeizhu1">
+                          <span class="selfbeizhu1" >
                             {{otherInfo1.businessRemark}}
                           </span>
                       </p>
