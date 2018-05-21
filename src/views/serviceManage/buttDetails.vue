@@ -137,6 +137,7 @@ export default {
       orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: false,
+      selectCheckboxWholeFlag:true,
       selectableFlag:true,
       selectableArr:[],
       tableFlag:false,
@@ -285,6 +286,7 @@ export default {
     },
     //搜索
     searchBtt() {
+      this.selectCheckboxWholeFlag = true
       if(this.userType){
         if(!(this.search.orgId && this.search.eshopCode)){
           this.$message({
@@ -338,6 +340,7 @@ export default {
       // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.selectCheckboxWholeFlag = true
       this.eshopCodeData()
       this.pageSize = 10;
       if (this.pageSync == 1) {
@@ -367,43 +370,70 @@ export default {
     //未对接列表复选框--全选
     selectCheckboxWhole(selection){
       if(this.activeName != "yesDocking"){
-        this.selectableArr = selection
-        verificationJointDate(this.selectableArr)
-          .then(({data})=>{
-             if(data.code == 1){
-                if('data' in data){
-                    this.$nextTick(()=>{
-                      this.checkboxEd(data.data)
-                    })
-                }
-             }
-          })
-          .catch(error=>{
-            console.log(error,"error----+++++")
-          })
+        if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
+          this.selectCheckboxWholeFlag = false  
+          this.selectableArr = selection
+          verificationJointDate(this.selectableArr)
+            .then(({data})=>{
+               if(data.code == 1){
+                  if('data' in data){
+                      this.$nextTick(()=>{
+                        this.checkboxEd(data.data)
+                      })
+                      this.selectCheckboxWholeFlag = true
+                  }else{
+                      this.selectCheckboxWholeFlag = false
+                  }
+               }
+            })
+            .catch(error=>{
+              console.log(error,"error----+++++")
+            })
+        }else{
+          this.selectCheckboxWholeFlag = true
+        }
       }
     },
-    //未对接列表复选框
-    selectCheckbox(selection, row,index){
-      console.log(selection,row,index,'index-----+++++')
-      if(this.activeName != "yesDocking"){
-        if(row.goodsType != "single"){
-            this.selectableArr = []
-            this.selectableArr[0] = row
-            verificationJointDate(this.selectableArr).then(({data})=>{
+    //未对接列表复选框 接口
+    noCheckbox(arr,callback){
+      this.$refs.multipleTable.toggleRowSelection(arr[0],false);
+      verificationJointDate(arr).then(({data})=>{
               if(data.code == 1){
                 if('data' in data){
                   this.$message({
                       type: "warning",
                       message:`组合商品${data.data[0].newName}下存在未对接成功的子商品，不可设置对接`
                   });
-                  this.$refs.multipleTable.toggleRowSelection(this.selectableArr[0],false);
+                  if(callback) callback(false)
                 }else{
+                  this.$refs.multipleTable.toggleRowSelection(arr[0],true);
                 }
               }
             }).catch(error=>{
               console.log(error,"error---")
             })
+    },
+    //未对接列表复选框  --  选中时触发
+    selectCheckbox(selection, row,index){
+      if(this.activeName != "yesDocking"){     //未对接
+        if(row.goodsType != "single"){    //判断  - 是否是组合商品，不是组合商品不需要请求
+          this.selectableArr = []
+          this.selectableArr[0] = row
+          if('checked' in row){   //判断 - 选中触发接口，取消不触发
+            if(row.checked){
+              row['checked'] = false
+            }else{
+              row['checked'] = true
+              this.noCheckbox(this.selectableArr,(bl)=>{    //商品不可以选中，回调，下次点击再次触发
+                row['checked'] = bl
+              })
+            }
+          }else{    //判断 - 第一次没有'checked'字段
+            row['checked'] = true
+            this.noCheckbox(this.selectableArr,(bl)=>{
+              row['checked'] = bl
+            })
+          }
         }
       }
     },
@@ -486,11 +516,13 @@ export default {
     handleSizeChange(page) {
       this.pageSize = page;
       this.tablePageSize(this.search, this.pageSync, this.pageSize);
+      this.selectCheckboxWholeFlag = true
     },
     // 分页
     handleCurrentChange(val) {
       this.pageSync = val;
       this.tablePageSize(this.search, this.pageSync, this.pageSize);
+      this.selectCheckboxWholeFlag = true
     },
     //所属类型
     typeChange() {

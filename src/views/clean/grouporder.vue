@@ -256,7 +256,7 @@ export default {
           orderContent: this.search.val
         };
         obj = Object.assign(obj, orderContent);
-      }else if(this.search.type == "jointGroupId"){
+      } else if (this.search.type == "jointGroupId") {
         var jointGroupId = {
           jointGroupId: this.search.val
         };
