@@ -158,3 +158,39 @@ export function formOrderRemark(obj) {
 export function updateOrderTimeDateList(obj) {
   return instance.post(`/apiservice/a/service/order/combination/updateOrderTimeDateList`, obj)
 }
+//已有订单更换技师按钮    参数 orderId
+export function updateOrderTechInit(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTechInit`, obj)
+}
+//已有订单增加 改派 技师列表    参数orderId，techName
+export function updateOrderTechTechList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTechTechList`, obj)
+}
+//已有订单增加保存按钮   参数 orderId，techIdList
+export function updateOrderTechAddSave(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTechAddSave`, obj)
+}
+//已有订单改派保存按钮    参数orderId，techIdList，techId
+export function updateOrderTechDispatchSave(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTechDispatchSave`, obj)
+}
+//更换服务时间中‘查询服务技师’  参数 一个是id  一个是serviceTime
+export function updateOrderTimeTechList (obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTimeTechList`, obj)
+}
+//更换服务时间中'保存' 
+export function updateOrderTimeSave (obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTimeSave`, obj)
+}
+//后台预约- 查询服务日期    serviceNum, masterId
+export function subscribeDateList  (obj) {
+  return instance.post(`/apiservice/a/service/order/combination/subscribeDateList`, obj)
+}
+//后台预约- 查询服务技师    serviceNum，masterId，serviceTime
+export function subscribeTechList  (obj) {
+  return instance.post(`/apiservice/a/service/order/combination/subscribeTechList`, obj)
+}
+//后台预约- 保存 serviceNum，masterId，serviceTime，techId
+export function subscribeSave  (obj) {
+  return instance.post(`/apiservice/a/service/order/combination/subscribeSave`, obj)
+}  
