@@ -158,7 +158,7 @@
 											</el-input>
 										</el-form-item>
 										<el-form-item v-else label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
-											<span>{{basicForm.serItemCommodity.combinationCommodities.length>0 ? basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit : 0+'小时/单位'}} </span>
+                      <span>{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span>
 										</el-form-item>
 										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
 											<el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
@@ -325,9 +325,9 @@
 <!-- 组合商品信息——选择商品 -->
 	<el-dialog title="选择商品" :close-on-click-modal="false" :visible.sync="combinationTypeDialog" class="dockingDialog com-dialog">
 		<div>
-			<el-input class="commodity-search" v-model="itemName" placeholder="请输入项目名称"></el-input>
-			<el-input class="commodity-search" v-model="goodName" placeholder="请输入商品名称"></el-input>
-			<input type="button" class="button-large btn-color" style="float:right" value="查 询" @click="choiceCommodity">
+			<el-input class="commodity-search" v-model="itemNameSearch" placeholder="请输入项目名称"></el-input>
+			<el-input class="commodity-search" v-model="goodNameSearch" placeholder="请输入商品名称"></el-input>
+			<input type="button" class="button-large btn-color" style="float:right" value="查 询" @click="choiceCommoditySearch">
 		</div>
 		<div style="padding-top:25px">
 			<p>已选择商品：</p>
@@ -665,8 +665,8 @@ export default {
         }
     }
     return {
-      goodName:'',
-      itemName:'',
+      goodNameSearch:'',
+      itemNameSearch:'',
       commodityArr:[],
       loadingCom:true,
       handleCreateFlag:'',
@@ -1047,7 +1047,12 @@ export default {
     ommodityCancel(){
       this.combinationTypeDialog = false;
     },
-    choiceCommodity(){
+    //搜索
+    choiceCommoditySearch(){
+      // console.log(this.itemName,this.goodName,"this.itemName,this.goodName")
+      this.choiceCommodity(this.itemNameSearch,this.goodNameSearch)
+    },
+    choiceCommodity(itemname,goodname){
         let obj = {}
         obj.sortId = this.basicForm.sortId;
         if(this.techUserType == 'sys'){
@@ -1055,8 +1060,8 @@ export default {
         }else{
            obj.orgId = '';
         }
-        obj.itemName = ''
-        obj.goodsName = ''
+        obj.itemName = this.itemNameSearch || ''
+        obj.goodsName = this.goodNameSearch || ''
         this.commodityArr = [].concat(this.basicForm.serItemCommodity.combinationCommodities)
         this.combinationTypeDialog = true;
         this.loadingCom = true;
@@ -1065,19 +1070,21 @@ export default {
               if(data != undefined){
                 let i , j , lon = this.commodityArr.length;
                 //判读：复选框选中
-                for( i = data.length ; i -- ;){
-                  data[i].combinationPrice = '0'
-                  data[i].combinationNum = '1'
-                  for( j = lon ; j-- ;){
-                    if(this.commodityArr[j].goodsId == data[i].goodsId){
-                      if( this.basicForm.serItemCommodity.serviceType == 'single'){
-                        data[i].check = true
-                      }else{
-                        this.radio = data[i].goodsId
+                console.log(lon,"this.commodityArr------______")
+                  for( i = data.length ; i -- ;){
+                    data[i].combinationPrice = '0'
+                    data[i].combinationNum = '1'
+                    if(!lon) this.radio = ''
+                    for( j = lon ; j-- ;){
+                      if(this.commodityArr[j].goodsId == data[i].goodsId){
+                        if( this.basicForm.serItemCommodity.serviceType == 'single'){
+                          data[i].check = true
+                        }else{
+                          this.radio = data[i].goodsId
+                        }
                       }
                     }
                   }
-                }
                 this.commodityDate = data
               }else{
                 this.commodityDate = []
@@ -1528,8 +1535,8 @@ export default {
       this.handleCreateFlag = str
       this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
       this.sordFlag = true;
-	  this.basicForm.sortId = "";
-	  this.basicForm.orgId = "";
+      this.basicForm.sortId = "";
+      this.basicForm.orgId = "";
       this.imgNumber = 0;
       this.tableProject({ majorSort: "clean" });
       this.alreadyArr = [];
@@ -1545,6 +1552,8 @@ export default {
       this.basicForm.serItemCommodity.cappingPerNum = ''
       this.basicForm.serItemCommodity.startPerNum = ''
       this.basicForm.serItemCommodity.minPurchase = ''
+      this.itemNameSearch = ''
+      this.goodNameSearch = ''
     },
     //编辑方法
     // handleUpdate(row) {
