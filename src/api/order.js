@@ -126,3 +126,31 @@ export function getCombination(obj, pageNumber, pageSize) {
 export function getOrderInf1(obj) {
   return instance.post(`/apiservice/a/service/order/combination/getCombinationById`, obj)
 }
+// 组合订单设置固定时间查询服务时间
+export function saveRegularDateDateList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/saveRegularDateDateList`, obj)
+}
+// 组合订单设置固定时间查询技师
+export function saveRegularDateTechList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/saveRegularDateTechList`, obj)
+}
+// 组合订单设置固定时间总保存
+export function saveRegularDate(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/saveRegularDate`, obj)
+}
+//组合订单更换固定时间总保存
+export function updateRegularDate(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateRegularDate`, obj)
+}
+//更换固定技师
+export function updateRegularTechTechList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateRegularTechTechList`, obj)
+}
+//更换固定技师保存
+export function updateRegularTechSave(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateRegularTechSave`, obj)
+}
+//组合订单查看备注
+export function formOrderRemark(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/formOrderRemark`, obj)
+}

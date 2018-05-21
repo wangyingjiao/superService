@@ -42,7 +42,7 @@
                 </div>
                 <!-- v-if="tableFlag || tableData3.length>0" -->
                 <div>
-                    <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+                    <el-table ref="multipleTable" v-loading="listLoading"  :data="tableData3" border tooltip-effect="dark" style="width: 100%" @select-all="selectCheckboxWhole"  @select="selectCheckbox" @selection-change="handleSelectionChange">
                         <div slot="empty">
                           <span v-if="!tableFlag"></span>
                           <span v-else>暂无数据</span>
@@ -105,6 +105,19 @@
     </div>
 </template>
 <script>
+
+let verificationJointDate = function(row){
+  return new Promise((res,rej)=>{
+    verificationJoint({serItemCommodityEshops:row})
+      .then(data=>{
+        res(data)
+      })
+      .catch(error=>{
+        rej(error)
+      })
+  })
+}
+
 import dict from "../../../static/dict.json";
 import {
   Taxonomy,
@@ -112,7 +125,8 @@ import {
   noButtedConnList,
   deleteGoodsCode,
   JonitGoods,
-  buttedList
+  buttedList,
+  verificationJoint
 } from "@/api/serviceManage";
 import { userType} from '../../utils/auth'
 import orgSearch from '../../components/Hamburger/orgSearch.vue'
@@ -123,6 +137,8 @@ export default {
       orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: false,
+      selectableFlag:true,
+      selectableArr:[],
       tableFlag:false,
       dockingEName: {},
       eshopStatus: null,
@@ -250,7 +266,7 @@ export default {
       if (this.activeName == "yesDocking") {
         return row.jointStatus != "butt_butt";
       } else {
-        return true;
+        return row.check;
       }
     },
     eshopCodeData(){
@@ -330,6 +346,66 @@ export default {
         this.pageSync = 1;
       }
       this.searchEmpty(); //清空搜索框
+    },
+    //复选框选中与否
+    checkboxEd(arr){
+      let {tableData3 } = this , i , j ,
+          len = tableData3.length , lon = arr.length , messageArr = '';
+      for( i = len ; i--;){
+        for( j = lon ; j--;){
+          if(arr[j].id == tableData3[i].id){
+            messageArr += tableData3[i].newName+'、'
+            this.$refs.multipleTable.toggleRowSelection(tableData3[i],false);
+          }
+        }
+      }
+      this.$message({
+        type: "warning",
+        message:`组合商品${messageArr.substring(0,messageArr.length-1)}下存在未对接成功的子商品，不可设置对接`
+      });
+    },
+    //未对接列表复选框--全选
+    selectCheckboxWhole(selection){
+      if(this.activeName != "yesDocking"){
+        this.selectableArr = selection
+        verificationJointDate(this.selectableArr)
+          .then(({data})=>{
+             if(data.code == 1){
+                if('data' in data){
+                    this.$nextTick(()=>{
+                      this.checkboxEd(data.data)
+                    })
+                }
+             }
+          })
+          .catch(error=>{
+            console.log(error,"error----+++++")
+          })
+      }
+    },
+    //未对接列表复选框
+    selectCheckbox(selection, row,index){
+      console.log(selection,row,index,'index-----+++++')
+      if(this.activeName != "yesDocking"){
+        if(row.goodsType != "single"){
+            this.selectableArr = []
+            this.selectableArr[0] = row
+            verificationJointDate(this.selectableArr).then(({data})=>{
+              if(data.code == 1){
+                if('data' in data){
+                  this.$message({
+                      type: "warning",
+                      message:`组合商品${data.data[0].newName}下存在未对接成功的子商品，不可设置对接`
+                  });
+                  this.$refs.multipleTable.toggleRowSelection(this.selectableArr[0],false);
+                }else{
+                }
+              }
+            }).catch(error=>{
+              console.log(error,"error---")
+            })
+        }
+      }
     },
     //复选框
     handleSelectionChange(val) {
