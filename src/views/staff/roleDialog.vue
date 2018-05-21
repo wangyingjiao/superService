@@ -1,7 +1,9 @@
 <template>
 	
-	<el-dialog 
-       :visible.sync="dialogFormVisible" 
+<!-- 弹窗开始 -->
+    <el-dialog
+       :title="textMap[dialogStatus]"
+       :visible.sync="dialogFormVisible"
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -11,12 +13,13 @@
         class="small-space dia_form"
         :model="temp" 
         label-position="left"
-        ref="temp" 
         :rules="rules"
+        ref="temp" 
         label-width="160px" 
         >
-        <el-form-item label="子所属机构:"  prop="officeId">
-          <el-select :disabled="selsctState" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
+
+        <el-form-item label="所属机构:"  prop="officeId">
+          <el-select :disabled="selsctState" @change="orgChange" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -26,15 +29,24 @@
           <el-input v-model.trim="temp.name" class="form_item" placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
 
+        <!-- <el-form-item label="等级:" prop="dataScope">
+          <el-select class="form_item"  disabled v-model="temp.dataScope" placeholder="请选择">
+            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
+            </el-option>
+          </el-select>
+          <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
+        </el-form-item> -->
+
         <el-form-item label="权限:" class="treecss" prop="check" >
             <el-tree
             class="scrollBox form_item"
-              :data=treeData
+              :data="treeData"
               :indent= 30
               show-checkbox
               node-key="id"    
               v-model="temp.check"
               ref="domTree"
+              :filter-node-method="filterNode"
               @check-change="handTreechange"
               @node-click="nodeClick"
               @current-change="currentChange"
@@ -45,19 +57,13 @@
             </el-tree>
   
         </el-form-item>
-        <!-- <el-form-item label="状态">
-          <el-select style='width: 400px;' class="filter-item" v-model="stationState">
-            <el-option v-for="item in state" :key="item.key" :label="item.value" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
 
       </el-form>
       <div slot="footer" class="dialog-footer">
         <!-- v-if判断当前是编辑还是新增 -->
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate"  @click="update('temp')">保 存</button>    
-        <button class="button-large btn-color" :disabled="btnState" @click="roleDialogCreate('temp')">保 存</button>    
-        <button class="button-cancel btn-color-cancel" @click="resetdia('temp')">取 消</button>
+        <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'create'" @click="create('temp')">保 存</button>    
+        <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
       </div>
     </el-dialog>
 	
@@ -106,9 +112,9 @@ export default {
         { id: "10", value: "十级" }
       ],
       roleLv: [],
-      dialogFormVisible:false,
+      filterText: "", //树状图过滤
+      dialogFormVisible: false,
       dialogStatus: "",
-      roleDiaState:"",
       textMap: {
         update: "编辑岗位",
         create: "新增岗位"
@@ -145,8 +151,7 @@ export default {
       }
     };
   },
-  computed: {
-  },
+  computed: {},
   created() {
     //获取权限列表
     getMenudata().then(res => {
@@ -154,15 +159,67 @@ export default {
     });
     //获取机构
     getSList({}).then(res => {
-      this.officeIds = res.data.data.list;
+      if (res.data.data.list != undefined) {
+        this.officeIds = res.data.data.list;
+      }
     });
-    // this.temp.name = this.rowData.name;
   },
-  props: ["diaState", "rowData", "resetForm"],
+  props: ["diaState", "rowData","getlistByDia"],
+  watch: {
+    filterText(val) {
+      this.$refs.domTree.filter(val);
+    }
+  },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.type.indexOf(value) !== -1;
+    },
+    orgChange(val) {
+      if (val == "sys") {
+        this.$nextTick(() => {
+          this.filterText = "";
+        });
+      } else {
+        this.$nextTick(() => {
+          this.filterText = "business";
+        });
+      }
+    },
+    handleCreate() {
+      this.listLoading = true;
+      getSList({})
+        .then(res => {
+          this.officeIds = res.data.data.list;
+          getMenudata().then(res => {
+            this.data2 = res.data.data;
+            if (res.data.code == 1) {
+              this.dialogStatus = "create";
+              this.dialogFormVisible = true;
+              // this.roleDiaState = true;
+              if (localStorage.getItem("type") == "platform") {
+                this.filterText = "";
+                this.$nextTick(() => {
+                  this.filterText = "business";
+                });
+              } else {
+                this.filterText = "";
+              }
+              this.listLoading = false;
+              if (this.officeIds.length == 1) {
+                this.temp.officeId = this.officeIds[0].id;
+              }
+            } else {
+              this.listLoading = false;
+            }
+          });
+        })
+        .catch(() => {
+          this.listLoading = false;
+        });
+    },
     //点击编辑时
-    handleUpdate1(row) {
-      console.log('子组件被调用，参数为',row)
+    handleUpdate(row) {
       this.myselfUpdate = true;
       this.listLoading = true;
       getPower(row.id).then(res => {
@@ -242,7 +299,7 @@ export default {
             this.$nextTick(() => {
               this.filterText = "business";
             });
-          }else{
+          } else {
             this.filterText = "";
           }
           this.temp.name = a.name;
@@ -273,7 +330,6 @@ export default {
           this.$nextTick(() => {
             this.$refs.domTree.setCheckedKeys(this.temp.check);
           });
-          
         } else {
           this.listLoading = false;
         }
@@ -406,13 +462,40 @@ export default {
 
       this.temp.check = this.$refs.domTree.getCheckedKeys();
     },
-    roleDialogCreate(formName) {
+    forOfTree() {
+      var sysArr = [];
+      for (var i of this.data2) {
+        if (i.type == "sys") {
+          sysArr.push(i.id);
+          for (var j of i.subMenus) {
+            sysArr.push(j.id);
+            if (j.subMenus) {
+              for (var k of j.subMenus) {
+                sysArr.push(k.id);
+              }
+            }
+          }
+        }
+      }
+      return sysArr;
+    },
+    //新增
+    create(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
+      if (this.filterText == "business") {
+        var sys = this.forOfTree();
+        for (var i of sys) {
+          arr.remove(i);
+        }
+      }
+      if (arr.length == 0) {
+        this.temp.check = [];
+      }
       for (var i = 0; i < arr.length; i++) {
         str += arr[i] + ",";
       }
-      //return;
+      // return;
       var obj = {
         name: this.temp.name,
         //dataScope: this.temp.dataScope,
@@ -437,11 +520,93 @@ export default {
                   type: "success",
                   message: "添加成功"
                 });
-                this.diaState = false;
+                this.dialogFormVisible = false;
+                this.$emit('getlistByDia','create')
+                // this.listQuery.page = 1;
+                // this.pageNumber = 1;
+                // this.search = {
+                //   name: "",
+                //   officeId: ""
+                // };
+                // this.handleFilter();
               } else {
+                // loading.close();
               }
             })
             .catch(err => {
+              // loading.close();
+              this.btnState = false;
+            });
+        } else {
+          var errArr = this.$refs[formName]._data.fields;
+          var errMes = [];
+          for (var i = 0; i < errArr.length; i++) {
+            if (errArr[i].validateMessage != "") {
+              errMes.push(errArr[i].validateMessage);
+            }
+          }
+          this.$message({
+            type: "error",
+            message: errMes[0]
+          });
+          return false;
+        }
+      });
+    },
+     //编辑
+    update(formName) {
+      var arr = this.$refs.domTree.getCheckedKeys();
+      var str = "";
+
+      if (this.filterText == "business") {
+        var sys = this.forOfTree();
+        for (var i of sys) {
+          arr.remove(i);
+        }
+      }
+      if (arr.length == 0) {
+        this.temp.check = [];
+      }
+      for (var i = 0; i < arr.length; i++) {
+        str += arr[i] + ",";
+      }
+      var obj = {
+        id: this.roleId,
+        name: this.temp.name,
+        dataScope: this.temp.dataScope,
+        //dataScope: "10",
+        menuIds: str,
+        useable: "1", //状态
+        organization: {
+          id: this.temp.officeId
+        }
+      };
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // this.loadingClick();
+          this.btnState = true;
+          upStation(obj)
+            .then(res => {
+              this.btnState = false;
+              if (res.data.code === 1) {
+                // loading.close();
+                this.selsctState = false;
+                this.resetTemp();
+                this.$refs.domTree.setCheckedKeys([]);
+                this.$refs[formName].resetFields();
+                this.dialogFormVisible = false;
+                this.$message({
+                  type: "success",
+                  message: "修改成功"
+                });
+                // this.getList();
+                this.$emit('getlistByDia','update')
+              } else {
+                // loading.close();
+              }
+            })
+            .catch(err => {
+              // loading.close();
               this.btnState = false;
             });
         } else {
@@ -468,12 +633,12 @@ export default {
         check: []
       };
     },
-    resetdia(formName) {
-      console.log(11111111);
+    resetForm(formName) {
+      this.selsctState = false;
+      this.dialogFormVisible = false;
       this.$refs.domTree.setCheckedKeys([]);
       this.$refs[formName].resetFields();
       this.resetTemp();
-      this.dialogFormVisible= false
     }
   }
 };
