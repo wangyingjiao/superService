@@ -286,6 +286,7 @@ export default {
     },
     //搜索
     searchBtt() {
+      this.selectCheckboxWholeFlag = true
       if(this.userType){
         if(!(this.search.orgId && this.search.eshopCode)){
           this.$message({
@@ -339,6 +340,7 @@ export default {
       // this.dockingEName = this.options[0] || { name: "" };
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
+      this.selectCheckboxWholeFlag = true
       this.eshopCodeData()
       this.pageSize = 10;
       if (this.pageSync == 1) {
