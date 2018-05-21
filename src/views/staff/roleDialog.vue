@@ -1,7 +1,7 @@
 <template>
 	
 	<el-dialog 
-       :visible.sync="diaState" 
+       :visible.sync="dialogFormVisible" 
        :show-close= "false"
        :close-on-click-modal="false"
        :close-on-press-escape="false"
@@ -12,10 +12,10 @@
         :model="temp" 
         label-position="left"
         ref="temp" 
+        :rules="rules"
         label-width="160px" 
         >
-         <p>子组件</p>
-        <el-form-item label="所属机构:"  prop="officeId">
+        <el-form-item label="子所属机构:"  prop="officeId">
           <el-select :disabled="selsctState" class="form_item" filterable v-model="temp.officeId" placeholder="请选择">
             <el-option v-for="item in officeIds" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -25,14 +25,6 @@
         <el-form-item label="岗位名称:" prop="name">
           <el-input v-model.trim="temp.name" class="form_item" placeholder="请输入2-15位的岗位名称"></el-input>
         </el-form-item>
-
-        <!-- <el-form-item label="等级:" prop="dataScope">
-          <el-select class="form_item"  disabled v-model="temp.dataScope" placeholder="请选择">
-            <el-option v-for="item in roleLv" :key="item.id" :label="item.value" :value="item.id">
-            </el-option>
-          </el-select>
-          <p style="font-size: 12px;color:#8391a5">* 十级权限最高，一级权限最低</p>
-        </el-form-item> -->
 
         <el-form-item label="权限:" class="treecss" prop="check" >
             <el-tree
@@ -64,8 +56,8 @@
       <div slot="footer" class="dialog-footer">
         <!-- v-if判断当前是编辑还是新增 -->
         <button class="button-large btn-color" :disabled="btnState" v-if="dialogStatus == 'update' && myselfUpdate"  @click="update('temp')">保 存</button>    
-        <button class="button-large btn-color" :disabled="btnState" @click="create('temp')">保 存</button>    
-        <button class="button-cancel btn-color-cancel" @click="resetForm('temp')">取 消</button>
+        <button class="button-large btn-color" :disabled="btnState" @click="roleDialogCreate('temp')">保 存</button>    
+        <button class="button-cancel btn-color-cancel" @click="resetdia('temp')">取 消</button>
       </div>
     </el-dialog>
 	
@@ -94,7 +86,7 @@ export default {
       selsctState: false, //下拉框状态，是否禁用
       myselfUpdate: true, //判断是否编辑自己
       officeIds: [],
-      treeData:[],
+      treeData: [],
       temp: {
         name: "",
         dataScope: "10",
@@ -114,7 +106,9 @@ export default {
         { id: "10", value: "十级" }
       ],
       roleLv: [],
+      dialogFormVisible:false,
       dialogStatus: "",
+      roleDiaState:"",
       textMap: {
         update: "编辑岗位",
         create: "新增岗位"
@@ -124,6 +118,30 @@ export default {
         //树形结构参数
         children: "subMenus",
         label: "name"
+      },
+      rules: {
+        officeId: [
+          { required: true, message: "机构不能为空", trigger: "change" }
+        ],
+        name: [
+          {
+            required: true,
+            message: "岗位名称不能为空",
+            trigger: "blur"
+          },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        dataScope: [
+          { required: true, message: "等级不能为空", trigger: "change" }
+        ],
+        check: [
+          {
+            type: "array",
+            required: true,
+            message: "权限不能为空",
+            trigger: "check-change"
+          }
+        ]
       }
     };
   },
@@ -138,17 +156,134 @@ export default {
     getSList({}).then(res => {
       this.officeIds = res.data.data.list;
     });
+    // this.temp.name = this.rowData.name;
   },
-  props: [
-    'diaState'
-  ],
+  props: ["diaState", "rowData", "resetForm"],
   methods: {
+    //点击编辑时
+    handleUpdate1(row) {
+      console.log('子组件被调用，参数为',row)
+      this.myselfUpdate = true;
+      this.listLoading = true;
+      getPower(row.id).then(res => {
+        this.listLoading = false;
+        if (res.data.code == 1) {
+          //处理权限位置
+          //处理订单的查看详情
+          var arr = res.data.data.menuListUnion;
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      if (arrk.permission == "order_info") {
+                        if (arrk.disabled == undefined) {
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          //处理所有列表权限
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].subMenus != undefined) {
+              var arri = arr[i].subMenus;
+              for (var j = 0; j < arri.length; j++) {
+                if (arri[j].subMenus != undefined) {
+                  var arrj = arri[j].subMenus;
+                  for (var k = 0; k < arrj.length; k++) {
+                    var arrk = arrj[k];
+                    if (arrk.permission != undefined) {
+                      if (
+                        arrk.permission.substring(
+                          arrk.permission.length - 4,
+                          arrk.permission.length
+                        ) == "view"
+                      ) {
+                        if (arrk.disabled == undefined) {
+                          var obj = arrk;
+                          arrj.remove(arrk);
+                          arrj.push(arrk);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          this.data2 = arr;
+          if (res.data.data.updateOwnFlag == "yes") {
+            this.myselfUpdate = false;
+          }
+          if (res.data.data.flagRoleId) {
+            this.myselfUpdate = false;
+            this.$nextTick(() => {
+              this.myselfUpdate = false;
+            });
+          }
+          this.dialogStatus = "update";
+          this.dialogFormVisible = true;
+          var a = res.data.data;
+          this.roleId = a.id;
+          setTimeout(() => {
+            this.temp.officeId = a.organization.id;
+          }, 50);
+          if (localStorage.getItem("type") == "platform") {
+            this.filterText = "";
+            this.$nextTick(() => {
+              this.filterText = "business";
+            });
+          }else{
+            this.filterText = "";
+          }
+          this.temp.name = a.name;
+          //this.temp.dataScope = a.dataScope;
+          //一期默认10级
+          this.temp.dataScope = "10";
+
+          //this.temp.check = a.menuIdList;
+          this.temp.check = a.menuIdListEdit;
+
+          if (res.data.data.flag) {
+            this.selsctState = true;
+          }
+          for (let i = 0; i < this.data2.length; i++) {
+            //特殊首页处理
+            if (this.data2[i].permission == "index") {
+            } else {
+              this.temp.check.remove(this.data2[i].id);
+            }
+
+            if (this.data2[i].subMenus != undefined) {
+              var child = this.data2[i];
+              for (let j = 0; j < child.subMenus.length; j++) {
+                this.temp.check.remove(child.subMenus[j].id);
+              }
+            }
+          }
+          this.$nextTick(() => {
+            this.$refs.domTree.setCheckedKeys(this.temp.check);
+          });
+          
+        } else {
+          this.listLoading = false;
+        }
+      });
+    },
     nodeClick(a, b, c) {},
     currentChange(a, b) {},
     nodeExpand(a, b, c) {},
     nodeCollapse(a, b, c) {},
     handTreechange(a, b, c) {
-      
       if (b) {
         // 处理订单里的查看详情
         if (
@@ -161,7 +296,6 @@ export default {
         ) {
           var arr = a.parentIds.split(",");
           for (var i = 0; i < this.treeData.length; i++) {
-            
             if (this.treeData[i].subMenus != undefined) {
               for (var j = 0; j < this.treeData[i].subMenus.length; j++) {
                 if (this.treeData[i].subMenus[j].permission == "order") {
@@ -272,7 +406,7 @@ export default {
 
       this.temp.check = this.$refs.domTree.getCheckedKeys();
     },
-    create(formName) {
+    roleDialogCreate(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
       for (var i = 0; i < arr.length; i++) {
@@ -304,13 +438,10 @@ export default {
                   message: "添加成功"
                 });
                 this.diaState = false;
-                
               } else {
-                
               }
             })
             .catch(err => {
-             
               this.btnState = false;
             });
         } else {
@@ -337,9 +468,12 @@ export default {
         check: []
       };
     },
-    resetForm() {
-      this.$emit('diaState',false)
-      // this.diaState = false;
+    resetdia(formName) {
+      console.log(11111111);
+      this.$refs.domTree.setCheckedKeys([]);
+      this.$refs[formName].resetFields();
+      this.resetTemp();
+      this.dialogFormVisible= false
     }
   }
 };

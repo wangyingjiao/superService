@@ -584,7 +584,7 @@ export default {
                 this.$nextTick(() => {
                   this.filterText = "business";
                 });
-              }else{
+              } else {
                 this.filterText = "";
               }
               this.listLoading = false;
@@ -681,7 +681,7 @@ export default {
             this.$nextTick(() => {
               this.filterText = "business";
             });
-          }else{
+          } else {
             this.filterText = "";
           }
           this.temp.name = a.name;
