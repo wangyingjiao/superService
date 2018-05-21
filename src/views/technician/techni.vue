@@ -254,7 +254,7 @@
                 <el-col :span="11">
                   <el-form-item prop="endDate">
                     <el-date-picker type="date" placeholder="选择日期" :editable='false' v-model="ruleForm.endDate" style="width: 100%;" format="yyyy-MM-dd" @change="endDateChange"
-                        :picker-options="pickerOptionsTech"></el-date-picker>
+                        :picker-options="pickerOptionsTechTime"></el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col class="line" :span="2">-</el-col>
@@ -1012,7 +1012,26 @@ export default {
         }
       };
     },
-    
+    pickerOptionsTechTime(){
+       //前2个月
+      let dt = new Date();
+      dt.setMonth(dt.getMonth() - 3);
+      let dtstr = dt.toLocaleString();
+      let dtarr = dtstr.split(" ")[0].split("/");
+      let time2 = Date.parse(new Date(dtarr[0], dtarr[1], dtarr[2]));
+      // 两个自然周
+      let now = new Date();
+      let nowTime = now.getTime();
+      let day = now.getDay();
+      let oneDayTime = 24*60*60*1000
+      let SundayTime =  nowTime + (7-day)*oneDayTime ; 
+      let time1 = SundayTime*1+86400000*14    //SundayTime当前周的周日，加2周
+      return{
+        disabledDate(time){
+          return time2 > time.getTime() || time.getTime() >time1
+        }
+      }
+    },
     pickerOptionsTech() {
       //当前时间
       // var data = new Date();
@@ -1021,14 +1040,15 @@ export default {
       // var day = data.getDate();
       // var str = year + "," + month + "," + day;
       //前2个月
-      var dt = new Date();
+      let dt = new Date();
       dt.setMonth(dt.getMonth() - 3);
-      var dtstr = dt.toLocaleString();
-      var dtarr = dtstr.split(" ")[0].split("/");
-      var time2 = Date.parse(new Date(dtarr[0], dtarr[1], dtarr[2]));
+      let dtstr = dt.toLocaleString();
+      let dtarr = dtstr.split(" ")[0].split("/");
+      let time2 = Date.parse(new Date(dtarr[0], dtarr[1], dtarr[2]));
       return {
         disabledDate(time) {
-          return time.getTime() < time2;
+          //true 禁
+          return time.getTime() < time2
         }
       };
     },
@@ -2735,10 +2755,10 @@ export default {
   box-sizing: border-box;
   padding: 0 0 0 20px;
 }
-.working > li {
+.tech-service .working > li,.weekDate .working > li{
   position: relative;
   border-bottom: 1px solid #f2f2f2;
-  padding-top: 15px;
+  padding: 10px;
 }
 
 .woking-div {
@@ -2748,14 +2768,17 @@ export default {
 .i-delete {
   position: absolute;
   right: 20px;
-  top: 27px;
+  top: 15px;
   cursor: pointer;
+}
+.working .i-delete{
+  top: 22px;
 }
 .time1 {
   /* padding: 10px 0; */
   position: absolute;
   right: 50px;
-  top: 16px;
+  top: 10px;
 }
 #confirmation {
   display: flex;
