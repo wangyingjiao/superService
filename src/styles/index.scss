@@ -571,6 +571,10 @@ body {
 .selfDialogWidth .el-dialog {width:700px}
 .selfDialogWidth3 .el-dialog {width:700px}
 .selfCustomerDialog1 .el-dialog{width:800px}
+//更换服务时间弹窗上的技师选择的表单验证信息位置调整
+.prostyle .el-form-item__content .el-form-item__error{
+  padding-left:20px;
+}
 //自定义弹窗大小
 .selfDialogWidth2 .el-dialog {width:800px}
 .selfDialogWidth2 .el-dialog__body {padding:30px 0;}
