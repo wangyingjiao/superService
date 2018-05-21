@@ -154,3 +154,7 @@ export function updateRegularTechSave(obj) {
 export function formOrderRemark(obj) {
   return instance.post(`/apiservice/a/service/order/combination/formOrderRemark`, obj)
 }
+//已有订单更换时间按钮
+export function updateOrderTimeDateList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateOrderTimeDateList`, obj)
+}

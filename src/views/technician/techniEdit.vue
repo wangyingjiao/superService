@@ -2176,17 +2176,17 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.i-delete {
+.working .i-delete {
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 15px;
   cursor: pointer;
 }
 .time {
   /* padding: 10px 0; */
   position: absolute;
   right: 50px;
-  top: 16px;
+  top: 10px;
 }
 #confirmation {
   display: flex;

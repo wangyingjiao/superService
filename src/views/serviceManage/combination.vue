@@ -123,14 +123,14 @@
 											<span><el-input v-model="scope.row.combinationPrice"></el-input></span>
 											</template>
 										</el-table-column>
-										<el-table-column prop="name" align="center" label="数量" :min-width="110">
+										<el-table-column prop="name" align="center" label="数量" :min-width="120">
 											<template scope="scope">
 												<span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
 											</template>
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="操作">
 											<template scope="scope">
-												<span style="color:#FF7676;" @click="deleteInformation(scope.row)">删除</span>
+												<span style="color:#FF7676;cursor:pointer" @click="deleteInformation(scope.row,scope.$index)">删除</span>
 											</template>
 										</el-table-column>
 									</el-table>
@@ -990,19 +990,33 @@ export default {
     dialogFormVisibleClick(){
         this.dialogFormVisible = true
         this.listDataAllClick()
-		this.handleCreate()
-		console.log(this.basicForm,"basicForm----+++++")
+        this.handleCreate()
+        console.log(this.basicForm,"basicForm----+++++")
+    },
+     //组合商品信息--选择商品--复选框
+    selectCommodity(item){
+      if(item.check){
+        this.commodityArr.push(item)
+      }else{
+        let i , len = this.commodityArr.length;
+        for(i = len ; i-- ;){
+          if(this.commodityArr[i].goodsId == item.goodsId){
+             this.commodityArr.remove(this.commodityArr[i]);
+          }
+        }
+      }
     },
     //组合商品信息--选择商品--保存
     commodityPreservation(){
       let {commodityArr,basicForm} = this,
           i,len = commodityArr.length,arr = [].concat(commodityArr);
-
-      this.$set(basicForm.serItemCommodity,"combinationCommodities",commodityArr)
+      basicForm.serItemCommodity.combinationCommodities = [].concat(commodityArr)
+      // this.$set(basicForm.serItemCommodity,"combinationCommodities",commodityArr)
       this.combinationTypeDialog = false;
     },
     //组合商品信息--选择商品--单选
     selectCommoditySingle(item){
+      // this.commodityArr[0] = Object.assign({},item)
       this.$set(this.commodityArr,0,item)
     },
     //组合商品信息--选择商品--删除商品
@@ -1030,25 +1044,10 @@ export default {
         this.radio = '';
       }
     },
-    //组合商品信息--选择商品--复选框
-    selectCommodity(item){
-      if(item.check){
-        this.commodityArr.push(item)
-      }else{
-        let i , len = this.commodityArr.length;
-        for(i = len ; i-- ;){
-          if(this.commodityArr[i].goodsId == item.goodsId){
-             this.commodityArr.remove(this.commodityArr[i]);
-          }
-        }
-      }
-    },
     ommodityCancel(){
       this.combinationTypeDialog = false;
     },
     choiceCommodity(){
-        this.combinationTypeDialog = true;
-        this.loadingCom = true;
         let obj = {}
         obj.sortId = this.basicForm.sortId;
         if(this.techUserType == 'sys'){
@@ -1056,34 +1055,37 @@ export default {
         }else{
            obj.orgId = '';
         }
-        obj.itemName = this.itemName
-        obj.goodsName = this.goodName
+        obj.itemName = ''
+        obj.goodsName = ''
+        this.commodityArr = [].concat(this.basicForm.serItemCommodity.combinationCommodities)
+        this.combinationTypeDialog = true;
+        this.loadingCom = true;
         listDataBySortId(obj).then(({data:{code,data}})=>{
             if(code == 1){
-				if(data != undefined){
-					let i , j , lon = this.commodityArr.length;
-					//判读：复选框选中
-					for( i = data.length ; i -- ;){
-						data[i].combinationPrice = '0'
-						data[i].combinationNum = '1'
-						for( j = lon ; j-- ;){
-							if(this.commodityArr[j].goodsId == data[i].goodsId){
-								if( this.basicForm.serItemCommodity.serviceType == 'single'){
-									data[i].check = true
-								}else{
-									this.radio = data[i].goodsId
-								}
-							}
-						}
-					}
-					this.commodityDate = data
-				}else{
-					this.commodityDate = []
-					this.commodityArr = []
-				}
+              if(data != undefined){
+                let i , j , lon = this.commodityArr.length;
+                //判读：复选框选中
+                for( i = data.length ; i -- ;){
+                  data[i].combinationPrice = '0'
+                  data[i].combinationNum = '1'
+                  for( j = lon ; j-- ;){
+                    if(this.commodityArr[j].goodsId == data[i].goodsId){
+                      if( this.basicForm.serItemCommodity.serviceType == 'single'){
+                        data[i].check = true
+                      }else{
+                        this.radio = data[i].goodsId
+                      }
+                    }
+                  }
+                }
+                this.commodityDate = data
+              }else{
+                this.commodityDate = []
+                this.commodityArr = []
+              }
             }else{
-				this.commodityDate = []
-				this.commodityArr = []
+              this.commodityDate = []
+              this.commodityArr = []
             }
             this.loadingCom = false;
         }).catch(error=>{
@@ -1091,8 +1093,10 @@ export default {
             console.log(error,'-------')
         })
     },
-    deleteInformation(item){
-      this.commodityDelete(item)
+    deleteInformation(item,index){
+      console.log(index,"item-------________")
+      this.basicForm.serItemCommodity.combinationCommodities.del(index)
+      // this.commodityDelete(item)
     },
     //服务分类
     typeAlive(num){
