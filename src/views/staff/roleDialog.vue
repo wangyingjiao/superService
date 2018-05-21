@@ -520,14 +520,7 @@ export default {
                   message: "添加成功"
                 });
                 this.dialogFormVisible = false;
-                this.$emit("getlistByDia", "create",res);
-                // this.listQuery.page = 1;
-                // this.pageNumber = 1;
-                // this.search = {
-                //   name: "",
-                //   officeId: ""
-                // };
-                // this.handleFilter();
+                this.$emit("getlistByDia", "create", res);
               } else {
                 // loading.close();
               }
