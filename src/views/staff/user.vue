@@ -198,6 +198,7 @@
       
   </el-dialog>
    <!-- 新增岗位弹窗 -->
+   <roleDialog ref="roleDialog" :treeData = 'data2'  @getlistByDia='getlistByDia'></roleDialog>
   <el-dialog 
        title="新增岗位" 
        :visible.sync="dialogFormStation" 
@@ -285,6 +286,7 @@ import {
 } from "@/api/staff";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import roleDialog from "../staff/roleDialog.vue";
 //import { parseTime } from "@/utils";
 // arr to obj
 
@@ -293,6 +295,9 @@ export default {
   name: "user",
   directives: {
     waves
+  },
+  components: {
+    roleDialog
   },
   data() {
     var validatePass = (rule, value, callback) => {
@@ -406,7 +411,8 @@ export default {
       servicestationCheck: [], // 服务站
       servicestationSearch: [], // 搜索服务站
       userSearch: [], //搜索条件
-      temp: {   //编辑新增绑定值
+      temp: {
+        //编辑新增绑定值
         mobile: "",
         name: "",
         password: "",
@@ -606,6 +612,9 @@ export default {
       if (!value) return true;
       return data.type.indexOf(value) !== -1;
     },
+    getlistByDia(str) {
+      console.log(str, "参数");
+    },
     orgChange(val) {
       if (val == "sys") {
         this.$nextTick(() => {
@@ -681,16 +690,7 @@ export default {
     },
     addRole() {
       // 新增岗位
-      this.dialogFormStation = true;
-      if (localStorage.getItem("type") == "platform") {
-        this.filterText = "";
-        this.$nextTick(() => {
-          this.filterText = "business";
-        });
-      }
-      if (this.mechanismCheck.length == 1) {
-        this.temp2.officeId2 = this.mechanismCheck[0].id;
-      }
+      this.$refs.roleDialog.handleCreate();
     },
     handleSizeChange(val) {
       // 切换条数
@@ -1065,71 +1065,11 @@ export default {
         }
       });
     },
-    create2(formName) {
-      // 岗位保存
-      var arr = this.$refs.domTree.getCheckedKeys();
-      var str = "";
-      if (this.filterText == "business") {
-        var sys = this.forOfTree();
-        for (var i of sys) {
-          arr.remove(i);
-        }
+    getlistByDia(str, res) {
+      if (res.data.data.organization.id == this.temp.officeId) {
+        this.stationCheck.push(res.data.data);
+        this.temp.role = res.data.data.id;
       }
-      if (arr.length == 0) {
-        this.temp.check = [];
-      }
-      for (var i = 0; i < arr.length; i++) {
-        str += arr[i] + ",";
-      }
-      var obj = {
-        name: this.temp2.name,
-        //dataScope: this.temp2.dataScope,
-        dataScope: "10",
-        menuIds: str,
-        useable: "1",
-        organization: {
-          id: this.temp2.officeId2
-        }
-      };
-
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.btnState = true;
-          addStation(obj)
-            .then(res => {
-              this.btnState = false;
-              if (res.data.code === 1) {
-                this.$refs.domTree.setCheckedKeys([]);
-                this.$refs[formName].resetFields();
-                this.dialogFormStation = false;
-                this.$message({
-                  type: "success",
-                  message: "添加成功"
-                });
-                if (res.data.data.organization.id == this.temp.officeId) {
-                  this.stationCheck.push(res.data.data);
-                  this.temp.role = res.data.data.id;
-                }
-              }
-            })
-            .catch(err => {
-              this.btnState = false;
-            });
-        } else {
-          var errArr = this.$refs[formName]._data.fields;
-          var errMes = [];
-          for (var i = 0; i < errArr.length; i++) {
-            if (errArr[i].validateMessage != "") {
-              errMes.push(errArr[i].validateMessage);
-            }
-          }
-          this.$message({
-            type: "error",
-            message: errMes[0]
-          });
-          return false;
-        }
-      });
     },
     update(formName) {
       // 编辑保存

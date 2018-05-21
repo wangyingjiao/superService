@@ -120,7 +120,7 @@ var refundDetails = (id)=>{
                 },
                 chooContent:'',
                 choose:choose,
-                loading:false,
+                loading:true,
                 chooses:'',
                 tableData:[],
                 informationData:{},
