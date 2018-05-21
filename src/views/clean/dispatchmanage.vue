@@ -21,7 +21,7 @@
 	<!-- 搜索结束 -->
 		<div class="second-bar">
 			<div class="tableWarpaa addStyle">
-					<el-table :data="tableData" border style="width:100%" class="dispatchTaleSelf">
+					<el-table v-loading="listLoading" :data="tableData" border style="width:100%" class="dispatchTaleSelf">
 					  <el-table-column  align="center" min-width="220"  label="订单编号">
 							<template scope="scope" >
 								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
@@ -57,7 +57,7 @@
                     <span v-if="scope.row.orderStatus =='success'">已成功</span>
                     <span v-if="scope.row.orderStatus =='waitdispatch'">待派单</span>
 								</div>
-							</template>							
+							</template>
 						</el-table-column>
 					  <el-table-column align="center"  min-width="94" label="服务状态">
 							<template scope="scope" >
@@ -481,6 +481,7 @@ export default {
       var obj = pramsObj;
       Reassignment(obj, pageNo, pageSize)
         .then(res => {
+          
           if (res.data.code === 1) {
             this.pagetotal1 = res.data.data.count;
             this.tableData = res.data.data.list;
