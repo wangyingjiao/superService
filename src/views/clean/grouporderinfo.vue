@@ -138,7 +138,7 @@
                             <span style="margin-left:10px;">{{item.timeArea}}</span>
                           </li>
                         </ul>
-                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="gehuanchangeguTime()" value="更换固定时间"></div>
                         <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
                       </div>                                      
                 </div>
@@ -1223,7 +1223,205 @@
               <button class="button-cancel" @click="setCancel('Orderform1')" >取 消</button>
             </div>
         </el-dialog>
-        <!--固定服务时间弹窗结束-->        
+        <!--固定服务时间弹窗结束-->
+        <!--更换固定服务时间弹窗开始-->
+        <el-dialog
+          title="更换固定服务时间"
+          :visible.sync="gehuantestFlag"
+          class="selfDialogWidth2"
+          :close-on-click-modal="false"
+          >
+            <el-form  :model="gehuanOrderform" :rules="gehuanorderrules" ref="gehuanOrderform" label-width="84px" label-position="left" >
+                <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
+                  <span class="selfLabelStyle">*</span>
+                  <el-input-number class="selfINputNumStyle"  v-model="gehuanseverHour" :min='1' :debounce='1000'  :max="999999" style="width:120px;" @change="gehuannumberChange"></el-input-number>
+                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*gehuanseverHour}}小时（预约个数 * 单次建议服务时长） </div>
+                </el-form-item>
+                <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
+                   <div class="button-large-fourth" @click="gehuansearchSeverDate">查询服务日期</div> 
+                </el-form-item>
+                <div v-if="gehuanseverFrequencyFlag" class="PositionRelative">
+                    <div class="exptyDiv"></div>
+                    <el-form-item label="服务频次：" prop="testsele" class="selfPaddingLeft20" style="padding-top:20px;"> 
+                        <input type="hidden"   v-model="gehuanOrderform.testsele"/>                       
+                        <div   v-for="(value,key,index) in gehuanfrequencyOptions"  :label="value" :name='key' :key="index"  @click="gehuanChangefrequency(key,index)">
+                          <div class="frequencyTabs" :class="freStyl == index ? 'activeStyle' :'' ">
+                                {{value}}
+                          </div>
+                        </div> 
+                    </el-form-item>
+                    <el-form-item style="margin-top: -15px;">
+                      <div style="font-size: 12px;color: #576475;float:left;padding-left: 20px;">                                           
+                        <span  style="display:inline-block;width: 612px;line-height: 18px;">
+                          <span style="display:inline-block;float: left;">
+                              <span>*目前固定服务时间：</span>
+                              <span style="width:80px;">
+                                <span v-if="otherInfo.serviceFrequency =='week_one'">1周1次</span>
+                                <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
+                                <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
+                              </span>
+                              <span style="width:80px;">每次{{otherInfo.copyserviceHour1}}</span>
+                          </span>
+                          <span style="margin-left:20px;">
+                            <span v-for="item in otherInfo.freList" :key="item.id">
+                              <span>                              
+                                <span v-if="item.week =='1'">每周一</span>
+                                <span v-if="item.week =='2'">每周二</span>
+                                <span v-if="item.week =='3'">每周三</span>
+                                <span v-if="item.week =='4'">每周四</span>
+                                <span v-if="item.week =='5'">每周五</span>
+                                <span v-if="item.week =='6'">每周六</span>
+                                <span v-if="item.week =='7'">每周日</span>
+                              </span>
+                              <span style="margin-left:10px;">{{item.timeArea}}</span>、
+                            </span>
+                          </span>
+                        </span>
+                      </div>                                                                                          
+                    </el-form-item>                                                      
+                    <el-form-item  label="服务时间：" prop="workTimes" class="selfPaddingLeft20" style="margin-top: -20px;">
+                          <div class="tech-order-jn" style="width:550px">
+                            <span class="tech-order-btn" @click="gehuanaddtime"> &#10010;请选择服务时间段</span>
+                          </div>
+                            <el-collapse-transition>                            
+                                <div class="tech-order-jn-sons wirkTimes" v-show="gehuanisB">
+                                  <div style="margin:0 10px;">
+                                    <p style="padding:10px 0;">新增日期</p>
+                                    <div>
+                                      <div style="display:flex;">
+                                        <div class="selfCheckBoxsday">日期</div>
+                                        <input type="button" class="selfCheckBoxs tech-order-posis"                                         
+                                          @click="gehuanroomSel2(item,index)" :key="index" v-for="(item,index) in sexDay" 
+                                          :class="freStyl1 == index ? 'tech-green' :''"
+                                          :value="item.name"
+                                        >
+                                      </div>
+                                    </div>
+                                    <div style="margin-top:10px;">
+                                      <div class="selfCheckBoxsday">时段</div>
+                                      <el-select v-model="gehuantimeArea" style="width:231px;"  placeholder="请选择时间段">
+                                        <el-option
+                                          v-for="item in gehuantimeAreaoptions"
+                                          :key="item.key"
+                                          :label="item.value"
+                                          :value="item.value">
+                                        </el-option>
+                                      </el-select> 
+                                    </div>
+                                  </div>
+                                  <div style="margin:10px 10px 10px;">
+                                    <span class="button-large btn-styl" @click="gehuansingletechClick">确认</span>
+                                    <input type="button" class="button-cancel btn-styl" style="margin-left:20px" @click="gehuansingleaddtimeno" value="取消">
+                                  </div>
+                                </div>                                                        
+                            </el-collapse-transition>                          
+                          </el-form-item>
+                          <div v-show="gehuanlistShowFlag">
+                              <el-form-item class="selfPaddingLeft20">
+                                <ul class="working" style="width:550px;margin-top: -21px;">
+                                  <li v-for="item in gehuanteachArr" :key="item.id">
+                                    <div>
+                                      <div class="selfwoking-div">
+                                        <div >
+                                          <span v-if="item.week =='1'">星期一</span>
+                                          <span v-if="item.week =='2'">星期二</span>
+                                          <span v-if="item.week =='3'">星期三</span>
+                                          <span v-if="item.week =='4'">星期四</span>
+                                          <span v-if="item.week =='5'">星期五</span>
+                                          <span v-if="item.week =='6'">星期六</span>
+                                          <span v-if="item.week =='7'">星期日</span>
+                                        </div>
+                                        <div class="selftime">{{item.timeArea}}</div>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <i class="i-delete el-icon-close" @click="gehuansingledeletes(item)"></i>
+                                    </div>
+                                  </li>
+                                </ul>
+                                <div class="severPromitINf" style="padding-left: 20px;">* 两周后的订单将按照更换后的固定时间分配</div>
+                              </el-form-item>                    
+                          </div>
+                          <el-form-item label="选择日期" prop='Date' class="selfPaddingLeft20">
+                                  <el-select v-model="gehuanOrderform.Date" style="width:550px;"  @visible-change='gehuandateChange1' placeholder="请选择第一次服务日期">
+                                    <el-option
+                                      v-for="item in gehuanoptions3"
+                                      :key="item.key"
+                                      :label="item.value"
+                                      :value="item.key">
+                                    </el-option>
+                                  </el-select>                      
+                          </el-form-item>
+                          <el-form-item label="" style="padding-left: 20px;">              
+                          <div class="button-large-fourth"  @click="gehuansearchSeverTech">查询服务技师</div> 
+                          </el-form-item>
+                </div>
+                                
+              <div  v-if="gehuangudingFlag" class="PositionRelative">
+                <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
+                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
+                    <p>* 更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p>
+                </div>               
+                <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20">             
+                  <div style="margin-top: -10px;">                
+                      <el-table
+                        :data="gehuantableData3"
+                        border                  
+                        class="orderInfoHeaderPic">
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="选择"                        
+                          > 
+                            <template scope="scope">
+                              <el-radio :label="scope.row.techId" v-model="gehuanradio4" @change.native="gehuangetCurrentRow4(scope.row.techId)">&nbsp;</el-radio>
+                            </template>                                               
+                        </el-table-column>                      
+                        <el-table-column
+                          min-width="90"
+                          align="center"
+                          label="头像"
+                          >
+                          <template scope="scope">
+                          <img class="picHeader" :src="imgSrc+scope.row.headPic+picWidth60"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column
+                          align="center"
+                          label="姓名"
+                          min-width="150"
+                          >
+                            <template scope="rowObj">
+                              <el-tooltip placement="left" v-if="rowObj.row.techName!= undefined" :disabled="rowObj.row.techName.length < 10" :content="rowObj.row.techName">
+                                <p :class=" rowObj.row.techName.length < 10 ? '' : 'selfToolTip1' ">{{rowObj.row.techName}}</p>
+                              </el-tooltip>
+                            </template>                                                
+                        </el-table-column>
+                        <el-table-column
+                          min-width="65"
+                          align="center"
+                          label="性别">
+                            <template scope="scope">
+                                <span v-if="scope.row.techSex =='male'">男</span>
+                              <span v-if="scope.row.techSex =='female'">女</span>
+                            </template>	                    
+                        </el-table-column>
+                        <el-table-column
+                          prop="techPhone"
+                          min-width="94"
+                          align="center"
+                          label="手机号">
+                        </el-table-column>                                  
+                      </el-table>
+                  </div>  
+                </el-form-item>
+              </div>
+            </el-form>
+            <div slot="footer" class="dialog-footer" style="text-align:center;">
+              <button class="button-large"   @click="gehuansetOk('gehuanOrderform')">确定</button>
+              <button class="button-cancel" @click="gehuansetCancel('gehunOrderform')" >取 消</button>
+            </div>
+        </el-dialog>                
 
                                          
   </div>
@@ -1301,6 +1499,14 @@ export default {
         callback(new Error("请选择服务时间"));
       }
     };
+    //工作时间
+    var WORKTIMES1 = (rule, value, callback) => {
+      if (this.gehuanteachArr.length > 0 && this.gehuanteachArr != undefined) {
+        callback();
+      } else {
+        callback(new Error("请选择服务时间"));
+      }
+    };    
     return {
       techObj:[],
       subOneId:'',//更换时间中的子订单第一条的Id
@@ -1308,20 +1514,29 @@ export default {
       otherInfo1:'',
       setOkFlag:false,//固定时间服务保存
       listShowFlag: false, //单选结果显示开关
+      gehuanlistShowFlag: false, //单选结果显示开关
       weekNumber: "", //单选星期几
+      gehuanweekNumber: "", //单选星期几
       timeArea: "", //单选时间段值
       timeAreaoptions: [], //单选时间段下拉对象
+      gehuantimeArea: "", //单选时间段值
+      gehuantimeAreaoptions: [], //单选时间段下拉对象      
       frequencyStatus: "week_some", //服务频次开关
       yuyuedialogVisible: false, //预约弹窗开关
       gudingFlag: false, //固定时间改派技师显示开关
+      gehuangudingFlag: false, //固定时间改派技师显示开关
       severFrequencyFlag: false, //固定时间服务显示开关
+      gehuanseverFrequencyFlag: false, //固定时间服务显示开关
       gudingFlag1: false, //更换时间改派技师显示开关
       gudingFlag11: false, //预约改派技师显示开关
       yuyueselectDateFlag: false, //预约日期选择开关
       severHour: "",
+      gehuanseverHour: "",
       yuyueNumber: "",
       frequencyOptions: "",
+      gehuanfrequencyOptions: "",
       frequencySelecte: "",
+      gehuanfrequencySelecte: "",
       addtimeFlag: true,
       //单选星期对象
       sexDay: [
@@ -1355,11 +1570,13 @@ export default {
         }
       ],
       testFlag: false,
+      gehuantestFlag:false,
       changeTechFlag: false,
       radio1: "",
       radio3: "",
       yuyueradio: "",
       radio4: "",
+      gehuanradio4:'',
       listTech1: [],//更换固定技师弹窗中的表格数据对象
       techName1: "",
       radio: "",
@@ -1393,6 +1610,7 @@ export default {
       options2: [],
       options21: [],
       options3: [],
+      gehuanoptions3: [],
       btnShow: [],
       timeSaveFlag: false,
       yuyuetimeSaveFlag1: false,
@@ -1431,6 +1649,23 @@ export default {
         Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
+      gehuanOrderform: {
+        workTimes: "",
+        testsele: "",
+        severHour: "",
+        Date: "",
+        Tech: ""
+      },
+      gehuanorderrules: {
+        testsele: [
+          { required: true, message: "请选择服务频次", trigger: "change" }
+        ],
+        workTimes: [
+          { required: true,validator:WORKTIMES1 , trigger: "blur" }
+        ],
+        Date: [{ required: true, message: "请选择日期", trigger: "change" }],
+        Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
+      },      
       orderrules: {
         becouss: [
           { required: true, message: "请选择取消原因", trigger: "change" }
@@ -1467,6 +1702,7 @@ export default {
       options: [],
       techName: "",
       isB: false, //单选星期与时段显示开关
+      gehuanisB: false, //单选星期与时段显示开关
       techStationId: "",
       promShow1: false,
       promInf1: "搜索内容不存在!",
@@ -1493,6 +1729,7 @@ export default {
       tableData1: [],
       tableData2: [],
       tableData3:[],//固定时间中表格数据
+      gehuantableData3:[],//固定时间中表格数据
       yuyuetableData: [],
       ordertableData:[],//已有订单表格数据
       dialogVisible: false,
@@ -1505,8 +1742,11 @@ export default {
       nowTime: "",
       addressInf: [],
       roomSel1Arr: {},//固定时间星期选择时的存储对象的容器
+      gehuanroomSel1Arr: {},//固定时间星期选择时的存储对象的容器
       teachArr: [],//固定时间服务时间选择确定后时的存储对象的容器
+      gehuanteachArr: [],//固定时间服务时间选择确定后时的存储对象的容器
       roomSelNum: [],//固定时间星期选择时的存储星期id的容器
+      gehuanroomSelNum: [],//固定时间星期选择时的存储星期id的容器
       workTimes: [], //工作时间
       freStyl: "4",
       freStyl1: "8",
@@ -1519,6 +1759,8 @@ export default {
       techArrtest:[],
       fanHuiseverArr:[],//固定服务时间中返回服务时间对象
       dateOptionsList:[],//固定服务时间中返回第一次服务时间下拉对象
+      gehuanfanHuiseverArr:[],//固定服务时间中返回服务时间对象
+      gehuandateOptionsList:[],//固定服务时间中返回第一次服务时间下拉对象      
     };
   },
   created() {
@@ -1814,8 +2056,8 @@ export default {
       if(status == 'add'){
      
       }else{
-         this.severHour = this.yuyuegeshu;//预约次数的回显
-         this.Orderform1.severHour =this.yuyuegeshu ;       
+        // this.severHour = this.yuyuegeshu;//预约次数的回显
+        // this.Orderform1.severHour =this.yuyuegeshu ;       
         // var a
         // if(this.otherInfo.serviceFrequency =='week_one'){
         //     a=0
@@ -1957,7 +2199,366 @@ export default {
 
       } 
     },
+    /*更换固定服务时间开始 */
+        //固定时间查询服务技师按钮
+        gehuansearchSeverTech() {
+          //未选择服务频次
+          if(this.gehuanOrderform.testsele == ''){
+            this.$message({
+              type: "error",
+              message: "请选择服务频次！"
+            });
+            return false;
+          }        
+          //未选择服务时间      
+          if(this.gehuanteachArr.length == 0){
+            this.$message({
+              type: "error",
+              message: "请选择服务时间！"
+            });
+            return false;
+          } 
+          //未选择第一次服务日期
+          if(this.gehuanOrderform.Date == ''){
+            this.$message({
+              type: "error",
+              message: "请选择第一次服务日期！"
+            });
+            return false;
+          }               
+          this.gehuantableData3=[]
+          this.gehuanradio4 = "";
+          var obj1 = {
+            serviceNum:this.gehuanseverHour,
+            masterId:this.orderId,
+            freList:this.gehuanteachArr,
+            serviceStart:this.gehuanOrderform.Date
+          };
+          saveRegularDateTechList(obj1)
+            .then(res => {
+              if (res.data.code === 1) {                 
+                this.gehuangudingFlag = true;
+                //技师表格数据
+                this.gehuantableData3 = res.data.data; 
+              }
+            })
+            .catch(res => {});      
 
+        },
+        //固定时间查询服务日期按钮
+        gehuansearchSeverDate() { 
+          this.freStyl = "4";
+          this.gehuanradio4 = ""; 
+          this.freStyl1 = "8";
+          this.gehuantimeArea = "";
+          this.gehuantimeAreaoptions = [];
+          this.gehuanOrderform.Date='';
+          this.gehuanOrderform.testsele='';
+          this.gehuanteachArr=[];       
+          this.gehuanlistShowFlag=false;
+          this.gehuanisB = false;
+          this.gehuanfanHuiseverArr=[];
+          this.gehuandateOptionsList=[];     
+          var obj1 = {
+            masterId:this.orderId,
+            serviceNum:this.gehuanseverHour
+          };
+          saveRegularDateDateList(obj1)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.gehuanfanHuiseverArr=res.data.data.weekList;
+                this.gehuandateOptionsList=res.data.data.dateList
+              }
+            })
+            .catch(res => {});               
+          //预约个数*单次服务时间如果大于6提示不能
+          if(this.gehuanseverHour*this.copyserviceHour > 6){
+                this.$message({
+                  type: "warning",
+                  message: "总服务时长不能大于6小时！"
+                });
+                this.gehuanseverFrequencyFlag = false;
+                return false
+          }
+          this.gehuanseverFrequencyFlag = true;     
+        },
+        //固定时间预约个数改变
+        gehuannumberChange(val) { 
+          this.freStyl = "4";
+          this.gehuanradio4 = "";
+          this.gehuanseverFrequencyFlag = false;
+          this.gehuangudingFlag = false;           
+          this.gehuanOrderform.severHour = val;            
+          //预约个数*单次服务时间如果大于6提示不能
+          if(val*this.copyserviceHour > 6){
+                this.$message({
+                  type: "warning",
+                  message: "总服务时长不能大于6小时！"
+                });
+                return false
+          }
+
+        },    
+        //固定时间服务频次更换
+        gehuanChangefrequency(key, index) {
+          this.gehuanfrequencySelecte = key;
+          this.freStyl = index;
+          this.gehuanOrderform.testsele = key;
+          this.freStyl1 = "8";
+          this.gehuantimeArea = "";
+          this.gehuantimeAreaoptions = [];          
+          this.gehuanteachArr = []            
+        },
+        //更换固定时间取消
+        gehuansetCancel(formName) {
+          this.gehuantestFlag = false;
+          //this.$refs[formName].resetFields();
+          this.freStyl = "4";
+          this.freStyl1 = "8";
+          this.gehuantimeArea = "";
+          this.gehuantimeAreaoptions = [];
+          this.gehuangudingFlag = false;                
+          this.$message({
+            type: "warning",
+            message: "更换固定服务时间取消！"
+          });        
+          this.gehuanteachArr=this.techArrtest;
+     
+          
+        },
+        //更换固定时间保存
+        gehuansetOk(formName) {
+          //未查询服务日期
+          if(this.gehuanOrderform.testsele == '' && this.gehuanseverFrequencyFlag == false){
+            this.$message({
+              type: "error",
+              message: "请查询服务日期！"
+            });
+            return false;
+          }
+          //未选择服务频次
+          if(this.gehuanOrderform.testsele == '' && this.gehuanseverFrequencyFlag == true){
+            this.$message({
+              type: "error",
+              message: "请选择服务频次！"
+            });
+            return false;
+          }               
+          //未选择服务时间      
+          if(this.gehuanteachArr.length == 0){
+            this.$message({
+              type: "error",
+              message: "请选择服务时间！"
+            });
+            return false;
+          } 
+          //未选择第一次服务日期
+          if(this.gehuanOrderform.Date == ''){
+            this.$message({
+              type: "error",
+              message: "请选择第一次服务日期！"
+            });
+            return false;
+          }
+          //未选择第一次服务日期
+          if(this.gehuanOrderform.Date != '' && this.gehuangudingFlag == false){
+            this.$message({
+              type: "error",
+              message: "请查询服务技师！"
+            });
+            return false;
+          }                    
+          this.$refs[formName].validate(val => {
+            if (val) {
+              this.gehuanOrderform.workTimes = this.gehuanteachArr;
+                var obj1 = {
+                  masterId:this.orderId,
+                  serviceNum:this.gehuanseverHour,
+                  freList:this.gehuanteachArr,
+                  serviceFrequency:this.gehuanOrderform.testsele,
+                  serviceStart:this.gehuanOrderform.Date,
+                  techId:this.gehuanradio4            
+                };
+                updateRegularDate(obj1)
+                  .then(res => {
+                    if (res.data.code === 1) {
+                      this.$message({
+                        type: "success",
+                        message: "固定服务时间设置成功！"
+                      });                  
+                      this.gehuantestFlag = false;
+                      this.$refs[formName].resetFields();
+                      this.getOrderAllInf(this.orderId); 
+                    }
+                  })
+                  .catch(res => {
+                  });                      
+            }else{
+              var errArr = this.$refs[formName]._data.fields;
+              var errMes = [];
+              for (var i = 0; i < errArr.length; i++) {
+                if (errArr[i].validateMessage != "") {
+                  errMes.push(errArr[i].validateMessage);
+                }
+              }
+              this.$message({
+                type: "error",
+                message: errMes[0]
+              });
+              return false;          
+            }
+          });
+        },
+        //更换固定时间按钮
+        gehuanchangeguTime() {
+            this.gehuantestFlag = true;              
+            this.gehuanseverHour = this.yuyuegeshu;//预约次数的回显
+            this.gehuanOrderform.severHour =this.yuyuegeshu ;       
+            var a
+            if(this.otherInfo.serviceFrequency =='week_one'){
+                a=0
+            }
+            if(this.otherInfo.serviceFrequency =='two_week_one'){
+                 a=2
+            }
+            if(this.otherInfo.serviceFrequency =='week_some'){
+                 a=1
+            }
+            this.gehuansearchSeverDate()
+            this.gehuanfrequencySelecte = this.otherInfo.serviceFrequency;
+            this.freStyl = a;
+            this.gehuanOrderform.testsele = this.otherInfo.serviceFrequency;
+            this.gehuantimeArea = "";
+            this.gehuanlistShowFlag=true;//日期选择结果显示开关            
+            this.gehuanOrderform.Date=this.otherInfo.serviceStart;
+            this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
+            this.gehuanteachArr = this.otherInfo.freList; //服务时间的回显 
+            this.gehuansearchSeverTech();//查询服务技师表格数据  
+            this.gehuanradio4 = this.otherInfo.techId;//技师选择的id 
+            this.gehuanOrderform.Tech = this.gehuanradio4;          
+            this.gehuangudingFlag = true; 
+            this.freStyl1 = "8";
+            this.gehuanisB=true;               
+            this.gehuanseverFrequencyFlag=true;
+        },
+        //单选服务时间段中星期几选择
+        gehuanroomSel2(item, index) {
+          this.gehuancreatIs = 'yes'
+          this.gehuantimeArea = "";
+          this.gehuanweekNumber = item.name;
+          this.freStyl1 = index;
+          this.gehuanroomSelNum.push(item.id); //存储星期的ID
+          this.gehuanroomSel1Arr = Object.assign({}, item); //存储星期的对象
+          this.gehuantimeAreaoptions=[];
+          //星期几的id在对象中遍历得到下拉日期数据
+          for(var b=0;b < this.gehuanfanHuiseverArr.length;b++){
+              if (item.id == this.gehuanfanHuiseverArr[b].value) {
+                this.gehuantimeAreaoptions = this.gehuanfanHuiseverArr[b].hoursList
+              }         
+          }
+        },
+        //单选服务时间段确定动作
+        gehuansingletechClick() {
+          this.gehuanOrderform.Date=''
+          if (this.gehuanweekNumber == "") {
+            this.$message.error("请选择星期");
+            return false;
+          }
+          if (this.gehuantimeArea == "") {
+            this.$message.error("请选择时段");
+            return false;
+          }
+          var obj = {};
+          obj.week = this.gehuanroomSel1Arr.id;
+          obj.timeArea = this.gehuantimeArea;      
+          if (this.gehuanOrderform.testsele == "week_some") {
+            if (this.gehuanteachArr.length > 0) {
+              this.gehuancreatIs = 'no'
+              for (var i of this.gehuanteachArr) {
+                if (i.week == obj.week) {
+                  this.$message.error("当前日期已选择");
+                  this.gehuancreatIs = 'yes'
+                  break
+                } 
+              }
+              if(this.gehuancreatIs == 'no'){
+                this.gehuanteachArr.push(obj);
+              }
+            } else {
+              this.gehuanteachArr.push(obj);
+            }
+          } else {
+            this.gehuanteachArr.splice(0);
+            this.gehuanteachArr.push(obj);
+          }
+          this.gehuanlistShowFlag=true;
+          //console.log(this.teachArr, "绑定值");            
+        },
+        //单选请选择服务时间段点击
+        gehuanaddtime() {
+          if(this.gehuanOrderform.testsele == ''){
+            this.$message({
+              type: "error",
+              message: "请选择服务频次！"
+            });
+            this.gehuanisB = false;
+          }else{
+            this.gehuanisB = true;
+          }
+        },
+        //单选服务时间段中选择后取消
+        gehuansingleaddtimeno() {
+          this.freStyl1 = "8";
+          this.gehuantimeArea = "";
+          this.gehuantimeAreaoptions = [];
+        },
+        //删除选择的服务时间（点击叉号）
+        gehuansingledeletes(item) {
+          this.gehuanteachArr.remove(item)
+          this.gehuantimeArea = "";
+          this.freStyl1 = "8";
+          this.gehuanOrderform.workTimes = "";
+          if(this.gehuanteachArr.length == 0){
+            this.gehuanlistShowFlag=false;
+          }
+        },
+        //固定服务时间修改中日期变化时改变时间对象
+        gehuandateChange1(val) {
+            //更换下拉列表值      
+              this.gehuanoptions3=[];
+              for(var j=0;j<this.gehuanteachArr.length;j++){
+                for(let i=0;i<this.gehuandateOptionsList.length;i++){           
+                    if(this.gehuandateOptionsList[i].label == this.gehuanteachArr[j].week){
+                      this.gehuanoptions3=this.gehuanoptions3.concat(this.gehuandateOptionsList[i].hoursList);//数组拼接
+                    }
+                }
+              }      
+          if(val== true){
+            //未选择服务频次
+            if(this.gehuanOrderform.testsele == ''){
+              this.$message({
+                type: "error",
+                message: "请选择服务频次！"
+              });
+              return false;
+            }
+            //未选择服务时间
+            if(this.gehuanteachArr.length == 0){
+              this.$message({
+                type: "error",
+                message: "请选择服务时间！"
+              });
+              return false;
+            }
+
+          } 
+        }, 
+        //固定时间更换弹窗单选改变
+        gehuangetCurrentRow4(value) {
+          this.gehuanradio4=value;
+          this.gehuanOrderform.Tech = value;
+        },           
+    /*更换固定服务时间结束 */
     //预约操作
     yuyueClick() {
       this.yuyueformInline.Tech="";
@@ -3052,6 +3653,7 @@ export default {
     this.choose = this.dict.refund_type;
     //服务频次字典量
     this.frequencyOptions = this.dict.frequency_options;
+    this.gehuanfrequencyOptions = this.dict.frequency_options;
     this.becaussOptions = this.dict.cancel_type;
     //获取订单的本地存储ID
     var orderId = window.localStorage.getItem("grouporderId");
