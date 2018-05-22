@@ -246,7 +246,8 @@
 			schedulePath(item){
 				//判断是不是多次服务
 				if(item.orderType == 'group_split_yes'){
-					this.$router.push({ path: "/clean/orderinfo", query: { id: item.masterId } });
+					localStorage.setItem("grouporderId", item.masterId);
+					this.$router.push({ path: "/clean/grouporderinfo", query: { id: item.masterId } });
 					return
 				}
 				// 判断是订单还是休假
