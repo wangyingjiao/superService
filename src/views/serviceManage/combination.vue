@@ -120,7 +120,7 @@
 										<el-table-column prop="name" align="center" label="组合商品售价" :min-width="105">
 											<template scope="scope">
 												<!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
-											<span><el-input v-model="scope.row.combinationPrice"></el-input></span>
+											<span><i class="iconfont">&#xe61c;</i><el-input v-model="scope.row.combinationPrice"></el-input></span>
 											</template>
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="数量" :min-width="120">
