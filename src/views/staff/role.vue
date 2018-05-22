@@ -55,7 +55,7 @@
       </el-pagination>
     </div>
    <!-- 弹窗开组件-->
-    <roleDialog ref="roleDialog" :treeData = 'data2' @getlistByDia='getlistByDia'  :diaState = 'roleDiaState'></roleDialog>
+    <roleDialog ref="roleDialog" :treeData = 'data2' @getlistByDia='getlistByDia'></roleDialog>
 <!-- 弹框结束-->
   </div>
   </div>
@@ -92,7 +92,7 @@ export default {
       btnState: false, //按钮状态，是否禁用
       selsctState: false, //下拉框状态，是否禁用
       myselfUpdate: true, //判断是否编辑自己
-      roleDiaState: false, //子组件，控制弹窗显示隐藏
+      // roleDiaState: false, //子组件，控制弹窗显示隐藏
       list: [], //列表数据
       officeIds: [],
       total: null,
@@ -281,7 +281,7 @@ export default {
       this.listQuery.start = parseInt(+time[0] / 1000);
       this.listQuery.end = parseInt((+time[1] + 3600 * 1000 * 24) / 1000);
     },
-    getlistByDia(str) {
+    getlistByDia(str,res) {
       if (str == "create") {
         this.listQuery.page = 1;
         this.pageNumber = 1;

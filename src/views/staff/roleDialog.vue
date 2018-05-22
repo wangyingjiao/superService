@@ -164,7 +164,7 @@ export default {
       }
     });
   },
-  props: ["diaState", "rowData","getlistByDia"],
+  props: ["diaState", "rowData", "getlistByDia"],
   watch: {
     filterText(val) {
       this.$refs.domTree.filter(val);
@@ -196,7 +196,6 @@ export default {
             if (res.data.code == 1) {
               this.dialogStatus = "create";
               this.dialogFormVisible = true;
-              // this.roleDiaState = true;
               if (localStorage.getItem("type") == "platform") {
                 this.filterText = "";
                 this.$nextTick(() => {
@@ -521,14 +520,7 @@ export default {
                   message: "添加成功"
                 });
                 this.dialogFormVisible = false;
-                this.$emit('getlistByDia','create')
-                // this.listQuery.page = 1;
-                // this.pageNumber = 1;
-                // this.search = {
-                //   name: "",
-                //   officeId: ""
-                // };
-                // this.handleFilter();
+                this.$emit("getlistByDia", "create", res);
               } else {
                 // loading.close();
               }
@@ -553,7 +545,7 @@ export default {
         }
       });
     },
-     //编辑
+    //编辑
     update(formName) {
       var arr = this.$refs.domTree.getCheckedKeys();
       var str = "";
@@ -600,7 +592,7 @@ export default {
                   message: "修改成功"
                 });
                 // this.getList();
-                this.$emit('getlistByDia','update')
+                this.$emit("getlistByDia", "update");
               } else {
                 // loading.close();
               }
