@@ -479,9 +479,13 @@ export default {
     },
     //查看跳转到订单详情页
     lookInf(row) {
-      console.log(row)
-      window.localStorage.setItem("orderId", row.id);
-      this.$router.push({ path: "/clean/orderinfo", query: { id: row.id } });
+      if(row.orderType == 'common'){
+        window.localStorage.setItem("orderId", row.id);
+        this.$router.push({ path: "/clean/orderinfo", query: { id: row.id } });        
+      }else{
+        window.localStorage.setItem("masterId", row.masterId);
+        this.$router.push({ path: "/clean/grouporderinfo", query: { id: row.masterId } });
+      }
     },
     //列表渲染
     reassList(pramsObj, pageNo, pageSize) {
