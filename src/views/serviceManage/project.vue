@@ -138,7 +138,7 @@
           </template>
         </el-table-column>
         <!-- :width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?550:150" -->
-        <el-table-column align="center" v-if="techUserType!='sys'" label="" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'?210:120">
+        <el-table-column align="center" v-if="techUserType!='sys'" label="" :min-width="btnShow.indexOf('project_send')>-1 && orgStatus == 'yes'?220:120">
              <template scope="scope">
             <div
               class="branch"  
