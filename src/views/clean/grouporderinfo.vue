@@ -1783,9 +1783,6 @@ export default {
     },
     //固定时间查询服务技师按钮
     searchSeverTech() {
-      if(this.gudingStatus =='add'){        
-      }else{
-      }
       //未选择服务频次
       if(this.Orderform1.testsele == ''){
         this.$message({
@@ -1831,9 +1828,6 @@ export default {
     },
     //固定时间查询服务日期按钮
     searchSeverDate() { 
-      if(this.gudingStatus =='add'){
-      }else{
-      }
       this.freStyl = "4";
       this.radio4 = ""; 
       this.freStyl1 = "8";
@@ -1870,9 +1864,6 @@ export default {
     },
     //固定时间预约个数改变
     numberChange(val) {
-      if(this.gudingStatus =='add'){
-      }else{
-      } 
       this.freStyl = "4";
       this.radio4 = "";
       this.severFrequencyFlag = false;
@@ -1897,27 +1888,19 @@ export default {
       this.timeArea = "";
       this.timeAreaoptions = [];          
       this.teachArr = []            
-      if(this.gudingStatus =='add'){
-      }else{
-      }
-
     },
     //更换固定时间取消
     setCancel(formName) {
+      this.$message({
+        type: "warning",
+        message: "更换固定服务时间取消！"
+      }); 
       this.freStyl = "4";
       this.freStyl1 = "8";
       this.timeArea = "";
       this.timeAreaoptions = [];
       this.gudingFlag = false;
-      this.$refs[formName].resetFields();      
-      if(this.gudingStatus =='add'){          
-      }else{
-          this.$message({
-            type: "warning",
-            message: "更换固定服务时间取消！"
-          });        
-          this.teachArr=this.techArrtest;
-      }      
+      this.$refs[formName].resetFields();           
       this.testFlag = false;
     },
     //更换固定时间保存
@@ -1965,7 +1948,6 @@ export default {
       this.$refs[formName].validate(val => {
         if (val) {
           this.Orderform1.workTimes = this.teachArr;
-          if(this.gudingStatus =='add'){
             this.setOkFlag=true;
             var obj1 = {
               masterId:this.orderId,
@@ -1990,36 +1972,7 @@ export default {
               })
               .catch(res => {
                 this.setOkFlag=false;
-              });            
-            
-          }else{
-            this.setOkFlag=true;
-            //组合订单更换固定时间总保存
-            var obj1 = {
-              masterId:this.orderId,
-              serviceNum:this.severHour,
-              freList:this.teachArr,
-              serviceFrequency:this.Orderform1.testsele,
-              serviceStart:this.Orderform1.Date,
-              techId:this.radio4            
-            };
-            updateRegularDate(obj1)
-              .then(res => {
-                this.setOkFlag=false;
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "固定服务时间更换成功！"
-                  }); 
-                  this.testFlag = false;
-                  this.$refs[formName].resetFields();
-                  this.getOrderAllInf(this.orderId);                
-                }
-              })
-              .catch(res => {
-                this.setOkFlag=false;
-              }); 
-          }          
+              });                     
         }else{
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
@@ -2053,39 +2006,6 @@ export default {
       this.teachArr = [];
       this.Orderform1.severHour = "1";
       this.severHour = "1";              
-      if(status == 'add'){
-     
-      }else{
-        // this.severHour = this.yuyuegeshu;//预约次数的回显
-        // this.Orderform1.severHour =this.yuyuegeshu ;       
-        // var a
-        // if(this.otherInfo.serviceFrequency =='week_one'){
-        //     a=0
-        // }
-        // if(this.otherInfo.serviceFrequency =='two_week_one'){
-        //      a=2
-        // }
-        // if(this.otherInfo.serviceFrequency =='week_some'){
-        //      a=1
-        // }
-        // this.Changefrequency(this.otherInfo.serviceFrequency,a)//服务频次回显
-        // this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
-        // this.teachArr = this.otherInfo.freList; //服务时间的回显         
-        // this.searchSeverTech();//查询服务技师表格数据
-        // this.freStyl1 = "8";
-        // this.isB=true;        
-        // if(this.teachArr.length != 0){
-        //    this.listShowFlag=true;//日期选择结果显示开关
-        // }        
-        // this.severFrequencyFlag=true;
-        // this.timeArea = "";
-        // this.timeAreaoptions = [];
-        // this.gudingFlag = true;
-        // this.testFlag = true;
-        // this.radio4 = "";//技师选择的id
-        // this.severHour = "1";//预约次数的回显      
-      }
-
     },
     //单选服务时间段中星期几选择
     roomSel2(item, index) {
@@ -2312,7 +2232,7 @@ export default {
         //更换固定时间取消
         gehuansetCancel(formName) {
           this.gehuantestFlag = false;
-          //this.$refs[formName].resetFields();
+          this.$refs[formName].resetFields();
           this.freStyl = "4";
           this.freStyl1 = "8";
           this.gehuantimeArea = "";
