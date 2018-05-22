@@ -84,7 +84,7 @@
           </template>
       </el-table-column>
 
-      <el-table-column  label="商品分类" align="center" min-width="95">
+      <el-table-column  label="商品类型" align="center" min-width="95">
           <template scope="scope">
               <span>{{scope.row.goodsType == 'single' ? '单一' : '组合'}}</span>
           </template>
@@ -796,14 +796,14 @@ import {
   delProject,
   getInfoPic
 } from "@/api/serviceManage";
-import { listDataAll } from "@/api/tech"
+import { listDataAll } from "@/api/tech";
 import Cookies from "js-cookie";
 import { getSign } from "@/api/sign";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
-import { userType} from '../../utils/auth'
+import { userType } from "../../utils/auth";
 import { parseTime } from "@/utils";
-import orgSearch from '../../components/Hamburger/orgSearch.vue'
-import combination from './combination'
+import orgSearch from "../../components/Hamburger/orgSearch.vue";
+import combination from "./combination";
 import {
   Taxonomy,
   Orienteering,
@@ -817,32 +817,152 @@ import {
 } from "@/api/serviceManage";
 import imgService from "../../components/upload/upload.vue";
 import addCommodity from "./addCommodity.vue";
-import dict from "../../../static/dict.json"
+import dict from "../../../static/dict.json";
 // var without = require('lodash.without')
 //挂载数据
 var arr = [];
 var informationTables = [
-  {label:'日常保洁1',name:'一居室',company:'￥120 /一居室',price:'11',num:'1'},
-  {label:'深度保洁1',name:'平米保洁',company:'￥20 /平米',price:'12',num:'2'},
-  {label:'日常保洁2',name:'一居室',company:'￥120 /一居室',price:'13',num:'3'},
-  {label:'深度保洁2',name:'平米保洁1',company:'￥201 /平米',price:'14',num:'4'},
-]
+  {
+    label: "日常保洁1",
+    name: "一居室",
+    company: "￥120 /一居室",
+    price: "11",
+    num: "1"
+  },
+  {
+    label: "深度保洁1",
+    name: "平米保洁",
+    company: "￥20 /平米",
+    price: "12",
+    num: "2"
+  },
+  {
+    label: "日常保洁2",
+    name: "一居室",
+    company: "￥120 /一居室",
+    price: "13",
+    num: "3"
+  },
+  {
+    label: "深度保洁2",
+    name: "平米保洁1",
+    company: "￥201 /平米",
+    price: "14",
+    num: "4"
+  }
+];
 var informationTable = [
-  {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁2',name:'居室保洁2',unit:'200',price:"间",id:'2',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁3',name:'居室保洁3',unit:'300',price:"间",id:'3',combinationPrice:"0",combinationNum:'1'},
-  {check:false,itemName:'日常保洁4',name:'居室保洁4',unit:'400',price:"间",id:"4",combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁5',name:'居室保洁5',unit:'500',price:"间",id:'5',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁6',name:'居室保洁6',unit:'600',price:"间",id:'6',combinationPrice:'0',combinationNum:'1'}
-]
+  {
+    check: false,
+    itemName: "日常保洁1",
+    name: "居室保洁1",
+    unit: "100",
+    price: "间",
+    id: "1",
+    combinationPrice: "0",
+    combinationNum: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁2",
+    name: "居室保洁2",
+    unit: "200",
+    price: "间",
+    id: "2",
+    combinationPrice: "0",
+    combinationNum: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁3",
+    name: "居室保洁3",
+    unit: "300",
+    price: "间",
+    id: "3",
+    combinationPrice: "0",
+    combinationNum: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁4",
+    name: "居室保洁4",
+    unit: "400",
+    price: "间",
+    id: "4",
+    combinationPrice: "0",
+    combinationNum: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁5",
+    name: "居室保洁5",
+    unit: "500",
+    price: "间",
+    id: "5",
+    combinationPrice: "0",
+    combinationNum: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁6",
+    name: "居室保洁6",
+    unit: "600",
+    price: "间",
+    id: "6",
+    combinationPrice: "0",
+    combinationNum: "1"
+  }
+];
 var commodityDate = [
-  {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1'},
-  {check:false,itemName:'日常保洁2',name:'居室保洁2',unit:'200',price:"间",id:'2'},
-  {check:false,itemName:'日常保洁3',name:'居室保洁3',unit:'300',price:"间",id:'3'},
-  {check:false,itemName:'日常保洁4',name:'居室保洁4',unit:'400',price:"间",id:"4"},
-  {check:false,itemName:'日常保洁5',name:'居室保洁5',unit:'500',price:"间",id:'5'},
-  {check:false,itemName:'日常保洁6',name:'居室保洁6',unit:'600',price:"间",id:'6'}
-]
+  {
+    check: false,
+    itemName: "日常保洁1",
+    name: "居室保洁1",
+    unit: "100",
+    price: "间",
+    id: "1"
+  },
+  {
+    check: false,
+    itemName: "日常保洁2",
+    name: "居室保洁2",
+    unit: "200",
+    price: "间",
+    id: "2"
+  },
+  {
+    check: false,
+    itemName: "日常保洁3",
+    name: "居室保洁3",
+    unit: "300",
+    price: "间",
+    id: "3"
+  },
+  {
+    check: false,
+    itemName: "日常保洁4",
+    name: "居室保洁4",
+    unit: "400",
+    price: "间",
+    id: "4"
+  },
+  {
+    check: false,
+    itemName: "日常保洁5",
+    name: "居室保洁5",
+    unit: "500",
+    price: "间",
+    id: "5"
+  },
+  {
+    check: false,
+    itemName: "日常保洁6",
+    name: "居室保洁6",
+    unit: "600",
+    price: "间",
+    id: "6"
+  }
+];
 export default {
   name: "project",
   directives: {
@@ -1065,26 +1185,26 @@ export default {
       }
     };
     return {
-      goodsTypeList:{},
-      commodityArr:[],
-      handleCreateFlag:'',
-      radio:'',
-      commodityDate:[],
-      informationPrice:['11','22','33','44'],
-      combinationTypeDialog:false,
-      combinationType:1,
-      sordFlag:true,
+      goodsTypeList: {},
+      commodityArr: [],
+      handleCreateFlag: "",
+      radio: "",
+      commodityDate: [],
+      informationPrice: ["11", "22", "33", "44"],
+      combinationTypeDialog: false,
+      combinationType: 1,
+      sordFlag: true,
       orgStatus: "",
       pageNumber: 1,
       addCommodityFlag: false,
       editName: {},
       customArr: [],
-      orgList:[],
+      orgList: [],
       jointCode: false,
       dockingData: [],
       alreadyArr: [],
       labelClickArr: [],
-      orgNameList:[],
+      orgNameList: [],
       systemClickId: null,
       systemClick2Id: null,
       systemClick3Id: null,
@@ -1163,17 +1283,15 @@ export default {
         commoditys: [],
         sysTags: [],
         customTags: [],
-        orgId:'',
-        type:'',  //服务分类
-        combinationCommodities:[], //组合订单----商品信息
-        combinationName:'',   //组合商品名称
-        combinationPrice:'',     //组合商品价格
-        commodityCompany:'',   //商品单位
+        orgId: "",
+        type: "", //服务分类
+        combinationCommodities: [], //组合订单----商品信息
+        combinationName: "", //组合商品名称
+        combinationPrice: "", //组合商品价格
+        commodityCompany: "" //商品单位
       },
       basicRles: {
-        type:[
-          { required: true, message: "请选择服务类型", trigger: "blur" },
-        ],
+        type: [{ required: true, message: "请选择服务类型", trigger: "blur" }],
         name: [
           { required: true, message: "请输入项目名称", trigger: "blur" },
           {
@@ -1187,7 +1305,7 @@ export default {
         sortId: [
           { required: true, message: "请选择所属分类", trigger: "blur" }
         ],
-        orgId:[{ required: true, message: "请选择所属机构", trigger: "blur" }],
+        orgId: [{ required: true, message: "请选择所属机构", trigger: "blur" }],
         info: [
           { required: true, message: "请输入2-10位的项目名称", trigger: "blur" }
         ],
@@ -1211,12 +1329,12 @@ export default {
         page: 1
       },
       search: {
-        orgId:'',
+        orgId: "",
         sortId: "",
         name: "",
-        goodsType:'',
+        goodsType: "",
         // sortIdandGoodsId: "",
-        goodsName: "",
+        goodsName: ""
       },
       pageSize: 10,
       fileList: [],
@@ -1251,7 +1369,7 @@ export default {
     // var dict = require("../../../static/dict.json");
     this.measure = dict.meterage;
     this.whole = dict.ser_sort;
-    this.goodsTypeList = dict.goods_type
+    this.goodsTypeList = dict.goods_type;
     // Whether()
     //   .then(({ data }) => {
     //     this.measure = data.meterage;
@@ -1262,26 +1380,26 @@ export default {
     this.sign; //获取签名
   },
   computed: {
-    informationCalculation(){
+    informationCalculation() {
       let num = this.basicForm.combinationCommodities,
-          i,
-          numDate,
-          bate = 0,
-          list;
-      if(this.basicForm.combinationCommodities.length > 0){
-        let len = this.basicForm.combinationCommodities.length
-        for( i = len ; i-- ;){
-          numDate = num[i]
-          list = numDate.combinationNum * numDate.combinationPrice
-          bate += list
+        i,
+        numDate,
+        bate = 0,
+        list;
+      if (this.basicForm.combinationCommodities.length > 0) {
+        let len = this.basicForm.combinationCommodities.length;
+        for (i = len; i--; ) {
+          numDate = num[i];
+          list = numDate.combinationNum * numDate.combinationPrice;
+          bate += list;
         }
-        return bate
-      }else{
-        return '0'
+        return bate;
+      } else {
+        return "0";
       }
     },
-    techUserType(){
-      return userType()
+    techUserType() {
+      return userType();
     },
     sign: function() {
       return getSign();
@@ -1292,80 +1410,85 @@ export default {
   },
   methods: {
     //组合商品信息--选择商品--保存
-    commodityPreservation(){
-      let {commodityArr,basicForm} = this,
-          i,len = commodityArr.length,arr = [].concat(commodityArr);
+    commodityPreservation() {
+      let { commodityArr, basicForm } = this,
+        i,
+        len = commodityArr.length,
+        arr = [].concat(commodityArr);
 
-      basicForm.combinationCommodities = commodityArr
+      basicForm.combinationCommodities = commodityArr;
       this.combinationTypeDialog = false;
     },
     //组合商品信息--选择商品--单选
-    selectCommoditySingle(item){
-      this.$set(this.commodityArr,0,item)
-      console.log(this.radio,"radio-----")
+    selectCommoditySingle(item) {
+      this.$set(this.commodityArr, 0, item);
+      console.log(this.radio, "radio-----");
     },
     //组合商品信息--选择商品--删除商品
-    commodityDelete(item){
-      let { commodityArr,commodityDate,combinationType } = this,
-          len = commodityArr.length,
-          lon = commodityDate.length,
-          i,j;
+    commodityDelete(item) {
+      let { commodityArr, commodityDate, combinationType } = this,
+        len = commodityArr.length,
+        lon = commodityDate.length,
+        i,
+        j;
       //删除商品的数组
-      for( i = len ; i-- ;){
-        if(commodityArr[i].name == item.name){
-          commodityArr.remove(commodityArr[i])
+      for (i = len; i--; ) {
+        if (commodityArr[i].name == item.name) {
+          commodityArr.remove(commodityArr[i]);
           break;
         }
       }
-      if(combinationType == 1){
+      if (combinationType == 1) {
         //商品列表的checkbox修改
-        for( j = lon ; j--;){
-          if(commodityDate[j].name == item.name){
-            commodityDate[j].check = false
+        for (j = lon; j--; ) {
+          if (commodityDate[j].name == item.name) {
+            commodityDate[j].check = false;
             break;
           }
         }
-      }else{
-        this.radio = '';
+      } else {
+        this.radio = "";
       }
     },
     //组合商品信息--选择商品--复选框
-    selectCommodity(item){
-      if(item.check){
-        this.commodityArr.push(item)
-      }else{
-        let i , len = this.commodityArr.length;
-        for(i = len ; i-- ;){
-          if(this.commodityArr[i].id == item.id){
-             this.commodityArr.remove(this.commodityArr[i]);
+    selectCommodity(item) {
+      if (item.check) {
+        this.commodityArr.push(item);
+      } else {
+        let i,
+          len = this.commodityArr.length;
+        for (i = len; i--; ) {
+          if (this.commodityArr[i].id == item.id) {
+            this.commodityArr.remove(this.commodityArr[i]);
           }
         }
       }
-      console.log(this.commodityArr,"this.commodityArr-------")
+      console.log(this.commodityArr, "this.commodityArr-------");
     },
-    ommodityCancel(){
+    ommodityCancel() {
       this.combinationTypeDialog = false;
     },
-    choiceCommodity(){
-        let i , len = commodityDate.length;
-        for( i = len ; i-- ;){
-          commodityDate[i].combinationPrice = '0'
-          commodityDate[i].combinationNum = '1'
-        }
-        this.commodityDate = commodityDate
-        this.combinationTypeDialog = true;
+    choiceCommodity() {
+      let i,
+        len = commodityDate.length;
+      for (i = len; i--; ) {
+        commodityDate[i].combinationPrice = "0";
+        commodityDate[i].combinationNum = "1";
+      }
+      this.commodityDate = commodityDate;
+      this.combinationTypeDialog = true;
     },
-    deleteInformation(item){
-      this.commodityDelete(item)
+    deleteInformation(item) {
+      this.commodityDelete(item);
     },
     //服务分类
-    typeAlive(num){
-      this.combinationType = num
-      this.commodityArr = []
-      this.basicForm.combinationCommodities = []
+    typeAlive(num) {
+      this.combinationType = num;
+      this.commodityArr = [];
+      this.basicForm.combinationCommodities = [];
     },
-    orgSearch(item){
-      this.search.orgId = item
+    orgSearch(item) {
+      this.search.orgId = item;
     },
     //删除商品
     deletGood(item) {
@@ -1720,7 +1843,7 @@ export default {
       if (getObj) {
         obj = getObj;
       } else {
-        var obj = Object.assign({},this.search)
+        var obj = Object.assign({}, this.search);
         obj.majorSort = this.tabs;
         // if (this.basicForm.majorSort) {
         //   obj.majorSort = this.tabs;
@@ -1762,8 +1885,8 @@ export default {
           this.listLoading = false;
         });
     },
-    listloadingson(bl){
-     this.listLoading = bl;
+    listloadingson(bl) {
+      this.listLoading = bl;
     },
     // 搜索
     handleSizeChange(val) {
@@ -1778,11 +1901,11 @@ export default {
       this.listLoading = true;
       this.getList(this.pageNumber, this.pageSize);
     },
-    handleCreateCom(){
-      this.$refs['combination'].dialogFormVisibleClick()
+    handleCreateCom() {
+      this.$refs["combination"].dialogFormVisibleClick();
     },
-    handleCreate(formName,str) {
-      this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
+    handleCreate(formName, str) {
+      this.measure = dict.meterage; //计量方式 ，防止收通用订单影响
       this.sordFlag = true;
       this.basicForm.sortId = "";
       this.imgNumber = 0;
@@ -1795,12 +1918,12 @@ export default {
     },
     //编辑方法
     handleUpdate(row) {
-      if(row.goodsType == "combined"){
+      if (row.goodsType == "combined") {
         // this.listLoading = true;
-        this.$refs['combination'].combinationEdit(row.id)
+        this.$refs["combination"].combinationEdit(row.id);
         return;
       }
-      this.handleCreateFlag = 'single'
+      this.handleCreateFlag = "single";
       this.resetForm();
       this.temp = Object.assign({}, row);
       this.dialogStatus = "update";
@@ -1821,14 +1944,14 @@ export default {
                 dataUpdate.commoditys[i].price
               );
             }
-              if(dataUpdate.sortId < 100){
-               this.sordFlag = false
-               this.measure = { "num": "按时长或数量"}
-               this.goods_info.type = "num"
-              }else{
-                this.sordFlag = true
-                this.measure = dict.meterage;
-              }
+            if (dataUpdate.sortId < 100) {
+              this.sordFlag = false;
+              this.measure = { num: "按时长或数量" };
+              this.goods_info.type = "num";
+            } else {
+              this.sordFlag = true;
+              this.measure = dict.meterage;
+            }
             // }
             this.listLoading = false;
             this.dialogFormVisible = true;
@@ -2035,7 +2158,7 @@ export default {
                   }
                   //loading取消
                   loading.close();
-                  this.comList()
+                  this.comList();
                 } else {
                   loading.close();
                   this.btnState = false;
@@ -2063,15 +2186,15 @@ export default {
       });
     },
     //组合商品新增成功刷新列表
-    comList(){
+    comList() {
       this.cancel("basic");
       this.basicForm.majorSort = "all";
       this.search.sortId = "";
       this.search.name = "";
       this.search.goodsType = "";
       this.search.goodsName = "";
-      this.$refs['orgSearch'].orgEmpty()
-      this.orgSearch()
+      this.$refs["orgSearch"].orgEmpty();
+      this.orgSearch();
       this.tabs = "all";
       this.listQuery.page = 1;
       this.getList(1, this.pageSize);
@@ -2145,27 +2268,24 @@ export default {
     orgSearch,
     combination
   },
-  mounted(){
-
-    let list = async ()=>{
-      try{
-        let _list = await this.$refs['orgSearch'].listDataAll()
-        this.orgList = _list
+  mounted() {
+    let list = async () => {
+      try {
+        let _list = await this.$refs["orgSearch"].listDataAll();
+        this.orgList = _list;
         this.handleClick({ name: "all" });
-      }
-      catch(error){
-      }
-    }
+      } catch (error) {}
+    };
 
-    list()
+    list();
   },
-  filters:{
+  filters: {
     rmb(value) {
-      return '¥'+value
+      return "¥" + value;
     }
   }
 };
 </script>
 <style>
-  @import './prokect.css';
+@import "./prokect.css";
 </style>
