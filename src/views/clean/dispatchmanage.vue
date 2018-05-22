@@ -162,7 +162,7 @@
 		<el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
 			<el-input placeholder="输入要搜索的姓名" style="width:252px;" v-model="techName2" class="dispatchTechNameSearch"></el-input> 
 			<button class="button-large FloatRight marginRight15" @click="searchTeh">查询</button>
-      <div class="NowTabs">当前选择标签：</div>
+      <!-- <div class="NowTabs">当前选择标签：</div> -->
 			<!-- <el-collapse-transition> -->
         <transition name="el-zoom-in-bottom">
 				<div class="selfpromMessageTab" v-if="middleA.length !=0">
@@ -187,7 +187,10 @@
 					</tr>
 					<div class="paddingTop60">
 							<tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
-								<td width="72px" class="fontSize12"  align="center"><el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox></td>
+								<td width="72px" class="fontSize12"  align="center">
+                  <!-- <el-checkbox  v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox> -->
+                  <el-radio :label="item.techId" v-model="radio1" @change.native="ChangeTech(item.techId)">&nbsp;</el-radio>
+                </td>
 								<td  width="157px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
 								<td width="172px" class="fontSize12" align="center"><el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 10" :content="item.techName"><div :class=" item.techName.length < 10 ? '' : 'selftechNameStyle' ">{{item.techName}}</div></el-tooltip></td>
 								<td  width="72px" class="fontSize12" align="center">
@@ -224,6 +227,7 @@ export default {
   name: "dispatchmanage",
   data() {
     return {
+      radio1:'',
       userType:'',
       mechanismOptions: [],
       mechanism: "",
@@ -367,28 +371,33 @@ export default {
     },
     //存储选择技师对象
     ChangeTech(obj) {
-      if (obj.techChecked) {
-        this.middleA.push(obj);
-      } else {
-        for (var a1 = 0; a1 < this.middleA.length; a1++) {
-          if (this.middleA[a1].techId == obj.techId) {
-            this.middleA.remove(this.middleA[a1]);
-          }
-        }
-      }
+      // if (obj.techChecked) {
+      //   this.middleA.push(obj);
+      // } else {
+      //   for (var a1 = 0; a1 < this.middleA.length; a1++) {
+      //     if (this.middleA[a1].techId == obj.techId) {
+      //       this.middleA.remove(this.middleA[a1]);
+      //     }
+      //   }
+      // }
     },
     //选择技师弹出层保存
     submitForm2() {
       this.techSaveFlag = true;
       //先遍历数据中选中的再保存
       var arr = [];
-      if (this.middleA != undefined && this.middleA.length != 0) {
-        for (let a = 0; a < this.middleA.length; a++) {
-          if (this.middleA[a].techChecked == true) {
-            arr.push(this.middleA[a].techId);
+        for (let a = 0; a < this.listTech.length; a++) {
+          if (this.listTech[a].techId == this.radio1 ) {
+            arr.push(this.listTech[a].techId);
           }
-        }
-      }
+        }      
+      // if (this.middleA != undefined && this.middleA.length != 0) {
+      //   for (let a = 0; a < this.middleA.length; a++) {
+      //     if (this.middleA[a].techChecked == true) {
+      //       arr.push(this.middleA[a].techId);
+      //     }
+      //   }
+      // }
       if (arr.length != 0) {
         var obj1 = {
           id: this.orderId,
@@ -435,14 +444,15 @@ export default {
             this.techSaveFlag = false;
           });
       }
-      if (arr.length == 0) {
-        this.techSaveFlag = false;
-        this.dialogTableVisible = false;
-      }
+      // if (arr.length == 0) {
+      //   this.techSaveFlag = false;
+      //   this.dialogTableVisible = false;
+      // }
     },
     //选择技师弹出层取消
     cancelForm2() {
-      this.middleA = [];
+      //this.middleA = [];
+      this.radio1='';
       this.listTech = [];
       this.dialogTableVisible = false;
     },
@@ -460,9 +470,6 @@ export default {
             this.dialogTableVisible = true;
             if (res.data.data != undefined) {
               this.listTech = res.data.data;
-              // for (var d = 0; d <this.listTech.length; d++) {
-              // 		this.$set(this.listTech[d],'techChecked',false)
-              // }
             } else {
               this.listTech = [];
             }
