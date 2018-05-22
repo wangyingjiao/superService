@@ -24,7 +24,7 @@
 					<el-table v-loading="listLoading" :data="tableData" border style="width:100%" class="dispatchTaleSelf">
 					  <el-table-column  align="center" min-width="220"  label="订单编号">
 							<template scope="scope" >
-								<div @click="lookInf(scope.row.id)" class="dispatchNumberStyle">
+								<div @click="lookInf(scope.row)" class="dispatchNumberStyle">
 										{{scope.row.orderNumber}}
 								</div>
 							</template>
@@ -478,9 +478,10 @@ export default {
         .catch(res => {});
     },
     //查看跳转到订单详情页
-    lookInf(id) {
-      window.localStorage.setItem("orderId", id);
-      this.$router.push({ path: "/clean/orderinfo", query: { id: id } });
+    lookInf(row) {
+      console.log(row)
+      window.localStorage.setItem("orderId", row.id);
+      this.$router.push({ path: "/clean/orderinfo", query: { id: row.id } });
     },
     //列表渲染
     reassList(pramsObj, pageNo, pageSize) {
