@@ -285,12 +285,12 @@ input, button{
   border:1px solid #ccc !important;
 }
 .el-input-number__decrease {
-  right:0px;
+  left:0px;
   border: 1px solid #bfcbd9;
   // border-left: none;
 }
 .el-input-number__increase {
-  left: 0px;
+  right: 0px;
   border: 1px solid #bfcbd9;
   // border-right: none;
 }

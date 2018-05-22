@@ -120,7 +120,11 @@
 										<el-table-column prop="name" align="center" label="组合商品售价" :min-width="105">
 											<template scope="scope">
 												<!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
-											<span><i class="iconfont">&#xe61c;</i><el-input v-model="scope.row.combinationPrice"></el-input></span>
+                      <div class="input-price">
+                          <i class="iconfont">&#xe61c;</i>
+                          <input class="price-com" type="text" v-model="scope.row.combinationPrice">
+                      </div>
+											<!-- <span><i class="iconfont">&#xe61c;</i><el-input icon="iconfont" v-model="scope.row.combinationPrice"></el-input></span> -->
 											</template>
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="数量" :min-width="120">
@@ -2012,6 +2016,22 @@ export default {
     }
     .combinationType-info .el-form-item__content{
       margin-left: 108px !important;
+    }
+    .input-price{
+      border:1px solid #bfcbd9;
+    }
+    .input-price i{
+      font-size: 21px;
+    }
+    .price-com{
+      background: #fff;
+      /* border:1px solid #bfcbd9; */
+      border: none;
+      width: 70%;
+      height: 34px;
+      line-height: 1;
+      outline: 0;
+      transition: border-color .2s cubic-bezier(.645 .045,.355,1);
     }
 </style>
 
