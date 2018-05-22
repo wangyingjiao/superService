@@ -2070,7 +2070,7 @@ export default {
       this.yuyueradio = value;
       this.yuyueformInline.Tech = this.yuyueradio;
     },
-    //预约的保存
+    //预约保存
     yuyuesubmitTime(formName) {
       //未选择日期
       if(this.yuyueformInline.Date == '' && this.yuyueselectDateFlag == false){
@@ -2136,13 +2136,11 @@ export default {
                 this.$refs["formInline"].resetFields();                               
                 this.getOrderAllInf(this.orderId);
               } else {
-                this.yuyuetimeObj = [];
                 this.yuyuetimeSaveFlag1 = false;
               }
             })
             .catch(res => {
               this.yuyuetimeSaveFlag1 = false;
-              this.yuyuetimeObj = [];
             });
         
         } else {
