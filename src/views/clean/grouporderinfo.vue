@@ -559,7 +559,7 @@
         <el-dialog title="选择技师" :visible.sync="dialogTableVisible" class="selfDialogWidth" :close-on-click-modal="false">
           <el-input placeholder="输入要搜索的姓名" v-model="techName" class="orderinfoTechNameStyle" style="width:252px;"></el-input> 
           <button class="button-large FloatRight  orderinfoTechSearchStyle" @click="searchTeh">查询</button>
-          <div class="NowTabs">当前选择标签：</div>
+          <div class="NowTabs" v-if="otherInfo.orderType =='group_split_no'">当前选择标签：</div>
            <transition name="el-zoom-in-bottom">
             <div class="selfpromMessageTab" v-if="middleA.length !=0">
               <div  class="tabWrap1" v-for="item in middleA" :key="item.techId">
@@ -2402,7 +2402,7 @@ export default {
             if (res.data.code === 1) {
               this.$message({
                 type: "success",
-                message: "新增成功!"
+                message: "增加成功!"
               });
               this.middleA = [];
               this.listTech = [];
