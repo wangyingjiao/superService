@@ -380,7 +380,6 @@ export default {
       //     }
       //   }
       // }
-      console.log(obj)
     },
     //选择技师弹出层保存
     submitForm2() {

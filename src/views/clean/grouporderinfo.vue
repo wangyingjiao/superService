@@ -651,7 +651,7 @@
           </div>
         </el-dialog>
         <!--更换固定技师弹窗结束-->        
-        <!--更换服务时间弹窗开始-->
+        <!--更换时间弹窗开始-->
         <el-dialog
           title="选择服务时间"
           :visible.sync="dialogVisible"
@@ -750,7 +750,7 @@
               <button class="button-cancel"  @click="cancelTime('formInline')">取 消</button>
             </div>
         </el-dialog>
-        <!--更换服务时间弹窗结束-->
+        <!--更换时间弹窗结束-->
         <!--预约弹窗开始-->
         <el-dialog
           title="预约"
