@@ -1807,12 +1807,15 @@ export default {
       this.gudingFlag = false;
       this.testFlag = true;
       this.Orderform1.testsele = "";
-      this.radio4 = "";
+      this.radio4 = "";           
+      this.teachArr = [];
       this.Orderform1.severHour = "1";
-      this.severHour = "1";      
-      this.teachArr = [];       
-      if(status == 'add'){      
-      }else{       
+      this.severHour = "1";              
+      if(status == 'add'){
+     
+      }else{
+         this.severHour = this.yuyuegeshu;//预约次数的回显
+         this.Orderform1.severHour =this.yuyuegeshu ;       
         // var a
         // if(this.otherInfo.serviceFrequency =='week_one'){
         //     a=0
@@ -1823,9 +1826,9 @@ export default {
         // if(this.otherInfo.serviceFrequency =='week_some'){
         //      a=1
         // }
-        // this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
-        // this.teachArr = this.otherInfo.freList; //服务时间的回显 
         // this.Changefrequency(this.otherInfo.serviceFrequency,a)//服务频次回显
+        // this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
+        // this.teachArr = this.otherInfo.freList; //服务时间的回显         
         // this.searchSeverTech();//查询服务技师表格数据
         // this.freStyl1 = "8";
         // this.isB=true;        
@@ -1892,9 +1895,8 @@ export default {
         this.teachArr.splice(0);
         this.teachArr.push(obj);
       }
-
-      console.log(this.teachArr, "绑定值");
-        this.listShowFlag=true;    
+      this.listShowFlag=true;
+       //console.log(this.teachArr, "绑定值");            
     },
     //单选请选择服务时间段点击
     addtime() {
@@ -2895,7 +2897,6 @@ export default {
             .then(res => {
               if (res.data.code === 1) {
                 //技师表格数据
-                console.log(res.data.data)
                 this.tableData2 = res.data.data.list;
                 this.techObj=res.data.data.tech;
                 this.gudingFlag1 = true;
