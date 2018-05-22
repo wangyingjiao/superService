@@ -31,7 +31,7 @@
         <!-- table列表 分页-->
             <div class="btton-table">
                 <div>
-                    <span v-if="nameFlag" style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
+                    <span style="line-height:25px;  margin-right: 6%;">当前查询的E店为：{{dockingEName.name}}</span>
                     <span class="e-prompt">对接相关的请求的交互结果非实时数据，最终的交互结果需耐心等待一段时间</span>
                     <button v-if="activeName!='noDocking' && btnShow.indexOf('project_remove')>-1" class="button-small btn_pad btn-color" style="width:80px;" @click="toggleSelection">解除对接</button>
                     <button :disabled="eshopStatus =='no'" v-if="activeName=='noDocking' && btnShow.indexOf('project_butt')>-1" :class="['button-small','btn_pad','btn-color',{'disabled':eshopStatus =='no'}]" style="width:80px;" @click="toggleSetUp">设置对接</button>
@@ -134,6 +134,7 @@ import { listDataAll } from "@/api/tech";
 export default {
   data() {
     return {
+      aaa:'',
       orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: false,
@@ -153,6 +154,14 @@ export default {
       pageSize: 10,
       total: 0,
       thisType: {},
+      searchLoca:{
+        orgId:'',
+        eshopCode: "",
+        majorSort: "",
+        sortId: "",
+        goodsName: "",
+        selfCode: ""
+      },
       search: {
         orgId:'',
         eshopCode: "",
@@ -238,11 +247,6 @@ export default {
           if (data.data.code) {
             this.listLoading = false;
             this.tableData3 = data.data.data.page.list;
-            if(this.tableData3.length>0){
-              this.nameFlag = true
-            }else{
-              this.nameFlag = false
-            }
             this.total = data.data.data.page.count;
             this.eshopStatus = data.data.data.eshopStatus;
           } else {
@@ -272,7 +276,7 @@ export default {
     },
     eshopCodeData(){
       if (this.search.eshopCode) {
-        var i,
+        let i,
           options = this.options;
         for (i = 0; i < options.length; i++) {
           if (options[i].eshopCode == this.search.eshopCode) {
@@ -296,6 +300,7 @@ export default {
           return
         }
       }
+      this.searchLoca = Object.assign({},this.search)
       //改变当前查询的E店：
       this.eshopCodeData()
       //--改变当前查询的E店------------------：
@@ -341,6 +346,7 @@ export default {
       // this.$refs.multipleTable.clearSelection();
       //防止请求多次
       this.selectCheckboxWholeFlag = true
+      this.searchLoca = Object.assign({},this.search)
       this.eshopCodeData()
       this.pageSize = 10;
       if (this.pageSync == 1) {
@@ -457,20 +463,22 @@ export default {
         arrPost.push(arr[i][data]);
       }
       obj.goodIds = arrPost;
-      obj.eshopCode = this.search.eshopCode;
+      obj.eshopCode = this.searchLoca.eshopCode;
       if(this.userType){
-        obj.orgId = this.search.orgId
+        obj.orgId = this.searchLoca.orgId
       }
       return obj;
     },
     //移除对接按钮
     toggleSelection(row, selected) {
+      // return
       var obj = this.setUpDelete("id");
 
       if (obj.goodIds.length <= 0) {
         return;
       }
       this.listLoading = true;
+      this.eshopCodeData()
       deleteGoodsCode(obj)
         .then(data => {
           if (data.data.code == 1) {
@@ -495,6 +503,7 @@ export default {
         return;
       }
       this.listLoading = true;
+      this.eshopCodeData()
       JonitGoods(obj)
         .then(data => {
           if (data.data.code == 1) {
@@ -555,7 +564,7 @@ export default {
                 resolve(this.search);
                 // this.dockingEName = data.data.data[0] || { name: "" }; //当前E店
               } else {
-                this.dockingEName = { name: "" };
+                // this.dockingEName = { name: "" };
               }
             } else {
               this.listLoading = false;
@@ -579,7 +588,8 @@ export default {
           this.$refs['orgSearch'].listDataAll()
         }else{
           let _promise = await this.promise({orgId:''})
-          this.buttedConnListApi(_promise);
+          await this.buttedConnListApi(_promise);
+          this.searchLoca = this.search
         }
       }
       catch(error){
