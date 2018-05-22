@@ -99,7 +99,7 @@
 								</div>
 								<div style="padding:0 20px;">
 									<el-form-item label="商品信息：" prop="serItemCommodity.combinationCommodities" class="combination-name">
-										<input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
+										<input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodityAsync">
 									</el-form-item>
 								</div>
 								<div class="combinationTable" style="padding:0 20px" v-if="basicForm.serItemCommodity.combinationCommodities == undefined ||basicForm.serItemCommodity.combinationCommodities.length>0">
@@ -1075,7 +1075,7 @@ export default {
     //搜索
     choiceCommoditySearch(){
       // console.log(this.itemName,this.goodName,"this.itemName,this.goodName")
-      this.choiceCommodity(true)
+      this.choiceCommodityAsync(true)
     },
     //选择商品按钮
     choiceCommodity(bl){
@@ -1101,46 +1101,55 @@ export default {
           });
         }
         this.loadingCom = true;
-        listDataBySortId(obj).then(({data:{code,data}})=>{
-            if(code == 1){
-              if(data != undefined){
-                let i , j , lon = this.commodityArr.length;
-                //判读：复选框选中
-                console.log(lon,"this.commodityArr------______")
-                  for( i = data.length ; i -- ;){
-                    data[i].combinationPrice = '0'
-                    data[i].combinationNum = '1'
-                    if(!lon) this.radio = ''
-                    for( j = lon ; j-- ;){
-                      if(this.commodityArr[j].goodsId == data[i].goodsId){
-                        if( this.basicForm.serItemCommodity.serviceType == 'single'){
-                          data[i].check = true
-                        }else{
-                          this.radio = data[i].goodsId
+        return new Promise((res,rej)=>{
+          listDataBySortId(obj).then(({data:{code,data}})=>{
+              if(code == 1){
+                if(data != undefined){
+                  let i , j , lon = this.commodityArr.length;
+                  //判读：复选框选中
+                  console.log(lon,"this.commodityArr------______")
+                    for( i = data.length ; i -- ;){
+                      data[i].combinationPrice = '0'
+                      data[i].combinationNum = '1'
+                      if(!lon) this.radio = ''
+                      for( j = lon ; j-- ;){
+                        if(this.commodityArr[j].goodsId == data[i].goodsId){
+                          if( this.basicForm.serItemCommodity.serviceType == 'single'){
+                            data[i].check = true
+                          }else{
+                            this.radio = data[i].goodsId
+                          }
                         }
                       }
                     }
-                  }
-                this.commodityDate = data
+                  this.commodityDate = data
+                }else{
+                  this.commodityDate = []
+                  this.commodityArr = []
+                }
+                res(true)
               }else{
                 this.commodityDate = []
                 this.commodityArr = []
+                res(false)
               }
-              this.combinationTypeDialog = true;
-            }else{
-              this.commodityDate = []
-              this.commodityArr = []
-            }
-            if(bl==true){
-            }else{comloading.close()};
-            this.loadingCom = false;
-        }).catch(error=>{
-            if(bl==true){
-            }else{comloading.close()};
-            this.loadingCom = false;
-            console.log(error,'-------')
+              if(bl==true){
+              }else{comloading.close()};
+              this.loadingCom = false;
+          }).catch(error=>{
+              if(bl==true){
+              }else{comloading.close()};
+              this.loadingCom = false;
+              rej(error)
+          })
         })
-       
+    },
+    choiceCommodityAsync(bl){
+      let dag = async(bl)=>{
+        let blo = await this.choiceCommodity(bl)
+        this.combinationTypeDialog = blo;
+      }
+      dag(bl)
     },
     deleteInformation(item,index){
       console.log(index,"item-------________")
@@ -2074,6 +2083,9 @@ export default {
       line-height: 1;
       outline: 0;
       transition: border-color .2s cubic-bezier(.645 .045,.355,1);
+    }
+    .com-dialog table{
+      width: 100% !important;
     }
 </style>
 
