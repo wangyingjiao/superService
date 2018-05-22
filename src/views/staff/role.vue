@@ -11,7 +11,6 @@
       <button class="button-large el-icon-search btn_search btn-color" @click="handleFilter"> 搜索</button>
     </div>
     <!-- 搜索结束 -->
-    
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
     <button class="button-small btn_pad btn-color"  v-if="btnShow.indexOf('role_insert') != -1" @click="handleCreate">新增</button>
