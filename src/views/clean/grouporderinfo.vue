@@ -451,7 +451,7 @@
                     <div class="leftArea" style="width:100%;">
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">备注:</span>
-                          <span class="lineContent1 selfbeizhu" style="margin-left: 20px;">{{otherInfo1.orderRemark}}</span>
+                          <span class="lineContent1 selfbeizhu" style="padding-left: 20px;">{{otherInfo1.orderRemark}}</span>
                       </p>
                       <p class="contentLine1">
                           <span class="lineContent2">
@@ -482,16 +482,6 @@
                           <span class="selfbeizhu1" >
                             {{otherInfo1.businessRemark}}
                           </span>
-                      </p>
-                      <p class="contentLine1" style="width:600px;">
-                          <span class="lineTitle"></span>
-                          <span class="lineContent2 ">
-                            <div class="picWrap">
-                                <div class="picStyle" v-for="item in otherInfo1.businessRemarkPics" :key="item"> 
-                                  <img :src="imgSrc+item+picWidth250"/>
-                                </div>
-                            </div>
-                          </span>
                       </p>                                                        
                     </div>
                     <div class="rightArea">
@@ -499,11 +489,21 @@
                           <span class="lineTitle">电话:</span>
                           <span class="lineContent">{{otherInfo1.businessPhone}}</span>
                       </p>                    
+                    </div>
+                    <div>
+                      <p class="contentLine1" >
+                          <span class="lineContent2 ">
+                            <div class="picWrap">
+                                <div class="picStyle" v-for="item in otherInfo1.businessRemarkPics" :key="item"> 
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
+                            </div>
+                          </span>
+                      </p>                      
                     </div> 
                 </div>                                     		
             </div>
-            <!--业务人员信息结束-->
-            
+            <!--业务人员信息结束-->            
             <!--门店信息开始-->
             <div class="thrid-bar marginTop15 marginBOT20 PositionRelative"  >
                  <div class="exptyDiv" ></div>
@@ -528,16 +528,6 @@
                           <span class="selfbeizhu1">
                             {{otherInfo1.shopRemark}}                        
                           </span>
-                      </p>
-                      <p class="contentLine1" style="width:600px;">
-                          <span class="lineTitle"></span>
-                          <span class="lineContent2">
-                            <div class="picWrap">
-                                <div class="picStyle" v-for="item in otherInfo1.shopRemarkPics" :key="item">
-                                  <img :src="imgSrc+item+picWidth250"/>
-                                </div>
-                            </div>
-                          </span>
                       </p>                                                        
                     </div>
                     <div class="rightArea">
@@ -545,6 +535,17 @@
                           <span class="lineTitle">电话:</span>
                           <span class="lineContent">{{otherInfo1.shopPhone}}</span>
                       </p>                  
+                    </div>
+                    <div>
+                      <p class="contentLine1">
+                          <span class="lineContent2">
+                            <div class="picWrap">
+                                <div class="picStyle" v-for="item in otherInfo1.shopRemarkPics" :key="item">
+                                  <img :src="imgSrc+item+picWidth250"/>
+                                </div>
+                            </div>
+                          </span>
+                      </p>                      
                     </div> 
                 </div>                                     		
             </div>
@@ -684,7 +685,7 @@
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
-                    <p >*  该订单的技师为：李四    15801655090</p>
+                    <p >*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" >             
@@ -1301,6 +1302,7 @@ export default {
       }
     };
     return {
+      techObj:[],
       subOneId:'',//更换时间中的子订单第一条的Id
       subOneId1:'',
       otherInfo1:'',
@@ -1571,7 +1573,8 @@ export default {
       var obj1 = {
         serviceNum:this.severHour,
         masterId:this.orderId,
-        freList:this.teachArr
+        freList:this.teachArr,
+        serviceStart:this.Orderform1.Date
       };
       saveRegularDateTechList(obj1)
         .then(res => {
@@ -1953,10 +1956,6 @@ export default {
 
       }
  
-    },
-    //固定技师选择单选改变
-    getCurrentRow(value) {
-      this.radio = value;
     },                 
     //预约操作
     yuyueClick() {
@@ -2228,201 +2227,7 @@ export default {
       this.getOrderAllInf(this.orderId);
      
     },
-    //更换固定技师弹出层确认
-    submitForm21() {
-      //更换固定技师保存
-      var obj1={
-         techId:this.radio,
-         masterId:this.orderId
-      }      
-      updateRegularTechSave(obj1)
-        .then(res => {
-          //this.techSaveFlag1=true;
-          if (res.data.code === 1) {
-            //this.techSaveFlag1=false;
-            this.$message({
-              type: "success",
-              message: "更换固定技师成功"
-            });
-            this.dialogTableVisible1 = false;
-            this.getOrderAllInf(this.orderId);
-          }
-        })
-        .catch(res => {
-          //this.techSaveFlag1=false;
-        });            
-    },
-    //更换固定技师弹出层取消
-    cancelForm21() {
-      this.$message({
-        type: "warning",
-        message: "更换固定技师已取消!"
-      });      
-      this.radio='';
-      this.listTech1 = [];
-      this.dialogTableVisible1 = false;
-    },
-    //多少退款改变
-    ChangerefundType(value) {
-      if (value == "") {
-        this.ruleForm.refundDifference = "";
-      }
-    },
-    //计算退款总额
-    rowChange(rowObj) {
-      if (rowObj.goodsChecked) {
-        this.ruleForm.refundAccount =
-          this.ruleForm.refundAccount + rowObj.payPrice * 1 * rowObj.goodsNum;
-      } else {
-        this.ruleForm.refundAccount =
-          this.ruleForm.refundAccount - rowObj.payPrice * 1 * rowObj.goodsNum;
-      }
-      if (this.ruleForm.refundAccount == "0") {
-        this.ruleForm.refundId = "";
-      } else {
-        this.ruleForm.refundId = "1";
-      }
-    },
-    //确认退款
-    orderRefundOk(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          if (
-            (this.refundDifferenceType == "" &&
-              this.ruleForm.refundDifference > 0) ||
-            (this.refundDifferenceType == null &&
-              this.ruleForm.refundDifference > 0)
-          ) {
-            this.$message({
-              type: "warning",
-              message: "请选择退款差额类型！"
-            });
-            return false;
-          }
-          if (this.ruleForm.refundDifference >= this.ruleForm.refundAccount) {
-            this.$message({
-              type: "warning",
-              message: "退款差额应小于退款金额！"
-            });
-          } else {
-            var refundPirce = 0;
-            if (this.refundDifferenceType == "many") {
-              refundPirce =
-                this.ruleForm.refundAccount +
-                Number(this.ruleForm.refundDifference);
-            }
-            if (this.refundDifferenceType == "less") {
-              refundPirce =
-                this.ruleForm.refundAccount -
-                Number(this.ruleForm.refundDifference);
-            }
-            if (
-              this.refundDifferenceType == "" ||
-              this.refundDifferenceType == null
-            ) {
-              this.refundDifferenceType = null;
-              refundPirce = this.ruleForm.refundAccount;
-            }
-            refundPirce = Number(refundPirce).toFixed(2);
-            const h = this.$createElement;
-            this.$msgbox({
-              title: "提示",
-              message: h("p", null, [
-                h("span", null, "实际退款金额为：￥"),
-                h("span", { style: "color: teal" }, refundPirce),
-                h("span", null, "，确定退款吗？")
-              ]),
-              showCancelButton: true,
-              confirmButtonText: "确定",
-              cancelButtonText: "取消"
-            })
-              .then(() => {
-                var arr = [];
-                for (var a = 0; a < this.ruleForm.orderRefundObj.length; a++) {
-                  if (this.ruleForm.orderRefundObj[a].goodsChecked) {
-                    arr.push(this.ruleForm.orderRefundObj[a]);
-                  }
-                }
-                this.middleB = Object.assign([], arr);
-                var orderRefundInfo = {};
-                orderRefundInfo.refundMethod = this.ruleForm.refundMethod;
-                orderRefundInfo.refundAccount = this.ruleForm.refundAccount;
-                orderRefundInfo.refundDifferenceType = this.refundDifferenceType;
-                orderRefundInfo.refundDifference = this.ruleForm.refundDifference;
-                orderRefundInfo.refundAccountReality = refundPirce;
-                orderRefundInfo.refundReason = this.ruleForm.refundReason;
-                var obj1 = {
-                  id: this.orderId,
-                  goodsInfoList: this.middleB,
-                  orderRefundInfo: orderRefundInfo
-                };
-                orderRefundSave(obj1)
-                  .then(res => {
-                    if (res.data.code === 1) {
-                      this.$message({
-                        type: "success",
-                        message: "退款成功"
-                      });
-                      this.refundDifferenceType = "";
-                      this.getOrderAllInf(this.orderId);
-                      this.$refs["ruleForm"].resetFields();
-                      this.orderRefundFlag = false;
-                    }
-                  })
-                  .catch(res => {});
-              })
-              .catch(() => {
-                this.$message({
-                  type: "warning",
-                  message: "已取消退款"
-                });
-              });
-          }
-        } else {
-          var errArr = this.$refs[formName]._data.fields;
-          var errMes = [];
-          for (var i = 0; i < errArr.length; i++) {
-            if (errArr[i].validateMessage != "") {
-              errMes.push(errArr[i].validateMessage);
-            }
-          }
-          this.$message({
-            type: "error",
-            message: errMes[0]
-          });
-          return false;
-        }
-      });
-    },
-    //取消退款
-    orderRefundCancel() {
-      this.refundDifferenceType = "";
-      this.$refs["ruleForm"].resetFields();
-      this.orderRefundFlag = false;
-    },
-    //跳转退款详情页
-    gotoRefund(orderNumber) {
-      if (this.btnShow.indexOf("refund_view") > -1) {
-        var src = window.location.href;
-        var end = src.indexOf("#") + 1;
-        var url = src.substring(0, end);
-        this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
-        window.open(this.jumpUrl);
-      } else {
-        this.$message({
-          type: "warning",
-          message: "无查看退款权限!"
-        });
-      }
-    },
-    loadingClick() {
-      loading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-        target: document.querySelector(".el-dialog__body")
-      });
-    },
+
     //用订单ID获取页面相关信息
     getOrderAllInf(orderId) {
       this.orderId = orderId;
@@ -2519,26 +2324,7 @@ export default {
         }
       }
     },
-    //更换固定技师弹出层查询按钮
-    searchTeh1() {
-      this.listTech1=[]
-      var obj = {
-        masterId: this.orderId,
-        techName: this.techName1//技师姓名参数
-      };
-      //更换固定技师格数据获取
-      updateRegularTechTechList(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            if (res.data.data != undefined) {
-              this.listTech1 = res.data.data;
-            } else {
-              this.listTech1 = [];
-            }
-          }
-        })
-        .catch(res => {});
-    },
+
     //新增与改派选择技师弹出层查询按钮
     searchTeh() {
       var obj = {
@@ -2710,7 +2496,8 @@ export default {
           .catch(res => {});
       }
     },
-    //改派或新增技师（更换固定技师）
+    /*更换固定技师相关操作开始*/
+    //更换固定技师按钮
     gaiPai1() {
         var obj1={
           techName:'',
@@ -2731,305 +2518,537 @@ export default {
 
           });      
     },
-    //取消订单
-    cancelOrder() {
-      this.cancelOrderFlag = true;
-    },
-    //退款按钮
-    orderRefund() {
-      this.ruleForm.refundAccount = 0;
-      this.ruleForm.refundDifference = "";
-      this.ruleForm.refundDifferenceType = "";
-      this.ruleForm.orderNowRefundStatus = "";
-      this.orderRefundFlag = true;
-      //退款按钮
-      var obj1 = {
-        id: this.orderId
+    //更换固定技师弹出层查询按钮
+    searchTeh1() {
+      this.listTech1=[]
+      var obj = {
+        masterId: this.orderId,
+        techName: this.techName1//技师姓名参数
       };
-      orderRefundInit(obj1)
+      //数据获取
+      updateRegularTechTechList(obj)
         .then(res => {
           if (res.data.code === 1) {
             if (res.data.data != undefined) {
-              this.ruleForm.payPrice = res.data.data.payPrice;
-              this.ruleForm.orderRefundObj = res.data.data.goodsInfoList;
-              if (res.data.data.orderNowRefundStatus != undefined) {
-                this.ruleForm.orderNowRefundStatus =
-                  res.data.data.orderNowRefundStatus;
-              }
+              this.listTech1 = res.data.data;
+            } else {
+              this.listTech1 = [];
             }
           }
         })
         .catch(res => {});
     },
-    //取消订单确认
-    submitOrder(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var obj = {
-            id: this.orderId,
-            cancelReason: this.Orderform.becouss,
-            cancelReasonRemark: this.Orderform.beizhu
-          };
-          orderCancelFun(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.$message({
-                  type: "success",
-                  message: "取消成功!"
-                });
-                this.getOrderAllInf(this.orderId);
-                this.cancelOrderFlag = false;
-              }
-            })
-            .catch(res => {});
-        } else {
-        }
-      });
-    },
-    //取消订单取消
-    unOrder(formName) {
-      this.$refs[formName].resetFields();
-      this.cancelOrderFlag = false;
-    },
-    //已有订单中表格中的更换时间按钮
-    changeTime(row) {
-      this.subOneId=row.orderList[0].id;//第一个子订单的Id
-      this.radio3 = "";
-      this.timeObj = [];
-      var obj={
-        id:this.subOneId
-      }
-      updateOrderTimeDateList(obj)
+    //更换固定技师弹出层确认
+    submitForm21() {
+      //更换固定技师保存
+      var obj1={
+         techId:this.radio,
+         masterId:this.orderId
+      }      
+      updateRegularTechSave(obj1)
         .then(res => {
+          //this.techSaveFlag1=true;
           if (res.data.code === 1) {
-            this.dialogVisible = true;
-            this.options2 = res.data.data; //服务时间下拉菜单值
-            //默认选择当前日期
-            if (this.options2 != undefined && this.options2[0] != undefined) {
-              this.formInline.Date = this.options2[0].value;
-              this.dateChange(this.formInline.Date);
-            }
-          }
-        })
-        .catch(res => {});      
-    },
-    //已有订单更换时间弹窗中的时间选项点击
-    timeChange(index, obj) {
-      //隐藏技师选择部分
-      this.radio3='';
-      this.gudingFlag1=false;
-      this.tableData2=[];
-      for (var a = 0; a < this.timeObj.length; a++) {
-        this.$set(this.timeObj[a], "selected", false);
-        if (a == index) {
-          this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
-          this.$refs.TimeWrap[a].style.color = "#4c70e8";
-          this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
-          this.timeObj[a].selected = !this.timeObj[a].selected;
-          this.formInline.Time = this.timeObj[a].serviceTimeStr;
-        } else {
-          this.$refs.TimeWrap[a].style.borderColor = "#fff";
-          this.$refs.TimeWrap[a].style.color = "#000";
-          this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-          this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-        }
-      }
-    },    
-    //已有订单更换时间中弹窗中日期变化时改变时间对象
-    dateChange(val) {
-      var that = this;
-      for (var b = 0; b < this.options2.length; b++) {
-        if (val == this.options2[b].value) {
-          if (this.options2[b].serviceTime != undefined) {
-            this.timeObj = this.options2[b].serviceTime;
-          }
-          if (this.options2[b].label != undefined) {
-            this.changTime = this.options2[b].label;
-          }
-        }
-      }
-      if (this.timeObj != undefined && this.timeObj.length != 0) {
-        //样式复位
-        this.$nextTick(() => {
-          for (var a = 0; a < this.timeObj.length; a++) {
-            that.$set(this.timeObj[a], "selected", false);
-            that.$refs.TimeWrap[a].style.borderColor = "#fff";
-            that.$refs.TimeWrap[a].style.color = "#000";
-            that.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-            that.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-          }
-        });
-      }
-    },
-    //更换时间查询服务技师按钮
-    searchSeverTech1() {
-      if(this.formInline.Time ==''){
-        this.$message({
-          type: "error",
-          message: "请选择时间！"
-        });
-        return false;        
-      }
-      var time = "";
-      for (var a = 0; a < this.timeObj.length; a++) {
-        if (this.timeObj[a].selected == true) {
-          time = this.timeObj[a].serviceTimeStr;
-        }
-      }
-      //更换服务时间中‘查询服务技师’  参数 一个是id  一个是serviceTime
-        var obj = {
-        id:this.subOneId,
-        serviceTime: this.changTime + " " + time + ":00",
-      };
-      updateOrderTimeTechList(obj)
-        .then(res => {
-          if (res.data.code === 1) {
-            //技师表格数据
-            console.log(res.data.data)
-            this.tableData2 = res.data.data;
-            this.gudingFlag1 = true;
-          } else {
-              this.tableData2 = [];
+            //this.techSaveFlag1=false;
+            this.$message({
+              type: "success",
+              message: "更换固定技师成功"
+            });
+            this.dialogTableVisible1 = false;
+            this.getOrderAllInf(this.orderId);
           }
         })
         .catch(res => {
-
-        });      
+          //this.techSaveFlag1=false;
+        });            
     },
-    //更换技师（表格内）单选改变
-    getCurrentRow3(value) {
-      this.radio3 = value;
-      this.formInline.Tech = this.radio3;
+    //更换固定技师弹出层取消
+    cancelForm21() {
+      this.$message({
+        type: "warning",
+        message: "更换固定技师已取消!"
+      });      
+      this.radio='';
+      this.listTech1 = [];
+      this.dialogTableVisible1 = false;
     },
-    //更换时间的保存
-    submitTime(formName) {
-      if(this.formInline.Time ==''){
-        this.$message({
-          type: "error",
-          message: "请选择时间！"
+    //固定技师选择单选改变
+    getCurrentRow(value) {
+      this.radio = value;
+    },            
+    /*更换固定技师相关操作结束*/
+    /*退款相关操作开始*/
+      //退款按钮
+      orderRefund() {
+        this.ruleForm.refundAccount = 0;
+        this.ruleForm.refundDifference = "";
+        this.ruleForm.refundDifferenceType = "";
+        this.ruleForm.orderNowRefundStatus = "";
+        this.orderRefundFlag = true;
+        var obj1 = {
+          id: this.orderId
+        };
+        orderRefundInit(obj1)
+          .then(res => {
+            if (res.data.code === 1) {
+              if (res.data.data != undefined) {
+                this.ruleForm.payPrice = res.data.data.payPrice;
+                this.ruleForm.orderRefundObj = res.data.data.goodsInfoList;
+                if (res.data.data.orderNowRefundStatus != undefined) {
+                  this.ruleForm.orderNowRefundStatus =
+                    res.data.data.orderNowRefundStatus;
+                }
+              }
+            }
+          })
+          .catch(res => {});
+      },
+      //多少退款改变
+      ChangerefundType(value) {
+        if (value == "") {
+          this.ruleForm.refundDifference = "";
+        }
+      },
+      //计算退款总额
+      rowChange(rowObj) {
+        if (rowObj.goodsChecked) {
+          this.ruleForm.refundAccount =
+            this.ruleForm.refundAccount + rowObj.payPrice * 1 * rowObj.goodsNum;
+        } else {
+          this.ruleForm.refundAccount =
+            this.ruleForm.refundAccount - rowObj.payPrice * 1 * rowObj.goodsNum;
+        }
+        if (this.ruleForm.refundAccount == "0") {
+          this.ruleForm.refundId = "";
+        } else {
+          this.ruleForm.refundId = "1";
+        }
+      },
+      //确认退款
+      orderRefundOk(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            if (
+              (this.refundDifferenceType == "" &&
+                this.ruleForm.refundDifference > 0) ||
+              (this.refundDifferenceType == null &&
+                this.ruleForm.refundDifference > 0)
+            ) {
+              this.$message({
+                type: "warning",
+                message: "请选择退款差额类型！"
+              });
+              return false;
+            }
+            if (this.ruleForm.refundDifference >= this.ruleForm.refundAccount) {
+              this.$message({
+                type: "warning",
+                message: "退款差额应小于退款金额！"
+              });
+            } else {
+              var refundPirce = 0;
+              if (this.refundDifferenceType == "many") {
+                refundPirce =
+                  this.ruleForm.refundAccount +
+                  Number(this.ruleForm.refundDifference);
+              }
+              if (this.refundDifferenceType == "less") {
+                refundPirce =
+                  this.ruleForm.refundAccount -
+                  Number(this.ruleForm.refundDifference);
+              }
+              if (
+                this.refundDifferenceType == "" ||
+                this.refundDifferenceType == null
+              ) {
+                this.refundDifferenceType = null;
+                refundPirce = this.ruleForm.refundAccount;
+              }
+              refundPirce = Number(refundPirce).toFixed(2);
+              const h = this.$createElement;
+              this.$msgbox({
+                title: "提示",
+                message: h("p", null, [
+                  h("span", null, "实际退款金额为：￥"),
+                  h("span", { style: "color: teal" }, refundPirce),
+                  h("span", null, "，确定退款吗？")
+                ]),
+                showCancelButton: true,
+                confirmButtonText: "确定",
+                cancelButtonText: "取消"
+              })
+                .then(() => {
+                  var arr = [];
+                  for (var a = 0; a < this.ruleForm.orderRefundObj.length; a++) {
+                    if (this.ruleForm.orderRefundObj[a].goodsChecked) {
+                      arr.push(this.ruleForm.orderRefundObj[a]);
+                    }
+                  }
+                  this.middleB = Object.assign([], arr);
+                  var orderRefundInfo = {};
+                  orderRefundInfo.refundMethod = this.ruleForm.refundMethod;
+                  orderRefundInfo.refundAccount = this.ruleForm.refundAccount;
+                  orderRefundInfo.refundDifferenceType = this.refundDifferenceType;
+                  orderRefundInfo.refundDifference = this.ruleForm.refundDifference;
+                  orderRefundInfo.refundAccountReality = refundPirce;
+                  orderRefundInfo.refundReason = this.ruleForm.refundReason;
+                  var obj1 = {
+                    id: this.orderId,
+                    goodsInfoList: this.middleB,
+                    orderRefundInfo: orderRefundInfo
+                  };
+                  orderRefundSave(obj1)
+                    .then(res => {
+                      if (res.data.code === 1) {
+                        this.$message({
+                          type: "success",
+                          message: "退款成功"
+                        });
+                        this.refundDifferenceType = "";
+                        this.getOrderAllInf(this.orderId);
+                        this.$refs["ruleForm"].resetFields();
+                        this.orderRefundFlag = false;
+                      }
+                    })
+                    .catch(res => {});
+                })
+                .catch(() => {
+                  this.$message({
+                    type: "warning",
+                    message: "已取消退款"
+                  });
+                });
+            }
+          } else {
+            var errArr = this.$refs[formName]._data.fields;
+            var errMes = [];
+            for (var i = 0; i < errArr.length; i++) {
+              if (errArr[i].validateMessage != "") {
+                errMes.push(errArr[i].validateMessage);
+              }
+            }
+            this.$message({
+              type: "error",
+              message: errMes[0]
+            });
+            return false;
+          }
         });
-        return false;        
-      }
-      if(this.formInline.Tech =='' && this.gudingFlag1 == false && this.otherInfo.orderType == 'group_split_yes'){
-        this.$message({
-          type: "error",
-          message: "请查询服务技师！"
+      },
+      //取消退款
+      orderRefundCancel() {
+        this.refundDifferenceType = "";
+        this.$refs["ruleForm"].resetFields();
+        this.orderRefundFlag = false;
+      },
+      //跳转退款详情页
+      gotoRefund(orderNumber) {
+        if (this.btnShow.indexOf("refund_view") > -1) {
+          var src = window.location.href;
+          var end = src.indexOf("#") + 1;
+          var url = src.substring(0, end);
+          this.jumpUrl = url + "/clean/refund?ordernumber=" + orderNumber;
+          window.open(this.jumpUrl);
+        } else {
+          this.$message({
+            type: "warning",
+            message: "无查看退款权限!"
+          });
+        }
+      },
+      loadingClick() {
+        loading = this.$loading({
+          lock: true,
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+          target: document.querySelector(".el-dialog__body")
         });
-        return false;        
-      }             
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.timeSaveFlag = true;
+      },      
+    /*退款相关操作结束*/
+    /*取消订单相关操作开始 */
+      //取消订单按钮
+      cancelOrder() {
+        this.cancelOrderFlag = true;
+      },
+      //取消订单确认
+      submitOrder(formName) {
+        this.$refs[formName].validate(valid => {
+          if (valid) {
+            var obj = {
+              id: this.orderId,
+              cancelReason: this.Orderform.becouss,
+              cancelReasonRemark: this.Orderform.beizhu
+            };
+            orderCancelFun(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.$message({
+                    type: "success",
+                    message: "取消成功!"
+                  });
+                  this.getOrderAllInf(this.orderId);
+                  this.cancelOrderFlag = false;
+                }
+              })
+              .catch(res => {});
+          } else {
+          }
+        });
+      },
+      //取消订单取消
+      unOrder(formName) {
+        this.$refs[formName].resetFields();
+        this.cancelOrderFlag = false;
+      },
+    /*取消订单相关操作结束 */
+    /*更换时间相关操作开始 */
+        //更换时间按钮
+        changeTime(row) {
+          this.subOneId=row.orderList[0].id;//第一个子订单的Id
+          this.radio3 = "";
+          this.timeObj = [];
+          var obj={
+            id:this.subOneId
+          }
+          updateOrderTimeDateList(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                this.dialogVisible = true;
+                this.options2 = res.data.data; //服务时间下拉菜单值
+                //默认选择当前日期
+                if (this.options2 != undefined && this.options2[0] != undefined) {
+                  this.formInline.Date = this.options2[0].value;
+                  this.dateChange(this.formInline.Date);
+                }
+              }
+            })
+            .catch(res => {});      
+        },
+        //更换时间弹窗中的时间选项点击
+        timeChange(index, obj) {
+          //隐藏技师选择部分
+          this.radio3='';
+          this.gudingFlag1=false;
+          this.tableData2=[];
+          for (var a = 0; a < this.timeObj.length; a++) {
+            this.$set(this.timeObj[a], "selected", false);
+            if (a == index) {
+              this.$refs.TimeWrap[a].style.borderColor = "#4c70e8";
+              this.$refs.TimeWrap[a].style.color = "#4c70e8";
+              this.$refs.TimeWrap[a].className = "selfSeverTimeSt mark";
+              this.timeObj[a].selected = !this.timeObj[a].selected;
+              this.formInline.Time = this.timeObj[a].serviceTimeStr;
+            } else {
+              this.$refs.TimeWrap[a].style.borderColor = "#fff";
+              this.$refs.TimeWrap[a].style.color = "#000";
+              this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+              this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+            }
+          }
+        },    
+        //更换时间中弹窗中日期变化时改变时间对象
+        dateChange(val) {
+          var that = this;
+          for (var b = 0; b < this.options2.length; b++) {
+            if (val == this.options2[b].value) {
+              if (this.options2[b].serviceTime != undefined) {
+                this.timeObj = this.options2[b].serviceTime;
+              }
+              if (this.options2[b].label != undefined) {
+                this.changTime = this.options2[b].label;
+              }
+            }
+          }
+          if (this.timeObj != undefined && this.timeObj.length != 0) {
+            //样式复位
+            this.$nextTick(() => {
+              for (var a = 0; a < this.timeObj.length; a++) {
+                that.$set(this.timeObj[a], "selected", false);
+                that.$refs.TimeWrap[a].style.borderColor = "#fff";
+                that.$refs.TimeWrap[a].style.color = "#000";
+                that.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+                that.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+              }
+            });
+          }
+        },
+        //更换时间查询服务技师按钮
+        searchSeverTech1() {
+          if(this.formInline.Time ==''){
+            this.$message({
+              type: "error",
+              message: "请选择时间！"
+            });
+            return false;        
+          }
           var time = "";
           for (var a = 0; a < this.timeObj.length; a++) {
             if (this.timeObj[a].selected == true) {
               time = this.timeObj[a].serviceTimeStr;
             }
           }
-          var that = this;
-          //this.formInline.Tech 技师的techId
-          //更换服务时间中'保存'
-          if(this.otherInfo.orderType == 'group_split_yes'){
-              var obj = {
-                //masterId: this.orderId,
-                id:this.subOneId,
-                serviceTime: this.changTime + " " + time + ":00",
-                techId:this.formInline.Tech
-              };              
-              updateOrderTimeSave(obj)
-                .then(res => {
-                  this.timeSaveFlag = false;
-                  if (res.data.code === 1) {
-                    this.$message({
-                      type: "success",
-                      message: "更换时间成功!"
-                    });
-                    this.$refs["formInline"].resetFields();
-                    this.dialogVisible = false;//弹窗关闭
-                    this.timeObj = [];//时段对象
-                    this.options2=[];
-                    this.radio3='';
-                    this.tableData2=[];
-                    this.gudingFlag1 = false;//技师信息展示开关
-                    this.getOrderAllInf(this.orderId);
-                  } else {
-                    this.timeObj = [];
-                    this.timeSaveFlag = false; 
-                  }
-                })
-                .catch(res => {
-                  this.timeSaveFlag = false;
-                  this.timeObj = [];
-                });            
+          //更换服务时间中‘查询服务技师’  参数 一个是id  一个是serviceTime
+            var obj = {
+            id:this.subOneId,
+            serviceTime: this.changTime + " " + time + ":00",
+          };
+          updateOrderTimeTechList(obj)
+            .then(res => {
+              if (res.data.code === 1) {
+                //技师表格数据
+                console.log(res.data.data)
+                this.tableData2 = res.data.data.list;
+                this.techObj=res.data.data.tech;
+                this.gudingFlag1 = true;
+              } else {
+                  this.tableData2 = [];
+              }
+            })
+            .catch(res => {
 
-          }else{
-              //不拆单的情况
-              var obj = {
-                //masterId: this.orderId,
-                id:this.subOneId,
-                serviceTime: this.changTime + " " + time + ":00",
-                techId:''
-              };              
-              updateOrderTimeSave(obj)
-                .then(res => {
-                  this.timeSaveFlag = false;
-                  if (res.data.code === 1) {
-                    this.$message({
-                      type: "success",
-                      message: "更换时间成功!"
-                    });
-                    this.$refs["formInline"].resetFields();
-                    this.dialogVisible = false;//弹窗关闭
-                    this.timeObj = [];//时段对象
-                    this.options2=[];
-                    this.gudingFlag1 = false;//技师信息展示开关
-                    this.getOrderAllInf(this.orderId);
-                  } else {
-                    this.timeObj = [];
-                    this.timeSaveFlag = false; 
-                  }
-                })
-                .catch(res => {
-                  this.timeSaveFlag = false;
-                  this.timeObj = [];
-                });            
+            });      
+        },
+        //更换技师（表格内）单选改变
+        getCurrentRow3(value) {
+          this.radio3 = value;
+          this.formInline.Tech = this.radio3;
+        },
+        //更换时间的保存
+        submitTime(formName) {
+          if(this.formInline.Time ==''){
+            this.$message({
+              type: "error",
+              message: "请选择时间！"
+            });
+            return false;        
           }
-        } else {
-          var errArr = this.$refs[formName]._data.fields;
-          var errMes = [];
-          for (var i = 0; i < errArr.length; i++) {
-            if (errArr[i].validateMessage != "") {
-              errMes.push(errArr[i].validateMessage);
+          if(this.formInline.Tech =='' && this.gudingFlag1 == false && this.otherInfo.orderType == 'group_split_yes'){
+            this.$message({
+              type: "error",
+              message: "请查询服务技师！"
+            });
+            return false;        
+          }             
+          this.$refs[formName].validate(valid => {
+            if (valid) {
+              this.timeSaveFlag = true;
+              var time = "";
+              for (var a = 0; a < this.timeObj.length; a++) {
+                if (this.timeObj[a].selected == true) {
+                  time = this.timeObj[a].serviceTimeStr;
+                }
+              }
+            var tech = [];
+            for (var a = 0; a < this.tableData2.length; a++) {
+              if (this.radio3 == this.tableData2[a].techId) {
+                tech.push(this.tableData2[a].techId);
+              }
+            }          
+              var that = this;
+              //this.formInline.Tech 技师的techId
+              //更换服务时间中'保存'
+              if(this.otherInfo.orderType == 'group_split_yes'){
+                  var obj = {
+                    //masterId: this.orderId,
+                    id:this.subOneId,
+                    serviceTime: this.changTime + " " + time + ":00",
+                    techId:this.formInline.Tech
+                  };              
+                  updateOrderTimeSave(obj)
+                    .then(res => {
+                      this.timeSaveFlag = false;
+                      if (res.data.code === 1) {
+                        this.$message({
+                          type: "success",
+                          message: "更换时间成功!"
+                        });
+                        this.$refs["formInline"].resetFields();                        
+                        this.timeObj = [];//时段对象
+                        this.options2=[];
+                        this.radio3='';
+                        this.tableData2=[];
+                        this.gudingFlag1 = false;//技师信息展示开关
+                        this.dialogVisible = false;//弹窗关闭
+                        this.getOrderAllInf(this.orderId);
+                      } else {
+                        //this.timeObj = [];
+                        this.timeSaveFlag = false; 
+                      }
+                    })
+                    .catch(res => {
+                      this.timeSaveFlag = false;
+                      //this.timeObj = [];
+                    });            
+
+              }else{
+                  //不拆单的情况
+                  var obj = {
+                    //masterId: this.orderId,
+                    id:this.subOneId,
+                    serviceTime: this.changTime + " " + time + ":00",
+                    techId:''
+                  };              
+                  updateOrderTimeSave(obj)
+                    .then(res => {
+                      this.timeSaveFlag = false;
+                      if (res.data.code === 1) {
+                        this.$message({
+                          type: "success",
+                          message: "更换时间成功!"
+                        });
+                        this.$refs["formInline"].resetFields();
+                        this.dialogVisible = false;//弹窗关闭
+                        this.timeObj = [];//时段对象
+                        this.options2=[];
+                        this.gudingFlag1 = false;//技师信息展示开关
+                        this.getOrderAllInf(this.orderId);
+                      } else {
+                        //this.timeObj = [];
+                        this.timeSaveFlag = false; 
+                      }
+                    })
+                    .catch(res => {
+                      this.timeSaveFlag = false;
+                      //this.timeObj = [];
+                    });            
+              }
+            } else {
+              var errArr = this.$refs[formName]._data.fields;
+              var errMes = [];
+              for (var i = 0; i < errArr.length; i++) {
+                if (errArr[i].validateMessage != "") {
+                  errMes.push(errArr[i].validateMessage);
+                }
+              }
+              this.$message({
+                type: "error",
+                message: errMes[0]
+              });
+              return false;
             }
-          }
-          this.$message({
-            type: "error",
-            message: errMes[0]
           });
-          return false;
-        }
-      });
-    },
-    //更换时间取消
-    cancelTime(formName) {
-      this.gudingFlag1 = false;
-      this.timeObj = [];//时段对象
-      this.options2=[];
-      this.radio3='';
-      this.tableData2=[];
-      this.formInline.Time='';
-      this.formInline.Tech ='';            
-      this.$refs[formName].resetFields();
-      //样式复位
-      for (var a = 0; a < this.timeObj.length; a++) {
-        this.$set(this.timeObj[a], "selected", false);
-        this.$refs.TimeWrap[a].style.borderColor = "#fff";
-        this.$refs.TimeWrap[a].style.color = "#000";
-        this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
-        this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
-      }
-      this.dialogVisible = false;
-    },                
+        },
+        //更换时间取消
+        cancelTime(formName) {
+          this.gudingFlag1 = false;
+          this.timeObj = [];//时段对象
+          this.options2=[];
+          this.radio3='';
+          this.tableData2=[];
+          this.formInline.Time='';
+          this.formInline.Tech ='';            
+          this.$refs[formName].resetFields();
+          //样式复位
+          for (var a = 0; a < this.timeObj.length; a++) {
+            this.$set(this.timeObj[a], "selected", false);
+            this.$refs.TimeWrap[a].style.borderColor = "#fff";
+            this.$refs.TimeWrap[a].style.color = "#000";
+            this.$refs.TimeWrap[a].style.border = "1px solid #bfcbd9";
+            this.$refs.TimeWrap[a].className = "selfSeverTimeSt";
+          }
+          this.dialogVisible = false;
+        },
+    /*更换时间相关操作结束 */                
   },
   mounted() {
     this.choose = this.dict.refund_type;
@@ -3327,7 +3346,7 @@ ul li {
   word-wrap: break-word;
 }
 .selfbeizhu1 {
-  width: 700px;
+  width: 660px;
   float: left;
   display: block;
   margin-left: 102px;
@@ -3487,7 +3506,7 @@ ul li {
   width: 100%;
   height: 120px;
   line-height: 120px;
-  margin-left: 82px;
+  padding-left: 82px;
 }
 .marginLeft82 {
   margin-left: 82px;

@@ -94,7 +94,7 @@
             <el-form-item label="" >
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
-                        <el-tooltip placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName">
+                        <el-tooltip class="clearfix" placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName">
                           <div>
                             <span v-if="item.techName.length != 9" class="techNameStyle1">{{item.techName}}</span> 
                             <span v-if="item.techName.length == 9" class="techNameStyle1">{{item.techName}}一</span>
@@ -888,6 +888,7 @@ export default {
 .techNameStyle1 {
   width: 125px;
   display:inline-block;
+  float:left;
   font-size:14px;
   overflow: hidden;
   text-overflow: ellipsis;
