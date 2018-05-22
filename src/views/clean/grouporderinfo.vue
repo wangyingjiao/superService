@@ -1811,8 +1811,7 @@ export default {
       this.Orderform1.severHour = "1";
       this.severHour = "1";      
       this.teachArr = [];       
-      if(status == 'add'){
-       
+      if(status == 'add'){      
       }else{       
         // var a
         // if(this.otherInfo.serviceFrequency =='week_one'){
@@ -1930,12 +1929,12 @@ export default {
         //更换下拉列表值      
           this.options3=[];
           for(var j=0;j<this.teachArr.length;j++){
-          for(let i=0;i<this.dateOptionsList.length;i++){           
-              if(this.dateOptionsList[i].label == this.teachArr[j].week){
-                this.options3=this.options3.concat(this.dateOptionsList[i].hoursList);//数组拼接
-              }
-          }
-        }      
+            for(let i=0;i<this.dateOptionsList.length;i++){           
+                if(this.dateOptionsList[i].label == this.teachArr[j].week){
+                  this.options3=this.options3.concat(this.dateOptionsList[i].hoursList);//数组拼接
+                }
+            }
+          }      
       if(val== true){
         //未选择服务频次
         if(this.Orderform1.testsele == ''){
@@ -1954,9 +1953,9 @@ export default {
           return false;
          }
 
-      }
- 
-    },                 
+      } 
+    },
+
     //预约操作
     yuyueClick() {
       this.yuyueformInline.Tech="";
