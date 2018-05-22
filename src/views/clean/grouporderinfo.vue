@@ -400,8 +400,8 @@
                         fixed="right"
                         >
                             <template scope="scope">                                  
-                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" @click="changeTime(scope.row)" value="更换时间">
-                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
+                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="otherInfo.orderStatus != 'cancel' && otherInfo.serviceStatus !='finish'" @click="changeTime(scope.row)" value="更换时间">
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="otherInfo.orderStatus != 'cancel' && otherInfo.serviceStatus !='finish'" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
                     </el-table>
@@ -685,7 +685,6 @@
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
                     <p >*  该订单的技师为：李四    15801655090</p>
-                    <!-- v-if="otherInfo.orderType == 'group_split_no'" -->
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" >             
@@ -2889,7 +2888,6 @@ export default {
             console.log(res.data.data)
             this.tableData2 = res.data.data;
             this.gudingFlag1 = true;
-
           } else {
               this.tableData2 = [];
           }
@@ -2897,13 +2895,10 @@ export default {
         .catch(res => {
 
         });      
-      
-
     },
     //更换技师（表格内）单选改变
     getCurrentRow3(value) {
       this.radio3 = value;
-      console.log(this.radio3,'techId')
       this.formInline.Tech = this.radio3;
     },
     //更换时间的保存
@@ -2936,7 +2931,7 @@ export default {
           //更换服务时间中'保存'
           if(this.otherInfo.orderType == 'group_split_yes'){
               var obj = {
-                masterId: this.orderId,
+                //masterId: this.orderId,
                 id:this.subOneId,
                 serviceTime: this.changTime + " " + time + ":00",
                 techId:this.formInline.Tech
@@ -2956,7 +2951,7 @@ export default {
                     this.radio3='';
                     this.tableData2=[];
                     this.gudingFlag1 = false;//技师信息展示开关
-
+                    this.getOrderAllInf(this.orderId);
                   } else {
                     this.timeObj = [];
                     this.timeSaveFlag = false; 
@@ -2970,9 +2965,10 @@ export default {
           }else{
               //不拆单的情况
               var obj = {
-                masterId: this.orderId,
+                //masterId: this.orderId,
                 id:this.subOneId,
-                serviceTime: this.changTime + " " + time + ":00"
+                serviceTime: this.changTime + " " + time + ":00",
+                techId:''
               };              
               updateOrderTimeSave(obj)
                 .then(res => {
@@ -2986,10 +2982,8 @@ export default {
                     this.dialogVisible = false;//弹窗关闭
                     this.timeObj = [];//时段对象
                     this.options2=[];
-                    this.radio3='';
-                    this.tableData2=[];
                     this.gudingFlag1 = false;//技师信息展示开关
-
+                    this.getOrderAllInf(this.orderId);
                   } else {
                     this.timeObj = [];
                     this.timeSaveFlag = false; 
@@ -3000,9 +2994,6 @@ export default {
                   this.timeObj = [];
                 });            
           }
-
-
-
         } else {
           var errArr = this.$refs[formName]._data.fields;
           var errMes = [];
