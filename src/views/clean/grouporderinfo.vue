@@ -2306,7 +2306,7 @@ export default {
                     if (res.data.code === 1) {
                       this.$message({
                         type: "success",
-                        message: "固定服务时间设置成功！"
+                        message: "更换固定服务时间成功！"
                       });                  
                       this.gehuantestFlag = false;
                       this.$refs[formName].resetFields();
@@ -2336,9 +2336,9 @@ export default {
             this.gehuantestFlag = true;              
             this.gehuanseverHour = this.yuyuegeshu;//预约次数的回显
             this.gehuanOrderform.severHour =this.yuyuegeshu ;       
-            var a
+            var a=null
             if(this.otherInfo.serviceFrequency =='week_one'){
-                a=0
+                 a=0
             }
             if(this.otherInfo.serviceFrequency =='two_week_one'){
                  a=2
