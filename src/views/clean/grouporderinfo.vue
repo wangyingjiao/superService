@@ -290,7 +290,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'"><span>总服务次数为：<span>{{otherInfo.bespeakTotal}}</span>次 已服务<span>{{otherInfo.bespeakNum}}</span>次 剩余<span>{{otherInfo.surplusNum}}</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
+                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'"><span>总服务次数为：<span>{{otherInfo.bespeakTotal}}</span>次 已服务<span>{{otherInfo.bespeakNum}}</span>次 剩余<span>{{otherInfo.surplusNum}}</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25" v-if="otherInfo.surplusNum != 0" @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -762,7 +762,7 @@
               <div>
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
-                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="999999" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></el-input-number>
+                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></el-input-number>
                     <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
@@ -2758,8 +2758,7 @@ export default {
               if (res.data.code === 1) {
                 var AllInfo = res.data.data;
                 this.otherInfo1 = AllInfo; //所有其他信息变量
-                this.RemarkInfFlag = true;
-                
+                this.RemarkInfFlag = true;                   
               }
             })
             .catch(res => {
