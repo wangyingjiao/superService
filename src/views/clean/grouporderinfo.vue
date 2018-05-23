@@ -802,7 +802,7 @@
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师:" prop="Tech" class="selfPaddingLeft20">             
-                  <div style="margin-top: -10px;">                
+                  <div style="margin-top: -10px;margin-right:30px;">                
                       <el-table
                         :data="yuyuetableData"
                         border                  
