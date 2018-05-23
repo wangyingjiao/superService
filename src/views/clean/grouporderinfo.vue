@@ -2125,7 +2125,17 @@ export default {
                       this.options3=this.options3.concat(this.dateOptionsList[i].hoursList);//数组拼接
                     }
                 }
-              }      
+              }
+              //排序
+              for(var i of this.options3){
+                  var str= i.key.replace(/-/g,'/'); 
+                  var date = new Date(str); 
+                   i.sortdate = date.getTime();
+              }
+              this.options3.sort(function(a,b){
+                return a.sortdate-b.sortdate;                
+              }) 
+ 
           if(val== true){
             //未选择服务频次
             if(this.Orderform1.testsele == ''){
