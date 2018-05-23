@@ -682,7 +682,7 @@
                         <div class="button-large-fourth" style="margin-left: 20px;margin-top: -22px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
-              <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
+              <div v-show="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
                     <p >*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
@@ -768,7 +768,7 @@
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue" style="margin-left:20px;">查询服务日期</div> 
                   </el-form-item>
-                  <div v-if="yuyueselectDateFlag" class="PositionRelative">
+                  <div v-show="yuyueselectDateFlag" class="PositionRelative">
                         <div class="exptyDiv"></div>
                         <el-form-item label="选择日期:" prop='Date' style="padding-top:20px;padding-left:20px;">
                                 <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:20px;width:82%"  @change='yuyuedateChange' placeholder="请选择">
@@ -793,7 +793,7 @@
                   </div>                   
 
               </div>
-              <div v-if="gudingFlag11" class="PositionRelative">
+              <div v-show="gudingFlag11" class="PositionRelative">
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top: 20px;padding-left:20px;">
                     <!-- <p>*  该订单的技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p> -->
@@ -1419,7 +1419,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align:center;">
               <button class="button-large"   @click="gehuansetOk('gehuanOrderform')">确定</button>
-              <button class="button-cancel" @click="gehuansetCancel('gehunOrderform')" >取 消</button>
+              <button class="button-cancel" @click="gehuansetCancel('gehuanOrderform')" >取 消</button>
             </div>
         </el-dialog>                
         <!--更换固定服务时间弹窗结束-->
@@ -2683,10 +2683,8 @@ export default {
           });
         },
         //预约取消
-        yuyuecancelTime(formName) {
-          this.yuyueselectDateFlag = false;
-          this.yuyueformInline.Tech='';
-          this.gudingFlag11 = false;
+        yuyuecancelTime(formName) {          
+          this.yuyueformInline.Tech='';          
           this.$refs[formName].resetFields();
           //样式复位
           for (var a = 0; a < this.yuyuetimeObj.length; a++) {
@@ -2695,7 +2693,9 @@ export default {
             this.$refs.yuyueTimeWrap[a].style.color = "#000";
             this.$refs.yuyueTimeWrap[a].style.border = "1px solid #bfcbd9";
             this.$refs.yuyueTimeWrap[a].className = "selfSeverTimeSt";
-          }
+          }          
+          this.yuyueselectDateFlag = false;
+          this.gudingFlag11 = false;
           this.yuyuedialogVisible = false;
         },
         //预约中日期变化时改变时间对象

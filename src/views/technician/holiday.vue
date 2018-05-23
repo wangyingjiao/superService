@@ -39,7 +39,7 @@
     </div>
     <!-- 搜索结束 -->
   <div class="app-container calendar-list-container">
-    <p class="bgWhite">
+    <div class="bgWhite">
     <el-table 
       :key='tableKey' 
       :data="list" 
@@ -50,20 +50,21 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="编号"  width="70">
+       <el-table-column align="center" label="编号"  width="70">
          <template scope="scope">
             {{scope.row.index + (pageNumber-1) * pageSize}}
         </template>
       </el-table-column>
+     
       <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
-            <template scope="rowObj">
-               <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
-                 <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.orgName}}</p>
-               </el-tooltip>
-               <el-tooltip placement="left" :disabled="rowObj.row.techStationName.length < 10" :content="rowObj.row.techStationName">
-                 <p :class="rowObj.row.techStationName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.techStationName}}</p>
-               </el-tooltip>
-            </template>
+          <template scope="rowObj">
+             <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+                <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'">{{rowObj.row.orgName}}</p>
+             </el-tooltip>
+             <el-tooltip placement="left" :disabled="rowObj.row.techStationName.length < 10" :content="rowObj.row.techStationName">
+                <p :class="rowObj.row.techStationName.length < 10 ? '' : 'overheidden'">{{rowObj.row.techStationName}}</p>
+             </el-tooltip>
+          </template>
       </el-table-column>
       
       <el-table-column  v-if="userType == 'org'" align="center" min-width="150" label="服务站">  
@@ -114,9 +115,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="right" label="操作" min-width="180" fixed="right">
+      <el-table-column align="center" label="操作" min-width="180" fixed="right">
         <template scope="scope">
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_review') >= 0 && scope.row.status == 'yes'" @click="handleCheck(scope.row)">审核</el-button>
+          <el-button disabled v-else @click="handleCheck(scope.row)">审核</el-button>
           <el-button class="ceshi3" v-if="btnShow.indexOf('holiday_delete') >= 0" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -131,6 +133,7 @@
     </div>
     
     <!-- 弹窗 -->
+    </el-dialog>
     <el-dialog 
       title="审核休假"
       :visible.sync="dialogForm" 
