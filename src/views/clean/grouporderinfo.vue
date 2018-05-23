@@ -105,7 +105,7 @@
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.orderType !='group_split_no'">
                       <span class="lineTitle">固定技师:</span>
                       <span  style="margin-left: 20px;" >
                         <span v-if="otherInfo.tech != undefined">{{otherInfo.tech.name}}</span>
@@ -123,7 +123,7 @@
                           <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
                           <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
                         </div>
-                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.copyserviceHour1}}</div>
+                        <div style="float:left;width:80px;margin-top: 20px;" v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'">每次{{otherInfo.copyserviceHour1}}</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
                           <li v-for="item in otherInfo.freList" :key="item.id">
                             <span>                              
@@ -518,7 +518,7 @@
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">地址:</span>
                           <span class="lineContent">
-                            <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
+                            <el-tooltip v-if="otherInfo1.shopAddr != undefined"  placement="left" :disabled="otherInfo1.shopAddr.length< 16" :content="otherInfo1.shopAddr">
                               <div class="selfToolTip">{{otherInfo1.shopAddr}}</div>
                             </el-tooltip>                                                
                           </span>
@@ -682,10 +682,10 @@
                         <div class="button-large-fourth" style="margin-left: 20px;margin-top: -22px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
-              <div v-show="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
+              <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
-                    <p >*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
+                    <p v-if="techObj != undefined">*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" >             
@@ -1161,7 +1161,7 @@
               <div  v-if="gudingFlag" class="PositionRelative">
                 <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
                 <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
-                    <p>* 更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p>
+                    <p v-if="otherInfo.tech != undefined">* 更换固定服务时间，可能会影响固定技师； <span  >目前该订单的固定技师为：<span >{{otherInfo.tech.name}}</span><span  style="padding-left:20px;">{{otherInfo.tech.phone}}</span></span></p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20">             
                   <div style="margin-top: -10px;">                
