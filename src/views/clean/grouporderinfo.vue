@@ -400,8 +400,8 @@
                         fixed="right"
                         >
                             <template scope="scope">                                  
-                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="otherInfo.orderStatus != 'cancel' && otherInfo.serviceStatus !='finish'" @click="changeTime(scope.row)" value="更换时间">
-                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="otherInfo.orderStatus != 'cancel' && otherInfo.serviceStatus !='finish'" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
+                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish'" @click="changeTime(scope.row)" value="更换时间">
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish'" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
                     </el-table>
@@ -583,7 +583,7 @@
               <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
                     <td width="72px" class="fontSize12"  align="center">
-                      <el-checkbox v-if="status == 'add'" v-model="item.techChecked" @change="ChangeTech(item)"></el-checkbox>
+                      <el-checkbox v-if="status == 'add'" v-model="item.techChecked" @change="ChangeTechLIne(item)"></el-checkbox>
                       <el-radio v-if="status == 'edit'" :label="item.techId" v-model="radio1" @change.native="getCurrentRow1(item.techId)">&nbsp;</el-radio>
                     </td>
                     <td  width="99px" class="height70" align="center"><img class="imgStyle" :src="imgSrc+item.headPic+picWidth60"/></td>
@@ -2843,7 +2843,7 @@ export default {
           }
         },
         //更换技师弹出层存储选择技师对象
-        ChangeTech(obj) {
+        ChangeTechLIne(obj) {
           if (obj.techChecked) {
             this.middleA.push(obj);
           } else {
@@ -2941,9 +2941,9 @@ export default {
             //已有订单增加 改派 技师列表    参数orderId，techName
             updateOrderTechTechList(obj)
               .then(res => {
-                if (res.data.code === 1) {              
-                  if (res.data.data != undefined) {
-                    this.dialogTableVisible = true;
+                if (res.data.code === 1) { 
+                  this.dialogTableVisible = true;             
+                  if (res.data.data != undefined) {                  
                     this.listTech = res.data.data;
                   }
                 }
@@ -2959,9 +2959,9 @@ export default {
             //已有订单增加 改派 技师列表    参数orderId，techName
             updateOrderTechTechList(obj)
               .then(res => {
-                if (res.data.code === 1) {              
+                if (res.data.code === 1) { 
+                  this.dialogTableVisible = true;                               
                   if (res.data.data != undefined) {
-                    this.dialogTableVisible = true;
                     this.listTech = res.data.data;
                   }
                 }
