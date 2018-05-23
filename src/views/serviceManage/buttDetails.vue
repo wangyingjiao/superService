@@ -9,22 +9,29 @@
         <!-- tabs切换完成 -->
         <!-- 搜索 -->
             <div class="searchBox">
-                <orgSearch v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
-                <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
-                    <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
-                    </el-option>
-                </el-select>
-                <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="所属类型" @change="typeChange">
-                    <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
-                    </el-option>
-                </el-select>
-                <el-select class="butt-search" filterable clearable v-model="search.sortId" placeholder="所属分类">
-                    <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
-                    </el-option>
-                </el-select>
-                <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入对接商品名称"></el-input>
-                <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
-                <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
+                <div>
+                  <orgSearch class="butt-search" v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
+                  <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
+                      <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
+                      </el-option>
+                  </el-select>
+                  <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="所属类型" @change="typeChange">
+                      <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
+                      </el-option>
+                  </el-select>
+                  <el-select class="butt-search" filterable clearable v-model="search.sortId" placeholder="所属分类">
+                      <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
+                      </el-option>
+                  </el-select>
+                  <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入对接商品名称"></el-input>
+                  <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
+                </div>
+                <div style="margin-top:10px">
+                   <el-select clearable filterable class="butt-search"  v-model="search.goodsType" placeholder="商品类型">
+                        <el-option v-for="(item,key) in goodsTypeList" :key="key" :label="item" :value="key"></el-option>
+                    </el-select>
+                  <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
+                </div>
             </div>
         <!-- 搜索 完成 -->
         </div>
@@ -61,6 +68,11 @@
                                 <span> {{scope.row.sortName}}</span>
                               </el-tooltip>
                             </template>
+                        </el-table-column>
+                        <el-table-column prop="goodsType" label="商品类型" align="center" min-width="100">
+                          <template scope="scope">
+                              <span>{{scope.row.goodsType=='combined'?'组合':'单一'}}</span>
+                          </template>
                         </el-table-column>
                         <el-table-column prop="univalence" label="价格/单位" align="center" min-width="120">
                             <template scope="scope">
@@ -108,7 +120,7 @@
 
 let verificationJointDate = function(row){
   return new Promise((res,rej)=>{
-    verificationJoint({combinationCommodity:row})
+    verificationJoint(row)
       .then(data=>{
         res(data)
       })
@@ -134,7 +146,7 @@ import { listDataAll } from "@/api/tech";
 export default {
   data() {
     return {
-      aaa:'',
+      goodsTypeList: {},
       orgList:[],
       activeName: "yesDocking", //tab切换
       listLoading: false,
@@ -168,7 +180,8 @@ export default {
         majorSort: "",
         sortId: "",
         goodsName: "",
-        selfCode: ""
+        selfCode: "",
+        goodsType:''
       }
     };
   },
@@ -404,8 +417,8 @@ export default {
       }
     },
     //未对接列表复选框 接口
-    noCheckbox(arr,callback){
-      this.$refs.multipleTable.toggleRowSelection(arr[0],false);
+    noCheckbox(arr,obj,callback){
+      this.$refs.multipleTable.toggleRowSelection(obj[0],false);
       verificationJointDate(arr).then(({data})=>{
               if(data.code == 1){
                 if('data' in data){
@@ -415,8 +428,10 @@ export default {
                   });
                   if(callback) callback(false)
                 }else{
-                  this.$refs.multipleTable.toggleRowSelection(arr[0],true);
+                  this.$refs.multipleTable.toggleRowSelection(obj[0],true);
                 }
+              }else{
+                if(callback) callback(false)
               }
             }).catch(error=>{
               console.log(error,"error---")
@@ -436,13 +451,13 @@ export default {
               row['checked'] = false
             }else{
               row['checked'] = true
-              this.noCheckbox(obj,(bl)=>{    //商品不可以选中，回调，下次点击再次触发
+              this.noCheckbox(obj,this.selectableArr,(bl)=>{    //商品不可以选中，回调，下次点击再次触发
                 row['checked'] = bl
               })
             }
           }else{    //判断 - 第一次没有'checked'字段
             row['checked'] = true
-            this.noCheckbox(obj,(bl)=>{
+            this.noCheckbox(obj,this.selectableArr,(bl)=>{
               row['checked'] = bl
             })
           }
@@ -585,6 +600,7 @@ export default {
   mounted() {
     //所属类型select
     this.thisType = dict.ser_sort;
+    this.goodsTypeList = dict.goods_type;
     delete this.thisType.all;
    
     //获取E店数据请求table列表
@@ -620,7 +636,7 @@ export default {
   margin-left: 1%;
 }
 .buttDetails .butt-search {
-  width: 13%;
+  width: 15%;
   margin-left: 1%;
 }
 .searchBox {

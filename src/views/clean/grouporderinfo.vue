@@ -684,11 +684,13 @@
               </div>
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
                 <div class="exptyDiv"></div>
-                <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
+                          
+                <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" style="padding-top:20px;" >   
+                   <div style="font-size:12px;padding-left:40px;">
                     <p v-if="techObj != undefined">*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
+                    
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
-                </div>               
-                <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" >             
+                </div>              
                   <div style="margin-top: -10px;padding-left:20px;">                
                       <el-table
                         :data="tableData2"
@@ -800,7 +802,7 @@
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师:" prop="Tech" class="selfPaddingLeft20">             
-                  <div style="margin-top: -10px;">                
+                  <div style="margin-top: -10px;margin-right:30px;">                
                       <el-table
                         :data="yuyuetableData"
                         border                  

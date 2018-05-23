@@ -22,8 +22,8 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreate('basic')">新增单一商品</button>
-     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreateCom('basic')">新增组合商品</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreate('basic')">新增单一项目</button>
+     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreateCom('basic')">新增组合项目</button>
     <span v-if="techUserType=='sys'">
       <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1"  @click="buttDetails">对接详情</button>
     </span>
@@ -289,100 +289,11 @@
                   <!-- 组合商品信息 -->
                     <div style="margin:0 -20px" class="combinationType-info">
                         <h3 class="tit">商品信息</h3><hr/>
-                        <div v-if="false">
-                            <div style="padding:20px 20px">
-                                <el-form-item label="服务类型：" prop="type" class="combination-name">
-                                    <div :class="combinationType==1?'type-border-alive':'type-border'" @click="typeAlive(1)">
-                                        <i :class="combinationType==1?'type-alive':'type-single'"></i>
-                                        <p>单次服务</p>
-                                    </div>
-                                    <div style="margin-left:50px" :class="combinationType==2?'type-border-alive':'type-border'" @click="typeAlive(2)">
-                                        <i :class="combinationType==2?'type-alive-com':'type-com'"></i>
-                                        <p>多次服务</p>
-                                    </div>
-                                </el-form-item>
-                            </div>
-                            <div style="padding:0 20px;">
-                                <el-form-item label="商品信息：" prop="commodityInfo" class="combination-name">
-                                    <input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
-                                </el-form-item>
-                            </div>
-                            <div style="padding:0 20px" v-if="basicForm.combinationCommodities == undefined ||basicForm.combinationCommodities.length>0">
-                                <el-table :data="basicForm.combinationCommodities" border style="width: 100%;">
-                                    <el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
-                                    <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
-                                    <el-table-column prop="company" align="center" label="原价/单位">
-                                        <template scope="scope">
-                                            <span>{{'¥'+scope.row.unit+' / '+scope.row.price}}</span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="name" align="center" label="组合商品售价">
-                                        <template scope="scope">
-                                          <span><el-input v-model="scope.row.combinationPrice"></el-input></span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="name" align="center" label="数量">
-                                        <template scope="scope">
-                                            <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="name" align="center" label="操作">
-                                        <template scope="scope">
-                                            <span style="color:#FF7676;" @click="deleteInformation(scope.row)">删除</span>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                            </div>
-                            <div style="padding:20px">
-                              <!-- 组合商品价格：{{informationCalculation}} -->
-                                <el-form-item label="组合商品名称：" class="combination-name">
-                                    <el-input
-                                      style="width:60%"
-                                      v-model="basicForm.combinationName"
-                                      placeholder="请输入1-24位的组合商品名称"></el-input>
-                                </el-form-item>
-                                <el-form-item label="组合商品价格：" class="combination-name">
-                                    <span v-if="handleCreateFlag=='combination'">{{'¥ '+informationCalculation}}</span>
-                                </el-form-item>
-                                <el-form-item label="商品单位：" class="combination-name">
-                                    <el-input
-                                      style="width:60%"
-                                      v-model="basicForm.combinationName"
-                                      placeholder="请输入1-6位的组合商品单位"></el-input>
-                                </el-form-item>
-                                <div>
-                                    <el-form-item label="折算时长：" class="combination-name">
-                                        <el-input
-                                          style="width:60%"
-                                          v-model="basicForm.combinationName"
-                                          placeholder="请输入2-10位的项目名称"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="起步人数：" class="combination-name">
-                                    <el-input
-                                          style="width:60%"
-                                          v-model="basicForm.combinationName"
-                                          placeholder="请输入2-10位的项目名称"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="封顶人数：" class="combination-name">
-                                    <el-input
-                                          style="width:60%"
-                                          v-model="basicForm.combinationName"
-                                          placeholder="请输入2-10位的项目名称"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="起够数量：" class="combination-name">
-                                    <el-input
-                                          style="width:60%"
-                                          v-model="basicForm.combinationName"
-                                          placeholder="请输入2-10位的项目名称"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                   <!-- 组合商品信息 完成-->
                </el-form>
     <!-- 商品信息表格 -->
-                <el-table v-if="true" :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
+                <el-table :data="basicForm.commoditys" border style="width: 100%"  v-show="basicForm.commoditys.length>0">
                   <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
                   <el-table-column prop="unit" align="center" label="商品单位"> </el-table-column>
                   <el-table-column prop="type" align="center" label="计量方式"> 
@@ -425,7 +336,7 @@
                   </el-table-column>
                 </el-table>
           <!-- 商品信息表格 。。。。。。。。完成 -->
-              <div class="add_Btn" @click="addCommodity" v-if="true">
+              <div class="add_Btn" @click="addCommodity">
                 <span class="fl btn_Span1">+</span>
                 <span class="fl btn_Span2">添加商品</span>
               </div>
@@ -613,7 +524,7 @@
               </div>
        
         <div slot="footer" class="dialog-footer">
-          <input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
+          <input type="button" class="button-cancel" @click="systemClose" value="关 闭">
         </div>
       </el-dialog>
     <!-- 系统标签结束 -->
@@ -733,53 +644,6 @@
         </div>
       </el-dialog>
     <!-- 对接E店完成 -->
-
-    <!-- 组合商品信息——选择商品 -->
-      <el-dialog title="选择商品" :close-on-click-modal="false" :visible.sync="combinationTypeDialog" class="dockingDialog">
-          <div>
-              <el-input class="commodity-search" v-model="orgStatus" placeholder="请输入内容"></el-input>
-              <el-input class="commodity-search" v-model="orgStatus" placeholder="请输入内容"></el-input>
-              <input type="button" class="button-large btn-color" style="float:right" value="查 询">
-          </div>
-          <div style="padding-top:25px">
-              <p>已选择商品：</p>
-              <transition name="el-zoom-in-bottom">
-                <div class="labelList label-current" v-if="commodityArr != undefined && commodityArr.length>0">
-                  <div v-for="(item,index) in commodityArr" :key="index" class="sys-label sys-label-dialog">
-                      <el-tooltip placement="left" :disabled="item.name.length <=5" :content="item.name">
-                        <div>
-                            <span class="sys-text">{{item.name}}</span>
-                            <span class="sys-close" @click="commodityDelete(item)"></span>
-                        </div>
-                      </el-tooltip>
-                  </div>
-                </div>
-              </transition>
-          </div>
-          <div>
-              <el-table height="360" :data="commodityDate" border style="width: 100%">
-                  <el-table-column prop="name" align="center" label="选择">
-                      <template scope="scope">
-                          <el-checkbox v-if="combinationType==1" v-model="scope.row.check" @change="selectCommodity(scope.row)"></el-checkbox>
-                          <el-radio v-else class="radio" v-model="radio" :label="scope.row.id" @change.native="selectCommoditySingle(scope.row)">&nbsp;</el-radio>
-                      </template>
-                  </el-table-column>
-                  <el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
-                  <el-table-column prop="name" align="center" label="商品名称"> </el-table-column>
-                  <el-table-column prop="unit" align="center" label="单价/单位">
-                      <template scope="scope">
-                          <span>{{'¥'+scope.row.unit+' / '+scope.row.price}}</span>
-                      </template>
-                  </el-table-column>
-              </el-table>
-          </div>
-          <div slot="footer" class="dialog-footer" style="text-align:center" >
-                <input type="button" class="button-large btn-color" @click="commodityPreservation" value="保 存">
-                <input type="button" class="button-cancel btn-color-cancel" @click="ommodityCancel" value="取 消">
-          </div>
-      </el-dialog>
-    <!-- 组合商品信息——选择商品 完成 -->
-
   </div>
 </div>
 </div>
@@ -1380,24 +1244,6 @@ export default {
     this.sign; //获取签名
   },
   computed: {
-    informationCalculation() {
-      let num = this.basicForm.combinationCommodities,
-        i,
-        numDate,
-        bate = 0,
-        list;
-      if (this.basicForm.combinationCommodities.length > 0) {
-        let len = this.basicForm.combinationCommodities.length;
-        for (i = len; i--; ) {
-          numDate = num[i];
-          list = numDate.combinationNum * numDate.combinationPrice;
-          bate += list;
-        }
-        return bate;
-      } else {
-        return "0";
-      }
-    },
     techUserType() {
       return userType();
     },
@@ -1409,83 +1255,9 @@ export default {
     }
   },
   methods: {
-    //组合商品信息--选择商品--保存
-    commodityPreservation() {
-      let { commodityArr, basicForm } = this,
-        i,
-        len = commodityArr.length,
-        arr = [].concat(commodityArr);
-
-      basicForm.combinationCommodities = commodityArr;
-      this.combinationTypeDialog = false;
-    },
-    //组合商品信息--选择商品--单选
-    selectCommoditySingle(item) {
-      this.$set(this.commodityArr, 0, item);
-      console.log(this.radio, "radio-----");
-    },
-    //组合商品信息--选择商品--删除商品
-    commodityDelete(item) {
-      let { commodityArr, commodityDate, combinationType } = this,
-        len = commodityArr.length,
-        lon = commodityDate.length,
-        i,
-        j;
-      //删除商品的数组
-      for (i = len; i--; ) {
-        if (commodityArr[i].name == item.name) {
-          commodityArr.remove(commodityArr[i]);
-          break;
-        }
-      }
-      if (combinationType == 1) {
-        //商品列表的checkbox修改
-        for (j = lon; j--; ) {
-          if (commodityDate[j].name == item.name) {
-            commodityDate[j].check = false;
-            break;
-          }
-        }
-      } else {
-        this.radio = "";
-      }
-    },
-    //组合商品信息--选择商品--复选框
-    selectCommodity(item) {
-      if (item.check) {
-        this.commodityArr.push(item);
-      } else {
-        let i,
-          len = this.commodityArr.length;
-        for (i = len; i--; ) {
-          if (this.commodityArr[i].id == item.id) {
-            this.commodityArr.remove(this.commodityArr[i]);
-          }
-        }
-      }
-      console.log(this.commodityArr, "this.commodityArr-------");
-    },
-    ommodityCancel() {
-      this.combinationTypeDialog = false;
-    },
-    choiceCommodity() {
-      let i,
-        len = commodityDate.length;
-      for (i = len; i--; ) {
-        commodityDate[i].combinationPrice = "0";
-        commodityDate[i].combinationNum = "1";
-      }
-      this.commodityDate = commodityDate;
-      this.combinationTypeDialog = true;
-    },
-    deleteInformation(item) {
-      this.commodityDelete(item);
-    },
-    //服务分类
-    typeAlive(num) {
-      this.combinationType = num;
-      this.commodityArr = [];
-      this.basicForm.combinationCommodities = [];
+    systemClose(){
+      this.SystemLabel = false
+      this.$refs.basic.validateField("sysTags")
     },
     orgSearch(item) {
       this.search.orgId = item;
@@ -1565,6 +1337,7 @@ export default {
     },
     imgClick(item) {
       this.picFile = item;
+      this.$refs.basic.validateField('picture')
       //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
       //上传图片成功触发表单验证
       // this.$refs['basic'].validate(valid => {})

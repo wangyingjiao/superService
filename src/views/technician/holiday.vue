@@ -133,7 +133,7 @@
     </div>
     
     <!-- 弹窗 -->
-    </el-dialog>
+    <reviewHoliday></reviewHoliday>
     <el-dialog 
       title="审核休假"
       :visible.sync="dialogForm" 
@@ -193,12 +193,16 @@ import {
 } from "@/api/tech";
 import { getMenudata, getSList, getStation, getFuwu } from "@/api/staff"; //接口调用
 import util from "@/utils/date";
+import reviewHoliday from "../technician/reviewHoliday.vue";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
   name: "holiday",
   directives: {
     waves
+  },
+  components: {
+    reviewHoliday
   },
   data() {
     return {
@@ -267,6 +271,7 @@ export default {
     };
   },
   created() {
+    console.log(11111111111111)
     this.activeName = "all";
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));
