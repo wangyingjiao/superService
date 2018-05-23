@@ -1037,7 +1037,8 @@ export default {
   border: 1px solid #ccc;
   border-top: none;
   margin-top: -23.5px;
-  padding-top: 23px;
+  padding-top: 10px;
+  padding-bottom:10px;
 }
 .tabWrap {
   width: 145px;
@@ -1046,7 +1047,7 @@ export default {
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:-9px 0 3px 6px;
+  margin:4px 0 3px 6px;
   background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
