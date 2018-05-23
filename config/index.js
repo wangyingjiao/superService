@@ -50,13 +50,13 @@ module.exports = {
       //     '^/apiservice': ''
       //   }
       // }
-      '/apiservice': {
-        target: 'http://10.16.70.62:8800/',
-        changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
-        pathRewrite: {
-          '^/apiservice': ''
-        }
-      }
+      // '/apiservice': {
+      //   target: 'http://10.16.70.62:8800/',
+      //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
+      //   pathRewrite: {
+      //     '^/apiservice': ''
+      //   }
+      // }
       // '/apiservice': {
       //   target: 'http://10.16.70.63:8800/',
       //   changeOrigin: true, // 如果接口跨域，需要进行这个参数配置
