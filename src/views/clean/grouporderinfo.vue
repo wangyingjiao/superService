@@ -373,7 +373,7 @@
                       <el-table-column
                         prop="orderTime"
                         align="center"
-                        min-width='160'
+                       min-width='180'
                         label="下单时间">
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
@@ -383,7 +383,7 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        width="200"
+                        min-width="200"
                         :render-header="renderHeader1"
                         fixed="right"
                         >                              
@@ -395,7 +395,7 @@
                       </el-table-column>                                        
                       <el-table-column
                         align="center"
-                        width="200"
+                       min-width="200"
                         :render-header="renderHeader2"
                         fixed="right"
                         >
@@ -4130,6 +4130,7 @@ ul li {
   padding-bottom: 20px;
   margin-top: -20px;
 }
+
 .servicerFont {
   cursor: pointer;
   color: #4c70e8;
