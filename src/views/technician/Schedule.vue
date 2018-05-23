@@ -75,7 +75,7 @@
 							</el-table-column>
 						<!-- 技师结束 -->
 						<!-- 7天时间 -->
-							<el-table-column min-width="120" v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate+'('+weekNum(item.weekNum)+')'" align="center" className="work">
+							<el-table-column min-width="145" v-for="(item,index) in tableData[0].scheduleDateInfos" :key="index" :label="item.sevenDate+'('+weekNum(item.weekNum)+')'" align="center" className="work">
 								<template scope="scope">
 									<!-- 
 										1：有工资时间

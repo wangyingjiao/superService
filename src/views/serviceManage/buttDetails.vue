@@ -108,7 +108,7 @@
 
 let verificationJointDate = function(row){
   return new Promise((res,rej)=>{
-    verificationJoint({serItemCommodityEshops:row})
+    verificationJoint({combinationCommodity:row})
       .then(data=>{
         res(data)
       })
@@ -379,7 +379,10 @@ export default {
         if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
           this.selectCheckboxWholeFlag = false  
           this.selectableArr = selection
-          verificationJointDate(this.selectableArr)
+          let obj = {}
+          obj.serItemCommodityEshops = this.selectableArr
+          obj.eshopCode = this.search.eshopCode
+          verificationJointDate(obj)
             .then(({data})=>{
                if(data.code == 1){
                   if('data' in data){
@@ -425,18 +428,21 @@ export default {
         if(row.goodsType != "single"){    //判断  - 是否是组合商品，不是组合商品不需要请求
           this.selectableArr = []
           this.selectableArr[0] = row
+          let obj ={}
+          obj.serItemCommodityEshops = this.selectableArr
+          obj.eshopCode = this.search.eshopCode
           if('checked' in row){   //判断 - 选中触发接口，取消不触发
             if(row.checked){
               row['checked'] = false
             }else{
               row['checked'] = true
-              this.noCheckbox(this.selectableArr,(bl)=>{    //商品不可以选中，回调，下次点击再次触发
+              this.noCheckbox(obj,(bl)=>{    //商品不可以选中，回调，下次点击再次触发
                 row['checked'] = bl
               })
             }
           }else{    //判断 - 第一次没有'checked'字段
             row['checked'] = true
-            this.noCheckbox(this.selectableArr,(bl)=>{
+            this.noCheckbox(obj,(bl)=>{
               row['checked'] = bl
             })
           }
