@@ -85,10 +85,10 @@
 						<div style="margin:0 -20px" class="combinationType-info">
 							<h3 class="tit">{{handleCreateFlag=='single'?'商品信息':'组合商品信息'}}</h3><hr/>
 							<div v-if="handleCreateFlag!='single'">
-								<div style="padding:20px 20px">
+								<div style="padding:20px 20px" class="com-type">
 									<el-form-item label="服务类型：" prop="serItemCommodity.serviceType" class="combination-name">
 										<div :class="basicForm.serItemCommodity.serviceType=='single'?'type-border-alive':'type-border'" @click="typeAlive('single')">
-											<i :class="basicForm.serItemCommodity.serviceType=='single'?'type-alive':'type-single'"></i>
+											<i :class="basicForm.serItemCommodity.serviceType=='single'?'type-alive-com':'type-com'"></i>
 											<p>单次服务</p>
 										</div>
 										<div style="margin-left:50px" :class="basicForm.serItemCommodity.serviceType=='combined'?'type-border-alive':'type-border'" @click="typeAlive('combined')">
@@ -99,7 +99,7 @@
 								</div>
 								<div style="padding:0 20px;">
 									<el-form-item label="商品信息：" prop="serItemCommodity.combinationCommodities" class="combination-name">
-										<input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodityAsync">
+										<input style="margin-left:0" type="button" class="button-cancel btn-color-cancel" value="选择商品" @click="choiceCommodity">
 									</el-form-item>
 								</div>
 								<div class="combinationTable" style="padding:0 20px" v-if="basicForm.serItemCommodity.combinationCommodities == undefined ||basicForm.serItemCommodity.combinationCommodities.length>0">
@@ -120,10 +120,11 @@
 										<el-table-column prop="name" align="center" label="组合商品售价" min-width="125">
 											<template scope="scope">
 												<!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
-                      <div class="input-price">
-                          <i class="iconfont">&#xe61c;</i>
-                          <input class="price-com" type="text" v-model.trim="scope.row.combinationPrice" :maxlength="inputMaxL"  @input="inputMaxL= /^\d+\.?\d{0,1}$/.test(scope.row.combinationPrice) ? null : scope.row.combinationPrice.length - 1" />
-                      </div>
+												<div class="input-price">
+													<i class="iconfont">&#xe61c;</i>
+													<input class="price-com" type="text"  :value="scope.row.combinationPrice" @input="e => scope.row.combinationPrice = inputPrice(e)"/>
+													<!-- <input class="price-com" type="text" v-model.trim="scope.row.combinationPrice" :maxlength="inputMaxL"  @input="inputMaxL= /^\d+\.?\d{0,1}$/.test(scope.row.combinationPrice) ? null : scope.row.combinationPrice.length - 1" /> -->
+												</div>
 											</template>
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="数量" min-width="140">
@@ -161,9 +162,9 @@
 											</el-input>
 										</el-form-item>
 										<el-form-item v-else label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
-                      <span v-if="dialogStatus != 'update'">{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span>
-                      <span v-else>{{basicForm.serItemCommodity.unit ? basicForm.serItemCommodity.convertHours+'小时/'+basicForm.serItemCommodity.unit : basicForm.serItemCommodity.convertHours+'小时/单位'}}</span>
-                    </el-form-item>
+											<span v-if="dialogStatus != 'update'">{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span>
+											<span v-else>{{basicForm.serItemCommodity.unit ? basicForm.serItemCommodity.convertHours+'小时/'+basicForm.serItemCommodity.unit : basicForm.serItemCommodity.convertHours+'小时/单位'}}</span>
+										</el-form-item>
 										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
 											<el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
 											<el-input
@@ -349,21 +350,21 @@
 			</transition>
 		</div>
 		<div>
-			<el-table height="360" v-loading.body="loadingCom" :data="commodityDate" border style="width: 100%">
+			<el-table v-loading.body="loadingCom" :data="commodityDate" border style="width: 100%" :height="comDigHeight">
 				<el-table-column prop="name" align="center" label="选择">
 					<template scope="scope">
 						<el-checkbox v-if="basicForm.serItemCommodity.serviceType=='single'" v-model="scope.row.check" @change="selectCommodity(scope.row)"></el-checkbox>
 						<el-radio v-else class="radio" v-model="radio" :label="scope.row.goodsId" @change.native="selectCommoditySingle(scope.row)">&nbsp;</el-radio>
 					</template>
 				</el-table-column>
-				<el-table-column prop="itemName" align="center" label="项目名称"> </el-table-column>
-				<el-table-column prop="goodsName" align="center" label="商品名称"> </el-table-column>
-				<el-table-column prop="convertHours" align="center" :min-width="90" label="折算时长/单位">
+				<el-table-column prop="itemName" align="center" label="项目名称" min-width="100"> </el-table-column>
+				<el-table-column prop="goodsName" align="center" label="商品名称" min-width="100"> </el-table-column>
+				<el-table-column prop="convertHours" align="center" min-width="130" label="折算时长/单位">
 					<template scope="scope">
 						<span>{{scope.row.convertHours+'小时'}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="doublePrice" align="center" label="单价/单位">
+				<el-table-column prop="doublePrice" align="center" min-width="100" label="单价/单位">
 					<template scope="scope">
 						<span>{{'¥'+scope.row.doublePrice}}</span>
 					</template>
@@ -687,6 +688,7 @@ export default {
         }
     }
     return {
+	  comDigHeight:'360',	
       goodNameSearch:'',
       itemNameSearch:'',
       commodityArr:[],
@@ -979,6 +981,18 @@ export default {
     }
   },
   methods: {
+	//组合商品售价限制
+	inputPrice(e){
+		let obj = e.target
+		obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符  
+		obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的  
+		obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$","."); 
+		obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数  
+		if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
+			obj.value= parseFloat(obj.value); 
+		} 
+		return obj.value
+	},
     //编辑
     combinationEdit(id){
         this.dialogStatus = "update";
@@ -1064,9 +1078,10 @@ export default {
       }
     },
     ommodityCancel(){
-      this.combinationTypeDialog = false;
-      this.itemNameSearch = ''
-      this.goodNameSearch = ''
+		this.commodityArr = [].concat(this.basicForm.serItemCommodity.combinationCommodities)
+		this.combinationTypeDialog = false;
+		this.itemNameSearch = ''
+		this.goodNameSearch = ''
     },
     //商品table
     listDataBySortIdData(obj){
@@ -1075,11 +1090,12 @@ export default {
     //搜索
     choiceCommoditySearch(){
       // console.log(this.itemName,this.goodName,"this.itemName,this.goodName")
-      this.choiceCommodityAsync(true)
+      this.choiceCommodity(true)
     },
     //选择商品按钮
     choiceCommodity(bl){
-        let obj = {}
+		let obj = {}
+		this.commodityDate = []
         obj.sortId = this.basicForm.sortId;
         if(this.techUserType == 'sys'){
           obj.orgId = this.basicForm.orgId;
@@ -1099,50 +1115,45 @@ export default {
             background: "rgba(0, 0, 0, 0.7)",
             target: document.querySelector(".comtabBox ")
           });
-        }
+		}
         this.loadingCom = true;
-        return new Promise((res,rej)=>{
-          listDataBySortId(obj).then(({data:{code,data}})=>{
-              if(code == 1){
-                if(data != undefined){
-                  let i , j , lon = this.commodityArr.length;
-                  //判读：复选框选中
-                  console.log(lon,"this.commodityArr------______")
-                    for( i = data.length ; i -- ;){
-                      data[i].combinationPrice = '0'
-                      data[i].combinationNum = '1'
-                      if(!lon) this.radio = ''
-                      for( j = lon ; j-- ;){
-                        if(this.commodityArr[j].goodsId == data[i].goodsId){
-                          if( this.basicForm.serItemCommodity.serviceType == 'single'){
-                            data[i].check = true
-                          }else{
-                            this.radio = data[i].goodsId
-                          }
-                        }
-                      }
-                    }
-                  this.commodityDate = data
-                }else{
-                  this.commodityDate = []
-                  this.commodityArr = []
-                }
-                res(true)
-              }else{
-                this.commodityDate = []
-                this.commodityArr = []
-                res(false)
-              }
-              if(bl==true){
-              }else{comloading.close()};
-              this.loadingCom = false;
-          }).catch(error=>{
-              if(bl==true){
-              }else{comloading.close()};
-              this.loadingCom = false;
-              rej(error)
-          })
-        })
+		listDataBySortId(obj).then(({data:{code,data}})=>{
+			if(code == 1){
+				if(data != undefined){
+					let i , j , lon = this.commodityArr.length;
+					//判读：复选框选中
+					for( i = data.length ; i -- ;){
+						data[i].combinationPrice = '0'
+						data[i].combinationNum = '1'
+						if(!lon) this.radio = ''
+						for( j = lon ; j-- ;){
+							if(this.commodityArr[j].goodsId == data[i].goodsId){
+								if( this.basicForm.serItemCommodity.serviceType == 'single'){
+								data[i].check = true
+								}else{
+								this.radio = data[i].goodsId
+								}
+							}
+						}
+					}
+					this.commodityDate = data
+				}else{
+					this.commodityDate = []
+					this.commodityArr = []
+				}
+				this.combinationTypeDialog = true
+			}else{
+				this.commodityDate = []
+				this.commodityArr = []
+			}
+			if(bl==true){
+			}else{comloading.close()};
+			this.loadingCom = false;
+		}).catch(error=>{
+			if(bl==true){
+			}else{comloading.close()};
+			this.loadingCom = false;
+		})
     },
     choiceCommodityAsync(bl){
       let dag = async(bl)=>{
@@ -2084,8 +2095,11 @@ export default {
       outline: 0;
       transition: border-color .2s cubic-bezier(.645 .045,.355,1);
     }
-    .com-dialog table{
+    /* .com-dialog table{
       width: 100% !important;
-    }
+	} */
+	.com-dialog .el-dialog--small{
+		width: 60%;
+	}
 </style>
 

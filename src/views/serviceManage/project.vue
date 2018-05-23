@@ -22,13 +22,13 @@
   </div>
   <div class="app-container calendar-list-container">
     <div class="bgWhite">
-    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreate('basic')">新增单一商品</button>
-     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1" style="width:80px" @click="handleCreateCom('basic')">新增组合商品</button>
+    <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreate('basic')">新增单一商品</button>
+     <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_insert')>-1"  @click="handleCreateCom('basic')">新增组合商品</button>
     <span v-if="techUserType=='sys'">
-      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1" style="width:80px" @click="buttDetails">对接详情</button>
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1"  @click="buttDetails">对接详情</button>
     </span>
     <span v-else>
-      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'" style="width:80px" @click="buttDetails">对接详情</button>
+      <button class="button-small btn_pad btn-color" v-if="btnShow.indexOf('project_send')>-1 && orgStatus=='yes'"  @click="buttDetails">对接详情</button>
     </span>
     <!-- btnShow.indexOf('project_send')>-1 && -->
     <el-table 
@@ -297,7 +297,7 @@
                                         <p>单次服务</p>
                                     </div>
                                     <div style="margin-left:50px" :class="combinationType==2?'type-border-alive':'type-border'" @click="typeAlive(2)">
-                                        <i :class="combinationType==2?'type-alive':'type-single'"></i>
+                                        <i :class="combinationType==2?'type-alive-com':'type-com'"></i>
                                         <p>多次服务</p>
                                     </div>
                                 </el-form-item>

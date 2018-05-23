@@ -35,19 +35,33 @@
     display: inline-block;
     line-height: 1;
   }
-  .type-border .type-single{
+  .type-border .type-single,.com-type .type-com{
     display: inline-block;
     background: url("../../../static/icon/u11590.png") no-repeat;
     background-size: 100%;
     width: 40px;
     height: 40px;
   }
-  .type-border-alive .type-alive{
+  .com-type .type-com{
+    background: url("../../../static/icon/servicecom.png") no-repeat;
+    display: inline-block;
+    background-size: 100%;
+    width: 40px;
+    height: 40px;
+  }
+  .type-border-alive .type-alive,.com-type .type-alive-com{
     display: inline-block;
     background: url("../../../static/icon/u11601.png") no-repeat;
     background-size: 100%;
     width: 40px;
     height: 40px;
+  }
+  .com-type .type-alive-com{
+    background: url("../../../static/icon/servicecomalive.png") no-repeat;
+    background-size: 100%;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
   }
   .labelSystem{
     display: flex;
@@ -354,12 +368,23 @@
   .prompt-img {
     margin: 0 0 10px 90px;
   }
+
+  #project .btn_pad{
+    width: auto;
+  }
+
+  #project .button-small{
+    width: auto;
+    padding: 0 10px;
+  }
   
   .bgWhite .el-switch.is-checked .el-switch__core {
     background-color: #4c70e8;
     border: 1px solid #4c70e8;
   }
-  
+  .bgWhite .filter-container{
+    border-bottom: none;
+  }
   .tabRight {
     width: 85%;
     height: 100%;
