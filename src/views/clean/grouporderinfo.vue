@@ -373,11 +373,7 @@
                       <el-table-column
                         prop="orderTime"
                         align="center"
-<<<<<<< HEAD
                        min-width='180'
-=======
-                        min-width='160'
->>>>>>> 4569265f808ed8479198fdbe8b9b0e65af94a722
                         label="下单时间">
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
