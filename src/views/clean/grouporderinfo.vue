@@ -105,7 +105,7 @@
                       <span class="lineTitle">建议服务时长:</span>
                       <span  class="lineContent">{{otherInfo.serviceHour}}</span>
                    </p>
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.orderType !='group_split_no'">
                       <span class="lineTitle">固定技师:</span>
                       <span  style="margin-left: 20px;" >
                         <span v-if="otherInfo.tech != undefined">{{otherInfo.tech.name}}</span>
@@ -123,7 +123,7 @@
                           <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
                           <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
                         </div>
-                        <div style="float:left;width:80px;margin-top: 20px;">每次{{otherInfo.copyserviceHour1}}</div>
+                        <div style="float:left;width:80px;margin-top: 20px;" v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'">每次{{otherInfo.copyserviceHour1}}</div>
                         <ul style="float:left;width:120px;margin-top: 20px;">
                           <li v-for="item in otherInfo.freList" :key="item.id">
                             <span>                              
@@ -138,7 +138,7 @@
                             <span style="margin-left:10px;">{{item.timeArea}}</span>
                           </li>
                         </ul>
-                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="gehuanchangeguTime()" value="更换固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
                         <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 20px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
                       </div>                                      
                 </div>
@@ -290,7 +290,7 @@
             <div class="hr-style"></div>
             <div class="techTabWrap">
                 <div>
-                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'"><span>总服务次数为：<span>{{otherInfo.bespeakTotal}}</span>次 已服务<span>{{otherInfo.bespeakNum}}</span>次 剩余<span>{{otherInfo.surplusNum}}</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25"  @click="yuyueClick" value="预约"></span> </p>                
+                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'"><span>总服务次数为：<span>{{otherInfo.bespeakTotal}}</span>次 已服务<span>{{otherInfo.bespeakNum}}</span>次 剩余<span>{{otherInfo.surplusNum}}</span>次</span><span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span><span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25" v-if="otherInfo.surplusNum != 0" @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -518,7 +518,7 @@
                       <p class="contentLine1">
                           <span class="lineTitle FloatLeft">地址:</span>
                           <span class="lineContent">
-                            <el-tooltip v-if="otherInfo.shopAddr != undefined"  placement="left" :disabled="otherInfo.shopAddr.length< 16" :content="otherInfo.shopAddr">
+                            <el-tooltip v-if="otherInfo1.shopAddr != undefined"  placement="left" :disabled="otherInfo1.shopAddr.length< 16" :content="otherInfo1.shopAddr">
                               <div class="selfToolTip">{{otherInfo1.shopAddr}}</div>
                             </el-tooltip>                                                
                           </span>
@@ -682,10 +682,10 @@
                         <div class="button-large-fourth" style="margin-left: 20px;margin-top: -22px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
-              <div v-show="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
+              <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
                 <div class="exptyDiv"></div>
                 <div style="margin-left:80px;font-size:12px;padding-top:20px;padding-left:40px;">
-                    <p >*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
+                    <p v-if="techObj != undefined">*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" >             
@@ -762,7 +762,7 @@
               <div>
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
-                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="999999" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></el-input-number>
+                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></el-input-number>
                     <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
@@ -1161,7 +1161,7 @@
               <div  v-if="gudingFlag" class="PositionRelative">
                 <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
                 <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
-                    <p>* 更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p>
+                    <p v-if="otherInfo.tech != undefined">* 更换固定服务时间，可能会影响固定技师； <span  >目前该订单的固定技师为：<span >{{otherInfo.tech.name}}</span><span  style="padding-left:20px;">{{otherInfo.tech.phone}}</span></span></p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20">             
                   <div style="margin-top: -10px;">                
@@ -1775,8 +1775,8 @@ export default {
     renderHeader2 (h) {
       return [h('p', {style:'font-size:14px;text-align:left;'}, ['作'])]
     },
-    /*设置固定时间相关操作开始 */
-        //设置固定时间按钮
+    /*设置固定服务时间相关操作开始 */
+        //设置固定服务时间按钮
         changeguTime(status) {
           this.gudingStatus=status;//是新增还是修改
           this.Orderform1.Date=''
@@ -1794,7 +1794,7 @@ export default {
           this.Orderform1.severHour = "1";
           this.severHour = "1";              
         },
-        //设置固定时间查询服务技师按钮
+        //设置固定服务时间查询服务技师按钮
         searchSeverTech() {
           //未选择服务频次
           if(this.Orderform1.testsele == ''){
@@ -1839,7 +1839,7 @@ export default {
             .catch(res => {});      
 
         },
-        //设置固定时间查询服务日期按钮
+        //设置固定服务时间查询服务日期按钮
         searchSeverDate() { 
           this.freStyl = "4";
           this.radio4 = ""; 
@@ -1875,7 +1875,7 @@ export default {
           }
           this.severFrequencyFlag = true;     
         },
-        //设置固定时间预约个数改变
+        //设置固定服务时间预约个数改变
         numberChange(val) {
           this.freStyl = "4";
           this.radio4 = "";
@@ -1892,7 +1892,7 @@ export default {
           }
 
         },    
-        //设置固定时间服务频次更换
+        //设置固定服务时间服务频次更换
         Changefrequency(key, index) {
           this.frequencySelecte = key;
           this.freStyl = index;
@@ -1902,11 +1902,11 @@ export default {
           this.timeAreaoptions = [];          
           this.teachArr = []            
         },
-        //设置固定时间取消
+        //设置固定服务时间取消
         setCancel(formName) {
           this.$message({
             type: "warning",
-            message: "更换固定服务时间取消！"
+            message: "设置固定服务时间取消！"
           }); 
           this.freStyl = "4";
           this.freStyl1 = "8";
@@ -1916,7 +1916,7 @@ export default {
           this.$refs[formName].resetFields();           
           this.testFlag = false;
         },
-        //设置固定时间保存
+        //设置固定服务时间保存
         setOk(formName) {
           //未查询服务日期
           if(this.Orderform1.testsele == '' && this.severFrequencyFlag == false){
@@ -1961,31 +1961,62 @@ export default {
           this.$refs[formName].validate(val => {
             if (val) {
               this.Orderform1.workTimes = this.teachArr;
-                this.setOkFlag=true;
-                var obj1 = {
-                  masterId:this.orderId,
-                  serviceNum:this.severHour,
-                  freList:this.teachArr,
-                  serviceFrequency:this.Orderform1.testsele,
-                  serviceStart:this.Orderform1.Date,
-                  techId:this.radio4            
-                };
-                saveRegularDate(obj1)
-                  .then(res => {
-                    this.setOkFlag=false;
-                    if (res.data.code === 1) {
-                      this.$message({
-                        type: "success",
-                        message: "固定服务时间设置成功！"
-                      });                  
-                      this.testFlag = false;
-                      this.$refs[formName].resetFields();
-                      this.getOrderAllInf(this.orderId); 
-                    }
-                  })
-                  .catch(res => {
-                    this.setOkFlag=false;
-                  });                     
+                if(this.gudingStatus == 'add'){
+                    this.setOkFlag=true;
+                    var obj1 = {
+                      masterId:this.orderId,
+                      serviceNum:this.severHour,
+                      freList:this.teachArr,
+                      serviceFrequency:this.Orderform1.testsele,
+                      serviceStart:this.Orderform1.Date,
+                      techId:this.radio4            
+                    };
+                    saveRegularDate(obj1)
+                      .then(res => {
+                        this.setOkFlag=false;
+                        if (res.data.code === 1) {
+                          this.$message({
+                            type: "success",
+                            message: "设置固定服务时间成功！"
+                          });                  
+                          this.testFlag = false;
+                          this.$refs[formName].resetFields();
+                          this.getOrderAllInf(this.orderId); 
+                        }
+                      })
+                      .catch(res => {
+                        this.setOkFlag=false;
+                      });                   
+
+                }else{
+                  this.setOkFlag=true;
+                  var obj1 = {
+                    masterId:this.orderId,
+                    serviceNum:this.severHour,
+                    freList:this.teachArr,
+                    serviceFrequency:this.Orderform1.testsele,
+                    serviceStart:this.Orderform1.Date,
+                    techId:this.radio4            
+                  };
+                  updateRegularDate(obj1)
+                    .then(res => {
+                      this.setOkFlag=false;
+                      if (res.data.code === 1) {
+                        this.$message({
+                          type: "success",
+                          message: "设置固定服务时间成功！"
+                        });                  
+                        this.testFlag = false;
+                        this.$refs[formName].resetFields();
+                        this.getOrderAllInf(this.orderId); 
+                      }
+                    })
+                    .catch(res => {
+                      this.setOkFlag=false;
+                    });                   
+
+                }
+                    
             }else{
               var errArr = this.$refs[formName]._data.fields;
               var errMes = [];
@@ -2003,7 +2034,7 @@ export default {
           });
         },
 
-        //设置固定时间服务时间段中星期几选择
+        //设置固定服务时间服务时间段中星期几选择
         roomSel2(item, index) {
           this.creatIs = 'yes'
           this.timeArea = "";
@@ -2019,7 +2050,7 @@ export default {
               }         
           }
         },
-        //设置固定时间服务时间段确定动作
+        //设置固定服务时间服务时间段确定动作
         singletechClick() {
           this.Orderform1.Date=''
           if (this.weekNumber == "") {
@@ -2056,7 +2087,7 @@ export default {
           this.listShowFlag=true;
           //console.log(this.teachArr, "绑定值");            
         },
-        //设置固定时间请选择服务时间段点击
+        //设置固定服务时间请选择服务时间段点击
         addtime() {
           if(this.Orderform1.testsele == ''){
             this.$message({
@@ -2068,13 +2099,13 @@ export default {
             this.isB = true;
           }
         },
-        //设置固定时间服务时间段中选择后取消
+        //设置固定服务时间服务时间段中选择后取消
         singleaddtimeno() {
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = [];
         },
-        //删除选择的服务时间（点击叉号）
+        //设置固定服务时间删除选择的服务时间（点击叉号）
         singledeletes(item) {
           this.teachArr.remove(item)
           this.timeArea = "";
@@ -2084,7 +2115,7 @@ export default {
             this.listShowFlag=false;
           }
         },
-        //设置固定时间中日期变化时改变时间对象
+        //设置固定服务时间中日期变化时改变时间对象
         dateChange1(val) {
             //更换下拉列表值      
               this.options3=[];
@@ -2094,7 +2125,17 @@ export default {
                       this.options3=this.options3.concat(this.dateOptionsList[i].hoursList);//数组拼接
                     }
                 }
-              }      
+              }
+              //排序
+              for(var i of this.options3){
+                  var str= i.key.replace(/-/g,'/'); 
+                  var date = new Date(str); 
+                   i.sortdate = date.getTime();
+              }
+              this.options3.sort(function(a,b){
+                return a.sortdate-b.sortdate;                
+              }) 
+ 
           if(val== true){
             //未选择服务频次
             if(this.Orderform1.testsele == ''){
@@ -2115,12 +2156,12 @@ export default {
 
           } 
         },
-        //设置固定时间弹窗单选改变
+        //设置固定服务时间弹窗单选改变
         getCurrentRow4(value) {
           this.radio4 = value;
           this.Orderform1.Tech = this.radio4;
         },
-    /*设置固定时间相关操作结束 */
+    /*设置固定服务时间相关操作结束 */
     /*更换固定时间相关操作开始 */
         //更换固定时间查询服务技师按钮
         gehuansearchSeverTech() {
@@ -2355,9 +2396,10 @@ export default {
             this.gehuanOrderform.Date=this.otherInfo.serviceStart;
             this.techArrtest=Object.assign({}, this.otherInfo.freList);; //服务时间的回显 
             this.gehuanteachArr = this.otherInfo.freList; //服务时间的回显 
-            this.gehuansearchSeverTech();//查询服务技师表格数据  
             this.gehuanradio4 = this.otherInfo.techId;//技师选择的id 
-            this.gehuanOrderform.Tech = this.gehuanradio4;          
+            this.gehuanOrderform.Tech = this.gehuanradio4;             
+            this.gehuansearchSeverTech();//查询服务技师表格数据  
+         
             this.gehuangudingFlag = true; 
             this.freStyl1 = "8";
             this.gehuanisB=true;               
@@ -2758,8 +2800,7 @@ export default {
               if (res.data.code === 1) {
                 var AllInfo = res.data.data;
                 this.otherInfo1 = AllInfo; //所有其他信息变量
-                this.RemarkInfFlag = true;
-                
+                this.RemarkInfFlag = true;                   
               }
             })
             .catch(res => {

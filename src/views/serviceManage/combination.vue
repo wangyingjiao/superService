@@ -162,7 +162,8 @@
 											</el-input>
 										</el-form-item>
 										<el-form-item v-else label="折算时长：" prop="serItemCommodity.convertHours" class="combination-name">
-											<span v-if="dialogStatus != 'update'">{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span>
+											<span v-if="dialogStatus != 'update'">{{convertHoursDate(basicForm.serItemCommodity.unit,basicForm.serItemCommodity.convertHours,basicForm.serItemCommodity.combinationCommodities)}}</span>
+											<!-- <span v-if="dialogStatus != 'update'">{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span> -->
 											<span v-else>{{basicForm.serItemCommodity.unit ? basicForm.serItemCommodity.convertHours+'小时/'+basicForm.serItemCommodity.unit : basicForm.serItemCommodity.convertHours+'小时/单位'}}</span>
 										</el-form-item>
 										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
@@ -323,7 +324,7 @@
 			</div>
 		</div>
         <div slot="footer" class="dialog-footer">
-          	<input type="button" class="button-cancel" @click="SystemLabel = false" value="关 闭">
+          	<input type="button" class="button-cancel" @click="systemClose" value="关 闭">
         </div>
       </el-dialog>
     <!-- 系统标签结束 -->
@@ -981,6 +982,28 @@ export default {
     }
   },
   methods: {
+	//折算时长
+	convertHoursDate(unit,convertHours,combinationCommodities){
+	// basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'
+		if(combinationCommodities.length>0){
+			if(unit){
+				return combinationCommodities[0].convertHours+'小时/'+unit
+			}else{
+				return combinationCommodities[0].convertHours+'小时/单位'
+			}
+		}else{
+			if(unit){
+				return 0+'小时/'+unit
+			}else{
+				return 0+'小时/单位'
+			}
+		}
+	},
+	//系统弹框关闭
+	systemClose(){
+		this.SystemLabel = false
+		this.$refs.basic.validateField("sysTags")
+	},  
 	//组合商品售价限制
 	inputPrice(e){
 		let obj = e.target
@@ -1027,7 +1050,7 @@ export default {
      //组合商品信息--选择商品--复选框
     selectCommodity(item){
       if(item.check){
-        this.commodityArr.push(item)
+		this.commodityArr.unshift(item)
       }else{
         let i , len = this.commodityArr.length;
         for(i = len ; i-- ;){
@@ -1042,10 +1065,10 @@ export default {
       let {commodityArr,basicForm} = this,
           i,len = commodityArr.length,arr = [].concat(commodityArr);
       basicForm.serItemCommodity.combinationCommodities = [].concat(commodityArr)
-      // this.$set(basicForm.serItemCommodity,"combinationCommodities",commodityArr)
       this.combinationTypeDialog = false;
       this.itemNameSearch = ''
-      this.goodNameSearch = ''
+	  this.goodNameSearch = ''
+	  this.$refs.basic.validateField("serItemCommodity.combinationCommodities");
     },
     //组合商品信息--选择商品--单选
     selectCommoditySingle(item){
@@ -1094,6 +1117,30 @@ export default {
     },
     //选择商品按钮
     choiceCommodity(bl){
+		if(this.techUserType == 'sys'){
+			if(!this.basicForm.orgId){
+				this.$message({
+					type: "warning",
+					message: "请选择所属机构"
+				});
+				return;
+			}
+			if(!this.basicForm.sortId){
+				this.$message({
+					type: "warning",
+					message: "请选择所属分类"
+				});
+				return;
+			}
+		}else{
+			if(!this.basicForm.sortId){
+				this.$message({
+					type: "warning",
+					message: "请选择所属分类"
+				});
+				return;
+			}
+		}
 		let obj = {}
 		this.commodityDate = []
         obj.sortId = this.basicForm.sortId;
@@ -1139,7 +1186,6 @@ export default {
 					this.commodityDate = data
 				}else{
 					this.commodityDate = []
-					this.commodityArr = []
 				}
 				this.combinationTypeDialog = true
 			}else{
@@ -1256,7 +1302,8 @@ export default {
     //   return arr;
     // },
     imgClick(item) {
-      this.picFile = item;
+	  this.picFile = item;
+	  this.$refs.basic.validateField('picture')
       //当点击保存时，会提示请上传图片，当上传图片后，提示不会消失
       //上传图片成功触发表单验证
       // this.$refs['basic'].validate(valid => {})
