@@ -271,6 +271,7 @@ export default {
     };
   },
   created() {
+    console.log(11111111111111)
     this.activeName = "all";
     if (JSON.parse(localStorage.getItem("btn"))) {
       this.btnShow = JSON.parse(localStorage.getItem("btn"));

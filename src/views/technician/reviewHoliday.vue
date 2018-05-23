@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-      dialogForm: true,
+      dialogForm: false,
       btnState: false,
       failReasonState: false,
       rules: {
