@@ -299,7 +299,7 @@
                       class="orderInfoHeaderPic testaa">
                       <el-table-column
                         align="center"
-                        width='180'
+                        min-width='180'
                         label="订单编号"
                         >
                             <template scope="scope">
@@ -310,7 +310,7 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        width='120'
+                        min-width='150'
                         label="服务时间"
                         >
                             <template scope="scope">
@@ -321,7 +321,7 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        width='100'
+                        min-width='100'
                         label="服务状态">
                           <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
@@ -334,7 +334,7 @@
                       </el-table-column>
                       <el-table-column
                         align="center"
-                        width='100'
+                        min-width='100'
                         label="订单状态">
                           <template scope="scope">
                             <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
@@ -351,7 +351,7 @@
                       <el-table-column
                         align="center"
                         label="完成时间"
-                        width='120'
+                        min-width='150'
                         >
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
@@ -362,7 +362,7 @@
                       <el-table-column
                         align="center"
                         label="对接订单编号"
-                        width='180'
+                        min-width='180'
                         >
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
@@ -373,7 +373,7 @@
                       <el-table-column
                         prop="orderTime"
                         align="center"
-                        width='120'
+                        min-width='160'
                         label="下单时间">
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
