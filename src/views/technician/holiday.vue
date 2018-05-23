@@ -142,7 +142,7 @@
        :close-on-press-escape="false"
        >
           <el-form        
-            class="small-space dia_form" 
+            class="small-space dia_form"
             ref="temp" 
             :rules="rules" 
             :model="temp" 
