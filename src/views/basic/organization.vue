@@ -730,7 +730,6 @@ export default {
               localStorage.getItem("type") == "platform" ||
               localStorage.getItem("type") == "sys"
             ) {
-              console.log(111);
               if (res.data.data.updateOwnFlag == "yes") {
                 this.allPlatformFlag = true;
               } else {
@@ -740,7 +739,6 @@ export default {
               this.allPlatformFlag = true;
             }
             this.orgId = res.data.data.updateOwnFlag;
-            console.log(this.allPlatformFlag, this.orgId);
             this.listLoading = false;
             if (res.data.data.haveStation !== 0) {
               this.typeState = true;
