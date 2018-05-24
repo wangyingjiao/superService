@@ -681,6 +681,7 @@
                           </el-select>                      
                   </el-form-item>
                   <el-form-item label="选择时间" prop='Time' class="selfPaddingLeft20">
+                        <span class="selfLabelStyle" style="left: -72px;">*</span>
                         <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                         <div class="marginTopDec46" style="width:500px;">
                           <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -688,7 +689,7 @@
                         <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                   </el-form-item>
                   <el-form-item label="" class="selfPaddingLeft20">              
-                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:0px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
+                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:-20px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
@@ -801,6 +802,7 @@
                                 </el-select>                      
                         </el-form-item>
                         <el-form-item label="选择时间:" prop='Time' class="selfPaddingLeft20" >
+                              <span class="selfLabelStyle" style="left: -72px;">*</span>
                               <el-input type="hidden" value='' v-model='yuyueformInline.Time'></el-input>                  
                               <div class="marginTopDec46" style="width:500px;">
                                 <div class="selfSeverTimeSt" ref="yuyueTimeWrap"  v-for="(item,index) in yuyuetimeObj" :key="index" @click="yuyuetimeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -808,7 +810,7 @@
                               <!-- <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                       -->
                         </el-form-item>
                         <el-form-item label="" class="selfPaddingLeft20" style="margin-top: 20px;">              
-                            <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px;margin-top: 1px;">查询服务技师</div> 
+                            <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px; margin-top: -15px">查询服务技师</div> 
                         </el-form-item>                    
                   </div>                   
 
@@ -1174,6 +1176,7 @@
                               </el-form-item>                    
                           </div>
                           <el-form-item v-if="gudingStatus != 'edit'" label="选择日期" prop='Date' class="selfPaddingLeft20">
+                                  <span class="selfLabelStyle">*</span>
                                   <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
                                     <el-option
                                       v-for="item in options3"
@@ -1673,7 +1676,7 @@ export default {
         workTimes: [
           { required: true,validator:WORKTIMES , trigger: "blur" }
         ],
-        Date: [{ required: true, message: "请选择日期", trigger: "change" }],
+        // Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       gehuanOrderform: {
@@ -1705,18 +1708,18 @@ export default {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       yuyueformInline1rules: {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       timeObj: [], //时间对象
