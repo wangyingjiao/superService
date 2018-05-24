@@ -582,8 +582,9 @@
                 <td  class="selfTableHEADTD" align="center" width="73px">选择</td>
                 <td  class="selfTableHEADTD" align="center" width="100px">头像</td>
                 <td  class="selfTableHEADTD" align="center" width="230px">姓名</td>
-                <td  class="selfTableHEADTD" align="center" width="73px">性别</td>
-                <td  class="selfTableHEADTD" align="center" width="161px">岗位性质</td>							
+                <td  class="selfTableHEADTD" align="center" width="71px">性别</td>
+                <td  class="selfTableHEADTD" align="center" width="90px">手机号</td>
+                <td  class="selfTableHEADTD" align="center" width="71px">岗位性质</td>							
               </tr>
               <div class="orderinfoTechTablePadding">
                   <tr v-for="item in listTech" :key="item.techId"  ref="tableItem1" class="selfTdStyle1">
@@ -597,7 +598,10 @@
                       <span class="fontSize12" v-if="item.techSex =='male'">男</span>
                       <span class="fontSize12" v-if="item.techSex =='female'">女</span>									
                     </td>
-                    <td width="160px" class="fontSize12"  align="center">
+                    <td  width="90px" class="fontSize12" align="center">
+                       {{item.techPhone}}									
+                    </td>                    
+                    <td width="70px" class="fontSize12"  align="center">
                           <span class="fontSize12" v-if="item.jobNature =='part_time'">兼职</span>
                           <span class="fontSize12" v-if="item.jobNature =='full_time'">全职</span>
                     </td>							
@@ -664,7 +668,7 @@
           :close-on-click-modal="false"
           class="selfDialogWidth3"
           >
-            <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px">
+            <el-form  :model="formInline" :rules="formInline1rules" ref="formInline" label-width="80px" class="gehuanjishiform">
               <div>
                   <el-form-item label="选择日期" prop='Date' class="selfPaddingLeft20">
                           <el-select v-model="formInline.Date" class="selfDateStyle" style="margin-left:20px;"  @change='dateChange' placeholder="请选择">
@@ -684,7 +688,7 @@
                         <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                   </el-form-item>
                   <el-form-item label="" class="selfPaddingLeft20">              
-                        <div class="button-large-fourth" style="margin-left: 20px;margin-top: -22px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
+                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:0px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
@@ -778,7 +782,7 @@
               <div>
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
-                    <el-input-number class="selfINputNumStyle"  v-model="yuyueNumber" :min='1' :debounce='1000'  :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></el-input-number>
+                    <input-num class="selfINputNumStyle"  v-model="yuyueNumber" :min='1'   :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></input-num>
                     <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
@@ -1026,7 +1030,16 @@
                 prop="techPhone"
                 align="center"
                 label="手机号">
-              </el-table-column>                  
+              </el-table-column>
+              <el-table-column
+                align="center"
+                min-width="65"
+                label="岗位性质">
+                  <template scope="scope">
+                      <span v-if="scope.row.jobNature =='full_time'">全职</span>
+                      <span v-if="scope.row.jobNature =='part_time'">兼职</span>
+                  </template>	                    
+              </el-table-column>                                
               <el-table-column
                 align="center"
                 label="操作">
@@ -1051,8 +1064,8 @@
             <el-form  :model="Orderform1" :rules="orderrules1" ref="Orderform1" label-width="84px" label-position="left" >
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
-                  <el-input-number class="selfINputNumStyle"  v-model="severHour" :min='1' :debounce='1000'  :max="testMax" style="width:120px;" @change="numberChange"></el-input-number>
-                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长） </div>
+                  <input-num class="selfINputNumStyle"  v-model="severHour" :min='1'   :max="testMax" style="width:120px;" @change="numberChange"></input-num>
+                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于{{copyserviceHour*severHour}}小时！ </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
@@ -1160,7 +1173,7 @@
                                 <div class="severPromitINf" style="padding-left: 20px;color:red;">* 三周后的订单将按照更换后的固定时间分配</div>
                               </el-form-item>                    
                           </div>
-                          <el-form-item label="选择日期" prop='Date' class="selfPaddingLeft20">
+                          <el-form-item v-if="gudingStatus != 'edit'" label="选择日期" prop='Date' class="selfPaddingLeft20">
                                   <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
                                     <el-option
                                       v-for="item in options3"
@@ -1251,7 +1264,7 @@
             <el-form  :model="gehuanOrderform" :rules="gehuanorderrules" ref="gehuanOrderform" label-width="84px" label-position="left" >
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
-                  <el-input-number class="selfINputNumStyle"  v-model="gehuanseverHour" :min='1' :debounce='1000'  :max="999" style="width:120px;" @change="gehuannumberChange"></el-input-number>
+                  <input-num class="selfINputNumStyle"  v-model="gehuanseverHour" :min='1' :debounce='1000'  :max="999" style="width:120px;" @change="gehuannumberChange"></input-num>
                    <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*gehuanseverHour}}小时（预约个数 * 单次建议服务时长） </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
@@ -1470,9 +1483,11 @@ import {
 } from "@/api/order";
 import { orderServer } from "@/api/serviceManage";
 import util from "@/utils/date";
+import inputNum from "../../components/inputNum.vue";
 var loading;
 export default {
   name: "orderinfo",
+  components:{inputNum },
   data() {
     //退款差价验证规则
     var checkChaE = (rule, value, callback) => {
@@ -1796,11 +1811,17 @@ export default {
     /*设置固定服务时间相关操作开始 */
         //设置固定服务时间按钮
         changeguTime(status) {
+
           this.gudingStatus=status;//是新增还是修改
-          this.Orderform1.Date=''
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.otherInfo.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          }
+          
           this.freStyl = "4";
           this.freStyl1 = "8";
-          this.testMax=this.copyserviceHour*this.severHour;
+          this.testMax=6/this.copyserviceHour;
           this.isB=false;
           this.severFrequencyFlag=false;
           this.timeArea = "";
@@ -1832,13 +1853,15 @@ export default {
             return false;
           } 
           //未选择第一次服务日期
-          if(this.Orderform1.Date == ''){
-            this.$message({
-              type: "error",
-              message: "请选择第一次服务日期！"
-            });
-            return false;
-          }               
+          if(this.gudingStatus == 'add'){
+              if(this.Orderform1.Date == ''){
+                this.$message({
+                  type: "error",
+                  message: "请选择第一次服务日期！"
+                });
+                return false;
+              }  
+          }  
           this.tableData3=[]
           this.radio4 = "";
           var obj1 = {
@@ -1887,25 +1910,17 @@ export default {
         },
         //设置固定服务时间预约个数改变
         numberChange(val) {
+          console.log('aaaaaaa')
           this.freStyl = "4";
           this.radio4 = "";
-          this.Orderform1.Date=''
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          }          
           this.severFrequencyFlag = false;
           this.gudingFlag = false;           
           this.Orderform1.severHour = val;
-                   
-          //预约个数*单次服务时间如果大于6提示不能
-          if(val*this.copyserviceHour > 6){                 
-                this.testMax=val-1; 
-                this.$message({
-                  type: "warning",
-                  message: "总服务时长不能大于6小时！"
-                });                
-                return false
-          }else{            
-            this.testMax++
-          }
-
         },    
         //设置固定服务时间服务频次更换
         Changefrequency(key, index) {
@@ -1958,22 +1973,25 @@ export default {
             });
             return false;
           } 
-          //未选择第一次服务日期
-          if(this.Orderform1.Date == ''){
-            this.$message({
-              type: "error",
-              message: "请选择第一次服务日期！"
-            });
-            return false;
-          }
-          //未选择第一次服务日期
-          if(this.Orderform1.Date != '' && this.gudingFlag == false){
-            this.$message({
-              type: "error",
-              message: "请查询服务技师！"
-            });
-            return false;
-          }                    
+          if(this.gudingStatus == 'add'){
+              if(this.Orderform1.Date == ''){
+                this.$message({
+                  type: "error",
+                  message: "请选择第一次服务日期！"
+                });
+                return false;
+              }
+              //未选择第一次服务日期
+              if(this.Orderform1.Date != '' && this.gudingFlag == false){
+                this.$message({
+                  type: "error",
+                  message: "请查询服务技师！"
+                });
+                return false;
+              }              
+
+          }   
+                  
           this.$refs[formName].validate(val => {
             if (val) {
               this.Orderform1.workTimes = this.teachArr;
@@ -2073,8 +2091,12 @@ export default {
           this.isB=false;//新增日期部分关闭 
           this.tableData3=[];//技师表格清空
           this.radio4='';//技师表格选择会值清空
-          this.gudingFlag=false; //技师部分关闭          
-          this.Orderform1.Date=''
+          this.gudingFlag=false; //技师部分关闭 
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.otherInfo.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          }                   
           if (this.weekNumber == "") {
             this.$message.error("请选择星期");
             return false;
@@ -2136,7 +2158,12 @@ export default {
           this.teachArr.remove(item)
           this.timeArea = "";
           this.freStyl1 = "8";
-          this.Orderform1.Date='';//清除第一次服务时间值
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.otherInfo.serviceStart
+          }else{
+             this.Orderform1.Date='';//清除第一次服务时间值
+          }          
+          
           this.Orderform1.workTimes = "";
           if(this.teachArr.length == 0){
             this.listShowFlag=false;
@@ -2212,13 +2239,15 @@ export default {
             return false;
           } 
           //未选择第一次服务日期
-          if(this.gehuanOrderform.Date == ''){
-            this.$message({
-              type: "error",
-              message: "请选择第一次服务日期！"
-            });
-            return false;
-          }               
+
+              if(this.gehuanOrderform.Date == ''){
+                this.$message({
+                  type: "error",
+                  message: "请选择第一次服务日期！"
+                });
+                return false;
+              }             
+              
           this.gehuantableData3=[]
           this.gehuanradio4 = "";
           var obj1 = {
@@ -3127,28 +3156,36 @@ export default {
         },
         //更换固定技师弹出层确认
         submitForm21() {
-          //更换固定技师保存
-          var obj1={
-            techId:this.radio,
-            masterId:this.orderId
-          }      
-          updateRegularTechSave(obj1)
-            .then(res => {
-              //this.techSaveFlag1=true;
-              if (res.data.code === 1) {
-                //this.techSaveFlag1=false;
-                this.$message({
-                  type: "success",
-                  message: "更换固定技师成功"
-                });
-                this.getOrderAllInf(this.orderId);
-                this.dialogTableVisible1 = false;
-                
-              }
-            })
-            .catch(res => {
-              //this.techSaveFlag1=false;
-            });            
+          if(this.radio == ''){
+              this.$message({
+                type: "error",
+                message: "请选择技师!"
+              });
+          }else{
+              //更换固定技师保存
+              var obj1={
+                techId:this.radio,
+                masterId:this.orderId
+              }      
+              updateRegularTechSave(obj1)
+                .then(res => {
+                  //this.techSaveFlag1=true;
+                  if (res.data.code === 1) {
+                    //this.techSaveFlag1=false;
+                    this.$message({
+                      type: "success",
+                      message: "更换固定技师成功"
+                    });
+                    this.getOrderAllInf(this.orderId);
+                    this.dialogTableVisible1 = false;
+                    
+                  }
+                })
+                .catch(res => {
+                  //this.techSaveFlag1=false;
+                }); 
+          }
+           
         },
         //更换固定技师弹出层取消
         cancelForm21() {     
@@ -3433,6 +3470,10 @@ export default {
         },    
         //更换时间中弹窗中日期变化时改变时间对象
         dateChange(val) {
+          this.tableData2=[];
+          this.radio3='';
+          this.gudingFlag1=false;
+          this.formInline.Time='';
           var that = this;
           for (var b = 0; b < this.options2.length; b++) {
             if (val == this.options2[b].value) {
@@ -3888,8 +3929,8 @@ ul li {
 }
 .promMessage {
   width: 90%;
-  height: 56px;
-  line-height: 56px;
+  height: 20px;
+  line-height: 20px;
   margin-left: 22px;
   color: #8391a5;
 }

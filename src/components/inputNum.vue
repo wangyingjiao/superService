@@ -23,7 +23,7 @@ export default {
     //  console.log($event.target.value)
       },
       pius(){
-         this.$emit('input', this.value+1)
+         this.$emit('input', parseInt(this.value)+1)
       }
   }
 };
