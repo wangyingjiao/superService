@@ -36,5 +36,6 @@ export default {
 .inputNum .el-input-group__append,
 .inputNum .el-input-group__prepend {
   padding: 0 5px;
+  overflow: hidden;
 }
 </style>
