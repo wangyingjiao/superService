@@ -2,6 +2,7 @@
     <el-input
     class="inputNum"
             disabled
+            
             v-bind:value="value"
             v-on:change="$emit('input', $event.target.value)">
             <el-button class="butMin" @click="minus" :disabled="value<=min?true:false" slot="prepend"><i class="el-icon-minus"></i></el-button>
@@ -23,13 +24,15 @@ export default {
     //  console.log($event.target.value)
       },
       pius(){
-         this.$emit('input', this.value+1)
+         this.$emit('input', parseInt(this.value)+1)
       }
   }
 };
 </script>
 <style >
-
+.inputNum input{
+  text-align: center;
+}
 .inputNum .el-input-group__append,.inputNum .el-input-group__prepend{
   padding: 0 5px;
 }
