@@ -658,10 +658,6 @@
   .upload-demo .el-upload-list__item-preview {
     display: none !important;
   }
-  .el-icon-plus {
-    text-align: center;
-    font-size: 20px;
-  }
   .el-upload--picture {
     width: 100%;
   }

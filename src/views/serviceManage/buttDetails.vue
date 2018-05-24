@@ -375,19 +375,21 @@ export default {
           len = tableData3.length , lon = arr.length , messageArr = '';
       for( i = len ; i--;){
         for( j = lon ; j--;){
-          if(arr[j].id == tableData3[i].id){
+          if(arr[j] == tableData3[i].id){
             messageArr += tableData3[i].newName+'、'
             this.$refs.multipleTable.toggleRowSelection(tableData3[i],false);
+          }else{
           }
         }
       }
       this.$message({
         type: "warning",
-        message:`组合商品${messageArr.substring(0,messageArr.length-1)}下存在未对接成功的子商品，不可设置对接`
+        message:`${messageArr.substring(0,messageArr.length-1)}下存在未对接成功的子商品，不可设置对接`
       });
     },
     //未对接列表复选框--全选
     selectCheckboxWhole(selection){
+      // this.$refs.multipleTable.clearSelection();
       if(this.activeName != "yesDocking"){
         if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
           this.selectCheckboxWholeFlag = false  
@@ -406,6 +408,8 @@ export default {
                   }else{
                       this.selectCheckboxWholeFlag = false
                   }
+               }else{
+                 this.selectCheckboxWholeFlag = false
                }
             })
             .catch(error=>{
@@ -424,7 +428,7 @@ export default {
                 if('data' in data){
                   this.$message({
                       type: "warning",
-                      message:`组合商品${data.data[0].newName}下存在未对接成功的子商品，不可设置对接`
+                      message:`${obj[0].newName}下存在未对接成功的子商品，不可设置对接`
                   });
                   if(callback) callback(false)
                 }else{
