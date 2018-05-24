@@ -10,27 +10,31 @@
         <!-- 搜索 -->
             <div class="searchBox">
                 <div>
-                  <orgSearch class="butt-search" v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
-                  <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
-                      <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
-                      </el-option>
-                  </el-select>
-                  <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="所属类型" @change="typeChange">
-                      <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
-                      </el-option>
-                  </el-select>
-                  <el-select class="butt-search" filterable clearable v-model="search.sortId" placeholder="所属分类">
-                      <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
-                      </el-option>
-                  </el-select>
-                  <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入对接商品名称"></el-input>
-                  <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
-                </div>
-                <div style="margin-top:10px">
-                   <el-select clearable filterable class="butt-search"  v-model="search.goodsType" placeholder="商品类型">
+                    <orgSearch class="butt-search" v-if="userType" ref="orgSearch" @orgsearch="orgSearch" :clearable="true"></orgSearch>
+                    <el-select class="butt-search" filterable v-model="search.eshopCode" placeholder="请选择E店" @change="searchEd(search.eshopCode)">
+                        <el-option v-for="item in options" :key="item.eshopCode" :label="item.name" :value="item.eshopCode">
+                        </el-option>
+                    </el-select>
+                    <el-select class="butt-search" clearable v-model="search.majorSort" placeholder="所属类型" @change="typeChange">
+                        <el-option v-for="(item,key) in thisType" :key="key" :label="item" :value="key">
+                        </el-option>
+                    </el-select>
+                    <el-select class="butt-search" filterable clearable v-model="search.sortId" placeholder="所属分类">
+                        <el-option v-for="(item,index) in typeOptions" :key="index" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
+                    <el-input class="butt-search" v-model="search.goodsName" placeholder="请输入对接商品名称"></el-input>
+                    <el-input class="butt-search" v-show="activeName!='noDocking' && techUserType!='sys'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
+                     <el-select clearable filterable class="butt-search"  v-model="search.goodsType" placeholder="商品类型">
                         <el-option v-for="(item,key) in goodsTypeList" :key="key" :label="item" :value="key"></el-option>
                     </el-select>
-                  <el-input class="butt-search" v-show="activeName!='noDocking'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
+                    <button class="button-large el-icon-search btn_search btn-color" @click="searchBtt">搜索</button>
+                </div>
+                <div style="margin-top:10px">
+                   <!-- <el-select v-if="techUserType!='sys'" clearable filterable class="butt-search"  v-model="search.goodsType" placeholder="商品类型">
+                        <el-option v-for="(item,key) in goodsTypeList" :key="key" :label="item" :value="key"></el-option>
+                    </el-select> -->
+                    <el-input class="butt-search" v-show="activeName!='noDocking' && techUserType=='sys'" v-model="search.selfCode" placeholder="请输入对接编码"></el-input>
                 </div>
             </div>
         <!-- 搜索 完成 -->
@@ -187,6 +191,9 @@ export default {
   },
   watch: {},
   computed: {
+    techUserType(){
+				return userType()
+    },
     btnShow() {
       if (JSON.parse(localStorage.getItem("btn"))) {
         return JSON.parse(localStorage.getItem("btn"));
@@ -375,21 +382,24 @@ export default {
           len = tableData3.length , lon = arr.length , messageArr = '';
       for( i = len ; i--;){
         for( j = lon ; j--;){
-          if(arr[j].id == tableData3[i].id){
+          if(arr[j] == tableData3[i].id){
             messageArr += tableData3[i].newName+'、'
             this.$refs.multipleTable.toggleRowSelection(tableData3[i],false);
+          }else{
+            // this.$refs.multipleTable.toggleRowSelection(tableData3[i],true);
           }
         }
       }
       this.$message({
         type: "warning",
-        message:`组合商品${messageArr.substring(0,messageArr.length-1)}下存在未对接成功的子商品，不可设置对接`
+        message:`${messageArr.substring(0,messageArr.length-1)}下存在未对接成功的子商品，不可设置对接`
       });
     },
     //未对接列表复选框--全选
     selectCheckboxWhole(selection){
       if(this.activeName != "yesDocking"){
         if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
+          // this.$refs.multipleTable.clearSelection();
           this.selectCheckboxWholeFlag = false  
           this.selectableArr = selection
           let obj = {}
@@ -406,6 +416,8 @@ export default {
                   }else{
                       this.selectCheckboxWholeFlag = false
                   }
+               }else{
+                 this.selectCheckboxWholeFlag = false
                }
             })
             .catch(error=>{
@@ -424,7 +436,7 @@ export default {
                 if('data' in data){
                   this.$message({
                       type: "warning",
-                      message:`组合商品${data.data[0].newName}下存在未对接成功的子商品，不可设置对接`
+                      message:`${obj[0].newName}下存在未对接成功的子商品，不可设置对接`
                   });
                   if(callback) callback(false)
                 }else{
@@ -636,7 +648,7 @@ export default {
   margin-left: 1%;
 }
 .buttDetails .butt-search {
-  width: 15%;
+  width: 14%;
   margin-left: 1%;
 }
 .searchBox {

@@ -2753,7 +2753,7 @@ export default {
   border-top: none;
   /* width: 400px; */
   box-sizing: border-box;
-  padding: 0 0 0 20px;
+  padding: 0 20px 0 20px;
 }
 .tech-service .working > li,.weekDate .working > li{
   position: relative;
@@ -2776,9 +2776,9 @@ export default {
 }
 .time1 {
   /* padding: 10px 0; */
-  position: absolute;
+  /* position: absolute;
   right: 50px;
-  top: 10px;
+  top: 10px; */
 }
 #confirmation {
   display: flex;

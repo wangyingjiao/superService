@@ -2179,14 +2179,14 @@ export default {
 .working .i-delete {
   position: absolute;
   right: 20px;
-  top: 15px;
+  top: 25px;
   cursor: pointer;
 }
-.time {
+.working .time {
   /* padding: 10px 0; */
-  position: absolute;
+  /* position: absolute;
   right: 50px;
-  top: 10px;
+  top: 10px; */
 }
 #confirmation {
   display: flex;

@@ -86,6 +86,10 @@
             placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
           </el-form-item>
            
+          <el-form-item label="分类名称:" prop="num" >
+            <inputNum v-model="temp.num" :min='1' :max = '8' :text="'测试组件'"></inputNum>
+          </el-form-item>
+           
 
           </el-form>
       
@@ -110,6 +114,7 @@ import {
   upClass
 } from "@/api/serviceManage";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
+import inputNum from "../../components/inputNum.vue";
 import { parseTime } from "@/utils";
 //挂载数据
 
@@ -118,7 +123,28 @@ export default {
   directives: {
     waves
   },
+  components:{
+    inputNum
+  },
   data() {
+    var numBlur = (rule, value, cb) => {
+      console.log(/^[1-9]\d*$/.test(value));
+      console.log(value);
+      if (!/^[1-9]\d*$/.test(value)) {
+        cb(new Error("只能是整数"));
+      } else {
+        cb();
+      }
+    };
+    var numChange = (rule, value, cb) => {
+      console.log(/^[1-9]\d*$/.test(value));
+      console.log(value);
+      if (!/^[1-9]\d*$/.test(value)) {
+        cb(new Error("change只能是整数"));
+      } else {
+        cb();
+      }
+    };
     return {
       btnShow: [],
       btnState: false,
@@ -139,6 +165,7 @@ export default {
       total: 1,
       majorSorts: [],
       temp: {
+        num: 0,
         name: "",
         majorSort: ""
       },
@@ -146,6 +173,18 @@ export default {
         name: ""
       },
       rules: {
+        num: [
+          {
+            required: true,
+            validator: numBlur,
+            trigger: "blur"
+          },
+          // {
+          //   required: true,
+          //   validator: numChange,
+          //   trigger: "change"
+          // }
+        ],
         majorSort: [
           { required: true, message: "所属类型不能为空", trigger: "change" }
         ],
@@ -366,6 +405,7 @@ export default {
     },
     // 新增保存
     create(formName) {
+      console.log(this.temp)
       var obj = {
         majorSort: this.temp.majorSort,
         name: this.temp.name
