@@ -1927,6 +1927,11 @@ export default {
           this.listShowFlag=false;//隐藏时间选择结果
           this.freStyl = index;
           this.Orderform1.testsele = key;
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          } 
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = []; 
