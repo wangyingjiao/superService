@@ -127,7 +127,7 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column prop="name" align="center" label="数量" min-width="140">
+										<el-table-column prop="name" align="center" label="数量" min-width="150">
 											<template scope="scope">
 												<inputNum :min='1' :max="999999"  v-model="scope.row.combinationNum"></inputNum>
 												<!-- <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span> -->
@@ -987,8 +987,9 @@ export default {
 	//组合商品售价限制
 	inputPrice(e){
 		let obj = e.target;
+		obj.value = obj.value.replace('。','.');
 		obj.value = obj.value.replace(/[^\d\.]/g,'');
-		obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字而不是  
+		obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字而不是
 		obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的 
 		obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");   
 		obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数 
