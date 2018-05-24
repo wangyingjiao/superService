@@ -118,6 +118,9 @@ export default {
   directives: {
     waves
   },
+  components:{
+    inputNum
+  },
   data() {
     var numBlur = (rule, value, cb) => {
       console.log(/^[1-9]\d*$/.test(value));
@@ -157,6 +160,7 @@ export default {
       total: 1,
       majorSorts: [],
       temp: {
+        num:1,
         name: "",
         majorSort: ""
       },
