@@ -63,7 +63,6 @@
              <p :class="scope.row.stationName.length < 10 ? '' : 'overheidden'" >{{scope.row.stationName}}</p>
            </el-tooltip>
         </template>
-       
       </el-table-column>
       
 
