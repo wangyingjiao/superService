@@ -1149,7 +1149,7 @@
                           </el-form-item>
                           <div v-show="listShowFlag">
                               <el-form-item class="selfPaddingLeft20">
-                                <ul class="working" style="width:550px;margin-top: -21px;">
+                                <ul class="working1" style="width:550px;margin-top: -21px;">
                                   <li v-for="item in teachArr" :key="item.id">
                                     <div>
                                       <div class="selfwoking-div">
@@ -1166,7 +1166,7 @@
                                       </div>
                                     </div>
                                     <div>
-                                      <i class="i-delete el-icon-close" @click="singledeletes(item)"></i>
+                                      <i class="i-delete1 el-icon-close" @click="singledeletes(item)"></i>
                                     </div>
                                   </li>
                                 </ul>
@@ -1348,7 +1348,7 @@
                           </el-form-item>
                           <div v-show="gehuanlistShowFlag">
                               <el-form-item class="selfPaddingLeft20">
-                                <ul class="working" style="width:550px;margin-top: -21px;">
+                                <ul class="working1" style="width:550px;margin-top: -21px;">
                                   <li v-for="item in gehuanteachArr" :key="item.id">
                                     <div>
                                       <div class="selfwoking-div">
@@ -1365,7 +1365,7 @@
                                       </div>
                                     </div>
                                     <div>
-                                      <i class="i-delete el-icon-close" @click="gehuansingledeletes(item)"></i>
+                                      <i class="i-delete1 el-icon-close" @click="gehuansingledeletes(item)"></i>
                                     </div>
                                   </li>
                                 </ul>
@@ -2591,18 +2591,8 @@ export default {
         //预约查询服务日期按钮
         searchseverDateyuyue() {
           this.yuyueradio = "";
+          this.yuyueformInline.Tech='';
           this.yuyuetimeObj=[];
-          //预约个数*单次服务时间如果大于6提示不能
-          if(this.yuyueNumber*this.copyserviceHour > 6){
-                this.$message({
-                  type: "warning",
-                  message: "总服务时长不能大于6小时！"
-                });
-                this.yuyueselectDateFlag = false;            
-                return false
-          }else{            
-      
-          }
           this.yuyueselectDateFlag = true;  
           //后台预约- 查询服务日期    serviceNum, masterId 
             var obj={
@@ -2643,6 +2633,7 @@ export default {
             return false;
           }
           this.yuyueradio = "";
+          this.yuyueformInline.Tech='';
           //选择的时间
           var time='';
           for (var a = 0; a < this.yuyuetimeObj.length; a++) {
@@ -2650,46 +2641,48 @@ export default {
               time = this.yuyuetimeObj[a].serviceTimeStr;
             }
           }
-          //后台预约- 查询服务技师    serviceNum，masterId，serviceTime      
-          var obj={
-            masterId: this.orderId,
-            serviceTime: this.yuyuechangTime + " " + time + ":00",
-            serviceNum:this.yuyueNumber
-          }    
-          subscribeTechList(obj)
-          .then(res => {
-            if(res.data.code == 1){
-              this.gudingFlag11 = true;
-              this.yuyuetableData =res.data.data          
-            }else{
-              //技师表格数据
-              this.yuyuetableData = []
-            }
-          }).catch(res => {
-              //技师表格数据
-              this.yuyuetableData = []
-          })
+          if(time == ''){
+            this.$message({
+              type: "error",
+              message: "请选择时间！"
+            });
+          }else{
+              //后台预约- 查询服务技师    serviceNum，masterId，serviceTime      
+              var obj={
+                masterId: this.orderId,
+                serviceTime: this.yuyuechangTime + " " + time + ":00",
+                serviceNum:this.yuyueNumber
+              }    
+              subscribeTechList(obj)
+              .then(res => {
+                if(res.data.code == 1){
+                  this.gudingFlag11 = true;
+                  this.yuyuetableData =res.data.data          
+                }else{
+                  //技师表格数据
+                  this.yuyuetableData = []
+                }
+              }).catch(res => {
+                  //技师表格数据
+                  this.yuyuetableData = []
+              })            
+
+          }
+
         },
         //预约数量改变
         yuyuenumberChange(val) {
           this.yuyueselectDateFlag = false;
           this.gudingFlag11 = false;
           this.yuyueformInline.severHour = val;
-          this.yuyueNumber = val;            
-          //预约个数*单次服务时间如果大于6提示不能
-          if(val*this.copyserviceHour > 6){
-                this.$message({
-                  type: "warning",
-                  message: "总服务时长不能大于6小时！"
-                });
-
-                return false
-          }
+          this.yuyueNumber = val; 
+          this.yuyueformInline.Tech='';
+          this.yuyueradio='';           
         },
         //预约单选改变
         yuyuegetCurrentRow(value) {
           this.yuyueradio = value;
-          this.yuyueformInline.Tech = this.yuyueradio;
+          this.yuyueformInline.Tech = value;
         },
         //预约保存
         yuyuesubmitTime(formName) {
@@ -2723,47 +2716,63 @@ export default {
               message: "请查询服务技师！"
             });
             return false;
-          }       
+          }
+          //未选择时间
+          if(this.yuyueformInline.Tech == '' && this.gudingFlag11 == true){
+            this.$message({
+              type: "error",
+              message: "请选择技师！"
+            });
+            return false;
+          }                  
           this.$refs[formName].validate(valid => {
-            if (valid) {
-              this.yuyuetimeSaveFlag1 = true;
+            if (valid) {             
               var time = "";
               for (var a = 0; a < this.yuyuetimeObj.length; a++) {
                 if (this.yuyuetimeObj[a].selected == true) {
                   time = this.yuyuetimeObj[a].serviceTimeStr;
                 }
               }
-              var that = this;
-              //后台预约- 保存 serviceNum，masterId，serviceTime，techId
-              var obj = {
-                masterId: this.orderId,
-                serviceTime: this.yuyuechangTime + " " + time + ":00",
-                serviceNum:this.yuyueNumber,
-                techId:this.yuyueformInline.Tech,
-              };          
-              subscribeSave(obj)
-                .then(res => {
-                  this.yuyuetimeSaveFlag1 = false;
-                  if (res.data.code === 1) {
-                    this.$message({
-                      type: "success",
-                      message: "预约成功!"
+              // var that = this;
+              if(time == ''){
+                  this.$message({
+                    type: "error",
+                    message: "请选择时间！"
+                  });
+                  
+              }else{
+                   this.yuyuetimeSaveFlag1 = true;
+                  //后台预约- 保存 serviceNum，masterId，serviceTime，techId
+                  var obj = {
+                    masterId: this.orderId,
+                    serviceTime: this.yuyuechangTime + " " + time + ":00",
+                    serviceNum:this.yuyueNumber,
+                    techId:this.yuyueformInline.Tech,
+                  };          
+                  subscribeSave(obj)
+                    .then(res => {
+                      this.yuyuetimeSaveFlag1 = false;
+                      if (res.data.code === 1) {
+                        this.$message({
+                          type: "success",
+                          message: "预约成功!"
+                        });
+                        this.getOrderAllInf(this.orderId);
+                        this.yuyuedialogVisible = false;
+                        this.yuyueselectDateFlag = false;
+                        this.yuyuetimeObj = [];
+                        this.gudingFlag11 = false; 
+                        this.$refs["formInline"].resetFields();                               
+                        
+                      } else {
+                        this.yuyuetimeSaveFlag1 = false;
+                      }
+                    })
+                    .catch(res => {
+                      this.yuyuetimeSaveFlag1 = false;
                     });
-                    this.getOrderAllInf(this.orderId);
-                    this.yuyuedialogVisible = false;
-                    this.yuyueselectDateFlag = false;
-                    this.yuyueformInline.Tech='';
-                    this.yuyuetimeObj = [];
-                    this.gudingFlag11 = false; 
-                    this.$refs["formInline"].resetFields();                               
-                    
-                  } else {
-                    this.yuyuetimeSaveFlag1 = false;
-                  }
-                })
-                .catch(res => {
-                  this.yuyuetimeSaveFlag1 = false;
-                });
+              }
+
             
             } else {
               var errArr = this.$refs[formName]._data.fields;
@@ -2782,8 +2791,8 @@ export default {
           });
         },
         //预约取消
-        yuyuecancelTime(formName) {          
-          this.yuyueformInline.Tech='';          
+        yuyuecancelTime(formName) {           
+          this.yuyueradio='';         
           this.$refs[formName].resetFields();
           //样式复位
           for (var a = 0; a < this.yuyuetimeObj.length; a++) {
@@ -2799,6 +2808,10 @@ export default {
         },
         //预约中日期变化时改变时间对象
         yuyuedateChange(val) {
+          this.gudingFlag11=false;//预约技师表格关闭
+          this.yuyuetableData=[];//预约技师表格清空
+          this.yuyueradio='';//预约技师表格单选清空
+          this.yuyueformInline.Tech='';
           var that = this;
           for (var b = 0; b < this.options21.length; b++) {
             if (val == this.options21[b].value) {
@@ -2828,6 +2841,7 @@ export default {
           this.gudingFlag11=false;
           this.yuyuetableData=[];
           this.yuyueradio='';
+          this.yuyueformInline.Tech='';
           for (var a = 0; a < this.yuyuetimeObj.length; a++) {
             this.$set(this.yuyuetimeObj[a], "selected", false);
             if (a == index) {
@@ -3748,20 +3762,20 @@ export default {
 ul li {
   list-style: none;
 }
-.i-delete {
+.i-delete1 {
     position: absolute;
     right: 20px;
     top: 35px;
     cursor: pointer;
     font-size: 12px;
 }
-.working {
+.working1 {
   border: 1px solid #bfcbd9;
   border-top: none;
   box-sizing: border-box;
   padding: 0 0 0 20px;
 }
-.working > li {
+.working1 > li {
   position: relative;
   border-bottom: 1px solid #f2f2f2;
   padding-top: 15px;
