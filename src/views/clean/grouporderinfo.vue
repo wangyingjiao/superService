@@ -1989,8 +1989,21 @@ export default {
                 return false;
               }              
 
-          }   
-                  
+          } 
+          if(this.radio4 =='' && this.gudingFlag == false){
+                this.$message({
+                  type: "error",
+                  message: "请查询技师！"
+                });
+                return false;            
+          }  
+          if(this.radio4 =='' && this.gudingFlag == true){
+                this.$message({
+                  type: "error",
+                  message: "请选择技师！"
+                });
+                return false;            
+          }                   
           this.$refs[formName].validate(val => {
             if (val) {
               this.Orderform1.workTimes = this.teachArr;
@@ -2087,10 +2100,6 @@ export default {
         },
         //设置固定服务时间服务时间段确定动作
         singletechClick() {
-          this.isB=false;//新增日期部分关闭 
-          this.tableData3=[];//技师表格清空
-          this.radio4='';//技师表格选择会值清空
-          this.gudingFlag=false; //技师部分关闭 
           if(this.gudingStatus =='edit'){
             this.Orderform1.Date=this.otherInfo.serviceStart
           }else{
@@ -2104,6 +2113,10 @@ export default {
             this.$message.error("请选择时段");
             return false;
           }
+          this.isB=false;//新增日期部分关闭 
+          this.tableData3=[];//技师表格清空
+          this.radio4='';//技师表格选择会值清空
+          this.gudingFlag=false; //技师部分关闭           
           var obj = {};
           obj.week = this.roomSel1Arr.id;
           obj.timeArea = this.timeArea;      
