@@ -1811,7 +1811,6 @@ export default {
     /*设置固定服务时间相关操作开始 */
         //设置固定服务时间按钮
         changeguTime(status) {
-
           this.gudingStatus=status;//是新增还是修改
           if(this.gudingStatus =='edit'){
             this.Orderform1.Date=this.otherInfo.serviceStart
@@ -2165,6 +2164,7 @@ export default {
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = [];
+          this.isB=false;//新增日期部分关闭 
         },
         //设置固定服务时间删除选择的服务时间（点击叉号）
         singledeletes(item) {
