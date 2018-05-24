@@ -1,8 +1,12 @@
 <template>
 <div>
   <!-- 搜索开始 -->
-    <div class="filter-container bgWhite">
-       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.orgId" placeholder="请选择机构">
+    <div class="filter-container tabStyle tabStyle2">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="普通订单" name="common"></el-tab-pane>
+        <el-tab-pane label="组合订单" name="grouporder"></el-tab-pane>
+      </el-tabs>
+       <el-select filterable  class="search-min" style="margin-left:20px;" clearable @change="searchOffice"  v-model="search.orgId" placeholder="请选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -148,6 +152,7 @@ export default {
     };
   },
   created() {
+    this.activeName = "common"
     getSList({}).then(res => {
       // 服务机构
       if (res.data.data.list != undefined) {
@@ -179,7 +184,9 @@ export default {
     // 获取列表
     getList() {
       this.listLoading = true;
-      var obj = {};
+      var obj = {
+        orderType: this.activeName
+      };
       if (this.search.payStatus) {
         obj = Object.assign(obj, { payStatus: this.search.payStatus });
       }
@@ -238,6 +245,10 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
+      this.getList();
+    },
+    //切换选项卡
+    handleClick() {
       this.getList();
     },
     searchOffice(val) {

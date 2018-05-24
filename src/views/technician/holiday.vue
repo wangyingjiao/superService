@@ -614,12 +614,4 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tabStyle2 .el-input {
-  margin-left: 0px;
-  margin-bottom: 0px;
-}
-.tabStyle2 .el-input-group {
-  margin-left: 20px;
-  margin-bottom: 20px;
-}
 </style>
