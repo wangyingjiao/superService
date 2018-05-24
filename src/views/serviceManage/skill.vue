@@ -91,7 +91,7 @@
                     <div class="tech-order-btnsk selfst1"  @click="orderTech"> &#10010; 请选择</div>
               </div>
             </el-form-item>            
-            <el-form-item label="" >
+            <el-form-item label="" style="margin-top:-23.5px;">
                   <div v-if="tabOptions.length !=0" class="techWrap">
                       <div class="tabWrap" v-for="item in tabOptions" :key="item.techId">
                         <el-tooltip class="clearfix" placement="left" v-if="item.techName != undefined" :disabled="item.techName.length < 9" :content="item.techName">
@@ -1035,9 +1035,9 @@ export default {
 }
 .techWrap {
   border: 1px solid #ccc;
+  line-height: 30px;
   border-top: none;
-  margin-top: -23.5px;
-  padding-top: 23px;
+  padding-top: 16px;
 }
 .tabWrap {
   width: 145px;
@@ -1046,7 +1046,7 @@ export default {
   height: 30px;
   text-align: center;
   line-height: 30px;
-  margin:-9px 0 3px 6px;
+  margin:-5px 0 3px 6px;
   background:#f2f7fd;
   color:#7a838a;
   font-size:14px;
