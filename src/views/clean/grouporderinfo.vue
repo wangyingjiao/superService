@@ -1910,7 +1910,6 @@ export default {
         },
         //设置固定服务时间预约个数改变
         numberChange(val) {
-          console.log('aaaaaaa')
           this.freStyl = "4";
           this.radio4 = "";
           if(this.gudingStatus =='edit'){
