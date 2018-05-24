@@ -1014,6 +1014,7 @@ export default {
 		if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
 			obj.value= parseFloat(obj.value); 
 		} 
+		// console.log(obj.value,"obj--------")
 		return obj.value
 	},
     //编辑

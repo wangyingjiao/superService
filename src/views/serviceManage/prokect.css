@@ -777,10 +777,13 @@
     background: rgba(242,247,253,1);
     padding: 0 8px;
   }
-  .labelList .sys-label-dialog{
+  .labelList .sys-label-dialog,.com-dialog .labelList .sys-label-dialog{
      width: 140px;
      padding-right: 15px;
      margin-bottom: 5px;
+  }
+  .com-dialog .labelList .sys-label-dialog{
+    width:130px;
   }
   .labelList .sys-label .sys-text{
     text-align: center;
