@@ -2976,7 +2976,7 @@ export default {
         },
         //选择技师弹出层保存
         submitForm2() {
-          this.techSaveFlag = true;//防止重复提交FLAG
+          
           //先遍历数据中选中的再保存（增加技师中的技师LIST）
           var arr = [];
           if (this.middleA != undefined && this.middleA.length != 0) {
@@ -2987,6 +2987,7 @@ export default {
             }
           }
           if (this.status == "add" && arr.length != 0) {
+            this.techSaveFlag = true;//防止重复提交FLAG
             //多选保存技师
             var obj = {
               orderId: this.subOneId1,
@@ -3005,6 +3006,7 @@ export default {
                   this.listTech = [];
                   this.changeTech(this.subOneId1)
                   this.dialogTableVisible = false;
+                  
                 }
               })
               .catch(res => {
@@ -3020,30 +3022,39 @@ export default {
                 tech.push(this.listTech[a].techId);
               }
             }
-            var obj1 = {
-              orderId: this.subOneId1,
-              techId: this.aa,
-              techIdList: tech
-            };
-            //已有订单改派保存按钮    参数orderId，techIdList，techId        
-            updateOrderTechDispatchSave(obj1)
-              .then(res => {
-                this.techSaveFlag = false;
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "改派成功!"
-                  });
-                  this.listTech = [];
-                  this.changeTech(this.subOneId1)
-                  this.dialogTableVisible = false;
-                } else {
+            if(tech.length == 0){
+                this.$message({
+                  type: "error",
+                  message: "请选择技师!"
+                });
+            }else{
+              this.techSaveFlag = true;//防止重复提交FLAG
+              var obj1 = {
+                orderId: this.subOneId1,
+                techId: this.aa,
+                techIdList: tech
+              };
+              //已有订单改派保存按钮    参数orderId，techIdList，techId        
+              updateOrderTechDispatchSave(obj1)
+                .then(res => {
                   this.techSaveFlag = false;
-                }
-              })
-              .catch(res => {
-                this.techSaveFlag = false;
-              });
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "改派成功!"
+                    });
+                    this.listTech = [];
+                    this.changeTech(this.subOneId1)
+                    this.dialogTableVisible = false;
+                  } else {
+                    this.techSaveFlag = false;
+                  }
+                })
+                .catch(res => {
+                  this.techSaveFlag = false;
+                });
+            }
+
           }
         },
         //更换技师弹出层改派或新增技师
