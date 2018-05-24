@@ -22,7 +22,7 @@
                                 <span v-if="infor.refundMethod=='alipay'">支付宝</span>
                                 <span v-if="infor.refundMethod=='bank_card'">银行卡</span>
                             </div>
-                            <div class="refundReason">
+                            <div class="refundReason" style="padding:0">
                                 <div>退款原因：</div>
                                 <div>{{infor.refundReason}}</div>
                             </div>
@@ -39,7 +39,7 @@
                             <div>退款金额：<span>{{'￥'+infor.refundAccountReality}}</span></div>
                         </div>
                        <div class="refund-right">
-                            <div>退款差额：
+                            <div style="padding:0;">退款差额：
                                 <div style="display:inline-block;padding-left:40px;">
                                     <p class="type-p" v-if="infor.refundDifferenceType">{{infor.refundDifferenceType=='less'?'少退':'多退'}}</p> 
                                     <p class="type-p" v-if="infor.refundDifference">{{'￥'+infor.refundDifference}}</p>
@@ -100,7 +100,7 @@
     .refundReason div:nth-child(2){
         width:80%;
         padding-left:20px;
-         text-indent:2em;
+        text-indent:2em;
     }
     #refundInformation{
         font-size: 12px;
