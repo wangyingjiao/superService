@@ -110,7 +110,7 @@
                       <span  style="margin-left: 20px;" >
                         <span>{{otherInfo.tech.name}}</span>
                         <span  style="margin-left:10px;">{{otherInfo.tech.phone}}</span>
-                        <span style="margin-left:15px;" v-if="otherInfo.orderStatus !='cancel'"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
+                        <span  style="margin-left:15px;" v-if="otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
                       </span>
                    </p>                                                                                            
                 </div>
@@ -138,8 +138,8 @@
                             <span style="margin-left:10px;">{{item.timeArea}}</span>
                           </li>
                         </ul>
-                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top:18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
-                        <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel'" style="float:left;width:100px;margin-top: 18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1" style="float:left;width:100px;margin-top:18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
+                        <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1" style="float:left;width:100px;margin-top: 18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
                       </div>                                      
                 </div>
             </div>
@@ -295,7 +295,7 @@
                     <span style="margin-left:20px;">已预约：<span>{{otherInfo.bespeakNum}}</span>次</span>
                     <span style="margin-left:20px;"> 剩余：<span>{{otherInfo.surplusNum}}</span>次</span>
                     <span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span>
-                    <span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25" v-if="otherInfo.surplusNum != 0" @click="yuyueClick" value="预约"></span> </p>                
+                    <span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25" v-if="otherInfo.surplusNum != 0 && btnShow.indexOf('combination_subscribe') > -1" @click="yuyueClick" value="预约"></span> </p>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
@@ -394,7 +394,7 @@
                         >                              
                           <template scope="scope">
                             <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
-                              <input type="button"  class="button-cancel height25"  @click="lookRemark(item)" value="查看备注">
+                              <input type="button" v-if="btnShow.indexOf('combination_remark') > -1" class="button-cancel height25"  @click="lookRemark(item)" value="查看备注">
                             </div> 
                           </template>                     
                       </el-table-column>                                        
@@ -405,8 +405,8 @@
                         fixed="right"
                         >
                             <template scope="scope">                                  
-                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish'" @click="changeTime(scope.row)" value="更换时间">
-                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish'" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
+                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTime(scope.row)" value="更换时间">
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
                     </el-table>
@@ -695,7 +695,7 @@
                 <div class="exptyDiv"></div>
                           
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20 prostyle" style="padding-top:20px;" >   
-                   <div style="font-size:12px;padding-left:40px;">
+                   <div style="font-size:12px;padding-left:40px;color:#8391a0d9">
                         <p v-if="techObj != undefined">*  该订单的技师为：<span>{{techObj.name}}</span><span style="padding-left:20px;">{{techObj.phone}}</span></p>
                         
                         <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
@@ -783,7 +783,7 @@
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
                     <input-num class="selfINputNumStyle"  v-model="yuyueNumber" :min='1'   :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></input-num>
-                    <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
+                    <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue" style="margin-left:20px;">查询服务日期</div> 
@@ -808,14 +808,14 @@
                               <!-- <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                       -->
                         </el-form-item>
                         <el-form-item label="" class="selfPaddingLeft20" style="margin-top: 20px;">              
-                        <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px;margin-top:-26px;">查询服务技师</div> 
+                        <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px;margin-top: -13px;">查询服务技师</div> 
                         </el-form-item>                    
                   </div>                   
 
               </div>
               <div v-show="gudingFlag11" class="PositionRelative">
                 <div class="exptyDiv"></div>
-                <div style="margin-left:80px;font-size:12px;padding-top: 20px;padding-left:20px;">
+                <div style="margin-left:80px;font-size:12px;padding-top: 20px;padding-left:20px;color:#8391a0d9">
                     <!-- <p>*  该订单的技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p> -->
                     <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
                 </div>               
@@ -1065,7 +1065,7 @@
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <input-num class="selfINputNumStyle"  v-model="severHour" :min='1'   :max="testMax" style="width:120px;" @change="numberChange"></input-num>
-                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于{{copyserviceHour*severHour}}小时！ </div>
+                   <div style="font-size: 12px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于{{copyserviceHour*severHour}}小时！ </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
@@ -1082,7 +1082,7 @@
                     </el-form-item>
                     <el-form-item style="margin-top: -15px;">
                       <div style="font-size: 12px;color: #576475;float:left;padding-left: 20px;" v-if="gudingStatus == 'edit'">                                           
-                        <span  style="display:inline-block;width: 612px;line-height: 18px;">
+                        <span  style="display:inline-block;width: 612px;line-height: 18px;color:#8391a0d9">
                           <span style="display:inline-block;float: left;">
                               <span>*目前固定服务时间：</span>
                               <span style="width:80px;">
@@ -1190,7 +1190,7 @@
                                 
               <div  v-if="gudingFlag" class="PositionRelative">
                 <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
-                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
+                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;color:#8391a0d9">
                     <p v-if="otherInfo.tech != undefined">* 更换固定服务时间，可能会影响固定技师； <span  >目前该订单的固定技师为：<span >{{otherInfo.tech.name}}</span><span  style="padding-left:20px;">{{otherInfo.tech.phone}}</span></span></p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20">             
@@ -1265,7 +1265,7 @@
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <input-num class="selfINputNumStyle"  v-model="gehuanseverHour" :min='1' :debounce='1000'  :max="999" style="width:120px;" @change="gehuannumberChange"></input-num>
-                   <div style="font-size: 12px;color: #576475;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*gehuanseverHour}}小时（预约个数 * 单次建议服务时长） </div>
+                   <div style="font-size: 12px;color:#8391a0d9;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*gehuanseverHour}}小时（预约个数 * 单次建议服务时长） </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="gehuansearchSeverDate">查询服务日期</div> 
@@ -1282,7 +1282,7 @@
                     </el-form-item>
                     <el-form-item style="margin-top: -15px;">
                       <div style="font-size: 12px;color: #576475;float:left;padding-left: 20px;">                                           
-                        <span  style="display:inline-block;width: 612px;line-height: 18px;">
+                        <span  style="display:inline-block;width: 612px;line-height: 18px;color:#8391a0d9">
                           <span style="display:inline-block;float: left;">
                               <span>*目前固定服务时间：</span>
                               <span style="width:80px;">
@@ -1369,7 +1369,7 @@
                                     </div>
                                   </li>
                                 </ul>
-                                <div class="severPromitINf" style="padding-left: 20px;">* 两周后的订单将按照更换后的固定时间分配</div>
+                                <div class="severPromitINf" style="padding-left: 20px;color:#8391a0d9">* 两周后的订单将按照更换后的固定时间分配</div>
                               </el-form-item>                    
                           </div>
                           <el-form-item label="选择日期" prop='Date' class="selfPaddingLeft20">
@@ -1389,7 +1389,7 @@
                                 
               <div  v-if="gehuangudingFlag" class="PositionRelative">
                 <div style="width:100%;height:20px;line-height:20px;background:#eef1f6;position:absolute;top:-36px;"></div>
-                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;">
+                <div style="margin-left:80px;font-size:12px;padding-left:20px;margin-top:50px;color:#8391a0d9">
                     <p>* 更换固定服务时间，可能会影响固定技师； 目前该订单的固定技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p>
                 </div>               
                 <el-form-item label="选择技师" prop="Tech" class="selfPaddingLeft20">             
@@ -3931,7 +3931,7 @@ ul li {
   height: 20px;
   line-height: 20px;
   margin-left: 22px;
-  color: #8391a5;
+  color: #8391a0d9;
 }
 .mark {
   background: url(../../../static/icon/Selected.png) right bottom no-repeat;
@@ -4045,7 +4045,7 @@ ul li {
   margin-left: 10px;
 }
 .NowTabs {
-  color: #576475;
+  color: #8391a0d9;
   float: left;
   width: 100%;
   font-size: 14px;
