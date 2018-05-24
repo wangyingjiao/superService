@@ -129,7 +129,8 @@
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="数量" min-width="140">
 											<template scope="scope">
-												<span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span>
+												<inputNum :min='1' :max="999999"  v-model="scope.row.combinationNum"></inputNum>
+												<!-- <span ><el-input-number class="selfINputNumStyle" v-model="scope.row.combinationNum" :min='1'  :max="999999"></el-input-number></span> -->
 											</template>
 										</el-table-column>
 										<el-table-column prop="name" align="center" label="操作">
@@ -400,6 +401,7 @@ import { userType} from '../../utils/auth'
 import { parseTime } from "@/utils";
 import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import combination from './combination'
+import inputNum from '../../components/inputNum.vue'
 import {
   Taxonomy,
   Orienteering,
@@ -418,28 +420,6 @@ import addCommodity from "./addCommodity.vue";
 import dict from "../../../static/dict.json"
 //挂载数据
 var arr = [];
-var informationTables = [
-  {label:'日常保洁1',name:'一居室',company:'￥120 /一居室',price:'11',num:'1'},
-  {label:'深度保洁1',name:'平米保洁',company:'￥20 /平米',price:'12',num:'2'},
-  {label:'日常保洁2',name:'一居室',company:'￥120 /一居室',price:'13',num:'3'},
-  {label:'深度保洁2',name:'平米保洁1',company:'￥201 /平米',price:'14',num:'4'},
-]
-var informationTable = [
-  {check:false,itemName:'日常保洁1',name:'居室保洁1',unit:'100',price:"间",id:'1',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁2',name:'居室保洁2',unit:'200',price:"间",id:'2',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁3',name:'居室保洁3',unit:'300',price:"间",id:'3',combinationPrice:"0",combinationNum:'1'},
-  {check:false,itemName:'日常保洁4',name:'居室保洁4',unit:'400',price:"间",id:"4",combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁5',name:'居室保洁5',unit:'500',price:"间",id:'5',combinationPrice:'0',combinationNum:'1'},
-  {check:false,itemName:'日常保洁6',name:'居室保洁6',unit:'600',price:"间",id:'6',combinationPrice:'0',combinationNum:'1'}
-]
-var commodityDate = [
-  {check:false,itemName:'日常保洁1',goodsName:'居室保洁1',goodsPrice:'100',goodsUnit:"间",goodsId:'1',convertHours:'1小时'},
-  {check:false,itemName:'日常保洁2',goodsName:'居室保洁2',goodsPrice:'200',goodsUnit:"间",goodsId:'2',convertHours:'2小时'},
-  {check:false,itemName:'日常保洁3',goodsName:'居室保洁3',goodsPrice:'300',goodsUnit:"间",goodsId:'3',convertHours:'3小时'},
-  {check:false,itemName:'日常保洁4',goodsName:'居室保洁4',goodsPrice:'400',goodsUnit:"间",goodsId:'4',convertHours:'4小时'},
-  {check:false,itemName:'日常保洁5',goodsName:'居室保洁5',goodsPrice:'500',goodsUnit:"间",goodsId:'5',convertHours:'5小时'},
-  {check:false,itemName:'日常保洁6',goodsName:'居室保洁6',goodsPrice:'600',goodsUnit:"间",goodsId:'6',convertHours:'6小时'}
-]
 export default {
   name: "project",
   directives: {
@@ -1006,15 +986,12 @@ export default {
 	},  
 	//组合商品售价限制
 	inputPrice(e){
-		let obj = e.target
-		obj.value = obj.value.replace(/[^\d\.]/g,""); //清除"数字"和"."以外的字符  
-		obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的  
-		obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$","."); 
-		obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数  
-		if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额 
-			obj.value= parseFloat(obj.value); 
-		} 
-		// console.log(obj.value,"obj--------")
+		let obj = e.target;
+		obj.value = obj.value.replace(/[^\d\.]/g,'');
+		obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字而不是  
+		obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的 
+		obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");   
+		obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数 
 		return obj.value
 	},
     //编辑
@@ -1171,8 +1148,8 @@ export default {
 					let i , j , lon = this.commodityArr.length;
 					//判读：复选框选中
 					for( i = data.length ; i -- ;){
-						data[i].combinationPrice = '0'
-						data[i].combinationNum = '1'
+						data[i].combinationPrice = 0
+						data[i].combinationNum = 1
 						if(!lon) this.radio = ''
 						for( j = lon ; j-- ;){
 							if(this.commodityArr[j].goodsId == data[i].goodsId){
@@ -1229,79 +1206,6 @@ export default {
     orgSearch(item){
       this.search.orgId = item
     },
-    //删除商品
-    // deletGood(item) {
-    //   this.$confirm("此操作将删除该商品, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     closeOnClickModal: false,
-    //     customClass: "deleteCom",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       deleteGoodsData({ id: item.id, itemId: item.itemId })
-    //         .then(data => {
-    //           if (data.data.code == 1) {
-    //             this.$message({
-    //               type: "success",
-    //               message: data.data.data
-    //             });
-    //             this.handleCurrentChange(this.listQuery.page);
-    //           } else {
-    //           }
-    //         })
-    //         .catch(error => {});
-    //     })
-    //     .catch(() => {
-    //       // return
-    //     });
-    // },
-    //已对接E店
-    // dockingE(item) {
-    //   if (item.jointEshopFlag == "yes") {
-    //     alreadyButted({ id: item.id })
-    //       .then(data => {
-    //         if (data.data.code == 1) {
-    //           var arr = data.data.data;
-    //           if ("commodityEshops" in arr) {
-    //             for (var i = 0; i < arr.commodityEshops.length; i++) {
-    //               if ("jointGoodsCode" in arr.commodityEshops[i]) {
-    //                 continue;
-    //               } else {
-    //                 arr.commodityEshops[i].jointGoodsCode = "";
-    //               }
-    //             }
-    //           }
-    //           // this.dockingData[0] = arr
-
-    //           this.$set(this.dockingData, 0, arr);
-    //           this.docking = true;
-    //         } else {
-    //           this.$message({
-    //             type: "warning",
-    //             message: data.data.data
-    //           });
-    //         }
-    //       })
-    //       .catch(error => {
-    //         return false;
-    //       });
-    //   } else {
-    //     this.dockingData = [];
-    //     this.docking = true;
-    //   }
-    // },
-    //对接详情
-    // buttDetails() {
-    //   this.$router.push({ path: "/service/buttDetails/" });
-    // },
-    // returnImg(item) {
-    //   var arr = [];
-    //   for (var i = 0; i < item.length; i++) {
-    //     arr.push(item[i].url);
-    //   }
-    //   return arr;
-    // },
     imgClick(item) {
 	  this.picFile = item;
 	  this.$refs.basic.validateField('picture')
@@ -1312,35 +1216,6 @@ export default {
     imgTextClick(item) {
       this.imgText = item;
     },
-    //对接商品
-    // handleSendData(row) {
-    //   var obj = { id: row.id };
-    //   sendData(obj)
-    //     .then(data => {
-    //       if (data.data.code == 1) {
-    //         this.$message({
-    //           type: "success",
-    //           message: data.data.data
-    //         });
-    //       }
-    //       if (data.data.code == 3) {
-    //         this.$message({
-    //           type: "warning",
-    //           message: data.data.data
-    //         });
-    //       }
-    //       this.getList(this.pageNumber, this.pageSize);
-    //     })
-    //     .catch(error => {
-    //       return false;
-    //     });
-    // },
-    //添加商品
-    // addCommodity() {
-    //   this.addCommodityFlag = true;
-    //   this.resetForm("ser");
-    //   this.handleEditFlag = false;
-    // },
     converFilter(val) {
       var reg = /^\d+(\.\d{1,2})?$/;
       var con = reg.test(val) ? true : false;
@@ -1478,80 +1353,6 @@ export default {
         return value;
       }
     },
-    //商品添加/编辑
-    // submitForm(formName) {
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       var obj = Object.assign({}, this.goods_info);
-    //       obj.startPerNum = this.goods_info.startPerNum || 0;
-    //       obj.minPurchase = this.goods_info.minPurchase;
-    //       obj.cappingPerNum = this.goods_info.cappingPerNum || 0;
-    //       obj.convertHours = this.goods_info.convertHours || 0;
-    //       obj.price = this.returnFloat(this.goods_info.price);
-    //       if (this.handleEditFlag) {
-    //         this.$set(this.basicForm.commoditys, this.handleEditIndex, obj);
-    //         this.resetForm("ser");
-    //         this.handleEditFlag = false;
-    //         this.addCommodityFlag = false;
-    //       } else {
-    //         if ("id" in obj) {
-    //           delete obj.id;
-    //         }
-    //         if ("jointGoodsCode" in obj) {
-    //           delete obj.jointGoodsCode;
-    //         }
-    //         this.basicForm.commoditys.push(obj);
-    //         this.resetForm("ser");
-    //         this.addCommodityFlag = false;
-    //       }
-    //     } else {
-    //       var errArr = this.$refs[formName]._data.fields;
-    //       var errMes = [];
-    //       for (var i = 0; i < errArr.length; i++) {
-    //         if (errArr[i].validateMessage != "") {
-    //           errMes.push(errArr[i].validateMessage);
-    //         }
-    //       }
-    //       this.$message({
-    //         type: "error",
-    //         message: errMes[0]
-    //       });
-    //       return false;
-    //     }
-    //   });
-    // },
-    //表格编辑
-    // handleEdit(index, val) {
-    //   this.addCommodityFlag = true;
-    //   this.handleEditFlag = true;
-    //   this.handleEditIndex = index;
-    //   this.editName = Object.assign({}, val);
-    //   this.goods_info = Object.assign({}, val);
-    //   this.goods_info.startPerNum = this.goods_info.startPerNum
-    //     ? this.goods_info.startPerNum
-    //     : "";
-    //   this.goods_info.cappingPerNum = this.goods_info.cappingPerNum
-    //     ? this.goods_info.cappingPerNum
-    //     : "";
-    //   this.goods_info.minPurchase = this.goods_info.minPurchase
-    //     ? this.goods_info.minPurchase
-    //     : "";
-    //   //   this.addComm = true;
-    // },
-    //表格删除
-    // tableHandleDelete(index, item) {
-    //   if (this.basicForm.commoditys.length <= 1) {
-    //     this.$message.error("商品信息不能为空");
-    //     return false;
-    //   } else {
-    //     this.$message({
-    //       message: "删除成功",
-    //       type: "success"
-    //     });
-    //     this.handleEditFlag = false;
-    //     this.basicForm.commoditys.splice(index, 1);
-    //   }
-    // },
     houseClick(val) {
       this.basicForm.sortId = "";
       this.tableProject({ majorSort: val });
@@ -1574,73 +1375,6 @@ export default {
         }
       }
     },
-    // serGetList() {
-    //   this.pageNumber = 1;
-    //   this.getList(this.pageNumber);
-    //   this.listQuery.page = 1;
-    // },
-    // getList(page, size, getObj) {
-    //   var _page = page || this.pageNumber;
-    //   var _size = size || this.pageSize;
-    //   this.listLoading = true;
-    //   var obj = {};
-    //   if (getObj) {
-    //     obj = getObj;
-    //   } else {
-    //     var obj = {};
-    //     if (this.basicForm.majorSort) {
-    //       obj.majorSort = this.tabs;
-    //     }
-    //     if (this.search.sortId) {
-    //       obj.sortId = this.search.sortId;
-    //     }
-    //     if (this.search.name) {
-    //       obj.name = this.search.name;
-    //     }
-    //     if (this.search.goodsName) {
-    //       obj.goodsName = this.search.goodsName;
-    //     }
-    //     if(this.search.orgId){
-    //       obj.orgId = this.search.orgId
-    //     }
-    //     // if (this.search.sortIdandGoodsId) {
-    //     //   obj.sortIdandGoodsId = this.search.sortIdandGoodsId;
-    //     // }
-    //   }
-    //   getProject(obj, _page, _size)
-    //     .then(res => {
-    //       this.orgStatus = res.data.data.orgStatus;
-    //       this.total = res.data.data.page.count;
-    //       this.pageNumber = res.data.data.page.pageNo;
-    //       this.pageSize = res.data.data.page.pageSize;
-    //       this.listQuery.page = res.data.data.page.pageNo;
-    //       this.listTable = res.data.data.page.list;
-    //       let i,
-    //         len = this.listTable.length;
-    //       if (this.listTable != undefined && this.listTable.length > 0) {
-    //         for (i = 0; i < len; i++) {
-    //           this.listTable[i].num = i + 1;
-    //         }
-    //       }
-    //       this.listLoading = false;
-    //     })
-    //     .catch(res => {
-    //       this.listLoading = false;
-    //     });
-    // },
-    // 搜索
-    // handleSizeChange(val) {
-    //   this.pageSize = val;
-    //   this.getList(1, this.pageSize);
-    //   this.pageNumber = 1;
-    //   this.listQuery.page = 1;
-    // },
-    // handleCurrentChange(val) {
-    //   this.pageNumber = val;
-
-    //   this.listLoading = true;
-    //   this.getList(this.pageNumber, this.pageSize);
-    // },
     handleCreate(formName,str) {
       this.handleCreateFlag = str
       this.measure = dict.meterage;    //计量方式 ，防止收通用订单影响
@@ -1665,142 +1399,6 @@ export default {
       this.itemNameSearch = ''
       this.goodNameSearch = ''
     },
-    //编辑方法
-    // handleUpdate(row) {
-    //   this.handleCreateFlag = 'single'
-    //   this.resetForm();
-    //   this.temp = Object.assign({}, row);
-    //   this.dialogStatus = "update";
-    //   this.basicForm.majorSort = "clean";
-    //   this.picList = [];
-    //   this.editId = row.id;
-    //   this.listLoading = true;
-    //   ServerEdit({ id: this.editId })
-    //     .then(data => {
-    //       if (data.data.code == 1) {
-    //         var dataUpdate = data.data.data;
-    //         this.jointCode = true;
-    //         // if (dataUpdate.commoditys != undefined) {
-    //         let i,
-    //           len = dataUpdate.commoditys.length;
-    //         for (i = 0; i < len; i++) {
-    //           dataUpdate.commoditys[i].price = this.returnFloat(
-    //             dataUpdate.commoditys[i].price
-    //           );
-    //         }
-    //           if(dataUpdate.sortId < 100){
-    //            this.sordFlag = false
-    //            this.measure = { "num": "按时长或数量"}
-    //            this.goods_info.type = "num"
-    //           }else{
-    //             this.sordFlag = true
-    //             this.measure = dict.meterage;
-    //           }
-    //         // }
-    //         this.listLoading = false;
-    //         this.dialogFormVisible = true;
-    //         var arr = data.data.data;
-    //         if (arr.pictures != undefined) {
-    //           this.picFile = arr.pictures;
-    //           //banner传给upload组件
-    //           this.picList = this.picFile;
-    //           // this.imgNumber = arr.pictures.length;
-    //           // for (var i = 0; i < arr.pictures.length; i++) {
-    //           //   var obj = {
-    //           //     url:arr.pictures[i]
-    //           //   }
-    //           //   this.picList.push(arr.pictures[i]);
-    //           // }
-    //         }
-    //         if (arr.pictureDetails != undefined) {
-    //           this.imgText = arr.pictureDetails;
-    //           //详情图片传给upload组件
-    //           this.pictureDetails = this.imgText;
-    //           // for(var i = 0;i<arr.pictureDetails.length; i++){
-    //           // var obj = {
-    //           // 	url:arr.pictureDetails[i]
-    //           // }
-    //           // 	this.pictureDetails.push(arr.pictureDetails[i])
-    //           // }
-    //         } else {
-    //           this.pictureDetails = ["", "", "", ""];
-    //         }
-    //         this.tableProject({ majorSort: arr.majorSort }, arr.sortId);
-    //         this.basicForm = arr;
-    //         this.customArr = arr.customTags || [];
-    //         this.alreadyArr = arr.sysTags || [];
-    //       } else {
-    //         this.listLoading = false;
-    //         return false;
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.listLoading = false;
-    //       return false;
-    //     });
-    // },
-    // handleDelete(row) {
-    //   this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     closeOnClickModal: false,
-    //     customClass: "deleteCom",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       var obj = {
-    //         id: row.id
-    //       };
-    //       ServerDelete(obj)
-    //         .then(res => {
-    //           if (res.data.code) {
-    //             if (res.data.code == 1) {
-    //               this.$message({
-    //                 type: "success",
-    //                 message: res.data.data
-    //               });
-    //             }
-    //             if (res.data.code == 3) {
-    //               this.$message({
-    //                 type: "warning",
-    //                 message: res.data.data
-    //               });
-    //             }
-    //             this.handleCurrentChange(this.listQuery.page);
-    //           } else {
-    //             // this.$message({
-    //             //   type: "error",
-    //             //   message: res.data.data
-    //             // });
-    //             // return false
-    //           }
-    //         })
-    //         .catch(error => {
-    //           return false;
-    //         });
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "warning",
-    //         message: "已取消删除"
-    //       });
-    //     });
-    // },
-    // handleClick(tab, event) {
-    //   this.search.sortId = "";
-    //   // this.search.name = "";
-    //   // this.search.goodsName = "";
-    //   // this.search.sortIdandGoodsId = "";
-    //   var size = this.pageSize;
-    //   this.pageNumber = 1;
-    //   Taxonomy({ majorSort: tab.name })
-    //     .then(data => {
-    //       this.searchSortList = data.data.data;
-    //     })
-    //     .catch(error => {});
-    //   this.getList(1, size);
-    //   this.listQuery.page = 1;
-    // },
     //取消
     cancel(fromName) {
       if (this.dialogStatus == "update") {
@@ -1884,152 +1482,6 @@ export default {
           }
         })
     },
-    //保存
-    // subForm(formName) {
-    //   var that = this;
-    //   this.$refs[formName].validate(valid => {
-    //     if (valid) {
-    //       this.btnState = true;
-    //       var arr = [];
-    //       var obj = Object.assign({}, that.basicForm);
-    //       obj.pictures = this.picFile; //服务图片缩略图.
-    //       obj.pictureDetails = this.imgText;
-    //       obj.sysTags = this.labelClickArr; //添加 系统标签
-    //       obj.customTags = this.customArr;
-    //       var loading = this.$loading({
-    //         lock: true,
-    //         spinner: "el-icon-loading",
-    //         background: "rgba(0, 0, 0, 0.7)",
-    //         target: document.querySelector(".tabBox ")
-    //       });
-    //       //==update 是编辑   create是添加
-    //       if (this.dialogStatus == "update") {
-    //         that.basicForm.sysTags = this.alreadyArr.concat(this.labelClickArr);
-    //         that.basicForm.customTags = this.customArr;
-    //         that.basicForm.pictures = this.picFile;
-    //         that.basicForm.pictureDetails = this.imgText;
-    //         serverEditPre(that.basicForm)
-    //           .then(data => {
-    //             this.btnState = false;
-    //             if (data.data.code) {
-    //               if (data.data.code == 3) {
-    //                 this.$message({
-    //                   message: data.data.data,
-    //                   type: "warning"
-    //                 });
-    //               }
-    //               if (data.data.code == 1) {
-    //                 this.$message({
-    //                   message: data.data.data,
-    //                   type: "success"
-    //                 });
-    //               }
-    //               loading.close();
-    //               this.resetForm();
-    //               this.dialogFormVisible = false;
-    //               this.getList(this.pageNumber, this.pageSize);
-    //               this.picFile = [];
-    //               this.pictureDetails = [];
-    //               this.picList = [];
-    //               this.imgNumber = 0;
-    //             } else {
-    //               loading.close();
-    //               this.btnState = false;
-    //               this.imgNumber = 0;
-    //             }
-    //           })
-    //           .catch(error => {
-    //             loading.close();
-    //             this.btnState = false;
-    //             this.imgNumber = 0;
-    //           });
-    //       } else {
-    //         if ("id" in obj) {
-    //           delete obj.id;
-    //         }
-    //         if ("pictureDetail" in obj) {
-    //           delete obj.pictureDetail;
-    //         }
-    //         // if("pictureDetails" in obj){
-    //         //   delete obj.pictureDetails
-    //         // }
-    //         ServerAdd(obj)
-    //           .then(data => {
-    //             this.btnState = false;
-    //             if (data.data.code) {
-    //               if (data.data.code == 1) {
-    //                 this.$message({
-    //                   message: data.data.data,
-    //                   type: "success"
-    //                 });
-    //               }
-    //               if (data.data.code == 3) {
-    //                 this.$message({
-    //                   message: data.data.data,
-    //                   type: "warning"
-    //                 });
-    //               }
-    //               //loading取消
-    //               loading.close();
-    //               this.cancel("basic");
-    //               this.basicForm.majorSort = "all";
-    //               this.search.sortId = "";
-    //               this.search.name = "";
-    //               this.search.goodsName = "";
-    //               // this.search.sortIdandGoodsId = "";
-  
-    //               this.$refs['orgSearch'].orgEmpty()
-    //               this.orgSearch()
-    //               this.tabs = "all";
-    //               this.listQuery.page = 1;
-    //               this.getList(1, this.pageSize);
-    //               this.picFile = [];
-    //               this.pictureDetails = [];
-    //             } else {
-    //               loading.close();
-    //               this.btnState = false;
-    //             }
-    //           })
-    //           .catch(error => {
-    //             loading.close();
-    //             this.btnState = false;
-    //           });
-    //       }
-    //     } else {
-    //       var errArr = this.$refs[formName]._data.fields;
-    //       var errMes = [];
-    //       for (var i = 0; i < errArr.length; i++) {
-    //         if (errArr[i].validateMessage != "") {
-    //           errMes.push(errArr[i].validateMessage);
-    //         }
-    //       }
-    //       this.$message({
-    //         type: "error",
-    //         message: errMes[0]
-    //       });
-    //       return false;
-    //     }
-    //   });
-    // },
-    // resetForm(ser) {
-    //   if (this.$refs["goods_info"]) {
-    //     this.$refs["goods_info"].resetFields();
-    //   }
-    //   if (ser == "ser") {
-    //     this.addCommodityFlag = true;
-    //   } else {
-    //     this.addCommodityFlag = false;
-    //     // this.addComm = false
-    //   }
-    //   this.goods_info.name = "";
-    //   this.goods_info.unit = "";
-    //   this.goods_info.type = "";
-    //   this.goods_info.price = "";
-    //   this.goods_info.convertHours = "";
-    //   this.goods_info.minPurchase = "";
-    //   this.goods_info.startPerNum = "";
-    //   this.goods_info.cappingPerNum = "";
-    // },
     //弹框关闭回调
     emptyingForm() {
       if (this.$refs["goods_info"]) {
@@ -2053,32 +1505,11 @@ export default {
       this.itemName = ''
       this.goodName = ''
     },
-    // resetEmpty(txt) {
-    //   if (txt == "ser") {
-    //     this.$refs["goods_info"].resetFields();
-    //     this.goods_info.minPurchase = "";
-    //     this.goods_info.startPerNum = "";
-    //     this.goods_info.cappingPerNum = "";
-    //   } else {
-    //     this.$refs["goods_info"].resetFields();
-    //     this.$refs["basic"].resetFields();
-    //     this.goods_info.minPurchase = "";
-    //     this.basicForm.sortNum = ""; //排序号好清空
-    //     this.basicForm.cityCodes = []; //定向城市
-    //     this.goods_info.minPurchase = ""; //起够数量
-    //     this.basicForm.commoditys = []; //商品信息表格
-    //     this.picFile = []; //清空图片
-    //     this.pictureDetails = [];
-    //     this.picList = []; //清空图片
-    //     this.dialogFormVisible = false;
-    //   }
-    // },
     listDataAllClick(){
          let list = async ()=>{
             try{
               let _list = await this.$refs['orgSearch'].listDataAll()
               this.orgList = _list
-              // this.handleClick({ name: "all" });
             }
             catch(error){
             }
@@ -2094,22 +1525,10 @@ export default {
     imgService,
     addCommodity,
     orgSearch,
-    combination
+	combination,
+	inputNum
   },
   mounted(){
-    // this.listDataAllClick()
-    // console.log('_______________________________________')
-    // let list = async ()=>{
-    //   try{
-    //     let _list = await this.$refs['orgSearch'].listDataAll()
-    //     this.orgList = _list
-    //     this.handleClick({ name: "all" });
-    //   }
-    //   catch(error){
-    //   }
-    // }
-
-    // list()
   },
   filters:{
    keepTwoNum(value){
@@ -2121,9 +1540,6 @@ export default {
 </script>
 <style>
     @import './prokect.css';
-    .com-dialog .el-table{
-        /* margin-top: 0; */
-    }
     .combinationType-info .el-form-item__content{
       margin-left: 108px !important;
     }
@@ -2135,7 +1551,6 @@ export default {
     }
     .price-com{
       background: #fff;
-      /* border:1px solid #bfcbd9; */
       border: none;
       width: 70%;
       height: 34px;
@@ -2143,9 +1558,6 @@ export default {
       outline: 0;
       transition: border-color .2s cubic-bezier(.645 .045,.355,1);
     }
-    /* .com-dialog table{
-      width: 100% !important;
-	} */
 	.com-dialog .el-dialog--small{
 		width: 60%;
 	}
