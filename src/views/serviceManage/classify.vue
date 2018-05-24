@@ -85,11 +85,6 @@
            class="form_item"
             placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
           </el-form-item>
-           
-          <el-form-item label="分类名称:" prop="num" >
-            <inputNum v-model="temp.num" :min='1' :max = '8' :text="'测试组件'"></inputNum>
-          </el-form-item>
-           
 
           </el-form>
       
@@ -165,7 +160,7 @@ export default {
       total: 1,
       majorSorts: [],
       temp: {
-        num: 0,
+        num:1,
         name: "",
         majorSort: ""
       },
@@ -173,18 +168,6 @@ export default {
         name: ""
       },
       rules: {
-        num: [
-          {
-            required: true,
-            validator: numBlur,
-            trigger: "blur"
-          },
-          // {
-          //   required: true,
-          //   validator: numChange,
-          //   trigger: "change"
-          // }
-        ],
         majorSort: [
           { required: true, message: "所属类型不能为空", trigger: "change" }
         ],
