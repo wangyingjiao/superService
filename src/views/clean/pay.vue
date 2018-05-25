@@ -1,12 +1,8 @@
 <template>
 <div>
   <!-- 搜索开始 -->
-    <div class="filter-container tabStyle tabStyle2">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="普通订单" name="common"></el-tab-pane>
-        <el-tab-pane label="组合订单" name="grouporder"></el-tab-pane>
-      </el-tabs>
-       <el-select filterable  class="search-min" style="margin-left:20px;" clearable @change="searchOffice"  v-model="search.orgId" placeholder="请选择机构">
+    <div class="filter-container bgWhite">
+       <el-select filterable  class="search-min" clearable @change="searchOffice"  v-model="search.orgId" placeholder="请选择机构">
         <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -46,10 +42,14 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="支付编号" min-width="210" prop="payNumber">      
+      <el-table-column  align="center" label="订单编号或订单组ID" min-width="250" >  
+        <template scope="scope">
+          <span v-if="scope.row.orderType == 'common'">{{scope.row.orderNumber}}</span>
+          <span v-else>{{scope.row.masterId}}</span>
+        </template>    
       </el-table-column>
-        
-        <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
+
+      <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
                <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                  <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.orgName}}</p>
@@ -66,17 +66,25 @@
              <p :class="scope.row.stationName.length < 10 ? '' : 'overheidden'" >{{scope.row.stationName}}</p>
            </el-tooltip>
         </template>
-       
       </el-table-column>
 
-
-      <el-table-column v-if="this.activeName =='common'" align="center" label="订单编号" min-width="210" prop="orderNumber">      
-      </el-table-column>
-
-      <el-table-column v-if="this.activeName =='grouporder'" align="center" label="订单组ID" min-width="210" prop="masterId">      
+      <el-table-column align="center" label="支付编号" min-width="210" prop="payNumber">      
       </el-table-column>
       
+      
       <el-table-column align="center" label="支付金额" min-width="100" prop="payAccount">      
+      </el-table-column>
+
+      <el-table-column align="center" label="支付方式" min-width="100">
+        <template scope="scope">
+          <span v-if="scope.row.payPlatform =='cash'">现金</span>
+          <span v-if="scope.row.payPlatform =='wx_pub_qr'">微信扫码</span>
+          <span v-if="scope.row.payPlatform =='wx'">微信</span>
+          <span v-if="scope.row.payPlatform =='alipay_qr'">支付宝扫码</span>
+          <span v-if="scope.row.payPlatform =='alipay'">支付宝</span>
+          <span v-if="scope.row.payPlatform =='pos'">银行卡</span>
+          <span v-if="scope.row.payPlatform =='balance'">余额</span>
+        </template>      
       </el-table-column>
 
       <el-table-column align="center" label="支付状态" min-width="100" prop="payStatus" >
@@ -112,7 +120,7 @@ import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "log",
+  name: "pay",
   directives: {
     waves
   },
@@ -135,6 +143,7 @@ export default {
       total: 1,
       seOptions: {
         orderNumber: "订单编号",
+        masterId: "订单组ID",
         payNumber: "支付编号"
       },
       payState: {
@@ -154,7 +163,6 @@ export default {
     };
   },
   created() {
-    this.activeName = "common"
     getSList({}).then(res => {
       // 服务机构
       if (res.data.data.list != undefined) {
@@ -186,9 +194,7 @@ export default {
     // 获取列表
     getList() {
       this.listLoading = true;
-      var obj = {
-        orderType: this.activeName
-      };
+      var obj = {};
       if (this.search.payStatus) {
         obj = Object.assign(obj, { payStatus: this.search.payStatus });
       }
@@ -208,6 +214,11 @@ export default {
           payNumber: this.search.val
         };
         obj = Object.assign(obj, payNumber);
+      }else if (this.search.type == "masterId") {
+        var masterId = {
+          masterId: this.search.val
+        };
+        obj = Object.assign(obj, masterId);
       }
       getPay(obj, this.pageNumber, this.pageSize)
         .then(res => {
@@ -247,10 +258,6 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.pageNumber = val;
-      this.getList();
-    },
-    //切换选项卡
-    handleClick() {
       this.getList();
     },
     searchOffice(val) {
