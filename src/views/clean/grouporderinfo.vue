@@ -792,6 +792,7 @@
                   <div v-show="yuyueselectDateFlag" class="PositionRelative">
                         <div class="exptyDiv"></div>
                         <el-form-item label="选择日期:" prop='Date' style="padding-top:20px;padding-left:20px;">
+                                <span class="selfLabelStyle" style="left: -72px;">*</span>
                                 <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:20px;width:82%"  @change='yuyuedateChange' placeholder="请选择">
                                   <el-option
                                     v-for="item in options21"
@@ -1714,9 +1715,9 @@ export default {
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       yuyueformInline1rules: {
-        Date: [
-          { required: true, message: "请选择服务日期", trigger: "change" }
-        ],
+        // Date: [
+        //   { required: true, message: "请选择服务日期", trigger: "change" }
+        // ],
         // Time: [
         //   { required: true, message: "请选择服务时间", trigger: "change" }
         // ],
