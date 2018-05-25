@@ -681,6 +681,7 @@
                           </el-select>                      
                   </el-form-item>
                   <el-form-item label="选择时间" prop='Time' class="selfPaddingLeft20">
+                        <span class="selfLabelStyle" style="left: -72px;">*</span>
                         <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                         <div class="marginTopDec46" style="width:500px;">
                           <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -688,7 +689,7 @@
                         <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                   </el-form-item>
                   <el-form-item label="" class="selfPaddingLeft20">              
-                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:0px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
+                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:-20px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
@@ -791,6 +792,7 @@
                   <div v-show="yuyueselectDateFlag" class="PositionRelative">
                         <div class="exptyDiv"></div>
                         <el-form-item label="选择日期:" prop='Date' style="padding-top:20px;padding-left:20px;">
+                                <span class="selfLabelStyle" style="left: -72px;">*</span>
                                 <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:20px;width:82%"  @change='yuyuedateChange' placeholder="请选择">
                                   <el-option
                                     v-for="item in options21"
@@ -801,6 +803,7 @@
                                 </el-select>                      
                         </el-form-item>
                         <el-form-item label="选择时间:" prop='Time' class="selfPaddingLeft20" >
+                              <span class="selfLabelStyle" style="left: -72px;">*</span>
                               <el-input type="hidden" value='' v-model='yuyueformInline.Time'></el-input>                  
                               <div class="marginTopDec46" style="width:500px;">
                                 <div class="selfSeverTimeSt" ref="yuyueTimeWrap"  v-for="(item,index) in yuyuetimeObj" :key="index" @click="yuyuetimeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -808,7 +811,7 @@
                               <!-- <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                       -->
                         </el-form-item>
                         <el-form-item label="" class="selfPaddingLeft20" style="margin-top: 20px;">              
-                            <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px;margin-top: 1px;">查询服务技师</div> 
+                            <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px; margin-top: -15px">查询服务技师</div> 
                         </el-form-item>                    
                   </div>                   
 
@@ -1174,6 +1177,7 @@
                               </el-form-item>                    
                           </div>
                           <el-form-item v-if="gudingStatus != 'edit'" label="选择日期" prop='Date' class="selfPaddingLeft20">
+                                  <span class="selfLabelStyle">*</span>
                                   <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
                                     <el-option
                                       v-for="item in options3"
@@ -1673,7 +1677,7 @@ export default {
         workTimes: [
           { required: true,validator:WORKTIMES , trigger: "blur" }
         ],
-        Date: [{ required: true, message: "请选择日期", trigger: "change" }],
+        // Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       gehuanOrderform: {
@@ -1705,18 +1709,18 @@ export default {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       yuyueformInline1rules: {
-        Date: [
-          { required: true, message: "请选择服务日期", trigger: "change" }
-        ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Date: [
+        //   { required: true, message: "请选择服务日期", trigger: "change" }
+        // ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       timeObj: [], //时间对象
@@ -1811,7 +1815,6 @@ export default {
     /*设置固定服务时间相关操作开始 */
         //设置固定服务时间按钮
         changeguTime(status) {
-
           this.gudingStatus=status;//是新增还是修改
           if(this.gudingStatus =='edit'){
             this.Orderform1.Date=this.otherInfo.serviceStart
@@ -1927,6 +1930,11 @@ export default {
           this.listShowFlag=false;//隐藏时间选择结果
           this.freStyl = index;
           this.Orderform1.testsele = key;
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          } 
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = []; 
@@ -2160,6 +2168,7 @@ export default {
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = [];
+          this.isB=false;//新增日期部分关闭 
         },
         //设置固定服务时间删除选择的服务时间（点击叉号）
         singledeletes(item) {

@@ -397,36 +397,61 @@ export default {
     },
     //未对接列表复选框--全选
     selectCheckboxWhole(selection){
+      console.log(selection,"select-all")
       if(this.activeName != "yesDocking"){
-        if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
-          // this.$refs.multipleTable.clearSelection();
-          this.selectCheckboxWholeFlag = false  
-          this.selectableArr = selection
-          let obj = {}
-          obj.serItemCommodityEshops = this.selectableArr
-          obj.eshopCode = this.search.eshopCode
-          verificationJointDate(obj)
-            .then(({data})=>{
-               if(data.code == 1){
-                  if('data' in data){
-                      this.$nextTick(()=>{
-                        this.checkboxEd(data.data)
-                      })
-                      this.selectCheckboxWholeFlag = true
-                  }else{
-                      this.selectCheckboxWholeFlag = false
-                  }
-               }else{
-                 this.selectCheckboxWholeFlag = false
-               }
-            })
-            .catch(error=>{
-              console.log(error,"error----+++++")
-            })
+        if(selection.length > 0){    //>0 选中请求， =0 取消选中不请求
+            this.selectableArr = selection
+            let obj = {}
+            obj.serItemCommodityEshops = this.selectableArr
+            obj.eshopCode = this.searchLoca.eshopCode
+            verificationJointDate(obj)
+              .then(({data})=>{
+                if(data.code == 1){
+                    if('data' in data){
+                        this.$nextTick(()=>{
+                          this.checkboxEd(data.data)
+                        })
+                    }else{
+                    }
+                }else{
+                }
+              })
+              .catch(error=>{
+                console.log(error,"error----+++++")
+              })
         }else{
-          this.selectCheckboxWholeFlag = true
         }
       }
+      // if(this.activeName != "yesDocking"){
+      //   if(this.selectCheckboxWholeFlag){     //全选-- 选中时触发，取消不触发
+      //     // this.$refs.multipleTable.clearSelection();
+      //     this.selectCheckboxWholeFlag = false  
+      //     this.selectableArr = selection
+      //     let obj = {}
+      //     obj.serItemCommodityEshops = this.selectableArr
+      //     obj.eshopCode = this.searchLoca.eshopCode
+      //     verificationJointDate(obj)
+      //       .then(({data})=>{
+      //          if(data.code == 1){
+      //             if('data' in data){
+      //                 this.$nextTick(()=>{
+      //                   this.checkboxEd(data.data)
+      //                 })
+      //                 this.selectCheckboxWholeFlag = true
+      //             }else{
+      //                 this.selectCheckboxWholeFlag = false
+      //             }
+      //          }else{
+      //            this.selectCheckboxWholeFlag = false
+      //          }
+      //       })
+      //       .catch(error=>{
+      //         console.log(error,"error----+++++")
+      //       })
+      //   }else{
+      //     this.selectCheckboxWholeFlag = true
+      //   }
+      // }
     },
     //未对接列表复选框 接口
     noCheckbox(arr,obj,callback){
@@ -438,7 +463,7 @@ export default {
                       type: "warning",
                       message:`${obj[0].newName}下存在未对接成功的子商品，不可设置对接`
                   });
-                  if(callback) callback(false)
+                  if(callback) callback(false)    //无法选择，赋值false，下次点击重新请求数据
                 }else{
                   this.$refs.multipleTable.toggleRowSelection(obj[0],true);
                 }
@@ -457,7 +482,7 @@ export default {
           this.selectableArr[0] = row
           let obj ={}
           obj.serItemCommodityEshops = this.selectableArr
-          obj.eshopCode = this.search.eshopCode
+          obj.eshopCode = this.searchLoca.eshopCode
           if('checked' in row){   //判断 - 选中触发接口，取消不触发
             if(row.checked){
               row['checked'] = false

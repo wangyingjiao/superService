@@ -122,7 +122,7 @@
 												<!-- <span><input type="text" v-model="scope.row.combinationPrice"></span> -->
 												<div class="input-price">
 													<i class="iconfont">&#xe61c;</i>
-													<input class="price-com" type="text"  :value="scope.row.combinationPrice" @input="e => scope.row.combinationPrice = inputPrice(e)"/>
+													<input class="price-com" type="text"  :value="scope.row.combinationPrice" @input="e => scope.row.combinationPrice = inputPrice(e)" @blur="e=>scope.row.combinationPrice = inputBlur(e)"/>
 													<!-- <input class="price-com" type="text" v-model.trim="scope.row.combinationPrice" :maxlength="inputMaxL"  @input="inputMaxL= /^\d+\.?\d{0,1}$/.test(scope.row.combinationPrice) ? null : scope.row.combinationPrice.length - 1" /> -->
 												</div>
 											</template>
@@ -984,6 +984,12 @@ export default {
 		this.SystemLabel = false
 		this.$refs.basic.validateField("sysTags")
 	},  
+	//组合商品售价失焦默认“0”
+	inputBlur(e){
+		let obj = e.target
+		obj.value = obj.value == '' ? 0 : obj.value
+		return obj.value
+	},
 	//组合商品售价限制
 	inputPrice(e){
 		let obj = e.target;
