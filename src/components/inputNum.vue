@@ -26,6 +26,7 @@ export default {
     this.minNum = this.min != undefined ? this.min : -9999;
   },
   methods: {
+   
     dis(val) {
       console.log(val);
     },
