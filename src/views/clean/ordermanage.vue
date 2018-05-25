@@ -131,7 +131,7 @@
 					</el-table-column>	  
 					<el-table-column align="center" label="操作" width="150" fixed="right">
 					<template scope="scope">
-							<el-button class="ceshi3" type="button" v-if="btnShow.indexOf('order_info') > -1" @click="lookInf(scope.row.id)">查看</el-button>
+							<el-button class="ceshi3" type="button" @click="lookInf(scope.row.id)">查看</el-button>
 					</template>
 					</el-table-column>
 				</el-table>    

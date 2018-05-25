@@ -61,7 +61,7 @@
                         <el-table-column :selectable="selectable" type="selection" width="100" align="center"></el-table-column>
                         <el-table-column prop="newName" label="对接商品名称" align="center" min-width="130">
                             <template scope="scope">
-                                    <el-tooltip placement="left" :disabled="scope.row.newName.length <= 13" :content="scope.row.newName">
+                                    <el-tooltip placement="left" :disabled="scope.row.newName.length <= 10" :content="scope.row.newName">
                                         <span>{{scope.row.newName}}</span>
                                     </el-tooltip>
                             </template>
@@ -144,7 +144,7 @@ import {
   buttedList,
   verificationJoint
 } from "@/api/serviceManage";
-import { userType} from '../../utils/auth'
+import { userType, setToken} from '../../utils/auth'
 import orgSearch from '../../components/Hamburger/orgSearch.vue'
 import { listDataAll } from "@/api/tech";
 export default {
@@ -385,6 +385,7 @@ export default {
           if(arr[j] == tableData3[i].id){
             messageArr += tableData3[i].newName+'、'
             this.$refs.multipleTable.toggleRowSelection(tableData3[i],false);
+            tableData3[i]['checked'] = false 
           }else{
             // this.$refs.multipleTable.toggleRowSelection(tableData3[i],true);
           }
@@ -397,7 +398,10 @@ export default {
     },
     //未对接列表复选框--全选
     selectCheckboxWhole(selection){
-      console.log(selection,"select-all")
+      let i , len = selection.length ;
+      for( i = len ; i-- ;){
+        selection[i]['checked'] = true
+      }
       if(this.activeName != "yesDocking"){
         if(selection.length > 0){    //>0 选中请求， =0 取消选中不请求
             this.selectableArr = selection
@@ -493,10 +497,10 @@ export default {
               })
             }
           }else{    //判断 - 第一次没有'checked'字段
-            row['checked'] = true
-            this.noCheckbox(obj,this.selectableArr,(bl)=>{
-              row['checked'] = bl
-            })
+              row['checked'] = true
+              this.noCheckbox(obj,this.selectableArr,(bl)=>{
+                row['checked'] = bl
+              })
           }
         }
       }
@@ -582,13 +586,13 @@ export default {
     //一页展示几条
     handleSizeChange(page) {
       this.pageSize = page;
-      this.tablePageSize(this.search, this.pageSync, this.pageSize);
+      this.tablePageSize(this.searchLoca, this.pageSync, this.pageSize);
       this.selectCheckboxWholeFlag = true
     },
     // 分页
     handleCurrentChange(val) {
       this.pageSync = val;
-      this.tablePageSize(this.search, this.pageSync, this.pageSize);
+      this.tablePageSize(this.searchLoca, this.pageSync, this.pageSize);
       this.selectCheckboxWholeFlag = true
     },
     //所属类型

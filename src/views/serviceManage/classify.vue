@@ -86,6 +86,11 @@
             placeholder="请输入2-10位的分类名" v-model.trim="temp.name"></el-input>
           </el-form-item>
 
+          <!-- <el-form-item label="分类名称:">
+            <input-num
+            :min="0"
+            placeholder="请输入2-10位的分类名" v-model.trim="temp.num"></input-num>
+          </el-form-item> -->
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
@@ -122,24 +127,6 @@ export default {
     inputNum
   },
   data() {
-    var numBlur = (rule, value, cb) => {
-      console.log(/^[1-9]\d*$/.test(value));
-      console.log(value);
-      if (!/^[1-9]\d*$/.test(value)) {
-        cb(new Error("只能是整数"));
-      } else {
-        cb();
-      }
-    };
-    var numChange = (rule, value, cb) => {
-      console.log(/^[1-9]\d*$/.test(value));
-      console.log(value);
-      if (!/^[1-9]\d*$/.test(value)) {
-        cb(new Error("change只能是整数"));
-      } else {
-        cb();
-      }
-    };
     return {
       btnShow: [],
       btnState: false,

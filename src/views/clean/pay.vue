@@ -42,10 +42,10 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column  align="center" label="订单编号或订单组ID" min-width="210" >  
+      <el-table-column  align="center" label="订单编号或订单组ID" min-width="250" >  
         <template scope="scope">
-          <span v-if="scope.row.orderType == 'common'">{{rowObj.row.orderNumber}}</span>
-          <span v-else>{{rowObj.row.masterId}}</span>
+          <span v-if="scope.row.orderType == 'common'">{{scope.row.orderNumber}}</span>
+          <span v-else>{{scope.row.masterId}}</span>
         </template>    
       </el-table-column>
 
@@ -120,7 +120,7 @@ import util from "@/utils/date";
 import waves from "@/directive/waves/index.js"; // 水波纹指令
 
 export default {
-  name: "log",
+  name: "pay",
   directives: {
     waves
   },
