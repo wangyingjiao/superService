@@ -288,20 +288,26 @@
         <div class="thrid-bar marginTop15">
             <div class="custom-action">已有订单信息</div>
             <div class="hr-style"></div>
-            <div class="techTabWrap" style="width:100%">
-                <div>
-                  <p class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'">
+            <div class="techTabWrap" style="width:100%">                
+                <div style="width:100%">
+                  <div class="yuyueStyle" v-if="otherInfo.orderType =='group_split_yes'">
+                     <span >单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span>
+                  </div>
+                  <div class="yuyueStyle" style="float:right;text-align: right;" v-if="otherInfo.orderType =='group_split_yes'">
                     <span>可预约次数：<span>{{otherInfo.bespeakTotal}}</span>次</span>
                     <span style="margin-left:20px;">已预约：<span>{{otherInfo.bespeakNum}}</span>次</span>
-                    <span style="margin-left:20px;"> 剩余：<span>{{otherInfo.surplusNum}}</span>次</span>
-                    <span style="margin-left:146px;">单个订单的建议服务时长：<span>{{otherInfo.serviceHour}}</span></span>
-                    <span style="float:right;margin-right: 20px;"><input type="button"  class="button-cancel height25" v-if="otherInfo.surplusNum != 0 && btnShow.indexOf('combination_subscribe') > -1" @click="yuyueClick" value="预约"></span> </p>                
+                    <span style="margin-left:20px;"> 剩余：<span>{{otherInfo.surplusNum}}</span>次</span>                    
+                    <span style="margin-right: 20px;"><input type="button"  class="button-cancel height25" style=" margin-top:-5px;" v-if="otherInfo.surplusNum != 0 && btnShow.indexOf('combination_subscribe') > -1" @click="yuyueClick" value="预约"></span> 
+                  </div>                
                 </div>               
                 <div class="selfTableWrapStyle2">                
                     <el-table
                       :data="ordertableData"
                       border                  
-                      class="orderInfoHeaderPic testaa">
+                      class="orderInfoHeaderPic testaa"
+                      style="margin-top:-8px;"
+                      >
+                      <!-- height="250" -->
                       <el-table-column
                         align="center"
                         min-width='180'
@@ -447,10 +453,10 @@
                 </div>                                     		
             </div>
             <!--下单用户信息结束-->        
-            <!--订单备注开始-->
+            <!--技师备注开始-->
             <div class="thrid-bar marginTop15 PositionRelative">
                 <div class="exptyDiv" ></div>
-                <div class="custom-action1 selfPaddingLeft20">订单备注</div>
+                <div class="custom-action1 selfPaddingLeft20">技师备注</div>
                 <div class="hr-style1 selfPaddingLeft20"></div>
                 <div class="selfWrap1 selfPaddingLeft20">
                     <div class="leftArea" style="width:100%;">
@@ -470,7 +476,7 @@
                     </div> 
                 </div>                                     		
             </div>
-            <!--订单备注结束-->               
+            <!--技师备注结束-->               
             <!--业务人员信息开始-->
             <div class="thrid-bar marginTop15 PositionRelative">
                 <div class="exptyDiv"></div>
@@ -783,8 +789,8 @@
               <div>
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
-                    <input-num class="selfINputNumStyle"  v-model="yuyueNumber" :min='1'   :max="otherInfo.surplusNum" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></input-num>
-                    <div style="font-size: 12px;color: #576475;width:500px;padding-left:20px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时（预约个数 * 单次建议服务时长） </div>
+                    <input-num class="selfINputNumStyle"  v-model="yuyueNumber" :min='1'   :max="yuyueMax" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></input-num>
+                    <div style="font-size: 12px;color: #576475;min-width:587px;padding-left:20px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时(预约个数 * 单次建议服务时长)且总服务长不能超过6小时! </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue" style="margin-left:20px;">查询服务日期</div> 
@@ -818,11 +824,7 @@
               </div>
               <div v-show="gudingFlag11" class="PositionRelative">
                 <div class="exptyDiv"></div>
-                <div style="margin-left:80px;font-size:12px;padding-top: 20px;padding-left:20px;color:#8391a0d9">
-                    <!-- <p>*  该订单的技师为：<span>{{otherInfo.tech.name}}</span><span style="padding-left:20px;">{{otherInfo.tech.phone}}</span></p> -->
-                    <p>更换服务时间，可能会影响已派技师，若已派技师无空闲时间，可选择其他技师</p>
-                </div>               
-                <el-form-item label="选择技师:" prop="Tech" class="selfPaddingLeft20">             
+                <el-form-item label="选择技师:" prop="Tech" class="selfPaddingLeft20" style="padding-top:14px;">             
                   <div style="margin-top: -10px;margin-right:30px;">                
                       <el-table
                         :data="yuyuetableData"
@@ -1068,7 +1070,7 @@
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <input-num class="selfINputNumStyle"  v-model="severHour" :min='1'   :max="testMax" style="width:120px;" @change="numberChange"></input-num>
-                   <div style="font-size: 12px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于{{copyserviceHour*severHour}}小时！ </div>
+                   <div style="font-size: 12px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于6小时！ </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
@@ -1178,7 +1180,7 @@
                           </div>
                           <el-form-item v-if="gudingStatus != 'edit'" label="选择日期" prop='Date' class="selfPaddingLeft20">
                                   <span class="selfLabelStyle">*</span>
-                                  <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
+                                  <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次上门服务日期">
                                     <el-option
                                       v-for="item in options3"
                                       :key="item.key"
@@ -1377,7 +1379,7 @@
                               </el-form-item>                    
                           </div>
                           <el-form-item label="选择日期" prop='Date' class="selfPaddingLeft20">
-                                  <el-select v-model="gehuanOrderform.Date" style="width:550px;"  @visible-change='gehuandateChange1' @change='testChangea' placeholder="请选择第一次服务日期">
+                                  <el-select v-model="gehuanOrderform.Date" style="width:550px;"  @visible-change='gehuandateChange1' @change='testChangea' placeholder="请选择第一次上门服务日期">
                                     <el-option
                                       v-for="item in gehuanoptions3"
                                       :key="item.key"
@@ -1601,6 +1603,7 @@ export default {
       ],
       testFlag: false,
       testMax:null,
+      yuyueMax:null,
       gehuantestFlag:false,
       changeTechFlag: false,
       radio1: "",
@@ -1860,7 +1863,7 @@ export default {
               if(this.Orderform1.Date == ''){
                 this.$message({
                   type: "error",
-                  message: "请选择第一次服务日期！"
+                  message: "请选择第一次上门服务日期！"
                 });
                 return false;
               }  
@@ -1984,7 +1987,7 @@ export default {
               if(this.Orderform1.Date == ''){
                 this.$message({
                   type: "error",
-                  message: "请选择第一次服务日期！"
+                  message: "请选择第一次上门服务日期！"
                 });
                 return false;
               }
@@ -2264,7 +2267,7 @@ export default {
               if(this.gehuanOrderform.Date == ''){
                 this.$message({
                   type: "error",
-                  message: "请选择第一次服务日期！"
+                  message: "请选择第一次上门服务日期！"
                 });
                 return false;
               }             
@@ -2384,7 +2387,7 @@ export default {
           if(this.gehuanOrderform.Date == ''){
             this.$message({
               type: "error",
-              message: "请选择第一次服务日期！"
+              message: "请选择第一次上门服务日期！"
             });
             return false;
           }
@@ -2595,6 +2598,11 @@ export default {
     /*预约相关操作开始 */
         //预约操作按钮
         yuyueClick() {
+          if(6/this.copyserviceHour < this.otherInfo.surplusNum){
+             this.yuyueMax=6/this.copyserviceHour;
+          }else{
+             this.yuyueMax=this.otherInfo.surplusNum;
+          }          
           this.yuyueformInline.Tech="";
           this.yuyueradio = "";
           this.yuyueformInline.severHour = "1";
@@ -2685,7 +2693,7 @@ export default {
 
         },
         //预约数量改变
-        yuyuenumberChange(val) {
+        yuyuenumberChange(val) {        
           this.yuyueformInline.severHour = val;
           this.yuyueNumber = val;
           this.yuyueformInline.Date = '' 
@@ -4244,7 +4252,7 @@ ul li {
   margin-top: 20px;
 }
 .yuyueStyle{
-  margin: 20px 0 20px 0px;font-size:12px;width:100%;
+  margin: 20px 0 20px 0px;font-size:12px;width:50%;display:inline-block;
 }
 .selfTableWrapStyle2 {
   min-width: 100%;
