@@ -199,67 +199,6 @@
   </el-dialog>
    <!-- 新增岗位弹窗 -->
    <roleDialog ref="roleDialog" :treeData = 'data2'  @getlistByDia='getlistByDia'></roleDialog>
-  <el-dialog 
-       title="新增岗位" 
-       :visible.sync="dialogFormStation" 
-       append-to-body
-       :show-close= "false"
-       :close-on-click-modal="false"
-       :close-on-press-escape="false"
-       class="twoDialog diasize" 
-      >
-      
-      <el-form 
-        class="small-space" 
-        :model="temp2" 
-        label-position="left"
-        :rules="rules2"
-        ref="temp2" 
-        label-width="80px" 
-        style='width: 100%;padding:0 6%;'>
-        
-        <el-form-item label=" 所属机构:"  prop="officeId2">
-          <el-select style='width: 100%;' filterable @change="orgChange" v-model="temp2.officeId2" placeholder="请选择">
-            <el-option v-for="item in mechanismCheck" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="岗位名称:" prop="name">
-          <el-input v-model.trim="temp2.name" style='width: 100%;' placeholder="请输入2-15位的岗位名称"></el-input>
-        </el-form-item>
-
-        <el-form-item label="权限:" class="treecss" prop="check">
-           <el-tree
-              class="scrollBox"
-              :data="data2"
-              :indent= 30
-              show-checkbox
-              node-key="id"
-              v-model="temp2.check"
-              ref="domTree"
-              :filter-node-method="filterNode"
-              style='width: 100%;'
-              @check-change="handTreechange"
-              :default-expand-all = "true"
-              :props="defaultProps">
-            </el-tree>
-           
-        </el-form-item>
-        <!-- <el-form-item label="状态">
-          <el-select style='width: 400px;' class="filter-item" v-model="stationState" placeholder="可用">
-            <el-option v-for="item in stationStateCheck" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-          </el-select>
-        </el-form-item> -->
-
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <button class="button-large" :disabled="btnState" @click="create2('temp2')">保 存</button>    
-        <button class="button-cancel" @click="resetForm2('temp2')">取 消</button>
-      </div>
-    </el-dialog>
-    
 
   </div>
   </div>
@@ -358,24 +297,6 @@ export default {
         }
       }
     };
-    var validateName = (rule, value, callback) => {
-      var that = this;
-      if (!value) {
-        return callback(new Error("岗位名不能为空"));
-      } else {
-        var obj = {
-          name: value,
-          id: this.temp2.officeId2
-        };
-        chkName(obj).then(res => {
-          if (res.data.code == 0) {
-            callback(new Error("岗位名重复！"));
-          } else {
-            callback();
-          }
-        });
-      }
-    };
     return {
       btnShow: [],
       btnState: false, //按钮禁用
@@ -433,12 +354,6 @@ export default {
         children: "subMenus",
         label: "name"
       },
-      temp2: {
-        officeId2: "",
-        check: [],
-        dataScope: "10",
-        stationState: ""
-      },
       stationState: "",
       orgList: "",
       stationCheck: [], // 岗位
@@ -463,7 +378,6 @@ export default {
       ],
 
       dialogFormVisible: false,
-      dialogFormStation: false,
       dialogStatus: "",
       textMap: {
         update: "编辑员工",
@@ -500,30 +414,6 @@ export default {
           { required: true, message: "服务站不能为空", trigger: "change" }
         ],
         role: [{ required: true, message: "岗位不能为空", trigger: "change" }]
-      },
-      rules2: {
-        officeId2: [
-          { required: true, message: "机构不能为空", trigger: "change" }
-        ],
-        name: [
-          {
-            required: true,
-            message: "岗位名称不能为空",
-            trigger: "blur"
-          },
-          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
-        ],
-        dataScope: [
-          { required: true, message: "等级不能为空", trigger: "change" }
-        ],
-        check: [
-          {
-            type: "array",
-            required: true,
-            message: "权限不能为空",
-            trigger: "check-change"
-          }
-        ]
       }
     };
   },
@@ -535,11 +425,6 @@ export default {
         deleted: "danger"
       };
       return statusMap[status];
-    }
-  },
-  watch: {
-    filterText(val) {
-      this.$refs.domTree.filter(val);
     }
   },
   created() {
@@ -608,23 +493,8 @@ export default {
     renderHeader(h) {
       return [h("p", {}, ["服务机构"]), h("p", {}, ["服务站"])];
     },
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.type.indexOf(value) !== -1;
-    },
     getlistByDia(str) {
       console.log(str, "参数");
-    },
-    orgChange(val) {
-      if (val == "sys") {
-        this.$nextTick(() => {
-          this.filterText = "";
-        });
-      } else {
-        this.$nextTick(() => {
-          this.filterText = "business";
-        });
-      }
     },
     loadingClick() {
       loading = this.$loading({
@@ -711,134 +581,6 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.resetTemp();
-    },
-    // addstation() {
-    //   this.resetTemptwo();
-    // },
-    handTreechange(a, b, c) {
-      if (b) {
-        // 处理订单里的查看详情
-        if (
-          [
-            "order_time",
-            "order_dispatch",
-            "order_addTech",
-            "order_cancel"
-          ].indexOf(a.permission) > -1
-        ) {
-          var arr = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].permission == "order") {
-                  this.$refs.domTree.setChecked(
-                    this.data2[i].subMenus[j].subMenus[
-                      this.data2[i].subMenus[j].subMenus.length - 2
-                    ].id,
-                    true
-                  );
-                }
-              }
-            } else {
-            }
-          }
-        }
-        //订单详情处理完毕
-        //自动勾选列表权限
-        if (a.subMenus == undefined) {
-          var arr = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].id == arr[3]) {
-                  var str = this.data2[i].subMenus[j].subMenus[
-                    this.data2[i].subMenus[j].subMenus.length - 1
-                  ];
-                  if (str.permission != undefined) {
-                    var per = str.permission;
-                    var newper = per.substring(per.length - 4, per.length);
-
-                    if (newper == "view") {
-                      this.$refs.domTree.setChecked(str.id, true);
-                    }
-                  } else {
-                  }
-                }
-              }
-            }
-          }
-        } else {
-        }
-        //自动勾选列表权限结束
-      } else {
-        //订单的查看详情不可取消
-
-        if (a.permission == "order_info") {
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].permission == "order") {
-                  var orderarr = this.data2[i].subMenus[j];
-                  for (var k = 0; k < orderarr.subMenus.length - 2; k++) {
-                    if (
-                      this.temp2.check.indexOf(orderarr.subMenus[k].id) > -1
-                    ) {
-                      this.$refs.domTree.setChecked(
-                        this.data2[i].subMenus[j].subMenus[
-                          orderarr.subMenus.length - 2
-                        ].id,
-                        true
-                      );
-                      this.temp2.check = this.$refs.domTree.getCheckedKeys();
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        //订单处理结束
-
-        //处理列表权限不可取消
-
-        if (
-          a.permission.substring(
-            a.permission.length - 4,
-            a.permission.length
-          ) == "view"
-        ) {
-          var arr1 = a.parentIds.split(",");
-          for (var i = 0; i < this.data2.length; i++) {
-            if (this.data2[i].subMenus != undefined) {
-              for (var j = 0; j < this.data2[i].subMenus.length; j++) {
-                if (this.data2[i].subMenus[j].id == arr1[3]) {
-                  for (
-                    var k = 0;
-                    k < this.data2[i].subMenus[j].subMenus.length - 1;
-                    k++
-                  ) {
-                    if (
-                      this.temp2.check.indexOf(
-                        this.data2[i].subMenus[j].subMenus[k].id
-                      ) > -1
-                    ) {
-                      this.$refs.domTree.setChecked(
-                        this.data2[i].subMenus[j].subMenus[
-                          this.data2[i].subMenus[j].subMenus.length - 1
-                        ].id,
-                        true
-                      );
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        //列表处理完毕
-      }
-      this.temp2.check = this.$refs.domTree.getCheckedKeys();
     },
     handleUpdate(row) {
       //点击编辑
@@ -1181,16 +923,6 @@ export default {
         useable: "1"
       };
     },
-    resetTemp2() {
-      // 清空岗位信息
-      this.temp2 = {
-        officeId2: "",
-        name: "",
-        dataScope: "",
-        check: []
-      };
-      //this.dataScope = "";
-    },
     resetForm(formName) {
       // 清空表单并还原状态
       this.dialogFormVisible = false;
@@ -1201,19 +933,6 @@ export default {
       this.roleState = false;
       this.crBtnState = false;
       this.useableState = false;
-    },
-    resetForm2(formName) {
-      // 清空岗位表单
-      this.temp2 = {
-        officeId2: "",
-        name: "",
-        dataScope: "10",
-        check: []
-      };
-      //this.dataScope = "";
-      this.dialogFormStation = false;
-      this.$refs.domTree.setCheckedKeys([]);
-      this.$refs[formName].resetFields();
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
