@@ -350,10 +350,6 @@ export default {
       },
 
       data2: [],
-      defaultProps: {
-        children: "subMenus",
-        label: "name"
-      },
       stationState: "",
       orgList: "",
       stationCheck: [], // 岗位

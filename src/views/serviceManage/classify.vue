@@ -91,6 +91,8 @@
             :min="0"
             placeholder="请输入2-10位的分类名" v-model.trim="temp.num"></input-num>
           </el-form-item> -->
+
+          
           </el-form>
       
       <div slot="footer" class="dialog-footer" style="text-align: center;">   
