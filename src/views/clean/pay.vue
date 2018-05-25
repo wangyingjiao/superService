@@ -70,9 +70,11 @@
       </el-table-column>
 
 
-      <el-table-column align="center" label="订单编号" min-width="210" prop="orderNumber">      
+      <el-table-column v-if="this.activeName =='common'" align="center" label="订单编号" min-width="210" prop="orderNumber">      
       </el-table-column>
 
+      <el-table-column v-if="this.activeName =='grouporder'" align="center" label="订单组ID" min-width="210" prop="masterId">      
+      </el-table-column>
       
       <el-table-column align="center" label="支付金额" min-width="100" prop="payAccount">      
       </el-table-column>

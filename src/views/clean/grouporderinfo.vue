@@ -681,6 +681,7 @@
                           </el-select>                      
                   </el-form-item>
                   <el-form-item label="选择时间" prop='Time' class="selfPaddingLeft20">
+                        <span class="selfLabelStyle" style="left: -72px;">*</span>
                         <el-input type="hidden" value='' v-model='formInline.Time'></el-input>                  
                         <div class="marginTopDec46" style="width:500px;">
                           <div class="selfSeverTimeSt" ref="TimeWrap"  v-for="(item,index) in timeObj" :key="index" @click="timeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -688,7 +689,7 @@
                         <div v-if="timeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                      
                   </el-form-item>
                   <el-form-item label="" class="selfPaddingLeft20">              
-                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:0px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
+                        <div class="button-large-fourth" style="margin-left: 20px;margin-top:-20px;" v-if="otherInfo.orderType == 'group_split_yes'" @click="searchSeverTech1">查询服务技师</div> 
                   </el-form-item>
               </div>
               <div v-if="gudingFlag1 && otherInfo.orderType == 'group_split_yes'" class="PositionRelative">
@@ -778,7 +779,7 @@
           :close-on-click-modal="false"
           class="selfDialogWidth3"
           >
-            <el-form  :model="yuyueformInline" :rules="yuyueformInline1rules" ref="yuyueformInline" label-width="80px">
+            <el-form  :model="yuyueformInline" :rules="yuyueformInline1rules" ref="yuyueformInline" label-width="80px" class="gehuanjishiform">
               <div>
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
@@ -791,6 +792,7 @@
                   <div v-show="yuyueselectDateFlag" class="PositionRelative">
                         <div class="exptyDiv"></div>
                         <el-form-item label="选择日期:" prop='Date' style="padding-top:20px;padding-left:20px;">
+                                <span class="selfLabelStyle" style="left: -72px;">*</span>
                                 <el-select v-model="yuyueformInline.Date" class="selfDateStyle" style="margin-left:20px;width:82%"  @change='yuyuedateChange' placeholder="请选择">
                                   <el-option
                                     v-for="item in options21"
@@ -801,6 +803,7 @@
                                 </el-select>                      
                         </el-form-item>
                         <el-form-item label="选择时间:" prop='Time' class="selfPaddingLeft20" >
+                              <span class="selfLabelStyle" style="left: -72px;">*</span>
                               <el-input type="hidden" value='' v-model='yuyueformInline.Time'></el-input>                  
                               <div class="marginTopDec46" style="width:500px;">
                                 <div class="selfSeverTimeSt" ref="yuyueTimeWrap"  v-for="(item,index) in yuyuetimeObj" :key="index" @click="yuyuetimeChange(index,item)">{{item.serviceTimeStr}}</div>                                                                 
@@ -808,7 +811,7 @@
                               <!-- <div v-if="yuyuetimeObj.length != 0" class="promMessage" style="font-size:12px;">*  更换服务时间，只会更改本次订单的服务时间</div>                                       -->
                         </el-form-item>
                         <el-form-item label="" class="selfPaddingLeft20" style="margin-top: 20px;">              
-                        <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px;margin-top: -13px;">查询服务技师</div> 
+                            <div class="button-large-fourth"  @click="searchSeverTechyuyue" style="margin-left:20px; margin-top: -15px">查询服务技师</div> 
                         </el-form-item>                    
                   </div>                   
 
@@ -1174,6 +1177,7 @@
                               </el-form-item>                    
                           </div>
                           <el-form-item v-if="gudingStatus != 'edit'" label="选择日期" prop='Date' class="selfPaddingLeft20">
+                                  <span class="selfLabelStyle">*</span>
                                   <el-select v-model="Orderform1.Date" style="width:550px;"  @visible-change='dateChange1' placeholder="请选择第一次服务日期">
                                     <el-option
                                       v-for="item in options3"
@@ -1673,7 +1677,7 @@ export default {
         workTimes: [
           { required: true,validator:WORKTIMES , trigger: "blur" }
         ],
-        Date: [{ required: true, message: "请选择日期", trigger: "change" }],
+        // Date: [{ required: true, message: "请选择日期", trigger: "change" }],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       gehuanOrderform: {
@@ -1705,18 +1709,18 @@ export default {
         Date: [
           { required: true, message: "请选择服务日期", trigger: "change" }
         ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       yuyueformInline1rules: {
-        Date: [
-          { required: true, message: "请选择服务日期", trigger: "change" }
-        ],
-        Time: [
-          { required: true, message: "请选择服务时间", trigger: "change" }
-        ],
+        // Date: [
+        //   { required: true, message: "请选择服务日期", trigger: "change" }
+        // ],
+        // Time: [
+        //   { required: true, message: "请选择服务时间", trigger: "change" }
+        // ],
         Tech: [{ required: true, message: "请选择技师", trigger: "change" }]
       },
       timeObj: [], //时间对象
@@ -1811,7 +1815,6 @@ export default {
     /*设置固定服务时间相关操作开始 */
         //设置固定服务时间按钮
         changeguTime(status) {
-
           this.gudingStatus=status;//是新增还是修改
           if(this.gudingStatus =='edit'){
             this.Orderform1.Date=this.otherInfo.serviceStart
@@ -1927,6 +1930,11 @@ export default {
           this.listShowFlag=false;//隐藏时间选择结果
           this.freStyl = index;
           this.Orderform1.testsele = key;
+          if(this.gudingStatus =='edit'){
+            this.Orderform1.Date=this.serviceStart
+          }else{
+             this.Orderform1.Date=''
+          } 
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = []; 
@@ -1989,8 +1997,21 @@ export default {
                 return false;
               }              
 
-          }   
-                  
+          } 
+          if(this.radio4 =='' && this.gudingFlag == false){
+                this.$message({
+                  type: "error",
+                  message: "请查询技师！"
+                });
+                return false;            
+          }  
+          if(this.radio4 =='' && this.gudingFlag == true){
+                this.$message({
+                  type: "error",
+                  message: "请选择技师！"
+                });
+                return false;            
+          }                   
           this.$refs[formName].validate(val => {
             if (val) {
               this.Orderform1.workTimes = this.teachArr;
@@ -2087,10 +2108,6 @@ export default {
         },
         //设置固定服务时间服务时间段确定动作
         singletechClick() {
-          this.isB=false;//新增日期部分关闭 
-          this.tableData3=[];//技师表格清空
-          this.radio4='';//技师表格选择会值清空
-          this.gudingFlag=false; //技师部分关闭 
           if(this.gudingStatus =='edit'){
             this.Orderform1.Date=this.otherInfo.serviceStart
           }else{
@@ -2104,6 +2121,10 @@ export default {
             this.$message.error("请选择时段");
             return false;
           }
+          this.isB=false;//新增日期部分关闭 
+          this.tableData3=[];//技师表格清空
+          this.radio4='';//技师表格选择会值清空
+          this.gudingFlag=false; //技师部分关闭           
           var obj = {};
           obj.week = this.roomSel1Arr.id;
           obj.timeArea = this.timeArea;      
@@ -2147,6 +2168,7 @@ export default {
           this.freStyl1 = "8";
           this.timeArea = "";
           this.timeAreaoptions = [];
+          this.isB=false;//新增日期部分关闭 
         },
         //设置固定服务时间删除选择的服务时间（点击叉号）
         singledeletes(item) {
@@ -2310,15 +2332,6 @@ export default {
           this.gehuanseverFrequencyFlag = false;
           this.gehuangudingFlag = false;           
           this.gehuanOrderform.severHour = val;            
-          //预约个数*单次服务时间如果大于6提示不能
-          if(val*this.copyserviceHour > 6){
-                this.$message({
-                  type: "warning",
-                  message: "总服务时长不能大于6小时！"
-                });
-                return false
-          }
-
         },    
         //更换固定时间服务频次更换
         gehuanChangefrequency(key, index) {
@@ -2591,6 +2604,7 @@ export default {
         //预约查询服务日期按钮
         searchseverDateyuyue() {
           this.yuyueradio = "";
+          this.yuyueformInline.Date == '' 
           this.yuyueformInline.Tech='';
           this.yuyuetimeObj=[];
           this.yuyueselectDateFlag = true;  
@@ -2672,12 +2686,14 @@ export default {
         },
         //预约数量改变
         yuyuenumberChange(val) {
-          this.yuyueselectDateFlag = false;
-          this.gudingFlag11 = false;
           this.yuyueformInline.severHour = val;
-          this.yuyueNumber = val; 
+          this.yuyueNumber = val;
+          this.yuyueformInline.Date = '' 
+          this.yuyueformInline.Time=''          
+          this.yuyueselectDateFlag = false;
           this.yuyueformInline.Tech='';
           this.yuyueradio='';           
+          this.gudingFlag11 = false;         
         },
         //预约单选改变
         yuyuegetCurrentRow(value) {
@@ -2808,6 +2824,7 @@ export default {
         },
         //预约中日期变化时改变时间对象
         yuyuedateChange(val) {
+          this.yuyueformInline.Time='' 
           this.gudingFlag11=false;//预约技师表格关闭
           this.yuyuetableData=[];//预约技师表格清空
           this.yuyueradio='';//预约技师表格单选清空
@@ -2820,6 +2837,7 @@ export default {
               }
               if (this.options21[b].label != undefined) {
                 this.yuyuechangTime = this.options21[b].label;
+                this.yuyueformInline.Date=this.options21[b].label;
               }
             }
           }
@@ -2967,7 +2985,7 @@ export default {
         },
         //选择技师弹出层保存
         submitForm2() {
-          this.techSaveFlag = true;//防止重复提交FLAG
+          
           //先遍历数据中选中的再保存（增加技师中的技师LIST）
           var arr = [];
           if (this.middleA != undefined && this.middleA.length != 0) {
@@ -2978,6 +2996,7 @@ export default {
             }
           }
           if (this.status == "add" && arr.length != 0) {
+            this.techSaveFlag = true;//防止重复提交FLAG
             //多选保存技师
             var obj = {
               orderId: this.subOneId1,
@@ -2996,6 +3015,7 @@ export default {
                   this.listTech = [];
                   this.changeTech(this.subOneId1)
                   this.dialogTableVisible = false;
+                  
                 }
               })
               .catch(res => {
@@ -3011,30 +3031,39 @@ export default {
                 tech.push(this.listTech[a].techId);
               }
             }
-            var obj1 = {
-              orderId: this.subOneId1,
-              techId: this.aa,
-              techIdList: tech
-            };
-            //已有订单改派保存按钮    参数orderId，techIdList，techId        
-            updateOrderTechDispatchSave(obj1)
-              .then(res => {
-                this.techSaveFlag = false;
-                if (res.data.code === 1) {
-                  this.$message({
-                    type: "success",
-                    message: "改派成功!"
-                  });
-                  this.listTech = [];
-                  this.changeTech(this.subOneId1)
-                  this.dialogTableVisible = false;
-                } else {
+            if(tech.length == 0){
+                this.$message({
+                  type: "error",
+                  message: "请选择技师!"
+                });
+            }else{
+              this.techSaveFlag = true;//防止重复提交FLAG
+              var obj1 = {
+                orderId: this.subOneId1,
+                techId: this.aa,
+                techIdList: tech
+              };
+              //已有订单改派保存按钮    参数orderId，techIdList，techId        
+              updateOrderTechDispatchSave(obj1)
+                .then(res => {
                   this.techSaveFlag = false;
-                }
-              })
-              .catch(res => {
-                this.techSaveFlag = false;
-              });
+                  if (res.data.code === 1) {
+                    this.$message({
+                      type: "success",
+                      message: "改派成功!"
+                    });
+                    this.listTech = [];
+                    this.changeTech(this.subOneId1)
+                    this.dialogTableVisible = false;
+                  } else {
+                    this.techSaveFlag = false;
+                  }
+                })
+                .catch(res => {
+                  this.techSaveFlag = false;
+                });
+            }
+
           }
         },
         //更换技师弹出层改派或新增技师
@@ -3462,6 +3491,7 @@ export default {
         //更换时间弹窗中的时间选项点击
         timeChange(index, obj) {
           //隐藏技师选择部分
+          this.formInline.Tech ='';          
           this.radio3='';
           this.gudingFlag1=false;
           this.tableData2=[];
@@ -3483,6 +3513,7 @@ export default {
         },    
         //更换时间中弹窗中日期变化时改变时间对象
         dateChange(val) {
+          this.formInline.Tech ='';
           this.tableData2=[];
           this.radio3='';
           this.gudingFlag1=false;
@@ -3526,25 +3557,33 @@ export default {
               time = this.timeObj[a].serviceTimeStr;
             }
           }
-          //更换服务时间中‘查询服务技师’  参数 一个是id  一个是serviceTime
-            var obj = {
-            id:this.subOneId,
-            serviceTime: this.changTime + " " + time + ":00",
-          };
-          updateOrderTimeTechList(obj)
-            .then(res => {
-              if (res.data.code === 1) {
-                //技师表格数据
-                this.tableData2 = res.data.data.list;
-                this.techObj=res.data.data.tech;
-                this.gudingFlag1 = true;
-              } else {
-                  this.tableData2 = [];
-              }
-            })
-            .catch(res => {
+          if(time == ''){
+            this.$message({
+              type: "error",
+              message: "请选择时间！"
+            });
+          }else{
+            //更换服务时间中‘查询服务技师’  参数 一个是id  一个是serviceTime
+              var obj = {
+              id:this.subOneId,
+              serviceTime: this.changTime + " " + time + ":00",
+            };
+            updateOrderTimeTechList(obj)
+              .then(res => {
+                if (res.data.code === 1) {
+                  //技师表格数据
+                  this.tableData2 = res.data.data.list;
+                  this.techObj=res.data.data.tech;
+                  this.gudingFlag1 = true;
+                } else {
+                    this.tableData2 = [];
+                }
+              })
+              .catch(res => {
 
-            });      
+              });    
+            }
+  
         },
         //更换技师（表格内）单选改变
         getCurrentRow3(value) {
@@ -3575,83 +3614,83 @@ export default {
                 if (this.timeObj[a].selected == true) {
                   time = this.timeObj[a].serviceTimeStr;
                 }
-              }
-            var tech = [];
-            for (var a = 0; a < this.tableData2.length; a++) {
-              if (this.radio3 == this.tableData2[a].techId) {
-                tech.push(this.tableData2[a].techId);
-              }
-            }          
+              }      
               var that = this;
               //this.formInline.Tech 技师的techId
               //更换服务时间中'保存'
-              if(this.otherInfo.orderType == 'group_split_yes'){
-                  var obj = {
-                    //masterId: this.orderId,
-                    id:this.subOneId,
-                    serviceTime: this.changTime + " " + time + ":00",
-                    techId:this.formInline.Tech
-                  };              
-                  updateOrderTimeSave(obj)
-                    .then(res => {
-                      this.timeSaveFlag = false;
-                      if (res.data.code === 1) {
-                        this.$message({
-                          type: "success",
-                          message: "更换时间成功!"
-                        });
-                        this.getOrderAllInf(this.orderId);
-                        this.$refs["formInline"].resetFields();                        
-                        this.timeObj = [];//时段对象
-                        this.options2=[];
-                        this.radio3='';
-                        this.tableData2=[];
-                        this.gudingFlag1 = false;//技师信息展示开关
-                        this.dialogVisible = false;//弹窗关闭
-                        
-                      } else {
-                        //this.timeObj = [];
-                        this.timeSaveFlag = false; 
-                      }
-                    })
-                    .catch(res => {
-                      this.timeSaveFlag = false;
-                      //this.timeObj = [];
-                    });            
-
+              if(time == ''){
+                  this.$message({
+                    type: "error",
+                    message: "请选择时间！"
+                  });
               }else{
-                  //不拆单的情况
-                  var obj = {
-                    //masterId: this.orderId,
-                    id:this.subOneId,
-                    serviceTime: this.changTime + " " + time + ":00",
-                    techId:''
-                  };              
-                  updateOrderTimeSave(obj)
-                    .then(res => {
-                      this.timeSaveFlag = false;
-                      if (res.data.code === 1) {
-                        this.$message({
-                          type: "success",
-                          message: "更换时间成功!"
-                        });
-                        this.getOrderAllInf(this.orderId);
-                        this.$refs["formInline"].resetFields();
-                        this.dialogVisible = false;//弹窗关闭
-                        this.timeObj = [];//时段对象
-                        this.options2=[];
-                        this.gudingFlag1 = false;//技师信息展示开关
-                        
-                      } else {
-                        //this.timeObj = [];
-                        this.timeSaveFlag = false; 
-                      }
-                    })
-                    .catch(res => {
-                      this.timeSaveFlag = false;
-                      //this.timeObj = [];
-                    });            
+                  if(this.otherInfo.orderType == 'group_split_yes'){
+                      var obj = {
+                        id:this.subOneId,
+                        serviceTime: this.changTime + " " + time + ":00",
+                        techId:this.formInline.Tech
+                      };              
+                      updateOrderTimeSave(obj)
+                        .then(res => {
+                          this.timeSaveFlag = false;
+                          if (res.data.code === 1) {
+                            this.$message({
+                              type: "success",
+                              message: "更换时间成功!"
+                            });
+                            this.getOrderAllInf(this.orderId);
+                            this.$refs["formInline"].resetFields();                        
+                            this.timeObj = [];//时段对象
+                            this.options2=[];
+                            this.radio3='';
+                            this.tableData2=[];
+                            this.gudingFlag1 = false;//技师信息展示开关
+                            this.dialogVisible = false;//弹窗关闭
+                            
+                          } else {
+                            //this.timeObj = [];
+                            this.timeSaveFlag = false; 
+                          }
+                        })
+                        .catch(res => {
+                          this.timeSaveFlag = false;
+                          //this.timeObj = [];
+                        });            
+
+                  }else{
+                      //不拆单的情况
+                      var obj = {
+                        id:this.subOneId,
+                        serviceTime: this.changTime + " " + time + ":00",
+                        techId:''
+                      };              
+                      updateOrderTimeSave(obj)
+                        .then(res => {
+                          this.timeSaveFlag = false;
+                          if (res.data.code === 1) {
+                            this.$message({
+                              type: "success",
+                              message: "更换时间成功!"
+                            });
+                            this.getOrderAllInf(this.orderId);
+                            this.$refs["formInline"].resetFields();
+                            this.dialogVisible = false;//弹窗关闭
+                            this.timeObj = [];//时段对象
+                            this.options2=[];
+                            this.gudingFlag1 = false;//技师信息展示开关
+                            
+                          } else {
+                            //this.timeObj = [];
+                            this.timeSaveFlag = false; 
+                          }
+                        })
+                        .catch(res => {
+                          this.timeSaveFlag = false;
+                          //this.timeObj = [];
+                        });            
+                  }
               }
+
             } else {
               var errArr = this.$refs[formName]._data.fields;
               var errMes = [];
