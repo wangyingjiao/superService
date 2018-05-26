@@ -17,7 +17,7 @@
 	                		</el-option>
 	              		</el-select>
 	          		</el-input>
-					<el-select class="searchRight select-width" clearable v-model="search.skilId" placeholder="请选择技能">
+					<el-select class="searchRight select-width" clearable v-model="search.skilId" filterable placeholder="请选择技能">
 						<el-option v-for="(item,index) in skils" :key="index" :label="item.name" :value="item.id">
 		                </el-option>
 					</el-select>
