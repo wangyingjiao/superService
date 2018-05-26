@@ -115,13 +115,13 @@
                    <!--  -->
                      <div style="width:80px;float:left;margin-top: 25px;">固定服务时间:</div>
                       <div  style="float:left;width:426px;">
-                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:80px;margin-top: 25px;">
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0" style="float:left;width:80px;margin-top: 25px;">
                           <span v-if="otherInfo.serviceFrequency =='week_one'">1周1次</span>
                           <span v-if="otherInfo.serviceFrequency =='week_some'">1周多次</span>
                           <span v-if="otherInfo.serviceFrequency =='two_week_one'">2周1次</span>
                         </div>
-                        <div style="float:left;width:105px;margin-top: 25px;" v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'">每次{{otherInfo.copyserviceHour1}}</div>
-                        <ul v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel'" style="float:left;width:120px;margin-top: 25px;">
+                        <div style="float:left;width:105px;margin-top: 25px;" v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 ">每次{{otherInfo.copyserviceHour1}}</div>
+                        <ul v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0" style="float:left;width:120px;margin-top: 25px;">
                           <li v-for="item in otherInfo.freList" :key="item.id">
                             <span>                              
                               <span v-if="item.week =='1'">每周一</span>
