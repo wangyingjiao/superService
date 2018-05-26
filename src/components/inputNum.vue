@@ -26,7 +26,6 @@ export default {
     this.minNum = this.min != undefined ? this.min : -9999;
   },
   methods: {
-   
     dis(val) {
       console.log(val);
     },
@@ -49,6 +48,10 @@ export default {
 .inputNum .el-input-group__prepend {
   padding: 0 5px;
   overflow: hidden;
+}
+.inputNum .el-input-group__append button,
+.inputNum .el-input-group__prepend button {
+  background-color: #fff;
 }
 .butDis {
   background-color: #eef1f6 !important;
