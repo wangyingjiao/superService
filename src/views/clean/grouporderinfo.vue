@@ -294,7 +294,7 @@
                     <span>可预约次数：<span>{{otherInfo.bespeakTotal}}</span>次</span>
                     <span style="margin-left:20px;">已预约：<span>{{otherInfo.bespeakNum}}</span>次</span>
                     <span style="margin-left:20px;"> 剩余：<span>{{otherInfo.surplusNum}}</span>次</span>                    
-                    <span style="margin-right: 20px;"><input type="button"  class="button-cancel height25" style=" margin-top:-5px;" v-if="otherInfo.surplusNum != 0 && btnShow.indexOf('combination_subscribe') > -1" @click="yuyueClick" value="预约"></span> 
+                    <span style="margin-right: 20px;"><input type="button"  class="button-cancel height25" style=" margin-top:-5px;" v-if="otherInfo.surplusNum != 0 && btnShow.indexOf('combination_subscribe') > -1 && otherInfo.orderStatus !='cancel'" @click="yuyueClick" value="预约"></span> 
                   </div>                
                 </div>               
                 <div class="selfTableWrapStyle2">                

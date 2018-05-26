@@ -105,7 +105,9 @@
 											</span>                       
                     </td>
 										<td class="height30" align="center">
-                      <span > <el-input-number class="selfINputNumStyle" :ref="item.goodsId"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number></span>
+                      <span > 
+                        <el-input-number class="selfINputNumStyle" :ref="item.goodsId"   @change="numberChange(item,item.goodsId)" v-model="item.goodsNum" :min='item.minPurchase' :debounce='1000'  :max="999999"></el-input-number>
+                      </span>
 										</td>
                     <td width="50px" class="fontSize12"  align="center" :ref="item.goodsId" style="display:none;">
                         {{item.payPriceSum}}
