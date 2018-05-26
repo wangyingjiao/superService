@@ -68,7 +68,7 @@
 		    </div>
         <!--订单信息结束-->
         <!--订单取消开始-->
-        <div class="thrid-bar marginTop15" v-if="otherInfo.orderSource =='own' && otherInfo.orderStatus =='cancel'">
+        <div class="thrid-bar marginTop15" v-if="otherInfo.orderStatus =='cancel'">
             <div class="custom-action">订单取消信息</div>
             <div class="hr-style"></div>
             <div class="selfWrap1">
