@@ -107,7 +107,7 @@
                       <span  style="margin-left: -24px;" >
                         <span>{{otherInfo.tech.name}}</span>
                         <span  style="margin-left:10px;">{{otherInfo.tech.phone}}</span>
-                        <span  style="margin-left:15px;" v-if="otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
+                        <span  style="margin-left:15px;" v-if="otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1 && otherInfo.surplusNum != 0"><input type="button"  class="button-cancel height25"  @click="gaiPai1()"  value="更换固定技师"></span>
                       </span>
                    </p>                                                                                            
                 </div>
@@ -135,8 +135,8 @@
                             <span style="margin-left:10px;">{{item.timeArea}}</span>
                           </li>
                         </ul>
-                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1" style="float:left;width:100px;margin-top:18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
-                        <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1" style="float:left;width:100px;margin-top: 18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
+                        <div v-if="otherInfo.freList != undefined && otherInfo.freList.length != 0 && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1  && otherInfo.surplusNum != 0" style="float:left;width:100px;margin-top:18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('edit')" value="更换固定时间"></div>
+                        <div v-if="otherInfo.freList == undefined && otherInfo.orderStatus !='cancel' && btnShow.indexOf('combination_regular') > -1  && otherInfo.surplusNum != 0" style="float:left;width:100px;margin-top: 18px;"><input type="button"  class="button-cancel height25"  @click="changeguTime('add')" value="设置固定时间"></div>
                       </div>                                      
                 </div>
             </div>
@@ -363,7 +363,7 @@
                         >
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
-                                {{item.finishTime}}
+                                <span  v-if="item.serviceStatus =='finish'" >{{item.finishTime}}</span>
                               </div> 
                             </template>                                                 
                       </el-table-column>
