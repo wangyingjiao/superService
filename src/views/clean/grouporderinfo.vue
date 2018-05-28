@@ -787,7 +787,7 @@
                   <el-form-item label=" 预约个数:" style="margin-top: -22px;padding-left:20px;">
                     <span class="selfLabelStyle" style="left: -72px;">*</span>
                     <input-num class="selfINputNumStyle"  v-model="yuyueNumber" :min='1'   :max="yuyueMax" style="width:120px;margin-left: 20px;" @change="yuyuenumberChange"></input-num>
-                    <div style="font-size: 12px;color: #576475;min-width:587px;padding-left:20px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*yuyueNumber}}小时(预约个数 * 单次建议服务时长)且总服务长不能超过6小时! </div>
+                    <div style="font-size: 12px;color: #576475;min-width:587px;padding-left:20px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*100*yuyueNumber/100}}小时(预约个数 * 单次建议服务时长)且总服务长不能超过6小时! </div>
                   </el-form-item>
                   <el-form-item label="" style="margin-top: -26px;padding-left:20px;">              
                   <div class="button-large-fourth"  @click="searchseverDateyuyue" style="margin-left:20px;">查询服务日期</div> 
