@@ -1067,7 +1067,7 @@
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <input-num class="selfINputNumStyle"  v-model="severHour" :min='1'   :max="testMax" style="width:120px;" @change="numberChange"></input-num>
-                   <div style="font-size: 12px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*severHour}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于6小时！ </div>
+                   <div style="font-size: 12px;color:#8391a0d9">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*100*severHour/100}}小时（预约个数 * 单次建议服务时长）且总服务时长不能大于6小时！ </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="searchSeverDate">查询服务日期</div> 
@@ -1268,7 +1268,7 @@
                 <el-form-item label="预约个数：" class="selfPaddingLeft20" style="margin-top: -22px;">
                   <span class="selfLabelStyle">*</span>
                   <input-num class="selfINputNumStyle"  v-model="gehuanseverHour" :min='1' :debounce='1000'  :max="999" style="width:120px;" @change="gehuannumberChange"></input-num>
-                   <div style="font-size: 12px;color:#8391a0d9;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*gehuanseverHour}}小时（预约个数 * 单次建议服务时长） </div>
+                   <div style="font-size: 12px;color:#8391a0d9;">* 单次建议服务时长为{{copyserviceHour}}小时；总服务时长为{{copyserviceHour*100*gehuanseverHour/100}}小时（预约个数 * 单次建议服务时长） </div>
                 </el-form-item>
                 <el-form-item label="" class="selfPaddingLeft20" style="margin-top: -22px;">              
                    <div class="button-large-fourth" @click="gehuansearchSeverDate">查询服务日期</div> 
@@ -1824,10 +1824,10 @@ export default {
           this.freStyl = "4";
           this.freStyl1 = "8";
           if(6/this.copyserviceHour < this.otherInfo.surplusNum){
-             this.testMax=6/this.copyserviceHour;
+             this.testMax=Math.floor(6/this.copyserviceHour);//向下取整
           }else{
              this.testMax=this.otherInfo.surplusNum;
-          }          
+          }         
           this.isB=false;
           this.severFrequencyFlag=false;
           this.timeArea = "";
@@ -2599,7 +2599,7 @@ export default {
         //预约操作按钮
         yuyueClick() {
           if(6/this.copyserviceHour < this.otherInfo.surplusNum){
-             this.yuyueMax=6/this.copyserviceHour;
+             this.yuyueMax=Math.floor(6/this.copyserviceHour);//向下取整
           }else{
              this.yuyueMax=this.otherInfo.surplusNum;
           }          
@@ -3154,7 +3154,7 @@ export default {
           if (hours == 0 && seconds == 0) {
             return minutes + "分钟";
           } else if (hours == 0 && seconds != 0) {
-            return minutes + 1 + "分钟";
+            return minutes +1+ "分钟";
           } else if (seconds == 0 && minutes == 0) {
             return hours + "小时";
           } else {
