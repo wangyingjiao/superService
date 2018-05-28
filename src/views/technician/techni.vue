@@ -223,7 +223,7 @@
                 <el-col :span="11">
                   <el-form-item prop="startDate">
                     <el-date-picker type="date" placeholder="选择日期" 
-                    v-model="ruleForm.startDate" style="width: 100%;" :editable='false' format="yyyy-MM-dd" @change="startDateChange" :picker-options="pickerOptionsTech"
+                    v-model="ruleForm.startDate" style="width: 100%;" :editable='false' format="yyyy-MM-dd" @change="startDateChange" :picker-options="pickerOptionsTechTime"
                    ></el-date-picker>
                   </el-form-item>
                 </el-col>
@@ -2841,7 +2841,7 @@ export default {
   height: 100px; */
   /* overflow: hidden; */
 }
-.button-large {
+.tech .button-large {
   display: inline-block;
   line-height: 25px;
   margin: 0 0 0 35px;
