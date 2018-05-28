@@ -186,14 +186,14 @@
                         align="center"
                         label="单价">
                           <template scope="scope">
-                              <span>￥{{scope.row.price}}</span>
+                              <span>￥{{scope.row.price | keepTwoNum}}</span>
                           </template>	                                           
                       </el-table-column>                                             
                       <el-table-column
                         align="center"
                         label="小计">
                           <template scope="scope">
-                              <span>￥{{scope.row.sum}}</span>
+                              <span>￥{{scope.row.sum | keepTwoNum}}</span>
                           </template>	                                           
                       </el-table-column>                      
                     </el-table>
