@@ -51,11 +51,18 @@
 
       <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
-               <el-tooltip placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
+              <!-- 判断订单状态 common普通订单 ！common组合订单 -->
+               <el-tooltip v-if="rowObj.row.orderType =='common'" placement="left" :disabled="rowObj.row.orgName.length < 10" :content="rowObj.row.orgName">
                  <p :class="rowObj.row.orgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.orgName}}</p>
                </el-tooltip>
-               <el-tooltip placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
+               <el-tooltip v-if="rowObj.row.orderType =='common'" placement="left" :disabled="rowObj.row.stationName.length < 10" :content="rowObj.row.stationName">
                  <p :class="rowObj.row.stationName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.stationName}}</p>
+               </el-tooltip>
+               <el-tooltip v-if="rowObj.row.orderType !='common'" placement="left" :disabled="rowObj.row.comOrgName.length < 10" :content="rowObj.row.comOrgName">
+                 <p :class="rowObj.row.comOrgName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.comOrgName}}</p>
+               </el-tooltip>
+               <el-tooltip v-if="rowObj.row.orderType !='common'" placement="left" :disabled="rowObj.row.comStationName.length < 10" :content="rowObj.row.comStationName">
+                 <p :class="rowObj.row.comStationName.length < 10 ? '' : 'overheidden'" >{{rowObj.row.comStationName}}</p>
                </el-tooltip>
             </template>
       </el-table-column>
