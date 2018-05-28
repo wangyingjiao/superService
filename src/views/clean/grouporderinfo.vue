@@ -310,6 +310,7 @@
                         min-width='180'
                         label="订单编号"
                         >
+                        
                             <template scope="scope">
                               <div class="selfTd" v-for="(item,index) in scope.row.orderList" :key="index">
                                 {{item.orderNumber}}
