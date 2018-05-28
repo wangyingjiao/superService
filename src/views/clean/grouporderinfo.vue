@@ -1820,11 +1820,14 @@ export default {
             this.Orderform1.Date=this.otherInfo.serviceStart
           }else{
              this.Orderform1.Date=''
-          }
-          
+          }          
           this.freStyl = "4";
           this.freStyl1 = "8";
-          this.testMax=6/this.copyserviceHour;
+          if(6/this.copyserviceHour < this.otherInfo.surplusNum){
+             this.testMax=6/this.copyserviceHour;
+          }else{
+             this.testMax=this.otherInfo.surplusNum;
+          }          
           this.isB=false;
           this.severFrequencyFlag=false;
           this.timeArea = "";
