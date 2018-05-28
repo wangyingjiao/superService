@@ -2841,7 +2841,7 @@ export default {
   height: 100px; */
   /* overflow: hidden; */
 }
-.button-large {
+.tech .button-large {
   display: inline-block;
   line-height: 25px;
   margin: 0 0 0 35px;
