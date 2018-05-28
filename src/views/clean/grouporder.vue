@@ -110,7 +110,7 @@
         </template>     
       </el-table-column>
 
-      <el-table-column align="center" label="对接订单组ID" min-width="250" prop="jointGroupId">      
+      <el-table-column align="center" label="对接订单组ID" min-width="260" prop="jointGroupId">      
       </el-table-column>
 
       <el-table-column align="center" label="下单时间" min-width="160" prop="orderTime">
