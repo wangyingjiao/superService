@@ -95,8 +95,7 @@
 													:class="{'order':data.type!='holiday'}" v-for="(data,i) in scope.row.scheduleDateInfos[index].techScheduleInfos" :key="i"
 													@click="schedulePath(data)">
 													{{tableDataTime(data.startTimeStr,data.endTimeStr)}}
-													<!-- <span>{{data.type=='holiday'?'休假':'订单'}}</span> -->
-													<span>{{data.type=='holiday'?'休假':(data.type=='order'?'订单':'(多次服务)')}}</span>
+													<span>{{data.type=='holiday'?'休假':(data.type=='order'?'订单':(data.orderType=='group_split_yes'?'(多次服务)':'(单次服务)'))}}</span>
 												</div>
 											</div>
 										</div>
@@ -245,7 +244,7 @@
 			},
 			schedulePath(item){
 				//判断是不是多次服务
-				if(item.orderType == 'group_split_yes'){
+				if(item.orderType == 'group_split_yes' || item.orderType == 'group_split_no'){
 					localStorage.setItem("grouporderId", item.masterId);
 					this.$router.push({ path: "/clean/grouporderinfo", query: { id: item.masterId } });
 					return
