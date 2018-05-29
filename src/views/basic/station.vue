@@ -517,17 +517,13 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
-         console.log(this.rowInfo)
           getStore({ stationId: this.rowInfo.id }).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
-              this.storeTree = res.data.data;
               this.dialogStoreVisible = true;
-
+              this.storeTree = res.data.data;
               this.$nextTick(() => {
-                console.log(this.rowInfo.storeList)
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
-                console.log(this.rowInfo.storeList,'111111')
               });
             }
           });
@@ -694,7 +690,7 @@ export default {
       this.loadingClick();
       var obj = {
         id: this.rowInfo.id,
-        orgId:this.rowInfo.orgId,
+        orgId: this.rowInfo.orgId,
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
       this.btnState = true;
