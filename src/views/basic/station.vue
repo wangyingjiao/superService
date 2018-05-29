@@ -517,7 +517,7 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
-          getStore({ stationId: this.rowInfo.id }).then(res => {
+          getStore({ stationId: this.rowInfo.id,orgId:this.rowInfo.orgId}).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
               this.dialogStoreVisible = true;
@@ -690,7 +690,6 @@ export default {
       this.loadingClick();
       var obj = {
         id: this.rowInfo.id,
-        orgId: this.rowInfo.orgId,
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
       this.btnState = true;
