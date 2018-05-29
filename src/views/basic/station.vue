@@ -296,6 +296,7 @@ export default {
         cityCode: ""
       },
       rowInfo: {
+        orgId: "",
         id: "",
         masterId: "",
         rangeType: "",
@@ -516,7 +517,7 @@ export default {
         this.listLoading = false;
         if (this.rowInfo.serviceAreaType == "store") {
           this.listLoading = true;
-
+         console.log(this.rowInfo)
           getStore({ stationId: this.rowInfo.id }).then(res => {
             if (res.data.code == 1) {
               this.listLoading = false;
@@ -524,7 +525,9 @@ export default {
               this.dialogStoreVisible = true;
 
               this.$nextTick(() => {
+                console.log(this.rowInfo.storeList)
                 this.$refs.domTree.setCheckedKeys(this.rowInfo.storeList);
+                console.log(this.rowInfo.storeList,'111111')
               });
             }
           });
@@ -554,6 +557,7 @@ export default {
       //行被点击时
       this.rowInfo.serviceAreaType = row.organ.scopeType;
       this.rowInfo.id = row.id;
+      this.rowInfo.orgId = row.orgId;
       if (row.user == undefined) {
         this.rowInfo.masterId = "";
       } else {
@@ -690,6 +694,7 @@ export default {
       this.loadingClick();
       var obj = {
         id: this.rowInfo.id,
+        orgId:this.rowInfo.orgId,
         storeList: this.$refs.domTree.getCheckedKeys(true)
       };
       this.btnState = true;
