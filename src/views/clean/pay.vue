@@ -42,7 +42,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column  align="center" label="订单编号或订单组ID" min-width="250" >  
+      <el-table-column  align="center" label="订单编号或订单组ID" min-width="280" >  
         <template scope="scope">
           <span v-if="scope.row.orderType == 'common'">{{scope.row.orderNumber}}</span>
           <span v-else>{{scope.row.masterId}}</span>
