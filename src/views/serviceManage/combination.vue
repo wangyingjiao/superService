@@ -167,6 +167,12 @@
 											<!-- <span v-if="dialogStatus != 'update'">{{basicForm.serItemCommodity.combinationCommodities.length>0 ? (basicForm.serItemCommodity.unit?basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/'+basicForm.serItemCommodity.unit:basicForm.serItemCommodity.combinationCommodities[0].convertHours+'小时/单位'):0+'小时/单位'}}</span> -->
 											<span v-else>{{basicForm.serItemCommodity.unit ? basicForm.serItemCommodity.convertHours+'小时/'+basicForm.serItemCommodity.unit : basicForm.serItemCommodity.convertHours+'小时/单位'}}</span>
 										</el-form-item>
+										<el-form-item label="服务时效：" class="combination-name">
+											<el-select v-model="basicForm.serItemCommodity.orderValidityDays" style="width:60%" class="form_item">
+												<el-option v-for="item in orderValidityDaysArr" :key="item.value" :label="item.label" :value="item.value">
+												</el-option>
+											</el-select>
+										</el-form-item>
 										<div v-if="basicForm.serItemCommodity.serviceType=='single'">
 											<el-form-item label="起步人数：" prop="serItemCommodity.startPerNum" class="combination-name">
 												<el-input
@@ -762,6 +768,13 @@ export default {
 					}
 				]
 			},
+			orderValidityDaysArr:[
+				{value:7,label:'七天'},
+				{value:30,label:'一个月'},
+				{value:90,label:'三个月'},
+				{value:180,label:'六个月'},
+				{value:360,label:'一年'},
+			],
 			basicForm: {
 				name: "",
 				sortId: "",
@@ -771,6 +784,7 @@ export default {
 				customTags: [],
 				orgId:'',
 				serItemCommodity:{
+					orderValidityDays:7,
 					serviceType:'single',  //服务分类
 					combinationCommodities:[], //组合订单----商品信息
 					name:'',  //商品名称
@@ -1390,6 +1404,7 @@ export default {
 			this.basicForm.majorSort = "clean";
 			this.commodityArr = []
 			this.basicForm.serItemCommodity.name = ''
+			this.basicForm.serItemCommodity.orderValidityDays = 7
 			this.basicForm.serItemCommodity.unit = ''
 			this.basicForm.serItemCommodity.serviceType = 'single'
 			this.basicForm.serItemCommodity.convertHours = ''
