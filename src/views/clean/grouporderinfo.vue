@@ -410,7 +410,7 @@
                         >
                             <template scope="scope">                                  
                                   <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTime(scope.row)" value="更换时间">
-                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTech(scope.row.orderList[0].id)" value="更换技师">                                                         
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;"  @click="changeTech(scope.row.orderList[0])" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
                     </el-table>
@@ -1000,7 +1000,7 @@
           class="selfDialogWidth1"
           >
           <div class="selfPromInfStyle1"> 
-            <input type="button"   class="button-cancel height25" style="float:right;margin-right: 16px;" v-if="otherInfo.orderType =='group_split_no'"  @click="gaiPai('add','')"  value="增加技师">
+            <input type="button"   class="button-cancel height25" style="float:right;margin-right: 16px;" v-if="otherInfo.orderType =='group_split_no' && techdisStatus.orderStatus != 'cancel' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('add','')"  value="增加技师">
           </div>
             <el-table
               :data="tableData1"
@@ -1047,8 +1047,7 @@
                 align="center"
                 label="操作">
                   <template scope="scope">
-                        <div style="cursor:pointer;color:#4c70e8"   @click="gaiPai('edit',scope.row)">改派</div>
-                        <!-- v-if="btnShow.indexOf('order_dispatch') > -1" -->
+                        <div style="cursor:pointer;color:#4c70e8" v-if="techdisStatus.orderStatus != 'cancel' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('edit',scope.row)">改派</div>
                   </template>                    
               </el-table-column>                  
             </el-table>                     
@@ -1466,6 +1465,8 @@ import {
   getOrderInf1, //组合订单ID获取页面相关信息
   saveRegularDateDateList,// 组合订单设置固定时间查询服务时间
   saveRegularDateTechList,// 组合订单设置固定时间查询技师
+  updateRegularDateDateList,// 组合订单更换固定时间查询服务时间
+  updateRegularDateTechList,// 组合订单更换固定时间查询技师  
   saveRegularDate,// 组合订单设置固定时间总保存
   updateRegularDate,//组合订单更换固定时间总保存
   updateRegularTechTechList,//更换固定技师
@@ -1792,7 +1793,8 @@ export default {
       fanHuiseverArr:[],//固定服务时间中返回服务时间对象
       dateOptionsList:[],//固定服务时间中返回第一次服务时间下拉对象
       gehuanfanHuiseverArr:[],//固定服务时间中返回服务时间对象
-      gehuandateOptionsList:[],//固定服务时间中返回第一次服务时间下拉对象      
+      gehuandateOptionsList:[],//固定服务时间中返回第一次服务时间下拉对象 
+      techdisStatus:[],//技师改派与新增的标志     
     };
   },
   created() {
@@ -1875,17 +1877,32 @@ export default {
             serviceNum:this.severHour,
             masterId:this.orderId,
             freList:this.teachArr,
-            serviceStart:this.Orderform1.Date
+            serviceStart:this.Orderform1.Date,
+            serviceFrequency:this.Orderform1.testsele,
           };
-          saveRegularDateTechList(obj1)
-            .then(res => {
-              if (res.data.code === 1) {                 
-                this.gudingFlag = true;
-                //技师表格数据
-                this.tableData3 = res.data.data; 
-              }
-            })
-            .catch(res => {});      
+          if(this.gudingStatus =='edit'){
+              updateRegularDateTechList(obj1)
+                .then(res => {
+                  if (res.data.code === 1) {                 
+                    this.gudingFlag = true;
+                    //技师表格数据
+                    this.tableData3 = res.data.data; 
+                  }
+                })
+                .catch(res => {});             
+
+          }else{
+            saveRegularDateTechList(obj1)
+              .then(res => {
+                if (res.data.code === 1) {                 
+                  this.gudingFlag = true;
+                  //技师表格数据
+                  this.tableData3 = res.data.data; 
+                }
+              })
+              .catch(res => {}); 
+          }
+     
 
         },
         //设置固定服务时间查询服务日期按钮
@@ -1900,19 +1917,35 @@ export default {
           this.listShowFlag=false;
           this.isB = false;
           this.fanHuiseverArr=[];
-          this.dateOptionsList=[];     
-          var obj1 = {
-            masterId:this.orderId,
-            serviceNum:this.severHour
-          };
-          saveRegularDateDateList(obj1)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.fanHuiseverArr=res.data.data.weekList;
-                this.dateOptionsList=res.data.data.dateList
-              }
-            })
-            .catch(res => {});               
+          this.dateOptionsList=[];
+          if(this.gudingStatus =='edit'){
+              var obj2 = {
+                masterId:this.orderId,
+                serviceNum:this.severHour
+              };
+              updateRegularDateDateList(obj2)
+                .then(res => {
+                  if (res.data.code === 1) {
+                    this.fanHuiseverArr=res.data.data.weekList;
+                    this.dateOptionsList=res.data.data.dateList
+                  }
+                })
+                .catch(res => {});            
+          }else{
+            var obj1 = {
+              masterId:this.orderId,
+              serviceNum:this.severHour
+            };
+            saveRegularDateDateList(obj1)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.fanHuiseverArr=res.data.data.weekList;
+                  this.dateOptionsList=res.data.data.dateList
+                }
+              })
+              .catch(res => {});
+          }     
+               
           this.severFrequencyFlag = true;     
         },
         //设置固定服务时间预约个数改变
@@ -2909,7 +2942,9 @@ export default {
     /**更换技师相关操作开始*/
         //更换技师按钮
         changeTech(row) {
-          this.subOneId1=row;//第一个子订单的Id
+          this.techdisStatus=row;
+          //
+          this.subOneId1=row.id;//第一个子订单的Id
           //已有订单更换技师按钮    参数 orderId
           var obj={
               orderId:this.subOneId1
@@ -2917,6 +2952,7 @@ export default {
         updateOrderTechInit(obj)
             .then(res => {
               if (res.data.code === 1) {
+                console.log(res.data.data)
                 this.tableData1=res.data.data
                 this.changeTechFlag = true;           
               }

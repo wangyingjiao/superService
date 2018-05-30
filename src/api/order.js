@@ -193,4 +193,12 @@ export function subscribeTechList  (obj) {
 //后台预约- 保存 serviceNum，masterId，serviceTime，techId
 export function subscribeSave  (obj) {
   return instance.post(`/apiservice/a/service/order/combination/subscribeSave`, obj)
-}  
+}
+// 组合订单更换固定时间查询日期
+export function updateRegularDateDateList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateRegularDateDateList`, obj)
+}
+// 组合订单更换固定时间查询技师
+export function updateRegularDateTechList(obj) {
+  return instance.post(`/apiservice/a/service/order/combination/updateRegularDateTechList`, obj)
+} 
