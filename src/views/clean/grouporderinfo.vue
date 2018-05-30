@@ -23,7 +23,13 @@
                       <span class="lineContent">
                         {{otherInfo.customerName}}                      
                       </span>
-                   </p>                                                                                                                                  
+                   </p> 
+                   <p class="contentLine">
+                      <span class="lineTitle">有效期:</span>
+                      <span class="lineContent" style="width:240px;position: absolute;">
+                        {{otherInfo.orderTime+'~'+otherInfo.expiryDate}}                      
+                      </span>
+                   </p>                                                                                                                                                    
                 </div>
                 <div class="rightArea">
                    <p class="contentLine">
