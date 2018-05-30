@@ -1465,6 +1465,8 @@ import {
   getOrderInf1, //组合订单ID获取页面相关信息
   saveRegularDateDateList,// 组合订单设置固定时间查询服务时间
   saveRegularDateTechList,// 组合订单设置固定时间查询技师
+  updateRegularDateDateList,// 组合订单更换固定时间查询服务时间
+  updateRegularDateTechList,// 组合订单更换固定时间查询技师  
   saveRegularDate,// 组合订单设置固定时间总保存
   updateRegularDate,//组合订单更换固定时间总保存
   updateRegularTechTechList,//更换固定技师
@@ -1878,15 +1880,29 @@ export default {
             serviceStart:this.Orderform1.Date,
             serviceFrequency:this.Orderform1.testsele,
           };
-          saveRegularDateTechList(obj1)
-            .then(res => {
-              if (res.data.code === 1) {                 
-                this.gudingFlag = true;
-                //技师表格数据
-                this.tableData3 = res.data.data; 
-              }
-            })
-            .catch(res => {});      
+          if(this.gudingStatus =='edit'){
+              updateRegularDateTechList(obj1)
+                .then(res => {
+                  if (res.data.code === 1) {                 
+                    this.gudingFlag = true;
+                    //技师表格数据
+                    this.tableData3 = res.data.data; 
+                  }
+                })
+                .catch(res => {});             
+
+          }else{
+            saveRegularDateTechList(obj1)
+              .then(res => {
+                if (res.data.code === 1) {                 
+                  this.gudingFlag = true;
+                  //技师表格数据
+                  this.tableData3 = res.data.data; 
+                }
+              })
+              .catch(res => {}); 
+          }
+     
 
         },
         //设置固定服务时间查询服务日期按钮
@@ -1901,19 +1917,35 @@ export default {
           this.listShowFlag=false;
           this.isB = false;
           this.fanHuiseverArr=[];
-          this.dateOptionsList=[];     
-          var obj1 = {
-            masterId:this.orderId,
-            serviceNum:this.severHour
-          };
-          saveRegularDateDateList(obj1)
-            .then(res => {
-              if (res.data.code === 1) {
-                this.fanHuiseverArr=res.data.data.weekList;
-                this.dateOptionsList=res.data.data.dateList
-              }
-            })
-            .catch(res => {});               
+          this.dateOptionsList=[];
+          if(this.gudingStatus =='edit'){
+              var obj2 = {
+                masterId:this.orderId,
+                serviceNum:this.severHour
+              };
+              updateRegularDateDateList(obj2)
+                .then(res => {
+                  if (res.data.code === 1) {
+                    this.fanHuiseverArr=res.data.data.weekList;
+                    this.dateOptionsList=res.data.data.dateList
+                  }
+                })
+                .catch(res => {});            
+          }else{
+            var obj1 = {
+              masterId:this.orderId,
+              serviceNum:this.severHour
+            };
+            saveRegularDateDateList(obj1)
+              .then(res => {
+                if (res.data.code === 1) {
+                  this.fanHuiseverArr=res.data.data.weekList;
+                  this.dateOptionsList=res.data.data.dateList
+                }
+              })
+              .catch(res => {});
+          }     
+               
           this.severFrequencyFlag = true;     
         },
         //设置固定服务时间预约个数改变
