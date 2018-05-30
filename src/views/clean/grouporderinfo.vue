@@ -2949,8 +2949,7 @@ export default {
         //更换技师按钮
         changeTech(row) {
           this.techdisStatus=row;
-          //
-          this.subOneId1=row.id;//第一个子订单的Id
+          this.subOneId1=this.techdisStatus.id;//第一个子订单的Id
           //已有订单更换技师按钮    参数 orderId
           var obj={
               orderId:this.subOneId1
@@ -3064,7 +3063,7 @@ export default {
                   });
                   this.middleA = [];
                   this.listTech = [];
-                  this.changeTech(this.subOneId1)
+                  this.changeTech(this.techdisStatus)
                   this.dialogTableVisible = false;
                   
                 }
@@ -3104,7 +3103,7 @@ export default {
                       message: "改派成功!"
                     });
                     this.listTech = [];
-                    this.changeTech(this.subOneId1)
+                    this.changeTech(this.techdisStatus)
                     this.dialogTableVisible = false;
                   } else {
                     this.techSaveFlag = false;
