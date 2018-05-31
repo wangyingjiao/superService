@@ -24,7 +24,7 @@
                         {{otherInfo.customerName}}                      
                       </span>
                    </p> 
-                   <p class="contentLine">
+                   <p class="contentLine" v-if="otherInfo.orderType =='group_split_yes'">
                       <span class="lineTitle">有效期:</span>
                       <span class="lineContent" style="width:240px;position: absolute;">
                         {{otherInfo.orderTime+'~'+otherInfo.expiryDate}}                      
