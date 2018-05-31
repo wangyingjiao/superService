@@ -44,7 +44,7 @@
       highlight-current-row 
       style="width: 100%">
 
-      <el-table-column align="center" label="订单组ID" min-width="260" prop="masterId">      
+      <el-table-column align="center" label="订单组ID" min-width="280" prop="masterId">      
       </el-table-column>       
         <el-table-column v-if="userType =='sys'||userType =='platform'" min-width="150" align="center"  :render-header="renderHeader">
             <template scope="rowObj">
@@ -110,7 +110,7 @@
         </template>     
       </el-table-column>
 
-      <el-table-column align="center" label="对接订单组ID" min-width="260" prop="jointGroupId">      
+      <el-table-column align="center" label="对接订单组ID" min-width="280" prop="jointGroupId">      
       </el-table-column>
 
       <el-table-column align="center" label="下单时间" min-width="160" prop="orderTime">
