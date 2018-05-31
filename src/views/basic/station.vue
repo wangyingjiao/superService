@@ -610,7 +610,7 @@ export default {
                   type: "success",
                   message: "删除成功!"
                 });
-                this.getList();
+                this.handleFilter();
               }
             })
             .catch(() => {
@@ -659,7 +659,7 @@ export default {
                 this.search.name = "";
                 this.search.cityCode = "";
                 this.search.officeId = "";
-                this.handleFilter();
+                this.getList();
                 this.dialogFormVisible = false;
               } else {
                 loading.close();
@@ -708,21 +708,7 @@ export default {
               type: "success",
               message: "保存成功!"
             });
-            var obj = {
-              name: this.search.name,
-              cityCode: this.search.cityCode
-            };
-            getSite(obj, this.pageNumber, this.pageSize).then(res => {
-              this.rowInfo.id = "";
-              this.list = res.data.data.list;
-              if (this.list != undefined) {
-                for (var i = 0; i < this.list.length; i++) {
-                  this.list[i].index = i + 1;
-                }
-              }
-              this.total = res.data.data.count;
-              this.listLoading = false;
-            });
+            this.getList()
           } else {
             loading.close();
           }
