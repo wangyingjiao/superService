@@ -415,7 +415,7 @@
                         fixed="right"
                         >
                             <template scope="scope">                                  
-                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTime(scope.row)" value="更换时间">
+                                  <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.orderList[0].orderStatus != 'cancel' && scope.row.orderList[0].orderStatus != 'finish' && scope.row.orderList[0].serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1" @click="changeTime(scope.row)" value="更换时间">
                                   <input type="button"  class="button-cancel height25" style="margin-left:5px;"  @click="changeTech(scope.row.orderList[0])" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
@@ -1006,7 +1006,7 @@
           class="selfDialogWidth1"
           >
           <div class="selfPromInfStyle1"> 
-            <input type="button"   class="button-cancel height25" style="float:right;margin-right: 16px;" v-if="otherInfo.orderType =='group_split_no' && techdisStatus.orderStatus != 'cancel' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('add','')"  value="增加技师">
+            <input type="button"   class="button-cancel height25" style="float:right;margin-right: 16px;" v-if="otherInfo.orderType =='group_split_no' && techdisStatus.orderStatus != 'cancel' && techdisStatus.orderStatus != 'finish' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('add','')"  value="增加技师">
           </div>
             <el-table
               :data="tableData1"
@@ -1053,7 +1053,7 @@
                 align="center"
                 label="操作">
                   <template scope="scope">
-                        <div style="cursor:pointer;color:#4c70e8" v-if="techdisStatus.orderStatus != 'cancel' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('edit',scope.row)">改派</div>
+                        <div style="cursor:pointer;color:#4c70e8" v-if="techdisStatus.orderStatus != 'cancel' && techdisStatus.orderStatus != 'finish' && techdisStatus.serviceStatus !='finish' && btnShow.indexOf('combination_order') > -1"  @click="gaiPai('edit',scope.row)">改派</div>
                   </template>                    
               </el-table-column>                  
             </el-table>                     
