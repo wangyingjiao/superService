@@ -93,6 +93,7 @@
            <span v-if="scope.row.orderStatus=='cancel'">已取消</span>
            <span v-if="scope.row.orderStatus=='success'">已成功</span>
            <span v-if="scope.row.orderStatus=='close'">已支付</span>
+           <span v-if="scope.row.orderStatus=='finish'">已完成</span>
         </template>
       </el-table-column>
 
