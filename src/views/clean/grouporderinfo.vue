@@ -417,7 +417,7 @@
                         >
                             <template scope="scope">                                  
                                   <input type="button"  class="button-cancel height25" style="margin-left:1px;" v-if="scope.row.hide =='no' && btnShow.indexOf('combination_order') > -1 " @click="changeTime(scope.row)" value="更换时间">
-                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;"  v-if="btnShow.indexOf('combination_order') > -1" @click="changeTech(scope.row.orderList[0])" value="更换技师">                                                         
+                                  <input type="button"  class="button-cancel height25" style="margin-left:5px;"  v-if="btnShow.indexOf('combination_order') > -1" @click="changeTech(scope.row)" value="更换技师">                                                         
                             </template>                                                                                            
                       </el-table-column>                                        
                     </el-table>
@@ -2950,7 +2950,7 @@ export default {
         //更换技师按钮
         changeTech(row) {
           this.techdisStatus=row;
-          this.subOneId1=this.techdisStatus.id;//第一个子订单的Id
+          this.subOneId1=this.techdisStatus.orderList[0].id;//第一个子订单的Id
           //已有订单更换技师按钮    参数 orderId
           var obj={
               orderId:this.subOneId1
